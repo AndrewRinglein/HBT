@@ -491,6 +491,21 @@ export function createPlayInput(session:()=>Sandbox|null,run:(command:BattleComm
  function fresh():boolean{const s=session();if(!s)return false;const a=actorOf(s);return a!==null&&begun?.actor===a&&begun.seq===s.ctx.state.seq}
  function basicMove():string|null{const s=session();if(!s)return null;const a=actorOf(s);if(a===null)return null
   return choicesOf(s).find(c=>'destination' in c.command&&c.command.actor===a&&c.command.slot==='movement')?.command.actionId??null}
- return {facts,ending,input,next,rest,upcoming,fresh,basicMove,get shown(){return shown as readonly Shown[]},get point(){return point}}
+ /** kingdom.tutorial-orphanage-enemy-turn: the first of the acting unit's attacks (in its own action order) the engine would take
+     against an enemy now — from the end of the path planned (the ghost: the action list on its forecast, pathEndAttacks), else
+     from where it stands (the validated choices) — or null. No range is worked out here. */
+ function attackInReach():string|null{const s=session();if(!s)return null;const a=actorOf(s);if(a===null)return null
+  const u=s.ctx.state.units[a]!
+  if(ghost){const first=[...pathEndAttacks(s,a,ghost).values()][0];return first?first.actionId:null}
+  for(const id of u.actions){if(!isAttack(s.ctx.actions[id]!))continue
+   if(choicesOf(s).some(c=>c.command.actionId===id&&c.command.actor===a&&'target' in c.command&&s.ctx.state.units[c.command.target]?.side!==u.side))return id}
+  return null}
+ /** kingdom.tutorial-orphanage-civilians-and-ending: this Hero Phase, how many of the player's standing units have acted and how
+     many have yet to (the engine's heroesYetToAct, and the one acting now) */
+ function acted():{done:number;left:number}{const s=session();if(!s||s.ctx.state.outcome)return {done:0,left:0}
+  const left=heroesYetToAct(s.ctx,s.policy).length+(actorOf(s)!==null?1:0)
+  const mine=s.ctx.state.units.filter(u=>u.side==='hero'&&u.lifeState==='standing'&&controllerOf(s.ctx,u.id,s.policy)==='human').length
+  return {done:Math.max(0,mine-left),left}}
+ return {facts,ending,input,next,rest,upcoming,fresh,basicMove,attackInReach,acted,get shown(){return shown as readonly Shown[]},get point(){return point}}
 }
 export type PlayInput=ReturnType<typeof createPlayInput>

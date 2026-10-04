@@ -65,17 +65,28 @@ const play=createPlayInput(()=>session,runPlay,{
     reach (the play input's facts, the engine's), and which rows this run has shown (a reveal each, saved with the run);
     it holds the next Activation back while a row that waits is up, and begins it — the same select-activation — when the
     runner lets go. A battle outside a run has no memory and shows no lesson (kingdom SWITCHES.md lesson*). */
+/** the units as the battle screen has them drawn (viewer state: id, side, life, hex) */
+const boardUnits=()=>Object.values(((surface?.viewer as unknown as {state?:{U?:Record<string,{id:number;side:string;life:string;hex:number}>}}|null)?.state?.U)??{})
+/** a seek of the board is under way (Show current state): the lines it passes over are not played, and start no lesson */
+let seeking=false
 const lessons=createLessons(LESSONS,{
  viewer:()=>(surface?.viewer??null) as unknown as LessonViewer|null,   // the mounted viewer's lesson calls (viewer src/overlays.js)
- units:which=>{const s=session;if(!s)return []
+ /* who stands where is read off the BOARD — the battle screen's own fold of the lines it has played — not off the engine's
+    state, which is ahead of the board while a phase plays (a row that goes up at a line of the log points at what is drawn);
+    which of the player's units are the party's is the engine's fielding (the hero uids) */
+ units:which=>{const s=session,U=boardUnits();if(!s)return []
   const party=new Set(s.setup.heroUids??[])
-  return s.ctx.state.units.filter(u=>u.lifeState==='standing'&&(which==='enemy'?u.side!=='hero':u.side==='hero'&&party.has(u.uid)===(which==='hero'))).map(u=>u.id).sort((a,b)=>a-b)},
- hexOf:id=>session!.ctx.state.units[id]!.hex,
+  return U.filter(u=>u.life==='standing'&&(which==='enemy'?u.side!=='hero':u.side==='hero'&&party.has(s.ctx.state.units[u.id]?.uid??-1)===(which==='hero'))).map(u=>u.id).sort((a,b)=>a-b)},
+ hexOf:id=>boardUnits().find(u=>u.id===id)?.hex??session!.ctx.state.units[id]!.hex,
  distance:(a,b)=>session!.ctx.geo.distance(a,b),
  acting:()=>session&&!busy&&!fault&&!session.ctx.state.outcome?play.facts().actor:null,
  fresh:()=>play.fresh(),
  moved:()=>{const a=session?play.facts().actor:null;return a!==null&&session!.ctx.state.units[a]!.moveUsed},
  basicMove:()=>play.basicMove(),
+ turn:()=>session?.ctx.state.turn??0,
+ attacked:()=>{const a=session?play.facts().actor:null;return a!==null&&session!.ctx.state.units[a]!.primaryUsed},
+ attackInReach:()=>play.attackInReach(),
+ acted:()=>play.acted(),
  reach:()=>session&&!session.ctx.state.outcome?play.facts().reach:[],
  seen:id=>!sitting||sitting.ctx.campaign.revealed.includes(lessonRevealOf(id)),
  mark:id=>{const c=sitting?.ctx;if(!c)return;const r=lessonRevealOf(id);if(canReveal(c.campaign,r)){performReveal(c,r,sitCause);persist()}},
@@ -89,6 +100,9 @@ function runPlay(command:BattleCommand){
  /* viewer.turn-taking point 5: a refusal is one plain line — on the board (the play input's note); a free battle's launcher
     says it too, in words, never the engine's code */
  if(!result.ok){if(!boardOnly())error=refusalLine(result.reason);return result}
+ /* kingdom.tutorial-orphanage-civilians-and-ending: a unit's Activation ended because its primary action resolved (the engine's
+    own facts: the order was an action in the primary slot, and its unit is no longer the one acting) — told to the lessons */
+ if(command.kind==='action'&&(command.slot??'primary')==='primary'&&session.ctx.state.units[command.actor]?.side==='hero'&&!(session.ctx.battleCursor?.at==='acting'&&session.ctx.battleCursor.actor===command.actor))lessons.happened('primary-ended')
  error='';busy=true;surface.viewer.push(session.ctx.events.slice(before));surface.viewer.play()
  return result
 }
@@ -408,7 +422,10 @@ function install(next:Sandbox){
  const meet=(typeId:string)=>{const c=sitting?.ctx;if(!c)return;const id=enemyRevealOf(typeId);if(canReveal(c.campaign,id)){performReveal(c,id,sitCause);persist()}}
  if(run)for(const k of LESSON_INTRODUCES[next.config.encounterId??'']??[])meet(k)
  const candidate=createBattleSurface(__BATTLE_VIEW_DATA__,{...(LOOK?{look:LOOK}:{}),newEnemies:enemiesToAnnounce(run?run.campaign.revealed:[],next.config.encounterId),
-  onNewEnemy:(typeId:string)=>{if(epoch===generation&&session&&isCampaignBattle(session))meet(typeId)},onHexClick:(hex:number)=>{
+  onNewEnemy:(typeId:string)=>{if(epoch===generation&&session&&isCampaignBattle(session))meet(typeId)},
+  /* kingdom.tutorial-orphanage-enemy-turn: each line of the battle's log as the board plays it (never a seek's) — a lesson's row
+     that starts on a line goes up then, and its notice holds the playback for its time */
+  onCursor:(_cursor:number,e:{type:string;phase?:string}|null)=>{if(epoch===generation&&busy&&!seeking&&!fault)lessons.played(e)},onHexClick:(hex:number)=>{
   if(epoch!==generation||!session||busy||fault||session.ctx.state.outcome||session.ctx.battleCursor?.at!=='acting')return false
   const actor=session.ctx.battleCursor.actor
   if(actor==null||controllerOf(session.ctx,actor,session.policy)!=='human')return false
@@ -421,6 +438,8 @@ function install(next:Sandbox){
   if(lessons.waiting()){if(e.kind!=='point')lessons.click();return false}
   let took=false
   try{took=play.input(e)}catch(err){fault=(err as Error).message;error=fault;busy=false;controls();return false}
+  /* kingdom.tutorial-orphanage-enemy-turn: the player clicked an enemy (the battle screen shows it in its panel) */
+  if(e.kind==='unit'&&session.ctx.state.units[e.id]?.side==='enemy')lessons.happened('enemy-clicked')
   if(e.kind==='point'){if(took)refreshPlay();return took}
   controls();return took
  },onDrain:()=>{if(epoch!==generation)return;busy=false;controls()},onError:(e:Error)=>{if(epoch!==generation)return;fault=e.message;error=fault;busy=false;controls()}},{fill:battleView})
@@ -429,7 +448,7 @@ function install(next:Sandbox){
  generation=epoch;surface?.dispose();surface=candidate;session=next;busy=false;fault='';error='';selectedAction='';selectedAim='';selectedActor='';selectedSwap='';launcher=false;mapOpen=false;campaignOpen=false
  surface.mount(q('battle'),view)
  /* kingdom.tutorial-orphanage-first-move: the lessons of the battle now on the screen — a run's battle; none outside a run */
- lessons.open(run?next.config.encounterId??null:null)
+ lessons.open(next.config.encounterId??null,!!run)
  controls()
 }
 function action(act:string,id?:string){let mayHaveMutated=false;try{
@@ -446,7 +465,7 @@ function action(act:string,id?:string){let mayHaveMutated=false;try{
  else if(act==='map'){if(!mapSitting)throw Error('Open the map with ?map');mapOpen=true;launcher=false;drawMap()}
  else if(act==='launcher'||act==='battle'){if(!session)throw Error('Start a battle first');launcher=act==='launcher'}
  // viewer.turn-taking: showing the current state includes the next hero begun once the board is still (beginNext in controls)
- else if(act==='skip'){for(let i=0;i<8;i++){surface?.viewer?.pause();surface?.viewer?.seek(session!.ctx.events.length);busy=false;controls();if(!busy)break}}
+ else if(act==='skip'){seeking=true;try{for(let i=0;i<8;i++){surface?.viewer?.pause();surface?.viewer?.seek(session!.ctx.events.length);busy=false;controls();if(!busy)break}}finally{seeking=false}}
  else {if(!session)throw Error('Start a battle first')
   if(act==='save'){const save=saveSandbox(session);localStorage.setItem('hbt-sandbox',save);q<HTMLTextAreaElement>('transferText').value=save}
   else if(act==='export')q<HTMLTextAreaElement>('transferText').value=JSON.stringify(exportSandbox(session,__ENGINE_PROVENANCE__),null,2)

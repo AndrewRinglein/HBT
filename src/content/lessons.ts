@@ -30,29 +30,49 @@ export type LessonTarget =
   | 'basic-move'
   /** of the hexes the acting unit's chosen move can reach now, the nearest to the civilians (then to the enemy) */
   | 'reach-toward-civilians'
+  /** the unit now acting */
+  | 'acting'
+  /** on the action bar, the first of the acting unit's attacks the engine would take against an enemy now */
+  | 'attack-slot'
+  /** the two numbers under the first enemy: its movement, and the damage of its first attack */
+  | 'enemy-move-number' | 'enemy-attack-number'
+  /** the right-hand panel · the End Turn button */
+  | 'panel' | 'end-turn'
 
-/** What starts a row: the battle put on the screen (before anyone acts) · a unit's Activation begun · its move chosen on the bar. */
-export type LessonStart = 'battle-begins' | 'activation-begins' | 'move-chosen'
-/** What ends a row: its notice's time · its look, held · the acting unit's move chosen on the bar · the acting unit moved. */
-export type LessonEnd = 'time' | 'look' | 'move-chosen' | 'moved'
+/** What starts a row: the battle put on the screen (before anyone acts) · a unit's Activation begun · its move chosen on the bar ·
+    an enemy in reach of one of the acting unit's attacks · a line of the battle's log just played (`event`) · the player
+    clicked an enemy · a unit's Activation ended because its primary action resolved · some of the player's units have acted
+    this Hero Phase and some have not. */
+export type LessonStart = 'battle-begins' | 'activation-begins' | 'move-chosen' | 'attack-in-reach' | 'event' | 'enemy-clicked' | 'primary-ended' | 'some-acted'
+/** What ends a row: its notice's time · its look, held · the acting unit's move chosen on the bar · the acting unit moved · the
+    acting unit used its primary action. */
+export type LessonEnd = 'time' | 'look' | 'move-chosen' | 'moved' | 'attacked'
+/** An arrow, and the word it carries. */
+export interface LessonPointer { readonly at: LessonTarget; readonly word?: string }
 
 export interface LessonRow {
   /** `lesson.<battle>.<step>` — its reveal is `reveal.<id>` */
   readonly id: string
-  /** the battle it is taught in: the encounter's id */
-  readonly encounterId: string
+  /** the battle it is taught in: the encounter's id; absent — whichever battle of the run it first happens in */
+  readonly encounterId?: string
   readonly starts: LessonStart
   readonly ends: LessonEnd
-  /** whose Activation a row that waits on one is for */
-  readonly of?: 'hero'
+  /** whose Activation a row that waits on one is for: a hero of the party, or one of the encounter's civilians */
+  readonly of?: 'hero' | 'civilians'
+  /** the line of the battle's log a row that `starts` on an event waits for: its type, and its phase when the row names one */
+  readonly event?: { readonly type: string; readonly phase?: string }
+  /** not before this Turn */
+  readonly fromTurn?: number
   /** the gold notice across the board's centre, one to three lines; it lasts for a time and goes by itself */
   readonly words?: readonly string[]
   /** where the view goes while the row is up */
   readonly look?: LessonTarget
-  /** the arrow, and the word it carries; an arrow that asks for an action stays until the action is done */
-  readonly point?: { readonly at: LessonTarget; readonly word?: string }
+  /** the arrow (or arrows), and the word it carries; an arrow that asks for an action stays until the action is done */
+  readonly point?: LessonPointer | readonly LessonPointer[]
   /** while it is up the player cannot act, and a click moves on to the next row instead of waiting it out */
   readonly waits?: true
+  /** the battle's playback waits under the notice, for its time: nothing is played on while the words are up */
+  readonly holds?: true
   /** the Activation this row begins with has NO move chosen: the press on the bar is a real act (kingdom SWITCHES lessonMoveNotArmed) */
   readonly unarmed?: true
 }
@@ -74,6 +94,29 @@ export const LESSONS: readonly LessonRow[] = [
     point: { at: 'basic-move' } },
   { id: 'lesson.orphanage.move', encounterId: ORPHANAGE, starts: 'move-chosen', ends: 'moved', of: 'hero',
     words: ['Move towards the zombie and the civilians.'], point: { at: 'reach-toward-civilians' } },
+
+  // ── kingdom.tutorial-orphanage-enemy-turn (2026-10-04; the same entry): "In this tutorial at some point, we need to say, \"Click on
+  //    enemies to learn more about them.\" At some point we need to explain attacks when you're in range." / "The first time we have
+  //    an enemy turn, we need to point at the enemy and pop up a golden notification that says, \"This is the enemy movement and this
+  //    is their most common attack value.\" There are two arrows pointing at the two base enemy numbers. … It points to the right
+  //    and says you can see all the details about this enemy on the right." / "At the end of the first enemy turn, we should
+  //    describe the phases. At the end of the enemy phase, reinforcements and battle changes can occur. That notification should
+  //    pop up before we start showing the extra zombie added." ──
+  // (a) the first time an enemy is in reach of one of the hero's attacks, from where he stands or from the end of the path planned
+  { id: 'lesson.orphanage.attack', encounterId: ORPHANAGE, starts: 'attack-in-reach', ends: 'attacked', of: 'hero',
+    words: ['An enemy is in range.', 'Choose an attack, then click the enemy to see your chance to hit and the damage.', 'Click it again to attack.'],
+    point: { at: 'attack-slot' } },
+  // (b) as the first Enemy Phase begins, before the Zombie acts: the battle waits for the notice's time
+  { id: 'lesson.orphanage.enemy-numbers', encounterId: ORPHANAGE, starts: 'event', event: { type: 'phase.begin', phase: 'enemy' }, ends: 'time', holds: true,
+    words: ['This is the enemy movement and this is their most common attack value.', 'Click on enemies to learn more about them.'],
+    look: 'enemy', point: [{ at: 'enemy-move-number' }, { at: 'enemy-attack-number' }] },
+  // (c) the first time the player clicks an enemy
+  { id: 'lesson.orphanage.enemy-panel', encounterId: ORPHANAGE, starts: 'enemy-clicked', ends: 'time',
+    words: ['You can see all the details about this enemy on the right.'], point: { at: 'panel' } },
+  // (d) when the first Enemy Phase has ended, before the Turn 2 Zombie is shown: the battle waits for the notice's time
+  { id: 'lesson.orphanage.phases', encounterId: ORPHANAGE, starts: 'event', event: { type: 'turn.end' }, ends: 'time', holds: true,
+    words: ['Each turn has a Hero Phase, when your units act, and an Enemy Phase, when the enemies act.', 'At the end of the enemy phase, reinforcements and battle changes can occur.'] },
+
 ]
 
 /** The reveal that says a lesson's row has been shown in this run. */
