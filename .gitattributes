@@ -1,0 +1,3 @@
+# What passed on which code (engine/tools/suites.mjs, 2026-10-04). Append-only, so when two workers
+# record a pass in separate copies of the folder, git keeps both sides' lines instead of stopping.
+.state/passes.jsonl merge=union
