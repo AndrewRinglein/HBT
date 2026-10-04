@@ -34,7 +34,20 @@ const grown={left:B0.own.x[0]-B0.bound.x[0],right:B0.bound.x[1]-B0.own.x[1],top:
 assert.ok(grown.left>1&&grown.right>1,'the edge columns need the view to pass the board\'s sides')
 say(`1 the bound passes the board's own box by ${Math.round(grown.left)} px left, ${Math.round(grown.right)} right, ${Math.round(grown.top)} up, ${Math.round(grown.bottom)} down (board px) — what the outermost hexes need, in this battle area`)
 // 2. a bubble's click on the Zombie standing on the last column: its whole hex comes into view
-const zombie=ctx().state.units.find(u=>u.side==='enemy');assert.equal(g.colOf(zombie.hex),W-1,'the Orphanage\'s first Zombie stands on the last column')
+/* Law 10, combine 2026-10-04 (viewer master cf11722 with this copy's engine fix.opening-orphanage-closer-start; engine DECISIONS.md
+   2026-10-04 '… a closer start': "bring the hero forward to the end of the bridge and bring the zombie left, maybe 3 squares"):
+   this read
+     const zombie=ctx().state.units.find(u=>u.side==='enemy');assert.equal(g.colOf(zombie.hex),W-1,'the Orphanage\'s first Zombie stands on the last column')
+   — the battle's opening on the old start. By the ruling the first Zombie stands on (16,3). The check is of "a unit in
+   column 0 or column 19", so the scene is the same battle one Turn on: the player ends Turn 1 (End Turn, as
+   tools/arrivals-camera.verify.mjs does) and the Zombie the schedule brings in stands on the last column. The view is
+   scrolled away to the left first, so the bubble's click has a slide to make. Every check below is unchanged. */
+assert.equal(g.colOf(ctx().state.units.find(u=>u.side==='enemy').hex),W-4,'the Orphanage\'s first Zombie stands three hexes in from the last column (the closer start)')
+V().dom.root.querySelector('#playEndTurn').handlers.click({});{const ask=V().dom.root.querySelector('#playAsk');if(ask&&ask.style.display!=='none')V().dom.root.querySelector('#playAskYes').handlers.click({})}
+settle();glide()
+assert.equal(ctx().state.turn,2,'Turn 2')
+const zombie=ctx().state.units.find(u=>u.side==='enemy'&&u.lifeState==='standing'&&g.colOf(u.hex)===W-1);assert.ok(zombie,'the Turn 2 Zombie stands on the last column')
+h.viewer.pan(-1e5,0);glide()
 const seq=ctx().state.seq
 V().clickBubble([zombie.id]);glide()
 assert.ok(wholeBy(zombie.hex)>=0,`the Zombie's whole hex is on the screen (${wholeBy(zombie.hex).toFixed(1)} px inside)`);assert.equal(V().view.inspectId,zombie.id)
