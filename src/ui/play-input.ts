@@ -84,6 +84,13 @@ export function createPlayInput(session:()=>Sandbox|null,run:(command:BattleComm
  /** the Activation this input began: who, the engine's sequence right after (nothing done since while it is unchanged), the
      battle saved before it began, and the heroes the engine would then have let begin */
  let begun:{actor:number;seq:number;saved:unknown;queue:number[]}|null=null
+ /** kingdom.tutorial-orphanage-first-move (engine DECISIONS.md 2026-10-04 'the opening's tutorial: …' — asked whether the lesson
+     should just point at the Move button rather than wait for a press, since a hero's move is already chosen when its
+     Activation begins: "1, no."): the unit whose Activation the host asked to begin with NO move chosen — the lesson's own
+     exception to 2026-10-03 'a hero starts its Activation with its basic move armed', which stands everywhere else. Until
+     the player chooses a move on the bar the input arms none for that unit: no reach, no path, no walk; the press is a
+     real act. It is that one Activation's: the next unit begun is armed as ever (kingdom SWITCHES lessonMoveNotArmed). */
+ let unarmed:number|null=null
  /** viewer.switch-hero-asks: the question asked (who would be ended, who begun, the engine's sequence when it was asked — it
      does not outlive that), and, between the yes and the next begin, the unit the player asked for */
  let asking:{from:number;to:number;seq:number}|null=null,wanted:number|null=null
@@ -124,11 +131,11 @@ export function createPlayInput(session:()=>Sandbox|null,run:(command:BattleComm
  }
  const nameOf=(s:Sandbox,id:number|null|undefined)=>id==null?null:s.ctx.state.units[id]?.name??null
  /** begin a hero: the battle saved first (the undo), then the engine's select-activation; its refusal said in a plain line */
- const begin=(s:Sandbox,id:number,queue:number[])=>{const uid=s.ctx.state.units[id]?.uid;if(uid===undefined)return false
+ const begin=(s:Sandbox,id:number,queue:number[],bare=false)=>{const uid=s.ctx.state.units[id]?.uid;if(uid===undefined)return false
   const saved=undo?undo.save():null
   const r=run({kind:'select-activation',unitUid:uid,expectedSeq:s.ctx.state.seq})
   if(!r.ok){note=refusalLine(r.reason,{target:nameOf(s,id)});return false}
-  const now=session()!;cacheSeq=-1;begun={actor:id,seq:now.ctx.state.seq,saved,queue};note=null;return true}
+  const now=session()!;cacheSeq=-1;begun={actor:id,seq:now.ctx.state.seq,saved,queue};unarmed=bare?id:null;note=null;return true}
  /** viewer.auto-end-no-actions: has the unit acting nothing left the engine would accept but ending its Activation? Only once
      it has done something since it began (the engine's sequence moved on; for an Activation this input did not begin, the
      unit's own moveUsed / primaryUsed). Nothing left: the engine validates no action from it (choicesOf — every move, attack
@@ -153,12 +160,12 @@ export function createPlayInput(session:()=>Sandbox|null,run:(command:BattleComm
  }
  /** viewer.turn-taking: while the engine waits for a choice, the next hero yet to act is begun — its basic move armed (moveOf
      with nothing chosen). The host calls it whenever it is idle; true when a hero was begun. */
- function next():boolean{
+ function next(o:{unarmed?:boolean}={}):boolean{
   const s=session();if(!s||s.ctx.state.outcome||s.ctx.battleCursor?.at!=='selecting')return false
   /* viewer.switch-hero-asks: after a yes, the unit asked for begins — not the leftmost — when the engine lets it */
   const q=queueOf(s),want=wanted;wanted=null
   const id=want!==null&&q.includes(want)?want:q[0];if(id===undefined)return false
-  return begin(s,id,q)
+  return begin(s,id,q,o.unarmed===true)
  }
  /** why another hero may not be switched to now (the engine said activation-not-selectable): not the player's, has acted
      or is down — read from the engine's own queue and unit facts — else the one acting must finish (no partial Activations) */
@@ -174,7 +181,8 @@ export function createPlayInput(session:()=>Sandbox|null,run:(command:BattleComm
      with a legal destination IN THE MOVEMENT SLOT — a move spent as the primary is chosen on the bar (SWITCHES playInputDefaultMove) */
  const moveOf=(s:Sandbox,actor:number)=>{
   const ch=choicesOf(s).filter(c=>'destination' in c.command&&c.command.actor===actor)
-  if(chosen===null){const first=ch.find(c=>c.command.slot==='movement');if(!first)return null
+  if(chosen===null){if(unarmed===actor)return null
+   const first=ch.find(c=>c.command.slot==='movement');if(!first)return null
    return {actionId:first.command.actionId,choices:ch.filter(c=>c.command.actionId===first.command.actionId&&c.command.slot==='movement')}}
   if(!isMove(s.ctx.actions[chosen]!))return null
   const mine=ch.filter(c=>c.command.actionId===chosen),slot=mine.some(c=>c.command.slot==='movement')?'movement':'primary'
@@ -421,7 +429,7 @@ export function createPlayInput(session:()=>Sandbox|null,run:(command:BattleComm
        the hero clicked) it is used — engine DECISIONS.md 2026-10-01, Devotion: "I can't double-click on it or anything to
        make it trigger" (kingdom SWITCHES playInputStandStill) */
     if(ghost&&ghost.actionId===e.actionId&&ghost.destination===s.ctx.state.units[actor]!.hex&&chosen===e.actionId){const r=run(moveCommand(s,actor,ghost));note=r.ok?null:said(s,r.reason,actor,null,e.actionId);done();return true}
-    if(ghost&&ghost.actionId!==e.actionId)ghost=null;chosen=e.actionId;aim=null
+    if(ghost&&ghost.actionId!==e.actionId)ghost=null;chosen=e.actionId;aim=null;unarmed=null
     const mv=moveOf(s,actor)
     if(!mv?.choices.length){chosen=null
      /* the engine's own reason this move has no hex now (its slot is spent, it is rooted, not ready …) */
@@ -477,6 +485,12 @@ export function createPlayInput(session:()=>Sandbox|null,run:(command:BattleComm
   if(aim?.locked&&aim.hex===hex)return confirmUse(s,actor,u)
   aim={hex,locked:true};note=null;return true
  }
- return {facts,ending,input,next,rest,upcoming,get shown(){return shown as readonly Shown[]},get point(){return point}}
+ /** kingdom.tutorial-orphanage-first-move: what the lessons ask of the unit acting — has it done nothing since this input
+     began it (the engine's sequence unmoved), and which action is its basic move: the first move the engine lists in the
+     movement slot, the one a begun Activation is armed with (whether or not it is armed now) */
+ function fresh():boolean{const s=session();if(!s)return false;const a=actorOf(s);return a!==null&&begun?.actor===a&&begun.seq===s.ctx.state.seq}
+ function basicMove():string|null{const s=session();if(!s)return null;const a=actorOf(s);if(a===null)return null
+  return choicesOf(s).find(c=>'destination' in c.command&&c.command.actor===a&&c.command.slot==='movement')?.command.actionId??null}
+ return {facts,ending,input,next,rest,upcoming,fresh,basicMove,get shown(){return shown as readonly Shown[]},get point(){return point}}
 }
 export type PlayInput=ReturnType<typeof createPlayInput>

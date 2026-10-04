@@ -14,6 +14,8 @@ import {makeNewCampaign,performAdvanceOpening,performDraft,performFieldOpeningBa
 import {readRun,writeRun} from './opening-run.js'
 import {canReveal,performReveal} from '../core/reveal.js'
 import {LESSON_INTRODUCES,enemyRevealOf,enemiesToAnnounce} from '../content/reveals.js'
+import {LESSONS,lessonRevealOf} from '../content/lessons.js'
+import {createLessons,type LessonViewer} from './lessons.js'
 import {makeCtx,setBattleOutcome,type Ctx} from '../core/mutate.js'
 import {performAdvancePrep,performDeploy,performUndeploy} from '../core/prep.js'
 import {resolveReckoning,applyBattleResult,performExitBattle} from '../core/reckoning.js'
@@ -57,6 +59,28 @@ const play=createPlayInput(()=>session,runPlay,{
   session=atlas&&!back.atlasScene?{...back,atlasScene:atlas}:back
   surface.viewer.rewind(m.events);return true},
 })
+/** kingdom.tutorial-orphanage-first-move (engine DECISIONS.md 2026-10-04 'the opening's tutorial: …, the Orphanage's lessons, …'):
+    the opening's lessons, shown over the battle screen by one runner (ui/lessons.ts) from the rows of content/lessons.ts.
+    This page is the runner's host: it answers what stands on the board (the engine's state), what the unit acting can
+    reach (the play input's facts, the engine's), and which rows this run has shown (a reveal each, saved with the run);
+    it holds the next Activation back while a row that waits is up, and begins it — the same select-activation — when the
+    runner lets go. A battle outside a run has no memory and shows no lesson (kingdom SWITCHES.md lesson*). */
+const lessons=createLessons(LESSONS,{
+ viewer:()=>(surface?.viewer??null) as unknown as LessonViewer|null,   // the mounted viewer's lesson calls (viewer src/overlays.js)
+ units:which=>{const s=session;if(!s)return []
+  const party=new Set(s.setup.heroUids??[])
+  return s.ctx.state.units.filter(u=>u.lifeState==='standing'&&(which==='enemy'?u.side!=='hero':u.side==='hero'&&party.has(u.uid)===(which==='hero'))).map(u=>u.id).sort((a,b)=>a-b)},
+ hexOf:id=>session!.ctx.state.units[id]!.hex,
+ distance:(a,b)=>session!.ctx.geo.distance(a,b),
+ acting:()=>session&&!busy&&!fault&&!session.ctx.state.outcome?play.facts().actor:null,
+ fresh:()=>play.fresh(),
+ moved:()=>{const a=session?play.facts().actor:null;return a!==null&&session!.ctx.state.units[a]!.moveUsed},
+ basicMove:()=>play.basicMove(),
+ reach:()=>session&&!session.ctx.state.outcome?play.facts().reach:[],
+ seen:id=>!sitting||sitting.ctx.campaign.revealed.includes(lessonRevealOf(id)),
+ mark:id=>{const c=sitting?.ctx;if(!c)return;const r=lessonRevealOf(id);if(canReveal(c.campaign,r)){performReveal(c,r,sitCause);persist()}},
+ wake:()=>controls(),
+})
 function runPlay(command:BattleCommand){
  if(!session||!surface?.viewer)return {ok:false as const,reason:'Start a battle first'}
  const before=session.ctx.events.length
@@ -77,7 +101,10 @@ function refreshPlay(){if(!surface?.viewer)return;surface.viewer.setPlay(!sessio
     its launcher's hero dropdown (kingdom SWITCHES turnAutoBeginBoardOnly). */
 function beginNext(){
  if(!session||!surface?.viewer||busy||fault||session.ctx.state.outcome||!boardOnly()||session.ctx.battleCursor?.at!=='selecting')return
- try{play.next()}catch(e){fault=(e as Error).message;error=fault;busy=false}
+ /* kingdom.tutorial-orphanage-first-move: while a lesson's row that waits is up (or about to be) nobody is begun; and the
+    Activation a lesson asks for begins with no move chosen */
+ if(lessons.waiting())return
+ try{play.next({unarmed:lessons.unarmed(play.upcoming())})}catch(e){fault=(e as Error).message;error=fault;busy=false}
 }
 /** viewer.auto-end-no-actions (engine DECISIONS.md 2026-10-03 'a player unit with nothing left it can do ends its Activation by
     itself', Andrew: "You should just auto-end its turn and put a notification on the screen: 'No remaining actions
@@ -365,6 +392,8 @@ function controls(){
  bind(q('commands'))
  surface?.viewer?.setTargeting(fault?null:targeting)
  refreshPlay();layout()
+ /* kingdom.tutorial-orphanage-first-move: the board is still — the lesson's row that is up may be over, the next may begin */
+ if(session&&surface?.viewer&&!busy&&!fault&&!session.ctx.state.outcome&&boardOnly())lessons.still()
 }
 function install(next:Sandbox){
  const epoch=generation+1
@@ -388,6 +417,8 @@ function install(next:Sandbox){
   selectedAim=JSON.stringify(choice.command);controls();return true
  },onPlay:(e:PlayEvent)=>{
   if(epoch!==generation||!session||busy||fault||session.ctx.state.outcome)return false
+  /* kingdom.tutorial-orphanage-first-move: while a lesson's row waits the player cannot act — a click moves on to the next row */
+  if(lessons.waiting()){if(e.kind!=='point')lessons.click();return false}
   let took=false
   try{took=play.input(e)}catch(err){fault=(err as Error).message;error=fault;busy=false;controls();return false}
   if(e.kind==='point'){if(took)refreshPlay();return took}
@@ -396,7 +427,10 @@ function install(next:Sandbox){
  const staging=document.createElement('div'),view=viewSandbox(next)
  try{candidate.mount(staging,view)}catch(e){candidate.dispose();throw e}
  generation=epoch;surface?.dispose();surface=candidate;session=next;busy=false;fault='';error='';selectedAction='';selectedAim='';selectedActor='';selectedSwap='';launcher=false;mapOpen=false;campaignOpen=false
- surface.mount(q('battle'),view);controls()
+ surface.mount(q('battle'),view)
+ /* kingdom.tutorial-orphanage-first-move: the lessons of the battle now on the screen — a run's battle; none outside a run */
+ lessons.open(run?next.config.encounterId??null:null)
+ controls()
 }
 function action(act:string,id?:string){let mayHaveMutated=false;try{
  error=''
@@ -464,4 +498,4 @@ bind(q('transfer'));bind(q('battleNav'));setup();controls()
    if(straightIn())openStraight(()=>beginSection(nextSection(mapOrder,taken)!))
    else{drawMap();controls()}}}}
 // A read-only integration handle for the built-page smoke; commands still use UI listeners.
-Object.defineProperty(window,'__sandbox',{value:{get session(){return session},get busy(){return busy},get fault(){return fault},get viewer(){return surface?.viewer},get generation(){return generation},get campaign(){return sitting?structuredClone(sitting.ctx.campaign):null}}})
+Object.defineProperty(window,'__sandbox',{value:{get session(){return session},get busy(){return busy},get fault(){return fault},get viewer(){return surface?.viewer},get generation(){return generation},get campaign(){return sitting?structuredClone(sitting.ctx.campaign):null},get lesson(){return lessons.up}}})
