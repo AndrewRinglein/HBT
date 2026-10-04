@@ -26,3 +26,5 @@
 {"suite":"kingdom","stamp":"fb27fccf9d","with":null,"at":"2026-10-04T16:33:50.603Z","by":"gate --shard (4 of 4)","in":"HBT-worker-content"}
 {"suite":"kingdom","stamp":"78ddf736c4","with":{"engine":"859cd0f485","content":"13e03bb467","viewer":"3587159661","kingdom":"78ddf736c4"},"at":"2026-10-04T16:59:29.766Z","by":"gate --shard (4 of 4)","in":"HBT-worker-content"}
 {"suite":"kingdom","stamp":"d9acca81d0","with":{"engine":"ed08f09b3d","content":"8a09c73e29","viewer":"e2b98eb8c6","kingdom":"d9acca81d0"},"at":"2026-10-04T19:48:03.777Z","by":"suites --run --full","in":"HBT-worker-kingdom"}
+{"suite":"kingdom","stamp":"78ddf736c4","failed":true,"at":"2026-10-04T19:28:12.263Z","by":"suites --run --full","in":"HBT-worker-engine"}
+{"suite":"kingdom","stamp":"78ddf736c4","with":{"engine":"01aa156b6c","content":"222249a75c","viewer":"fe0fd2736f","kingdom":"78ddf736c4"},"at":"2026-10-04T19:46:48.956Z","by":"suites --run","in":"HBT-worker-engine"}
