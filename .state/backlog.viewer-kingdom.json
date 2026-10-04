@@ -614,7 +614,9 @@
   "shape": "plumbing",
   "spec": "Ruled 2026-10-03 (Andrew, engine/DECISIONS.md 'one draft after every battle; the yellow focus border goes ...'): 'There's a highlighting of a hex that happens where there's a big yellow border around the hex at some point during unit activation. I don't quite know what that's for visually.' / 'That yellow focus border doesn't look good, so just remove it.' It is viewer src/styles.css:569, `.targetHex:focus-visible{background:rgba(255,215,100,.35)!important;box-shadow:inset 0 0 0 5px #ffd764;outline:none}` ('Native targeting buttons retain a visible keyboard focus within the hex clip'): a 5-pixel yellow inner border on whichever target hex holds the keyboard focus. Remove that border and tint so a hex shows only the game's own marks (the path, the target marks, the planned hex); check `.playHex:focus-visible` (line 602, a blue tint) the same way and remove it if it shows as a stray highlight in mouse play - say which. The hex buttons stay buttons (keyboard play still works; only the yellow ring goes). Kingdom's pages are rebuilt.",
   "expect": "In BATTLE-SANDBOX.html?play=encounter.opening.orphanage no hex ever shows the yellow border or tint, with the mouse or after a key is pressed; targeting and moving by keyboard still work; a page test focuses a target hex by keyboard and finds no yellow box-shadow or background on it.",
-  "note": "Filed by the kingdom chat from Andrew's ruling, 2026-10-03. Small."
+  "note": "Filed by the kingdom chat from Andrew's ruling, 2026-10-03. Small.",
+  "status": "done",
+  "sha": "2996289"
  },
  {
   "id": "viewer.panel-lists-items",
