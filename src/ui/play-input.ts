@@ -35,7 +35,7 @@
 // all: sandboxChoices is every move, attack, power and bonus move validateBattleCommand takes; and nothing stowed it may
 // draw), the input sends the engine's own end-cycle, the command End activation sends, and the host puts the notice on the
 // screen. A unit that has not acted, or that can still do anything, is left alone (kingdom SWITCHES autoEnd*).
-import {sandboxChoices,sandboxActivationChoices,sandboxSwapChoices,type Sandbox,type SandboxChoice,type SandboxSwapOffer} from '../core/sandbox.js'
+import {sandboxChoices,sandboxActivationChoices,sandboxSwapChoices,sandboxSwapRefusals,type Sandbox,type SandboxChoice,type SandboxSwapOffer} from '../core/sandbox.js'
 import {controllerOf,validateBattleCommand,forecastFrom,previewFrom,preview,threatOf,zocHoldersAt,heroesYetToAct,isAttack,isMove,isBurst,actionReach} from '../engine.js'
 import {refusalLine,switchLine,type SwitchRefusal} from './refusals.js'
 import type {BattleCommand,Forecast} from '../engine.js'
@@ -51,7 +51,12 @@ export type PlayAsk={kind:'switch';from:number;to:number}
 /** movement.swap-and-shields: the swap on the board's action bar — the engine's legal hand lists to hold afterwards (by
     label, in the sandbox's order; a click names one by its index), the engine's swapCostOf, and with none to make the
     engine's own reason (viewer src/play.js's optional swap fact; kingdom SWITCHES playInputSwap) */
-export type PlaySwap={cost:number;choices:{label:string}[];why:string|null}
+export type PlaySwap={cost:number;choices:{label:string;hands:string[]}[];why:string|null;carried:PlayCarried[];refused:{hands:string[];why:string}[]}
+/** viewer.swap-button-rearranges (engine DECISIONS.md 2026-10-03 'the swap button says "Swap" and opens a rearranging of the
+    unit's gear'; "Just the ability to swap hands with inventory"): one item the acting unit carries — the instance, its row,
+    the row's name, and whether it is in a hand now. The gear panel shows exactly these and nothing else: the unit's hands
+    and its own stowed items, never the stash. */
+export type PlayCarried={instance:string;item:string;name:string;held:boolean}
 /** viewer.auto-end-no-actions: the ruled words of the notice (engine DECISIONS.md 2026-10-03, Andrew) */
 export const NO_ACTIONS_LEFT='No remaining actions possible.'
 export type CommandResult={ok:true}|{ok:false;reason:string}
@@ -79,14 +84,20 @@ export function createPlayInput(session:()=>Sandbox|null,run:(command:BattleComm
  let asking:{from:number;to:number;seq:number}|null=null,wanted:number|null=null
  const shown:Shown[]=[]
  // per engine sequence number: the validated choices, the ghost's forecast, each enemy's reach, the hatching
- let cacheSeq=-1,cache:{choices?:SandboxChoice[];swap?:SandboxSwapOffer;forecast?:Map<string,Forecast>;threat?:Map<number,{move:number[];hit:number[]}>;zoc?:number[]}={}
+ let cacheSeq=-1,cache:{choices?:SandboxChoice[];swap?:SandboxSwapOffer;refused?:{hands:string[];why:string}[];forecast?:Map<string,Forecast>;threat?:Map<number,{move:number[];hit:number[]}>;zoc?:number[]}={}
  const cached=(s:Sandbox)=>{if(s.ctx.state.seq!==cacheSeq){cacheSeq=s.ctx.state.seq;cache={}}return cache}
  const choicesOf=(s:Sandbox)=>{const c=cached(s);return c.choices??=sandboxChoices(s)}
  /** the engine's swap for the hero acting (kingdom core sandboxSwapChoices: every hand list validateBattleCommand takes) */
  const swapOf=(s:Sandbox)=>{const c=cached(s);return c.swap??=sandboxSwapChoices(s)}
  /** the swap fact: none while no hero acts or for a hero who carries nothing to swap; else the offer, or the engine's reason */
+ /** viewer.swap-button-rearranges: with the hand lists the engine takes, everything the unit carries (its hands, then what is
+     stowed on it — the engine's loadout, named from the engine's item rows) and every other arrangement with the engine's
+     reason (kingdom core sandboxSwapRefusals), so the gear panel offers only what the engine accepts and says why not */
  const swapFact=(s:Sandbox):PlaySwap|null=>{const o=swapOf(s);if(o.cost===null||(!o.choices.length&&!o.why))return null
-  return {cost:o.cost,choices:o.choices.map(c=>({label:c.label})),why:o.choices.length?null:o.why}}
+  const L=s.ctx.state.units[s.ctx.battleCursor!.actor!]!.loadout!,c=cached(s)
+  const row=(i:{instanceId:string;itemId:string},held:boolean):PlayCarried=>({instance:i.instanceId,item:i.itemId,name:s.ctx.items[i.itemId]?.name??i.itemId,held})
+  return {cost:o.cost,choices:o.choices.map(x=>({label:x.label,hands:[...x.hands]})),why:o.choices.length?null:o.why,
+   carried:[...L.hands.map(i=>row(i,true)),...L.stowed.map(i=>row(i,false))],refused:c.refused??=sandboxSwapRefusals(s)}}
  /** a power aimed at the one using it alone (Lock Shields, Raise Guard, Cover …: the row's target is `self`) */
  const selfOnly=(s:Sandbox,id:string)=>(s.ctx.actions[id]?.target as {select?:string}|undefined)?.select==='self'
  /** the human hero now acting, or null */

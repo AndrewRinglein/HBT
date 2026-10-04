@@ -586,3 +586,20 @@ whenever the board is still), viewer `src/chrome.js` (the notice); probes `test/
 | `autoEndWhen` | When is the test made, and when does the end happen? | **Whenever the board is still (the host's `controls()`, after the resolved actions have played) and a player unit is acting that has done something since it began — so the walk is seen to finish, then the Activation ends.** A unit that has not acted is never ended, whatever the engine would take from it. Never while the switch question stands. | The item: "a unit that has not acted at all is never auto-ended (it can at least move, or the player may want to look)". | Default — 2026-10-04 |
 | `autoEndNotice` | Who words the notice, how long does it stay, and does the next unit wait for it? | **The host gives the ruled words (`NO_ACTIONS_LEFT`) to the viewer's `notice(text)`; the viewer shows them over the board for 3.2 seconds of wall time and takes them down by itself. Nothing waits: the next unit's Activation begins at once, as after the button, with the notice still up.** | The item: "long enough to read" and "The notice does not block: the next Activation begins as after the button." The length is a look to judge. | Default — 2026-10-04 |
 | `autoEndBoardOnly` | In a free battle (the launcher's dropdowns), is a unit ended by itself too? | **No: only in a battle played on the board (an encounter), as `turnAutoBeginBoardOnly` begins units by itself only there.** | A free battle is driven from the launcher's own controls, which show "No legal action available. End this activation to continue." | Default — 2026-10-04 |
+
+## viewer.swap-button-rearranges — the swap button opens a rearranging of the unit's gear (2026-10-04)
+
+Engine DECISIONS.md 2026-10-03 'the swap button says "Swap" and opens a rearranging of the unit's gear' (Andrew: "The button
+for swapping should say 'Swap'. And when you press it, it should give you the option to rearrange your gear." · "Just the
+enhanced gear, not adding gear that you didn't already have. Just the ability to swap hands with inventory").
+`src/core/sandbox.ts` (`sandboxSwapRefusals`), `src/ui/play-input.ts` (the swap fact: `carried`, `choices` with their hands,
+`refused`); probes `test/swap-button-rearranges.test.ts`, `tools/swap-button-rearranges.verify.mjs`. Rewritten as the rule
+with dated notes (Law 10): `test/swap-shields-play.test.ts` (the fact's shape), `tools/swap-shields.verify.mjs` (the swap made
+through the gear panel; its record unchanged, so engine `test/movement-swap-and-shields.test.ts` is untouched and passes),
+`tools/bar-follows-activation.verify.mjs` (one Swap button).
+
+| Switch | Question | Default | Reason | Status |
+|---|---|---|---|---|
+| `swapFactGear` | What must the host hand over for a panel that rearranges and says why not? | **Everything the acting unit carries (`carried`: its loadout's hands, then its stowed, each named from the engine's item row), the hand lists the engine takes with their instances (`choices`, as before, by the sandbox's `sandboxSwapChoices`), and every other arrangement of those instances with the engine's own reason (`refused`, `sandboxSwapRefusals`: `validateBattleCommand` on each).** The swap is still sent by the index of the hand list chosen. | The item: "the panel offers only arrangements the engine accepts, shows the cost, and says why one is refused in one line"; the engine decides, the host lists, the viewer looks up. | Default — 2026-10-04 |
+| `swapFactOwnGearOnly` | Could the panel ever show the stash, or an item of another unit? | **No: `carried` is read from the unit's own loadout in the battle; a hand list names only those instances (the viewer refuses a fact that names another).** | Ruled the same day: "not adding gear that you didn't already have". | Default — 2026-10-04 |
+| `swapLauncherUnchanged` | Does a free battle's launcher (the Swap dropdown and its button) change too? | **No: it already reads "Swap (N stamina)" beside a list of the hands to hold; the ruling is about the battle screen's bar.** | `sandboxSwapControl` is the launcher's own control, retired for battles played on the board. | Default — 2026-10-04 |

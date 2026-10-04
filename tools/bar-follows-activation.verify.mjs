@@ -48,8 +48,11 @@ function follows(when,id,fresh=true){
  if(fresh){assert.equal(V().play.slot,move,`${when}: its basic move is armed`)
   const lit=rows().filter(r=>r.className.split(' ').includes('playChosen')).map(r=>r.dataset.act)
   assert.deepEqual(lit,[move],`${when}: its basic move is the one lit on the bar`)}
+ /* Law 10, viewer.swap-button-rearranges (2026-10-04; engine DECISIONS.md 2026-10-03 'the swap button says "Swap" and opens a rearranging of the unit's gear'): one Swap button for a unit the host offers a swap, none otherwise — and the host's
+    swap fact names this unit's own gear. was: one .swBtn per hand list (sw === V().play.swap.choices.length) */
  const sw=V().dom.stambar.querySelectorAll('.swBtn').length
- assert.equal(sw,V().play.swap?V().play.swap.choices.length:0,`${when}: the swap strip is ${u.name}'s`)
+ assert.equal(sw,V().play.swap?1:0,`${when}: the swap strip is ${u.name}'s`)
+ if(V().play.swap)assert.deepEqual(V().play.swap.carried.map(c=>c.instance),[...u.loadout.hands,...u.loadout.stowed].map(i=>i.instanceId),`${when}: the swap is of ${u.name}'s own gear`)
  say(`${when}: ${u.name} — ${bar().length} buttons, card and stamina its own${fresh?`, ${move} armed`:''}`)
 }
 const hexBtn=x=>V().dom.stage.querySelectorAll('.playHex').find(n=>+n.dataset.hex===x)
