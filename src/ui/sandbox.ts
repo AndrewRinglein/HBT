@@ -14,7 +14,7 @@ import {makeNewCampaign,performAdvanceOpening,performDraft,performFieldOpeningBa
 import {readRun,writeRun} from './opening-run.js'
 import {canReveal,performReveal} from '../core/reveal.js'
 import {LESSON_INTRODUCES,enemyRevealOf,enemiesToAnnounce} from '../content/reveals.js'
-import {LESSONS,lessonRevealOf} from '../content/lessons.js'
+import {LESSONS,lessonRevealOf,lessonKeyOf,screenLessonOf,type LessonRow,type LessonScreen} from '../content/lessons.js'
 import {createLessons,type LessonViewer} from './lessons.js'
 import {makeCtx,setBattleOutcome,type Ctx} from '../core/mutate.js'
 import {performAdvancePrep,performDeploy,performUndeploy} from '../core/prep.js'
@@ -287,6 +287,21 @@ function takeReward(itemId:string){
 }
 /** who carries an item that names its takers — ui/after.ts carrierChoice (each hero who may, with its card art) */
 const giveChoice=(itemId:string)=>carrierChoice(sitting!.ctx.campaign,itemId)
+/** kingdom.tutorial-after-battle-lines (engine DECISIONS.md 2026-10-04 'the opening's tutorial: …', the extra step (g): "One line
+    each, the first time, on the XP, level-up, reward and equip screens." — "Yep, we need tutorials there."): the gold line a
+    screen between battles carries the first time it comes up in a run — a row of the lesson table (content/lessons.ts, its
+    `screen`), remembered by its reveal as every row is. It is part of the page and stays while that showing of the screen is
+    up (the same battle's screen, the same hero's level-up), however often the page redraws it; the next time the screen
+    comes up it carries none (kingdom SWITCHES.md lessonScreen*). */
+let screenLesson:{key:string;row:LessonRow}|null=null
+function screenLine(screen:LessonScreen|null,instance:string):string{
+ const key=screen?screen+':'+instance:''
+ if(!screen)screenLesson=null
+ else if(screenLesson?.key!==key){const row=screenLessonOf(screen,id=>sitting!.ctx.campaign.revealed.includes(lessonRevealOf(id)))
+  screenLesson=row?{key,row}:null
+  if(row){const r=lessonRevealOf(lessonKeyOf(row));if(canReveal(sitting!.ctx.campaign,r))performReveal(sitting!.ctx,r,sitCause)}}
+ return screenLesson?`<p class="lessonLine" data-lesson="${escape(screenLesson.row.id)}" role="note">${escape((screenLesson.row.words??[]).join(' '))}</p>`:''
+}
 function drawCampaign(){
  const s=sitting!,c=s.ctx.campaign,host=q('campaign')
  if(s.mounted){s.mounted();s.mounted=null}
@@ -302,7 +317,11 @@ function drawCampaign(){
  else if(c.cursor.step==='rewards'||c.cursor.step==='levelUp'){html=rewardsScreen(c,s.ctx.events,s.lastBattle)+(s.giving?giveChoice(s.giving):'');mount=hx=>mountRewards(hx,id=>act(()=>takeReward(id)))}
  else if(c.cursor.step==='open'&&s.giving)html=`<div class="sliceView waitingOffer" data-waiting="${escape(s.giving)}"><h2>The ${escape(itemName(s.giving))} has waited in the stash</h2><p class="meta">It is for ${escape(whoseOf(s.giving))}. One is with you now, with a hand free for it.</p></div>`+giveChoice(s.giving)
  else html=`<div class="sliceView"><p>The Campaign is at ${escape(c.cursor.step)}.</p></div>`
- host.innerHTML=say+html
+ /* kingdom.tutorial-after-battle-lines: which screen this is, and which showing of it — the gold line of its first */
+ const battleId=c.cursor.engagement?.id??''
+ const line=screenLine(s.levelHero?'level-up':c.cursor.step==='prep'&&c.cursor.prepStep==='deploy'?'who-goes':c.cursor.step==='prep'&&c.cursor.prepStep==='equip'?'equip'
+  :c.cursor.step==='reckoning'&&/data-won="true"/.test(html)?'recap':(c.cursor.step==='rewards'||c.cursor.step==='levelUp')?'rewards':null,s.levelHero??battleId)
+ host.innerHTML=say+line+html
  host.querySelectorAll<HTMLElement>('[data-act]').forEach(el=>el.addEventListener('click',(ev:Event)=>{
   // the innermost [data-act] under the pointer acts — a × inside a slot is the ×, not the slot (as slice.ts)
   const t=ev?.target as HTMLElement|undefined;if(t?.closest&&t.closest('[data-act]')!==el)return

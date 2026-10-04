@@ -71,7 +71,8 @@ export function createLessons(rows: readonly LessonRow[], host: LessonHost) {
   /** what the player did, waiting for a still board to be answered */
   const did = new Set<string>()
 
-  const mine = (r: LessonRow) => open && (r.encounterId === undefined || r.encounterId === battle) && !host.seen(lessonKeyOf(r))
+  /* a row of a screen between battles is the page's own to show (ui/sandbox.ts screenLine): it never goes up over a battle */
+  const mine = (r: LessonRow) => open && r.starts !== 'screen' && (r.encounterId === undefined || r.encounterId === battle) && !host.seen(lessonKeyOf(r))
   const pending = (starts: LessonRow['starts']) => rows.filter((r) => r.starts === starts && mine(r))
   const fits = (row: LessonRow, actor: number | null) => row.of === undefined || (actor !== null && host.units(row.of).includes(actor))
   const due = (row: LessonRow) => row.fromTurn === undefined || host.turn() >= row.fromTurn

@@ -48,10 +48,12 @@ export type LessonTarget =
     an enemy in reach of one of the acting unit's attacks · a line of the battle's log just played (`event`) · the player
     clicked an enemy · a unit's Activation ended because its primary action resolved · some of the player's units have acted
     this Hero Phase and some have not · the path the acting unit has planned would draw a free attack. */
-export type LessonStart = 'battle-begins' | 'activation-begins' | 'move-chosen' | 'attack-in-reach' | 'event' | 'enemy-clicked' | 'primary-ended' | 'some-acted' | 'path-provokes'
+export type LessonStart = 'battle-begins' | 'activation-begins' | 'move-chosen' | 'attack-in-reach' | 'event' | 'enemy-clicked' | 'primary-ended' | 'some-acted' | 'path-provokes' | 'screen'
 /** What ends a row: its notice's time · its look, held · the acting unit's move chosen on the bar · the acting unit moved · the
     acting unit used its primary action. */
-export type LessonEnd = 'time' | 'look' | 'move-chosen' | 'moved' | 'attacked'
+export type LessonEnd = 'time' | 'look' | 'move-chosen' | 'moved' | 'attacked' | 'screen'
+/** The screens between battles a row may belong to: the victory screen, the rewards, a level-up, Equip, Who goes. */
+export type LessonScreen = 'recap' | 'rewards' | 'level-up' | 'equip' | 'who-goes'
 /** An arrow, and the word it carries. */
 export interface LessonPointer { readonly at: LessonTarget; readonly word?: string }
 
@@ -68,6 +70,9 @@ export interface LessonRow {
   readonly of?: 'hero' | 'civilians'
   /** the line of the battle's log a row that `starts` on an event waits for: its type, and its phase when the row names one */
   readonly event?: { readonly type: string; readonly phase?: string; readonly of?: 'player' }
+  /** a row of a screen between battles (`starts: 'screen'`): the screen it is the gold line of — shown at its top the first time that
+      screen comes up in a run, for as long as it is up; no battle is on the screen and the runner has no part in it */
+  readonly screen?: LessonScreen
   /** not before this Turn */
   readonly fromTurn?: number
   /** the gold notice across the board's centre, one to three lines; it lasts for a time and goes by itself */
@@ -164,9 +169,20 @@ export const LESSONS: readonly LessonRow[] = [
   { id: 'lesson.downed', starts: 'event', event: { type: 'life.downed', of: 'player' }, ends: 'time', holds: true,
     words: ['This unit is down and bleeding out.', 'The number on its card is the Turns it has left; an enemy\'s blow takes one away.', 'Win the battle before it runs out and it lives, wounded.'],
     look: 'struck', point: { at: 'struck-card' } },
+
+  // ── kingdom.tutorial-after-battle-lines (2026-10-04; the same entry, the extra step (g)): "One line each, the first time, on the XP,
+  //    level-up, reward and equip screens." — "Yep, we need tutorials there." One gold line at the top of each screen between the
+  //    battles, the first time it comes up in a run; it stays while that screen is up. ──
+  { id: 'lesson.screen.recap', starts: 'screen', ends: 'screen', screen: 'recap', words: ['What the battle earned: XP for every hero who fought.'] },
+  { id: 'lesson.screen.rewards', starts: 'screen', ends: 'screen', screen: 'rewards', words: ['Take one reward. You choose who carries it.'] },
+  { id: 'lesson.screen.level-up', starts: 'screen', ends: 'screen', screen: 'level-up', words: ['A level makes a hero stronger; what you choose here is kept for the whole run.'] },
+  { id: 'lesson.screen.equip', starts: 'screen', ends: 'screen', screen: 'equip', words: ['Click an item, then a slot, to put it on a hero. A slot takes only its own kind of item.'] },
+  { id: 'lesson.screen.who-goes', starts: 'screen', ends: 'screen', screen: 'who-goes', words: ['Choose who fights this battle, up to the limit. Whoever stays home is unharmed and earns nothing.'] },
 ]
 
 /** The reveal that says a lesson's row has been shown in this run. */
 export const lessonRevealOf = (id: string): string => 'reveal.' + id
+/** The gold line of a screen between battles: its row, when the run has not shown it yet. */
+export const screenLessonOf = (screen: LessonScreen, seen: (key: string) => boolean): LessonRow | null => LESSONS.find((r) => r.starts === 'screen' && r.screen === screen && !seen(lessonKeyOf(r))) ?? null
 /** What a row's showing is remembered under: its own id, or the lesson it shares with other rows. */
 export const lessonKeyOf = (row: LessonRow): string => row.once ?? row.id

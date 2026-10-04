@@ -30,7 +30,10 @@ const innerHTML=Object.getOwnPropertyDescriptor(El.prototype,'innerHTML')
 let drawing=null
 Object.defineProperty(El.prototype,'innerHTML',{configurable:true,get:innerHTML.get,set(v){
  const log=this._drawn??drawing
- if(log&&(this.id==='conquest'||this.id==='campaign')){const html=String(v);log.push({host:this.id,map:this.id==='conquest'&&html.includes('data-section='),equip:html.includes('equip-page'),deploy:html.includes('deploy-page'),draft:html.includes('data-act="draft"')})}
+ if(log&&(this.id==='conquest'||this.id==='campaign')){const html=String(v);log.push({host:this.id,map:this.id==='conquest'&&html.includes('data-section='),equip:html.includes('equip-page'),deploy:html.includes('deploy-page'),draft:html.includes('data-act="draft"'),
+  /* kingdom.tutorial-after-battle-lines: which screen between battles the write is, and the gold line it carries (the row's id and words) */
+  recap:/class="hx recap/.test(html),won:/data-won="true"/.test(html),rewards:/class="hx rewards/.test(html),levelup:/class="hx levelup/.test(html),
+  lesson:(html.match(/class="lessonLine" data-lesson="([^"]+)"/)??[])[1]??null,line:(html.match(/class="lessonLine"[^>]*>([^<]*)</)??[])[1]??null})}
  innerHTML.set.call(this,v)}})
 /* … and a run as a page kept it BEFORE battle 1 was fought, for a save the page of today never takes: 'new' — nobody
    drafted, the open step (the older page's first screen, the map); 'drafted' — the first hero drafted (the first offer),
