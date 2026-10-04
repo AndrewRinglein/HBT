@@ -6,6 +6,14 @@
 // sits on End Turn with its line. A page test asserts each notice's words, target and trigger, that (c2) does not show in Turn 1,
 // and that a replayed battle shows none of them."
 //
+// Law 10, 2026-10-04 (kingdom.tutorial-turns-in-battle-one; engine/DECISIONS.md 2026-10-04 "after the backlog run: …; battle 2's
+// lessons" — Andrew: "Five taking turns was present in battle 1, but camera controls should stay."): the civilians' row (a) carries
+// the taking-turns lesson that battle 2 showed — one lesson, not two (kingdom SWITCHES.md lessonTurnsRow). (a) below held two
+// lines, ["The civilians are yours to move.", "Move them away from danger."], and one arrow, on the civilian acting; as the rule
+// it holds the row's three lines — those words on one line, then the two taking-turns lines — that more than one of the
+// player's units is left to activate when it goes up, and a second arrow on the card of each unit that waits. (c1), (c2) and
+// the replay are untouched.
+//
 // The BUILT sandbox, a new run, the Orphanage played with the mouse (tools/lesson-play.mjs): Turn 1's Activations ended one by
 // one; then, each Turn, the hero plans a path toward the nearest enemy and attacks when the engine lists an attack from its
 // end — the first primary action of the battle — and the board is read when it is next still.
@@ -27,11 +35,15 @@ for(const id of MINE)assert.ok(!shownYet(id),'not shown during the hero\'s first
 B.endActivation()
 const civ=B.actor();assert.ok(civ&&civ.side==='hero'&&!B.party().includes(civ.uid),'a civilian is activated')
 assert.equal(h.lesson,YOURS.id,'the civilians\' row goes up as the first civilian is activated')
-assert.deepEqual(lines(),['The civilians are yours to move.','Move them away from danger.']);assert.deepEqual(lines(),[...YOURS.words])
-assert.deepEqual(ptrs().map(p=>p.target),['unit:'+civ.id],'an arrow on that civilian');assert.equal(ctx().state.turn,1,'in Turn 1')
+/* Law 10, 2026-10-04 (kingdom.tutorial-turns-in-battle-one): was two lines and the one arrow on the civilian — see the note above */
+assert.deepEqual(lines(),['The civilians are yours to move. Move them away from danger.','Your units act one at a time: finish one Activation before the next begins.','Double-click another unit to switch to it, while the one acting has done nothing.']);assert.deepEqual(lines(),[...YOURS.words])
+const waits=[...V().play.endTurn.yetToAct].sort((a,b)=>a-b);assert.ok(waits.length>=1&&!waits.includes(civ.id),'more than one of the player\'s units is left to activate: another has yet to act')
+assert.deepEqual(ptrs().map(p=>p.target),['unit:'+civ.id,...waits.map(id=>'card:'+id)],'an arrow on that civilian, and one on the card of each unit that waits');assert.equal(ctx().state.turn,1,'in Turn 1')
+flush(60);for(const [i,id] of waits.entries())assert.equal(ptrs()[i+1].el,V().dom.rail.querySelectorAll('.railchip').find(c=>+c.dataset.i===id),'on that unit\'s card in the top bar')
+assert.ok(!waits.some(id=>B.party().includes(ctx().state.units[id].uid)),'the hero has acted: it is the other civilian that waits')
 assert.ok(B.drawn('playReach').length>0,'and it is the player\'s to move: its blue grid is up')
 const msA=O().notice.ms;flush(msA+300);assert.equal(h.lesson,null,'the notice goes by itself');assert.equal(ptrs().length,0)
-say(`a Turn 1, ${civ.name} activated: "${YOURS.words.join(' ')}" with an arrow on it, ${msA} ms`)
+say(`a Turn 1, ${civ.name} activated, ${waits.length} more yet to act: "${YOURS.words.join('" / "')}" with an arrow on it and one on each waiting unit's card, ${msA} ms`)
 
 /* Turn 1 ends with nobody having used a primary action: neither ending line has shown — (c2) never shows in Turn 1 */
 B.endActivation();assert.equal(h.lesson,null,'the second civilian: not again')

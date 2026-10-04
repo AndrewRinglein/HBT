@@ -54,6 +54,9 @@ function stage(seen = new Set<string>()) {
     acting: () => battle.acting, fresh: () => battle.fresh, moved: () => battle.moved,
     basicMove: () => battle.acting === null ? null : 'move.walk',
     turn: () => 1, attacked: () => false, attackInReach: () => null, acted: () => ({ done: 0, left: 0 }), provoker: () => null, isPlayers: () => true,
+    // kingdom.tutorial-turns-in-battle-one (2026-10-04): the runner asks its host who has yet to act; in this stand-in, nobody —
+    // an answer added to the host, nothing this test holds is changed
+    yetToAct: () => [] as number[],
     reach: () => battle.reach,
     seen: (id: string) => seen.has(id), mark: (id: string) => { seen.add(id) },
     wake: () => { wakes++; lessons.still() },
