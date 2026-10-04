@@ -27051,6 +27051,17 @@ index f2862bf..78da0a9 100644
   PASS  brought its own tests — test/fixtures/opening-draft-one-rule.json, test/opening-draft-one-rule.test.ts
   PASS  existing tests untouched
   PASS  control battles unchanged
+## viewer.hex-tooltip — LANDED `66d3243`
+2026-10-04 14:12
+
+  PASS  dependencies landed
+  WARN  not already decided — 1 candidate ruling(s) — READ BEFORE ASKING: DECISIONS.md:2602
+  PASS  typecheck
+  PASS  the item's own tests — test/viewer.hex-tooltip.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — viewer/test/viewer.hex-tooltip.test.ts
+  PASS  existing tests untouched
+  SKIPPED  control battles unchanged — engine code 4cb6488349 and the content pack are the ones the control battles last passed on (2026-10-04 11:37, gate tool.tests-follow-what-changed --land, in HBT-worker-engine) — not run
   PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
   PASS  hardcode scan — core knows mechanisms, never names
   PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
@@ -27071,6 +27082,17 @@ index f2862bf..78da0a9 100644
   PASS  brought its own tests — test/action-spent.test.ts, test/aoo-pays-stamina.test.ts, test/audit.test.ts, test/authored-slots.test.ts, test/battle-cursor.test.ts, test/civilians-field-kit.test.ts, test/high-cell-los.test.ts, test/item-powers.test.ts, test/preview-from-planned-hex.test.ts, test/rulings-2026-08-15.test.ts, test/fixtures/battle-cursor-free-attack.json, test/free-attack-is-basic-attack.test.ts
   WARN  existing tests untouched — DELETED LINES in test/action-spent.test.ts (-2), test/aoo-pays-stamina.test.ts (-35), test/authored-slots.test.ts (-2), test/battle-cursor.test.ts (-2), test/civilians-field-kit.test.ts (-10), test/high-cell-los.test.ts (-2), test/item-powers.test.ts (-1), test/preview-from-planned-hex.test.ts (-1), test/rulings-2026-08-15.test.ts (-5) — will land FLAGGED for review
   PASS  control battles unchanged — will re-bless at commit — this item DECLARED it changes the control battles: map.open b52001ce->32d99613, map.ridge ef8ade8b->dea75a79, map.flanks 9a0e1af5->df5fe22c, map.highlands 04ddee2d->afc885da, map.field 1595c9e3->2955b12b, map.thicket c6031170->da750c56, map.proving.open 396281e6->a33c47dc, map.proving.ridge b86b8a24->6017fcf8, map.proving.ford 05323666->37dee6b7, map.proving.copse d225b1e1->e85289b7, map.proving.ruin 6da536d2->261ef5db, map.courtyard 0c7cf00d->53034727, map.floodplain 5c378345->bcbeb38b, test.map.embers 8c453a30->d17fe0a1, test.map.showcase 0eff263f->5319362c, test.map.duel-8 f88139ad->815e8021, test.map.dungeon-16x8 f9d6a241->336947bb, test.map.horde-24 f8312af8->c8879f4c, test.map.journey-20x10 c7c65409->34ac1c54, test.map.authored-40x40 d8540413->c6c1b72e, test.map.high-prop-single 0f8a4865->b5387772, test.map.high-prop-multi c2e90dfb->ea8c7986, test.map.well-shove e08516ce->420cd0b6
+## viewer.move-cost-on-grid — LANDED `b9a0e6d`
+2026-10-04 14:13
+
+  PASS  dependencies landed
+  WARN  not already decided — 1 candidate ruling(s) — READ BEFORE ASKING: SWITCHES.md:1944
+  PASS  typecheck
+  PASS  the item's own tests — test/viewer.move-cost-on-grid.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — viewer/test/viewer.move-cost-on-grid.test.ts
+  PASS  existing tests untouched
+  SKIPPED  control battles unchanged — engine code 4cb6488349 and the content pack are the ones the control battles last passed on (2026-10-04 11:37, gate tool.tests-follow-what-changed --land, in HBT-worker-engine) — not run
   PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
   PASS  hardcode scan — core knows mechanisms, never names
   PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
@@ -27490,6 +27512,22 @@ index a7b7c23..cdf0223 100644
   PASS  brought its own tests — test/ai-scorer.test.ts, test/alpha-team.test.ts, test/audit.test.ts, test/battle-cursor.test.ts, test/item-powers.test.ts, test/opening-cavern-trail.test.ts, test/opening-gates.test.ts, test/zone-of-control.test.ts, test/counterattack-and-fend.test.ts, test/fixtures/battle-cursor-counterattack.json
   WARN  existing tests untouched — DELETED LINES in test/ai-scorer.test.ts (-1), test/alpha-team.test.ts (-1), test/battle-cursor.test.ts (-2), test/item-powers.test.ts (-2), test/opening-cavern-trail.test.ts (-1), test/opening-gates.test.ts (-1), test/zone-of-control.test.ts (-1) — will land FLAGGED for review
   PASS  control battles unchanged — will re-bless at commit — this item DECLARED it changes the control battles: map.open 32d99613->2c365882, map.ridge dea75a79->6db868b4, map.flanks df5fe22c->3505d381, map.highlands afc885da->f2813442, map.field 2955b12b->3383b07f, map.thicket da750c56->86c57255, map.proving.open a33c47dc->16d5c09d, map.proving.ridge 6017fcf8->5fc0a8e8, map.proving.ford 37dee6b7->f6db810e, map.proving.copse e85289b7->864a747c, map.proving.ruin 261ef5db->2f63cfe5, map.courtyard 53034727->66d0fd90, map.floodplain bcbeb38b->a56426bf, test.map.embers d17fe0a1->bb7b4797, test.map.showcase 5319362c->84e05fc3, test.map.duel-8 815e8021->24bf5b9a, test.map.dungeon-16x8 336947bb->27f02d6f, test.map.horde-24 c8879f4c->d7d8f422, test.map.journey-20x10 34ac1c54->ec0ae060, test.map.authored-40x40 c6c1b72e->22bb7785, test.map.high-prop-single b5387772->48e82bf3, test.map.high-prop-multi ea8c7986->ff400453, test.map.well-shove 420cd0b6->167f8568
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+## viewer.fallen-cards-and-first-aid — LANDED `145e040`
+2026-10-04 14:13
+
+  PASS  dependencies landed
+  WARN  not already decided — 1 candidate ruling(s) — READ BEFORE ASKING: SWITCHES.md:1944
+  PASS  typecheck
+  PASS  the item's own tests — test/viewer.fallen-cards-and-first-aid.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — viewer/test/viewer.fallen-cards-and-first-aid.test.ts
+  PASS  existing tests untouched
+  SKIPPED  control battles unchanged — engine code 4cb6488349 and the content pack are the ones the control battles last passed on (2026-10-04 11:37, gate tool.tests-follow-what-changed --land, in HBT-worker-engine) — not run
   PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
   PASS  hardcode scan — core knows mechanisms, never names
   PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
@@ -27660,3 +27698,67 @@ index a343f25..7f337a8 100644
        return n
 ```
 </details>
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+## viewer.area-fall-warning — LANDED `45f5876`
+2026-10-04 14:13
+
+  PASS  dependencies landed
+  WARN  not already decided — 2 candidate ruling(s) — READ BEFORE ASKING: SWITCHES.md:1944 · ..\THREE-PACKAGES-PLAN.md:211
+  PASS  typecheck
+  PASS  the item's own tests — test/viewer.area-fall-warning.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — viewer/test/viewer.area-fall-warning.test.ts
+  PASS  existing tests untouched
+  SKIPPED  control battles unchanged — engine code 4cb6488349 and the content pack are the ones the control battles last passed on (2026-10-04 11:37, gate tool.tests-follow-what-changed --land, in HBT-worker-engine) — not run
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+## viewer.new-enemy-notice — LANDED `bc49720`
+2026-10-04 14:51
+
+  PASS  dependencies landed
+  WARN  not already decided — 1 candidate ruling(s) — READ BEFORE ASKING: SWITCHES.md:1944
+  PASS  typecheck
+  PASS  the item's own tests — test/viewer.new-enemy-notice.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — viewer/test/viewer.new-enemy-notice.test.ts
+  PASS  existing tests untouched
+  SKIPPED  control battles unchanged — engine code 4cb6488349 and the content pack are the ones the control battles last passed on (2026-10-04 11:37, gate tool.tests-follow-what-changed --land, in HBT-worker-engine) — not run
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+## viewer.new-enemy-ability-line — LANDED `420b854`
+2026-10-04 14:51
+
+  PASS  dependencies landed
+  WARN  not already decided — 1 candidate ruling(s) — READ BEFORE ASKING: SWITCHES.md:1944
+  PASS  typecheck
+  PASS  the item's own tests — test/viewer.new-enemy-ability-line.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — viewer/test/viewer.new-enemy-ability-line.test.ts
+  PASS  existing tests untouched
+  SKIPPED  control battles unchanged — engine code 4cb6488349 and the content pack are the ones the control battles last passed on (2026-10-04 11:37, gate tool.tests-follow-what-changed --land, in HBT-worker-engine) — not run
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
