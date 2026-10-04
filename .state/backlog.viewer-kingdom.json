@@ -25,7 +25,9 @@
   "shape": "plumbing",
   "spec": "Ruled 2026-10-03 (Andrew, engine/DECISIONS.md 'the opening run, audited', question 3: 'Should the player choose which four heroes go into each battle?' - '3 yes'; his post: 'Hero selection.'). Today the run has no choice: kingdom/src/ui/sandbox.ts fieldBattle sends the first four living heroes by id (BASE_DEPLOY_LIMIT 4), so with five alive the same hero always stays home, and a hero left home cannot be re-fitted at Equip. Before each battle of the opening run, when more living heroes are held than the deploy limit, the player chooses who goes - up to the limit - on the way to Equip; with the limit or fewer alive, all go and no choice is asked. The Equip screen then shows the chosen heroes. Use the kingdom's existing Deploy mechanism if one fits (prior art first: the slice's Assignment and deploy screens) and not a second one; the choice is saved with the run and a replayed lost battle offers the choice again. Rebuild the pages.",
   "expect": "At http://127.0.0.1:4230/play with five living heroes the run asks which four go before the battle, the four chosen are the four on the Equip screen and on the board, and the fifth stays home unharmed and earns nothing; with four or fewer alive no choice is asked; the page test reaches five alive and asserts the choice.",
-  "note": "Filed by the kingdom chat from Andrew's ruling, 2026-10-03, after the audit of the opening run."
+  "note": "Filed by the kingdom chat from Andrew's ruling, 2026-10-03, after the audit of the opening run.",
+  "status": "done",
+  "sha": "872f0e9"
  },
  {
   "id": "kingdom.opening-free-equip",
