@@ -35,6 +35,7 @@
   {
    "id": "unit.zombie",
    "name": "Zombie",
+   "playerLine": "This enemy can poison whoever it claws.",
    "tier": 1,
    "types": [
     "Undead"
@@ -182,6 +183,7 @@
   {
    "id": "unit.skeleton",
    "name": "Skeleton",
+   "playerLine": "This enemy can leave a wound that bleeds.",
    "tier": 1,
    "types": [
     "Undead"
@@ -245,6 +247,7 @@
   {
    "id": "unit.skeletal-archer",
    "name": "Skeleton Archer",
+   "playerLine": "This enemy can shoot from far away.",
    "tier": 1,
    "types": [
     "Undead"
@@ -293,6 +296,7 @@
   {
    "id": "unit.soldier",
    "name": "Soldier",
+   "playerLine": "This enemy can weaken whoever its heavy blow lands on.",
    "tier": 1,
    "types": [
     "Undead"
@@ -353,6 +357,7 @@
   {
    "id": "unit.necromancer",
    "name": "Necromancer",
+   "playerLine": "This enemy can raise the dead to fight again, heal the undead near it, and weaken and tire you with its bolt from far away.",
    "tier": 2,
    "types": [
     "Human"
@@ -467,6 +472,7 @@
   {
    "id": "unit.ghoul",
    "name": "Ghoul",
+   "playerLine": "This enemy can eat the dead to heal and grow stronger, and its shriek from a distance tires you.",
    "tier": 1,
    "types": [
     "Undead"
@@ -831,6 +837,7 @@
   {
    "id": "unit.imp",
    "name": "Imp",
+   "playerLine": "This enemy can fly over water and obstacles, and its blast from a distance can set you burning.",
    "tier": 1,
    "types": [
     "Demon"
@@ -891,6 +898,7 @@
   {
    "id": "unit.powerful-imp",
    "name": "Powerful Imp",
+   "playerLine": "This enemy can fly over water and obstacles, and its blast from a distance always sets you burning.",
    "tier": 1,
    "types": [
     "Demon"
@@ -938,6 +946,7 @@
   {
    "id": "unit.fire-imp",
    "name": "Fire Imp",
+   "playerLine": "This enemy can fly over water and obstacles, and burns what stands near it when its Activation ends.",
    "tier": 1,
    "types": [
     "Demon",
@@ -1006,6 +1015,7 @@
   {
    "id": "unit.poison-imp",
    "name": "Poison Imp",
+   "playerLine": "This enemy can poison from a distance, and poisons what stands near it when its Activation ends.",
    "tier": 1,
    "types": [
     "Demon",
@@ -1236,6 +1246,7 @@
   {
    "id": "unit.lieutenant-demon",
    "name": "Lieutenant Demon",
+   "playerLine": "This enemy can strike from far away, and makes the demons near it tougher and more accurate, and heals them.",
    "tier": 2,
    "types": [
     "Demon"
@@ -1354,6 +1365,7 @@
   {
    "id": "unit.bruiser-demon",
    "name": "Bruiser Demon",
+   "playerLine": "This enemy can raise Protection around itself after every Activation.",
    "tier": 2,
    "types": [
     "Demon"
@@ -1492,6 +1504,7 @@
   {
    "id": "unit.bloodhound",
    "name": "Bloodhound",
+   "playerLine": "This enemy can run straight past your heroes without drawing a free attack.",
    "tier": 1,
    "types": [
     "Beast"
@@ -1537,6 +1550,7 @@
   {
    "id": "unit.hellhound",
    "name": "Hellhound",
+   "playerLine": "This enemy can run straight past your heroes without drawing a free attack, and burns whoever it bites.",
    "tier": 1,
    "types": [
     "Demon",
@@ -1618,6 +1632,7 @@
   {
    "id": "unit.zombie-hound",
    "name": "Zombie Hound",
+   "playerLine": "This enemy can run straight past your heroes without drawing a free attack, and its bite can leave Rotting Flesh.",
    "tier": 1,
    "types": [
     "Undead",
@@ -1781,6 +1796,7 @@
   {
    "id": "unit.werewolf",
    "name": "Werewolf",
+   "playerLine": "This enemy can heal itself after every Activation, and its claws can pass on Lycanthropy.",
    "tier": 2,
    "types": [
     "Beast"
