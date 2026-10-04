@@ -37,7 +37,7 @@ python3 tools/prep-art.py [kingdom-art]      downscale the kingdom art into gene
 python3 tools/prep-mock.py [mock]           pull the Load Game mock's banners and faces into generated/art/ (after prep-art)
 node tools/mk-items.mjs                      regenerate src/content/generated/items.ts — the codex items' CAMPAIGN fields; the rows are the engine's (+ items-gaps.json, kits.ts)
 node tools/mk-progress.mjs                   regenerate src/content/generated/progress.ts — specialty intents, class names; the level tables are the engine's
-python3 tools/prep-heroes.py                 the pool heroes' card portraits into generated/art/ (after prep-art)
+python3 tools/prep-heroes.py                 the card portraits of all 24 base heroes and the civilians into generated/art/ (after prep-art; asks the registry by node)
 python3 tools/prep-after.py [hell-tcg]       the after-battle screens' sounds, music and card back from Hell-TCG into generated/art/
 node tools/mk-quotes.mjs                     regenerate src/content/generated/quotes.ts (the recap's quotes) from hell-tcg/data/combatQuotes.js
 node tools/mk-descriptions.mjs               regenerate src/content/generated/descriptions.ts — the base heroes' descriptions (the codex's backstory and quote) the first draft shows

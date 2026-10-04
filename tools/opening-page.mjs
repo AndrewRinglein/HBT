@@ -28,6 +28,17 @@ export const FIRST_HERO=PARTY.firstHero,ROLL_SOURCE=PARTY.draftScore.rollSource
 export const POSITIVE_BADGES=PARTY.crucible.badges.favourable.map(b=>b.id),FLAWED_BADGES=PARTY.crucible.badges.flawed.map(b=>b.id)
 const BADGE_NAMES=[...FIRST_HERO.badges,...POSITIVE_BADGES,...FLAWED_BADGES].map(id=>E.BADGES[id].name)
 const DESCRIPTION=Object.fromEntries(JSON.parse(readFileSync(new URL('../../content/hbt-content.json',import.meta.url),'utf8')).heroes.heroes.map(h=>[h.id,h.backstory]))
+/* kingdom.opening-hero-card-art (engine DECISIONS.md 2026-10-03 'every draft card shows the hero's card art …': "Card art
+   should be present when you're drafting, both the first time and the next ones."; 'card art on the level-up and reward
+   screens …': "Card art not showing in the level-up screen."): the portraits the page is held against — generated/art, as
+   tools/prep-heroes.py made them and the build inlines them (a data: URI of the file's own bytes). A hero whose art is
+   missing on disk is named in index.json heroesMissing and shows a blank card, never another's. ART_SEEN counts the hero
+   cards held on each screen over a run. */
+const ART_INDEX=JSON.parse(readFileSync(new URL('../generated/art/index.json',import.meta.url),'utf8'))
+export const HEROES_MISSING=[...(ART_INDEX.heroesMissing??[])]
+const portraitCache={}
+const portraitUri=id=>portraitCache[id]??=(f=>f?'data:image/jpeg;base64,'+readFileSync(new URL('../generated/art/'+f,import.meta.url)).toString('base64'):null)(ART_INDEX.heroes?.[id])
+export const ART_SEEN={draft:0,whoGoes:0,equip:0,victory:0,rewards:0,carrier:0,levelUp:0}
 /* what a draft should move each engine stat by: its rolled points (and the first hero's Health), and its badges' own rows */
 const movedBy=d=>{const out={};for(const m of d.mods)out[m.stat]=(out[m.stat]??0)+m.add;for(const b of d.badges)for(const [k,n] of Object.entries(E.BADGES[b].statModifiers??{}))out[k]=(out[k]??0)+n;return out}
 const numbersOf=text=>Object.fromEntries(text.split(',').map(p=>{const [k,n]=p.split(':');return [k,Number(n)]}))
@@ -90,6 +101,22 @@ export function openingPage(page,search,store){
  const settle=()=>{if(handle.busy)v.click('skip')}
  /* the page's clock, run forward in small steps: a timer a timer sets comes due on a later step, as in a browser */
  const wait=ms=>{for(let t=0;t<ms;t+=50)w._flush(50)}
+ /* kingdom.opening-hero-card-art: whose portrait a hero shows — its own (a rescued civilian's is its template's, ui/art.ts
+    portraitIdOf) — and that portrait, or null when the hero is named in heroesMissing; a hero in neither fails */
+ const artKey=id=>camp().roster[id]?.templateId??id
+ function portraitFor(id,label){
+  const key=artKey(id),want=portraitUri(key)
+  assert.ok(want||HEROES_MISSING.includes(key),`${label}: ${key} has a portrait, or is named in heroesMissing`)
+  return want
+ }
+ /* the images inside `el` are exactly `n` of that hero's own card art — or, for a hero with none on disk, no image at all
+    (a blank card). The URIs are not printed: a portrait is ~45,000 characters */
+ function showsArt(el,id,label,screen,n=1){
+  assert.ok(el,label+': the card');const want=portraitFor(id,label),got=el.querySelectorAll('img').map(i=>i.getAttribute('src'))
+  assert.equal(got.length,want?n:0,`${label}: ${id}'s card shows ${want?'its card art':'a blank card (its art is missing on disk)'} — ${got.length} image(s) found`)
+  for(const src of got)assert.ok(src===want,`${label}: the image on ${id}'s card is its own card art, not another's`)
+  ART_SEEN[screen]++
+ }
 
  function readMap(taken,label){
   assert.ok(shown('conquest'),label+': the map is shown');assert.ok(!shown('campaign'),label+': no campaign screen over it')
@@ -132,6 +159,8 @@ export function openingPage(page,search,store){
   const first=heroIds().length===0,seen={}
   for(const o of opts){
    const id=o.dataset.id,who=`${label}: ${id}`
+   /* kingdom.opening-hero-card-art: every draft card — the first draft's and every later one's — shows its hero's card art */
+   showsArt(o,id,who,'draft')
    if(first){
     /* the first hero: chosen from three by description only — no stats, no badges, no kit */
     assert.ok(DESCRIPTION[id]&&o.textContent.includes(DESCRIPTION[id]),who+' is shown by its description')
@@ -209,6 +238,8 @@ export function openingPage(page,search,store){
   const cards=deployCards()
   assert.deepEqual(cards.map(x=>x.id),free,label+': a card for each hero free to fight, and nobody else — no civilian, nobody dead')
   for(const x of cards)assert.ok(x.text.includes(camp().roster[x.id].name),`${label}: ${x.id} is named`)
+  /* kingdom.opening-hero-card-art: the Who-goes page shows the card art of every hero who may go */
+  for(const el of byId('campaign').querySelectorAll('.deploycard'))showsArt(el,el.dataset.hero,`${label}: who goes`,'whoGoes')
   return {asked:true,free,limit}
  }
  /* the Deploy page as it stands against the Campaign: the cards going are the heroes sent, the count says how many, and
@@ -255,6 +286,10 @@ export function openingPage(page,search,store){
   const fitted=new Set(byId('campaign').querySelectorAll('[data-slot]').map(el=>el.dataset.hero))
   assert.deepEqual([...fitted].sort(),party,label+': Equip shows the heroes sent, and nobody left home')
   for(const id of party)assert.ok(byId('campaign').textContent.includes(camp().roster[id].name),`${label}: ${id} is named on Equip`)
+  /* kingdom.opening-hero-card-art: every hero card at Equip shows its hero's card art (the card's hero is its slots') */
+  const equipCards=byId('campaign').querySelectorAll('.herocard').map(el=>({el,id:el.querySelectorAll('[data-slot]')[0]?.dataset.hero}))
+  assert.deepEqual(equipCards.map(x=>x.id).sort(),party,label+': the hero cards at Equip are the heroes sent')
+  for(const x of equipCards)showsArt(x.el,x.id,label+': Equip','equip')
   v.click('advance');settle()
   return onTheBattle(label)
  }
@@ -298,7 +333,26 @@ export function openingPage(page,search,store){
   v.click('reckon');wait(2500)
   assert.ok(shown('campaign'),label+': the recap is shown');const recap=byId('campaign').querySelector('.recap')
   assert.ok(recap,label+': the recap');assert.equal(recap.dataset.won,String(won),label+': the recap says '+(won?'won':'lost'))
+  /* kingdom.opening-hero-card-art: the victory screen shows the card art of every hero who fought (its party row, in the
+     order they were sent) and of the hero in its spotlight; a lost battle's recap has the spotlight alone */
+  const faces=recap.querySelectorAll('.party-portrait')
+  if(won){assert.equal(faces.length,e.deployed.length,label+': the victory screen shows a face per hero who fought');for(const [i,id] of e.deployed.entries())showsArt(faces[i],id,label+': the victory screen','victory')}
+  const spot=recap.querySelectorAll('.spotlight-frame')[0],spotSrc=spot?.querySelectorAll('img').map(i=>i.getAttribute('src'))??[]
+  const spotOf=e.deployed.filter(id=>{const p=portraitFor(id,label+': the spotlight');return p&&spotSrc[0]===p})
+  assert.ok(spotSrc.length<=1&&(spotSrc.length===1?spotOf.length>=1:e.deployed.some(id=>!portraitFor(id,label))),label+': the spotlight shows the card art of a hero who fought')
   v.click('exit');wait(100)
+  /* … and the rewards screen, when the battle leads to it: every hero card there is its hero's card art. The portrait is
+     a background there (rewards.html's own markup), so it is read off the page's HTML, the card's own block */
+  if(byId('campaign').querySelector('.rewards')){
+   const html=byId('campaign').innerHTML,cards=byId('campaign').querySelectorAll('.hero-card')
+   assert.deepEqual(cards.map(c=>c.dataset.hero),[...e.deployed],label+': the rewards screen shows a card per hero who fought')
+   for(const id of e.deployed){
+    const from=html.indexOf(`data-hero="${id}"`),block=html.slice(from,html.indexOf('hero-name',from)),want=portraitFor(id,label+': the rewards screen')
+    assert.ok(from>=0&&block.includes('class="hero-portrait"'),`${label}: the rewards screen: ${id}'s card`)
+    assert.ok(want?block.includes(`style="background-image:url(${want})"`):!block.includes('url('),`${label}: the rewards screen: ${id}'s card shows ${want?'its own card art':'a blank card'}`)
+    ART_SEEN.rewards++
+   }
+  }
   return {e,result,played,seed}
  }
 
@@ -309,6 +363,8 @@ export function openingPage(page,search,store){
    const id=b.dataset.id,before=camp().roster[id].level
    v.click('level-hero',id);wait(1600)
    const sheet=byId('campaign').querySelector('.levelup');assert.ok(sheet,`${label}: ${id}'s level-up sheet`)
+   /* kingdom.opening-hero-card-art: the level-up screen shows the hero's card art (its card, before and after) */
+   showsArt(sheet.querySelectorAll('.lu-portrait')[0],id,`${label}: the level-up screen`,'levelUp',2)
    assert.equal(sheet.querySelectorAll('[data-act=lu-decline-specialty]').length,0,`${label}: no level without a specialty here — the engine fields no level-2 hero without one`)
    const over=byId('lu-specialty'),pick=byId('lu-pick')
    /* the specialty owed at the first level-up, then a level's pick, each chosen and confirmed; else the hero is clicked */
@@ -334,5 +390,13 @@ export function openingPage(page,search,store){
   return card.dataset.id
  }
 
- return {get lastOffer(){return lastOffer},v,w,root,handle,store:v.store,camp,byId,shown,heroIds,civilianIds,settle,wait,readMap,draft,freeToFight,whoGoes,deployStands,send,bringHome,toEquip,equipThenFight,onTheBattle,fightOut,levelUps,takeReward}
+ /* kingdom.opening-hero-card-art: who may carry a reward that names its takers — the heroes offered, each shown with its
+    own card art (the rewards screen's carrier); [] when the reward goes to the stash */
+ function carriers(label){
+  const buttons=byId('campaign').querySelectorAll('[data-act=give]')
+  for(const b of buttons)showsArt(b,b.dataset.id,label+': who carries it','carrier')
+  return buttons.map(b=>b.dataset.id)
+ }
+
+ return {get lastOffer(){return lastOffer},v,w,root,handle,store:v.store,camp,byId,shown,heroIds,civilianIds,settle,wait,readMap,draft,freeToFight,whoGoes,deployStands,send,bringHome,toEquip,equipThenFight,onTheBattle,fightOut,levelUps,takeReward,carriers}
 }

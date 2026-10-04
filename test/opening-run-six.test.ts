@@ -103,5 +103,9 @@ describe('kingdom.opening-run-six — one run through the six battles, saved', (
     expect(out).toMatch(/opening run six: .*passed/)
     // kingdom.opening-deploy-choice (2026-10-03): the same run asks who goes once five are free to fight, and says so
     expect(out).toMatch(/with five free to fight the run asked who goes \(battle 5: home [^;]+; battle 6: home [^;]+; battle 6 again: home [^)]+\)/)
+    // kingdom.opening-hero-card-art (2026-10-03): the same run holds every hero card it shows to that hero's own card art —
+    // every draft card (six drafts of three), the Who-goes page, Equip, the victory screen, the rewards screen and its
+    // carrier, the level-up screen — and says how many of each it held
+    expect(out).toMatch(/card art on every hero card \(draft 18, whoGoes [1-9]\d*, equip [1-9]\d*, victory [1-9]\d*, rewards [1-9]\d*, carrier [1-9]\d*, levelUp [1-9]\d*; heroes with no art on disk, shown blank: [^)]+\)/)
   }, 1800000)
 })

@@ -22,7 +22,7 @@
 //
 //   node tools/opening-run-six.verify.mjs [BATTLE-SANDBOX.html]
 import assert from 'node:assert/strict'
-import {openingPage,TAKERS,POOL,LEFT_OUT,HERO_CLASSES,FIRST_HERO,POSITIVE_BADGES} from './opening-page.mjs'
+import {openingPage,TAKERS,POOL,LEFT_OUT,HERO_CLASSES,FIRST_HERO,POSITIVE_BADGES,ART_SEEN,HEROES_MISSING} from './opening-page.mjs'
 const page=process.argv[2]??'BATTLE-SANDBOX.html'
 const ORDER=['orphanage','lumberjack','bridge','cavern-trail','gates','cathedral'].map(x=>'encounter.opening.'+x)
 const [ORPHANAGE,LUMBERJACK,BRIDGE,CAVERN,GATES,CATHEDRAL]=ORDER
@@ -232,7 +232,8 @@ function settle(won,label){
  if(won&&camp().cursor.step==='rewards'){
   const offer=[...camp().cursor.rewardOffer]
   kept=P.takeReward(0,label)
-  const givers=P.byId('campaign').querySelectorAll('[data-act=give]').map(b=>b.dataset.id)
+  /* kingdom.opening-hero-card-art: who may carry it — each hero offered is shown with its own card art (P.carriers) */
+  const givers=P.carriers(label)
   if(givers.length){P.v.click('give',givers[0]);P.wait(100)}
   assert.ok(offer.includes(kept),label+': a reward offered is kept')
  }
@@ -368,6 +369,20 @@ assert.equal(led.drafted.badges[0],FIRST_HERO.badges[0],'the first hero has the 
 assert.ok(led.drafted.badges.slice(1).some(b=>POSITIVE_BADGES.includes(b)),'and a positive badge beside it')
 assert.ok(led.drafted.mods.some(m=>m.stat==='maxHp'&&m.add===FIRST_HERO.health&&m.source===FIRST_HERO.healthSource),'and +2 Health')
 
+/* 5d · kingdom.opening-hero-card-art (engine DECISIONS.md 2026-10-03 'every draft card shows the hero's card art …': "Card
+   art should be present when you're drafting, both the first time and the next ones."; 'card art on the level-up and
+   reward screens …': "Card art not showing in the level-up screen."): every screen of the run that shows a hero's card or
+   face showed that hero's own card art — asserted card by card where each screen is driven (tools/opening-page.mjs
+   showsArt): the three cards of all six drafts (the first draft's with its description and still no number), every card
+   of the Who-goes page each time the run asked, every hero card at Equip before every battle, every face on every
+   victory screen, every hero card on every rewards screen, each hero who may carry the Flaming Longsword, and every
+   level-up sheet. Here: each of those screens was reached, and the whole party of six — every one a hero of the 24, five
+   of them outside the old five-hero pool's portraits or not — has a portrait or is named as missing. */
+assert.equal(ART_SEEN.draft,OFFERS.length*3,'an image was held on every card of every draft')
+for(const [screen,n] of Object.entries(ART_SEEN))assert.ok(n>0,`the run reached ${screen} and its hero cards were held to their card art`)
+assert.ok(ART_SEEN.whoGoes>=5*WENT.length,'every card of the Who-goes page, each time the run asked')
+const artless=P.heroIds().filter(id=>HEROES_MISSING.includes(id))
+
 /* 6 · the end: every section taken, the run complete — and never the kingdom map */
 assert.equal(P.readMap(ORDER,'the end'),null,'every section is taken')
 assert.match(P.byId('runNote').textContent,/the opening run is complete/,'the map says the run is complete')
@@ -378,4 +393,4 @@ const party=P.heroIds()
 console.error('settled by: '+JSON.stringify(chosen))
 console.error('offers: '+OFFERS.map(o=>`${o.label}: ${o.ids.map(id=>POOL.find(h=>h.id===id).name).join(' / ')} -> ${POOL.find(h=>h.id===o.took).name}`).join('; '))
 console.error('drafted with: '+OFFERS.map(o=>`${POOL.find(h=>h.id===o.took).name}: ${[...o.drafted.badges.map(b=>b.replace('badge.','')),...o.drafted.mods.map(m=>(m.add>0?'+':'')+m.add+' '+m.stat),...o.drafted.unfielded.map(r=>(r.amount>0?'+':'')+r.amount+' '+r.stat+(r.stat==='itemSlots'?' (on the hero, its item slots)':' (not fielded)'))].join(', ')}`).join('; '))
-console.log(`opening run six: six battles from the map, never the kingdom map (Week ${camp().week}); six drafts of three, no class twice, Rogues and Mages offered; the first hero chosen by description only and given Leadership, a positive badge and +2 Health; every later draft shown with its rolled modifiers, kept in every battle and to the end of the run, the same after the page is closed and reopened; the party six, one of each class (${party.map(id=>camp().roster[id].classes.find(c=>HERO_CLASSES.includes(c)).replace('class.','')).join(', ')}); four deploy — with five free to fight the run asked who goes (${WENT.map(w=>`${w.label}: home ${w.home.map(h=>camp().roster[h].name).join(', ')}`).join('; ')}), the four chosen on Equip and on the board, whoever stayed home unharmed and unpaid, the choice kept when the page is closed on it, and asked again for a lost battle; base heroes left out for no kit: ${LEFT_OUT.map(h=>h.name).join(', ')||'none'}; party ${party.map(id=>`${camp().roster[id].name} L${camp().roster[id].level}${camp().roster[id].lifeState==='alive'?'':' ('+camp().roster[id].lifeState+')'}`).join(', ')}; closed after battle 3 and reopened at battle 4 with the same party, items, XP and levels; battle 2 lost and offered again with the same party; a run left mid-battle (battle 4) reopens on that battle; the Bridge's ${b3.kept} kept passed`)
+console.log(`opening run six: six battles from the map, never the kingdom map (Week ${camp().week}); six drafts of three, no class twice, Rogues and Mages offered; the first hero chosen by description only and given Leadership, a positive badge and +2 Health; every later draft shown with its rolled modifiers, kept in every battle and to the end of the run, the same after the page is closed and reopened; the party six, one of each class (${party.map(id=>camp().roster[id].classes.find(c=>HERO_CLASSES.includes(c)).replace('class.','')).join(', ')}); four deploy — with five free to fight the run asked who goes (${WENT.map(w=>`${w.label}: home ${w.home.map(h=>camp().roster[h].name).join(', ')}`).join('; ')}), the four chosen on Equip and on the board, whoever stayed home unharmed and unpaid, the choice kept when the page is closed on it, and asked again for a lost battle; base heroes left out for no kit: ${LEFT_OUT.map(h=>h.name).join(', ')||'none'}; card art on every hero card (${Object.entries(ART_SEEN).map(([k,n])=>`${k} ${n}`).join(', ')}; heroes with no art on disk, shown blank: ${artless.map(id=>camp().roster[id].name).join(', ')||'none'}); party ${party.map(id=>`${camp().roster[id].name} L${camp().roster[id].level}${camp().roster[id].lifeState==='alive'?'':' ('+camp().roster[id].lifeState+')'}`).join(', ')}; closed after battle 3 and reopened at battle 4 with the same party, items, XP and levels; battle 2 lost and offered again with the same party; a run left mid-battle (battle 4) reopens on that battle; the Bridge's ${b3.kept} kept passed`)

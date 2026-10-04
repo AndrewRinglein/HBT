@@ -22,5 +22,5 @@ body.map-view{background:#1a1610}#conquest{min-height:100vh;box-sizing:border-bo
    screens (after.css, scoped under .hx); who carries a named-class reward; a refusal said on the map or a screen */
 body.campaign-view{background:#14110f}#campaign{max-width:none;padding:0;margin:0}#campaign .sliceView{max-width:1400px;margin:auto;padding:18px 28px 60px}
 #campaign .giveChoice{position:fixed;z-index:650;left:50%;top:50%;transform:translate(-50%,-50%);width:min(560px,92vw);box-sizing:border-box;padding:20px 24px;background:#1a1612;color:#e6d7c3;border:1px solid #c9a227;border-radius:6px;box-shadow:0 18px 60px rgba(0,0,0,.85);text-align:center}
-#campaign .giveChoice h2{font:600 20px/1.3 'Cinzel',Georgia,serif;margin:0 0 12px;color:#e8c84a}#campaign .giveChoice button{margin:4px}
+#campaign .giveChoice h2{font:600 20px/1.3 'Cinzel',Georgia,serif;margin:0 0 12px;color:#e8c84a}#campaign .giveChoice button{margin:4px;display:inline-flex;flex-direction:column;align-items:center;gap:6px;padding:8px}#campaign .giveChoice button img{display:block;width:120px;aspect-ratio:2/3;object-fit:cover;border:1px solid #6b5a3e;border-radius:4px}
 .sittingError{position:fixed;z-index:700;left:50%;top:10px;transform:translateX(-50%);margin:0;padding:8px 14px;background:#3a1512;color:#ffbca6;border:1px solid #8b3535;border-radius:4px;max-width:90vw}

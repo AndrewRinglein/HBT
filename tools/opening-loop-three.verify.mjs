@@ -47,7 +47,7 @@ const KNOWN={'battle 1':[['ai',1]],'battle 2 lost':[['idle',5]],'battle 2 won':[
    every run. What this page test holds — the loop's flow through three battles — is unchanged.
    LOOP_THREE_SEED: another run seed (another party) — its battles are searched; the known seeds are this file's run's only */
 const RUN_SEED=Number(process.env.LOOP_THREE_SEED??11),FOUND=process.env.LOOP_THREE_SEED===undefined?KNOWN:{}
-const {handle,camp,byId,heroIds,civilianIds,wait,readMap,draft,whoGoes,equipThenFight,fightOut:settleOn,levelUps,takeReward,v}=openingPage(page,'?map&seed='+RUN_SEED)
+const {handle,camp,byId,heroIds,civilianIds,wait,readMap,draft,whoGoes,equipThenFight,fightOut:settleOn,levelUps,takeReward,carriers,v}=openingPage(page,'?map&seed='+RUN_SEED)
 /* a battle settled, the seed that settled it said (stderr) — a known seed is tried before the search (opening-page.mjs `first`) */
 const chosen={}
 function fightOut(won,label,hows,how={}){const r=settleOn(won,label,hows,{...how,first:FOUND[label]??[]});chosen[label]=[r.played,r.seed];console.error(`settled ${label}: ${r.played} seed ${r.seed}`);return r}
@@ -102,7 +102,9 @@ const b2=fightOut(true,'battle 2 won')
 assert.equal(camp().cursor.step,'rewards','battle 2 won offers its reward')
 assert.deepEqual(camp().cursor.rewardOffer,[SWORD],'the Flaming Longsword')
 takeReward(0,'battle 2')
-const givers=byId('campaign').querySelectorAll('[data-act=give]').map(b=>b.dataset.id).sort()
+/* kingdom.opening-hero-card-art (2026-10-03): each hero who may carry it is shown with its own card art (opening-page.mjs
+   carriers); the heroes offered are read as before */
+const givers=carriers('battle 2').sort()
 const may=party2.filter(id=>camp().roster[id].classes.some(c=>TAKERS.includes(c)))
 assert.deepEqual(givers,may,'only a Warrior or a Paladin is offered it')
 v.click('give',givers[0]);wait(100)

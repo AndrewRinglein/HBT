@@ -18,12 +18,11 @@ import {resolveReckoning,applyBattleResult,performExitBattle} from '../core/reck
 import {performTakeReward,listRewardTakers,performLevelUp,performLeaveLevelUp} from '../core/rewards.js'
 import {performEquip,performUnequip} from '../core/shop.js'
 import {sandboxResult} from '../core/sandbox.js'
-import {itemOf} from '../content/items.js'
 import {encounterDef} from '../engine.js'
 import {equipPage} from './equip.js'
 import {draftScreen} from './draft.js'
 import {deployPage} from './deploy.js'
-import {recapScreen,mountRecap,rewardsScreen,mountRewards,levelUpScreen,mountLevelUp,toggleMute,type LastBattle,type Cleanup} from './after.js'
+import {recapScreen,mountRecap,rewardsScreen,mountRewards,carrierChoice,levelUpScreen,mountLevelUp,toggleMute,type LastBattle,type Cleanup} from './after.js'
 import {fontFaces} from './art.js'
 
 declare const __BATTLE_VIEW_DATA__:Record<string,unknown>
@@ -190,11 +189,8 @@ function takeReward(itemId:string){
  if(listRewardTakers(s.ctx.campaign,itemId).length){s.giving=itemId;drawCampaign();return}
  performTakeReward(s.ctx,itemId,sitCause);onward()
 }
-/** who carries an item that names its takers — a Warrior or a Paladin for the Flaming Longsword (content/encounter-rewards.ts) */
-function giveChoice(itemId:string){
- const c=sitting!.ctx.campaign
- return `<div class="giveChoice" role="dialog" aria-label="Who carries it"><h2>Who carries the ${escape(itemOf(itemId).name)}?</h2><p>${listRewardTakers(c,itemId).map(h=>`<button data-act="give" data-id="${escape(h)}">${escape(c.roster[h]!.name)} · ${escape(c.roster[h]!.classes.map(x=>x.replace('class.','')).join(', '))}</button>`).join(' ')}</p></div>`
-}
+/** who carries an item that names its takers — ui/after.ts carrierChoice (each hero who may, with its card art) */
+const giveChoice=(itemId:string)=>carrierChoice(sitting!.ctx.campaign,itemId)
 function drawCampaign(){
  const s=sitting!,c=s.ctx.campaign,host=q('campaign')
  if(s.mounted){s.mounted();s.mounted=null}

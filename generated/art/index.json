@@ -294,6 +294,106 @@
    "w": 320,
    "h": 440,
    "bytes": 36511
+  },
+  "hero-mage-fire.jpg": {
+   "w": 320,
+   "h": 480,
+   "bytes": 30427
+  },
+  "hero-mage-fireaura.jpg": {
+   "w": 320,
+   "h": 480,
+   "bytes": 32414
+  },
+  "hero-mage-sexy.jpg": {
+   "w": 320,
+   "h": 480,
+   "bytes": 26276
+  },
+  "hero-mage-thinking.jpg": {
+   "w": 320,
+   "h": 480,
+   "bytes": 33793
+  },
+  "hero-paladin-dark.jpg": {
+   "w": 320,
+   "h": 480,
+   "bytes": 23613
+  },
+  "hero-paladin-hunk.jpg": {
+   "w": 320,
+   "h": 480,
+   "bytes": 35028
+  },
+  "hero-paladin-smug.jpg": {
+   "w": 320,
+   "h": 480,
+   "bytes": 36029
+  },
+  "hero-priest-pauper.jpg": {
+   "w": 320,
+   "h": 480,
+   "bytes": 33332
+  },
+  "hero-priest-robes.jpg": {
+   "w": 320,
+   "h": 480,
+   "bytes": 41790
+  },
+  "hero-ranger-nature.jpg": {
+   "w": 320,
+   "h": 480,
+   "bytes": 34995
+  },
+  "hero-ranger-ranger.jpg": {
+   "w": 320,
+   "h": 480,
+   "bytes": 35731
+  },
+  "hero-ranger-scantily.jpg": {
+   "w": 320,
+   "h": 480,
+   "bytes": 35432
+  },
+  "hero-rogue-raven.jpg": {
+   "w": 320,
+   "h": 480,
+   "bytes": 26133
+  },
+  "hero-rogue-rose.jpg": {
+   "w": 320,
+   "h": 480,
+   "bytes": 33424
+  },
+  "hero-rogue-skull.jpg": {
+   "w": 320,
+   "h": 480,
+   "bytes": 20197
+  },
+  "hero-rogue-snake.jpg": {
+   "w": 320,
+   "h": 480,
+   "bytes": 31992
+  },
+  "hero-warrior-barbarian.jpg": {
+   "w": 320,
+   "h": 480,
+   "bytes": 40044
+  },
+  "hero-warrior-brawler.jpg": {
+   "w": 320,
+   "h": 480,
+   "bytes": 31057
+  },
+  "hero-warrior-fearsome.jpg": {
+   "w": 320,
+   "h": 480,
+   "bytes": 34566
+  },
+  "hero-school-teacher.jpg": {
+   "w": 320,
+   "h": 480,
+   "bytes": 17481
   }
  },
  "map": {
@@ -555,16 +655,38 @@
   "waystation": "card-waystation.jpg"
  },
  "heroes": {
+  "hero.base.mage-fire": "hero-mage-fire.jpg",
+  "hero.base.mage-fireaura": "hero-mage-fireaura.jpg",
+  "hero.base.mage-sexy": "hero-mage-sexy.jpg",
+  "hero.base.mage-thinking": "hero-mage-thinking.jpg",
+  "hero.base.paladin-dark": "hero-paladin-dark.jpg",
+  "hero.base.paladin-hunk": "hero-paladin-hunk.jpg",
   "hero.base.paladin-shiney": "hero-paladin-shiney.jpg",
+  "hero.base.paladin-smug": "hero-paladin-smug.jpg",
   "hero.base.priest-armored": "hero-priest-armored.jpg",
+  "hero.base.priest-pauper": "hero-priest-pauper.jpg",
+  "hero.base.priest-robes": "hero-priest-robes.jpg",
   "hero.base.priest-scantily": "hero-priest-scantily.jpg",
   "hero.base.ranger-aggressive": "hero-ranger-aggressive.jpg",
+  "hero.base.ranger-nature": "hero-ranger-nature.jpg",
+  "hero.base.ranger-ranger": "hero-ranger-ranger.jpg",
+  "hero.base.ranger-scantily": "hero-ranger-scantily.jpg",
+  "hero.base.rogue-raven": "hero-rogue-raven.jpg",
+  "hero.base.rogue-rose": "hero-rogue-rose.jpg",
+  "hero.base.rogue-skull": "hero-rogue-skull.jpg",
+  "hero.base.rogue-snake": "hero-rogue-snake.jpg",
+  "hero.base.warrior-barbarian": "hero-warrior-barbarian.jpg",
+  "hero.base.warrior-brawler": "hero-warrior-brawler.jpg",
+  "hero.base.warrior-fearsome": "hero-warrior-fearsome.jpg",
   "hero.base.warrior-iron": "hero-warrior-iron.jpg",
   "hero.fixed.farmer": "hero-farmer.jpg",
   "hero.fixed.lumberjack-and-wife": "hero-lumberjack-and-wife.jpg",
-  "hero.fixed.orphans": "hero-orphans.jpg"
+  "hero.fixed.orphans": "hero-orphans.jpg",
+  "hero.fixed.school-teacher": "hero-school-teacher.jpg"
  },
- "heroesMissing": [],
+ "heroesMissing": [
+  "hero.fixed.lumberjacks-wife"
+ ],
  "audio": {
   "click-primary": {
    "file": "sfx-ui-click-primary-2.mp3",
