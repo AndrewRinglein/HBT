@@ -113,7 +113,20 @@ test('a new activation centres the map on the one acting; a click on another uni
   const f0 = { ...V.view.camF }, other = Object.values(V.S.U).find(u => u.id !== V.S.activeId && u.life !== 'dead')
   v.inspect(other.id); assert.deepEqual(V.view.camF, f0, 'looking at another unit already in view does not move the camera')
   v.centre(other.id); const q = V.data.POS[other.hex]
-  assert.ok(Math.hypot(V.camTarget.x - q.px, V.camTarget.y - q.py) < Math.hypot(f0.x - q.px, f0.y - q.py) + 1e-9, 'the host\'s centre brings it to the middle')
+  /* Law 10, combine 2026-10-04 (viewer master cf11722 — viewer.camera-shows-edge-units — with this copy's engine
+     fix.opening-orphanage-closer-start; engine DECISIONS.md 2026-10-04 'the view may slide past the board's edge to show a unit on
+     an edge column': "the least that shows it, never more"): this read
+       assert.ok(Math.hypot(V.camTarget.x - q.px, V.camTarget.y - q.py) < Math.hypot(f0.x - q.px, f0.y - q.py) + 1e-9, 'the host\'s centre brings it to the middle')
+     — "nearer than the view was", a measure against wherever the view stood before. On the closer start's recording the
+     last Activation leaves the view PAST the board's top edge (its actor's hex needs it), and the unit centred on next —
+     a Zombie on row 1 — needs less of that: the view comes back toward the board, which is further from the Zombie than it
+     was and is the rule. The line's claim is held against the board instead of against the last view: the centre is at
+     least as near the unit as the board's own bound lets a view come, it is inside the camera's one bound, and across the
+     board — where no edge is in the way — it is the unit's own column exactly. */
+  { const B = V.cameraBound(), clamp = (x, [a, b]) => Math.min(b, Math.max(a, x)), c = V.camTarget
+    assert.ok(Math.hypot(c.x - q.px, c.y - q.py) <= Math.hypot(clamp(q.px, B.own.x) - q.px, clamp(q.py, B.own.y) - q.py) + 1e-6, 'the host\'s centre brings it to the middle: as near as the board lets the view come, or nearer')
+    assert.ok(c.x >= B.bound.x[0] - 1e-6 && c.x <= B.bound.x[1] + 1e-6 && c.y >= B.bound.y[0] - 1e-6 && c.y <= B.bound.y[1] + 1e-6, 'inside the camera\'s one bound')
+    if (q.px >= B.own.x[0] && q.px <= B.own.x[1]) assert.ok(Math.abs(c.x - q.px) < 1e-6, 'across the board, exactly on the unit') }
   v.dispose()
 })
 

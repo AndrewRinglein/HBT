@@ -104,8 +104,22 @@ test('at the standard zoom there is board beyond the battle area on both axes; e
   assert.ok(q.r - q.l < F.w - 40 && q.b - q.t < F.h - 40, `board to scroll to across and down: the view sees ${(q.r - q.l).toFixed(0)} x ${(q.b - q.t).toFixed(0)} of ${F.w} x ${F.h}`)
   let n = 0
   let past = 0
-  for (let i = 0; i < EV.length; i++) if (EV[i].type === 'activation.begin') { v.seek(i + 1); noVoidOrLeast(V, `Activation at event ${i} (${V.S.U[EV[i].actor]?.name})`, EV[i].actor); if (V.cameraBound().past) past++; n++ }
-  assert.ok(n > 10, `enough Activations: ${n}`); assert.ok(past < n / 2, `most Activations are centred with only board in view (${n - past} of ${n})`)
+  /* Law 10, combine 2026-10-04 (viewer master cf11722 — viewer.camera-shows-edge-units — with this copy's engine
+     fix.opening-orphanage-closer-start): the last line read
+       assert.ok(past < n / 2, `most Activations are centred with only board in view (${n - past} of ${n})`)
+     — a count of the recording of the day. On the closer start the Orphanage is fought at the board's top (the civilians
+     stand on rows 1 and 2, the hero is on row 0 by Turn 2), so on this recording about half of the Activations are of a
+     unit on an edge row or column (21 of 41). What the count stood for is held of EVERY Activation instead: the view
+     passes the board's edge only where the board's own bound would cut the acting unit's hex (the camera's own measure,
+     revealPan, asked of the view held to the board); and some Activation is centred with only board in view. */
+  const clamp = (x, [a, b]) => Math.min(b, Math.max(a, x))
+  for (let i = 0; i < EV.length; i++) if (EV[i].type === 'activation.begin') { v.seek(i + 1); noVoidOrLeast(V, `Activation at event ${i} (${V.S.U[EV[i].actor]?.name})`, EV[i].actor)
+    const B = V.cameraBound()
+    if (B.past) { past++
+      const held = { ...V.camTarget, x: clamp(V.camTarget.x, B.own.x), y: clamp(V.camTarget.y, B.own.y) }
+      assert.notEqual(V.revealPan(held, V.S.U[EV[i].actor].hex), null, `Activation at event ${i}: the view is past the edge only because the board's own bound would cut ${V.S.U[EV[i].actor]?.name}'s hex`) }
+    n++ }
+  assert.ok(n > 10, `enough Activations: ${n}`); assert.ok(n - past > 0, `some Activations are centred with only board in view (${n - past} of ${n})`)
   /* a host's pan: to the bound, and no further (was: 'only board' — the pan stopped at the board's edge) */
   v.pan(-1e5, -1e5); let B = withinBound(V, 'a host pan far up-left'); assert.ok(Math.abs(V.camTarget.x - B.bound.x[0]) < TOL && Math.abs(V.camTarget.y - B.bound.y[0]) < TOL, 'at the bound\'s corner')
   v.pan(1e5, 1e5); B = withinBound(V, 'and far down-right'); assert.ok(Math.abs(V.camTarget.x - B.bound.x[1]) < TOL && Math.abs(V.camTarget.y - B.bound.y[1]) < TOL, 'at the bound\'s other corner')

@@ -114,9 +114,21 @@ for (const size of SIZES) {
   })
 
   test(`${at}: a bubble click on a unit in the first or last column brings its whole hex into view; the bottom corner hexes can be scrolled into view`, () => {
-    const { w, v, V } = boot(size); v.setPlay(facts(V.S.activeId)); v.render(); settle(w, 200)
-    /* the Orphanage's first Zombie stands on the board's last column */
-    const zombie = Object.values(V.S.U).find(u => u.side === 'enemy'); assert.equal(V.data.POS[zombie.hex].c, 19)
+    /* Law 10, combine 2026-10-04 (viewer master cf11722 with this copy's engine fix.opening-orphanage-closer-start; engine
+       DECISIONS.md 2026-10-04 '… a closer start': "bring the hero forward to the end of the bridge and bring the zombie left,
+       maybe 3 squares"): this read
+         const { w, v, V } = boot(size); v.setPlay(facts(V.S.activeId)); v.render(); settle(w, 200)
+         // the Orphanage's first Zombie stands on the board's last column
+         const zombie = Object.values(V.S.U).find(u => u.side === 'enemy'); assert.equal(V.data.POS[zombie.hex].c, 19)
+       — the battle's opening on the old start. By the ruling the first Zombie stands on (16,3). The claim is of "a unit in
+       the first or last column", so the scene is the same recording at Turn 2, when the Zombie the schedule brings in
+       stands on the last column, (19,5) — the first Activation after its arrival. Every check below is unchanged. */
+    const { w, v, V } = boot(size)
+    const wave2 = EV.findIndex(e => e.type === 'encounter.wave' && e.turn === 2), enter2 = EV.findIndex((e, i) => i > wave2 && e.type === 'unit.enter')
+    v.seek(EV.findIndex((e, i) => i > enter2 && e.type === 'activation.begin') + 1)
+    v.setPlay(facts(V.S.activeId)); v.render(); settle(w, 200)
+    /* the Orphanage's Turn 2 Zombie stands on the board's last column */
+    const zombie = V.S.U[EV[enter2].actor]; assert.equal(zombie.side, 'enemy'); assert.equal(V.data.POS[zombie.hex].c, 19)
     v.pan(-1e5, 0); settle(w, 100)
     V.clickBubble([zombie.id]); settle(w)
     assert.equal(V.view.inspectId, zombie.id); assert.ok(wholeBy(V, zombie.hex) >= 0, `the Zombie's whole hex is on the screen after the bubble's click (${wholeBy(V, zombie.hex).toFixed(1)} px inside)`)

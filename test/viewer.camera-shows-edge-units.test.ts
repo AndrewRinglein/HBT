@@ -24,9 +24,17 @@ describe('the view may pass the board\'s edge to show a unit on an edge column',
   it('the engine: on the Orphanage units stand and arrive on the board\'s first and last columns', () => {
     const ctx = createBattle(scenarioOptions(scenarioDef('test.opening-orphanage'), 1)), g = ctx.geo, last = g.board.width - 1
     const zombie = ctx.state.units.find((u) => u.side === 'enemy')!
-    expect(g.colOf(zombie.hex)).toBe(last)
+    // Law 10, combine 2026-10-04 (viewer master cf11722 with this copy's engine fix.opening-orphanage-closer-start; engine DECISIONS.md
+    // 2026-10-04 '… a closer start': "bring the zombie left, maybe 3 squares"): was `expect(g.colOf(zombie.hex)).toBe(last)` — the
+    // first Zombie stood on the last column, (19,3); by the ruling it stands three hexes left, on (16,3). The units that
+    // stand on the board's first and last columns are the schedule's arrivals, held below as they were.
+    expect([g.colOf(zombie.hex), g.rowOf(zombie.hex)]).toEqual([last - 3, 3])
     runBattle(ctx)
-    const arrivals = ctx.events.filter((e) => e.type === 'unit.enter' && (e as { arrived?: unknown }).arrived).map((e) => ({ turn: e.turn, col: g.colOf((e as unknown as { hex: number }).hex) }))
+    // (the same note: on the closer start this battle can be over before Turn 2 — the hero reaches the first Zombie at once — so
+    // the arrivals are read from the same battle fielded to see its schedule out, the engine's own switch
+    // boardClearWaitsForSchedule, as test/viewer.arrivals-camera.test.ts fields it. A fielding choice, not the rule.)
+    const seen = createBattle({ ...scenarioOptions(scenarioDef('test.opening-orphanage'), 1), cfg: { switches: { boardClearWaitsForSchedule: true } } } as Parameters<typeof createBattle>[0]); runBattle(seen)
+    const arrivals = seen.events.filter((e) => e.type === 'unit.enter' && (e as { arrived?: unknown }).arrived).map((e) => ({ turn: e.turn, col: g.colOf((e as unknown as { hex: number }).hex) }))
     expect(arrivals.find((a) => a.turn === 2)!.col).toBe(last)
     expect(arrivals.find((a) => a.turn === 3)!.col).toBe(0)
   })

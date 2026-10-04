@@ -88,9 +88,20 @@ test('arrivals on two sides in one Turn: each side shown in turn — left, then 
   assert.ok(waited > 100, `the pump waited through both slides and holds (${waited} frames held)`)
   /* and afterwards the view's centre is the first activated hero's hex (across; the board's edge holds what it must) */
   playTo(w, v, V, begin + 1); v.pause(); for (let i = 0; i < 90; i++) { w._flush(16); assert.ok(onBoard(V)) }
-  const hexH = EV[begin].hex, c = V.camTarget, box = V.view.panBox
+  /* Law 10, combine 2026-10-04 (viewer master cf11722 — viewer.camera-shows-edge-units — with this copy's engine items; engine
+     DECISIONS.md 2026-10-04 'the view may slide past the board's edge to show a unit on an edge column': "the least that
+     shows it, never more"): this read
+       const hexH = EV[begin].hex, c = V.camTarget, box = V.view.panBox
+       assert.ok(Math.abs(c.x - Math.min(box.x[1], Math.max(box.x[0], V.data.POS[hexH].px))) < .5, 'centred on the first activated hero')
+     — the hero's column held into `panBox`, which since viewer.camera-shows-edge-units is the camera's WIDER bound (as far
+     past the board as its outermost hexes need). The fixture is the engine's own battle and on the combined tree its
+     first hero of Turn 2 stands on column 15, where the board's edge holds the centring: his hex is whole on the screen,
+     so the view does not pass the edge for him ("never more") and stops on the board's own bound. The rule, held exactly:
+     centred on the hero across the board as far as the board's own bound allows, the view not past the edge. */
+  const hexH = EV[begin].hex, c = V.camTarget, own = V.cameraBound().own
   assert.equal(V.S.activeId, hero); assert.equal(V.S.U[hero].hex, hexH)
-  assert.ok(Math.abs(c.x - Math.min(box.x[1], Math.max(box.x[0], V.data.POS[hexH].px))) < .5, 'centred on the first activated hero')
+  assert.ok(Math.abs(c.x - Math.min(own.x[1], Math.max(own.x[0], V.data.POS[hexH].px))) < .5, 'centred on the first activated hero, as far as the board\'s own edge lets the view go')
+  assert.equal(V.cameraBound().past, null, 'and the view is not past the board\'s edge: the hero\'s hex is whole without it')
   assert.ok(insideBy(screenOf(V, hexH)) > 100, 'the hero is well inside the screen')
   v.dispose()
 })

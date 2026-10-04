@@ -30,6 +30,11 @@ const html = readFileSync(process.env.VIEWER_PAGE || 'BATTLE-VIEWER.html', 'utf8
 const load = f => JSON.parse(readFileSync(f, 'utf8'))
 const orphanage = load('battles/test.opening-orphanage.json'), lumberjack = load('battles/test.opening-lumberjack.json'),
   bridge = load('battles/test.opening-bridge.json'), cathedral = load('battles/test.opening-cathedral.json')
+/* combine 2026-10-04: the opening recordings this file stands bodies on (the battles whose board is painted), in their order —
+   a scene one of them no longer holds is found by its KIND in the first that holds one (the notes at each use) */
+const PAINTED = [orphanage, lumberjack, bridge, cathedral]
+/** a battle the engine fights now: its own export tool, as tools/affliction-pop-up.test.mjs asks it */
+const exportOf = (scenario, seed) => JSON.parse(execFileSync(process.execPath, ['node_modules/tsx/dist/cli.mjs', 'tools/export-battle.mts', '--scenario', scenario, '--seed', String(seed)], { cwd: '../engine', encoding: 'utf8', maxBuffer: 1 << 27 }))
 const FRAME = 16                       // ms of the page's clock a frame, and of every body's
 const TOL = .05                        // s of the attacker's clip: two frames and the pump's own timer step
 /* the board's projectiles (src/hexvfx.js): how long each is in the air and how much of that it gathers at the caster first */
@@ -227,9 +232,18 @@ test('a Hunter\'s arrow leaves the bow at the release of the shot, not before or
 })
 
 test('a priest\'s cast leaves at the release of the cast: the bolt gathers before it and leaves the hand at the moment; the target reacts when it lands', async () => {
-  const a = findAttack(lumberjack.events, { type: 'hero.base.priest-armored', kind: 'ranged', result: 'hit' }); assert.ok(a, 'battle 2 has a priest\'s cast that hits')
+  /* Law 10, combine 2026-10-04 (viewer master cf11722 with this copy's engine fix.opening-probe-cadence; engine DECISIONS.md
+     2026-10-03 'one draft after every battle; …': "One, yes." — a party of 1, 2, 3, 4, 5, 6): this read
+       const a = findAttack(lumberjack.events, { type: 'hero.base.priest-armored', kind: 'ranged', result: 'hit' }); assert.ok(a, 'battle 2 has a priest\'s cast that hits')
+       const { seen, rec, look, v } = await watch(lumberjack, a), F = FLIGHTS.holy
+     — battle 2's recording, whose party of three held the priest. By the ruling battle 2 fields two heroes and the priest
+     is not one of them. The scene is the first of this file's recordings, in their order, that holds a priest's cast
+     that hits (found by kind, not by name: the Cathedral today). Every check below is unchanged. */
+  const scene = PAINTED.map(b => ({ battle: b, a: findAttack(b.events, { type: 'hero.base.priest-armored', kind: 'ranged', result: 'hit' }) })).find(s => s.a)
+  assert.ok(scene, 'an opening recording has a priest\'s cast that hits')
+  const a = scene.a
   assert.equal(a.e.damageType, 'true')
-  const { seen, rec, look, v } = await watch(lumberjack, a), F = FLIGHTS.holy
+  const { seen, rec, look, v } = await watch(scene.battle, a), F = FLIGHTS.holy
   /* the priest has no shot motion: his cast is his swing, and its moment the swing's */
   const mo = look.moments.attack; assert.equal(seen.motion.motion, 'attack')
   const bolt = seen.fx.find(f => f.dur === F.ms); assert.ok(bolt, 'the board flew the holy bolt: ' + JSON.stringify(seen.fx.map(f => f.dur)))
@@ -302,8 +316,21 @@ test('a miss and a block happen at the blow too: the word at the moment, no hit 
     assert.ok(arrow, 'a shot that misses still flies'); near(arrow.clip, mo.at, 'and leaves at the release')
     const line = seen.lines.find(l => l.at === shot.outcome); near((line.wall - arrow.wall) / 1000, FLIGHTS.arrow.ms / 1000, 'the miss is shown when the arrow has flown')
     assert.equal(seen.fx.filter(f => f.dur === FLIGHTS.arrow.ms).length, 1, 'one arrow, not a second at the line'); assert.equal(rec.result, 'miss'); v.pause(); v.dispose() }
-  const blocked = findAttack(bridge.events, { type: 'unit.fire-imp', kind: 'ranged', result: 'block' }); assert.ok(blocked, 'the Bridge has a blocked shot')
-  { const { seen, rec, look, v, EV } = await watch(bridge, blocked), m = seen.motion.motion, mo = look.moments[m], fx = seen.fx.find(f => f.dur === FLIGHTS.arrow.ms)
+  /* Law 10, combine 2026-10-04 (viewer master cf11722 with this copy's engine fix.opening-probe-cadence, as at the priest's cast
+     above): this read
+       const blocked = findAttack(bridge.events, { type: 'unit.fire-imp', kind: 'ranged', result: 'block' }); assert.ok(blocked, 'the Bridge has a blocked shot')
+       { const { seen, rec, look, v, EV } = await watch(bridge, blocked), …
+     — the Bridge's recording, where a Fire Imp's shot was blocked. The Bridge is another battle now (three heroes) and no
+     shot is blocked in its recording, nor in any of the six opening recordings as they stand (and a blocked shot needs a
+     painted board here: the bodies stand on it). The scene is the Bridge as the engine fights it now, exported by the
+     engine's own tool on seed 1 — seeds read from 0 upward for the first whose battle holds a blocked shot (seed 0 holds
+     none; on seed 1 an Imp's shot is blocked by the priest). Read for the KIND of line, as the Gates' replicate is in the
+     engine's own test; nothing here asks who wins. Every check below is unchanged. */
+  const bridgeNow = exportOf('test.opening-bridge', 1)
+  const blockedScene = { battle: bridgeNow, a: findAttack(bridgeNow.events, { type: null, kind: 'ranged', result: 'block' }) }
+  assert.ok(blockedScene.a, 'the Bridge, fought on seed 1, has a blocked shot')
+  const blocked = blockedScene.a
+  { const { seen, rec, look, v, EV } = await watch(blockedScene.battle, blocked), m = seen.motion.motion, mo = look.moments[m], fx = seen.fx.find(f => f.dur === FLIGHTS.arrow.ms)
     assert.ok(fx, 'a blocked shot flies: it was not drawn at all before'); near(fx.clip, mo.at, 'it leaves at the release')
     const line = seen.lines.find(l => l.at === blocked.outcome); near((line.wall - fx.wall) / 1000, FLIGHTS.arrow.ms / 1000, 'BLOCK is shown when it arrives')
     assert.equal(rec.result, 'block')
@@ -364,7 +391,14 @@ test('only when things are drawn moves: the log plays in its order, a hand step 
 
 test('with the enemies of a type moving together (the default), each attack in the Enemy Phase keeps its timing', async () => {
   const EV = orphanage.events, a = findAttack(EV, { type: 'unit.zombie', kind: 'melee', result: 'hit' })
-  const { seen, rec, look, v } = await watch(orphanage, a, { opts: { enemiesTogether: true }, before: a.i - EV.findLastIndex((e, i) => i < a.i && e.type === 'phase.begin' && e.phase === 'enemy') }), mo = look.moments.attack
+  /* Law 10, combine 2026-10-04 (viewer master cf11722 with this copy's engine fix.opening-orphanage-closer-start): this read
+       const { seen, rec, look, v } = await watch(orphanage, a, { opts: { enemiesTogether: true }, before: a.i - EV.findLastIndex(…) }), mo = look.moments.attack
+     — watched until two lines after the attack's damage, which is where its blow had been drawn on the old start's
+     recording: one Zombie in that Enemy Phase, its lines played in the log's order. On the closer start two Zombies act in
+     the first Enemy Phase; moving together, the group's lines are taken at once and its attacks are drawn after its walks
+     (viewer.enemy-type-moves-together), so the blow is drawn after the pump has passed those lines. The watch runs to the
+     end of that Turn instead; what is asserted of the attack — the target reacts at the blow — is unchanged. */
+  const { seen, rec, look, v } = await watch(orphanage, a, { opts: { enemiesTogether: true }, before: a.i - EV.findLastIndex((e, i) => i < a.i && e.type === 'phase.begin' && e.phase === 'enemy'), until: EV.findIndex((e, i) => i > a.i && e.type === 'turn.begin') }), mo = look.moments.attack
   assert.ok(seen.reaction, 'the hero was seen to react'); near(seen.reaction.clip, mo.at, 'at the blow'); assert.equal(rec.reaction, 'hit')
   v.pause(); v.dispose()
 })

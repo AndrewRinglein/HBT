@@ -38,7 +38,15 @@ describe('an attack\'s moments: what the engine\'s log gives the board to time',
           if (EV[outcome]!.type !== 'attack.hit') continue
           /* the attack's own damage carries its id (a hook's damage on the same target may stand between the hit and it) */
           if (x.type === 'damage.applied' && x.target === e.target && x.attackId === e.attackId && damage < 0) damage = j
-          if ((x.type === 'life.dead' || x.type === 'life.downed') && x.target === e.target && damage >= 0) { expect(damage, `${id} line ${j}: the fall comes after the damage`).toBeGreaterThan(outcome); expect(x.causeId).toBe(e.attackId); falls++ } }
+          if ((x.type === 'life.dead' || x.type === 'life.downed') && x.target === e.target && damage >= 0) { expect(damage, `${id} line ${j}: the fall comes after the damage`).toBeGreaterThan(outcome)
+            // Law 10, combine 2026-10-04 (engine master ea9dafc — rule.free-attack-is-basic-attack — with this copy's engine
+            // fix.opening-probe-cadence): was `expect(x.causeId).toBe(e.attackId)`. True of every attack these three battles held
+            // on master. On the combined tree the Lumberjack House (two heroes, not three) has an attack of opportunity that
+            // fells its target, and the engine names that fall by the rule that gave the attack — `movement.aoo` — while the
+            // declared line (`free: true`) and its damage carry the attack's own id. Held as the engine has it: a fall names
+            // its attack, and a free attack's fall names the attack of opportunity. FOUND for the home chat (viewer SWITCHES
+            // combineFreeAttackFallCause): anything that matches a fall to its attack by causeId misses a free attack's kill.
+            expect(x.causeId).toBe((e as { free?: boolean }).free ? 'movement.aoo' : e.attackId); falls++ } }
         expect(outcome, `${id} line ${i}: the attack's outcome follows its declaration`).toBeGreaterThan(i)
         if (EV[outcome]!.type === 'attack.hit') { hits++; expect(damage, `${id} line ${outcome}: a hit's damage follows it`).toBeGreaterThan(outcome) } } }
     expect(attacks).toBeGreaterThan(60); expect(hits).toBeGreaterThan(30); expect(falls).toBeGreaterThan(8); expect(ranged).toBeGreaterThan(15)
