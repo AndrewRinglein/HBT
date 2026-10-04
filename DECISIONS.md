@@ -4864,3 +4864,27 @@ Ruled:
 - **A trigger can sit on the hero itself, with a tag requirement** — "a trigger on a hero itself … could have a tag requirement like melee, so you can add burn to melee attacks on a hero, and then it only triggers when you're using something that has the tag melee". A new capability: the engine scopes a trigger to one attack id today (`onlyWithAttack`) and holds no tag requirement; no badge carries a trigger. Filed: `capability.unit-trigger-with-tag`.
 - **Battle 2's lesson: taking turns belongs to battle 1** ("taking turns was present in battle 1" — the hero and the civilians already take turns there); **the camera controls lesson stays** in battle 2. Filed: `kingdom.tutorial-turns-in-battle-one`.
 - **The bow's late release stays for now.**
+
+## 2026-10-04 — the weapon audit: the Armory Ledger was approved 2026-09-28 and almost none of it is in the game
+
+Andrew, in the kingdom chat: "why are you only asking about longsword? There are other weapons that have had effects changed". A read-only audit of every weapon, shield, enchantment and custom-weapon change ruled 2026-09-28 (and after) against the Codex and the engine's pack found:
+
+- **In the game:** the rules (special free attacks on the basic attack, counterattack, fend - engine), the Longsword's Counterattack power, the tier-3 Flaming Longsword, the Peddler's Vest, the tier-0 cut, the Net, the knives.
+- **Not in the game:** the Armory Ledger he approved that day ("approved for now. We're going to revisit it later when we're dealing with balance") - 148 rows on a claude.ai artifact, never in the repository: 17 new weapons (Short Sword, Giant Sword, the axes, flails, Bow Staff, sickles and scythes, Spear and Pike, Whip), the re-authored Great Sword and War Axe, every shield's new powers and the Tower's numbers, the Knight Shield and the four Iron shields, 13 of the 14 custom series and all of tiers 4-6, 5 new tier-2 enchantments, 4 relics, 5 bloodrunes and 2 trinkets; three replaced weapons still stand (Raider's Cutlass, Hunting Spear, Crippling Whip); a weapon's Strength, Crit and Accuracy still go to the wielder at tier 3 and on named weapons; nothing grants Fend; the swords' "+10 counterattack" is on no row; and the pack drops clauses from weapons the 24 base heroes carry (Crush's Armor loss, Elf Shot's Precision, the Obsidian Fang's Strength loss, Thrown Dagger's Surge, 'up to N enemies', Great Cleave's Accuracy).
+- **The Ledger's rows are now in the folder:** `CONTENT-DRAFTS/2026-09-28-armory-ledger/` (`ledger-rows.json`, the page, and a note), extracted unchanged; its stored marks were empty.
+
+Filed without asking, as he has said for content details (2026-10-03 'exact weapons are not the concern now': decide, record the switch, report), each row's shown default taken for its open questions: `fix.kit-attack-clauses`, `content.shields-reauthored`, `content.greatsword-war-axe-reauthored`, `fix.enchant-stats-on-weapon`, `rule.counterattack-replaced-and-lost`, `capability.free-attack-accuracy`, `capability.weapon-mechanisms` (left-hand sweep, Strength 7 to equip, ignores Block), `content.ledger-new-weapons`, `content.ledger-replaced-weapons-removed`, `content.ledger-custom-series`, `content.ledger-enchants-relics-runes-trinkets`.
+
+Not ruled, left as it is and listed for him: what the 54 older enchant rows stamped tier 3 (Frost, Venomous and the rest) become now that "enchantments are tier 2"; whether "counterattack on block" (the Bow Staff, the Retaliator) survives "set off by being attacked"; the Vengeful badge, a Berserker counterattack class power and "+20 dodge versus special attacks", dictated and in no row; an unlanded armor-series draft of 2026-09-29 (`CONTENT-DRAFTS/2026-09-29-armor-series/`).
+
+## 2026-10-04 — posted: an enchantment stuck onto an item and a unique tier-3 item are two classes, and they were conflated (questions out)
+
+Andrew, in the kingdom chat, told that what the 54 older enchant rows stamped tier 3 become is not ruled:
+
+“There are two different classes of things: 1. An enchantment that is labeled as tier 2 and that is just stuck onto an item of the appropriate type. 2. Things that are tier 3 and that are supposed to be their own unique item. These two terms have been conflated, unfortunately.”
+
+“If it was defined as one of the 54 older tier 3 things, those are attributes on items. We now have a whole bunch of things that are tier 3, 4, 5, and 6, but we still have some that are just tier 3.   Ask me more clarifying questions.”
+
+What the content holds today (content `hbt-content.json` `enchants`): 9 rows at tier 2, the Forge's basic ones (Hale, Lucky, Nimble, Fleet, Heavy, Keen, Cruel, Far, Long); 54 rows at tier 3 (Frost, Venomous, Bloodletting … Flaming), each with `appliesToTags` — an attribute put on any item carrying the tag; 16 named weapons at tier 3 that are their own rows (Holy Avenger, Demon Whip, Death Bow …); and, in the Armory Ledger only, 14 custom series with tiers 3 to 6 across base weapons (Flaming among them — the one name in both lists) and 5 new tier-2 enchantments.
+
+Kept as said: **the 54 older tier-3 rows are attributes on items**, not unique items. Everything else waits on his answers to the kingdom chat's questions; `content.ledger-custom-series` and `content.ledger-enchants-relics-runes-trinkets` are not to be built until they are answered.
