@@ -12,6 +12,8 @@ import {conquestProgress,takeSection,nextSection} from '../core/conquest.js'
 import {conquestMapHTML} from './conquest-map.js'
 import {makeNewCampaign,performAdvanceOpening,performDraft,performFieldOpeningBattle,performOpeningDeploy,performOpeningStraightIn,isOpeningStraightIn,draftsOwedOf,openingBattlesWonOf} from '../core/opening.js'
 import {readRun,writeRun} from './opening-run.js'
+import {canReveal,performReveal} from '../core/reveal.js'
+import {LESSON_INTRODUCES,enemyRevealOf,enemiesToAnnounce} from '../content/reveals.js'
 import {makeCtx,setBattleOutcome,type Ctx} from '../core/mutate.js'
 import {performAdvancePrep,performDeploy,performUndeploy} from '../core/prep.js'
 import {resolveReckoning,applyBattleResult,performExitBattle} from '../core/reckoning.js'
@@ -367,7 +369,17 @@ function controls(){
 function install(next:Sandbox){
  const epoch=generation+1
  advanceSandbox(next)
- const candidate=createBattleSurface(__BATTLE_VIEW_DATA__,{...(LOOK?{look:LOOK}:{}),onHexClick:(hex:number)=>{
+ /* viewer.new-enemy-notice (engine DECISIONS.md 2026-10-04 '… new enemies are named …': "If a new enemy is introduced there is
+    going to be a notification: \"New enemy\" and their name." — the first time a kind is met): the host says which kinds
+    are new. In the run that is every enemy kind the Campaign has not met (its `revealed` list), less the ones this battle's
+    own lesson introduces, which are met as the battle is put on the screen; each kind is written as met — and the run saved
+    — when the battle screen says its notice has gone up, so a battle replayed after a loss announces nothing already met.
+    A battle outside a run has nothing to remember: every enemy kind is new to it (kingdom SWITCHES newEnemy*). */
+ const run=isCampaignBattle(next)?sitting!.ctx:null
+ const meet=(typeId:string)=>{const c=sitting?.ctx;if(!c)return;const id=enemyRevealOf(typeId);if(canReveal(c.campaign,id)){performReveal(c,id,sitCause);persist()}}
+ if(run)for(const k of LESSON_INTRODUCES[next.config.encounterId??'']??[])meet(k)
+ const candidate=createBattleSurface(__BATTLE_VIEW_DATA__,{...(LOOK?{look:LOOK}:{}),newEnemies:enemiesToAnnounce(run?run.campaign.revealed:[],next.config.encounterId),
+  onNewEnemy:(typeId:string)=>{if(epoch===generation&&session&&isCampaignBattle(session))meet(typeId)},onHexClick:(hex:number)=>{
   if(epoch!==generation||!session||busy||fault||session.ctx.state.outcome||session.ctx.battleCursor?.at!=='acting')return false
   const actor=session.ctx.battleCursor.actor
   if(actor==null||controllerOf(session.ctx,actor,session.policy)!=='human')return false
