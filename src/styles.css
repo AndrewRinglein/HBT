@@ -317,6 +317,15 @@ html,body{margin:0;background:#08090b;color:var(--ink);
 /* ── ability list — DEFINED BOXES, as the approved screen has them.
    Each row is its own plate with its own border: a 3px class rule, a 26px icon
    plate, name + description, then four 40×24 boxed cells. ─────────────────── */
+/* viewer.panel-lists-items: what the unit carries, under the character — the place, the item's name, what it gives */
+.pItems{margin:0 18px 10px;padding:7px 9px 5px;background:#14120e;border:1px solid var(--border);border-radius:2px}
+.pItemsHead{font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);margin-bottom:5px}
+.pItem{display:grid;grid-template-columns:74px 1fr;column-gap:8px;padding:3px 0;border-top:1px solid #221d15;font-size:12.5px;line-height:1.3}
+.pItemsHead + .pItem{border-top:0}
+.pItemSlot{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:#8b8778;padding-top:2px}
+.pItemName{color:#e8dfc8;font-weight:600}
+.pItem.empty .pItemName{color:#6f6857;font-weight:400;font-style:italic}
+.pItemGives{grid-column:2;color:#a9a394;font-size:11.5px}
 .pAb{flex:1;margin:0 18px;overflow-y:auto;border-top:1px solid var(--border);padding-top:8px}
 .abHead{display:flex;align-items:center;gap:6px;
   font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);

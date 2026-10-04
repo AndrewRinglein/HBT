@@ -16,6 +16,9 @@
      layers   — ground layer number -> name (static.json.layers)
      actionKinds — actionId -> 'charge'|'attack'|'move'|'burst'|'power', the engine's classification (static.json)
      statusRows  — statusId -> {flags, tickDamageType?, standAction?}, each status's behaviour (static.json)
+     items — itemId -> {name, itemClass, hands, slots, grants, abilities, mods}, each item's own row (static.json), and
+                   hands — the engine's count of hands: the panel's items section (viewer.panel-lists-items); a host that
+                   hands neither gets the items by their ids, with no empty hand drawn
      itemClasses — itemId -> the engine's item class (weapon, shield, …; static.json): a power a held shield grants raises the
                    shield (viewer.shield-guard-motion); a host that hands none gets no raised shield
      layerStatus · terrainApplies — what each painted layer and ground applies (static.json)
@@ -157,7 +160,9 @@ export function mountBattleViewer(root, data, opts = {}) {
       LAYERS: data.layers || {}, LAYER_STATUS: data.layerStatus || {}, TERRAIN_APPLIES: data.terrainApplies || {}, distance: prepared.distance, BOARD: { width: F.width, height: F.height },
       ACT: data.actions || {}, BADGES: data.badges || {},
       /* viewer.reads-engine: what each action IS (the engine's predicates) and what each status DOES (its row's flags) */
-      KINDS: data.actionKinds || {}, STATUS_ROWS: data.statusRows || {}, ITEM_CLASSES: data.itemClasses || {}, ARTMAP: data.artmap, ASSETS: data.assets, atlas, displayHeights: null,
+      KINDS: data.actionKinds || {}, STATUS_ROWS: data.statusRows || {}, ITEM_CLASSES: data.itemClasses || {},
+      /* viewer.panel-lists-items: each item's own row (name, class, hands, what it gives) and the engine's count of hands */
+      ITEMS: data.items || {}, HANDS: Number.isInteger(data.hands) ? data.hands : null, ARTMAP: data.artmap, ASSETS: data.assets, atlas, displayHeights: null,
       /* viewer.true-3d-camera: the board's map from the scene's metres to board px — the battle's 3D scene's own, else the
          flat board's (camera3d.js); the one camera, the stage and the 3D layer all stand on it */
       boardAffine: atlas ? (atlas.kind === 'painted' ? paintedToCSS(atlas) : worldToCSS(atlas, F)) : flatAffine(F),
