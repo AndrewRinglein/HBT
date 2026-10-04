@@ -4590,3 +4590,12 @@ Andrew, straight after, on the swap entry above:
 “Just the enhanced gear, not adding gear that you didn't already have. Just the ability to swap hands with inventory”
 
 - **The swap rearranges only what the unit already has: its hands with its own inventory.** No gear is added that it did not already carry ("enhanced", dictated, read as "in-hand"). `viewer.swap-button-rearranges` says so.
+
+## 2026-10-03 — reported: the Fire Imp is not on its own model, and it burns itself at the end of every Activation (question out)
+
+Andrew, in the kingdom chat, playing the opening run (the Bridge):
+
+“The fire imp is not using the fire imp model. Also, it seems like it's dealing fire damage to itself every turn, or trying to do burn that's then being resisted. It means at the end of every turn, it has a damage reaction to itself. It's odd. I don't quite know what's causing that.”
+
+- **The model.** viewer `tools/character-models.mjs:97` stands `unit.fire-imp` on the look `fire-imp` of the demo's winged imp; the reviewed Fire Imp look — the fire skin and flames, `assets/characters/winged-imp/fire-imp.html` and its `review/fire-imp-fire-flames-*` captures — is not what the battle shows. Filed: `viewer.fire-imp-own-model`.
+- **The self-burn.** It is the Fire Imp's own row, not a fault in the playback: `unit.fire-imp` (content bestiary) carries the trigger `onActivationEnd` — "every unit within N hexes", range 2 — apply Burn 1. "Every unit within 2 hexes" counts the imp itself (distance 0) and its own side, so at the end of each of its Activations it applies Burn 1 to itself, its Fire Resist 2 takes it, and the screen shows the reaction. Whether the aura should spare the imp itself, or its allies too, is his to say: asked. Nothing is changed until he answers.
