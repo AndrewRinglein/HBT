@@ -3483,18 +3483,6 @@ export const UNIT_PACK = {
       "reach": 1,
       "staminaCost": 1
     },
-    "attack.longsword.stab": {
-      "id": "attack.longsword.stab",
-      "name": "Stab",
-      "kind": "melee",
-      "damageType": "physical",
-      "bonus": 2,
-      "stat": "strength",
-      "reach": 1,
-      "staminaCost": 2,
-      "crit": 3,
-      "accuracy": 5
-    },
     "attack.elfbow.elf-shot": {
       "id": "attack.elfbow.elf-shot",
       "name": "Elf Shot",
@@ -7278,18 +7266,6 @@ export const UNIT_PACK = {
       "reach": 1,
       "staminaCost": 1
     },
-    "attack.longsword.stab.heavy": {
-      "id": "attack.longsword.stab.heavy",
-      "name": "Stab",
-      "kind": "melee",
-      "damageType": "physical",
-      "bonus": 3,
-      "stat": "strength",
-      "reach": 1,
-      "staminaCost": 2,
-      "crit": 3,
-      "accuracy": 5
-    },
     "attack.longsword.slash.keen": {
       "id": "attack.longsword.slash.keen",
       "name": "Slash",
@@ -7300,18 +7276,6 @@ export const UNIT_PACK = {
       "reach": 1,
       "staminaCost": 1,
       "accuracy": 6
-    },
-    "attack.longsword.stab.keen": {
-      "id": "attack.longsword.stab.keen",
-      "name": "Stab",
-      "kind": "melee",
-      "damageType": "physical",
-      "bonus": 2,
-      "stat": "strength",
-      "reach": 1,
-      "staminaCost": 2,
-      "crit": 3,
-      "accuracy": 11
     },
     "attack.longsword.slash.cruel": {
       "id": "attack.longsword.slash.cruel",
@@ -7324,18 +7288,6 @@ export const UNIT_PACK = {
       "staminaCost": 1,
       "accuracy": 3,
       "crit": 4
-    },
-    "attack.longsword.stab.cruel": {
-      "id": "attack.longsword.stab.cruel",
-      "name": "Stab",
-      "kind": "melee",
-      "damageType": "physical",
-      "bonus": 2,
-      "stat": "strength",
-      "reach": 1,
-      "staminaCost": 2,
-      "crit": 7,
-      "accuracy": 8
     },
     "attack.halberd.hack.heavy": {
       "id": "attack.halberd.hack.heavy",
@@ -13475,8 +13427,7 @@ export const UNIT_PACK = {
         "block": 5
       },
       "grants": [
-        "attack.longsword.slash",
-        "attack.longsword.stab"
+        "attack.longsword.slash"
       ],
       "abilities": [
         "power.longsword.counterattack"
@@ -33886,8 +33837,7 @@ export const UNIT_PACK = {
         "crit": 3
       },
       "grants": [
-        "attack.longsword.slash",
-        "attack.longsword.stab"
+        "attack.longsword.slash"
       ],
       "abilities": [
         "power.longsword.counterattack"
@@ -33920,8 +33870,7 @@ export const UNIT_PACK = {
         "block": 5
       },
       "grants": [
-        "attack.longsword.slash",
-        "attack.longsword.stab"
+        "attack.longsword.slash"
       ],
       "abilities": [
         "power.longsword.counterattack"
@@ -33946,8 +33895,7 @@ export const UNIT_PACK = {
         "resist": 1
       },
       "grants": [
-        "attack.longsword.slash",
-        "attack.longsword.stab"
+        "attack.longsword.slash"
       ],
       "abilities": [
         "power.longsword.counterattack"
@@ -33973,8 +33921,7 @@ export const UNIT_PACK = {
         "block": 5
       },
       "grants": [
-        "attack.longsword.slash",
-        "attack.longsword.stab"
+        "attack.longsword.slash"
       ],
       "abilities": [
         "power.longsword.counterattack"
@@ -34003,8 +33950,7 @@ export const UNIT_PACK = {
         "block": 5
       },
       "grants": [
-        "attack.longsword.slash",
-        "attack.longsword.stab"
+        "attack.longsword.slash"
       ],
       "abilities": [
         "power.longsword.counterattack"
@@ -34034,8 +33980,7 @@ export const UNIT_PACK = {
         "block": 5
       },
       "grants": [
-        "attack.longsword.slash",
-        "attack.longsword.stab"
+        "attack.longsword.slash"
       ],
       "abilities": [
         "power.longsword.counterattack"
@@ -34068,8 +34013,7 @@ export const UNIT_PACK = {
         "block": 5
       },
       "grants": [
-        "attack.longsword.slash",
-        "attack.longsword.stab"
+        "attack.longsword.slash"
       ],
       "abilities": [
         "power.longsword.counterattack"
@@ -36535,8 +36479,7 @@ export const UNIT_PACK = {
         "block": 5
       },
       "grants": [
-        "attack.longsword.slash",
-        "attack.longsword.stab"
+        "attack.longsword.slash"
       ],
       "abilities": [
         "power.longsword.counterattack"
@@ -40313,8 +40256,7 @@ export const UNIT_PACK = {
         "maxStamina": 1
       },
       "grants": [
-        "attack.longsword.slash",
-        "attack.longsword.stab"
+        "attack.longsword.slash"
       ],
       "abilities": [
         "power.longsword.counterattack"
@@ -40333,8 +40275,7 @@ export const UNIT_PACK = {
         "block": 5
       },
       "grants": [
-        "attack.longsword.slash.heavy",
-        "attack.longsword.stab.heavy"
+        "attack.longsword.slash.heavy"
       ],
       "abilities": [
         "power.longsword.counterattack"
@@ -40354,8 +40295,7 @@ export const UNIT_PACK = {
         "block": 5
       },
       "grants": [
-        "attack.longsword.slash.keen",
-        "attack.longsword.stab.keen"
+        "attack.longsword.slash.keen"
       ],
       "abilities": [
         "power.longsword.counterattack"
@@ -40375,8 +40315,7 @@ export const UNIT_PACK = {
         "block": 5
       },
       "grants": [
-        "attack.longsword.slash.cruel",
-        "attack.longsword.stab.cruel"
+        "attack.longsword.slash.cruel"
       ],
       "abilities": [
         "power.longsword.counterattack"
