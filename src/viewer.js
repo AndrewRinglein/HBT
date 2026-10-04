@@ -63,7 +63,7 @@ import { mountOverlays } from './overlays.js'
 import { POLICY as CAM_POLICY, ARRIVAL_SIDES } from './camera-policy.js'
 import { screenOf as cameraScreenOf } from './camera3d.js'
 import { mountPlayChrome } from './chrome.js'
-import { opportunityPose, animateOpportunityStep, OPPORTUNITY_STEP_MS, feetOf, heightOf } from './board.js'
+import { opportunityPose, animateOpportunityStep, OPPORTUNITY_STEP_MS, feetOf, heightOf, fxAttack, flightOf } from './board.js'
 import { terrainLayer } from './terrain3d.js'
 import { bundledModels } from './models.js'
 import {prepareAtlasBinding} from './atlas.js'
@@ -411,6 +411,7 @@ export function mountBattleViewer(root, data, opts = {}) {
      log, as ever. Only enemies, only the Enemy Phase; a type with one Activation in the run plays as before
      (viewer SWITCHES together*). */
   let together = opts.enemiesTogether !== false, plan = null, frozen = null, trail = [], trailFrom = 0
+  let strike = null, reacted = null            // viewer.attack-impact-timing: the attack held for its blow; the blow whose damage line is still to come
   /** the line shown at place n: the plan's while one runs, else the log's */
   const evAt = n => plan && n >= plan.from && n < plan.to ? V.EV[plan.order[n - plan.from]] : V.EV[n]
   V.together = { get on() { return together }, runs: [], log: [],
@@ -717,19 +718,135 @@ export function mountBattleViewer(root, data, opts = {}) {
     nameKinds(R, fresh, false, () => visit(0))
     return DUR[e.type] ?? 0
   }
+  /* ── AN ATTACK'S MOMENTS (viewer.attack-impact-timing, 2026-10-04) ───────────────────────────────────────────────────────
+     Engine DECISIONS.md 2026-10-03 'an attack's timing: the projectile leaves at the release, the target reacts at the blow …'
+     (Andrew: "Ranged attacks are not synced up well enough for the point at which the attack is launched compared to when
+     the projectile animation then goes" / "the recoil from being hit should be connected to the timing of the attack. What
+     happens is the attack plays, maybe a third of a second later, the reaction plays") and, the same day, 'a death is tied
+     to the strike' ("Death animations are happening separately from the strike").
+     Only WHEN things are drawn moves; the log plays in its order and every line folds once (Law 0, Law 3: the pump owns the
+     clock). While the pump plays, an attack whose outcome line (attack.hit, attack.miss, a block) stands ahead in the log is
+     shown like this:
+       · attack.declared — the forecast, the two turn to each other; the strike is NOT started yet. The beat is what is
+         left of the old 900 once the motion's own lead-in is taken off (never under IMPACT_AIM_MIN).
+       · the lines between fold as they did.
+       · at the outcome line the pump WAITS, not folding it: the attacker's motion starts; a shot's projectile is launched
+         so that it leaves the attacker at the motion's release (an effect that gathers first is launched that much
+         sooner); and the line is folded at THE BLOW — the motion's blow moment, or the projectile's arrival.
+       · at the blow the target's body reacts at once: its hit reaction (or recoil), its death when the log goes on to say
+         this blow killed it or brought it down, its shield raised when it blocked. The damage's own line follows without
+         the old 250 beat between (the beat is kept after it), so the number comes with the reaction.
+     The moment is the attacker's motion's own (the cast: the pack's moments, authored per clip beside the bindings); a unit
+     with no body is its token, whose lunge reaches its target in TOKEN_LEAD. A hand step, a seek and a line with no
+     outcome ahead play as they always did: the strike at the declaration. What was done is V.impact.log (pump-clock ms:
+     one clip second is 750). viewer SWITCHES impactAtTheOutcome, impactLeadIn, impactLookAhead, impactBlockRaises. */
+  const IMPACT_AIM_MIN = 120, TOKEN_LEAD = 100
+  const IMPACT_STOP = new Set(['attack.declared', 'activation.begin', 'activation.end', 'move.begin', 'moved', 'burst.declared', 'turn.begin', 'phase.begin', 'battle.end'])
+  V.impact = { log: [] }
+  function dropImpact() { strike = null; reacted = null }
+  const logIndex = pos => plan && pos >= plan.from && pos < plan.to ? plan.order[pos - plan.from] : pos
+  /** from the place after a declaration: where its outcome line stands, if the log holds it */
+  function outcomeAhead(e) {
+    for (let p = V.cursor; p < V.EV.length; p++) { const x = evAt(p)
+      if (!x || IMPACT_STOP.has(x.type)) return null
+      if (x.type === 'attack.hit' && x.target === e.target) return { at: p, result: 'hit', crit: !!x.crit }
+      if (x.type === 'attack.miss' && x.target === e.target) return { at: p, result: 'miss', crit: false }
+      if (x.type === 'block.rolled' && x.blocked) return { at: p, result: 'block', crit: false } }
+    return null
+  }
+  /** from the place after a hit: the attack's own damage line (a hook's damage between the two is not it), and whether the log
+      goes on to say the target fell to it */
+  function aftermath(target, attackId) {
+    const out = { damage: -1, falls: null }
+    for (let p = V.cursor; p < V.EV.length; p++) { const x = evAt(p)
+      if (!x || IMPACT_STOP.has(x.type)) break
+      if (x.type === 'damage.applied' && x.target === target && x.attackId === attackId && out.damage < 0) out.damage = p
+      if ((x.type === 'life.dead' || x.type === 'life.downed') && x.target === target && out.damage >= 0) { out.falls = x.type === 'life.dead' ? 'dead' : 'downed'; break } }
+    return out
+  }
+  /** an attack has been declared (its line is folded): hold its strike for its outcome line, where the log holds one */
+  function declareStrike(e, cues) {
+    dropImpact()
+    const lunge = cues.find(c => c.k === 'lunge')
+    if (!V.playing || !lunge) return { cues, lead: null }
+    const out = outcomeAhead(e); if (!out) return { cues, lead: null }
+    const mo = V.cast?.moment?.(e.actor, e.kind) || { motion: 'token', at: TOKEN_LEAD / 750, of: null, clip: null, source: 'token' }
+    const F = flightOf(e.kind, e.damageType)
+    const rec = { declared: logIndex(V.cursor - 1), outcome: logIndex(out.at), actor: e.actor, target: e.target, kind: e.kind, damageType: e.damageType, result: out.result, falls: null,
+      motion: mo.motion, clip: mo.clip, moment: mo.at, source: mo.source, flight: F ? { ...F } : null,
+      motionAt: null, projectileAt: null, releaseAt: null, blowAt: null, reactionAt: null, reaction: null }
+    V.impact.log.push(rec)
+    strike = { at: out.at, result: out.result, crit: out.crit, e, lunge, mo, F, t: null, struck: false, launched: false, rec }
+    V.cast?.face?.(e.actor, e.target)
+    const sp = V.speed * .75
+    return { cues: cues.filter(c => c !== lunge), lead: Math.max(mo.at * 750, F ? F.ms * F.windup * sp : 0) }
+  }
+  /** the pump stands at a held attack's outcome line: what is due is played, and the wait to the next moment is the beat;
+      null when the blow has come (or nothing is held) and the line is to be folded */
+  function strikeStep() {
+    const s = strike; if (!s) return null
+    if (V.cursor !== s.at) { if (V.cursor > s.at) dropImpact(); return null }
+    const now = V.clock()
+    if (!s.t) {
+      /* the timeline, laid from now on the pump's clock: a clip second is 750 of its ms at every speed (the bodies run at the
+         pump's speed); an effect's time is the page's own, so it is scaled by the speed */
+      const sp = V.speed * .75, L = s.mo.at * 750, W = s.F ? s.F.ms * s.F.windup * sp : 0, T = s.F ? s.F.ms * (1 - s.F.windup) * sp : 0
+      const release = now + Math.max(L, W)
+      s.t = { motion: release - L, fx: s.F ? release - W : null, release, blow: release + T }
+    }
+    if (!s.struck && now >= s.t.motion - .5) { s.struck = true; playCues(V, [s.lunge]); s.rec.motionAt = now }
+    if (s.F && !s.launched && now >= s.t.fx - .5) {
+      s.launched = true; fxAttack(V, s.e.kind, s.e.damageType, s.e.actor, s.e.target, s.e.damageOnHit, s.crit)
+      s.rec.projectileAt = now; s.rec.releaseAt = s.t.release }
+    const waits = [s.struck ? null : s.t.motion, s.F && !s.launched ? s.t.fx : null, s.t.blow].filter(t => t != null && t > now + .5)
+    return waits.length ? Math.min(...waits) - now : null
+  }
+  /** the outcome line has just been folded, at the blow: the target's body reacts now */
+  function landStrike(e, cues) {
+    const s = strike; strike = null
+    const now = V.clock(), target = s.e.target
+    s.rec.blowAt = now
+    if (!s.struck) { playCues(V, [s.lunge]); s.rec.motionAt = now }                     // a hand step, or a line reached with no wait
+    if (s.launched) cues = cues.filter(c => c.k !== 'fx.attack')                         // the projectile has already flown
+    if (s.result === 'hit') {
+      const A = aftermath(target, s.e.attackId); s.rec.falls = A.falls
+      if (A.damage >= 0) {
+        let did = null
+        if (V.cast) { if (A.falls && V.cast.fall?.(target)) did = 'death'; else if (V.cast.flinch(target)) did = 'hit' }
+        if (did) { s.rec.reaction = did; s.rec.reactionAt = now }
+        /* the damage's own line: its flash does not start the body again, and the hit's old beat is kept after it */
+        reacted = { target, damage: A.damage, did, rec: s.rec, carry: DUR['attack.hit'] ?? 0 }
+        return { cues, d: 0 }
+      }
+    } else if (s.result === 'block' && V.cast?.guard?.(e.defender ?? target)) { s.rec.reaction = 'guard'; s.rec.reactionAt = now }
+    return { cues, d: null }
+  }
   function beat(e) {
     cancelOpportunityLabel()
     let d
+    /* viewer.attack-impact-timing: a held attack's outcome line waits for its blow */
+    if (strike && V.playing) { const wait = strikeStep(); if (wait != null) return wait }
     if (e.type === 'encounter.wave' && V.playing && !V.invalid) return waveBeat(e)
     if (e.type === 'move.begin' || e.type === 'moved') d = stepMove(e)
     else if (PAINT.has(e.type)) d = stepPaint(e)
     else {
       const before = opportunityPose(V)
-      const cues = applyOne(e, false)
+      const landing = strike && V.cursor === strike.at
+      let cues = applyOne(e, false), impact = null
+      if (e.type === 'attack.declared') { const D = declareStrike(e, cues); cues = D.cues; if (D.lead != null) impact = Math.max(IMPACT_AIM_MIN, (DUR[e.type] ?? 0) - D.lead) }
+      else if (landing) { const D = landStrike(e, cues); cues = D.cues; impact = D.d }
+      else if (reacted && V.cursor - 1 === reacted.damage) {
+        /* the damage of a blow already shown: the body has reacted (a token flashes now), and the hit's beat follows */
+        const R = reacted; reacted = null
+        if (R.did) cues = cues.map(c => c.k === 'flash' && c.id === R.target ? { ...c, reacted: true } : c)
+        else { R.rec.reaction = 'flash'; R.rec.reactionAt = V.clock() }
+        impact = (DUR[e.type] ?? 0) + R.carry
+      }
       burstBeat(e)
       const after = opportunityPose(V)
       const starting = after && (!before || before.id !== after.id || before.moveSeq !== after.moveSeq || before.from !== after.from || before.to !== after.to)
       d = e.type === 'block.rolled' ? (e.blocked ? 700 : 0) : e.type === 'kdb.rolled' ? (e.fired ? 520 : 0) : DUR[e.type] ?? 0
+      if (impact != null) d = impact
       if (starting) {
         render()
         animateOpportunityStep(V, after.id, {...feetOf(V, after.from), z:heightOf(V,after.from)}, after)
@@ -758,7 +875,7 @@ export function mountBattleViewer(root, data, opts = {}) {
   V.holds = new Set()
   V.holdPump = (who = 'affliction') => { V.holds.add(who); V.hold = true; if (V.timer != null) { clearTimeout(V.timer); V.timer = null } }
   V.releasePump = (who = 'affliction') => { if (!V.holds.delete(who) || V.holds.size) return; V.hold = false; if (!disposed && !V.invalid && V.playing && V.timer == null) step() }
-  function dropHold() { cancelNaming(); cancelArrivals(); V.holds.clear(); V.hold = false; closeAffliction(V); overlays.dropped() }
+  function dropHold() { cancelNaming(); cancelArrivals(); V.holds.clear(); V.hold = false; closeAffliction(V); overlays.dropped(); dropImpact() }
   function step() {
     V.timer = null
     if (V.invalid || V.hold) return

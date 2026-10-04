@@ -10,7 +10,7 @@ import { afflictionPopup } from './affliction.js'
 import { dangerHTML, raIcon } from './icons.js'
 import { flatAffine, anisoOf, orbitCamera, stageMatrix, matrix3d, screenOf, boardRay, pickBoard, groundFootprint, LENS } from './camera3d.js'
 import { POLICY, TILT, fitZoom, zoomLimits, tiltLimits, panRange, turned as turnedBy, elevationOfTilt } from './camera-policy.js'
-import { createHexVFX, playMeleeAttack, playMagicBolt, playHolyBolt, playArrow, playStatusApply, playStatusTick, STATUS_STYLES } from './hexvfx.js'
+import { createHexVFX, playMeleeAttack, playMagicBolt, playHolyBolt, playArrow, playStatusApply, playStatusTick, STATUS_STYLES, FLIGHTS } from './hexvfx.js'
 
 export const el = (cls, style, html) => { const d = document.createElement('div')
   if (cls) d.className = cls; if (style) d.style.cssText = style; if (html != null) d.innerHTML = html; return d }
@@ -420,6 +420,9 @@ export function fxAttack(V, kind, dt, aId, tId, dmg, crit = false) {
     else                     playArrow(FX, A, T, {})
   } catch (e) {}
 }
+/* viewer.attack-impact-timing: the projectile an attack flies — fxAttack's own choice above — and its time in the air; a blow
+   flies none */
+export const flightOf = (kind, dt) => kind === 'melee' ? null : dt === 'magic' ? FLIGHTS.magic : dt === 'true' ? FLIGHTS.holy : FLIGHTS.arrow
 /* a status's canvas effect is the ONE style map's (theme.js STYLE .vfx), ringed in the status's own hue — the
    heal is the only effect that is not a status (viewer.reads-engine, review V5) */
 export function fxStatus(V, tId, styleId) {
@@ -730,7 +733,9 @@ export function playCues(V, cues) {
     switch (c.k) {
       /* the models strike and flinch on the same cues the standees lunge and flash on (viewer.character-models) */
       case 'lunge': lunge(V, c.a, c.t); V.cast?.strike(c.a, c.t, c.kind); break
-      case 'flash': hitFlash(V, c.id); V.cast?.flinch(c.id); break
+      /* viewer.attack-impact-timing: a body that reacted at the blow (the pump: `reacted`) does not start its reaction again when
+         the damage's own line is shown */
+      case 'flash': hitFlash(V, c.id); if (!c.reacted) V.cast?.flinch(c.id); break
       case 'guard': V.cast?.guard(c.id); break                   // viewer.shield-guard-motion: the body raises its shield
       case 'hitstop': hitstop(V, c.ms); break
       case 'float': pushFloat(V, c.hex, c.text, floatHue(c, V.data), c); break

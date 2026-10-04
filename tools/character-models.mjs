@@ -83,6 +83,32 @@ const GUARD = 'shield_blockleft'
 /* the battle demo's roster keys -> the viewer's (the demo plays `block` as the struck unit's reaction:
    assets/battle-demo/main.mjs, `a===target&&step.kind==='melee'&&blocked` -> sample('block')) */
 const ROSTER_KEY = { idle: 'idle', move: 'move', flight: 'flight', melee: 'attack', ranged: 'ranged', block: 'hit', death: 'death' }
+/* viewer.attack-impact-timing (engine DECISIONS.md 2026-10-03 'an attack's timing: the projectile leaves at the release, the target
+   reacts at the blow ...', Andrew: "Ranged attacks are not synced up well enough for the point at which the attack is launched
+   compared to when the projectile animation then goes" / "the recoil from being hit should be connected to the timing of the
+   attack"; and 'a death is tied to the strike'). EVERY ATTACK MOTION'S MOMENT, in the clip's own seconds, authored HERE and
+   nowhere else — per CLIP (its name; one performance on whichever body's bones it was fitted, 'Purchased ' taken off), never
+   per unit: `blow`, where an `attack` clip lands its strike (the target's reaction — hit, recoil, block, death — starts
+   there), and `release`, where a `ranged` clip lets go (the board's projectile leaves there). A clip played in the other role
+   (a body with no shot casts with its swing; the Imp spits with its claw clip) reads the moment it has.
+   Where the numbers come from (viewer SWITCHES impactMoments): the striking hand's (the wolf's head's) fastest moment in the
+   clip, measured on the body it is bound to; the bow's release is the battle demo's accepted cast point for its archer
+   (assets/battle-demo/main.mjs: ranged.duration * .61), the Imp's spit the demo's own .56 s. A combo's blow is its FIRST strike
+   (the Zombie's two claws: .25 and .48 s; the sword combo's three swings: .25, .73, 1.52 s).
+   A clip with no row keeps MOMENT_DEFAULT of its length — the demo's own rule for a strike (melee.duration * .48) — and is
+   listed by name (--list). */
+export const MOMENTS = {
+  'double-claw': { blow: .25 },                    // the Zombie's two claws: the first
+  'Sword_Regular_Combo': { blow: .25 },            // the skeletons' and the Soldier's sword: the first of three swings
+  'atk_slashdown': { blow: 1.05 },                 // the heroes' downward slash (and a priest's or a mage's cast, who have no other)
+  'Sword swing': { blow: 1.05 },                   // the Lieutenant Demon's: the same performance
+  'Melee_Hook': { blow: .27 },                     // the hook punch (the civilians, the Necromancer)
+  'tearing-bite': { blow: .2 },                    // the hounds' bite: the snap, after the lunge
+  'attackClaws_RM': { blow: .5, release: .56 },    // the Imps: the claw's strike, and the spit that leaves just after it
+  'archery-crouch-shot-mid': { release: 3.81 },    // the bow: crouch, nock, draw, hold — and loose
+}
+export const MOMENT_DEFAULT = .48
+const clipKey = clip => clip.replace(/^Purchased /, '')
 /* which look each engine unit type wears (viewer SWITCHES.md, viewer.character-models) */
 const HUMANOIDS = 'assets/characters/humanoid-enemies/accepted-humanoids.json'
 export const BINDINGS = {
@@ -310,6 +336,26 @@ const clipIn = (path, name) => {
   return clip
 }
 
+/** a clip's length in its file: its last key (the GLB's own JSON — an animation input's `max` is required by glTF) */
+const lengths = new Map()
+function clipLength(path, clip) {
+  const k = path + '#' + clip; if (lengths.has(k)) return lengths.get(k)
+  const g = glbJSON(path), a = (g.animations || []).find(x => x.name === clip)
+  const len = Math.max(...a.samplers.map(s => g.accessors[s.input].max?.[0] ?? NaN))
+  if (!(len > 0)) throw new Error(`character model ${path}: the length of '${clip}' cannot be read`)
+  lengths.set(k, len); return len
+}
+/** viewer.attack-impact-timing: a look's moments — for its `attack` and its `ranged` motion, where the clip strikes or lets go
+    (`at`, seconds), how long the clip is (`of`), the clip's name and whether the moment is authored (MOMENTS) or the default */
+function momentsOf(look) {
+  const out = {}
+  for (const m of ['attack', 'ranged']) { const ref = look.motions[m]; if (!ref) continue
+    const clip = clipKey(ref.clip), of = clipLength(ref.path, ref.clip), row = MOMENTS[clip]
+    const at = row && (m === 'ranged' ? row.release ?? row.blow : row.blow ?? row.release)
+    if (at != null && !(at > 0 && at < of)) throw new Error(`MOMENTS['${clip}']: ${at} s is not inside the clip (${of} s, ${ref.path})`)
+    out[m] = at != null ? { at, of, clip, source: 'authored' } : { at: Math.round(MOMENT_DEFAULT * of * 1000) / 1000, of, clip, source: 'default' } }
+  return out
+}
 /** the nodes a clip moves, by name */
 const movedBy = (path, clip) => { const g = glbJSON(path), a = (g.animations || []).find(x => x.name === clip); return [...new Set(a.channels.map(c => g.nodes[c.target.node].name))] }
 /** a selected performance, borrowed onto a body: refused unless the body's rig has every bone it moves */
@@ -599,6 +645,10 @@ export async function packCharacterModels() {
     })
     pack[typeId] = { typeId, looks }
   }
+  /* viewer.attack-impact-timing: every look's attack and shot motion carries its moment; a row of the table no body plays is stale */
+  const played = new Set()
+  for (const { looks } of Object.values(pack)) for (const look of looks) { look.moments = momentsOf(look); for (const m of Object.values(look.moments)) played.add(m.clip) }
+  for (const clip of Object.keys(MOMENTS)) if (!played.has(clip)) throw new Error(`MOMENTS['${clip}']: no body plays a clip of that name`)
   return pack
 }
 
@@ -613,4 +663,8 @@ if (main && process.argv.includes('--list')) {
   /* viewer.shield-guard-motion: every body holding a shield with no raise-the-shield clip, by name (listed, not faked) */
   const lacking = Object.entries(pack).filter(([, { looks }]) => looks.some(l => l.missing.includes('guard'))).map(([t]) => t)
   console.log(`shield holders without a raise-the-shield clip: ${lacking.join(', ') || 'none'}`)
+  /* viewer.attack-impact-timing: every attack and shot clip with no authored moment (it keeps the default), by name */
+  const bare = new Set()
+  for (const { looks } of Object.values(pack)) for (const l of looks) for (const [m, mo] of Object.entries(l.moments)) if (mo.source === 'default') bare.add(`${mo.clip} (${m})`)
+  console.log(`attack and shot clips with no authored moment (they keep ${MOMENT_DEFAULT} of their length): ${[...bare].sort().join(', ') || 'none'}`)
 }
