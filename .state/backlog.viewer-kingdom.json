@@ -634,7 +634,9 @@
   "shape": "plumbing",
   "spec": "Ruled 2026-10-03 (Andrew, engine/DECISIONS.md 'card art on the level-up and reward screens; the specialty choice offers three, not nine'): 'you're supposed to only get a choice of three different specialty classes, not nine.' Today the level-up at level 2 (kingdom src/ui/after.ts levelUpScreen; the level-up mechanism in src/core; content levels.rules.specialty: 'The specialty is chosen at the FIRST level-up') lists all nine of the hero's class's specialties. Offer three: three different specialties of the hero's class, drawn for that hero from the run's own named stream (no Math.random, no clock) at the moment the choice is owed, written so the same three show when the page is closed and reopened, and the pick still cannot be skipped. Which three is not ruled - a plain draw without repeats is the default; record it as a kingdom switch. The offer is the mechanism's (core), the nine are content's; every Campaign's specialty choice follows it (the slice too) unless that breaks a ruled slice criterion - say so if it does. Never weaken an assertion: a test that picked a named specialty from the nine picks from the three offered, with a dated note. Rebuild the pages. Confirmed the same day: asked 'Is a random three of the nine right for the specialty choice?' - 'It's random: 3 of the 9.'",
   "expect": "At http://127.0.0.1:4230/play a hero reaching level 2 is offered exactly three different specialties of its own class, must take one, and has it afterwards; closing and reopening the page on the choice shows the same three; two heroes of one class on one run need not be offered the same three; the page test asserts three offered at every specialty choice.",
-  "note": "Filed by the kingdom chat from Andrew's ruling, 2026-10-03, while he played the opening run."
+  "note": "Filed by the kingdom chat from Andrew's ruling, 2026-10-03, while he played the opening run.",
+  "status": "done-needs-review",
+  "sha": "664f1c9"
  },
  {
   "id": "kingdom.opening-reward-card-art",
