@@ -714,7 +714,9 @@
   "shape": "plumbing",
   "spec": "Ruled 2026-10-03 (Andrew, engine/DECISIONS.md 'the opening run: the Flaming Longsword waits for its taker ...'): asked 'If the party has no Warrior or Paladin after battle 2, should the Flaming Longsword wait in the stash until one is drafted? (Today it's never offered again.)' - 'One, yes.' Today (kingdom SWITCHES openingItemTakers) the sword is offered after a won Lumberjack House only when a living Warrior or Paladin has room for it; with none, nothing is offered and it is gone for the run - and with the draft pool grown to six classes (kingdom.opening-draft-pool) a party of three after battle 2 will often hold neither. Keep it: with no taker the Flaming Longsword goes into the run's stash, the player is told it waits, and it is offered - the carrier named by the player, as today - as soon as a living Warrior or Paladin with room is in the party (after the draft that brings one, or when one frees a hand). It stays a Warrior's or a Paladin's only (2026-09-28). Rebuild the pages.",
   "expect": "At http://127.0.0.1:4230/play a run whose party has no Warrior or Paladin after the Lumberjack House shows the Flaming Longsword kept in the stash, and the draft that brings a Warrior or Paladin is followed by the offer to take it; a run that has one after battle 2 is offered it then, as today; the page test covers both.",
-  "note": "Filed by the kingdom chat from Andrew's ruling, 2026-10-03, after the audit of the opening run."
+  "note": "Filed by the kingdom chat from Andrew's ruling, 2026-10-03, after the audit of the opening run.",
+  "status": "done-needs-review",
+  "sha": "f1dda2c"
  },
  {
   "id": "viewer.bar-shows-every-effect",

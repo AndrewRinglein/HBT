@@ -26152,3 +26152,543 @@ index e7d1fc1..21aa972 100644
  
 ```
 </details>
+
+## kingdom.opening-sword-waits — LANDED `f1dda2c` **NEEDS REVIEW**
+2026-10-04 10:53
+
+  PASS  dependencies landed
+  WARN  not already decided — 2 candidate ruling(s) — READ BEFORE ASKING: DECISIONS.md:4410 · SWITCHES.md:1944
+  PASS  typecheck
+  PASS  the item's own tests — test/opening-sword-waits.test.ts, test/isc-044.test.ts, test/opening-deploy-choice.test.ts, test/opening-draft-cadence.test.ts, test/opening-draft-modifiers.test.ts, test/opening-draft-pool.test.ts, test/opening-hero-card-art.test.ts, test/opening-loop-three.test.ts, test/opening-run-six.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — kingdom/test/opening-sword-waits.test.ts, kingdom/test/isc-044.test.ts, kingdom/test/opening-deploy-choice.test.ts, kingdom/test/opening-draft-cadence.test.ts, kingdom/test/opening-draft-modifiers.test.ts, kingdom/test/opening-draft-pool.test.ts, kingdom/test/opening-hero-card-art.test.ts, kingdom/test/opening-loop-three.test.ts, kingdom/test/opening-run-six.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/isc-044.test.ts (-7), test/opening-deploy-choice.test.ts (-4), test/opening-draft-modifiers.test.ts (-1), test/opening-draft-pool.test.ts (-6), test/opening-hero-card-art.test.ts (-4), test/opening-loop-three.test.ts (-3), test/opening-run-six.test.ts (-1) — will land FLAGGED for review
+  PASS  control battles unchanged
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+fc2ef61
+
+diff --git a/test/opening-sword-waits.test.ts b/test/opening-sword-waits.test.ts
+new file mode 100644
+index 0000000..cb969dc
+--- /dev/null
++++ b/test/opening-sword-waits.test.ts
+@@ -0,0 +1,174 @@
++// kingdom.opening-sword-waits — ruled 2026-10-03 (Andrew, engine/DECISIONS.md 'the opening run: the Flaming Longsword waits
++// for its taker; a lost battle pays no XP; a replay rolls new dice'): asked "If the party has no Warrior or Paladin after
++// battle 2, should the Flaming Longsword wait in the stash until one is drafted? (Today it's never offered again.)" —
++// "One, yes."
++//
++// Expect: "At http://127.0.0.1:4230/play a run whose party has no Warrior or Paladin after the Lumberjack House shows the
++// Flaming Longsword kept in the stash, and the draft that brings a Warrior or Paladin is followed by the offer to take
++// it; a run that has one after battle 2 is offered it then, as today; the page test covers both."
++//
++// core/rewards.ts: a won battle whose row names an item for classes nobody of which can take it keeps the item in the
++// stash (resolveBattleWaiting; the one writer puts it there); listWaitingOffers says when a living hero of those classes
++// has room for it, and performTakeWaiting gives it to the hero the player names. It stays those classes' only
++// (core/shop.ts whyNotEquip reads the same row). The page half is tools/opening-run-six.verify.mjs, on a run seed whose
++// party of two holds no taker (14) and on the suite's own (11), which holds one.
++import { describe, it, expect, beforeAll } from 'vitest'
++import { spawnSync } from 'node:child_process'
++import * as REWARDS from '../src/core/rewards.js'
++import * as ROWS from '../src/content/encounter-rewards.js'
++import { makeNewCampaign, performAdvanceOpening, performDraft, performFieldOpeningBattle, listDraftOffers, performOpeningDeploy, draftsOwedOf } from '../src/core/opening.js'
++import { makeCtx, setBattleOutcome, type Ctx } from '../src/core/mutate.js'
++import { performAdvancePrep } from '../src/core/prep.js'
++import { resolveReckoning, applyBattleResult, performExitBattle } from '../src/core/reckoning.js'
++import { performLeaveLevelUp, performTakeReward, listRewardTakers } from '../src/core/rewards.js'
++import { whyNotEquip, performEquip } from '../src/core/shop.js'
++import type { SandboxConfig } from '../src/core/sandbox.js'
++import type { EngagementResult } from '../src/core/seam.js'
++import { ABBOTOWN_MAP } from '../src/content/conquest.js'
++import { recapScreen, carrierChoice, type LastBattle } from '../src/ui/after.js'
++import { runOf, runSaveOf } from '../src/ui/opening-run.js'
++import { encounterDef } from '../src/engine.js'
++
++const SECTIONS = ABBOTOWN_MAP.sections.map((s) => s.encounterId)
++const SWORD = 'item.longsword.flaming', TAKERS = ['class.warrior', 'class.paladin']
++type Waiting = { itemId: string; takers: string[] }
++const R = REWARDS as unknown as {
++  listWaitingOffers?: (c: Ctx['campaign']) => Waiting[]; listWaitingItems?: (c: Ctx['campaign']) => string[]
++  whyNotTakeWaiting?: (c: Ctx['campaign'], itemId: string, heroId: string) => string | null
++  performTakeWaiting?: (ctx: Ctx, itemId: string, heroId: string, causeId: string) => void
++}
++const takersRowOf = (ROWS as unknown as { rewardTakersOf?: (itemId: string) => readonly string[] | null }).rewardTakersOf
++const driver = () => import('../tools/opening-page.mjs' as string) as Promise<{ playedOut: (config: SandboxConfig, won: boolean) => { result: EngagementResult } }>
++const isTaker = (c: Ctx['campaign'], id: string) => c.roster[id]!.classes.some((x) => TAKERS.includes(x))
++const heroIds = (c: Ctx['campaign']) => Object.values(c.roster).filter((h) => !h.classes.includes('class.civilian')).map((h) => h.id).sort()
++
++/** The drafts owed, taken: a hero of the takers' classes when `want`, one of no such class otherwise — null when the offers hold none. */
++function draft(ctx: Ctx, want: boolean): boolean {
++  for (let guard = 0; draftsOwedOf(ctx.campaign) > 0 && guard < 4; guard++) {
++    performAdvanceOpening(ctx, 'test')
++    const pick = listDraftOffers(ctx.campaign).find((h) => h.classes.some((x) => TAKERS.includes(x)) === want)
++    if (!pick) return false
++    performDraft(ctx, pick.id, 'test')
++  }
++  return true
++}
++function field(ctx: Ctx): SandboxConfig {
++  const id = SECTIONS[ctx.campaign.cursor.prologue! - 1]!
++  performFieldOpeningBattle(ctx, { id, mapId: encounterDef(id).mapId!, kind: ABBOTOWN_MAP.engagementKind }, 'test')
++  performOpeningDeploy(ctx, 'test'); performAdvancePrep(ctx, 'test')
++  const e = ctx.campaign.cursor.engagement!
++  return { mapId: e.mapId, heroes: [...e.deployed], heroRows: e.deployed.map((h) => structuredClone(ctx.campaign.roster[h]!)), enemies: [], seed: e.seed, encounterId: e.id }
++}
++function write(ctx: Ctx, r: EngagementResult): LastBattle {
++  const e = ctx.campaign.cursor.engagement!, k = resolveReckoning(ctx.campaign, e, r)
++  setBattleOutcome(ctx, r, k, 'test'); applyBattleResult(ctx, e, r, k)
++  return { engagementId: e.id, result: r, reckoning: k }
++}
++function toOpen(ctx: Ctx): void {
++  const c = ctx.campaign
++  performExitBattle(ctx, 'test')
++  if (c.cursor.step === 'rewards') { const item = c.cursor.rewardOffer![0]!, takers = listRewardTakers(c, item); performTakeReward(ctx, item, 'test', takers[0]) }
++  if (c.cursor.step === 'levelUp') performLeaveLevelUp(ctx, 'test')
++  expect(c.cursor.step).toBe('open')
++}
++/** A run through a won Lumberjack House with a party of two that holds a taker (`taker`) or none; the first run seed that drafts so. */
++async function afterLumberjack(taker: boolean): Promise<{ ctx: Ctx; last: LastBattle }> {
++  const { playedOut } = await driver()
++  for (let seed = 1; seed <= 60; seed++) {
++    const ctx = makeCtx(makeNewCampaign(seed))
++    if (!draft(ctx, taker)) continue
++    write(ctx, playedOut(field(ctx), true).result); toOpen(ctx)
++    if (!draft(ctx, false)) continue
++    expect(heroIds(ctx.campaign).some((id) => isTaker(ctx.campaign, id))).toBe(taker)
++    const last = write(ctx, playedOut(field(ctx), true).result)
++    expect(ctx.campaign.cursor.prologue).toBe(3)
++    return { ctx, last }
++  }
++  throw new Error(`no run seed from 1 to 60 drafts a party of two ${taker ? 'with' : 'without'} a Warrior or a Paladin`)
++}
++
++describe('kingdom.opening-sword-waits — the Flaming Longsword waits for its taker', () => {
++  beforeAll(async () => { await driver() }, 120000)
++
++  it('the row says whose it is: the Flaming Longsword is a Warrior\'s or a Paladin\'s', () => {
++    expect(typeof takersRowOf, 'content/encounter-rewards.ts rewardTakersOf').toBe('function')
++    expect(takersRowOf!(SWORD)).toEqual(TAKERS)
++    expect(takersRowOf!('item.longsword')).toBeNull()
++  })
++
++  it('with no Warrior or Paladin after the Lumberjack House the sword is kept in the stash, and the player is told it waits', async () => {
++    const { ctx, last } = await afterLumberjack(false), c = ctx.campaign
++    expect(c.cursor.rewardOffer, 'nothing to take now: nobody may carry it').toBeNull()
++    expect(c.stash, 'the Flaming Longsword is kept in the stash').toEqual([SWORD])
++    expect(Object.values(c.roster).some((h) => h.equipped.includes(SWORD))).toBe(false)
++    expect(R.listWaitingItems!(c)).toEqual([SWORD])
++    expect(R.listWaitingOffers!(c), 'no offer yet: nobody can take it').toEqual([])
++    const html = recapScreen(c, ctx.events, last)
++    expect(html, 'the victory screen says it waits').toMatch(/Flaming Longsword waits in the stash[^<]*Warrior or a Paladin/)
++    // it stays a Warrior's or a Paladin's only: nobody else may put it on at Equip, though it lies in the stash
++    toOpen(ctx)
++    if (!draft(ctx, false)) return   // (the next draft offered only takers: nothing more to hold here)
++    const id = SECTIONS[c.cursor.prologue! - 1]!
++    performFieldOpeningBattle(ctx, { id, mapId: encounterDef(id).mapId!, kind: ABBOTOWN_MAP.engagementKind }, 'test')
++    performOpeningDeploy(ctx, 'test')
++    expect(c.cursor.prepStep).toBe('equip')
++    for (const id of c.cursor.engagement!.deployed) {
++      expect(whyNotEquip(c, id, SWORD), `${id} is no Warrior or Paladin`).toMatch(/Warrior or a Paladin/)
++      expect(() => performEquip(ctx, id, SWORD, 'test')).toThrow(/Warrior or a Paladin/)
++    }
++    expect(c.stash).toContain(SWORD)
++  })
++
++  it('the draft that brings a Warrior or a Paladin is followed by the offer to take it: the player names the carrier, and it is carried', async () => {
++    const { ctx } = await afterLumberjack(false), c = ctx.campaign
++    toOpen(ctx)
++    // later drafts, until one brings a taker (by the sixth draft every class is drafted)
++    let brought = false
++    for (let battle = 3; battle <= 6 && !brought; battle++) {
++      c.cursor.prologue = battle
++      brought = draft(ctx, true) && heroIds(c).some((id) => isTaker(c, id))
++      if (!brought) { draft(ctx, false); expect(R.listWaitingOffers!(c)).toEqual([]) }
++    }
++    expect(brought, 'a Warrior or a Paladin is drafted').toBe(true)
++    const may = heroIds(c).filter((id) => isTaker(c, id))
++    expect(R.listWaitingOffers!(c), 'the sword is offered as soon as a taker with room is in the party').toEqual([{ itemId: SWORD, takers: may }])
++    // the same when the run is closed here and opened again: nothing is stored for the offer
++    expect(R.listWaitingOffers!(runOf(runSaveOf(c, null)).campaign)).toEqual([{ itemId: SWORD, takers: may }])
++    // who carries it: the heroes offered are the takers, each by name
++    expect(listRewardTakers(c, SWORD)).toEqual(may)
++    const choice = carrierChoice(c, SWORD)
++    expect([...choice.matchAll(/data-act="give" data-id="([^"]+)"/g)].map((m) => m[1])).toEqual(may)
++    // a hero who is neither is refused; the one named gets it
++    const other = heroIds(c).find((id) => !isTaker(c, id))!
++    expect(R.whyNotTakeWaiting!(c, SWORD, other)).toMatch(/Warrior or a Paladin|class\.warrior or class\.paladin/)
++    expect(() => R.performTakeWaiting!(ctx, SWORD, other, 'test')).toThrow(/refused/)
++    R.performTakeWaiting!(ctx, SWORD, may[0]!, 'test')
++    expect(c.roster[may[0]!]!.equipped).toContain(SWORD)
++    expect(c.stash).not.toContain(SWORD)
++    expect([R.listWaitingItems!(c), R.listWaitingOffers!(c)]).toEqual([[], []])
++    expect(() => R.performTakeWaiting!(ctx, SWORD, may[0]!, 'test'), 'it is given once').toThrow(/refused/)
++  })
++
++  it('a run that has a Warrior or a Paladin after battle 2 is offered it then, as today: it never goes to the stash', async () => {
++    const { ctx, last } = await afterLumberjack(true), c = ctx.campaign
++    expect(c.cursor.rewardOffer).toEqual([SWORD])
++    expect(c.stash).toEqual([])
++    expect(R.listWaitingItems!(c)).toEqual([])
++    expect(recapScreen(c, ctx.events, last)).not.toMatch(/waits in the stash/)
++    const taker = listRewardTakers(c, SWORD)
++    expect(taker.length).toBeGreaterThan(0)
++    performExitBattle(ctx, 'test')
++    performTakeReward(ctx, SWORD, 'test', taker[0])
++    expect(c.roster[taker[0]!]!.equipped).toContain(SWORD)
++  })
++
++  it('the page covers both: a run with no Warrior or Paladin after battle 2 keeps the sword in the stash and offers it after the draft that brings one; a run with one is offered it at once', () => {
++    const run = (seed: string) => spawnSync(process.execPath, ['tools/opening-run-six.verify.mjs', 'BATTLE-SANDBOX.html'], { cwd: '../kingdom', encoding: 'utf8', maxBuffer: 1 << 24, env: { ...process.env, RUN_SIX_SEED: seed } })
++    const none = run('14')
++    expect(none.status, none.stderr.split('\n').filter((l) => /Error/.test(l)).slice(0, 2).join(' | ')).toBe(0)
++    expect(none.stdout).toMatch(/the Flaming Longsword waited in the stash \(no Warrior or Paladin in the party of two; the map said so\) and was offered after the draft that brought [^,]+, who carries it/)
++    const one = run('11')
++    expect(one.status, one.stderr.split('\n').filter((l) => /Error/.test(l)).slice(0, 2).join(' | ')).toBe(0)
++    expect(one.stdout).toMatch(/the Flaming Longsword was offered after the Lumberjack House, as before, and is carried by /)
++  }, 1800000)
++})
+5073c4e
+
+diff --git a/test/isc-044.test.ts b/test/isc-044.test.ts
+index a6351b9..8152b75 100644
+--- a/test/isc-044.test.ts
++++ b/test/isc-044.test.ts
+@@ -1,5 +1,13 @@
+-// ISC-044 — one hero is drafted before battle 1, two more after it, one more
+-// after each battle until six drafted heroes, and no draft is offered after.
+-// GAME-ARCHITECTURE.md §2.5 · SKELETON-SETTLED.md:112
++// ISC-044 — one hero is drafted before battle 1 and one more after each battle
++// until six drafted heroes, and no draft is offered after.
++// GAME-ARCHITECTURE.md §2.5 · engine/DECISIONS.md 2026-10-03 'one draft after every battle; …'
++//
++// Law 10 note, 2026-10-04 (kingdom.opening-draft-cadence; engine DECISIONS.md 2026-10-03 'one draft after every battle; …': "We're only supposed to have one draft between battles 1 and 2. I was getting two drafts." · "One, yes."): the criterion read "one hero is drafted before
++// battle 1, two more after it, one more after each battle until six" (ruled 2026-08-23,
++// SKELETON-SETTLED.md:112) and this probe held the running totals 1, 3, 4, 5, 6 before
++// battles 1 to 5, with no draft after battle 5. The ruling replaces that cadence: one
++// draft after every battle. The running totals are 1, 2, 3, 4, 5 before the slice's five
++// battles, and the sixth hero is drafted after battle 5 — at the beat the Kingdom centre
++// and the square outside it are taken — before Week 1. Six drafted, and none after, stand.
+ //
+ // Law 10 note, 2026-09-02: the pool holds FIVE heroes since the alpha four were
+@@ -23,5 +31,5 @@ import { playOpening, playWeeks } from '../src/sim/autoplay.js'
+ 
+ describe('ISC-044 — the draft cadence', () => {
+-  it('1 · +2 · +1 · +1 · +1 up to six or the pool, then the Beacon; the opening ends with the Kingdom Territory and the Ridge held at Week 1', () => {
++  it('one before battle 1, one after each battle, up to six or the pool, then the Beacon; the opening ends with the Kingdom Territory and the Ridge held at Week 1', () => {
+     const pool = HERO_POOL.filter((h) => groupOf(h.classes) === 'hero').length
+     const cap = Math.min(DRAFT_CADENCE.until, pool)
+@@ -33,10 +41,11 @@ describe('ISC-044 — the draft cadence', () => {
+     const battles = ctx.events.filter((e) => e.type === 'engagement.resolved')
+     expect(battles.length).toBe(5)
+-    // drafts between battles: before 1 → 1; after 1 → 2; after 2, 3, 4 → 1 each; after 5 → none (six reached)
++    // drafts between battles: before 1 → 1; after 1, 2, 3, 4 → 1 each; after 5 → 1 more, the sixth, before Week 1
+     const seqOf = (e: { seq: number }) => e.seq
+     const between = (a: number, b: number) => drafts.filter((d) => seqOf(d) > a && seqOf(d) < b).length
+     const bs = battles.map(seqOf)
+-    // the cadence's running total, clipped at the cap: 1, 3, 4, 5, 6 → the drafts between battles are the differences
+-    const totals = [1, 3, 4, 5, 6].map((t) => Math.min(t, cap))
++    // the cadence's running total, clipped at the cap: 1, 2, 3, 4, 5 before battles 1 to 5, 6 after the fifth → the
++    // drafts between battles are the differences (was 1, 3, 4, 5, 6 and none after the fifth — the note above)
++    const totals = [1, 2, 3, 4, 5, 6].map((t) => Math.min(t, cap))
+     expect(between(-1, bs[0]!)).toBe(totals[0])
+     expect(between(bs[0]!, bs[1]!)).toBe(totals[1]! - totals[0]!)
+@@ -44,4 +53,6 @@ describe('ISC-044 — the draft cadence', () => {
+     expect(between(bs[2]!, bs[3]!)).toBe(totals[3]! - totals[2]!)
+     expect(between(bs[3]!, bs[4]!)).toBe(totals[4]! - totals[3]!)
++    expect(between(bs[4]!, Infinity)).toBe(totals[5]! - totals[4]!)
++    expect([totals[1]! - totals[0]!, totals[2]! - totals[1]!, totals[3]! - totals[2]!, totals[4]! - totals[3]!, totals[5]! - totals[4]!]).toEqual([1, 1, 1, 1, 1])
+     expect(drafts.length).toBe(cap)
+     expect(draftedCountOf(c)).toBe(cap)
+diff --git a/test/opening-deploy-choice.test.ts b/test/opening-deploy-choice.test.ts
+index ffe0fad..86a510c 100644
+--- a/test/opening-deploy-choice.test.ts
++++ b/test/opening-deploy-choice.test.ts
+@@ -34,6 +34,13 @@ import { runBattle, encounterDef } from '../src/engine.js'
+ 
+ const SECTIONS = ABBOTOWN_MAP.sections.map((s) => s.encounterId)
+-/** the opening battle before which the cadence has drafted `heroes` (1 · +2 · +1 a battle, to six) */
+-const BATTLE_OF: Record<number, number> = { 1: 1, 3: 2, 4: 3, 5: 4, 6: 5 }
++/**
++ * the opening battle before which the cadence has drafted `heroes`: one before every battle, to six.
++ * Law 10, 2026-10-04 (kingdom.opening-draft-cadence; engine DECISIONS.md 2026-10-03 'one draft after every battle; …': "We're only supposed to have one draft between battles 1 and 2. I was getting two drafts." · "One, yes."): this read
++ *   const BATTLE_OF: Record<number, number> = { 1: 1, 3: 2, 4: 3, 5: 4, 6: 5 }
++ * — the 2026-08-23 cadence (two drafts after battle 1) the ruling replaces. A party of N now stands before battle N; the
++ * tests below hold what they held, of the same party sizes, one battle later from the second (and the party of two, which
++ * the old cadence never fielded, is held with the others that ask nothing).
++ */
++const BATTLE_OF: Record<number, number> = { 1: 1, 2: 2, 3: 3, 4: 4, 5: 5, 6: 6 }
+ 
+ /** A run with `heroes` drafted (the first offer each time), standing on the map before the battle the cadence brings them to. */
+@@ -68,5 +75,5 @@ function cardsOn(html: string): { id: string; act: string | undefined; going: bo
+ describe('kingdom.opening-deploy-choice — the player chooses which four go', () => {
+   it('with the deploy limit or fewer free to fight, all go and no choice is asked: Equip opens at once', () => {
+-    for (const heroes of [1, 3, 4]) {
++    for (const heroes of [1, 2, 3, 4]) {
+       const ctx = partyOf(11, heroes)
+       field(ctx)
+@@ -221,5 +228,7 @@ describe('kingdom.opening-deploy-choice — the player chooses which four go', (
+     if (c.cursor.step === 'levelUp') performLeaveLevelUp(ctx, 'test')
+     expect(c.cursor.step).toBe('open')
+-    expect(c.cursor.prologue, 'the same battle is owed').toBe(4)
++    // Law 10, 2026-10-04 (kingdom.opening-draft-cadence, the note at BATTLE_OF): was toBe(4) — five heroes stood before
++    // battle 4 under the old cadence, before battle 5 now. The rule held is unchanged: the battle lost is the battle owed.
++    expect(c.cursor.prologue, 'the same battle is owed').toBe(BATTLE_OF[5])
+     expect(draftsOwedOf(c)).toBe(0)
+     // fielded again: the five are all still free (Wounded, not Severe), so the choice is asked again — nobody carried over
+diff --git a/test/opening-draft-cadence.test.ts b/test/opening-draft-cadence.test.ts
+new file mode 100644
+index 0000000..d1d2a02
+--- /dev/null
++++ b/test/opening-draft-cadence.test.ts
+@@ -0,0 +1,103 @@
++// kingdom.opening-draft-cadence — ruled 2026-10-03 (Andrew, engine/DECISIONS.md 'one draft after every battle; the yellow
++// focus border goes; …'): "We're only supposed to have one draft between battles 1 and 2. I was getting two drafts." ·
++// asked "Should the cadence change to one draft after every battle (party of 1, 2, 3, 4, 5, 6), replacing the 2026-08-23
++// ruling of two drafts after battle 1?" — "One, yes."
++//
++// Expect: "At http://127.0.0.1:4230/play a new run drafts one hero before the Orphanage and exactly one after each battle:
++// two heroes at the Lumberjack House, three at the Bridge, four at the Cavern Trail, five at the Gates, six at the
++// Cathedral; the draft screen's 'hero N of six' counts them; the page test asserts one draft between each pair of battles
++// and the party's size at every battle."
++//
++// The cadence is a content row (content/prologue.ts DRAFT_CADENCE: one first, one after each battle, until six); the
++// mechanism (core/opening.ts draftsOwedOf) reads it and names no number of its own. The page half is
++// tools/opening-run-six.verify.mjs and tools/opening-loop-three.verify.mjs, on the built BATTLE-SANDBOX.html.
++import { describe, it, expect } from 'vitest'
++import { execFileSync } from 'node:child_process'
++import { readFileSync } from 'node:fs'
++import { makeNewCampaign, performAdvanceOpening, performDraft, performFieldOpeningBattle, performResolvePrologue, listDraftOffers, draftsOwedOf, draftedCountOf } from '../src/core/opening.js'
++import { makeCtx, setCursor, type Ctx } from '../src/core/mutate.js'
++import { DRAFT_CADENCE } from '../src/content/prologue.js'
++import { ABBOTOWN_MAP } from '../src/content/conquest.js'
++import { draftScreen } from '../src/ui/draft.js'
++import { encounterDef } from '../src/engine.js'
++
++const SECTIONS = ABBOTOWN_MAP.sections.map((s) => s.encounterId)
++const battleOf = (id: string) => ({ id, mapId: encounterDef(id).mapId!, kind: ABBOTOWN_MAP.engagementKind })
++
++/** Every draft owed before the battle on the cursor, taken (the first offer each time); the draft screen's heading at each. */
++function draftsBefore(ctx: Ctx): string[] {
++  const headings: string[] = []
++  for (let guard = 0; draftsOwedOf(ctx.campaign) > 0 && guard < 8; guard++) {
++    performAdvanceOpening(ctx, 'test')
++    expect(ctx.campaign.cursor.step).toBe('draft')
++    headings.push(draftScreen(ctx.campaign).match(/<h2>([^<]*)<\/h2>/)![1]!)
++    performDraft(ctx, listDraftOffers(ctx.campaign)[0]!.id, 'test')
++  }
++  return headings
++}
++
++describe('kingdom.opening-draft-cadence — one draft after every battle', () => {
++  it('the cadence is a content row: one before battle 1, one after each battle, until six — and core names no number of its own', () => {
++    expect(DRAFT_CADENCE).toEqual({ first: 1, afterEach: 1, until: 6 })
++    const core = readFileSync('src/core/opening.ts', 'utf8')
++    const body = core.slice(core.indexOf('export function draftsOwedOf'), core.indexOf('export function openingBattlesWonOf'))
++    expect(body).toContain('DRAFT_CADENCE.first')
++    expect(body).toContain('DRAFT_CADENCE.afterEach')
++    expect(body).toContain('DRAFT_CADENCE.until')
++    expect(core, 'the two drafts after battle 1 are gone from the mechanism').not.toContain('afterFirst')
++  })
++
++  it('a new run drafts one hero before the Orphanage and exactly one after each battle: a party of 1, 2, 3, 4, 5, 6 at battles 1 to 6', () => {
++    for (const seed of [5, 11, 21]) {
++      const ctx = makeCtx(makeNewCampaign(seed))
++      const sizes: number[] = [], drafts: number[] = [], headings: string[] = []
++      for (let n = 1; n <= SECTIONS.length; n++) {
++        expect(ctx.campaign.cursor.prologue).toBe(n)
++        expect(draftsOwedOf(ctx.campaign), `seed ${seed}: one draft is owed before battle ${n}`).toBe(1)
++        // the battle is refused while its one draft is owed
++        expect(() => performFieldOpeningBattle(ctx, battleOf(SECTIONS[n - 1]!), 'test')).toThrow(new RegExp(`refused: 1 to draft before battle ${n}`))
++        const got = draftsBefore(ctx)
++        drafts.push(got.length); headings.push(...got); sizes.push(draftedCountOf(ctx.campaign))
++        expect(draftsOwedOf(ctx.campaign)).toBe(0)
++        // … and fielded once it is taken; then won: the cursor moves on (performResolvePrologue, the writer's call)
++        const e = performFieldOpeningBattle(ctx, battleOf(SECTIONS[n - 1]!), 'test')
++        expect(e.prologue).toBe(n)
++        setCursor(ctx, { step: 'open', engagement: null }, 'test')
++        performResolvePrologue(ctx, true, 'test', true)
++      }
++      expect(drafts, `seed ${seed}: one draft before each battle`).toEqual([1, 1, 1, 1, 1, 1])
++      expect(sizes, `seed ${seed}: the party at battles 1 to 6`).toEqual([1, 2, 3, 4, 5, 6])
++      // the draft screen counts them: the first hero, then hero 2 of six … hero 6 of six
++      expect(headings).toEqual(['The draft — your first hero', ...[2, 3, 4, 5, 6].map((k) => `The draft — hero ${k} of six`)])
++      // six drafted before the Cathedral: nothing is owed after it
++      expect(ctx.campaign.cursor.prologue).toBe(7)
++      expect(draftsOwedOf(ctx.campaign), 'six are drafted: the tutorial draft retires').toBe(0)
++    }
++  })
++
++  it('a lost battle, replayed, owes no draft: the cadence counts battles won', () => {
++    const ctx = makeCtx(makeNewCampaign(11))
++    draftsBefore(ctx)
++    performFieldOpeningBattle(ctx, battleOf(SECTIONS[0]!), 'test')
++    setCursor(ctx, { step: 'open', engagement: null }, 'test')
++    performResolvePrologue(ctx, false, 'test', true)
++    expect(ctx.campaign.cursor.prologue).toBe(1)
++    expect(draftsOwedOf(ctx.campaign)).toBe(0)
++    expect(draftedCountOf(ctx.campaign)).toBe(1)
++  })
++
++  it('the draft screen never says two are owed: one draft stands between two battles', () => {
++    const ctx = makeCtx(makeNewCampaign(11))
++    draftsBefore(ctx)
++    setCursor(ctx, { prologue: 2 }, 'test')
++    performAdvanceOpening(ctx, 'test')
++    expect(draftScreen(ctx.campaign)).not.toMatch(/to draft before the next battle/)
++  })
++
++  it('the pages: the six-battle run and the three-battle sitting each take one draft between each pair of battles, and say the party\'s size at every battle', () => {
++    const six = execFileSync(process.execPath, ['tools/opening-run-six.verify.mjs', 'BATTLE-SANDBOX.html'], { cwd: '../kingdom', encoding: 'utf8', maxBuffer: 1 << 24 })
++    expect(six).toMatch(/one draft before every battle \(1, 1, 1, 1, 1, 1\): a party of 1, 2, 3, 4, 5, 6 at battles 1 to 6/)
++    const three = execFileSync(process.execPath, ['tools/opening-loop-three.verify.mjs', 'BATTLE-SANDBOX.html'], { cwd: '../kingdom', encoding: 'utf8', maxBuffer: 1 << 24 })
++    expect(three).toMatch(/draft \(one before every battle: a party of 1, 2, 3; no class twice\)/)
++  }, 1800000)
++})
+diff --git a/test/opening-draft-modifiers.test.ts b/test/opening-draft-modifiers.test.ts
+index 63d775e..f304781 100644
+--- a/test/opening-draft-modifiers.test.ts
++++ b/test/opening-draft-modifiers.test.ts
+@@ -184,5 +184,8 @@ describe('kingdom.opening-draft-modifiers — the first hero by description, lat
+     for (const seed of SEEDS) for (const take of [0, 1, 2]) {
+       const ctx = makeCtx(makeNewCampaign(seed))
+-      for (let n = 1; n <= 5; n++) {
++      // Law 10, 2026-10-04 (kingdom.opening-draft-cadence; engine DECISIONS.md 2026-10-03 'one draft after every battle; …':
++      // "One, yes."): was `n <= 5` — the old cadence had drafted all six before battle 5. One draft stands before every
++      // battle now, the sixth before battle 6; 'six drafted' below is held as it was.
++      for (let n = 1; n <= 6; n++) {
+         ctx.campaign.cursor.prologue = n
+         while (draftsOwedOf(ctx.campaign) > 0) {
+diff --git a/test/opening-draft-pool.test.ts b/test/opening-draft-pool.test.ts
+index 832ca72..9c5d494 100644
+--- a/test/opening-draft-pool.test.ts
++++ b/test/opening-draft-pool.test.ts
+@@ -4,5 +4,6 @@
+ // With the standing rule (2026-09-28 'the draft never repeats a class until all six are drafted': "Until you've drafted all
+ // six of the starting classes, you never get a draft of the same class again") every draft offers three and the party ends
+-// as six heroes, one of each class. The cadence (1 · +2 · +1 a battle, to six) and the deploy limit of 4 are unchanged.
++// as six heroes, one of each class. The cadence (to six) and the deploy limit of 4 are unchanged by this item; the cadence
++// itself was ruled again the same day — one draft after every battle (kingdom.opening-draft-cadence).
+ // Expect: "every draft of a new run offers three heroes of classes not yet drafted, Rogues and Mages among them, and after
+ // the last draft the party is six heroes, one of each class; four deploy; … any base hero without a kit is listed by name."
+@@ -90,10 +91,19 @@ describe('kingdom.opening-draft-pool — the opening draft pool is all 24 base h
+   })
+ 
+-  it('the cadence and the deploy limit are unchanged: 1 · +2 · +1 a battle to six, and four of the six deploy', () => {
+-    expect(DRAFT_CADENCE).toEqual({ first: 1, afterFirst: 2, afterEach: 1, until: 6 })
++  // Law 10, 2026-10-04 (kingdom.opening-draft-cadence; engine DECISIONS.md 2026-10-03 'one draft after every battle; …': "We're only supposed to have one draft between battles 1 and 2. I was getting two drafts." · "One, yes."): this test was titled
++  //   'the cadence and the deploy limit are unchanged: 1 · +2 · +1 a battle to six, and four of the six deploy'
++  // and read
++  //   expect(DRAFT_CADENCE).toEqual({ first: 1, afterFirst: 2, afterEach: 1, until: 6 })
++  //   ctx.campaign.cursor.prologue = 5   // the whole party on the roster, as after the last draft (before battle 5)
++  //   const id = ABBOTOWN_MAP.sections[4]!.encounterId
++  // — the 2026-08-23 cadence the ruling replaces. The row is now one before battle 1 and one after each battle, to six;
++  // the sixth hero is drafted before battle 6 (the Cathedral), where the whole party stands. What the pool's item held is
++  // held: the cadence still ends at six, three are offered at every draft, and four of the six deploy.
++  it('the cadence runs to six — one draft before every battle — and the deploy limit is unchanged: four of the six deploy', () => {
++    expect(DRAFT_CADENCE).toEqual({ first: 1, afterEach: 1, until: 6 })
+     expect(DRAFT_OFFER).toBe(3)
+     const ctx = makeCtx(makeNewCampaign(15))
+-    // the whole party on the roster, as after the last draft (before battle 5)
+-    ctx.campaign.cursor.prologue = 5
++    // the whole party on the roster, as after the last draft (before battle 6)
++    ctx.campaign.cursor.prologue = 6
+     const step = (): string => ctx.campaign.cursor.step
+     performAdvanceOpening(ctx, 'test')
+@@ -105,5 +115,5 @@ describe('kingdom.opening-draft-pool — the opening draft pool is all 24 base h
+     expect(draftedCountOf(ctx.campaign)).toBe(6)
+     expect(Object.values(ctx.campaign.roster).map((h) => classOf(h.id)).sort()).toEqual(SIX)
+-    const id = ABBOTOWN_MAP.sections[4]!.encounterId
++    const id = ABBOTOWN_MAP.sections[5]!.encounterId
+     performFieldOpeningBattle(ctx, { id, mapId: encounterDef(id).mapId!, kind: ABBOTOWN_MAP.engagementKind }, 'test')
+     while (ctx.campaign.cursor.prepStep !== 'deploy') performAdvancePrep(ctx, 'test')
+diff --git a/test/opening-hero-card-art.test.ts b/test/opening-hero-card-art.test.ts
+index 1540fd1..80e8c47 100644
+--- a/test/opening-hero-card-art.test.ts
++++ b/test/opening-hero-card-art.test.ts
+@@ -49,6 +49,11 @@ const art = ART as unknown as { heroes: Record<string, string>; data: Record<str
+ for (const h of [...HERO_POOL, ...CIVILIANS, ...RESCUABLE_CIVILIANS]) { art.heroes[h.id] = fileOf(h.id); art.data[fileOf(h.id)] = uriOf(h.id) }
+ 
+-/** the opening battle before which the cadence has drafted `heroes` (1 · +2 · +1 a battle, to six) */
+-const BATTLE_OF: Record<number, number> = { 1: 1, 3: 2, 4: 3, 5: 4, 6: 5 }
++/**
++ * the opening battle before which the cadence has drafted `heroes`: one before every battle, to six.
++ * Law 10, 2026-10-04 (kingdom.opening-draft-cadence; engine DECISIONS.md 2026-10-03 'one draft after every battle; …': "We're only supposed to have one draft between battles 1 and 2. I was getting two drafts." · "One, yes."): this read
++ *   const BATTLE_OF: Record<number, number> = { 1: 1, 3: 2, 4: 3, 5: 4, 6: 5 }
++ * — the 2026-08-23 cadence (two drafts after battle 1) the ruling replaces. A party of N now stands before battle N.
++ */
++const BATTLE_OF: Record<number, number> = { 1: 1, 2: 2, 3: 3, 4: 4, 5: 5, 6: 6 }
+ /** A run with `heroes` drafted, standing on the map before the battle the cadence brings them to. `pick`: which offer. */
+ function partyOf(seed: number, heroes: number, pick: (offers: readonly { id: string }[]) => string = (o) => o[0]!.id): Ctx {
+@@ -141,5 +146,5 @@ describe('kingdom.opening-hero-card-art — every screen that shows a hero shows
+ 
+   it('every later draft: three cards, each its hero\'s card art with what it already shows — its stats, rolled points and badges', () => {
+-    for (const heroes of [1, 3, 4, 5]) {
++    for (const heroes of [1, 2, 3, 4, 5]) {
+       // the next battle's draft: stand on the map before it and open the draft
+       const next = partyOf(11, heroes)
+@@ -240,5 +245,7 @@ describe('kingdom.opening-hero-card-art — every screen that shows a hero shows
+     let seen = 0
+     for (let seed = 1; seed <= 30 && seen < 2; seed++) {
+-      const ctx = partyOf(seed, 3), c = ctx.campaign
++      // Law 10, 2026-10-04 (kingdom.opening-draft-cadence): was partyOf(seed, 3) — the party of three the old cadence brought
++      // to the Lumberjack House. Two heroes stand there now; the carrier screen is held the same way, of that party
++      const ctx = partyOf(seed, 2), c = ctx.campaign
+       field(ctx)   // the Lumberjack House: its row offers the Flaming Longsword to a Warrior or a Paladin
+       const takers = listRewardTakers(c, SWORD)
+diff --git a/test/opening-loop-three.test.ts b/test/opening-loop-three.test.ts
+index 5d77c19..808b3ea 100644
+--- a/test/opening-loop-three.test.ts
++++ b/test/opening-loop-three.test.ts
+@@ -107,5 +107,6 @@ describe('kingdom.opening-loop-three — the opening fielded as its encounters',
+     expect(civilians[0]!.name).toBe(civ[0]!.typeId === 'hero.fixed.orphans' ? 'Orphan Child' : 'School Teacher')
+     expect(Object.values(ctx.campaign.roster).filter((h) => !h.classes.includes('class.civilian')).every((h) => h.xp === 20)).toBe(true)
+-    expect(draftsOwedOf(ctx.campaign)).toBe(2)
++    // Law 10, 2026-10-04 (kingdom.opening-draft-cadence; engine DECISIONS.md 2026-10-03 'one draft after every battle; …': "We're only supposed to have one draft between battles 1 and 2. I was getting two drafts." · "One, yes."): was toBe(2) — the 2026-08-23 cadence, two drafts after battle 1. One is owed now.
++    expect(draftsOwedOf(ctx.campaign)).toBe(1)
+   })
+ 
+@@ -126,9 +127,12 @@ describe('kingdom.opening-loop-three — the opening fielded as its encounters',
+   })
+ 
+-  it('the next battle is refused until its drafts are taken; the cadence is 1, then 2 after battle 1', () => {
++  // Law 10, 2026-10-04 (kingdom.opening-draft-cadence; engine DECISIONS.md 2026-10-03 'one draft after every battle; …': "We're only supposed to have one draft between battles 1 and 2. I was getting two drafts." · "One, yes."): this test was titled 'the next battle is refused until its drafts are taken; the cadence
++  // is 1, then 2 after battle 1' and expected /refused: 2 to draft before battle 2/ — the 2026-08-23 cadence the ruling
++  // replaces. The refusal stands; what is owed is one draft.
++  it('the next battle is refused until its draft is taken; the cadence is one before battle 1, then one after each battle', () => {
+     const ctx = atOrphanage()
+     write(ctx, playedWon(ctx))
+     toOpen(ctx)
+-    expect(() => performFieldOpeningBattle(ctx, battleOf(LUMBERJACK), 'test')).toThrow(/refused: 2 to draft before battle 2/)
++    expect(() => performFieldOpeningBattle(ctx, battleOf(LUMBERJACK), 'test')).toThrow(/refused: 1 to draft before battle 2/)
+   })
+ 
+diff --git a/test/opening-run-six.test.ts b/test/opening-run-six.test.ts
+index 1ba14a0..f9a41fc 100644
+--- a/test/opening-run-six.test.ts
++++ b/test/opening-run-six.test.ts
+@@ -108,5 +108,11 @@ describe('kingdom.opening-run-six — one run through the six battles, saved', (
+     // — the battles the run asked before while the Bridge cost a hero. Won by the strong party the Bridge costs nobody, so
+     // five are free a battle earlier: the run asks before battle 4 too, and says so. The same rule, held at one more battle.
+-    expect(out).toMatch(/with five or more free to fight the run asked who goes \(battle 4: home [^;]+; battle 5: home [^;]+; battle 6: home [^;]+; battle 6 again: home [^)]+\)/)
++    // Law 10, 2026-10-04 (kingdom.opening-draft-cadence; engine DECISIONS.md 2026-10-03 'one draft after every battle; …': "We're only supposed to have one draft between battles 1 and 2. I was getting two drafts." · "One, yes."): the line above's rule moved once more, and read
++    //   expect(out).toMatch(/with five or more free to fight the run asked who goes \(battle 4: home [^;]+; battle 5: home [^;]+; battle 6: home [^;]+; battle 6 again: home [^)]+\)/)
++    // — a party of five at battle 4, under the cadence the ruling replaces. With one draft after every battle the party is
++    // four at battle 4 (no choice is asked) and five at battle 5: the run asks before battle 5, battle 6 and its replay.
++    expect(out).toMatch(/with five or more free to fight the run asked who goes \(battle 5: home [^;]+; battle 6: home [^;]+; battle 6 again: home [^)]+\)/)
++    // kingdom.opening-draft-cadence: … and the run says its cadence — one draft before every battle, the party's size at each
++    expect(out).toMatch(/one draft before every battle \(1, 1, 1, 1, 1, 1\): a party of 1, 2, 3, 4, 5, 6 at battles 1 to 6/)
+     // kingdom.opening-hero-card-art (2026-10-03): the same run holds every hero card it shows to that hero's own card art —
+     // every draft card (six drafts of three), the Who-goes page, Equip, the victory screen, the rewards screen and its
+```
+</details>
