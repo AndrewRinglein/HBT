@@ -310,6 +310,13 @@ export function applyUnlock(ctx: Ctx, id: string, tier: string, causeId: string)
   emit(ctx, 'unlock.purchased', causeId, { unlockId: id, tier, renown: ctx.campaign.renown, spent: ctx.campaign.unlocks.length })
 }
 
+/** A reveal granted — the one write of campaign.revealed (GAME-ARCHITECTURE.md §2.5; viewer.new-enemy-notice, 2026-10-04). */
+export function applyReveal(ctx: Ctx, revealId: string, causeId: string): void {
+  if (ctx.campaign.revealed.includes(revealId)) throw new Error(`applyReveal refused: '${revealId}' is already granted`)
+  ctx.campaign.revealed.push(revealId)
+  emit(ctx, 'reveal.granted', causeId, { revealId })
+}
+
 // ── what the one writer says as it writes ───────────────────────────────────
 
 function heroOrThrow(campaign: CampaignState, heroId: string) {

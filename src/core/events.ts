@@ -71,6 +71,9 @@ export const KINGDOM_EVENTS = [
   // specialty chosen at the first level-up. A level is a number; a specialization is a choice
   // made once, so it takes its own word.
   'hero.specialized',
+  // Added 2026-10-04 with viewer.new-enemy-notice, and to GLOSSARY.md the same day: a reveal granted (GAME-ARCHITECTURE.md
+  // §2.5 "Reveals are granted by scripted triggers") — the first is an enemy kind met, so the run announces it once.
+  'reveal.granted',
 ] as const
 
 export type KingdomEventType = (typeof KINGDOM_EVENTS)[number]

@@ -36,14 +36,19 @@
 // draw), the input sends the engine's own end-cycle, the command End activation sends, and the host puts the notice on the
 // screen. A unit that has not acted, or that can still do anything, is left alone (kingdom SWITCHES autoEnd*).
 import {sandboxChoices,sandboxActivationChoices,sandboxSwapChoices,sandboxSwapRefusals,type Sandbox,type SandboxChoice,type SandboxSwapOffer} from '../core/sandbox.js'
-import {controllerOf,validateBattleCommand,forecastFrom,previewFrom,preview,threatOf,zocHoldersAt,heroesYetToAct,isAttack,isMove,isBurst,actionReach} from '../engine.js'
+import {controllerOf,validateBattleCommand,forecastFrom,previewFrom,preview,threatOf,zocHoldersAt,heroesYetToAct,isAttack,isMove,isBurst,actionReach,stepCost} from '../engine.js'
 import {refusalLine,switchLine,type SwitchRefusal} from './refusals.js'
 import type {BattleCommand,Forecast} from '../engine.js'
 
 export type PlayEvent={kind:'hex';hex:number}|{kind:'point';hex:number|null}|{kind:'unit';id:number;hex:number}|{kind:'choose';id:number}|{kind:'back'}|{kind:'slot';actionId:string;unit:number|null}|{kind:'end-turn'}|{kind:'end-activation'}|{kind:'swap';index:number;unit:number|null}|{kind:'answer';yes:boolean}
 export type PlayAim={from:number;to:number;target:number|null;hit:number|null;dmg:number|null;hpAfter:number|null;lethal:boolean;locked:boolean}
 /** What the viewer draws (viewer src/play.js validates the same shape). Hexes ascending unless named a walk. */
-export type PlayFacts={actor:number|null;slot:string|null;reach:number[];zoc:number[];path:number[];provokes:number[];ghost:{unit:number;hex:number}|null;threat:{unit:number;move:number[];hit:number[]}|null;targets:number[];aim:PlayAim|null;note:string|null;swap?:PlaySwap|null;ask?:PlayAsk|null;moveDone?:string[]}
+export type PlayFacts={actor:number|null;slot:string|null;reach:number[];zoc:number[];path:number[];provokes:number[];ghost:{unit:number;hex:number}|null;threat:{unit:number;move:number[];hit:number[]}|null;targets:number[];aim:PlayAim|null;note:string|null;swap?:PlaySwap|null;ask?:PlayAsk|null;moveDone?:string[];reachCost?:PlayCost[]}
+/** viewer.move-cost-on-grid (engine DECISIONS.md 2026-10-03 '... movement costs on the grid ...', Andrew: "tiles that require
+    extra movement points should have that movement cost, I think, maybe on them in gray"): what entering one hex of the reach
+    costs the acting unit — the engine's stepCost for the last step of the engine's own walk to it (viewer src/play.js's
+    optional reachCost fact; kingdom SWITCHES moveCostLastStep). */
+export type PlayCost={hex:number;cost:number}
 /** viewer.switch-hero-asks: the question the battle screen must put before anything else is done — end the Activation of the
     unit acting (`from`) and begin the unit double-clicked (`to`)? Unit ids; the viewer draws the pop-up with their names and
     offers {kind:'answer', yes} back (viewer src/play.js's optional ask fact). */
@@ -275,6 +280,10 @@ export function createPlayInput(session:()=>Sandbox|null,run:(command:BattleComm
   const mv=moveOf(s,actor)
   if(mv){f.slot=mv.actionId
    f.reach=asc(mv.choices.map(c=>(c.command as {destination:number}).destination))
+   /* viewer.move-cost-on-grid: the cost of entering each reach hex, the engine's — stepCost onto it from the hex before it on
+      the engine's own walk there (movementOptions' path). A move that walks no path (a leap, a flight, a sidestep) is charged
+      no step, so it names no cost. Nothing is added up or subtracted here. */
+   f.reachCost=mv.choices.filter(c=>c.path.length>0).map(c=>{const hex=(c.command as {destination:number}).destination;return{hex,cost:stepCost(s.ctx,hex,c.path.length>1?c.path[c.path.length-2]!:here)}}).sort((a,b)=>a.hex-b.hex)
    f.zoc=zocOf(s,actor)
    // the path preview: to the hex pointed at, else to the ghost — the engine's own walk (movementOptions' path), its provoke points forecastFrom's
    const to=point!==null&&f.reach.includes(point)?point:ghost?.destination??null

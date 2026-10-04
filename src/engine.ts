@@ -67,7 +67,9 @@ export { runActivation } from '../../engine/src/ai/modes.js'
 export { activationChoices, controllerOf, validateBattleCommand, executeBattleCommand } from '../../engine/src/core/commands.js'
 export type { BattleCommand, ControlPolicy } from '../../engine/src/core/commands.js'
 export { isAttack, isMove, isBurst, staminaCostOf } from '../../engine/src/core/action.js'
-export { movementOptions } from '../../engine/src/core/movement.js'
+// Widened 2026-10-04 (viewer.move-cost-on-grid): stepCost — the engine's own charge for one step onto a hex, read-only, so
+// the battle screen's movement grid shows the engine's number on a tile and adds nothing up.
+export { movementOptions, stepCost } from '../../engine/src/core/movement.js'
 export { preview } from '../../engine/src/core/pipeline.js'
 export { burstCentres, previewBurst } from '../../engine/src/core/burst.js'
 export { previewPower } from '../../engine/src/core/ability.js'
