@@ -24,15 +24,24 @@
 // back through the host's undo (the engine has no command for it; the battle is restored to before it began) — and is
 // otherwise refused: no partial Activations (the engine's not-current-actor / activation-not-selectable). Every refusal is
 // one plain line (src/ui/refusals.ts), worded from the engine's refusal code (kingdom SWITCHES turn*).
+// viewer.switch-hero-asks (engine DECISIONS.md 2026-10-03 'size and shadows are the default; ... switching heroes asks first
+// ...', 'the opening draft pool is all 24 heroes ...; the switch pop-up is for any player unit'): a double-click on another
+// un-acted player unit while the one acting has done something is no longer refused — the input holds the question (its
+// facts' `ask`), the viewer draws the pop-up "End activation of X and start activation of Y?", and the answer comes back:
+// yes is the engine's own end-cycle for X, then select-activation for Y; no changes nothing (kingdom SWITCHES switchAsk*).
 import {sandboxChoices,sandboxActivationChoices,sandboxSwapChoices,type Sandbox,type SandboxChoice,type SandboxSwapOffer} from '../core/sandbox.js'
 import {controllerOf,validateBattleCommand,forecastFrom,previewFrom,preview,threatOf,zocHoldersAt,heroesYetToAct,isAttack,isMove,isBurst,actionReach} from '../engine.js'
 import {refusalLine,switchLine,type SwitchRefusal} from './refusals.js'
 import type {BattleCommand,Forecast} from '../engine.js'
 
-export type PlayEvent={kind:'hex';hex:number}|{kind:'point';hex:number|null}|{kind:'unit';id:number;hex:number}|{kind:'choose';id:number}|{kind:'back'}|{kind:'slot';actionId:string;unit:number|null}|{kind:'end-turn'}|{kind:'end-activation'}|{kind:'swap';index:number;unit:number|null}
+export type PlayEvent={kind:'hex';hex:number}|{kind:'point';hex:number|null}|{kind:'unit';id:number;hex:number}|{kind:'choose';id:number}|{kind:'back'}|{kind:'slot';actionId:string;unit:number|null}|{kind:'end-turn'}|{kind:'end-activation'}|{kind:'swap';index:number;unit:number|null}|{kind:'answer';yes:boolean}
 export type PlayAim={from:number;to:number;target:number|null;hit:number|null;dmg:number|null;hpAfter:number|null;lethal:boolean;locked:boolean}
 /** What the viewer draws (viewer src/play.js validates the same shape). Hexes ascending unless named a walk. */
-export type PlayFacts={actor:number|null;slot:string|null;reach:number[];zoc:number[];path:number[];provokes:number[];ghost:{unit:number;hex:number}|null;threat:{unit:number;move:number[];hit:number[]}|null;targets:number[];aim:PlayAim|null;note:string|null;swap?:PlaySwap|null}
+export type PlayFacts={actor:number|null;slot:string|null;reach:number[];zoc:number[];path:number[];provokes:number[];ghost:{unit:number;hex:number}|null;threat:{unit:number;move:number[];hit:number[]}|null;targets:number[];aim:PlayAim|null;note:string|null;swap?:PlaySwap|null;ask?:PlayAsk|null}
+/** viewer.switch-hero-asks: the question the battle screen must put before anything else is done — end the Activation of the
+    unit acting (`from`) and begin the unit double-clicked (`to`)? Unit ids; the viewer draws the pop-up with their names and
+    offers {kind:'answer', yes} back (viewer src/play.js's optional ask fact). */
+export type PlayAsk={kind:'switch';from:number;to:number}
 /** movement.swap-and-shields: the swap on the board's action bar — the engine's legal hand lists to hold afterwards (by
     label, in the sandbox's order; a click names one by its index), the engine's swapCostOf, and with none to make the
     engine's own reason (viewer src/play.js's optional swap fact; kingdom SWITCHES playInputSwap) */
@@ -57,6 +66,9 @@ export function createPlayInput(session:()=>Sandbox|null,run:(command:BattleComm
  /** the Activation this input began: who, the engine's sequence right after (nothing done since while it is unchanged), the
      battle saved before it began, and the heroes the engine would then have let begin */
  let begun:{actor:number;seq:number;saved:unknown;queue:number[]}|null=null
+ /** viewer.switch-hero-asks: the question asked (who would be ended, who begun, the engine's sequence when it was asked — it
+     does not outlive that), and, between the yes and the next begin, the unit the player asked for */
+ let asking:{from:number;to:number;seq:number}|null=null,wanted:number|null=null
  const shown:Shown[]=[]
  // per engine sequence number: the validated choices, the ghost's forecast, each enemy's reach, the hatching
  let cacheSeq=-1,cache:{choices?:SandboxChoice[];swap?:SandboxSwapOffer;forecast?:Map<string,Forecast>;threat?:Map<number,{move:number[];hit:number[]}>;zoc?:number[]}={}
@@ -75,6 +87,7 @@ export function createPlayInput(session:()=>Sandbox|null,run:(command:BattleComm
  const sync=(s:Sandbox|null)=>{
   const a=s?actorOf(s):null,key=s&&a!=null?`${a}@${s.ctx.state.turn}:${s.ctx.events.filter(e=>e.type==='activation.begin').length}`:null
   if(key!==owner){owner=key;chosen=null;ghost=null;aim=null;if(a!==null)note=null}
+  if(asking&&(!s||a!==asking.from||s.ctx.state.seq!==asking.seq))asking=null
   return a
  }
  /** the heroes the engine would let begin now, in the top bar's order — the heroes' side left to right, ascending unit id,
@@ -96,7 +109,9 @@ export function createPlayInput(session:()=>Sandbox|null,run:(command:BattleComm
      with nothing chosen). The host calls it whenever it is idle; true when a hero was begun. */
  function next():boolean{
   const s=session();if(!s||s.ctx.state.outcome||s.ctx.battleCursor?.at!=='selecting')return false
-  const q=queueOf(s),id=q[0];if(id===undefined)return false
+  /* viewer.switch-hero-asks: after a yes, the unit asked for begins — not the leftmost — when the engine lets it */
+  const q=queueOf(s),want=wanted;wanted=null
+  const id=want!==null&&q.includes(want)?want:q[0];if(id===undefined)return false
   return begin(s,id,q)
  }
  /** why another hero may not be switched to now (the engine said activation-not-selectable): not the player's, has acted
@@ -202,7 +217,7 @@ export function createPlayInput(session:()=>Sandbox|null,run:(command:BattleComm
   const threat=chosen===null&&point!==null?threatAt(s,point):null
   if(actor===null)return {...empty,threat}
   const here=s.ctx.state.units[actor]!.hex
-  const f:PlayFacts={...empty,actor,threat,slot:chosen,ghost:ghost?{unit:actor,hex:ghost.destination}:null,swap:swapFact(s)}
+  const f:PlayFacts={...empty,actor,threat,slot:chosen,ghost:ghost?{unit:actor,hex:ghost.destination}:null,swap:swapFact(s),...(asking?{ask:{kind:'switch' as const,from:asking.from,to:asking.to}}:{})}
   const mv=moveOf(s,actor)
   if(mv){f.slot=mv.actionId
    f.reach=asc(mv.choices.map(c=>(c.command as {destination:number}).destination))
@@ -267,6 +282,23 @@ export function createPlayInput(session:()=>Sandbox|null,run:(command:BattleComm
  function input(e:PlayEvent):boolean{
   const s=session();if(!s||s.ctx.state.outcome)return false
   let actor=sync(s)
+  /* viewer.switch-hero-asks: the answer to the question. No (or a question that no longer stands) changes nothing. Yes ends
+     the one acting with the engine's own end-cycle — the command End activation sends — and begins the one asked for with
+     select-activation; the host may begin it itself the moment the engine waits (next(), which honours `wanted`). Any other
+     order but pointing drops the question first: the pop-up is the only thing on the screen while it stands. */
+  if(e.kind==='answer'){const a=asking;asking=null
+   if(!a||actor!==a.from||s.ctx.state.seq!==a.seq)return false
+   if(!e.yes){note=null;return true}
+   wanted=a.to
+   const r=run({kind:'end-cycle',actor:a.from,expectedSeq:s.ctx.state.seq})
+   if(!r.ok){wanted=null;note=said(s,r.reason,actor);return false}
+   done()
+   if(wanted!==null){wanted=null
+    const now=session()
+    if(now&&!now.ctx.state.outcome&&now.ctx.battleCursor?.at==='selecting'){const q=queueOf(now)
+     if(q.includes(a.to))begin(now,a.to,q);else note=switchLine(whyNot(now,a.to,null))}}
+   return true}
+  if(e.kind!=='point')asking=null
   /* viewer.turn-taking: a double-click on a hero (its card or its body). While the engine waits for a choice, it begins that
      hero. While another acts: a switch only while the one acting has done nothing since it was begun (the engine's sequence
      unchanged) — its Activation is taken back by the host's undo and the one asked for begins — else refused in one line:
@@ -285,7 +317,14 @@ export function createPlayInput(session:()=>Sandbox|null,run:(command:BattleComm
     begun=null;owner=null;cacheSeq=-1;done()
     const back=session()!;sync(back)
     return begin(back,e.id,queueOf(back))}
-   note=v.reason==='activation-not-selectable'?switchLine(whyNot(s,e.id,actor)):said(s,v.reason,actor,e.id);return false}
+   if(v.reason!=='activation-not-selectable'){note=said(s,v.reason,actor,e.id);return false}
+   /* viewer.switch-hero-asks: the one asked for is the player's, standing and yet to act — only the unit acting is in the way
+      (the engine's own facts, whyNot) — and that unit has done something, so the free switch is gone: ask. The question is
+      put only when the engine would take End activation from the unit acting; nothing is ended until the answer is yes. */
+   const why=whyNot(s,e.id,actor)
+   if(why.kind==='busy'&&why.did!=='begun'&&validateBattleCommand(s.ctx,s.policy,{kind:'end-cycle',actor,expectedSeq:s.ctx.state.seq}).ok){
+    asking={from:actor,to:e.id,seq:s.ctx.state.seq};note=null;return true}
+   note=switchLine(why);return false}
   // viewer.play-chrome: End Turn (asked first by the viewer's pop-up when ending() names heroes) and End activation
   if(e.kind==='end-turn'){const r=run({kind:'end-player-phase',expectedSeq:s.ctx.state.seq});note=r.ok?null:said(s,r.reason,actor);if(r.ok)done();return r.ok}
   if(e.kind==='end-activation'){if(actor===null)return false

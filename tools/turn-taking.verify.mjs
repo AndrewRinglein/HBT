@@ -48,13 +48,20 @@ V().offerPlay({kind:'back'});settle()
 hexBtn(dest).handlers.click({detail:1});hexBtn(dest).handlers.click({detail:2});settle()
 assert.equal(me().hex,dest,'the double-click walked it there')
 say(`4 a single click on hex ${dest} showed the path (${V().play.path.length||'-'}); a double-click walked ${me().name} there`)
-// after the hero moves, double-clicking another hero is refused with a one-line reason
+// after the hero moves, double-clicking another hero switches nothing by itself: the screen asks first
+// 2026-10-04 (viewer.switch-hero-asks; engine DECISIONS.md 2026-10-03 'size and shadows are the default; ... switching heroes
+// asks first ...', Andrew: "it should pop up and say, 'End activation of X hero and start activation of Y hero.'"): rewritten
+// as the rule. Was: "is refused with a one-line reason" — the play note read `${name} has already moved - End Activation
+// first.`. The hero is still the one acting after the double-click; the screen now asks in a pop-up, and No keeps it acting.
 const other=heroes[1]
 chip(other).handlers.dblclick({});settle()
-assert.equal(ctx().battleCursor.actor,first,'no switching away mid-Activation')
-const note=V().dom.playNote.textContent
-assert.equal(note,`${me().name} has already moved - End Activation first.`);assert.doesNotMatch(note,RAW);assert.notEqual(V().dom.playNote.style.display,'none')
-say(`5 a double-click on ${ctx().state.units[other].name}: "${note}"`)
+assert.equal(ctx().battleCursor.actor,first,'no switching away mid-Activation without a yes')
+const askBox=V().dom.root.querySelector('#playSwitch'),note=V().dom.root.querySelector('#playSwitchText').textContent
+assert.notEqual(askBox.style.display,'none','the screen asks')
+assert.equal(note,`End activation of ${me().name} and start activation of ${ctx().state.units[other].name}?`);assert.doesNotMatch(note,RAW)
+V().dom.root.querySelector('#playSwitchNo').handlers.click({});settle()
+assert.equal(askBox.style.display,'none','No closes it');assert.equal(ctx().battleCursor.actor,first,'No: the hero is still the one acting')
+say(`5 a double-click on ${ctx().state.units[other].name}: "${note}" - No keeps ${me().name} acting`)
 // End Activation passes to the next un-acted hero, left to right; the previous hero's ring and highlight are gone
 V().dom.root.querySelector('#playEndAct').handlers.click({});settle()
 assert.deepEqual([ctx().battleCursor.at,ctx().battleCursor.actor],['acting',other],'the next hero is begun')

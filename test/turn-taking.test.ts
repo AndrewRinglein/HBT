@@ -81,7 +81,13 @@ describe('the battle screen\'s turn-taking', () => {
     expect(box.s.ctx.events.length).toBeLessThanOrEqual(n)
     expect(P.facts().slot).toBe(basicMove(box.s, other))
   })
-  it('once the hero has moved it must finish: a switch is refused in one plain line', () => {
+  /* 2026-10-04 (viewer.switch-hero-asks; engine DECISIONS.md 2026-10-03 'size and shadows are the default; ... switching heroes
+     asks first ...', Andrew: "it should pop up and say, 'End activation of X hero and start activation of Y hero.'"): rewritten
+     as the rule. Was 'once the hero has moved it must finish: a switch is refused in one plain line' — the double-click
+     returned false and the note read `${name} has already moved - End Activation first.`. The double-click still switches
+     nothing by itself (no partial Activations: the engine still lets no other hero begin, and the hero is still the one
+     acting); the screen now asks instead of refusing, and nothing changes until the answer (test/switch-hero-asks.test.ts). */
+  it('once the hero has moved, a double-click on another hero switches nothing by itself: the screen asks first', () => {
     const { box, P } = start(); P.next()
     const me = box.s.ctx.battleCursor!.actor!, name = box.s.ctx.state.units[me]!.name
     const step = P.facts().reach[0]!; P.input({ kind: 'hex', hex: step }); P.input({ kind: 'hex', hex: step })
@@ -89,9 +95,12 @@ describe('the battle screen\'s turn-taking', () => {
     const other = eligible(box.s).find((id) => id !== me), q = sandboxActivationChoices(box.s)
     expect(q.length, 'the engine lets no other hero begin mid-Activation').toBe(0)
     const third = box.s.ctx.state.units.find((u) => u.side === 'hero' && u.id !== me)!
-    expect(P.input({ kind: 'choose', id: other ?? third.id })).toBe(false)
+    const seq = box.s.ctx.state.seq
+    expect(P.input({ kind: 'choose', id: other ?? third.id })).toBe(true)
     expect(box.s.ctx.battleCursor?.actor).toBe(me)
-    expect(P.facts().note).toBe(`${name} has already moved - End Activation first.`)
+    expect(box.s.ctx.state.seq, 'nothing was ended or begun').toBe(seq)
+    expect(P.facts().ask, `the question: end ${name}, begin the other`).toEqual({ kind: 'switch', from: me, to: other ?? third.id })
+    expect(P.facts().note, 'a question, not a refusal').toBeNull()
   })
   it('every refusal is a plain line, never a raw code', () => {
     const { box, P } = start(); P.next()
