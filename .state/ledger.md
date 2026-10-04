@@ -26777,3 +26777,53 @@ index e0bd22a..c1dda3f 100644
      const r = run(repo(), '--shard', '9/8')
 ```
 </details>
+
+## tool.kingdom-vitest-workers — LANDED `d7fa58e` **NEEDS REVIEW**
+2026-10-04 11:56
+
+  PASS  dependencies landed
+  WARN  not already decided — 1 candidate ruling(s) — READ BEFORE ASKING: SWITCHES.md:1944
+  PASS  typecheck
+  PASS  the item's own tests — test/tests-follow-what-changed.test.ts, test/kingdom-vitest-workers.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — test/tests-follow-what-changed.test.ts, test/kingdom-vitest-workers.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/tests-follow-what-changed.test.ts (-3) — will land FLAGGED for review
+  PASS  control battles unchanged
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/tests-follow-what-changed.test.ts b/test/tests-follow-what-changed.test.ts
+index 059741f..cc728ff 100644
+--- a/test/tests-follow-what-changed.test.ts
++++ b/test/tests-follow-what-changed.test.ts
+@@ -311,8 +311,16 @@ describe('what a change runs', () => {
+     expect(ranSuites(f)).toEqual(['kingdom'])
+     expect(ranLines(f).map((l) => l.match(/--shard=(\d\/4)/)?.[1])).toEqual(['1/4', '2/4', '3/4', '4/4'])   // in four quarters, as combine ran it
+-    // each quarter on four vitest workers, so its child-process tests keep their 5 s beside other workers' suites — unless the caller's environment says otherwise
++    // Rewritten 2026-10-04 (tool.kingdom-vitest-workers), a rule moved, not an assertion weakened: this
++    // read "each quarter on four vitest workers … workers=4" while the runner set VITEST_MAX_WORKERS=4
++    // itself, kingdom having no vitest config. The four are now kingdom/vitest.config.ts's (the engine's
++    // own cap, one place for the gate, a landing and this runner) and test/kingdom-vitest-workers.test.ts
++    // holds that vitest resolves them there. What is left to hold here: the runner sets no cap of its
++    // own, and what the caller's environment says still reaches every quarter.
+     clearRan(f)
+-    expect(node(join(f.main, 'engine'), { ...f.env, FIXTURE_WORKERS: '1' }, 'tools/suites.mjs', '--run', 'kingdom').status).toBe(0)
+-    expect(ranLines(f).every((l) => l.endsWith(' workers=4')), ranLines(f).join(' | ')).toBe(true)
++    const noCap: Record<string, string | undefined> = { ...process.env, ...f.env, FIXTURE_WORKERS: '1' }
++    delete noCap.VITEST_MAX_WORKERS
++    expect(spawnSync(process.execPath, ['tools/suites.mjs', '--run', 'kingdom'], { cwd: join(f.main, 'engine'), encoding: 'utf8', env: noCap }).status).toBe(0)
++    expect(ranLines(f)).toHaveLength(4)
++    expect(ranLines(f).every((l) => l.endsWith(' workers=unset')), ranLines(f).join(' | ')).toBe(true)
+     clearRan(f)
+     expect(node(join(f.main, 'engine'), { ...f.env, FIXTURE_WORKERS: '1', VITEST_MAX_WORKERS: '2' }, 'tools/suites.mjs', '--run', 'kingdom').status).toBe(0)
+```
+</details>

@@ -5,7 +5,10 @@
   "shape": "plumbing",
   "spec": "Found 2026-10-04 by three workers and the home chat (GBH SWITCHES vitest.kingdomShardWorkers, gate.shardFewerWorkersUnderLoad, suites.kingdomWorkers, combine.kingdomQuarters): kingdom has no vitest.config.ts, so `node tools/gate.mjs --shard k/4` runs on vitest's default worker count (16 on Andrew's PC), and with more than one worker testing at once kingdom's tests that spawn a child process (cold-start, item-generation-isolation, sandbox-ui, the page verifies) pass their 5 s or 60 s limit on any tree. Every worker has had to set VITEST_MAX_WORKERS=4 by hand, and engine/tools/suites.mjs sets 4 for its own run of kingdom's quarters. Give kingdom a vitest.config.ts that caps the workers the way the engine's does (read engine/vitest.config.ts first: one shape, not a second idea), with the environment still able to override it, so `gate.mjs --shard`, the landing's checks and `suites.mjs` all get the cap from one place; then take the hand-set cap out of suites.mjs if the config makes it redundant. No test's own time limit is changed (Law 10). kingdom/vitest.config.ts is kingdom's code (engine/tools/code-stamp.mjs PACKAGE_CODE: add it to kingdom's list if config files are not already there) - say so. Kingdom commits in its own repository; record the choice in GBH SWITCHES.md and mark the three hand-cap rows answered.",
   "expect": "With no environment variable set, `node tools/gate.mjs --shard 1/4` in kingdom/ runs on the capped number of vitest workers (the run's own header or config shows it); VITEST_MAX_WORKERS still overrides; the four kingdom shards pass with two other test runs going on the machine without a 5 s time-out in a test the change did not touch; no test's time limit changed.",
-  "note": "Filed by the kingdom chat, 2026-10-04, from the workers' reports. Small tooling."
+  "note": "Filed by the kingdom chat, 2026-10-04, from the workers' reports. Small tooling.",
+  "attempts": 1,
+  "status": "done-needs-review",
+  "sha": "d7fa58e"
  },
  {
   "id": "tool.tests-follow-what-changed",
