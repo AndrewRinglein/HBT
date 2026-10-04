@@ -1,0 +1,121 @@
+
+ RUN  v4.1.11 C:/Users/aring/Desktop/HBT-worker-kingdom/engine
+
+ ❯ test/civilians-field-kit.test.ts (6 tests | 5 failed) 388ms
+     × in encounter.opening.lumberjack the Lumberjack attacks with his axe (Chop or Cleave) and his wife with her dagger — never Punch 144ms
+     × every civilian placed by prologue-1..3, the Supper, the Orphanage and the Lumberjack House fields its Codex kit, as a preview of the row reads it 3ms
+     × what each kit is: the school children throw rocks, the farmer jabs with the pitchfork, the Supper's villagers stab with the dagger 2ms
+     × a fixture enemy row that carries a kit fields it when an encounter places it — as a setup unit and as a scheduled arrival 9ms
+     × the opt-in flag is retired: no row says placedWithKit, and nothing in the core reads it 1ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 5 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/civilians-field-kit.test.ts > fix.civilians-field-kit > in encounter.opening.lumberjack the Lumberjack attacks with his axe (Chop or Cleave) and his wife with her dagger — never Punch
+AssertionError: replicate 0: the Lumberjack fields his axe: expected [] to deeply equal [ 'item.lumberjack-axe' ]
+
+- Expected
++ Received
+
+- [
+-   "item.lumberjack-axe",
+- ]
++ []
+
+ ❯ test/civilians-field-kit.test.ts:64:99
+     62|       expect(jack.length, `replicate ${replicate}: the Lumberjack is p…
+     63|       expect(wife.length, `replicate ${replicate}: his wife is placed`…
+     64|       expect(equipped(ctx, jack[0]!.id), `replicate ${replicate}: the …
+       |                                                                                                   ^
+     65|       expect(equipped(ctx, wife[0]!.id), `replicate ${replicate}: his …
+     66|       expect(jack[0]!.actions, `replicate ${replicate}: the Lumberjack…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/5]⎯
+
+ FAIL  test/civilians-field-kit.test.ts > fix.civilians-field-kit > every civilian placed by prologue-1..3, the Supper, the Orphanage and the Lumberjack House fields its Codex kit, as a preview of the row reads it
+AssertionError: encounter.prologue-2: hero.fixed.lumberjack-and-wife fields its Codex kit: expected [] to deeply equal [ 'item.lumberjack-axe' ]
+
+- Expected
++ Received
+
+- [
+-   "item.lumberjack-axe",
+- ]
++ []
+
+ ❯ test/civilians-field-kit.test.ts:110:80
+    108|         for (const u of units) {
+    109|           civilians++; types.add(typeId)
+    110|           expect(equipped(ctx, u.id), `${id}: ${typeId} fields its Cod…
+       |                                                                                ^
+    111|           // what it fights with is what fielding the row with its kit…
+    112|           expect(attacksOf(u), `${id}: ${typeId}'s attacks are its kit…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/5]⎯
+
+ FAIL  test/civilians-field-kit.test.ts > fix.civilians-field-kit > what each kit is: the school children throw rocks, the farmer jabs with the pitchfork, the Supper's villagers stab with the dagger
+AssertionError: expected [ 'attack.punch' ] to deeply equal [ 'attack.pile-of-rocks.throw', …(1) ]
+
+- Expected
++ Received
+
+  [
+-   "attack.pile-of-rocks.throw",
+    "attack.punch",
+  ]
+
+ ❯ test/civilians-field-kit.test.ts:126:73
+    124|   it('what each kit is: the school children throw rocks, the farmer ja…
+    125|     const supper = fielded('encounter.supper'), school = fielded('enco…
+    126|     expect(attacksOf(placed(school, 'hero.fixed.school-children')[0]!)…
+       |                                                                         ^
+    127|     expect(attacksOf(placed(surrounded, 'hero.fixed.farmer')[0]!)).toE…
+    128|     expect(attacksOf(placed(surrounded, LUMBERJACK)[0]!)).toEqual([CHO…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/5]⎯
+
+ FAIL  test/civilians-field-kit.test.ts > fix.civilians-field-kit > a fixture enemy row that carries a kit fields it when an encounter places it — as a setup unit and as a scheduled arrival
+AssertionError: the armed enemy fields its kit: expected [] to deeply equal [ 'item.dagger' ]
+
+- Expected
++ Received
+
+- [
+-   "item.dagger",
+- ]
++ []
+
+ ❯ test/civilians-field-kit.test.ts:152:71
+    150|       for (const u of raiders) {
+    151|         expect(u.side, 'an enemy').toBe('enemy')
+    152|         expect(equipped(ctx, u.id), 'the armed enemy fields its kit').…
+       |                                                                       ^
+    153|         expect(attacksOf(u), 'its kit\'s attack, then its own').toEqua…
+    154|       }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/5]⎯
+
+ FAIL  test/civilians-field-kit.test.ts > fix.civilians-field-kit > the opt-in flag is retired: no row says placedWithKit, and nothing in the core reads it
+AssertionError: hero.fixed.orphans carries no placedWithKit: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ test/civilians-field-kit.test.ts:176:112
+    174|
+    175|   it('the opt-in flag is retired: no row says placedWithKit, and nothi…
+    176|     for (const u of Object.values(UNITS)) expect('placedWithKit' in u,…
+       |                                                                                                                ^
+    177|   })
+    178| })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/5]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  5 failed | 1 passed (6)
+   Start at  21:53:10
+   Duration  1.27s (transform 612ms, setup 0ms, import 767ms, tests 388ms, environment 0ms)
+

@@ -24043,3 +24043,134 @@ index d7b29b5..dcf9f1d 100644
    })
 ```
 </details>
+
+## fix.civilians-field-kit — LANDED `2643774` **NEEDS REVIEW**
+2026-10-04 07:55
+
+  PASS  dependencies landed
+  WARN  not already decided — 2 candidate ruling(s) — READ BEFORE ASKING: SWITCHES.md:1816 · SWITCHES.md:1928
+  PASS  typecheck
+  PASS  the item's own tests — test/battle-cursor.test.ts, test/items-per-unit.test.ts, test/orphans-teacher-knife.test.ts, test/civilians-field-kit.test.ts
+  PASS  gate 1 — the id appears in a real battle — encounter.opening.lumberjack: 11 log lines, 11 fired, 8 changed state
+  PASS  brought its own tests — test/battle-cursor.test.ts, test/items-per-unit.test.ts, test/orphans-teacher-knife.test.ts, test/civilians-field-kit.test.ts, test/fixtures/battle-cursor-civilians-field-kit.json
+  WARN  existing tests untouched — DELETED LINES in test/battle-cursor.test.ts (-2), test/items-per-unit.test.ts (-1), test/orphans-teacher-knife.test.ts (-4) — will land FLAGGED for review
+  PASS  control battles unchanged
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — shape 'data' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without encounter.opening.lumberjack — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/battle-cursor.test.ts b/test/battle-cursor.test.ts
+index 2521813..e0090c4 100644
+--- a/test/battle-cursor.test.ts
++++ b/test/battle-cursor.test.ts
+@@ -281,4 +281,14 @@ const openingLevelsGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-c
+ // affliction's badge.gained line names its rule). A `changed` case is checked here and skips the older layers.
+ const afflictionsAtZeroRuleGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-afflictions-at-zero-rule.json', import.meta.url), 'utf8'))
++// fix.civilians-field-kit (2026-10-03; DECISIONS.md 2026-10-03 'every civilian fields its kit by default when an encounter
++// places it': "Yes, all of the civilians, by default, should field their kit the first time they're loaded. So all of them
++// should get it." · "If enemies have weapons assigned, they need them also when they come into play."), Law 10: every unit an
++// encounter places fields the kit its row carries, and the opt-in placedWithKit flag is retired. Every case frozen here
++// (tools/capture-civilians-field-kit-cursor.mts). Moved for real, the ruling working (state, RNG and result): exactly the three
++// cases that place a civilian who fought with Punch until now — showcase.supper (ten villagers: daggers, pitchforks, rocks),
++// showcase.surrounded (the Lumberjack's axe, the Farmer's pitchfork) and test.opening-lumberjack (the Lumberjack's axe, his
++// wife's dagger and basic armor). The cases that place only an Orphan Child or the School Teacher do not move: they fielded
++// their Dagger already. A `changed` case is checked here and skips the older layers.
++const civiliansKitGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-civilians-field-kit.json', import.meta.url), 'utf8'))
+ const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
+ // Explicit rule migration, not regenerated historical hashes. These nine old
+@@ -400,5 +410,8 @@ describe('resumable battle cursor', () => {
+       const orphansKnifeExpected = orphansKnifeGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+       const afflictionsAtZeroRuleExpected = afflictionsAtZeroRuleGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+-      const afflictionsAtZeroRuleMoved = afflictionsAtZeroRuleExpected?.changed === true
++      const civiliansKitExpected = civiliansKitGolden.cases.find((row:{id:string})=>row.id===fixture.id)
++      const civiliansKitMoved = civiliansKitExpected?.changed === true
++      // was: const afflictionsAtZeroRuleMoved = afflictionsAtZeroRuleExpected?.changed === true — a civilians-kit-moved case skips the afflictions-at-zero-rule layer too (fix.civilians-field-kit 2026-10-03)
++      const afflictionsAtZeroRuleMoved = afflictionsAtZeroRuleExpected?.changed === true || civiliansKitMoved
+       const openingLevelsExpected = openingLevelsGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+       // was: const openingLevelsMoved = openingLevelsExpected?.changed === true — an afflictions-at-zero-rule-moved case skips the opening-levels layer too (rule.afflictions-at-zero-refiled-2 2026-10-02)
+@@ -494,5 +507,12 @@ describe('resumable battle cursor', () => {
+           }
+         } else result = battle.runBattle(ctx)
+-        if (afflictionsAtZeroRuleExpected) {
++        if (civiliansKitExpected) {
++        expect(hash(ctx.events), 'full civilians-field-kit events').toBe(civiliansKitExpected.events)
++        expect(hash(ctx.state), 'full civilians-field-kit state').toBe(civiliansKitExpected.state)
++        expect(hash(ctx.rng.log), 'full civilians-field-kit RNG').toBe(civiliansKitExpected.rng)
++        expect(result).toEqual(civiliansKitExpected.result)
++        }
++        // was: if (afflictionsAtZeroRuleExpected) { — fix.civilians-field-kit (2026-10-03): a civilians-kit-moved case is checked above instead
++        if (afflictionsAtZeroRuleExpected && !civiliansKitMoved) {
+         expect(hash(ctx.events), 'full afflictions-at-zero-rule events').toBe(afflictionsAtZeroRuleExpected.events)
+         expect(hash(ctx.state), 'full afflictions-at-zero-rule state').toBe(afflictionsAtZeroRuleExpected.state)
+diff --git a/test/items-per-unit.test.ts b/test/items-per-unit.test.ts
+index cab4e00..3bb04a8 100644
+--- a/test/items-per-unit.test.ts
++++ b/test/items-per-unit.test.ts
+@@ -92,5 +92,10 @@ describe('the invariant — no heroItems means the hero the converter used to fo
+       // fold. The melee knife makes her role and ai melee (derived from the kit), and her row says placedWithKit.
+       // was: 'hero.fixed.orphans': ['attacks'],
+-      'hero.fixed.orphans': ['role', 'ai', 'attacks', 'placedWithKit'],
++      // Law 10, fix.civilians-field-kit (2026-10-03; DECISIONS.md 2026-10-03 'every civilian fields its kit by default when an
++      // encounter places it': "all of the civilians, by default, should field their kit the first time they're loaded"): the
++      // opt-in row flag is retired — every placed unit fields its kit — so her row no longer says placedWithKit. Content
++      // moved, not the fold.
++      // was: 'hero.fixed.orphans': ['role', 'ai', 'attacks', 'placedWithKit'],
++      'hero.fixed.orphans': ['role', 'ai', 'attacks'],
+       'hero.fixed.lumberjack-and-wife': ['attacks'],
+       'hero.fixed.farmer': ['attacks'],
+diff --git a/test/orphans-teacher-knife.test.ts b/test/orphans-teacher-knife.test.ts
+index 6842802..64eccaf 100644
+--- a/test/orphans-teacher-knife.test.ts
++++ b/test/orphans-teacher-knife.test.ts
+@@ -5,4 +5,7 @@
+ // one assembler, flagged by the Codex row (placedWithKit, gen/civilian-rulings.json). Every other placed civilian is
+ // fielded authored whole, with Punch (SWITCHES.md arrivalKit).
++// fix.civilians-field-kit (2026-10-03; DECISIONS.md 2026-10-03 'every civilian fields its kit by default when an encounter
++// places it'): the flag is retired and the last sentence is no longer the rule — every placed civilian fields its kit.
++// The orphans' and the teacher's knife stand as ruled; the third test below is rewritten as the new rule (Law 10 note there).
+ import { describe, expect, it } from 'vitest'
+ import { createBattle, fieldedDef } from '../src/core/setup.js'
+@@ -47,15 +50,29 @@ describe('fix.orphans-teacher-knife-refiled', () => {
+   })
+ 
+-  it('a school child placed by an encounter still fights with Punch (arrivalKit stands for every other civilian)', () => {
++  // Law 10, 2026-10-03 (fix.civilians-field-kit; DECISIONS.md 2026-10-03 'every civilian fields its kit by default when an
++  // encounter places it', Andrew: "Yes, all of the civilians, by default, should field their kit the first time they're
++  // loaded. So all of them should get it." — which replaces the 2026-10-02 entry's "the other placed civilians … stay as
++  // they are"). This test was
++  //   it('a school child placed by an encounter still fights with Punch (arrivalKit stands for every other civilian)', …
++  //     expect(equipped(ctx, child.id), 'the child is fielded authored whole').toEqual([])
++  //     expect(child.actions.filter((a) => a.startsWith('attack.'))).toEqual([PUNCH])
++  //     … expect(swung(ctx, child.id).every((a) => a === PUNCH), 'the child only punches').toBe(true)
++  // — the rule of 2026-10-02, when only the orphans and the teacher were named. The rule now, as ruled: the school
++  // children field their kit too (the pile of rocks), and on their own Activation they throw rocks, never Punch.
++  it('a school child placed by an encounter fields its kit too — the pile of rocks — as every placed civilian does since 2026-10-03', () => {
+     const ctx = createBattle({ ...scenarioOptions(scenarioDef('showcase.surrounded')), encounter: ENCOUNTERS['encounter.prologue-3']! })
+     const child = placed(ctx, CHILD)[0]!
+     expect(child, 'the school children are placed').toBeDefined()
+-    expect(equipped(ctx, child.id), 'the child is fielded authored whole').toEqual([])
+-    expect(child.actions.filter((a) => a.startsWith('attack.'))).toEqual([PUNCH])
++    expect(equipped(ctx, child.id), 'the child fields its Codex kit').toEqual(UNITS[CHILD]!.defaultItems)
++    expect(equipped(ctx, child.id)).toEqual(['item.pile-of-rocks'])
++    expect(child.actions.filter((a) => a.startsWith('attack.'))).toEqual(['attack.pile-of-rocks.throw', PUNCH])
+     // and the teacher placed beside them in the Schoolhouse carries her knife there too
+     const teacher = placed(ctx, TEACHER)[0]!
+     expect(equipped(ctx, teacher.id)).toEqual([KNIFE])
+     runBattle(ctx)
+-    expect(swung(ctx, child.id).every((a) => a === PUNCH), 'the child only punches').toBe(true)
++    // what the child chooses on its own Activation is the rocks (a reaction — an attack of opportunity — is the cheapest
++    // legal melee attack by its own ruling, and the rocks are thrown, not swung)
++    const chosen = ctx.events.flatMap((e, i) => e.type === 'attack.declared' && e['actor'] === child.id && ctx.events.slice(Math.max(0, i - 4), i).some((p) => p.type === 'action.spent' && p['actor'] === child.id && p['actionId'] === e['attackId'] && p['slot'] === 'primary') ? [String(e['attackId'])] : [])
++    expect(chosen.filter((a) => a !== 'attack.pile-of-rocks.throw'), 'on its Activation the child throws rocks, never Punch').toEqual([])
+   })
+ })
+```
+</details>

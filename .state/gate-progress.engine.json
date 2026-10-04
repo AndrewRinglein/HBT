@@ -1,24 +1,24 @@
 {
- "id": "fix.transformed-snapshot-order",
- "tree": "46647851d47bfdacbf1ebd9f417dd9bd72fdf8c5",
- "ctx": "94d42d8947ba6a35f8bf995f5a45a978a8bfcb31",
+ "id": "fix.civilians-field-kit",
+ "tree": "e16f0b1470fe4ace0f2c4d342fabfe5b6dcd53bc",
+ "ctx": "a090ca8842539a1ab8b9b8f25462a15c89b65d99",
  "results": {},
  "durations": {
   "dependencies landed": 0,
-  "not already decided": 249,
-  "typecheck": 1495,
-  "the item's own tests": 2224,
-  "gate 1 — the id appears in a real battle": 0,
-  "brought its own tests": 34,
-  "existing tests untouched": 1,
-  "control battles unchanged": 36047,
-  "content has a published source": 86,
+  "not already decided": 541,
+  "typecheck": 1815,
+  "the item's own tests": 9365,
+  "gate 1 — the id appears in a real battle": 1907,
+  "brought its own tests": 41,
+  "existing tests untouched": 0,
+  "control battles unchanged": 35513,
+  "content has a published source": 122,
   "hardcode scan — core knows mechanisms, never names": 37,
   "prior art — nothing new copies what exists": 0,
   "wrong home — nothing another package owns": 0,
   "generalizes — the second instance costs zero engine code": 0,
-  "naming — new content ids use declared kinds": 32,
-  "naming — no banned words invented": 108,
-  "kill switch — the tests fail without the content": 1
+  "naming — new content ids use declared kinds": 33,
+  "naming — no banned words invented": 124,
+  "kill switch — the tests fail without the content": 2520
  }
 }

@@ -614,6 +614,17 @@ The log carries one `unit.equipped` per (unit, item) after `unit.enter`.
 Refused loudly: an unknown item, more than two hands of weapons, two armors, a
 mismatched list. Enemies carry no items.
 
+**A unit an encounter places fields the kit its row carries (2026-10-03, fix.civilians-field-kit).**
+Ruled 2026-10-03 (Andrew, DECISIONS.md 'every civilian fields its kit by default when an encounter
+places it'): *"all of the civilians, by default, should field their kit the first time they're
+loaded"* · *"If enemies have weapons assigned, they need them also when they come into play."* An
+encounter's setup unit and a scheduled arrival go through the same assembler (`fieldArrival`): a row
+with `defaultItems` fields them — one `unit.equipped` per item after its `unit.enter`, as a hero's —
+and a row with none is fielded authored whole. No bestiary row carries a kit today, so "Enemies carry
+no items" above still describes every enemy; it is no longer a rule. A listed enemy (a battle's
+`enemies`) and a form (a hero transformed at 0 Health) are assembled authored whole, as before.
+SWITCHES.md "fix.civilians-field-kit".
+
 **Per-unit mods, after the items (2026-09-25, seam.unit-mods).** `BattleOptions.heroMods`,
 parallel to `heroes`, carries the numbers the kingdom resolved for one fielded hero — its set
 bonuses (GEAR-DESIGN.md §5): stat mods naming their source, stored as StatMods so the stat
