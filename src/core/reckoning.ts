@@ -115,10 +115,24 @@ export function battleXpOf(engagementId: string, result: EngagementResult): { in
   // as lost"): a row the fold marks `turned` ended a lost battle still on the enemy side — it is dead here, the one dead
   // path, never a second removal (kingdom SWITCHES.md turnedLostIsDead)
   const lost = result.outcome !== 'heroClear'
+  // kingdom.opening-replay-rules (engine DECISIONS.md 2026-10-03 'the opening run: … a lost battle pays no XP; a replay
+  // rolls new dice': asked "Should a lost battle pay any XP? (Today a lost Orphanage pays its 20 XP every time you replay
+  // it.)" — "Now a lost battle offers a replay." — No): a lost battle that is fought again pays nobody — not its row's
+  // fixed XP, not the formula's. The Orphanage's 20 is paid when it is won, whatever its kills or length.
+  const unpaid = isReplayedLoss(engagementId, result)
   return result.units.filter((u) => u.side === 'hero' && u.role === undefined).map((u) => {
     const dead = u.lifeState === 'dead' || (lost && u.turned === true)
-    return { index: u.index, xp: dead ? 0 : fixedXp ?? speed + killXpOf(u), dead }
+    return { index: u.index, xp: dead || unpaid ? 0 : fixedXp ?? speed + killXpOf(u), dead }
   })
+}
+
+/**
+ * Is this a lost battle that is fought again — its rewards row says a lost one is replayed (content/encounter-rewards.ts:
+ * the opening's six)? Such an attempt is not kept: it pays no XP and names no MVP; it only offers the replay. The wounds
+ * it left are kept, as ruled (2026-09-28). Pure.
+ */
+export function isReplayedLoss(engagementId: string, result: EngagementResult): boolean {
+  return result.outcome !== 'heroClear' && (encounterRewardOf(engagementId)?.replayed ?? false)
 }
 
 /** The MVP's prize on top of its battle's XP (B7). */
@@ -169,7 +183,8 @@ export function resolveReckoning(campaign: CampaignState, engagement: Engagement
   })
 
   // MVP — mvpOf, a weighted roll keyed by the Engagement, on its own cup. Nobody alive → no MVP.
-  const mvp = mvpOf(engagement.id, heroes, () => rollOf(campaign, CUP_IDS.mvp, [engagement.id]))
+  // (a lost battle that is replayed names none: nothing of that attempt is paid — kingdom.opening-replay-rules)
+  const mvp = isReplayedLoss(engagement.id, result) ? null : mvpOf(engagement.id, heroes, () => rollOf(campaign, CUP_IDS.mvp, [engagement.id]))
   if (mvp !== null) { heroes[mvp]!.mvp = true; heroes[mvp]!.xp += MVP_XP }
 
   // a prologue battle may take no ground (content/prologue.ts): no claim, no

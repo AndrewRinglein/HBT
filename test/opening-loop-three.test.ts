@@ -119,11 +119,19 @@ describe('kingdom.opening-loop-three — the opening fielded as its encounters',
     expect(draftsOwedOf(ctx.campaign)).toBe(0)
     const party = ctx.campaign.cursor.engagement!.deployed
     expect(party.every((id) => ctx.campaign.roster[id]!.wound === 1)).toBe(true)
-    // out through the level-ups (the Orphanage pays its 20 on a loss too) to the open step, and the same battle again
-    toOpen(ctx)
+    // Law 10, 2026-10-04 (kingdom.opening-replay-rules; engine DECISIONS.md 2026-10-03 'the opening run: the Flaming Longsword waits for its taker; a lost battle pays no XP; a replay rolls new dice': "Now a lost battle offers a replay." · "New dice."). This read
+    //   // out through the level-ups (the Orphanage pays its 20 on a loss too) to the open step, and the same battle again
+    //   expect(ctx.campaign.cursor.engagement!.seed).toBe(1)
+    // — kingdom SWITCHES openingFixedXp ("on a loss too") and openingReplaySeed (the same seed every replay), both settled
+    // the other way by the ruling. The rule now: the lost battle paid nobody, so no level waits — straight to the open
+    // step — and the same battle is fielded again with the same party on NEW dice, not its first attempt's seed 1.
+    expect(party.every((id) => ctx.campaign.roster[id]!.xp === 0), 'a lost Orphanage pays no XP').toBe(true)
+    performExitBattle(ctx, 'test')
+    expect(ctx.campaign.cursor.step, 'no level waits after a loss').toBe('open')
     fielded(ctx, ORPHANAGE)
     expect(ctx.campaign.cursor.engagement!.deployed).toEqual(party)
-    expect(ctx.campaign.cursor.engagement!.seed).toBe(1)
+    expect(ctx.campaign.cursor.engagement!.seed, 'the replay is on new dice').not.toBe(1)
+    expect(ctx.campaign.cursor.replays).toBe(1)
   })
 
   // Law 10, 2026-10-04 (kingdom.opening-draft-cadence; engine DECISIONS.md 2026-10-03 'one draft after every battle; …': "We're only supposed to have one draft between battles 1 and 2. I was getting two drafts." · "One, yes."): this test was titled 'the next battle is refused until its drafts are taken; the cadence

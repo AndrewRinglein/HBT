@@ -213,9 +213,22 @@ function stayedHome(f,label,paid){
 /* the battle on the board settled, then its reckoning, its reward kept (a named-class item to its first taker) and the
    level-ups, back to the map — the run still in the opening */
 const REOPENED_ON_CHOICE=[]
+/* kingdom.opening-replay-rules (engine DECISIONS.md 2026-10-03 'the opening run: … a lost battle pays no XP; a replay rolls
+   new dice': "Now a lost battle offers a replay." · "New dice."): every battle the run lost, with the seed it was first
+   fielded on and the seed of its replay (LOST) */
+const LOST=[]
+const xpNow=()=>Object.fromEntries(Object.values(camp().roster).map(h=>[h.id,h.xp]))
 function settle(won,label,reopenOnSpecialty=false,how={}){
- const id=camp().cursor.engagement.id
+ const id=camp().cursor.engagement.id,xpWas=xpNow(),levelsWas=JSON.stringify(Object.values(camp().roster).map(h=>[h.id,h.level]))
  const {e,result,played,seed}=P.fightOut(won,label,how)
+ if(!won){
+  /* a lost battle pays no XP to anyone — not its fixed XP (the Orphanage's 20), not the formula's — and levels nobody:
+     it only offers the replay (the Continue goes straight back to the map) */
+  assert.deepEqual(xpNow(),xpWas,label+': a lost battle leaves every hero\'s XP where it was')
+  assert.equal(camp().cursor.step,'open',label+': nothing to level after a loss — back to the map')
+  assert.equal(JSON.stringify(Object.values(camp().roster).map(h=>[h.id,h.level])),levelsWas,label+': nobody levels on a loss')
+  LOST.push({label,id,seed})
+ }
  chosen[won?id:id+':lost']=[played,seed,result.turns]
  console.error(`settled ${label}: ${won?'the strong party, the engine\'s AI':'the party held idle, cut at Turn 1'} — ${result.outcome} on Turn ${result.turns}, the Engagement's own seed ${seed}`)
  if(how.civilianFalls)console.error(`${label}: the strong party stood idle until a civilian had fallen, and the engine's AI played from there (kingdom.opening-recap-civilians)`)
@@ -266,10 +279,33 @@ assert.deepEqual(P.heroIds(),[],'the run starts with nobody')
 assert.ok(browser.has(RUN_KEY),'the run is kept in the browser')
 
 /* 2 · battles 1 to 3 */
-const b1=battle(ORPHANAGE,1)
+/* kingdom.opening-replay-rules: the Orphanage is LOST first — the hero's XP stays where it was (no 20 for a loss), the map
+   offers it again with no draft; the replay is fielded on NEW DICE (another seed than the first attempt's, the one the
+   Campaign gives the battle's first replay); the page is closed on that replay's battle and opened again: the same
+   battle, to the byte. Then it is won — and pays its 20.
+   Law 10, 2026-10-04 (kingdom.opening-replay-rules): this read `const b1=battle(ORPHANAGE,1)` — the Orphanage won at once.
+   Everything it held is held below, of the Orphanage won on its replay. */
+const b1=field(ORPHANAGE,1,'battle 1')
 assert.equal(b1.drafted.length,1,'one hero before battle 1')
 const first=b1.drafted[0]
-assert.equal(camp().roster[first].xp>=20&&camp().roster[first].level,2,'the Orphanage pays its 20 XP: the first hero is level 2')
+settle(false,'battle 1 lost')
+assert.equal(camp().roster[first].xp,0,'a lost Orphanage leaves the hero\'s XP where it was: no 20 for a loss')
+assert.equal(P.readMap([],'after losing battle 1'),ORPHANAGE,'the lost Orphanage is offered again')
+P.v.click('field',ORPHANAGE)
+assert.equal(camp().cursor.step,'prep','no draft is owed for the replay');assert.equal(whoGoes('battle 1 again').asked,false)
+let replay1=P.equipThenFight([first],'battle 1 again')
+const dice1={first:b1.s.config.seed,replay:replay1.config.seed}
+assert.equal(dice1.first,1,'the first attempt was fielded on the battle\'s own number');assert.notEqual(dice1.replay,dice1.first,'the replay is fielded on new dice')
+assert.equal(camp().cursor.engagement.seed,dice1.replay);assert.equal(camp().cursor.replays,1,'the Campaign counts the replay')
+assert.deepEqual({...replay1.config,seed:0},{...b1.s.config,seed:0,heroRows:replay1.config.heroRows},'the same battle, the same party — only the dice')
+const asFielded=JSON.stringify({config:replay1.config,events:replay1.ctx.events})
+P=openingPage(page,'?map',browser)
+assert.equal(camp().cursor.step,'battle','a replay left mid-battle reopens on that battle')
+replay1=P.onTheBattle('battle 1 again, reopened')
+assert.equal(JSON.stringify({config:replay1.config,events:replay1.ctx.events}),asFielded,'the replay, reopened from the save, is the same battle to the byte')
+settle(true,'battle 1 won',true,{civilianFalls:true});stayedHome(b1,'battle 1',true)
+assert.equal(camp().roster[first].xp>=20&&camp().roster[first].level,2,'the Orphanage, won, pays its 20 XP: the first hero is level 2')
+assert.equal(camp().cursor.replays??0,0,'the battle won, its replays are spent')
 /* battle 2 lost: the map offers it again, no draft, the same party (a loss with nobody dead is sought first), wounds kept;
    then won */
 const b2=field(LUMBERJACK,2,'battle 2');settle(false,'battle 2 lost')
@@ -286,6 +322,8 @@ assert.equal(camp().cursor.step,'prep','no draft is owed for the replay')
 assert.equal(P.heroIds().length,2,'the replay is the same party of two: a lost battle brings no draft')
 assert.equal(whoGoes('battle 2 again').asked,false,'two free to fight: no choice is asked for the replay')
 const replay=P.equipThenFight(standing,'battle 2 again')
+/* kingdom.opening-replay-rules: the replay is on new dice */
+assert.equal(b2.s.config.seed,2,'battle 2\'s first attempt: its own number');assert.notEqual(replay.config.seed,b2.s.config.seed,'battle 2\'s replay is fielded on new dice')
 assert.deepEqual([...replay.config.heroes].sort(),standing,'the same party')
 for(const id of replay.config.heroes)assert.equal(replay.config.heroRows.find(h=>h.id===id).wound,camp().roster[id].wound,`${id} carries its wound into the replay`)
 /* Law 10, 2026-10-04 (kingdom.page-test-strong-party; engine DECISIONS.md 2026-10-04 "Go ahead, overpowered power party."):
@@ -379,6 +417,7 @@ assert.ok(b6.who.home.some(id=>again.sent.includes(id)),'heroes who stayed home 
 const homeAgain=Object.fromEntries(again.home.map(id=>[id,structuredClone(camp().roster[id])]))
 const xpAgain=Object.fromEntries(again.sent.map(id=>[id,camp().roster[id].xp]))
 const replay6=P.equipThenFight(again.sent,'battle 6 again')
+assert.equal(b6.s.config.seed,6,'battle 6\'s first attempt: its own number');assert.notEqual(replay6.config.seed,b6.s.config.seed,'battle 6\'s replay is fielded on new dice')
 assert.deepEqual([...replay6.config.heroes].sort(),again.sent,'the four chosen for the replay are the four on the board')
 settle(true,'battle 6 won');stayedHome({home:homeAgain,deployed:again.sent,xpBefore:xpAgain},'battle 6 won',true)
 
@@ -521,6 +560,18 @@ const saidOf=list=>list.map(x=>`${x.name} ${x.fate}${x.joins?', joins':''}`).joi
 if(RUN_SEED===11)assert.ok(FREE_WORN.length>=1,'run seed 11 keeps an idol or a bloodrune as a battle reward and wears it')
 for(const x of FREE_WORN){assert.equal(x.fielded,true,`${x.label}: ${x.item} was fielded`);assert.ok(['idol','bloodrune'].includes(x.row.itemClass),x.item+' is an idol or a bloodrune')}
 
+/* 5i · kingdom.opening-replay-rules (engine DECISIONS.md 2026-10-03 'the opening run: the Flaming Longsword waits for its
+   taker; a lost battle pays no XP; a replay rolls new dice': asked "Should a lost battle pay any XP? …" — "Now a lost
+   battle offers a replay." (No) · asked "Should a replayed battle roll new dice? …" — "New dice."): three battles were
+   lost first — the Orphanage, the Lumberjack House and the Cathedral. Each left every hero's XP where it was and
+   levelled nobody (asserted at each, settle), and was offered again from the map with no draft; each replay was fielded
+   on another seed than its first attempt (its own number); the Orphanage's replay, left mid-battle, reopened as the same
+   battle to the byte; and the Orphanage paid its 20 when it was won. */
+assert.deepEqual(LOST.map(x=>x.id),[ORPHANAGE,LUMBERJACK,CATHEDRAL],'three battles lost first');assert.deepEqual(LOST.map(x=>x.seed),[1,2,6],'each first attempt on the battle\'s own number')
+const DICE=[[1,dice1.replay],[2,replay.config.seed],[6,replay6.config.seed]]
+for(const [was,now] of DICE){assert.notEqual(now,was);assert.ok(Number.isSafeInteger(now)&&now>=1&&now<=2147483647,'a seed the engine takes')}
+assert.equal(new Set(DICE.map(d=>d[1])).size,3,'three replays, three other seeds')
+
 /* 6 · the end: every section taken, the run complete — and never the kingdom map */
 assert.equal(P.readMap(ORDER,'the end'),null,'every section is taken')
 assert.match(P.byId('runNote').textContent,/the opening run is complete/,'the map says the run is complete')
@@ -531,4 +582,4 @@ const party=P.heroIds()
 console.error('settled by: '+JSON.stringify(chosen))
 console.error('offers: '+OFFERS.map(o=>`${o.label}: ${o.ids.map(id=>POOL.find(h=>h.id===id).name).join(' / ')} -> ${POOL.find(h=>h.id===o.took).name}`).join('; '))
 console.error('drafted with: '+OFFERS.map(o=>`${POOL.find(h=>h.id===o.took).name}: ${[...o.drafted.badges.map(b=>b.replace('badge.','')),...o.drafted.mods.map(m=>(m.add>0?'+':'')+m.add+' '+m.stat),...o.drafted.unfielded.map(r=>(r.amount>0?'+':'')+r.amount+' '+r.stat+(r.stat==='itemSlots'?' (on the hero, its item slots)':' (not fielded)'))].join(', ')}`).join('; '))
-console.log(`opening run six: six battles from the map, never the kingdom map (Week ${camp().week}); one draft before every battle (${CADENCE.map(x=>x.drafts).join(', ')}): a party of ${CADENCE.map(x=>x.party).join(', ')} at battles 1 to 6; six drafts of three, no class twice, Rogues and Mages offered; three specialties of its own class offered at every specialty choice (${SPECIALTY_CHOICES.length} choices), one taken each time; the page closed on the choice and opened again showed the same three; the first hero chosen by description only and given Leadership, a positive badge and +2 Health; every later draft shown with its rolled modifiers, kept in every battle and to the end of the run, the same after the page is closed and reopened; the party six, one of each class (${party.map(id=>camp().roster[id].classes.find(c=>HERO_CLASSES.includes(c)).replace('class.','')).join(', ')}); four deploy — with five or more free to fight the run asked who goes (${WENT.map(w=>`${w.label}: home ${w.home.map(h=>camp().roster[h].name).join(', ')}`).join('; ')}), the four chosen on Equip and on the board, whoever stayed home unharmed and unpaid, the choice kept when the page is closed on it, and asked again for a lost battle; base heroes left out for no kit: ${LEFT_OUT.map(h=>h.name).join(', ')||'none'}; card art on every hero card (${Object.entries(ART_SEEN).map(([k,n])=>`${k} ${n}`).join(', ')}; heroes with no art on disk, shown blank: ${artless.map(id=>camp().roster[id].name).join(', ')||'none'}); the victory screens showed the civilians who fought, set apart from the heroes and marked unhurt, wounded or dead (the Orphanage: ${saidOf(atOrphanage)}; the Lumberjack House: ${saidOf(atLumberjack)}); a civilian who died (${fallen.map(x=>x.name).join(', ')}) was marked dead and did not join;${FREE_WORN.map(x=>` ${/^[aeiou]/.test(x.row.itemClass)?'an':'a'} ${x.row.itemClass} kept as a battle reward (${x.row.name}, ${Object.entries(x.row.equipCost).map(([c,n])=>n+' '+c.replace('currency.','')).join(', ')} outside the opening) went onto ${camp().roster[x.hero].name} at Equip free — shown as free to equip, nothing taken from the purse — and was fielded in the next battle;`).join('')||' no idol or bloodrune was offered before the last battle;'} item card art: ${ITEM_ART_SEEN.rewardArt+ITEM_ART_SEEN.rewardPlain} reward cards — ${ITEM_ART_SEEN.rewardArt} showed their item's card art, ${ITEM_ART_SEEN.rewardPlain} plain and named in itemsMissing; ${ITEM_ART_SEEN.equipArt+ITEM_ART_SEEN.equipPlain} items on Equip — ${ITEM_ART_SEEN.equipArt} with art, ${ITEM_ART_SEEN.equipPlain} plain and named in itemsMissing${ITEM_ART_SEEN.sword?'; the Flaming Longsword\'s reward card showed its card art':''}; party ${party.map(id=>`${camp().roster[id].name} L${camp().roster[id].level}${camp().roster[id].lifeState==='alive'?'':' ('+camp().roster[id].lifeState+')'}`).join(', ')}; closed after battle 3 and reopened at battle 4 with the same party, items, XP and levels; battle 2 lost and offered again with the same party; a run left mid-battle (battle 4) reopens on that battle; the Bridge's ${b3.kept} kept passed`)
+console.log(`opening run six: six battles from the map, never the kingdom map (Week ${camp().week}); one draft before every battle (${CADENCE.map(x=>x.drafts).join(', ')}): a party of ${CADENCE.map(x=>x.party).join(', ')} at battles 1 to 6; six drafts of three, no class twice, Rogues and Mages offered; three specialties of its own class offered at every specialty choice (${SPECIALTY_CHOICES.length} choices), one taken each time; the page closed on the choice and opened again showed the same three; the first hero chosen by description only and given Leadership, a positive badge and +2 Health; every later draft shown with its rolled modifiers, kept in every battle and to the end of the run, the same after the page is closed and reopened; the party six, one of each class (${party.map(id=>camp().roster[id].classes.find(c=>HERO_CLASSES.includes(c)).replace('class.','')).join(', ')}); four deploy — with five or more free to fight the run asked who goes (${WENT.map(w=>`${w.label}: home ${w.home.map(h=>camp().roster[h].name).join(', ')}`).join('; ')}), the four chosen on Equip and on the board, whoever stayed home unharmed and unpaid, the choice kept when the page is closed on it, and asked again for a lost battle; base heroes left out for no kit: ${LEFT_OUT.map(h=>h.name).join(', ')||'none'}; card art on every hero card (${Object.entries(ART_SEEN).map(([k,n])=>`${k} ${n}`).join(', ')}; heroes with no art on disk, shown blank: ${artless.map(id=>camp().roster[id].name).join(', ')||'none'}); a lost battle paid no XP (the Orphanage, the Lumberjack House and the Cathedral, each lost first: every hero's XP where it was) and was offered again on new dice (${DICE.map(d=>`seed ${d[0]}, then ${d[1]}`).join('; ')}); a replay left mid-battle reopened as the same battle to the byte; the Orphanage won paid its 20; the victory screens showed the civilians who fought, set apart from the heroes and marked unhurt, wounded or dead (the Orphanage: ${saidOf(atOrphanage)}; the Lumberjack House: ${saidOf(atLumberjack)}); a civilian who died (${fallen.map(x=>x.name).join(', ')}) was marked dead and did not join;${FREE_WORN.map(x=>` ${/^[aeiou]/.test(x.row.itemClass)?'an':'a'} ${x.row.itemClass} kept as a battle reward (${x.row.name}, ${Object.entries(x.row.equipCost).map(([c,n])=>n+' '+c.replace('currency.','')).join(', ')} outside the opening) went onto ${camp().roster[x.hero].name} at Equip free — shown as free to equip, nothing taken from the purse — and was fielded in the next battle;`).join('')||' no idol or bloodrune was offered before the last battle;'} item card art: ${ITEM_ART_SEEN.rewardArt+ITEM_ART_SEEN.rewardPlain} reward cards — ${ITEM_ART_SEEN.rewardArt} showed their item's card art, ${ITEM_ART_SEEN.rewardPlain} plain and named in itemsMissing; ${ITEM_ART_SEEN.equipArt+ITEM_ART_SEEN.equipPlain} items on Equip — ${ITEM_ART_SEEN.equipArt} with art, ${ITEM_ART_SEEN.equipPlain} plain and named in itemsMissing${ITEM_ART_SEEN.sword?'; the Flaming Longsword\'s reward card showed its card art':''}; party ${party.map(id=>`${camp().roster[id].name} L${camp().roster[id].level}${camp().roster[id].lifeState==='alive'?'':' ('+camp().roster[id].lifeState+')'}`).join(', ')}; closed after battle 3 and reopened at battle 4 with the same party, items, XP and levels; battle 2 lost and offered again with the same party; a run left mid-battle (battle 4) reopens on that battle; the Bridge's ${b3.kept} kept passed`)

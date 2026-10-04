@@ -102,13 +102,22 @@ describe('kingdom.opening-rewards — the opening pays as ruled', () => {
     expect(spec.heroProgress!.map((p) => p?.level)).toEqual([2, 2, 2])
   })
 
-  it('the Orphanage pays 20 no matter what — a lost one too; the dead get nothing', () => {
+  // Law 10, 2026-10-04 (kingdom.opening-replay-rules; engine DECISIONS.md 2026-10-03 'the opening run: the Flaming Longsword waits for its taker; a lost battle pays no XP; a replay rolls new dice': asked "Should a lost battle pay any XP? (Today a lost Orphanage pays its 20 XP every
+  // time you replay it.)" — "Now a lost battle offers a replay." — No). This test was titled 'the Orphanage pays 20 no
+  // matter what — a lost one too; the dead get nothing' and held of the lost Orphanage
+  //   expect(reckoning.heroes.map((h) => [h.xp, h.wound])).toEqual(DEPLOY.map(() => [20, 1]))
+  // — kingdom SWITCHES openingFixedXp's "on a loss too", which the ruling settles the other way. The rule now: a lost
+  // Orphanage pays nobody (the wounds it left stand); a WON one pays its 20 whatever its kills or length, and the dead
+  // still get nothing.
+  it('the Orphanage pays 20 when it is won, whatever its kills or length — a lost one pays nobody; the dead get nothing', () => {
     const ctx = atOrphanage()
     const lost = panelResult(ctx, false)
     const { reckoning } = decide(ctx, lost)
-    expect(reckoning.heroes.map((h) => [h.xp, h.wound])).toEqual(DEPLOY.map(() => [20, 1]))
+    expect(reckoning.heroes.map((h) => [h.xp, h.wound])).toEqual(DEPLOY.map(() => [0, 1]))
+    expect(reckoning.heroes.some((h) => h.mvp)).toBe(false)
     const ctx2 = atOrphanage()
     const { result } = playIt(ctx2, 1)
+    expect(result.outcome, 'the battle the dead hero is set in is a won one').toBe('heroClear')
     const oneDead = withUnitFate(result, 'hero', 1, { lifeState: 'dead' })
     const { reckoning: k2 } = decide(ctx2, oneDead)
     expect(k2.heroes.map((h) => h.xp)).toEqual([20, 0, 20])

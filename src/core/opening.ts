@@ -18,7 +18,7 @@
 import type { CampaignState, Engagement, Hero, HeroId } from './campaign.js'
 import { makeCampaign } from './campaign.js'
 import { type Ctx, engagementOf, setCursor, setDraftOffer, applyDraft, applyRescue, setEnded } from './mutate.js'
-import { pickOf, rollBelowOf } from './rng.js'
+import { pickOf, rollBelowOf, rollOf } from './rng.js'
 import { firstHeroDraftedOf, handDraftedOf, type Roller, type BaseOf, type Drafted } from './draft-modifiers.js'
 import { UNITS } from '../engine.js'
 import { crucibleBadgeOf, crucibleStatOf } from '../content/crucible.js'
@@ -227,12 +227,29 @@ function beginPrologueBattle(ctx: Ctx, causeId: string): Engagement {
 }
 
 /**
+ * kingdom.opening-replay-rules — ruled 2026-10-03 (Andrew, engine/DECISIONS.md 'the opening run: the Flaming Longsword waits
+ * for its taker; a lost battle pays no XP; a replay rolls new dice': asked "Should a replayed battle roll new dice? (Today
+ * it replays on the same dice.)" — "New dice."). The seed the opening battle on the cursor is fielded on, keyed by what
+ * the battle IS (Law 4): the opening's nth battle, and which attempt at it — never by when. The first attempt is the
+ * battle's own number, as it always was; the kth replay is a roll on the run's own battle cup keyed by the battle's
+ * number and the replay's count (halved into the engine's seed range, never 0). So a replay is new dice, the next replay
+ * differs again, and the same replay fielded from a reopened save is the same battle. Pure.
+ */
+export function openingBattleSeedOf(campaign: CampaignState): number {
+  const n = campaign.cursor.prologue
+  if (n === null) throw new Error('openingBattleSeedOf refused: the opening is done')
+  const replay = campaign.cursor.replays ?? 0
+  return replay === 0 ? n : (rollOf(campaign, CUP_IDS.battle, ['opening', n, 'replay', replay]) >>> 1) || 1
+}
+
+/**
  * kingdom.opening-loop-three (PLAYABLE-OPENING-PLAN.md item 12; engine DECISIONS.md 2026-09-28 'the opening's six battles,
  * in order'): field the next opening battle as an engine encounter — the Engagement's id is the encounter's, so its
  * rewards row (content/encounter-rewards.ts) pays it; the encounter brings its own map, enemies and civilians (none are
  * listed here); its number is the opening's cursor, so the draft cadence counts it. Refused while a draft is owed, off
  * the open step, after the opening or after the Campaign ended. Then Combat Prep, as beginPrologueBattle does.
- * A replayed battle (lost) is fielded again by the same call: the cursor did not move, so nothing is owed.
+ * A replayed battle (lost) is fielded again by the same call: the cursor did not move, so nothing is owed — on new dice
+ * (openingBattleSeedOf: the replay's count went up when it was lost).
  */
 export function performFieldOpeningBattle(ctx: Ctx, battle: { readonly id: string; readonly mapId: string; readonly kind: string }, causeId: string): Engagement {
   const c = ctx.campaign
@@ -244,8 +261,9 @@ export function performFieldOpeningBattle(ctx: Ctx, battle: { readonly id: strin
   const e: Engagement = {
     id: battle.id, kind: battle.kind, prologue: n, territoryId: null, mapId: battle.mapId,
     enemies: [], condition: null, councilOffer: [], tactic: null, deployed: [],
-    // keyed by what the battle is — the opening's nth — so a replay is the same battle (kingdom SWITCHES.md openingReplaySeed)
-    seed: n,
+    // keyed by what the battle is — the opening's nth, and which attempt at it (openingBattleSeedOf; until 2026-10-04 the
+    // number alone, so a replay was the same dice: kingdom SWITCHES.md openingReplaySeed, overturned)
+    seed: openingBattleSeedOf(c),
   }
   setCursor(ctx, { engagement: e, fought: 0 }, causeId)
   beginCombatPrep(ctx, causeId)
@@ -340,14 +358,17 @@ export function performAdvanceOpening(ctx: Ctx, causeId: string): void {
 export function performResolvePrologue(ctx: Ctx, won: boolean, causeId: string, replayed = false): void {
   const c = ctx.campaign
   if (c.cursor.prologue === null) return
-  if (!won && replayed) return
+  // a lost battle that is replayed: nothing advances — and the replay is counted, so it is fielded on new dice
+  // (kingdom.opening-replay-rules; openingBattleSeedOf)
+  if (!won && replayed) { setCursor(ctx, { replays: (c.cursor.replays ?? 0) + 1 }, causeId); return }
   if (!won && !listTerritories(c, (t) => t.kingdom && t.owned).length) {
     setEnded(ctx, `lost prologue battle ${c.cursor.prologue} before the Kingdom Territory was taken`, causeId)
     return
   }
   // each of the opening's battles is its own beat: the field slot clears between them
   tickAssignments(ctx, causeId)
-  setCursor(ctx, { prologue: c.cursor.prologue + 1 }, causeId)
+  // … and the next battle's first attempt is its own: the replays counted were this battle's
+  setCursor(ctx, { prologue: c.cursor.prologue + 1, ...(c.cursor.replays ? { replays: 0 } : {}) }, causeId)
 }
 
 /** Permanent death: the only path out. GAME-ARCHITECTURE.md §6 — harvest, then a fresh Campaign. */

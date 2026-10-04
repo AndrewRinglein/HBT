@@ -442,6 +442,9 @@ export function openingPage(page,search,store){
      through a won battle and joined the roster is marked as joining; and the report names each one wounded or dead as
      a hero is named — "No wounds sustained" is said only when no hero and no civilian was. A lost battle shows none. */
   const fought=result.units.filter(u=>u.side==='hero'&&u.role!==undefined),civs=recap.querySelectorAll('.civilian-member')
+  /* kingdom.opening-replay-rules (engine DECISIONS.md 2026-10-03 '… a lost battle pays no XP; a replay rolls new dice'): a
+     lost battle's screen says no XP was earned */
+  if(!won)assert.match(byId('campaign').innerHTML,/XP earned: <b>0<\/b>/,label+': the lost battle\'s screen says no XP was earned')
   if(!won)assert.equal(civs.length,0,label+': a lost battle\'s screen shows no civilians')
   else{
    assert.equal(civs.length,fought.length,label+': a card for every civilian who fought')
