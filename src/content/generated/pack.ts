@@ -28993,7 +28993,7 @@ export const UNIT_PACK = {
       "abilities": [],
       "triggers": [
         {
-          "id": "trigger.greatsword.bloodletting.bleed-crit",
+          "id": "trigger.greatsword.bloodletting.bleed-crit.hew",
           "hook": "onCrit",
           "chance": 100,
           "select": "target",
@@ -29002,7 +29002,21 @@ export const UNIT_PACK = {
             "statusId": "status.bleed",
             "value": 2
           },
-          "source": "item.greatsword.bloodletting"
+          "source": "item.greatsword.bloodletting",
+          "onlyWithAttack": "attack.greatsword.hew"
+        },
+        {
+          "id": "trigger.greatsword.bloodletting.bleed-crit.great-cleave",
+          "hook": "onCrit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.bleed",
+            "value": 2
+          },
+          "source": "item.greatsword.bloodletting",
+          "onlyWithAttack": "attack.greatsword.great-cleave"
         }
       ],
       "base": "item.greatsword",
@@ -29216,7 +29230,7 @@ export const UNIT_PACK = {
           "onlyWithAttack": "attack.war-axe.hack"
         },
         {
-          "id": "trigger.war-axe.bloodletting.bleed-crit",
+          "id": "trigger.war-axe.bloodletting.bleed-crit.chop",
           "hook": "onCrit",
           "chance": 100,
           "select": "target",
@@ -29225,7 +29239,21 @@ export const UNIT_PACK = {
             "statusId": "status.bleed",
             "value": 2
           },
-          "source": "item.war-axe.bloodletting"
+          "source": "item.war-axe.bloodletting",
+          "onlyWithAttack": "attack.war-axe.chop"
+        },
+        {
+          "id": "trigger.war-axe.bloodletting.bleed-crit.hack",
+          "hook": "onCrit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.bleed",
+            "value": 2
+          },
+          "source": "item.war-axe.bloodletting",
+          "onlyWithAttack": "attack.war-axe.hack"
         }
       ],
       "base": "item.war-axe",
@@ -29615,7 +29643,7 @@ export const UNIT_PACK = {
           "onlyWithAttack": "attack.war-axe.hack"
         },
         {
-          "id": "trigger.war-axe.taunting.taunt",
+          "id": "trigger.war-axe.taunting.taunt.chop",
           "hook": "onHit",
           "chance": 50,
           "select": "target",
@@ -29624,7 +29652,21 @@ export const UNIT_PACK = {
             "statusId": "status.taunt",
             "value": 2
           },
-          "source": "item.war-axe.taunting"
+          "source": "item.war-axe.taunting",
+          "onlyWithAttack": "attack.war-axe.chop"
+        },
+        {
+          "id": "trigger.war-axe.taunting.taunt.hack",
+          "hook": "onHit",
+          "chance": 50,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.taunt",
+            "value": 2
+          },
+          "source": "item.war-axe.taunting",
+          "onlyWithAttack": "attack.war-axe.hack"
         }
       ],
       "base": "item.war-axe",
@@ -29809,7 +29851,7 @@ export const UNIT_PACK = {
           "onlyWithAttack": "attack.war-hammer.skullsplitter"
         },
         {
-          "id": "trigger.war-hammer.frost.frost",
+          "id": "trigger.war-hammer.frost.frost.smash",
           "hook": "onHit",
           "chance": 100,
           "select": "target",
@@ -29818,10 +29860,24 @@ export const UNIT_PACK = {
             "statusId": "status.frost",
             "value": 1
           },
-          "source": "item.war-hammer.frost"
+          "source": "item.war-hammer.frost",
+          "onlyWithAttack": "attack.war-hammer.smash"
         },
         {
-          "id": "trigger.war-hammer.frost.frost-crit",
+          "id": "trigger.war-hammer.frost.frost.skullsplitter",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.frost",
+            "value": 1
+          },
+          "source": "item.war-hammer.frost",
+          "onlyWithAttack": "attack.war-hammer.skullsplitter"
+        },
+        {
+          "id": "trigger.war-hammer.frost.frost-crit.smash",
           "hook": "onCrit",
           "chance": 100,
           "select": "target",
@@ -29830,7 +29886,21 @@ export const UNIT_PACK = {
             "statusId": "status.frost",
             "value": 2
           },
-          "source": "item.war-hammer.frost"
+          "source": "item.war-hammer.frost",
+          "onlyWithAttack": "attack.war-hammer.smash"
+        },
+        {
+          "id": "trigger.war-hammer.frost.frost-crit.skullsplitter",
+          "hook": "onCrit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.frost",
+            "value": 2
+          },
+          "source": "item.war-hammer.frost",
+          "onlyWithAttack": "attack.war-hammer.skullsplitter"
         }
       ],
       "gaps": [
@@ -29940,7 +30010,7 @@ export const UNIT_PACK = {
           "onlyWithAttack": "attack.war-hammer.skullsplitter"
         },
         {
-          "id": "trigger.war-hammer.taunting.taunt",
+          "id": "trigger.war-hammer.taunting.taunt.smash",
           "hook": "onHit",
           "chance": 50,
           "select": "target",
@@ -29949,7 +30019,21 @@ export const UNIT_PACK = {
             "statusId": "status.taunt",
             "value": 2
           },
-          "source": "item.war-hammer.taunting"
+          "source": "item.war-hammer.taunting",
+          "onlyWithAttack": "attack.war-hammer.smash"
+        },
+        {
+          "id": "trigger.war-hammer.taunting.taunt.skullsplitter",
+          "hook": "onHit",
+          "chance": 50,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.taunt",
+            "value": 2
+          },
+          "source": "item.war-hammer.taunting",
+          "onlyWithAttack": "attack.war-hammer.skullsplitter"
         }
       ],
       "gaps": [
@@ -30052,7 +30136,7 @@ export const UNIT_PACK = {
       "abilities": [],
       "triggers": [
         {
-          "id": "trigger.hunting-spear.venomous.poison",
+          "id": "trigger.hunting-spear.venomous.poison.thrust",
           "hook": "onDamage",
           "chance": 100,
           "select": "target",
@@ -30061,10 +30145,24 @@ export const UNIT_PACK = {
             "statusId": "status.poison",
             "value": 1
           },
-          "source": "item.hunting-spear.venomous"
+          "source": "item.hunting-spear.venomous",
+          "onlyWithAttack": "attack.hunting-spear.thrust"
         },
         {
-          "id": "trigger.hunting-spear.venomous.poison-crit",
+          "id": "trigger.hunting-spear.venomous.poison.hurl",
+          "hook": "onDamage",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.poison",
+            "value": 1
+          },
+          "source": "item.hunting-spear.venomous",
+          "onlyWithAttack": "attack.hunting-spear.hurl"
+        },
+        {
+          "id": "trigger.hunting-spear.venomous.poison-crit.thrust",
           "hook": "onCrit",
           "chance": 100,
           "select": "target",
@@ -30073,7 +30171,21 @@ export const UNIT_PACK = {
             "statusId": "status.poison",
             "value": 2
           },
-          "source": "item.hunting-spear.venomous"
+          "source": "item.hunting-spear.venomous",
+          "onlyWithAttack": "attack.hunting-spear.thrust"
+        },
+        {
+          "id": "trigger.hunting-spear.venomous.poison-crit.hurl",
+          "hook": "onCrit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.poison",
+            "value": 2
+          },
+          "source": "item.hunting-spear.venomous",
+          "onlyWithAttack": "attack.hunting-spear.hurl"
         }
       ],
       "base": "item.hunting-spear",
@@ -30096,7 +30208,7 @@ export const UNIT_PACK = {
       "abilities": [],
       "triggers": [
         {
-          "id": "trigger.glaive.bloodletting.bleed-crit",
+          "id": "trigger.glaive.bloodletting.bleed-crit.sweep",
           "hook": "onCrit",
           "chance": 100,
           "select": "target",
@@ -30105,7 +30217,21 @@ export const UNIT_PACK = {
             "statusId": "status.bleed",
             "value": 2
           },
-          "source": "item.glaive.bloodletting"
+          "source": "item.glaive.bloodletting",
+          "onlyWithAttack": "attack.glaive.sweep"
+        },
+        {
+          "id": "trigger.glaive.bloodletting.bleed-crit.impale",
+          "hook": "onCrit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.bleed",
+            "value": 2
+          },
+          "source": "item.glaive.bloodletting",
+          "onlyWithAttack": "attack.glaive.impale"
         }
       ],
       "base": "item.glaive",
@@ -30200,7 +30326,7 @@ export const UNIT_PACK = {
       "abilities": [],
       "triggers": [
         {
-          "id": "trigger.glaive.taunting.taunt",
+          "id": "trigger.glaive.taunting.taunt.sweep",
           "hook": "onHit",
           "chance": 50,
           "select": "target",
@@ -30209,7 +30335,21 @@ export const UNIT_PACK = {
             "statusId": "status.taunt",
             "value": 2
           },
-          "source": "item.glaive.taunting"
+          "source": "item.glaive.taunting",
+          "onlyWithAttack": "attack.glaive.sweep"
+        },
+        {
+          "id": "trigger.glaive.taunting.taunt.impale",
+          "hook": "onHit",
+          "chance": 50,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.taunt",
+            "value": 2
+          },
+          "source": "item.glaive.taunting",
+          "onlyWithAttack": "attack.glaive.impale"
         }
       ],
       "base": "item.glaive",
@@ -30230,7 +30370,7 @@ export const UNIT_PACK = {
       "abilities": [],
       "triggers": [
         {
-          "id": "trigger.crossbow.venomous.poison",
+          "id": "trigger.crossbow.venomous.poison.bolt",
           "hook": "onDamage",
           "chance": 100,
           "select": "target",
@@ -30239,10 +30379,24 @@ export const UNIT_PACK = {
             "statusId": "status.poison",
             "value": 1
           },
-          "source": "item.crossbow.venomous"
+          "source": "item.crossbow.venomous",
+          "onlyWithAttack": "attack.crossbow.bolt"
         },
         {
-          "id": "trigger.crossbow.venomous.poison-crit",
+          "id": "trigger.crossbow.venomous.poison.punch-through",
+          "hook": "onDamage",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.poison",
+            "value": 1
+          },
+          "source": "item.crossbow.venomous",
+          "onlyWithAttack": "attack.crossbow.punch-through"
+        },
+        {
+          "id": "trigger.crossbow.venomous.poison-crit.bolt",
           "hook": "onCrit",
           "chance": 100,
           "select": "target",
@@ -30251,7 +30405,21 @@ export const UNIT_PACK = {
             "statusId": "status.poison",
             "value": 2
           },
-          "source": "item.crossbow.venomous"
+          "source": "item.crossbow.venomous",
+          "onlyWithAttack": "attack.crossbow.bolt"
+        },
+        {
+          "id": "trigger.crossbow.venomous.poison-crit.punch-through",
+          "hook": "onCrit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.poison",
+            "value": 2
+          },
+          "source": "item.crossbow.venomous",
+          "onlyWithAttack": "attack.crossbow.punch-through"
         }
       ],
       "base": "item.crossbow",
@@ -30359,7 +30527,7 @@ export const UNIT_PACK = {
       "abilities": [],
       "triggers": [
         {
-          "id": "trigger.crossbow.goading.taunt",
+          "id": "trigger.crossbow.goading.taunt.bolt",
           "hook": "onDamage",
           "chance": 40,
           "select": "target",
@@ -30368,7 +30536,21 @@ export const UNIT_PACK = {
             "statusId": "status.taunt",
             "value": 1
           },
-          "source": "item.crossbow.goading"
+          "source": "item.crossbow.goading",
+          "onlyWithAttack": "attack.crossbow.bolt"
+        },
+        {
+          "id": "trigger.crossbow.goading.taunt.punch-through",
+          "hook": "onDamage",
+          "chance": 40,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.taunt",
+            "value": 1
+          },
+          "source": "item.crossbow.goading",
+          "onlyWithAttack": "attack.crossbow.punch-through"
         }
       ],
       "base": "item.crossbow",
@@ -30428,7 +30610,7 @@ export const UNIT_PACK = {
           "onlyWithAttack": "attack.hand-crossbow.loaded-bolt"
         },
         {
-          "id": "trigger.hand-crossbow.venomous.poison",
+          "id": "trigger.hand-crossbow.venomous.poison.snapshot",
           "hook": "onDamage",
           "chance": 100,
           "select": "target",
@@ -30437,10 +30619,24 @@ export const UNIT_PACK = {
             "statusId": "status.poison",
             "value": 1
           },
-          "source": "item.hand-crossbow.venomous"
+          "source": "item.hand-crossbow.venomous",
+          "onlyWithAttack": "attack.hand-crossbow.snapshot"
         },
         {
-          "id": "trigger.hand-crossbow.venomous.poison-crit",
+          "id": "trigger.hand-crossbow.venomous.poison.loaded-bolt",
+          "hook": "onDamage",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.poison",
+            "value": 1
+          },
+          "source": "item.hand-crossbow.venomous",
+          "onlyWithAttack": "attack.hand-crossbow.loaded-bolt"
+        },
+        {
+          "id": "trigger.hand-crossbow.venomous.poison-crit.snapshot",
           "hook": "onCrit",
           "chance": 100,
           "select": "target",
@@ -30449,7 +30645,21 @@ export const UNIT_PACK = {
             "statusId": "status.poison",
             "value": 2
           },
-          "source": "item.hand-crossbow.venomous"
+          "source": "item.hand-crossbow.venomous",
+          "onlyWithAttack": "attack.hand-crossbow.snapshot"
+        },
+        {
+          "id": "trigger.hand-crossbow.venomous.poison-crit.loaded-bolt",
+          "hook": "onCrit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.poison",
+            "value": 2
+          },
+          "source": "item.hand-crossbow.venomous",
+          "onlyWithAttack": "attack.hand-crossbow.loaded-bolt"
         }
       ],
       "base": "item.hand-crossbow",
@@ -30621,7 +30831,7 @@ export const UNIT_PACK = {
       "abilities": [],
       "triggers": [
         {
-          "id": "trigger.rapier.frost.frost",
+          "id": "trigger.rapier.frost.frost.thrust",
           "hook": "onHit",
           "chance": 100,
           "select": "target",
@@ -30630,10 +30840,24 @@ export const UNIT_PACK = {
             "statusId": "status.frost",
             "value": 1
           },
-          "source": "item.rapier.frost"
+          "source": "item.rapier.frost",
+          "onlyWithAttack": "attack.rapier.thrust"
         },
         {
-          "id": "trigger.rapier.frost.frost-crit",
+          "id": "trigger.rapier.frost.frost.pierce",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.frost",
+            "value": 1
+          },
+          "source": "item.rapier.frost",
+          "onlyWithAttack": "attack.rapier.pierce"
+        },
+        {
+          "id": "trigger.rapier.frost.frost-crit.thrust",
           "hook": "onCrit",
           "chance": 100,
           "select": "target",
@@ -30642,7 +30866,21 @@ export const UNIT_PACK = {
             "statusId": "status.frost",
             "value": 2
           },
-          "source": "item.rapier.frost"
+          "source": "item.rapier.frost",
+          "onlyWithAttack": "attack.rapier.thrust"
+        },
+        {
+          "id": "trigger.rapier.frost.frost-crit.pierce",
+          "hook": "onCrit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.frost",
+            "value": 2
+          },
+          "source": "item.rapier.frost",
+          "onlyWithAttack": "attack.rapier.pierce"
         }
       ],
       "gaps": [
@@ -30716,7 +30954,7 @@ export const UNIT_PACK = {
           "onlyWithAttack": "attack.raiders-cutlass.boarding-swing"
         },
         {
-          "id": "trigger.raiders-cutlass.bloodletting.bleed-crit",
+          "id": "trigger.raiders-cutlass.bloodletting.bleed-crit.slash",
           "hook": "onCrit",
           "chance": 100,
           "select": "target",
@@ -30725,7 +30963,21 @@ export const UNIT_PACK = {
             "statusId": "status.bleed",
             "value": 2
           },
-          "source": "item.raiders-cutlass.bloodletting"
+          "source": "item.raiders-cutlass.bloodletting",
+          "onlyWithAttack": "attack.raiders-cutlass.slash"
+        },
+        {
+          "id": "trigger.raiders-cutlass.bloodletting.bleed-crit.boarding-swing",
+          "hook": "onCrit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.bleed",
+            "value": 2
+          },
+          "source": "item.raiders-cutlass.bloodletting",
+          "onlyWithAttack": "attack.raiders-cutlass.boarding-swing"
         }
       ],
       "base": "item.raiders-cutlass",
@@ -30903,7 +31155,7 @@ export const UNIT_PACK = {
       "abilities": [],
       "triggers": [
         {
-          "id": "trigger.throwing-knives.venomous.poison",
+          "id": "trigger.throwing-knives.venomous.poison.flick",
           "hook": "onDamage",
           "chance": 100,
           "select": "target",
@@ -30912,10 +31164,24 @@ export const UNIT_PACK = {
             "statusId": "status.poison",
             "value": 1
           },
-          "source": "item.throwing-knives.venomous"
+          "source": "item.throwing-knives.venomous",
+          "onlyWithAttack": "attack.throwing-knives.flick"
         },
         {
-          "id": "trigger.throwing-knives.venomous.poison-crit",
+          "id": "trigger.throwing-knives.venomous.poison.fan",
+          "hook": "onDamage",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.poison",
+            "value": 1
+          },
+          "source": "item.throwing-knives.venomous",
+          "onlyWithAttack": "attack.throwing-knives.fan"
+        },
+        {
+          "id": "trigger.throwing-knives.venomous.poison-crit.flick",
           "hook": "onCrit",
           "chance": 100,
           "select": "target",
@@ -30924,7 +31190,21 @@ export const UNIT_PACK = {
             "statusId": "status.poison",
             "value": 2
           },
-          "source": "item.throwing-knives.venomous"
+          "source": "item.throwing-knives.venomous",
+          "onlyWithAttack": "attack.throwing-knives.flick"
+        },
+        {
+          "id": "trigger.throwing-knives.venomous.poison-crit.fan",
+          "hook": "onCrit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.poison",
+            "value": 2
+          },
+          "source": "item.throwing-knives.venomous",
+          "onlyWithAttack": "attack.throwing-knives.fan"
         }
       ],
       "base": "item.throwing-knives",
@@ -31037,7 +31317,7 @@ export const UNIT_PACK = {
           "onlyWithAttack": "attack.poison-stars.star"
         },
         {
-          "id": "trigger.poison-stars.venomous.poison",
+          "id": "trigger.poison-stars.venomous.poison.star",
           "hook": "onDamage",
           "chance": 100,
           "select": "target",
@@ -31046,10 +31326,24 @@ export const UNIT_PACK = {
             "statusId": "status.poison",
             "value": 1
           },
-          "source": "item.poison-stars.venomous"
+          "source": "item.poison-stars.venomous",
+          "onlyWithAttack": "attack.poison-stars.star"
         },
         {
-          "id": "trigger.poison-stars.venomous.poison-crit",
+          "id": "trigger.poison-stars.venomous.poison.venom-spread",
+          "hook": "onDamage",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.poison",
+            "value": 1
+          },
+          "source": "item.poison-stars.venomous",
+          "onlyWithAttack": "attack.poison-stars.venom-spread"
+        },
+        {
+          "id": "trigger.poison-stars.venomous.poison-crit.star",
           "hook": "onCrit",
           "chance": 100,
           "select": "target",
@@ -31058,7 +31352,21 @@ export const UNIT_PACK = {
             "statusId": "status.poison",
             "value": 2
           },
-          "source": "item.poison-stars.venomous"
+          "source": "item.poison-stars.venomous",
+          "onlyWithAttack": "attack.poison-stars.star"
+        },
+        {
+          "id": "trigger.poison-stars.venomous.poison-crit.venom-spread",
+          "hook": "onCrit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.poison",
+            "value": 2
+          },
+          "source": "item.poison-stars.venomous",
+          "onlyWithAttack": "attack.poison-stars.venom-spread"
         }
       ],
       "base": "item.poison-stars",
@@ -31133,7 +31441,7 @@ export const UNIT_PACK = {
           "onlyWithAttack": "attack.poison-stars.star"
         },
         {
-          "id": "trigger.poison-stars.frost.frost",
+          "id": "trigger.poison-stars.frost.frost.star",
           "hook": "onHit",
           "chance": 100,
           "select": "target",
@@ -31142,10 +31450,24 @@ export const UNIT_PACK = {
             "statusId": "status.frost",
             "value": 1
           },
-          "source": "item.poison-stars.frost"
+          "source": "item.poison-stars.frost",
+          "onlyWithAttack": "attack.poison-stars.star"
         },
         {
-          "id": "trigger.poison-stars.frost.frost-crit",
+          "id": "trigger.poison-stars.frost.frost.venom-spread",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.frost",
+            "value": 1
+          },
+          "source": "item.poison-stars.frost",
+          "onlyWithAttack": "attack.poison-stars.venom-spread"
+        },
+        {
+          "id": "trigger.poison-stars.frost.frost-crit.star",
           "hook": "onCrit",
           "chance": 100,
           "select": "target",
@@ -31154,7 +31476,21 @@ export const UNIT_PACK = {
             "statusId": "status.frost",
             "value": 2
           },
-          "source": "item.poison-stars.frost"
+          "source": "item.poison-stars.frost",
+          "onlyWithAttack": "attack.poison-stars.star"
+        },
+        {
+          "id": "trigger.poison-stars.frost.frost-crit.venom-spread",
+          "hook": "onCrit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.frost",
+            "value": 2
+          },
+          "source": "item.poison-stars.frost",
+          "onlyWithAttack": "attack.poison-stars.venom-spread"
         }
       ],
       "base": "item.poison-stars",
@@ -31178,7 +31514,7 @@ export const UNIT_PACK = {
       "abilities": [],
       "triggers": [
         {
-          "id": "trigger.obsidian-fang-dagger.venomous.poison",
+          "id": "trigger.obsidian-fang-dagger.venomous.poison.fang",
           "hook": "onDamage",
           "chance": 100,
           "select": "target",
@@ -31187,10 +31523,24 @@ export const UNIT_PACK = {
             "statusId": "status.poison",
             "value": 1
           },
-          "source": "item.obsidian-fang-dagger.venomous"
+          "source": "item.obsidian-fang-dagger.venomous",
+          "onlyWithAttack": "attack.obsidian-fang-dagger.fang"
         },
         {
-          "id": "trigger.obsidian-fang-dagger.venomous.poison-crit",
+          "id": "trigger.obsidian-fang-dagger.venomous.poison.gut",
+          "hook": "onDamage",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.poison",
+            "value": 1
+          },
+          "source": "item.obsidian-fang-dagger.venomous",
+          "onlyWithAttack": "attack.obsidian-fang-dagger.gut"
+        },
+        {
+          "id": "trigger.obsidian-fang-dagger.venomous.poison-crit.fang",
           "hook": "onCrit",
           "chance": 100,
           "select": "target",
@@ -31199,7 +31549,21 @@ export const UNIT_PACK = {
             "statusId": "status.poison",
             "value": 2
           },
-          "source": "item.obsidian-fang-dagger.venomous"
+          "source": "item.obsidian-fang-dagger.venomous",
+          "onlyWithAttack": "attack.obsidian-fang-dagger.fang"
+        },
+        {
+          "id": "trigger.obsidian-fang-dagger.venomous.poison-crit.gut",
+          "hook": "onCrit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.poison",
+            "value": 2
+          },
+          "source": "item.obsidian-fang-dagger.venomous",
+          "onlyWithAttack": "attack.obsidian-fang-dagger.gut"
         }
       ],
       "base": "item.obsidian-fang-dagger",
@@ -31224,7 +31588,7 @@ export const UNIT_PACK = {
       "abilities": [],
       "triggers": [
         {
-          "id": "trigger.obsidian-fang-dagger.bloodletting.bleed-crit",
+          "id": "trigger.obsidian-fang-dagger.bloodletting.bleed-crit.fang",
           "hook": "onCrit",
           "chance": 100,
           "select": "target",
@@ -31233,7 +31597,21 @@ export const UNIT_PACK = {
             "statusId": "status.bleed",
             "value": 2
           },
-          "source": "item.obsidian-fang-dagger.bloodletting"
+          "source": "item.obsidian-fang-dagger.bloodletting",
+          "onlyWithAttack": "attack.obsidian-fang-dagger.fang"
+        },
+        {
+          "id": "trigger.obsidian-fang-dagger.bloodletting.bleed-crit.gut",
+          "hook": "onCrit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.bleed",
+            "value": 2
+          },
+          "source": "item.obsidian-fang-dagger.bloodletting",
+          "onlyWithAttack": "attack.obsidian-fang-dagger.gut"
         }
       ],
       "base": "item.obsidian-fang-dagger",
@@ -31281,7 +31659,7 @@ export const UNIT_PACK = {
       "abilities": [],
       "triggers": [
         {
-          "id": "trigger.obsidian-fang-dagger.addling.confusion",
+          "id": "trigger.obsidian-fang-dagger.addling.confusion.fang",
           "hook": "onHit",
           "chance": 40,
           "select": "target",
@@ -31290,7 +31668,21 @@ export const UNIT_PACK = {
             "statusId": "status.confusion",
             "value": 1
           },
-          "source": "item.obsidian-fang-dagger.addling"
+          "source": "item.obsidian-fang-dagger.addling",
+          "onlyWithAttack": "attack.obsidian-fang-dagger.fang"
+        },
+        {
+          "id": "trigger.obsidian-fang-dagger.addling.confusion.gut",
+          "hook": "onHit",
+          "chance": 40,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.confusion",
+            "value": 1
+          },
+          "source": "item.obsidian-fang-dagger.addling",
+          "onlyWithAttack": "attack.obsidian-fang-dagger.gut"
         }
       ],
       "base": "item.obsidian-fang-dagger",
@@ -31314,7 +31706,7 @@ export const UNIT_PACK = {
       "abilities": [],
       "triggers": [
         {
-          "id": "trigger.obsidian-fang-dagger.hobbling.slow",
+          "id": "trigger.obsidian-fang-dagger.hobbling.slow.fang",
           "hook": "onDamage",
           "chance": 100,
           "select": "target",
@@ -31323,7 +31715,21 @@ export const UNIT_PACK = {
             "statusId": "status.slow",
             "value": 2
           },
-          "source": "item.obsidian-fang-dagger.hobbling"
+          "source": "item.obsidian-fang-dagger.hobbling",
+          "onlyWithAttack": "attack.obsidian-fang-dagger.fang"
+        },
+        {
+          "id": "trigger.obsidian-fang-dagger.hobbling.slow.gut",
+          "hook": "onDamage",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.slow",
+            "value": 2
+          },
+          "source": "item.obsidian-fang-dagger.hobbling",
+          "onlyWithAttack": "attack.obsidian-fang-dagger.gut"
         }
       ],
       "base": "item.obsidian-fang-dagger",
@@ -31377,7 +31783,7 @@ export const UNIT_PACK = {
       "abilities": [],
       "triggers": [
         {
-          "id": "trigger.duel-runeblades.bloodletting.bleed-crit",
+          "id": "trigger.duel-runeblades.bloodletting.bleed-crit.twin-cut",
           "hook": "onCrit",
           "chance": 100,
           "select": "target",
@@ -31386,7 +31792,21 @@ export const UNIT_PACK = {
             "statusId": "status.bleed",
             "value": 2
           },
-          "source": "item.duel-runeblades.bloodletting"
+          "source": "item.duel-runeblades.bloodletting",
+          "onlyWithAttack": "attack.duel-runeblades.twin-cut"
+        },
+        {
+          "id": "trigger.duel-runeblades.bloodletting.bleed-crit.rune-cross",
+          "hook": "onCrit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.bleed",
+            "value": 2
+          },
+          "source": "item.duel-runeblades.bloodletting",
+          "onlyWithAttack": "attack.duel-runeblades.rune-cross"
         }
       ],
       "base": "item.duel-runeblades",
@@ -31432,7 +31852,7 @@ export const UNIT_PACK = {
       "abilities": [],
       "triggers": [
         {
-          "id": "trigger.duel-runeblades.frost.frost",
+          "id": "trigger.duel-runeblades.frost.frost.twin-cut",
           "hook": "onHit",
           "chance": 100,
           "select": "target",
@@ -31441,10 +31861,24 @@ export const UNIT_PACK = {
             "statusId": "status.frost",
             "value": 1
           },
-          "source": "item.duel-runeblades.frost"
+          "source": "item.duel-runeblades.frost",
+          "onlyWithAttack": "attack.duel-runeblades.twin-cut"
         },
         {
-          "id": "trigger.duel-runeblades.frost.frost-crit",
+          "id": "trigger.duel-runeblades.frost.frost.rune-cross",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.frost",
+            "value": 1
+          },
+          "source": "item.duel-runeblades.frost",
+          "onlyWithAttack": "attack.duel-runeblades.rune-cross"
+        },
+        {
+          "id": "trigger.duel-runeblades.frost.frost-crit.twin-cut",
           "hook": "onCrit",
           "chance": 100,
           "select": "target",
@@ -31453,7 +31887,21 @@ export const UNIT_PACK = {
             "statusId": "status.frost",
             "value": 2
           },
-          "source": "item.duel-runeblades.frost"
+          "source": "item.duel-runeblades.frost",
+          "onlyWithAttack": "attack.duel-runeblades.twin-cut"
+        },
+        {
+          "id": "trigger.duel-runeblades.frost.frost-crit.rune-cross",
+          "hook": "onCrit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.frost",
+            "value": 2
+          },
+          "source": "item.duel-runeblades.frost",
+          "onlyWithAttack": "attack.duel-runeblades.rune-cross"
         }
       ],
       "base": "item.duel-runeblades",
@@ -31510,7 +31958,7 @@ export const UNIT_PACK = {
           "onlyWithAttack": "attack.shepherds-sling.whirl"
         },
         {
-          "id": "trigger.shepherds-sling.venomous.poison",
+          "id": "trigger.shepherds-sling.venomous.poison.stone",
           "hook": "onDamage",
           "chance": 100,
           "select": "target",
@@ -31519,10 +31967,24 @@ export const UNIT_PACK = {
             "statusId": "status.poison",
             "value": 1
           },
-          "source": "item.shepherds-sling.venomous"
+          "source": "item.shepherds-sling.venomous",
+          "onlyWithAttack": "attack.shepherds-sling.stone"
         },
         {
-          "id": "trigger.shepherds-sling.venomous.poison-crit",
+          "id": "trigger.shepherds-sling.venomous.poison.whirl",
+          "hook": "onDamage",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.poison",
+            "value": 1
+          },
+          "source": "item.shepherds-sling.venomous",
+          "onlyWithAttack": "attack.shepherds-sling.whirl"
+        },
+        {
+          "id": "trigger.shepherds-sling.venomous.poison-crit.stone",
           "hook": "onCrit",
           "chance": 100,
           "select": "target",
@@ -31531,7 +31993,21 @@ export const UNIT_PACK = {
             "statusId": "status.poison",
             "value": 2
           },
-          "source": "item.shepherds-sling.venomous"
+          "source": "item.shepherds-sling.venomous",
+          "onlyWithAttack": "attack.shepherds-sling.stone"
+        },
+        {
+          "id": "trigger.shepherds-sling.venomous.poison-crit.whirl",
+          "hook": "onCrit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.poison",
+            "value": 2
+          },
+          "source": "item.shepherds-sling.venomous",
+          "onlyWithAttack": "attack.shepherds-sling.whirl"
         }
       ],
       "base": "item.shepherds-sling",
@@ -31708,7 +32184,7 @@ export const UNIT_PACK = {
           "onlyWithAttack": "attack.crippling-whip.lash"
         },
         {
-          "id": "trigger.crippling-whip.frost.frost",
+          "id": "trigger.crippling-whip.frost.frost.lash",
           "hook": "onHit",
           "chance": 100,
           "select": "target",
@@ -31717,10 +32193,24 @@ export const UNIT_PACK = {
             "statusId": "status.frost",
             "value": 1
           },
-          "source": "item.crippling-whip.frost"
+          "source": "item.crippling-whip.frost",
+          "onlyWithAttack": "attack.crippling-whip.lash"
         },
         {
-          "id": "trigger.crippling-whip.frost.frost-crit",
+          "id": "trigger.crippling-whip.frost.frost.hamstring",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.frost",
+            "value": 1
+          },
+          "source": "item.crippling-whip.frost",
+          "onlyWithAttack": "attack.crippling-whip.hamstring"
+        },
+        {
+          "id": "trigger.crippling-whip.frost.frost-crit.lash",
           "hook": "onCrit",
           "chance": 100,
           "select": "target",
@@ -31729,7 +32219,21 @@ export const UNIT_PACK = {
             "statusId": "status.frost",
             "value": 2
           },
-          "source": "item.crippling-whip.frost"
+          "source": "item.crippling-whip.frost",
+          "onlyWithAttack": "attack.crippling-whip.lash"
+        },
+        {
+          "id": "trigger.crippling-whip.frost.frost-crit.hamstring",
+          "hook": "onCrit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.frost",
+            "value": 2
+          },
+          "source": "item.crippling-whip.frost",
+          "onlyWithAttack": "attack.crippling-whip.hamstring"
         }
       ],
       "base": "item.crippling-whip",
@@ -31833,7 +32337,7 @@ export const UNIT_PACK = {
           "onlyWithAttack": "attack.iron-claws.eviscerate"
         },
         {
-          "id": "trigger.iron-claws.venomous.poison",
+          "id": "trigger.iron-claws.venomous.poison.rake",
           "hook": "onDamage",
           "chance": 100,
           "select": "target",
@@ -31842,10 +32346,24 @@ export const UNIT_PACK = {
             "statusId": "status.poison",
             "value": 1
           },
-          "source": "item.iron-claws.venomous"
+          "source": "item.iron-claws.venomous",
+          "onlyWithAttack": "attack.iron-claws.rake"
         },
         {
-          "id": "trigger.iron-claws.venomous.poison-crit",
+          "id": "trigger.iron-claws.venomous.poison.eviscerate",
+          "hook": "onDamage",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.poison",
+            "value": 1
+          },
+          "source": "item.iron-claws.venomous",
+          "onlyWithAttack": "attack.iron-claws.eviscerate"
+        },
+        {
+          "id": "trigger.iron-claws.venomous.poison-crit.rake",
           "hook": "onCrit",
           "chance": 100,
           "select": "target",
@@ -31854,7 +32372,21 @@ export const UNIT_PACK = {
             "statusId": "status.poison",
             "value": 2
           },
-          "source": "item.iron-claws.venomous"
+          "source": "item.iron-claws.venomous",
+          "onlyWithAttack": "attack.iron-claws.rake"
+        },
+        {
+          "id": "trigger.iron-claws.venomous.poison-crit.eviscerate",
+          "hook": "onCrit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.poison",
+            "value": 2
+          },
+          "source": "item.iron-claws.venomous",
+          "onlyWithAttack": "attack.iron-claws.eviscerate"
         }
       ],
       "base": "item.iron-claws",
@@ -31890,7 +32422,7 @@ export const UNIT_PACK = {
           "onlyWithAttack": "attack.iron-claws.eviscerate"
         },
         {
-          "id": "trigger.iron-claws.bloodletting.bleed-crit",
+          "id": "trigger.iron-claws.bloodletting.bleed-crit.rake",
           "hook": "onCrit",
           "chance": 100,
           "select": "target",
@@ -31899,7 +32431,21 @@ export const UNIT_PACK = {
             "statusId": "status.bleed",
             "value": 2
           },
-          "source": "item.iron-claws.bloodletting"
+          "source": "item.iron-claws.bloodletting",
+          "onlyWithAttack": "attack.iron-claws.rake"
+        },
+        {
+          "id": "trigger.iron-claws.bloodletting.bleed-crit.eviscerate",
+          "hook": "onCrit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.bleed",
+            "value": 2
+          },
+          "source": "item.iron-claws.bloodletting",
+          "onlyWithAttack": "attack.iron-claws.eviscerate"
         }
       ],
       "base": "item.iron-claws",
@@ -32077,7 +32623,7 @@ export const UNIT_PACK = {
       "abilities": [],
       "triggers": [
         {
-          "id": "trigger.grappling-harpoon.frost.frost",
+          "id": "trigger.grappling-harpoon.frost.frost.brace",
           "hook": "onHit",
           "chance": 100,
           "select": "target",
@@ -32086,10 +32632,24 @@ export const UNIT_PACK = {
             "statusId": "status.frost",
             "value": 1
           },
-          "source": "item.grappling-harpoon.frost"
+          "source": "item.grappling-harpoon.frost",
+          "onlyWithAttack": "attack.grappling-harpoon.brace"
         },
         {
-          "id": "trigger.grappling-harpoon.frost.frost-crit",
+          "id": "trigger.grappling-harpoon.frost.frost.hurl",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.frost",
+            "value": 1
+          },
+          "source": "item.grappling-harpoon.frost",
+          "onlyWithAttack": "attack.grappling-harpoon.hurl"
+        },
+        {
+          "id": "trigger.grappling-harpoon.frost.frost-crit.brace",
           "hook": "onCrit",
           "chance": 100,
           "select": "target",
@@ -32098,7 +32658,21 @@ export const UNIT_PACK = {
             "statusId": "status.frost",
             "value": 2
           },
-          "source": "item.grappling-harpoon.frost"
+          "source": "item.grappling-harpoon.frost",
+          "onlyWithAttack": "attack.grappling-harpoon.brace"
+        },
+        {
+          "id": "trigger.grappling-harpoon.frost.frost-crit.hurl",
+          "hook": "onCrit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.frost",
+            "value": 2
+          },
+          "source": "item.grappling-harpoon.frost",
+          "onlyWithAttack": "attack.grappling-harpoon.hurl"
         }
       ],
       "base": "item.grappling-harpoon",
@@ -32173,7 +32747,7 @@ export const UNIT_PACK = {
           "onlyWithAttack": "attack.apprentice-wand.surge"
         },
         {
-          "id": "trigger.apprentice-wand.eternal-ice.frost",
+          "id": "trigger.apprentice-wand.eternal-ice.frost.spark",
           "hook": "onHit",
           "chance": 100,
           "select": "target",
@@ -32182,7 +32756,21 @@ export const UNIT_PACK = {
             "statusId": "status.frost",
             "value": 2
           },
-          "source": "item.apprentice-wand.eternal-ice"
+          "source": "item.apprentice-wand.eternal-ice",
+          "onlyWithAttack": "attack.apprentice-wand.spark"
+        },
+        {
+          "id": "trigger.apprentice-wand.eternal-ice.frost.surge",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.frost",
+            "value": 2
+          },
+          "source": "item.apprentice-wand.eternal-ice",
+          "onlyWithAttack": "attack.apprentice-wand.surge"
         }
       ],
       "base": "item.apprentice-wand",
@@ -32271,7 +32859,7 @@ export const UNIT_PACK = {
       "abilities": [],
       "triggers": [
         {
-          "id": "trigger.ancient-tome.eternal-ice.frost",
+          "id": "trigger.ancient-tome.eternal-ice.frost.read-the-page",
           "hook": "onHit",
           "chance": 100,
           "select": "target",
@@ -32280,7 +32868,21 @@ export const UNIT_PACK = {
             "statusId": "status.frost",
             "value": 2
           },
-          "source": "item.ancient-tome.eternal-ice"
+          "source": "item.ancient-tome.eternal-ice",
+          "onlyWithAttack": "attack.ancient-tome.read-the-page"
+        },
+        {
+          "id": "trigger.ancient-tome.eternal-ice.frost.long-passage",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.frost",
+            "value": 2
+          },
+          "source": "item.ancient-tome.eternal-ice",
+          "onlyWithAttack": "attack.ancient-tome.long-passage"
         }
       ],
       "base": "item.ancient-tome",
@@ -32673,7 +33275,7 @@ export const UNIT_PACK = {
       "abilities": [],
       "triggers": [
         {
-          "id": "trigger.daggers.venomous.poison",
+          "id": "trigger.daggers.venomous.poison.stab",
           "hook": "onDamage",
           "chance": 100,
           "select": "target",
@@ -32682,10 +33284,24 @@ export const UNIT_PACK = {
             "statusId": "status.poison",
             "value": 1
           },
-          "source": "item.daggers.venomous"
+          "source": "item.daggers.venomous",
+          "onlyWithAttack": "attack.daggers.stab"
         },
         {
-          "id": "trigger.daggers.venomous.poison-crit",
+          "id": "trigger.daggers.venomous.poison.thrown-dagger",
+          "hook": "onDamage",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.poison",
+            "value": 1
+          },
+          "source": "item.daggers.venomous",
+          "onlyWithAttack": "attack.daggers.thrown-dagger"
+        },
+        {
+          "id": "trigger.daggers.venomous.poison-crit.stab",
           "hook": "onCrit",
           "chance": 100,
           "select": "target",
@@ -32694,7 +33310,21 @@ export const UNIT_PACK = {
             "statusId": "status.poison",
             "value": 2
           },
-          "source": "item.daggers.venomous"
+          "source": "item.daggers.venomous",
+          "onlyWithAttack": "attack.daggers.stab"
+        },
+        {
+          "id": "trigger.daggers.venomous.poison-crit.thrown-dagger",
+          "hook": "onCrit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.poison",
+            "value": 2
+          },
+          "source": "item.daggers.venomous",
+          "onlyWithAttack": "attack.daggers.thrown-dagger"
         }
       ],
       "base": "item.daggers",
@@ -32740,7 +33370,7 @@ export const UNIT_PACK = {
       "abilities": [],
       "triggers": [
         {
-          "id": "trigger.daggers.addling.confusion",
+          "id": "trigger.daggers.addling.confusion.stab",
           "hook": "onHit",
           "chance": 40,
           "select": "target",
@@ -32749,7 +33379,21 @@ export const UNIT_PACK = {
             "statusId": "status.confusion",
             "value": 1
           },
-          "source": "item.daggers.addling"
+          "source": "item.daggers.addling",
+          "onlyWithAttack": "attack.daggers.stab"
+        },
+        {
+          "id": "trigger.daggers.addling.confusion.thrown-dagger",
+          "hook": "onHit",
+          "chance": 40,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.confusion",
+            "value": 1
+          },
+          "source": "item.daggers.addling",
+          "onlyWithAttack": "attack.daggers.thrown-dagger"
         }
       ],
       "base": "item.daggers",
@@ -32772,7 +33416,7 @@ export const UNIT_PACK = {
       "abilities": [],
       "triggers": [
         {
-          "id": "trigger.daggers.hobbling.slow",
+          "id": "trigger.daggers.hobbling.slow.stab",
           "hook": "onDamage",
           "chance": 100,
           "select": "target",
@@ -32781,7 +33425,21 @@ export const UNIT_PACK = {
             "statusId": "status.slow",
             "value": 2
           },
-          "source": "item.daggers.hobbling"
+          "source": "item.daggers.hobbling",
+          "onlyWithAttack": "attack.daggers.stab"
+        },
+        {
+          "id": "trigger.daggers.hobbling.slow.thrown-dagger",
+          "hook": "onDamage",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.slow",
+            "value": 2
+          },
+          "source": "item.daggers.hobbling",
+          "onlyWithAttack": "attack.daggers.thrown-dagger"
         }
       ],
       "base": "item.daggers",
@@ -32805,7 +33463,7 @@ export const UNIT_PACK = {
       "abilities": [],
       "triggers": [
         {
-          "id": "trigger.daggers.bloodletting.bleed-crit",
+          "id": "trigger.daggers.bloodletting.bleed-crit.stab",
           "hook": "onCrit",
           "chance": 100,
           "select": "target",
@@ -32814,7 +33472,21 @@ export const UNIT_PACK = {
             "statusId": "status.bleed",
             "value": 2
           },
-          "source": "item.daggers.bloodletting"
+          "source": "item.daggers.bloodletting",
+          "onlyWithAttack": "attack.daggers.stab"
+        },
+        {
+          "id": "trigger.daggers.bloodletting.bleed-crit.thrown-dagger",
+          "hook": "onCrit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.bleed",
+            "value": 2
+          },
+          "source": "item.daggers.bloodletting",
+          "onlyWithAttack": "attack.daggers.thrown-dagger"
         }
       ],
       "base": "item.daggers",
@@ -32858,7 +33530,7 @@ export const UNIT_PACK = {
       "abilities": [],
       "triggers": [
         {
-          "id": "trigger.longbow.rooting.root",
+          "id": "trigger.longbow.rooting.root.shot",
           "hook": "onDamage",
           "chance": 25,
           "select": "target",
@@ -32867,7 +33539,21 @@ export const UNIT_PACK = {
             "statusId": "status.root",
             "value": 1
           },
-          "source": "item.longbow.rooting"
+          "source": "item.longbow.rooting",
+          "onlyWithAttack": "attack.longbow.shot"
+        },
+        {
+          "id": "trigger.longbow.rooting.root.long-shot",
+          "hook": "onDamage",
+          "chance": 25,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.root",
+            "value": 1
+          },
+          "source": "item.longbow.rooting",
+          "onlyWithAttack": "attack.longbow.long-shot"
         }
       ],
       "base": "item.longbow",
@@ -32939,7 +33625,7 @@ export const UNIT_PACK = {
       "abilities": [],
       "triggers": [
         {
-          "id": "trigger.longbow.venomous.poison",
+          "id": "trigger.longbow.venomous.poison.shot",
           "hook": "onDamage",
           "chance": 100,
           "select": "target",
@@ -32948,10 +33634,24 @@ export const UNIT_PACK = {
             "statusId": "status.poison",
             "value": 1
           },
-          "source": "item.longbow.venomous"
+          "source": "item.longbow.venomous",
+          "onlyWithAttack": "attack.longbow.shot"
         },
         {
-          "id": "trigger.longbow.venomous.poison-crit",
+          "id": "trigger.longbow.venomous.poison.long-shot",
+          "hook": "onDamage",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.poison",
+            "value": 1
+          },
+          "source": "item.longbow.venomous",
+          "onlyWithAttack": "attack.longbow.long-shot"
+        },
+        {
+          "id": "trigger.longbow.venomous.poison-crit.shot",
           "hook": "onCrit",
           "chance": 100,
           "select": "target",
@@ -32960,7 +33660,21 @@ export const UNIT_PACK = {
             "statusId": "status.poison",
             "value": 2
           },
-          "source": "item.longbow.venomous"
+          "source": "item.longbow.venomous",
+          "onlyWithAttack": "attack.longbow.shot"
+        },
+        {
+          "id": "trigger.longbow.venomous.poison-crit.long-shot",
+          "hook": "onCrit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.poison",
+            "value": 2
+          },
+          "source": "item.longbow.venomous",
+          "onlyWithAttack": "attack.longbow.long-shot"
         }
       ],
       "base": "item.longbow",
@@ -33002,7 +33716,7 @@ export const UNIT_PACK = {
       "abilities": [],
       "triggers": [
         {
-          "id": "trigger.longbow.goading.taunt",
+          "id": "trigger.longbow.goading.taunt.shot",
           "hook": "onDamage",
           "chance": 40,
           "select": "target",
@@ -33011,7 +33725,21 @@ export const UNIT_PACK = {
             "statusId": "status.taunt",
             "value": 1
           },
-          "source": "item.longbow.goading"
+          "source": "item.longbow.goading",
+          "onlyWithAttack": "attack.longbow.shot"
+        },
+        {
+          "id": "trigger.longbow.goading.taunt.long-shot",
+          "hook": "onDamage",
+          "chance": 40,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.taunt",
+            "value": 1
+          },
+          "source": "item.longbow.goading",
+          "onlyWithAttack": "attack.longbow.long-shot"
         }
       ],
       "base": "item.longbow",
@@ -33062,7 +33790,7 @@ export const UNIT_PACK = {
       "abilities": [],
       "triggers": [
         {
-          "id": "trigger.longbow.frost.frost",
+          "id": "trigger.longbow.frost.frost.shot",
           "hook": "onHit",
           "chance": 100,
           "select": "target",
@@ -33071,10 +33799,24 @@ export const UNIT_PACK = {
             "statusId": "status.frost",
             "value": 1
           },
-          "source": "item.longbow.frost"
+          "source": "item.longbow.frost",
+          "onlyWithAttack": "attack.longbow.shot"
         },
         {
-          "id": "trigger.longbow.frost.frost-crit",
+          "id": "trigger.longbow.frost.frost.long-shot",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.frost",
+            "value": 1
+          },
+          "source": "item.longbow.frost",
+          "onlyWithAttack": "attack.longbow.long-shot"
+        },
+        {
+          "id": "trigger.longbow.frost.frost-crit.shot",
           "hook": "onCrit",
           "chance": 100,
           "select": "target",
@@ -33083,7 +33825,21 @@ export const UNIT_PACK = {
             "statusId": "status.frost",
             "value": 2
           },
-          "source": "item.longbow.frost"
+          "source": "item.longbow.frost",
+          "onlyWithAttack": "attack.longbow.shot"
+        },
+        {
+          "id": "trigger.longbow.frost.frost-crit.long-shot",
+          "hook": "onCrit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.frost",
+            "value": 2
+          },
+          "source": "item.longbow.frost",
+          "onlyWithAttack": "attack.longbow.long-shot"
         }
       ],
       "base": "item.longbow",
@@ -33104,7 +33860,7 @@ export const UNIT_PACK = {
       "abilities": [],
       "triggers": [
         {
-          "id": "trigger.shortbow.rooting.root",
+          "id": "trigger.shortbow.rooting.root.short-shot",
           "hook": "onDamage",
           "chance": 25,
           "select": "target",
@@ -33113,7 +33869,21 @@ export const UNIT_PACK = {
             "statusId": "status.root",
             "value": 1
           },
-          "source": "item.shortbow.rooting"
+          "source": "item.shortbow.rooting",
+          "onlyWithAttack": "attack.shortbow.short-shot"
+        },
+        {
+          "id": "trigger.shortbow.rooting.root.quick-shot",
+          "hook": "onDamage",
+          "chance": 25,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.root",
+            "value": 1
+          },
+          "source": "item.shortbow.rooting",
+          "onlyWithAttack": "attack.shortbow.quick-shot"
         }
       ],
       "base": "item.shortbow",
@@ -33154,7 +33924,7 @@ export const UNIT_PACK = {
       "abilities": [],
       "triggers": [
         {
-          "id": "trigger.shortbow.venomous.poison",
+          "id": "trigger.shortbow.venomous.poison.short-shot",
           "hook": "onDamage",
           "chance": 100,
           "select": "target",
@@ -33163,10 +33933,24 @@ export const UNIT_PACK = {
             "statusId": "status.poison",
             "value": 1
           },
-          "source": "item.shortbow.venomous"
+          "source": "item.shortbow.venomous",
+          "onlyWithAttack": "attack.shortbow.short-shot"
         },
         {
-          "id": "trigger.shortbow.venomous.poison-crit",
+          "id": "trigger.shortbow.venomous.poison.quick-shot",
+          "hook": "onDamage",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.poison",
+            "value": 1
+          },
+          "source": "item.shortbow.venomous",
+          "onlyWithAttack": "attack.shortbow.quick-shot"
+        },
+        {
+          "id": "trigger.shortbow.venomous.poison-crit.short-shot",
           "hook": "onCrit",
           "chance": 100,
           "select": "target",
@@ -33175,7 +33959,21 @@ export const UNIT_PACK = {
             "statusId": "status.poison",
             "value": 2
           },
-          "source": "item.shortbow.venomous"
+          "source": "item.shortbow.venomous",
+          "onlyWithAttack": "attack.shortbow.short-shot"
+        },
+        {
+          "id": "trigger.shortbow.venomous.poison-crit.quick-shot",
+          "hook": "onCrit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.poison",
+            "value": 2
+          },
+          "source": "item.shortbow.venomous",
+          "onlyWithAttack": "attack.shortbow.quick-shot"
         }
       ],
       "base": "item.shortbow",
@@ -33196,7 +33994,7 @@ export const UNIT_PACK = {
       "abilities": [],
       "triggers": [
         {
-          "id": "trigger.shortbow.goading.taunt",
+          "id": "trigger.shortbow.goading.taunt.short-shot",
           "hook": "onDamage",
           "chance": 40,
           "select": "target",
@@ -33205,7 +34003,21 @@ export const UNIT_PACK = {
             "statusId": "status.taunt",
             "value": 1
           },
-          "source": "item.shortbow.goading"
+          "source": "item.shortbow.goading",
+          "onlyWithAttack": "attack.shortbow.short-shot"
+        },
+        {
+          "id": "trigger.shortbow.goading.taunt.quick-shot",
+          "hook": "onDamage",
+          "chance": 40,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.taunt",
+            "value": 1
+          },
+          "source": "item.shortbow.goading",
+          "onlyWithAttack": "attack.shortbow.quick-shot"
         }
       ],
       "base": "item.shortbow",
@@ -33251,7 +34063,7 @@ export const UNIT_PACK = {
       "abilities": [],
       "triggers": [
         {
-          "id": "trigger.shortbow.fire.burn",
+          "id": "trigger.shortbow.fire.burn.short-shot",
           "hook": "onHit",
           "chance": 100,
           "select": "target",
@@ -33260,10 +34072,24 @@ export const UNIT_PACK = {
             "statusId": "status.burn",
             "value": 1
           },
-          "source": "item.shortbow.fire"
+          "source": "item.shortbow.fire",
+          "onlyWithAttack": "attack.shortbow.short-shot"
         },
         {
-          "id": "trigger.shortbow.fire.burn-crit",
+          "id": "trigger.shortbow.fire.burn.quick-shot",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.burn",
+            "value": 1
+          },
+          "source": "item.shortbow.fire",
+          "onlyWithAttack": "attack.shortbow.quick-shot"
+        },
+        {
+          "id": "trigger.shortbow.fire.burn-crit.short-shot",
           "hook": "onCrit",
           "chance": 100,
           "select": "target",
@@ -33272,7 +34098,21 @@ export const UNIT_PACK = {
             "statusId": "status.burn",
             "value": 2
           },
-          "source": "item.shortbow.fire"
+          "source": "item.shortbow.fire",
+          "onlyWithAttack": "attack.shortbow.short-shot"
+        },
+        {
+          "id": "trigger.shortbow.fire.burn-crit.quick-shot",
+          "hook": "onCrit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.burn",
+            "value": 2
+          },
+          "source": "item.shortbow.fire",
+          "onlyWithAttack": "attack.shortbow.quick-shot"
         }
       ],
       "base": "item.shortbow",
@@ -33361,7 +34201,7 @@ export const UNIT_PACK = {
       "abilities": [],
       "triggers": [
         {
-          "id": "trigger.elfbow.rooting.root",
+          "id": "trigger.elfbow.rooting.root.elf-shot",
           "hook": "onDamage",
           "chance": 25,
           "select": "target",
@@ -33370,7 +34210,21 @@ export const UNIT_PACK = {
             "statusId": "status.root",
             "value": 1
           },
-          "source": "item.elfbow.rooting"
+          "source": "item.elfbow.rooting",
+          "onlyWithAttack": "attack.elfbow.elf-shot"
+        },
+        {
+          "id": "trigger.elfbow.rooting.root.double-shot",
+          "hook": "onDamage",
+          "chance": 25,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.root",
+            "value": 1
+          },
+          "source": "item.elfbow.rooting",
+          "onlyWithAttack": "attack.elfbow.double-shot"
         }
       ],
       "base": "item.elfbow",
@@ -33392,7 +34246,7 @@ export const UNIT_PACK = {
       "abilities": [],
       "triggers": [
         {
-          "id": "trigger.elfbow.fire.burn",
+          "id": "trigger.elfbow.fire.burn.elf-shot",
           "hook": "onHit",
           "chance": 100,
           "select": "target",
@@ -33401,10 +34255,24 @@ export const UNIT_PACK = {
             "statusId": "status.burn",
             "value": 1
           },
-          "source": "item.elfbow.fire"
+          "source": "item.elfbow.fire",
+          "onlyWithAttack": "attack.elfbow.elf-shot"
         },
         {
-          "id": "trigger.elfbow.fire.burn-crit",
+          "id": "trigger.elfbow.fire.burn.double-shot",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.burn",
+            "value": 1
+          },
+          "source": "item.elfbow.fire",
+          "onlyWithAttack": "attack.elfbow.double-shot"
+        },
+        {
+          "id": "trigger.elfbow.fire.burn-crit.elf-shot",
           "hook": "onCrit",
           "chance": 100,
           "select": "target",
@@ -33413,7 +34281,21 @@ export const UNIT_PACK = {
             "statusId": "status.burn",
             "value": 2
           },
-          "source": "item.elfbow.fire"
+          "source": "item.elfbow.fire",
+          "onlyWithAttack": "attack.elfbow.elf-shot"
+        },
+        {
+          "id": "trigger.elfbow.fire.burn-crit.double-shot",
+          "hook": "onCrit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.burn",
+            "value": 2
+          },
+          "source": "item.elfbow.fire",
+          "onlyWithAttack": "attack.elfbow.double-shot"
         }
       ],
       "base": "item.elfbow",
@@ -33562,7 +34444,7 @@ export const UNIT_PACK = {
           "onlyWithAttack": "attack.barbarian-bow.crippling-shot"
         },
         {
-          "id": "trigger.barbarian-bow.fire.burn",
+          "id": "trigger.barbarian-bow.fire.burn.power-shot",
           "hook": "onHit",
           "chance": 100,
           "select": "target",
@@ -33571,10 +34453,24 @@ export const UNIT_PACK = {
             "statusId": "status.burn",
             "value": 1
           },
-          "source": "item.barbarian-bow.fire"
+          "source": "item.barbarian-bow.fire",
+          "onlyWithAttack": "attack.barbarian-bow.power-shot"
         },
         {
-          "id": "trigger.barbarian-bow.fire.burn-crit",
+          "id": "trigger.barbarian-bow.fire.burn.crippling-shot",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.burn",
+            "value": 1
+          },
+          "source": "item.barbarian-bow.fire",
+          "onlyWithAttack": "attack.barbarian-bow.crippling-shot"
+        },
+        {
+          "id": "trigger.barbarian-bow.fire.burn-crit.power-shot",
           "hook": "onCrit",
           "chance": 100,
           "select": "target",
@@ -33583,7 +34479,21 @@ export const UNIT_PACK = {
             "statusId": "status.burn",
             "value": 2
           },
-          "source": "item.barbarian-bow.fire"
+          "source": "item.barbarian-bow.fire",
+          "onlyWithAttack": "attack.barbarian-bow.power-shot"
+        },
+        {
+          "id": "trigger.barbarian-bow.fire.burn-crit.crippling-shot",
+          "hook": "onCrit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.burn",
+            "value": 2
+          },
+          "source": "item.barbarian-bow.fire",
+          "onlyWithAttack": "attack.barbarian-bow.crippling-shot"
         }
       ],
       "base": "item.barbarian-bow",
@@ -33675,7 +34585,7 @@ export const UNIT_PACK = {
           "onlyWithAttack": "attack.barbarian-bow.crippling-shot"
         },
         {
-          "id": "trigger.barbarian-bow.rooting.root",
+          "id": "trigger.barbarian-bow.rooting.root.power-shot",
           "hook": "onDamage",
           "chance": 25,
           "select": "target",
@@ -33684,7 +34594,21 @@ export const UNIT_PACK = {
             "statusId": "status.root",
             "value": 1
           },
-          "source": "item.barbarian-bow.rooting"
+          "source": "item.barbarian-bow.rooting",
+          "onlyWithAttack": "attack.barbarian-bow.power-shot"
+        },
+        {
+          "id": "trigger.barbarian-bow.rooting.root.crippling-shot",
+          "hook": "onDamage",
+          "chance": 25,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.root",
+            "value": 1
+          },
+          "source": "item.barbarian-bow.rooting",
+          "onlyWithAttack": "attack.barbarian-bow.crippling-shot"
         }
       ],
       "base": "item.barbarian-bow",
@@ -33756,7 +34680,7 @@ export const UNIT_PACK = {
       "abilities": [],
       "triggers": [
         {
-          "id": "trigger.javelin.venomous.poison",
+          "id": "trigger.javelin.venomous.poison.throw",
           "hook": "onDamage",
           "chance": 100,
           "select": "target",
@@ -33765,10 +34689,24 @@ export const UNIT_PACK = {
             "statusId": "status.poison",
             "value": 1
           },
-          "source": "item.javelin.venomous"
+          "source": "item.javelin.venomous",
+          "onlyWithAttack": "attack.javelin.throw"
         },
         {
-          "id": "trigger.javelin.venomous.poison-crit",
+          "id": "trigger.javelin.venomous.poison.stab",
+          "hook": "onDamage",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.poison",
+            "value": 1
+          },
+          "source": "item.javelin.venomous",
+          "onlyWithAttack": "attack.javelin.stab"
+        },
+        {
+          "id": "trigger.javelin.venomous.poison-crit.throw",
           "hook": "onCrit",
           "chance": 100,
           "select": "target",
@@ -33777,7 +34715,21 @@ export const UNIT_PACK = {
             "statusId": "status.poison",
             "value": 2
           },
-          "source": "item.javelin.venomous"
+          "source": "item.javelin.venomous",
+          "onlyWithAttack": "attack.javelin.throw"
+        },
+        {
+          "id": "trigger.javelin.venomous.poison-crit.stab",
+          "hook": "onCrit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.poison",
+            "value": 2
+          },
+          "source": "item.javelin.venomous",
+          "onlyWithAttack": "attack.javelin.stab"
         }
       ],
       "base": "item.javelin",
@@ -33798,7 +34750,7 @@ export const UNIT_PACK = {
       "abilities": [],
       "triggers": [
         {
-          "id": "trigger.javelin.frost.frost",
+          "id": "trigger.javelin.frost.frost.throw",
           "hook": "onHit",
           "chance": 100,
           "select": "target",
@@ -33807,10 +34759,24 @@ export const UNIT_PACK = {
             "statusId": "status.frost",
             "value": 1
           },
-          "source": "item.javelin.frost"
+          "source": "item.javelin.frost",
+          "onlyWithAttack": "attack.javelin.throw"
         },
         {
-          "id": "trigger.javelin.frost.frost-crit",
+          "id": "trigger.javelin.frost.frost.stab",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.frost",
+            "value": 1
+          },
+          "source": "item.javelin.frost",
+          "onlyWithAttack": "attack.javelin.stab"
+        },
+        {
+          "id": "trigger.javelin.frost.frost-crit.throw",
           "hook": "onCrit",
           "chance": 100,
           "select": "target",
@@ -33819,7 +34785,21 @@ export const UNIT_PACK = {
             "statusId": "status.frost",
             "value": 2
           },
-          "source": "item.javelin.frost"
+          "source": "item.javelin.frost",
+          "onlyWithAttack": "attack.javelin.throw"
+        },
+        {
+          "id": "trigger.javelin.frost.frost-crit.stab",
+          "hook": "onCrit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.frost",
+            "value": 2
+          },
+          "source": "item.javelin.frost",
+          "onlyWithAttack": "attack.javelin.stab"
         }
       ],
       "base": "item.javelin",
@@ -33853,7 +34833,8 @@ export const UNIT_PACK = {
             "statusId": "status.bleed",
             "value": 2
           },
-          "source": "item.longsword.bloodletting"
+          "source": "item.longsword.bloodletting",
+          "onlyWithAttack": "attack.longsword.slash"
         }
       ],
       "base": "item.longsword",
@@ -33996,7 +34977,8 @@ export const UNIT_PACK = {
             "statusId": "status.taunt",
             "value": 2
           },
-          "source": "item.longsword.taunting"
+          "source": "item.longsword.taunting",
+          "onlyWithAttack": "attack.longsword.slash"
         }
       ],
       "base": "item.longsword",
@@ -34095,7 +35077,7 @@ export const UNIT_PACK = {
           "onlyWithAttack": "attack.halberd.hack"
         },
         {
-          "id": "trigger.halberd.bloodletting.bleed-crit",
+          "id": "trigger.halberd.bloodletting.bleed-crit.hack",
           "hook": "onCrit",
           "chance": 100,
           "select": "target",
@@ -34104,7 +35086,21 @@ export const UNIT_PACK = {
             "statusId": "status.bleed",
             "value": 2
           },
-          "source": "item.halberd.bloodletting"
+          "source": "item.halberd.bloodletting",
+          "onlyWithAttack": "attack.halberd.hack"
+        },
+        {
+          "id": "trigger.halberd.bloodletting.bleed-crit.cleave",
+          "hook": "onCrit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.bleed",
+            "value": 2
+          },
+          "source": "item.halberd.bloodletting",
+          "onlyWithAttack": "attack.halberd.cleave"
         }
       ],
       "base": "item.halberd",
@@ -34172,7 +35168,7 @@ export const UNIT_PACK = {
           "onlyWithAttack": "attack.halberd.hack"
         },
         {
-          "id": "trigger.halberd.taunting.taunt",
+          "id": "trigger.halberd.taunting.taunt.hack",
           "hook": "onHit",
           "chance": 50,
           "select": "target",
@@ -34181,7 +35177,21 @@ export const UNIT_PACK = {
             "statusId": "status.taunt",
             "value": 2
           },
-          "source": "item.halberd.taunting"
+          "source": "item.halberd.taunting",
+          "onlyWithAttack": "attack.halberd.hack"
+        },
+        {
+          "id": "trigger.halberd.taunting.taunt.cleave",
+          "hook": "onHit",
+          "chance": 50,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.taunt",
+            "value": 2
+          },
+          "source": "item.halberd.taunting",
+          "onlyWithAttack": "attack.halberd.cleave"
         }
       ],
       "base": "item.halberd",
@@ -34299,7 +35309,8 @@ export const UNIT_PACK = {
             "statusId": "status.confusion",
             "value": 4
           },
-          "source": "item.fire-staff.maddening"
+          "source": "item.fire-staff.maddening",
+          "onlyWithAttack": "attack.fire-staff.fire-blast"
         }
       ],
       "base": "item.fire-staff",
@@ -34344,7 +35355,8 @@ export const UNIT_PACK = {
             "statusId": "status.confusion",
             "value": 1
           },
-          "source": "item.fire-staff.bewildering"
+          "source": "item.fire-staff.bewildering",
+          "onlyWithAttack": "attack.fire-staff.fire-blast"
         }
       ],
       "base": "item.fire-staff",
@@ -34430,7 +35442,8 @@ export const UNIT_PACK = {
             "statusId": "status.frost",
             "value": 2
           },
-          "source": "item.frost-staff.eternal-ice"
+          "source": "item.frost-staff.eternal-ice",
+          "onlyWithAttack": "attack.frost-staff.frost-blast"
         }
       ],
       "base": "item.frost-staff",
@@ -34478,7 +35491,8 @@ export const UNIT_PACK = {
             "statusId": "status.confusion",
             "value": 1
           },
-          "source": "item.frost-staff.bewildering"
+          "source": "item.frost-staff.bewildering",
+          "onlyWithAttack": "attack.frost-staff.frost-blast"
         }
       ],
       "base": "item.frost-staff",
@@ -34596,7 +35610,8 @@ export const UNIT_PACK = {
             "statusId": "status.confusion",
             "value": 4
           },
-          "source": "item.earth-staff.maddening"
+          "source": "item.earth-staff.maddening",
+          "onlyWithAttack": "attack.earth-staff.earth-blast"
         }
       ],
       "gaps": [
@@ -34644,7 +35659,8 @@ export const UNIT_PACK = {
             "statusId": "status.frost",
             "value": 2
           },
-          "source": "item.earth-staff.eternal-ice"
+          "source": "item.earth-staff.eternal-ice",
+          "onlyWithAttack": "attack.earth-staff.earth-blast"
         }
       ],
       "gaps": [
@@ -34704,7 +35720,8 @@ export const UNIT_PACK = {
             "statusId": "status.confusion",
             "value": 1
           },
-          "source": "item.lightning-staff.bewildering"
+          "source": "item.lightning-staff.bewildering",
+          "onlyWithAttack": "attack.lightning-staff.bolt"
         }
       ],
       "base": "item.lightning-staff",
@@ -34736,7 +35753,8 @@ export const UNIT_PACK = {
             "statusId": "status.confusion",
             "value": 4
           },
-          "source": "item.lightning-staff.maddening"
+          "source": "item.lightning-staff.maddening",
+          "onlyWithAttack": "attack.lightning-staff.bolt"
         }
       ],
       "base": "item.lightning-staff",
@@ -34769,7 +35787,8 @@ export const UNIT_PACK = {
             "statusId": "status.frost",
             "value": 2
           },
-          "source": "item.force-staff.eternal-ice"
+          "source": "item.force-staff.eternal-ice",
+          "onlyWithAttack": "attack.force-staff.force-blast"
         }
       ],
       "base": "item.force-staff",
@@ -34847,7 +35866,8 @@ export const UNIT_PACK = {
             "statusId": "status.confusion",
             "value": 1
           },
-          "source": "item.force-staff.bewildering"
+          "source": "item.force-staff.bewildering",
+          "onlyWithAttack": "attack.force-staff.force-blast"
         }
       ],
       "base": "item.force-staff",
@@ -34943,7 +35963,8 @@ export const UNIT_PACK = {
             "statusId": "status.confusion",
             "value": 1
           },
-          "source": "item.holy-symbol.bewildering"
+          "source": "item.holy-symbol.bewildering",
+          "onlyWithAttack": "attack.holy-symbol.wrath"
         }
       ],
       "base": "item.holy-symbol",
