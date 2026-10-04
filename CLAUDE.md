@@ -56,7 +56,8 @@ tests"). The viewer's code is `src/`, `tools/`, `test/`, `battles/`, `art-src/`,
 - After a **re-dump** (a new content pack, an engine change: `npm run static`,
   `node tools/dump-fields.mjs`) with no viewer code changed, `node tools/gate.mjs --land` rebuilds
   the page without running the parts: each part is printed `SKIPPED` with the reason and the page
-  `REBUILT, NOT RE-VERIFIED` — never PASS for a part that did not run.
+  `REBUILT, NOT RE-VERIFIED` — never PASS for a part that did not run. A part that **fails** is
+  written to `.state/passes.jsonl` as a failure, and `--land` then refuses until the gate passes again.
 - **What it costs, as ruled:** the gate plays the engine's battles and kingdom's built page, and its
   pass is keyed on the viewer's code alone. A new pack or an engine change that breaks the page's
   playback is found at the once-per-chat full run (`node ../tools/combine.mjs <worker folder> --full`,

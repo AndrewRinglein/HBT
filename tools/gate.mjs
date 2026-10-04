@@ -58,7 +58,7 @@ import { createHash } from 'node:crypto'
 import { mergedFails } from './verify-slices.mjs'
 import { PAGE_TESTS } from './page-tests.mjs'
 import { codeStamp, stampOf, allStamps, PACKAGES } from '../../engine/tools/code-stamp.mjs'
-import { readPasses, hasPass, appendPass, copyName } from '../../engine/tools/suites.mjs'
+import { readPasses, hasPass, appendPass, appendFail, copyName } from '../../engine/tools/suites.mjs'
 
 const PKG = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 process.chdir(PKG)
@@ -246,6 +246,8 @@ function runPart(name) {
   rec.parts[name] = { ...r, secs: secs(t0), at: new Date().toISOString(), code: codeNow(), withKey: withKeyNow() }
   mkdirSync('.build', { recursive: true })
   writeFileSync(RECORD, JSON.stringify(rec, null, 1) + '\n')
+  // a failed part is recorded against the viewer's code too: an older pass on this code is not relied on after it (--land then refuses)
+  if (!r.ok) appendFail(PKG, { suite: 'viewer', stamp: rec.parts[name].code, by: `gate --part ${name}`, in: copyName(ROOT) })
   console.log(`\npart ${name}: ${r.ok ? 'PASS' : 'FAIL — ' + r.why} (${secs(t0)} s) · tree ${tree.slice(0, 10)}`)
   return r.ok
 }
