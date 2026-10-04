@@ -117,6 +117,19 @@ export const LESSONS: readonly LessonRow[] = [
   { id: 'lesson.orphanage.phases', encounterId: ORPHANAGE, starts: 'event', event: { type: 'turn.end' }, ends: 'time', holds: true,
     words: ['Each turn has a Hero Phase, when your units act, and an Enemy Phase, when the enemies act.', 'At the end of the enemy phase, reinforcements and battle changes can occur.'] },
 
+  // ── kingdom.tutorial-orphanage-civilians-and-ending (2026-10-04; the same entry, the extra steps (a) and (c)): "Civilians are yours
+  //    to move: \"Move the civilians away from danger.\"" — "we should do A right away."; "A hero's turn ends after its primary
+  //    action, and what End Turn does." — "Okay, we need to do C." ──
+  // (a) the first time a civilian's Activation begins
+  { id: 'lesson.orphanage.civilians-yours', encounterId: ORPHANAGE, starts: 'activation-begins', ends: 'time', of: 'civilians',
+    words: ['The civilians are yours to move.', 'Move them away from danger.'], point: { at: 'acting' } },
+  // (c1) the first time a unit's Activation ends because its primary action resolved
+  { id: 'lesson.orphanage.primary-ends', encounterId: ORPHANAGE, starts: 'primary-ended', ends: 'time',
+    words: ["A primary action ends that unit's Activation."] },
+  // (c2) in Turn 2's Hero Phase, once one unit has acted and another has not — not in Turn 1, which is not to be crowded
+  { id: 'lesson.orphanage.end-turn', encounterId: ORPHANAGE, starts: 'some-acted', ends: 'time', fromTurn: 2,
+    words: ['When all of your units have acted, the Enemy Phase begins.', 'End Turn begins it now: units that have not acted lose their Activation.'],
+    point: { at: 'end-turn' } },
 ]
 
 /** The reveal that says a lesson's row has been shown in this run. */
