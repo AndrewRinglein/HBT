@@ -654,7 +654,9 @@
   "shape": "plumbing",
   "spec": "Ruled 2026-10-03 (Andrew, engine/DECISIONS.md 'the civilians show on the victory screen ...'): 'The battle should show in this victory screen too. If they were wounded, if they died, they're in there too.' - asked whether he meant the civilians: '2, yes.' Today the victory screen (kingdom src/ui/after.ts recapScreen) draws the deployed heroes only (`e.deployed` from the roster), each portrait with its wound or death mark, and its report lines name only them. Show the civilians who fought the battle beside the heroes - the units the encounter placed on the player's side (the Orphan Child and the School Teacher at the Orphanage, the Lumberjack and his Wife at the Lumberjack House) - each with its portrait or card art and the same marks: unhurt, wounded, dead; and name a wounded or dead civilian in the report lines as a hero is named. Read them from the battle's own result (the engine's units on the hero side that are not roster heroes), not from a list of names. Set apart from the heroes so the two are not confused (a divider or a smaller row - the look is Andrew's to judge). 'Decisive Victory - No wounds sustained' is said only when no hero and no civilian was wounded or killed - or keep it the heroes' and say which was chosen, as a kingdom switch. A civilian who survives and joins the pool (2026-08-23 'They CAN survive and join') is marked as joining, if the run records it. Rebuild the pages.",
   "expect": "At http://127.0.0.1:4230/play the victory screen after the Orphanage shows the first hero and, set apart, the Orphan Child and the School Teacher, each marked unhurt, wounded or dead as the battle left them; after the Lumberjack House it shows the Lumberjack and his Wife the same way; the page test asserts a card for every player-side unit of the battle and the mark of a civilian who died.",
-  "note": "Filed by the kingdom chat from Andrew's ruling, 2026-10-03, while he played the opening run."
+  "note": "Filed by the kingdom chat from Andrew's ruling, 2026-10-03, while he played the opening run.",
+  "status": "done-needs-review",
+  "sha": "93f1bc6"
  },
  {
   "id": "kingdom.opening-free-equip",
