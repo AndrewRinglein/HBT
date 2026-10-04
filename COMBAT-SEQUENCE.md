@@ -187,7 +187,8 @@ thing anyone means. **The End of Activation ladder still runs**, which is what m
 | # | Rung | Built? |
 |---|---|---|
 | 1 | Check movement points — enough to enter? | **yes** |
-| 2 | Attacks of opportunity fire → **settle** | *not yet* |
+| 2 | Attacks of opportunity fire → **settle** | **yes** — leaving a zone of control draws each holder's **special free attack** (rule.free-attack-is-basic-attack, 2026-10-04): its basic attack — the first action of the weapon in hand, when that is a melee attack — else its own unarmed attack (Punch), through THE attack function as a reaction: no Stamina asked for or spent, −20 Accuracy (`FREE_ATTACK`, a named row of the accuracy ladder), the declared line marked `free`. A hit ends the mover's movement. `src/core/free-attack.ts` |
+| 5b | **Fend** → **settle** | **yes** — capability.counterattack-and-fend (2026-10-04): after the mover has entered a hex and met its ground, each standing enemy whose zone of control it has just walked INTO (it was outside that zone on the hex before) and whose `fend` stat is above 0 makes its special free attack on it — the same free attack as rung 2, plus its `fendAccuracy`; once per fender per walk; a hit ends the movement on that hex. A sidestep, a flight and a walk that ignores zones of control draw none. |
 | 3 | Enter the hex, spend the points | **yes** |
 | 4 | Traps → **settle** | *not yet* |
 | 5 | Gain terrain status from the hex | *not yet* |
@@ -205,6 +206,14 @@ Repeat per hex. Vision and stealth recalculate after **every** step, after every
 ### Primary action
 
 Attack or class power.
+
+**Counterattack** (capability.counterattack-and-fend, 2026-10-04; DECISIONS.md 2026-09-28: "set off by being attacked, not by
+being hit, blocked, or dodged" — "once per enemy action … all three of their attacks will resolve, and then you will get your
+one counterattack"). After an attack made on the attacker's own Activation has resolved WHOLE — every hit, its KDB check, its
+Destroy — and settled: if it was a melee attack, the attacker still stands beside the unit it attacked, and that unit still
+stands with its `counterattack` stat above 0, the unit makes its special free attack on the attacker (the basic attack, no
+Stamina, −20 Accuracy, plus its `counterattackAccuracy`), then settle. A burst is not an attack and draws none; a special
+free attack (an attack of opportunity, a fend, a counterattack) is never answered.
 
 ### Surge check
 
@@ -637,6 +646,6 @@ nothing changes. SWITCHES.md "Per-unit mods at fielding".
 
 ## V2 burst resolution (2026-09-16)
 
-COMBAT-V2-DESIGN sections 4/7/15/18 supersede legacy arc/blast attacks. A burst command names a centre hex. Validate range, hex visibility, high LOS, floor and shared action limits before spending anything. Freeze origin, shape hexes, source packets and eligible stable UIDs/recipient geometry; spend the action once and emit burst.declared. In UID order, skip recipients already dead/zero, emit shielding for high intersections, otherwise apply one stacked low-prop attenuation budget across ordered damage packets. Positive exposed payload invokes defender onBurst once; its actual effects precede planning. Stable authored burstScale saves floor covered source damage. Shared Frost (once), Protection and each typed defense resolve the actual rung. Spend pools once, apply ordered packets, then healing; emit exact burst.struck facts. Settle after the complete burst, retaining onDeath and ordinary battle-result XP. There is no attack hook, hit/crit/block roll, or burst KDB in this stage.
+COMBAT-V2-DESIGN sections 4/7/15/18 supersede legacy arc/blast attacks. A burst command names a centre hex. Validate range, hex visibility, high LOS, floor and shared action limits before spending anything. Freeze origin, shape hexes, source packets and eligible stable UIDs/recipient geometry; spend the action once and emit burst.declared. In UID order, skip recipients already dead/zero, emit shielding for high intersections, otherwise apply one stacked low-prop attenuation budget across ordered damage packets. Positive exposed payload invokes defender onBurst once; its actual effects precede planning. Stable authored burstScale saves floor covered source damage. Shared Frost (once), Protection and each typed defense resolve the actual rung. Spend pools once, apply ordered packets, then healing; emit exact burst.struck facts. After the last recipient, Destroy reaches every prop touching the shape; then a burst whose profile names a ground layer (`paints`, capability.burst-paints-ground, 2026-10-04) paints every hex of its shape through `paintGround` — shielded or not, a unit there or not — and each standing unit on a painted hex takes that layer's entry beat. Settle after the complete burst, retaining onDeath and ordinary battle-result XP. There is no attack hook, hit/crit/block roll, or burst KDB in this stage.
 
 Public previews never execute future onBurst hooks: numbers are current-state/conditional. See V2-BURSTS.md for explicit zero/negative exposure, endpoint cover, moved targets, new summons, caster death, Taunt/Powers Locked, mixed damage/healing and packet-source policy.

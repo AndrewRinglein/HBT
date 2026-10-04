@@ -79,6 +79,29 @@ const RAW_SCENARIOS: Readonly<Record<string, ScenarioDef>> = {
     mapId: 'map.open', heroes: ['test-warrior', 'test-warrior'], heroHexes: [85, 100], heroItems: [['item.rune-kairin'], ['item.rune-vampire-hunter']],
     enemies: ['test-zombie', 'test-zombie', 'test-zombie'], enemyHexes: [86, 101, 87], replicate: 0,
   },
+  // movement.back-flip (2026-10-04; Andrew 2026-10-03, DECISIONS.md 'Back Flip is a general Rogue and Ranger
+  // class power'): no hero starts with Back Flip, so no standard battle can show it - this fields a Ranger and
+  // a Rogue who each drafted it at a power grant (heroProgress.powers), against three zombies. The kiters step
+  // with it when it is ready and with their Side Roll while it is down. A fielding, not a balance claim.
+  'test.back-flip': {
+    id: 'test.back-flip', note: 'TEST: a Ranger and a Rogue who each drafted power.back-flip from the general pool of their class, against three zombies. No campaign claim.',
+    mapId: 'map.open', heroes: ['hero.base.ranger-ranger', 'hero.base.rogue-raven'], heroHexes: [85, 101],
+    heroProgress: [{ level: 1, powers: ['power.back-flip'] }, { level: 1, powers: ['power.back-flip'] }],
+    enemies: ['test-zombie', 'test-zombie', 'test-zombie'], enemyHexes: [89, 105, 121], replicate: 0,
+  },
+  // capability.counterattack-and-fend (2026-10-04; Andrew 2026-09-28, DECISIONS.md 'counterattack, special free attacks,
+  // the opening six, shields, custom weapons'): the two special free attacks a power puts up, each live in a real
+  // battle. A paladin with his Longsword raises its Counterattack when he cannot reach a zombie, and answers the one
+  // that swings at him; a warrior carrying the test Fend power fends off the zombies that walk up to him. Fieldings,
+  // not balance claims.
+  'test.counterattack': {
+    id: 'test.counterattack', note: 'TEST: a paladin with his Longsword (Counterattack with +10 Accuracy, until the end of his next Turn) against two zombies. No campaign claim.',
+    mapId: 'map.open', heroes: ['hero.base.paladin-hunk'], heroHexes: [85], enemies: ['unit.zombie', 'unit.zombie'], enemyHexes: [91, 107], replicate: 0,
+  },
+  'test.fend': {
+    id: 'test.fend', note: 'TEST: a warrior wearing test.badge.fender (grants power.test-fend: Fend until the end of his next Turn) against three zombies that must walk up to him. No campaign claim.',
+    mapId: 'map.open', heroes: ['hero.base.warrior-iron'], heroHexes: [85], heroBadges: [['test.badge.fender']], enemies: ['unit.zombie', 'unit.zombie', 'unit.zombie'], enemyHexes: [91, 107, 75], replicate: 0,
+  },
   // content.afflictions-revised (2026-09-29, Andrew, DECISIONS.md 'the four afflictions'): "when the
   // affliction of Vampirism happens, it grants both Cold Heart and Vampirism." A real battle in which a
   // Vampire's bite afflicts — replicate 7 is the first whose 20% roll succeeds (found, not tuned).

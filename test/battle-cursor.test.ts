@@ -317,6 +317,28 @@ const impBlastTunedGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-c
 // `changed` marks the cases that differ from the content.imp-blast-tuned capture — every case fix.civilians-field-kit moves. A
 // `changed` case is checked here and skips the older layers; the rest run down this copy's three layers, then master's, as before.
 const combineCiviliansKitGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-combine-civilians-kit.json', import.meta.url), 'utf8'))
+// capability.burst-paints-ground (2026-10-04; DECISIONS.md 2026-10-03 'reported: the priest's Holy Texts has no heal in battle'),
+// Law 10: a burst leaves its ground — Flame Burst's seven hexes burn, Frost Nova's frost — and the two staffs name no gap. Every
+// case frozen here (tools/capture-burst-paints-ground-cursor.mts). Moved for real (state, RNG and result): the four cases in which a
+// staff mage casts one — showcase.kiln, showcase.rime, showcase.supper and test.opening-cathedral (the fixture counts each case's
+// painted hexes). Moved in text only: the nine other cases that field a staff, whose unit.equipped line no longer carries the gap
+// sentence — showcase.assembled-party, showcase.eve-24-b, showcase.horrors, showcase.surrounded, showcase.waystation,
+// test.opening-gates and progression-surge-0/1/2. A `changed` case is checked here and skips the older layers.
+const burstPaintsGroundGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-burst-paints-ground.json', import.meta.url), 'utf8'))
+// rule.free-attack-is-basic-attack (2026-10-04; DECISIONS.md 2026-09-28 'counterattack, special free attacks …' and 2026-10-04 'the
+// basic attack is a weapon's first attack, and every free attack uses it without paying stamina'), Law 10: the attack of opportunity
+// is the holder's basic attack, spends no Stamina (no stamina.spent line) and rolls at −20 Accuracy, and its declared line says
+// `free`. Every case frozen here (tools/capture-free-attack-cursor.mts; the fixture counts each case's attacks of opportunity).
+// The 32 cases in which a unit leaves a zone of control moved — for real (state, RNG or result) where the swing changed or its roll
+// now falls the other side of the chance, in text only where the same swing lands the same way. A `changed` case is checked here
+// and skips the older layers.
+const freeAttackGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-free-attack.json', import.meta.url), 'utf8'))
+// capability.counterattack-and-fend (2026-10-04; DECISIONS.md 2026-09-28 'counterattack, special free attacks, the opening six,
+// shields, custom weapons'), Law 10: the Longsword carries a Counterattack power, the computer uses it, and a unit with
+// Counterattack up answers a melee attack. Every case frozen here (tools/capture-counterattack-cursor.mts; the fixture counts each
+// case's counterattacks and fends). The 19 cases that field a Longsword moved (its `unit.equipped` line names the power; where the
+// power is used the fight re-times). A `changed` case is checked here and skips the older layers.
+const counterattackGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-counterattack.json', import.meta.url), 'utf8'))
 // fix.own-area-skips-owner (2026-10-04; DECISIONS.md 2026-10-04 'the Poison Imp, the Balrog and the four caster-centred class powers skip
 // their owner too': "One and two, yes, skip the caster."), Law 10: the Poison Imp's end-of-Activation Poison and the Balrog's
 // end-of-Activation Burn target every OTHER unit within 2 hexes, so neither lands on its owner at the end of its Activations.
@@ -336,6 +358,14 @@ const probeCadenceGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cu
 // on a line the log already had, no fight moved (movedOnlyText in the fixture: state, RNG and result unchanged).
 // Every case frozen here (tools/capture-affliction-pop-up-words-cursor.mts). Moved — in the log's words only (the events' hash; state, RNG and result unchanged), the cases in which a hero gains an affliction: showcase.prologue-party, showcase.waystation, test.afflictions-at-zero-rule, test.vampire-bite. A `changed` case is checked here and skips the older layers.
 const afflictionWordsGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-affliction-pop-up-words.json', import.meta.url), 'utf8'))
+// combine (2026-10-04; GBH SWITCHES combine.mergeMainFirst): engine master ea9dafc (capability.burst-paints-ground,
+// rule.free-attack-is-basic-attack, capability.counterattack-and-fend) merged into the kingdom worker's copy (fix.own-area-skips-owner,
+// fix.opening-orphanage-closer-start, fix.opening-probe-cadence, fix.affliction-pop-up-words). Each side froze its own layers on its
+// own tree, from the same layer below (combine-civilians-kit); a case both sides moved is neither side's hash on the combined tree.
+// Every case frozen here on the combined tree (tools/capture-combine-free-attack-cursor.mts): `changed` marks the cases that differ
+// from the fix.affliction-pop-up-words capture (this copy's top layer) — every case master's three items move. A `changed` case is
+// checked here and skips the older layers; the rest run down this copy's four layers, then master's three, then the layers below.
+const combineFreeAttackGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-combine-free-attack.json', import.meta.url), 'utf8'))
 const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
 // Explicit rule migration, not regenerated historical hashes. These nine old
 // cases contain Surge ledger/refresh changes or terminal markers corrected
@@ -459,11 +489,17 @@ describe('resumable battle cursor', () => {
       const fireImpBurnExpected = fireImpBurnGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const impBlastTunedExpected = impBlastTunedGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const combineCiviliansKitExpected = combineCiviliansKitGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+      const burstPaintsGroundExpected = burstPaintsGroundGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+      const freeAttackExpected = freeAttackGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+      const counterattackExpected = counterattackGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const ownAreaExpected = ownAreaGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const closerStartExpected = closerStartGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const probeCadenceExpected = probeCadenceGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const afflictionWordsExpected = afflictionWordsGolden.cases.find((row:{id:string})=>row.id===fixture.id)
-      const afflictionWordsMoved = afflictionWordsExpected?.changed === true
+      const combineFreeAttackExpected = combineFreeAttackGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+      const combineFreeAttackMoved = combineFreeAttackExpected?.changed === true
+      // was: const afflictionWordsMoved = afflictionWordsExpected?.changed === true — a case the combined tree moved skips this layer too (combine 2026-10-04)
+      const afflictionWordsMoved = afflictionWordsExpected?.changed === true || combineFreeAttackMoved
       // was: const probeCadenceMoved = probeCadenceExpected?.changed === true — a case fix.affliction-pop-up-words moved skips this layer too (fix.affliction-pop-up-words 2026-10-04)
       const probeCadenceMoved = probeCadenceExpected?.changed === true || afflictionWordsMoved
       // was: const closerStartMoved = closerStartExpected?.changed === true — a case fix.opening-probe-cadence moved skips this layer too (fix.opening-probe-cadence 2026-10-04)
@@ -471,7 +507,15 @@ describe('resumable battle cursor', () => {
       // was: const ownAreaMoved = ownAreaExpected?.changed === true — a case fix.opening-orphanage-closer-start moved skips this layer too (fix.opening-orphanage-closer-start 2026-10-04)
       const ownAreaMoved = ownAreaExpected?.changed === true || closerStartMoved
       // was: const combineCiviliansKitMoved = combineCiviliansKitExpected?.changed === true — a case fix.own-area-skips-owner moved skips this layer too (fix.own-area-skips-owner 2026-10-04)
-      const combineCiviliansKitMoved = combineCiviliansKitExpected?.changed === true || ownAreaMoved
+      // (combine 2026-10-04: this copy's line here read `const combineCiviliansKitMoved = combineCiviliansKitExpected?.changed === true || ownAreaMoved` — master's three layers sit between; the line is master's, below)
+      // was: const counterattackMoved = counterattackExpected?.changed === true — a case this copy's four layers moved skips master's three too (combine 2026-10-04: master's layers sit under this copy's)
+      const counterattackMoved = counterattackExpected?.changed === true || ownAreaMoved
+      // was: const freeAttackMoved = freeAttackExpected?.changed === true — a counterattack-moved case skips the free-attack layer too (capability.counterattack-and-fend 2026-10-04)
+      const freeAttackMoved = freeAttackExpected?.changed === true || counterattackMoved
+      // was: const burstPaintsGroundMoved = burstPaintsGroundExpected?.changed === true — a free-attack-moved case skips the burst-paints-ground layer too (rule.free-attack-is-basic-attack 2026-10-04)
+      const burstPaintsGroundMoved = burstPaintsGroundExpected?.changed === true || freeAttackMoved
+      // was: const combineCiviliansKitMoved = combineCiviliansKitExpected?.changed === true — a burst-paints-ground-moved case skips the combine layer too (capability.burst-paints-ground 2026-10-04)
+      const combineCiviliansKitMoved = combineCiviliansKitExpected?.changed === true || burstPaintsGroundMoved
       // was: const impBlastTunedMoved = impBlastTunedExpected?.changed === true — a case the combined tree moved skips the imp-blast-tuned layer too (combine 2026-10-04)
       const impBlastTunedMoved = impBlastTunedExpected?.changed === true || combineCiviliansKitMoved
       // was: const fireImpBurnMoved = fireImpBurnExpected?.changed === true — an imp-blast-tuned-moved case skips the fire-imp-burn layer too (content.imp-blast-tuned 2026-10-04)
@@ -576,7 +620,14 @@ describe('resumable battle cursor', () => {
             battle.completeActionCycle(ctx)
           }
         } else result = battle.runBattle(ctx)
-        if (afflictionWordsExpected) {
+        if (combineFreeAttackExpected) {
+        expect(hash(ctx.events), 'full combine-free-attack events').toBe(combineFreeAttackExpected.events)
+        expect(hash(ctx.state), 'full combine-free-attack state').toBe(combineFreeAttackExpected.state)
+        expect(hash(ctx.rng.log), 'full combine-free-attack RNG').toBe(combineFreeAttackExpected.rng)
+        expect(result).toEqual(combineFreeAttackExpected.result)
+        }
+        // was: if (afflictionWordsExpected) { — combine (2026-10-04): a case the combined tree moved is checked above instead
+        if (afflictionWordsExpected && !combineFreeAttackMoved) {
         expect(hash(ctx.events), 'full affliction-pop-up-words events').toBe(afflictionWordsExpected.events)
         expect(hash(ctx.state), 'full affliction-pop-up-words state').toBe(afflictionWordsExpected.state)
         expect(hash(ctx.rng.log), 'full affliction-pop-up-words RNG').toBe(afflictionWordsExpected.rng)
@@ -603,8 +654,30 @@ describe('resumable battle cursor', () => {
         expect(hash(ctx.rng.log), 'full own-area-skips-owner RNG').toBe(ownAreaExpected.rng)
         expect(result).toEqual(ownAreaExpected.result)
         }
-        // was: if (combineCiviliansKitExpected) { — fix.own-area-skips-owner (2026-10-04): a case it moved is checked above instead
-        if (combineCiviliansKitExpected && !ownAreaMoved) {
+        // (combine 2026-10-04: this copy's check here read `if (combineCiviliansKitExpected && !ownAreaMoved) {` — master's three layers are checked between; the line is master's, below)
+        // was: if (counterattackExpected) { — combine (2026-10-04): a case this copy's four layers moved is checked above instead
+        if (counterattackExpected && !ownAreaMoved) {
+        expect(hash(ctx.events), 'full counterattack events').toBe(counterattackExpected.events)
+        expect(hash(ctx.state), 'full counterattack state').toBe(counterattackExpected.state)
+        expect(hash(ctx.rng.log), 'full counterattack RNG').toBe(counterattackExpected.rng)
+        expect(result).toEqual(counterattackExpected.result)
+        }
+        // was: if (freeAttackExpected) { — capability.counterattack-and-fend (2026-10-04): a counterattack-moved case is checked above instead
+        if (freeAttackExpected && !counterattackMoved) {
+        expect(hash(ctx.events), 'full free-attack events').toBe(freeAttackExpected.events)
+        expect(hash(ctx.state), 'full free-attack state').toBe(freeAttackExpected.state)
+        expect(hash(ctx.rng.log), 'full free-attack RNG').toBe(freeAttackExpected.rng)
+        expect(result).toEqual(freeAttackExpected.result)
+        }
+        // was: if (burstPaintsGroundExpected) { — rule.free-attack-is-basic-attack (2026-10-04): a free-attack-moved case is checked above instead
+        if (burstPaintsGroundExpected && !freeAttackMoved) {
+        expect(hash(ctx.events), 'full burst-paints-ground events').toBe(burstPaintsGroundExpected.events)
+        expect(hash(ctx.state), 'full burst-paints-ground state').toBe(burstPaintsGroundExpected.state)
+        expect(hash(ctx.rng.log), 'full burst-paints-ground RNG').toBe(burstPaintsGroundExpected.rng)
+        expect(result).toEqual(burstPaintsGroundExpected.result)
+        }
+        // was: if (combineCiviliansKitExpected) { — capability.burst-paints-ground (2026-10-04): a burst-paints-ground-moved case is checked above instead
+        if (combineCiviliansKitExpected && !burstPaintsGroundMoved) {
         expect(hash(ctx.events), 'full combine-civilians-kit events').toBe(combineCiviliansKitExpected.events)
         expect(hash(ctx.state), 'full combine-civilians-kit state').toBe(combineCiviliansKitExpected.state)
         expect(hash(ctx.rng.log), 'full combine-civilians-kit RNG').toBe(combineCiviliansKitExpected.rng)

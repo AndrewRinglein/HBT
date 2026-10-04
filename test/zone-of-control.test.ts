@@ -121,7 +121,11 @@ describe('attack of opportunity', () => {
         const ctx = createBattle({ replicate: r, enemyCount: 12, mapId: 'map.open' })
         ctx.cfg.switches.zoneOfControl = zoc
         runBattle(ctx)
-        n += ctx.events.filter((e) => e.type === 'aoo.provoked').length
+        // Law 10, 2026-10-04 — capability.counterattack-and-fend (2026-10-04; DECISIONS.md 2026-09-28 'counterattack, special free attacks, the opening six, shields, custom weapons'): a counterattack and a
+        // fend write this same line (they are special free attacks too), named by `as`. This measures the attack of
+        // opportunity — the zone-of-control switch's own consequence — so it counts the lines with no `as`
+        // (was: every aoo.provoked line, when the attack of opportunity was the only one). A counterattack needs no zone.
+        n += ctx.events.filter((e) => e.type === 'aoo.provoked' && e['as'] === undefined).length
       }
       return n
     }

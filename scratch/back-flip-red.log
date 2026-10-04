@@ -1,0 +1,229 @@
+
+ RUN  v4.1.11 C:/Users/aring/Desktop/HBT-worker-engine/engine
+
+ ❯ test/back-flip.test.ts (15 tests | 12 failed) 145ms
+     × Back Flip: 1 Stamina, cooldown 4, one hex, +20 Dodge until the end of the user's next Activation 5ms
+     × it is a second instance of the bonus move Side Roll already is: the same movement profile, nothing new in it 0ms
+     × the Codex authors it beside Sidestep, Side Roll and Leap, as a bonus move in two classes' general pool and nobody's starting move 1ms
+     × it is in the general pool of the Rogue and of the Ranger, and of no other class 0ms
+     × a Rogue or a Ranger who drafted it at a power grant fields it — beside its walk and its Side Roll, whatever its specialty 1ms
+     × a class whose general pool does not hold it cannot draft it, and a Ranger cannot draft another class's move 1ms
+     × spends 1 Stamina and moves exactly 1 hex into any open adjacent hex — out of a zone of control, provoking nothing 2ms
+     × whatever the destination costs: onto ground a walk could not afford, with no movement points left 6ms
+     × +20 Dodge until the end of its own next Activation — through the Enemy Phase between — then no longer 0ms
+     × cannot be used again until its cooldown of 4 has run; Side Roll is still there every Turn 0ms
+     × it is the Activation's movement: after a Back Flip there is no Side Roll and no walk in the same Activation 0ms
+     × a Ranger who drafted it uses it — the fielding test.back-flip — and gains the Dodge 0ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 12 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/back-flip.test.ts > the row is the Codex row — data, not code > Back Flip: 1 Stamina, cooldown 4, one hex, +20 Dodge until the end of the user's next Activation
+AssertionError: expected undefined to match object { id: 'power.back-flip', …(5) }
+
+- Expected:
+{
+  "cooldown": 4,
+  "effects": [
+    {
+      "kind": "statMod",
+      "stat": "dodge",
+      "until": "endOfNextActivation",
+      "value": 20,
+    },
+  ],
+  "id": "power.back-flip",
+  "move": {
+    "budgetMod": 0,
+    "shape": "sidestep",
+    "stepRange": 1,
+  },
+  "name": "Back Flip",
+  "staminaCost": 1,
+}
+
++ Received:
+undefined
+
+ ❯ test/back-flip.test.ts:47:23
+     45| describe('the row is the Codex row — data, not code', () => {
+     46|   it('Back Flip: 1 Stamina, cooldown 4, one hex, +20 Dodge until the e…
+     47|     expect(MOVES[BF]).toMatchObject({
+       |                       ^
+     48|       id: BF, name: 'Back Flip', staminaCost: 1, cooldown: 4,
+     49|       move: { shape: 'sidestep', stepRange: 1, budgetMod: 0 },
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/12]⎯
+
+ FAIL  test/back-flip.test.ts > the row is the Codex row — data, not code > it is a second instance of the bonus move Side Roll already is: the same movement profile, nothing new in it
+TypeError: Cannot read properties of undefined (reading 'move')
+ ❯ test/back-flip.test.ts:56:23
+     54|
+     55|   it('it is a second instance of the bonus move Side Roll already is: …
+     56|     expect(MOVES[BF]!.move).toEqual(MOVES['power.side-roll']!.move)
+       |                       ^
+     57|     expect(Object.keys(MOVES[BF]!).sort()).toEqual([...Object.keys(MOV…
+     58|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/12]⎯
+
+ FAIL  test/back-flip.test.ts > the row is the Codex row — data, not code > the Codex authors it beside Sidestep, Side Roll and Leap, as a bonus move in two classes' general pool and nobody's starting move
+AssertionError: settled.json has no power.back-flip row: expected undefined to be defined
+ ❯ test/back-flip.test.ts:70:60
+     68|     const settled = JSON.parse(readFileSync(join(__dirname, '..', '..'…
+     69|     const row = settled.powers.find((p) => p.id === BF)
+     70|     expect(row, 'settled.json has no power.back-flip row').toBeDefined…
+       |                                                            ^
+     71|     expect(row).toMatchObject({ name: 'Back Flip', stamina: 1, cooldow…
+     72|     expect(row!['grantedToClasses'] ?? []).toEqual([])
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/12]⎯
+
+ FAIL  test/back-flip.test.ts > who has it: the Rogue's and the Ranger's general pool, and nobody from the start > it is in the general pool of the Rogue and of the Ranger, and of no other class
+AssertionError: the content index publishes no general pool: expected undefined to be defined
+ ❯ test/back-flip.test.ts:83:73
+     81| describe('who has it: the Rogue\'s and the Ranger\'s general pool, and…
+     82|   it('it is in the general pool of the Rogue and of the Ranger, and of…
+     83|     expect(GENERAL_POOL, 'the content index publishes no general pool'…
+       |                                                                         ^
+     84|     expect(GENERAL_POOL!['class.rogue']).toContain(BF)
+     85|     expect(GENERAL_POOL!['class.ranger']).toContain(BF)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/12]⎯
+
+ FAIL  test/back-flip.test.ts > who has it: the Rogue's and the Ranger's general pool, and nobody from the start > a Rogue or a Ranger who drafted it at a power grant fields it — beside its walk and its Side Roll, whatever its specialty
+Error: fieldedDef(hero.base.ranger-ranger): hero.base.ranger-ranger drafted 'power.back-flip', which is not a power in the registry
+ ❯ applyProgress src/core/items.ts:234:96
+    232|   delta['surge'] = (delta['surge'] ?? 0) + progress.level
+    233|   const powers = [...(progress.powers ?? [])]
+    234|   for (const p of powers) if (!abilities[p] || abilities[p].attack || …
+       |                                                                                                ^
+    235|   return {
+    236|     ...foldStats(base, delta, `${where}: ${base.typeId}'s progress`),
+ ❯ assemble src/core/setup.ts:223:33
+ ❯ fieldedDef src/core/setup.ts:245:10
+ ❯ test/back-flip.test.ts:95:19
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/12]⎯
+
+ FAIL  test/back-flip.test.ts > who has it: the Rogue's and the Ranger's general pool, and nobody from the start > a class whose general pool does not hold it cannot draft it, and a Ranger cannot draft another class's move
+AssertionError: expected [Function] to throw error matching /general pool/ but got 'fieldedDef(hero.base.warrior-iron): h…'
+
+- Expected:
+/general pool/
+
++ Received:
+"fieldedDef(hero.base.warrior-iron): hero.base.warrior-iron drafted 'power.back-flip', which is not a power in the registry"
+
+ ❯ test/back-flip.test.ts:107:62
+    105|
+    106|   it('a class whose general pool does not hold it cannot draft it, and…
+    107|     expect(() => fieldedDef(WARRIOR, { progress: DRAFTED })).toThrow(/…
+       |                                                              ^
+    108|     expect(() => fieldedDef(RANGER, { progress: { level: 1, powers: ['…
+    109|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/12]⎯
+
+ FAIL  test/back-flip.test.ts > what it does > spends 1 Stamina and moves exactly 1 hex into any open adjacent hex — out of a zone of control, provoking nothing
+Error: battle options: hero.base.ranger-ranger drafted 'power.back-flip', which is not a power in the registry
+ ❯ applyProgress src/core/items.ts:234:96
+    232|   delta['surge'] = (delta['surge'] ?? 0) + progress.level
+    233|   const powers = [...(progress.powers ?? [])]
+    234|   for (const p of powers) if (!abilities[p] || abilities[p].attack || …
+       |                                                                                                ^
+    235|   return {
+    236|     ...foldStats(base, delta, `${where}: ${base.typeId}'s progress`),
+ ❯ assemble src/core/setup.ts:223:33
+ ❯ src/core/setup.ts:559:15
+ ❯ createBattle src/core/setup.ts:546:10
+ ❯ rig test/back-flip.test.ts:38:10
+ ❯ test/back-flip.test.ts:115:17
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/12]⎯
+
+ FAIL  test/back-flip.test.ts > what it does > whatever the destination costs: onto ground a walk could not afford, with no movement points left
+Error: battle options: hero.base.ranger-ranger drafted 'power.back-flip', which is not a power in the registry
+ ❯ applyProgress src/core/items.ts:234:96
+    232|   delta['surge'] = (delta['surge'] ?? 0) + progress.level
+    233|   const powers = [...(progress.powers ?? [])]
+    234|   for (const p of powers) if (!abilities[p] || abilities[p].attack || …
+       |                                                                                                ^
+    235|   return {
+    236|     ...foldStats(base, delta, `${where}: ${base.typeId}'s progress`),
+ ❯ assemble src/core/setup.ts:223:33
+ ❯ src/core/setup.ts:559:15
+ ❯ createBattle src/core/setup.ts:546:10
+ ❯ rig test/back-flip.test.ts:38:10
+ ❯ test/back-flip.test.ts:133:19
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/12]⎯
+
+ FAIL  test/back-flip.test.ts > what it does > +20 Dodge until the end of its own next Activation — through the Enemy Phase between — then no longer
+Error: battle options: hero.base.rogue-rose drafted 'power.back-flip', which is not a power in the registry
+ ❯ applyProgress src/core/items.ts:234:96
+    232|   delta['surge'] = (delta['surge'] ?? 0) + progress.level
+    233|   const powers = [...(progress.powers ?? [])]
+    234|   for (const p of powers) if (!abilities[p] || abilities[p].attack || …
+       |                                                                                                ^
+    235|   return {
+    236|     ...foldStats(base, delta, `${where}: ${base.typeId}'s progress`),
+ ❯ assemble src/core/setup.ts:223:33
+ ❯ src/core/setup.ts:559:15
+ ❯ createBattle src/core/setup.ts:546:10
+ ❯ rig test/back-flip.test.ts:38:10
+ ❯ test/back-flip.test.ts:154:17
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/12]⎯
+
+ FAIL  test/back-flip.test.ts > what it does > cannot be used again until its cooldown of 4 has run; Side Roll is still there every Turn
+Error: battle options: hero.base.ranger-ranger drafted 'power.back-flip', which is not a power in the registry
+ ❯ applyProgress src/core/items.ts:234:96
+    232|   delta['surge'] = (delta['surge'] ?? 0) + progress.level
+    233|   const powers = [...(progress.powers ?? [])]
+    234|   for (const p of powers) if (!abilities[p] || abilities[p].attack || …
+       |                                                                                                ^
+    235|   return {
+    236|     ...foldStats(base, delta, `${where}: ${base.typeId}'s progress`),
+ ❯ assemble src/core/setup.ts:223:33
+ ❯ src/core/setup.ts:559:15
+ ❯ createBattle src/core/setup.ts:546:10
+ ❯ rig test/back-flip.test.ts:38:10
+ ❯ test/back-flip.test.ts:177:17
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/12]⎯
+
+ FAIL  test/back-flip.test.ts > what it does > it is the Activation's movement: after a Back Flip there is no Side Roll and no walk in the same Activation
+Error: battle options: hero.base.ranger-ranger drafted 'power.back-flip', which is not a power in the registry
+ ❯ applyProgress src/core/items.ts:234:96
+    232|   delta['surge'] = (delta['surge'] ?? 0) + progress.level
+    233|   const powers = [...(progress.powers ?? [])]
+    234|   for (const p of powers) if (!abilities[p] || abilities[p].attack || …
+       |                                                                                                ^
+    235|   return {
+    236|     ...foldStats(base, delta, `${where}: ${base.typeId}'s progress`),
+ ❯ assemble src/core/setup.ts:223:33
+ ❯ src/core/setup.ts:559:15
+ ❯ createBattle src/core/setup.ts:546:10
+ ❯ rig test/back-flip.test.ts:38:10
+ ❯ test/back-flip.test.ts:195:17
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/12]⎯
+
+ FAIL  test/back-flip.test.ts > in a real battle > a Ranger who drafted it uses it — the fielding test.back-flip — and gains the Dodge
+AssertionError: no scenario test.back-flip is registered: expected undefined to be defined
+ ❯ test/back-flip.test.ts:208:59
+    206|   it('a Ranger who drafted it uses it — the fielding test.back-flip — …
+    207|     const s = SCENARIOS['test.back-flip']
+    208|     expect(s, 'no scenario test.back-flip is registered').toBeDefined()
+       |                                                           ^
+    209|     expect(s!.heroProgress?.some((p) => p?.powers?.includes(BF))).toBe…
+    210|     const ctx = createBattle(scenarioOptions(s!))
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/12]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  12 failed | 3 passed (15)
+   Start at  05:00:23
+   Duration  1.35s (transform 883ms, setup 0ms, import 1.06s, tests 145ms, environment 0ms)
+

@@ -265,6 +265,14 @@ describe('independent audit of logged battles', () => {
             // (station.accuracy-field): the row's `accuracy` — Punch −5, the
             // war-axe's Hack −5, the longbow's +10 — lands at SITUATIONAL.
             acc += a.attack.accuracy ?? 0
+            // The auditor learned the SPECIAL FREE ATTACK on 2026-10-04 (rule.free-attack-is-basic-attack; DECISIONS.md
+            // 2026-09-28: "the basic attack, no stamina, −20 Accuracy"): an attack of opportunity's declared line says
+            // `free`, and it swings at −20. EXTENDED, not weakened — every other swing is recomputed as before, and a
+            // free swing that spent Stamina would break the stamina ledger below (no stamina.spent line is its rule).
+            if (e['free'] === true) acc -= 20
+            // … and on 2026-10-04 (capability.counterattack-and-fend) that a counterattack and a fend add the swinging
+            // unit's own Accuracy for that free attack — "counterattack with +10 Accuracy" — read through the mod ledger.
+            if (e['free'] === true && typeof e['as'] === 'string') acc += modded(e.actor!, e['as'] + 'Accuracy', 0, e.turn)
             // The auditor learned TARGET_DODGE on 2026-08-20 — the Codex
             // cohort brought the first nonzero dodge (Dusk Hawk 5), and dodge
             // is flat off the hit chance, plus whatever the target's terrain

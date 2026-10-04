@@ -15,6 +15,8 @@ export function isCowork(env?: Record<string, string | undefined>, cwd?: string)
 export const COWORK_BUDGET_S: number
 export const COWORK_TEST_TIMEOUT_MS: number
 export function testTimeoutFor(env?: Record<string, string | undefined>, cwd?: string): number | undefined
+export const VITEST_WORKERS: number
+export function vitestWorkersFor(cpus?: number): number
 export function budgetFrom(argv: string[], env?: Record<string, string | undefined>, cwd?: string): number
 export function parseShard(arg: unknown): { k: number; n: number } | null
 export function normalizeShards(raw: unknown, tree: string): ShardRecord

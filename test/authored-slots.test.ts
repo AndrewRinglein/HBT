@@ -104,11 +104,14 @@ describe('authored action slots', () => {
     expect(executeAction(ctx, { actor: 0, actionId: primary, target: 1 }).ok).toBe(true)
     rejectUnchanged(ctx, { actor: 0, actionId: free, target: 0 })
   })
-  it('reactions ignore authored slots and the closed cycle, but pay resources', () => {
+  // LAW 10 — rewritten 2026-10-04 by rule.free-attack-is-basic-attack (2026-10-04; DECISIONS.md 2026-09-28 'counterattack, special free attacks …': "the basic attack, no stamina, −20 Accuracy"; 2026-10-04 'the basic attack is a weapon's first attack …': "that stamina cost is not triggered by special free attacks").
+  // This read '… but pay resources' and held the reaction's Stamina to 97. A reaction is a special free attack: no Stamina.
+  // Its use and cooldown are still spent; the authored slot and the closed cycle are still ignored.
+  it('reactions ignore authored slots and the closed cycle; they spend a use and the cooldown, and no Stamina', () => {
     const ctx = fixture(), id = grant(ctx, { slot: 'movement', staminaCost: 3, uses: 2, cooldown: 1 })
     ctx.state.units[0]!.moveUsed = ctx.state.units[0]!.primaryUsed = true
     performAttack(ctx, 0, 1, id, 'reaction')
-    expect(ctx.state.units[0]!.stamina).toBe(97)
+    expect(ctx.state.units[0]!.stamina).toBe(100)   // was 97: a special free attack spends no Stamina
     expect(ctx.state.units[0]!.usesLeft[id]).toBe(1)
     expect(ctx.state.units[0]!.cooldowns[id]).toBe(ctx.state.turn + 2)
     const after = saveBattle(ctx)

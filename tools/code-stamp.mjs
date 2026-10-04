@@ -88,10 +88,12 @@ export const PACKAGE_CODE = {
     code: ['src', 'tools', 'test', 'battles', 'art-src', 'package.json', 'package-lock.json', 'tsconfig.json'],
     not: [LOGS],
   },
-  // kingdom: its sources without the generated items, its tests, its tools and its one
-  // fixture → kingdom's suite. Not generated/ (art) and not the built pages.
+  // kingdom: its sources without the generated items, its tests, its tools, its one
+  // fixture and its package, compiler and test-runner config (vitest.config.ts: how many
+  // workers its suite runs on — tool.kingdom-vitest-workers) → kingdom's suite. Not
+  // generated/ (art) and not the built pages.
   kingdom: {
-    code: ['src', 'test', 'tools', 'fixtures', 'package.json', 'tsconfig.json'],
+    code: ['src', 'test', 'tools', 'fixtures', 'package.json', 'tsconfig.json', 'vitest.config.ts'],
     not: ['src/content/generated', LOGS],
   },
 }

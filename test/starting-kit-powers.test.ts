@@ -59,9 +59,19 @@ describe('the pack carries the three powers, each in its Codex words', () => {
     }
   })
 
-  it('what the engine cannot do yet is named on the two staffs: a burst paints no ground', () => {
-    expect(ITEMS['item.fire-staff']!.gaps).toEqual([`${FLAME}: those seven hexes become burning — a burst paints no ground (capability.burst-paints-ground)`])
-    expect(ITEMS['item.frost-staff']!.gaps).toEqual([`${NOVA}: those seven hexes become frost — a burst paints no ground (capability.burst-paints-ground)`])
+  // LAW 10 — rewritten 2026-10-04 by capability.burst-paints-ground, as a RULE, not the frozen text. This read
+  // "what the engine cannot do yet is named on the two staffs: a burst paints no ground" and held each staff's
+  // `gaps` to the one sentence naming that missing capability. The claim under test was never the sentence: it
+  // was "the ground clause of each Codex row is never silently dropped" — named as a gap while the engine could
+  // not do it. The engine does it now (the burst's own `paints`; test/burst-paints-ground.test.ts holds what it
+  // does), so the same claim reads: the clause is on the burst, and the staff names no gap for it.
+  it('the ground clause of each staff is never dropped: it is on the burst, and the staff names no gap for it', () => {
+    expect((BURSTS[FLAME]!.burst as { paints?: string }).paints).toBe('layer.burning')
+    expect((BURSTS[NOVA]!.burst as { paints?: string }).paints).toBe('layer.frost')
+    expect((ITEMS['item.fire-staff']!.gaps ?? []).filter((g) => g.includes('those seven hexes'))).toEqual([])
+    expect((ITEMS['item.frost-staff']!.gaps ?? []).filter((g) => g.includes('those seven hexes'))).toEqual([])
+    expect(ITEMS['item.fire-staff']!.gaps ?? []).toEqual([])
+    expect(ITEMS['item.frost-staff']!.gaps ?? []).toEqual([])
   })
 
   it('content\'s gap list no longer says any of the three is unparsed', () => {

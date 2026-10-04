@@ -1,0 +1,116 @@
+
+ RUN  v4.1.11 C:/Users/aring/Desktop/HBT-worker-engine/engine
+
+ ❯ test/kingdom-vitest-workers.test.ts (8 tests | 6 failed) 1437ms
+     × one function names the cap: four workers, never more than the machine has CPUs 5ms
+     × both configs take their cap from that function — kingdom has no number of its own 2ms
+     × with no environment variable set, vitest in kingdom/ runs on the capped number of workers — the same number as the engine 307ms
+     × no test's time limit is changed: kingdom's config names none, and vitest keeps its own 5 s there 1ms
+     × tools/suites.mjs sets no worker cap of its own for kingdom's quarters — the config is the one place 1ms
+     × the config is kingdom's code: changing it makes kingdom's suite run again 1ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 6 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/kingdom-vitest-workers.test.ts > tool.kingdom-vitest-workers — kingdom caps its vitest workers as the engine does > one function names the cap: four workers, never more than the machine has CPUs
+AssertionError: expected 'undefined' to be 'function' // Object.is equality
+
+Expected: "function"
+Received: "undefined"
+
+ ❯ test/kingdom-vitest-workers.test.ts:47:37
+     45| describe('tool.kingdom-vitest-workers — kingdom caps its vitest worker…
+     46|   it('one function names the cap: four workers, never more than the ma…
+     47|     expect(typeof vitestWorkersFor).toBe('function')
+       |                                     ^
+     48|     expect(vitestWorkersFor!(16)).toBe(4)
+     49|     expect(vitestWorkersFor!(4)).toBe(4)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/6]⎯
+
+ FAIL  test/kingdom-vitest-workers.test.ts > tool.kingdom-vitest-workers — kingdom caps its vitest workers as the engine does > both configs take their cap from that function — kingdom has no number of its own
+AssertionError: kingdom/vitest.config.ts: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ test/kingdom-vitest-workers.test.ts:56:68
+     54|
+     55|   it('both configs take their cap from that function — kingdom has no …
+     56|     expect(existsSync(KINGDOM_CONFIG), 'kingdom/vitest.config.ts').toB…
+       |                                                                    ^
+     57|     for (const file of [KINGDOM_CONFIG, ENGINE_CONFIG]) {
+     58|       const text = readFileSync(file, 'utf8')
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/6]⎯
+
+ FAIL  test/kingdom-vitest-workers.test.ts > tool.kingdom-vitest-workers — kingdom caps its vitest workers as the engine does > with no environment variable set, vitest in kingdom/ runs on the capped number of workers — the same number as the engine
+TypeError: .toMatch() expects to receive a string, but got undefined
+ ❯ test/kingdom-vitest-workers.test.ts:66:53
+     64|   it('with no environment variable set, vitest in kingdom/ runs on the…
+     65|     const kingdom = resolved(KINGDOM)
+     66|     expect(kingdom.configFile?.replace(/\\/g, '/')).toMatch(/kingdom\/…
+       |                                                     ^
+     67|     expect(kingdom.maxWorkers).toBe(Math.min(4, availableParallelism()…
+     68|     expect(kingdom.maxWorkers).toBe(resolved(ENGINE).maxWorkers)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/6]⎯
+
+ FAIL  test/kingdom-vitest-workers.test.ts > tool.kingdom-vitest-workers — kingdom caps its vitest workers as the engine does > no test's time limit is changed: kingdom's config names none, and vitest keeps its own 5 s there
+AssertionError: kingdom/vitest.config.ts: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ test/kingdom-vitest-workers.test.ts:77:68
+     75|
+     76|   it("no test's time limit is changed: kingdom's config names none, an…
+     77|     expect(existsSync(KINGDOM_CONFIG), 'kingdom/vitest.config.ts').toB…
+       |                                                                    ^
+     78|     expect(readFileSync(KINGDOM_CONFIG, 'utf8')).not.toMatch(/testTime…
+     79|     expect(resolved(KINGDOM).testTimeout).toBe(5000)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/6]⎯
+
+ FAIL  test/kingdom-vitest-workers.test.ts > tool.kingdom-vitest-workers — kingdom caps its vitest workers as the engine does > tools/suites.mjs sets no worker cap of its own for kingdom's quarters — the config is the one place
+AssertionError: expected '4' to be undefined
+
+- Expected:
+undefined
+
++ Received:
+"4"
+
+ ❯ test/kingdom-vitest-workers.test.ts:85:45
+     83|     const kingdom = SUITES.find((s: { suite: string }) => s.suite === …
+     84|     expect(kingdom.cmds).toHaveLength(4)
+     85|     expect(kingdom.env?.VITEST_MAX_WORKERS).toBeUndefined()
+       |                                             ^
+     86|     expect(kingdom.cmds.flat().some((a) => /max-?workers/i.test(a))).t…
+     87|     expect(readFileSync(fileURLToPath(new URL('../tools/suites.mjs', i…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/6]⎯
+
+ FAIL  test/kingdom-vitest-workers.test.ts > tool.kingdom-vitest-workers — kingdom caps its vitest workers as the engine does > the config is kingdom's code: changing it makes kingdom's suite run again
+AssertionError: expected [ 'src', 'test', 'tools', …(3) ] to include 'vitest.config.ts'
+ ❯ test/kingdom-vitest-workers.test.ts:97:39
+     95|
+     96|   it("the config is kingdom's code: changing it makes kingdom's suite …
+     97|     expect(PACKAGE_CODE.kingdom.code).toContain('vitest.config.ts')
+       |                                       ^
+     98|     expect(PACKAGE_CODE.engine.code).toContain('vitest.config.ts')
+     99|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/6]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  6 failed | 2 passed (8)
+   Start at  04:41:59
+   Duration  1.66s (transform 63ms, setup 0ms, import 86ms, tests 1.44s, environment 0ms)
+

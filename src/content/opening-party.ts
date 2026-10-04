@@ -70,6 +70,16 @@ const STAT_OF = CRUCIBLE.statOf as Record<string, string>
 
 /** One stat change the Crucible rolled, in the Crucible's word and the stat's own units (a Health point is 2 Health). */
 export type Rolled = { readonly stat: string; readonly amount: number }
+/**
+ * The dice a draft rolls on, keyed by what the roll is (Law 4): `below` gives 0..n-1, `d100` 1..100. The engine's own
+ * draft rolls on its 'draft' stream; a caller with a stream of its own (the kingdom's run) hands its own in —
+ * fix.opening-draft-one-rule (2026-10-04): one procedure, whoever's dice.
+ */
+export type DraftRoller = { below(n: number, ...keys: number[]): number; d100(...keys: number[]): number }
+/** A hero's own value of a stat, in the Crucible's word — what a rolled point is added to and floored against. */
+export type DraftBase = (stat: string) => number
+/** What a draft gives one hero: its badges, the stat points it rolled, those points as the battle takes them, and the points no engine stat takes. */
+export type DraftRolls = { readonly badges: string[]; readonly rolls: Rolled[]; readonly mods: UnitMods; readonly unfielded: Rolled[] }
 /** A drafted hero as the opening fields it: its row, what it rolled, and what the battle is handed. */
 export type OpeningHero = {
   readonly id: string
@@ -91,21 +101,24 @@ const isMelee = (id: string): boolean =>
   SCORE.meleeClasses.includes(classOfRow(id) ?? '') || UNITS[id]!.ai === 'melee-aggressive'
 const stepOf = (stat: string): number => STEP[stat] ?? STEP['default']!
 const floorOf = (stat: string): number => FLOOR[stat] ?? FLOOR['default']!
-const baseOf = (id: string, stat: string): number => ((UNITS[id] as unknown as Record<string, number | undefined>)[STAT_OF[stat] ?? stat]) ?? 0
+/** A row's own value of a stat, in the Crucible's word — what a point is added to and floored against. */
+const baseOfRow = (id: string): DraftBase => (stat) => ((UNITS[id] as unknown as Record<string, number | undefined>)[STAT_OF[stat] ?? stat]) ?? 0
+/** The engine's own draft dice: its named 'draft' stream (Law 4), keyed by what the roll is. */
+const rollerOf = (rng: Rng): DraftRoller => ({ below: (n, ...keys) => rollBelow(rng, n, 'draft', ...keys), d100: (...keys) => roll100(rng, 'draft', ...keys) })
 
 /**
  * The Crucible's stat changes (generateCrucibleHero: `gains` then `losses`, a stat never twice, up to
  * `repeatAttempts` rolls to find a new one; one change is the stat's step, held at its floor).
  */
-function rollStats(rng: Rng, id: string, gains: number, losses: number, keys: readonly number[], used: Set<string>): Rolled[] {
+function rollStats(roller: DraftRoller, baseOf: DraftBase, gains: number, losses: number, keys: readonly number[], used: Set<string>): Rolled[] {
   const out: Rolled[] = []
   const now: Record<string, number> = {}
   for (const [sign, count, sub] of [[1, gains, 1], [-1, losses, 2]] as const) {
     for (let i = 0; i < count; i++) {
       let stat = '', a = 0
-      do { stat = CRUCIBLE.statPool[rollBelow(rng, CRUCIBLE.statPool.length, 'draft', ...keys, sub, i, a)]!; a++ } while (used.has(stat) && a < CRUCIBLE.repeatAttempts)
+      do { stat = CRUCIBLE.statPool[roller.below(CRUCIBLE.statPool.length, ...keys, sub, i, a)]!; a++ } while (used.has(stat) && a < CRUCIBLE.repeatAttempts)
       if (used.has(stat)) continue
-      const was = now[stat] ?? baseOf(id, stat)
+      const was = now[stat] ?? baseOf(stat)
       const is = Math.max(floorOf(stat), was + sign * stepOf(stat))
       now[stat] = is
       used.add(stat)
@@ -116,13 +129,13 @@ function rollStats(rng: Rng, id: string, gains: number, losses: number, keys: re
 }
 
 /** pickWeightedBadge: favourable at `favourablePercent`, else flawed; weighted by rarity; `exclude` never. */
-function pickBadge(rng: Rng, favourablePercent: number, exclude: ReadonlySet<string>, keys: readonly number[]): string | null {
-  const wantGood = roll100(rng, 'draft', ...keys, 0) <= favourablePercent
+function pickBadge(roller: DraftRoller, favourablePercent: number, exclude: ReadonlySet<string>, keys: readonly number[]): string | null {
+  const wantGood = roller.d100(...keys, 0) <= favourablePercent
   let cands = (wantGood ? FAVOURABLE : FLAWED).filter((b) => !exclude.has(b.id))
   if (!cands.length) cands = [...FAVOURABLE, ...FLAWED].filter((b) => !exclude.has(b.id))
   if (!cands.length) return null
   const weight = (b: BadgeRow) => (CRUCIBLE.rarityWeight as Record<string, number>)[b.rarity] ?? CRUCIBLE.rarityDefault
-  let r = rollBelow(rng, cands.reduce((s, b) => s + weight(b), 0), 'draft', ...keys, 1)
+  let r = roller.below(cands.reduce((s, b) => s + weight(b), 0), ...keys, 1)
   for (const b of cands) { r -= weight(b); if (r < 0) return b.id }
   return cands[cands.length - 1]!.id
 }
@@ -148,37 +161,52 @@ export function draftScoreOf(id: string, rolls: readonly Rolled[], badges: reado
   return s
 }
 
-/** The first hero: one pool row taken, no offer and no pick, with everything the ruling gives it. */
-function firstHero(rng: Rng, id: string): OpeningHero {
+/**
+ * The first hero's bonuses, for the hero whose base `baseOf` reads — the hero the player chose, or the row the engine's
+ * own draft took: the rule's badges (Leadership), a positive badge and the chance of another, +Health, a Crucible stat
+ * point and the chance of another. Nothing here depends on which hero it is but the floors a point is held at.
+ * Exported for the played run (fix.opening-draft-one-rule, 2026-10-04): the kingdom calls this on its own stream.
+ */
+export function firstHeroDraftOf(roller: DraftRoller, baseOf: DraftBase): DraftRolls {
   const F = OPENING.firstHero
   const badges = [...F.badges]
-  const positives = F.positiveBadges + (roll100(rng, 'draft', 0, 2, 7) <= F.anotherBadgePercent ? 1 : 0)
+  const positives = F.positiveBadges + (roller.d100(0, 2, 7) <= F.anotherBadgePercent ? 1 : 0)
   for (let i = 0; i < positives; i++) {
-    const b = pickBadge(rng, 100, new Set(badges), [0, 2, 6, i])
+    const b = pickBadge(roller, 100, new Set(badges), [0, 2, 6, i])
     if (b) badges.push(b)
   }
-  const points = F.statPoints + (roll100(rng, 'draft', 0, 2, 9) <= F.anotherPointPercent ? 1 : 0)
-  const rolls = rollStats(rng, id, points, 0, [0, 2, 8], new Set())
+  const points = F.statPoints + (roller.d100(0, 2, 9) <= F.anotherPointPercent ? 1 : 0)
+  const rolls = rollStats(roller, baseOf, points, 0, [0, 2, 8], new Set())
   const { mods, unfielded } = modsOf(rolls, SCORE.rollSource, [{ stat: 'maxHp', add: F.health, source: F.healthSource }])
-  return { id, badges, rolls, mods, unfielded, offered: [id], scores: [] }
+  return { badges, rolls, mods, unfielded }
 }
 
-/** One offered hero as the Crucible rolls it (generateCrucibleHero: the stat changes, then 1-3 badges, the first unique across the hand). */
-function rolledOffer(rng: Rng, id: string, ordinal: number, j: number, signatures: Set<string>): { badges: string[]; rolls: Rolled[] } {
-  const keys = [ordinal, 2 + j]
-  const [gains, losses] = CRUCIBLE.modTypes[rollBelow(rng, CRUCIBLE.modTypes.length, 'draft', ...keys, 0)]!
-  const rolls = rollStats(rng, id, gains!, losses!, keys, new Set())
-  const c = roll100(rng, 'draft', ...keys, 3)
-  let count = 0, acc = 0
-  for (const [n, pct] of CRUCIBLE.badgeCount) { acc += pct!; if (c <= acc) { count = n!; break } }
-  const badges: string[] = []
-  for (let i = 0; i < count; i++) {
-    const signature = i === 0
-    const exclude = new Set([...badges, ...(signature ? signatures : [])])
-    const b = pickBadge(rng, signature ? CRUCIBLE.favourablePercent.signature : CRUCIBLE.favourablePercent.later, exclude, [...keys, 4, i])
-    if (b && !badges.includes(b)) { badges.push(b); if (signature) signatures.add(b) }
-  }
-  return { badges, rolls }
+/**
+ * One draft's hand as the Crucible rolls it (generateCrucibleHero, dealHeroCards): per offered hero, in offer order, the
+ * stat changes, then one to three badges — each hero's first badge unlike every badge the party already carries
+ * (`carried`) and every first badge earlier in the hand. `ordinal` is the draft's (0 is the first hero's, never rolled
+ * here); `bases[j]` reads offered hero j's own stats. Exported for the played run (fix.opening-draft-one-rule): the
+ * player sees all three and picks; the engine's own draft takes the best-scoring.
+ */
+export function draftHandOf(roller: DraftRoller, bases: readonly DraftBase[], ordinal: number, carried: readonly string[]): DraftRolls[] {
+  const signatures = new Set(carried)
+  return bases.map((baseOf, j) => {
+    const keys = [ordinal, 2 + j]
+    const [gains, losses] = CRUCIBLE.modTypes[roller.below(CRUCIBLE.modTypes.length, ...keys, 0)]!
+    const rolls = rollStats(roller, baseOf, gains!, losses!, keys, new Set())
+    const c = roller.d100(...keys, 3)
+    let count = 0, acc = 0
+    for (const [n, pct] of CRUCIBLE.badgeCount) { acc += pct!; if (c <= acc) { count = n!; break } }
+    const badges: string[] = []
+    for (let i = 0; i < count; i++) {
+      const signature = i === 0
+      const exclude = new Set([...badges, ...(signature ? signatures : [])])
+      const b = pickBadge(roller, signature ? CRUCIBLE.favourablePercent.signature : CRUCIBLE.favourablePercent.later, exclude, [...keys, 4, i])
+      if (b && !badges.includes(b)) { badges.push(b); if (signature) signatures.add(b) }
+    }
+    const { mods, unfielded } = modsOf(rolls, SCORE.rollSource)
+    return { badges, rolls, mods, unfielded }
+  })
 }
 
 /**
@@ -189,6 +217,7 @@ function rolledOffer(rng: Rng, id: string, ordinal: number, j: number, signature
  */
 export function openingHeroesOf(replicate: number, count: number): OpeningHero[] {
   const rng = draftRng(replicate)
+  const roller = rollerOf(rng)
   const pool = OPENING.pool.filter((id) => UNITS[id])
   const drafted: OpeningHero[] = []
   for (let ordinal = 0; ordinal < count; ordinal++) {
@@ -198,17 +227,21 @@ export function openingHeroesOf(replicate: number, count: number): OpeningHero[]
     const left = pool.filter((id) => !ids.includes(id))
     const eligible = allSix ? left : left.filter((id) => !classes.has(classOfRow(id)))
     if (eligible.length === 0) throw new Error(`opening draft ${ordinal + 1}: nobody left to draft — pool ${pool.length}, drafted ${ids.join(', ')}`)
-    if (ordinal === 0) { drafted.push(firstHero(rng, sample(rng, eligible, 1, 'draft', ordinal, 0)[0]!)); continue }
+    if (ordinal === 0) {
+      const id = sample(rng, eligible, 1, 'draft', ordinal, 0)[0]!
+      const first = firstHeroDraftOf(roller, baseOfRow(id))
+      drafted.push({ id, badges: first.badges, rolls: first.rolls, mods: first.mods, unfielded: first.unfielded, offered: [id], scores: [] })
+      continue
+    }
     const offer = sample(rng, eligible, OPENING.offer, 'draft', ordinal, 0)
     // the hand's signature badges are unique against every badge the party already carries (dealHeroCards)
-    const signatures = new Set(drafted.flatMap((h) => h.badges))
-    const rolled = offer.map((id, j) => ({ id, ...rolledOffer(rng, id, ordinal, j, signatures) }))
+    const hand = draftHandOf(roller, offer.map(baseOfRow), ordinal, drafted.flatMap((h) => h.badges))
+    const rolled = offer.map((id, j) => ({ id, ...hand[j]! }))
     const scores = rolled.map((o) => draftScoreOf(o.id, o.rolls, o.badges, ids))
     // the best score; a tie goes to the earlier offer (Law 6)
     const best = scores.reduce((b, s, j) => (s > scores[b]! ? j : b), 0)
     const take = rolled[best]!
-    const { mods, unfielded } = modsOf(take.rolls, SCORE.rollSource)
-    drafted.push({ id: take.id, badges: take.badges, rolls: take.rolls, mods, unfielded, offered: offer, scores })
+    drafted.push({ id: take.id, badges: take.badges, rolls: take.rolls, mods: take.mods, unfielded: take.unfielded, offered: offer, scores })
   }
   return drafted
 }

@@ -26,7 +26,7 @@ export type Applied = {
 /** v2.swap: a foldable stat whose absent value is not 0. */
 export const FOLD_BASE: Readonly<Record<string, number>> = { swapCost: 1 }
 
-export const FOLDABLE = ['maxHp', 'armor', 'resist', 'fireResist', 'poisonResist', 'shadowResist', 'coldResist', 'block', 'rangedBlock', 'dodge', 'strength', 'precision', 'magic', 'spirit', 'reach', 'accuracy', 'movement', 'maxStamina', 'staminaRegen', 'crit', 'luck', 'toughness', 'surge', 'vision', 'thorns', 'swapCost', 'bleedOutTurns', 'deathbedFighting'] as const   // swapCost: v2.swap, 2026-09-24 — its unfolded value is 1, not 0 (FOLD_BASE)   // toughness: capability.deathbed; surge: capability.surge — 2026-09-03   // bleedOutTurns, deathbedFighting: fix.codex-numbers, 2026-10-01 (review finding C9)
+export const FOLDABLE = ['maxHp', 'armor', 'resist', 'fireResist', 'poisonResist', 'shadowResist', 'coldResist', 'block', 'rangedBlock', 'dodge', 'strength', 'precision', 'magic', 'spirit', 'reach', 'accuracy', 'movement', 'maxStamina', 'staminaRegen', 'crit', 'luck', 'toughness', 'surge', 'vision', 'thorns', 'swapCost', 'bleedOutTurns', 'deathbedFighting', 'counterattack', 'counterattackAccuracy', 'fend', 'fendAccuracy'] as const   // the last four: capability.counterattack-and-fend, 2026-10-04   // swapCost: v2.swap, 2026-09-24 — its unfolded value is 1, not 0 (FOLD_BASE)   // toughness: capability.deathbed; surge: capability.surge — 2026-09-03   // bleedOutTurns, deathbedFighting: fix.codex-numbers, 2026-10-01 (review finding C9)
 
 /** The value a foldable stat holds when nothing has folded onto it — 0, or FOLD_BASE's (swapCost 1). */
 export function unfoldedOf(k: string): number {
@@ -170,6 +170,15 @@ export function applyItems(
 // units is still correct"). Drafted powers join the row's abilities. Loud on
 // anything unknown: a level past the table, a specialty of another class, a
 // pick that is not one of the options, a power that is not in the registry.
+//
+// A drafted MOVEMENT power (movement.back-flip, 2026-10-04) joins the row's
+// moves instead, and only when the hero's class holds it in its general pool
+// ("Each power grant offers three: two from the specialty, one from the
+// general pool" - the pool is the content pack's, handed in). It goes in
+// before the row's own first movement of the same shape, so the unit's
+// declared order prefers the drafted one when it is ready (Law 6: the order
+// is the unit's data; SWITCHES.md draftedMoveOrder); a row with no movement
+// of that shape takes it last.
 
 /**
  * The level a specialty is chosen at — the first level-up, 1 → 2, on every table (Codex levels.rules.specialty:
@@ -191,6 +200,8 @@ export function applyProgress(
   where: string,
   /** progression.level-table-by-type: the table to level on when it is not the class's (civilian.farmer). */
   tableId: string = classId,
+  /** Each class's general pool - the movement powers a hero of that class may draft (content: the pack's generalPool). */
+  generalPool: Readonly<Record<string, readonly string[]>> = {},
 ): UnitDef {
   const table = levels[tableId]
   if (!table) throw new Error(`${where}: ${base.typeId} levels on '${tableId}', and the pack has no such level table`)
@@ -230,11 +241,23 @@ export function applyProgress(
   } else if (progress.specialtyId) throw new Error(`${where}: ${base.typeId} is level 1 and names a specialty`)
   // capability.surge: "Surge always EQUALS the character level" (heroes.json rules) — added to whatever the row and the specialty grant
   delta['surge'] = (delta['surge'] ?? 0) + progress.level
-  const powers = [...(progress.powers ?? [])]
-  for (const p of powers) if (!abilities[p] || abilities[p].attack || abilities[p].move) throw new Error(`${where}: ${base.typeId} drafted '${p}', which is not a power in the registry`)
+  const drafted = [...(progress.powers ?? [])]
+  for (const p of drafted) {
+    if (!abilities[p] || abilities[p].attack) throw new Error(`${where}: ${base.typeId} drafted '${p}', which is not a power in the registry`)
+    if (abilities[p].move && !(generalPool[classId] ?? []).includes(p)) throw new Error(`${where}: ${base.typeId} drafted '${p}', a movement power that is not in ${classId}'s general pool`)
+  }
+  const powers = drafted.filter((p) => !abilities[p]!.move)
+  let moves = [...base.moves]
+  for (const p of drafted) {
+    const shape = abilities[p]!.move?.shape
+    if (shape === undefined || moves.includes(p)) continue
+    const at = moves.findIndex((m) => abilities[m]?.move?.shape === shape)
+    moves = at === -1 ? [...moves, p] : [...moves.slice(0, at), p, ...moves.slice(at)]
+  }
   return {
     ...foldStats(base, delta, `${where}: ${base.typeId}'s progress`),
     abilities: [...base.abilities, ...powers.filter((p) => !base.abilities.includes(p))],
+    moves,
   }
 }
 

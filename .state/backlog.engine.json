@@ -5,7 +5,10 @@
   "shape": "plumbing",
   "spec": "Found 2026-10-04 by three workers and the home chat (GBH SWITCHES vitest.kingdomShardWorkers, gate.shardFewerWorkersUnderLoad, suites.kingdomWorkers, combine.kingdomQuarters): kingdom has no vitest.config.ts, so `node tools/gate.mjs --shard k/4` runs on vitest's default worker count (16 on Andrew's PC), and with more than one worker testing at once kingdom's tests that spawn a child process (cold-start, item-generation-isolation, sandbox-ui, the page verifies) pass their 5 s or 60 s limit on any tree. Every worker has had to set VITEST_MAX_WORKERS=4 by hand, and engine/tools/suites.mjs sets 4 for its own run of kingdom's quarters. Give kingdom a vitest.config.ts that caps the workers the way the engine's does (read engine/vitest.config.ts first: one shape, not a second idea), with the environment still able to override it, so `gate.mjs --shard`, the landing's checks and `suites.mjs` all get the cap from one place; then take the hand-set cap out of suites.mjs if the config makes it redundant. No test's own time limit is changed (Law 10). kingdom/vitest.config.ts is kingdom's code (engine/tools/code-stamp.mjs PACKAGE_CODE: add it to kingdom's list if config files are not already there) - say so. Kingdom commits in its own repository; record the choice in GBH SWITCHES.md and mark the three hand-cap rows answered.",
   "expect": "With no environment variable set, `node tools/gate.mjs --shard 1/4` in kingdom/ runs on the capped number of vitest workers (the run's own header or config shows it); VITEST_MAX_WORKERS still overrides; the four kingdom shards pass with two other test runs going on the machine without a 5 s time-out in a test the change did not touch; no test's time limit changed.",
-  "note": "Filed by the kingdom chat, 2026-10-04, from the workers' reports. Small tooling."
+  "note": "Filed by the kingdom chat, 2026-10-04, from the workers' reports. Small tooling.",
+  "attempts": 1,
+  "status": "done-needs-review",
+  "sha": "d7fa58e"
  },
  {
   "id": "tool.tests-follow-what-changed",
@@ -79,11 +82,18 @@
   "shape": "rule",
   "changesBaseline": true,
   "probeIds": [
-   "aoo.provoked"
+   "attack.lumberjack-axe.chop",
+   "attack.longsword.slash"
   ],
   "spec": "Ruled 2026-09-28 (Andrew, engine DECISIONS.md 'counterattack, special free attacks, the opening six, shields, custom weapons': 'we're changing attack of opportunity, so it's using the same rules as everything else. No stamina, uses the basic attack.' - 'Special free attacks - counterattack, fend, the attack of opportunity - are one rule: the basic attack, no stamina, -20 Accuracy. The attack of opportunity changes to this rule') and never built; completed 2026-10-04 ('the basic attack is a weapon's first attack, and every free attack uses it without paying stamina'): 'There's supposed to be a basic attack for each character, and that basic attack is used on all [free] attacks. Most weapons have a basic attack. Chop should be the basic attack ... It is the first attack. It has a stamina cost, but that stamina cost is not triggered by special free attacks.' Today src/core/movement.ts aooChoice takes the holder's cheapest LEGAL melee attack and attackOfOpportunity pays its stamina (the replaced 2026-08-20 rule; fix.aoo-pays-stamina 2026-09-04), so an armed unit punches a passer-by, and the engine holds no basic attack. Build: (1) the basic attack as a mechanism - a unit's basic attack is the first attack granted by the weapon it holds (its main-hand weapon, or its two-handed weapon; the attack the weapon's row lists first), and Punch for a unit holding no weapon; for a unit whose attacks are its row's own (the bestiary), its first attack. The core names no content instance: 'first attack of the held weapon' is read from the loadout and the rows' declared order. (2) the attack of opportunity resolves the holder's basic attack through THE attack function as a reaction with no stamina spent and nothing written back by hand (Law 3: the log and the state agree - the reaction's cost is zero, not refunded), at -20 Accuracy; and where the held weapon's first action is not a melee attack the unit has no basic attack and its free attack is Punch (ruled the same day: 'If you have something that does not have a basic melee attack as its number 1 action, then you do not have a basic attack, and you use punch.'); skipped with a line only when even Punch is not legal. The forecast (aooChoice's caller, preview.from-planned-hex) chooses by the same one rule. (3) The AI and the bar are unchanged otherwise. Read ENGINE-CONSTITUTION.md and COMBAT-SEQUENCE.md first; rewrite the 2026-08-20/09-04 tests that assert cheapest-and-pays as this rule with a dated Law 10 note; settle engine SWITCHES placedKitAoo by this entry (it cited the replaced ruling). The control battles move (every attack of opportunity changes): changesBaseline is claimed - confirm it. Rebuild the engine pack if it changes, the viewer's dumps and recordings, and the kingdom pages.",
   "expect": "A unit holding a weapon that provokes an attack of opportunity swings its weapon's first attack - the Lumberjack his Chop, a hero with a longsword its first sword attack - at -20 Accuracy and spends no Stamina, with stamina.spent absent from the log for that swing; an unarmed unit punches; a unit at 0 Stamina still makes its free attack; the forecast shows the same attack; on its own Activation the same attack still costs its Stamina. A unit whose main-hand weapon is a bow makes its free attack with Punch.",
-  "note": "Filed by the kingdom chat, 2026-10-04, from Andrew's ruling and his question why the Lumberjack punches. Shape and changesBaseline are the filer's guesses: check tools/gate.mjs's demands (variants: a second weapon's basic attack costs zero code)."
+  "note": "Filed by the kingdom chat, 2026-10-04, from Andrew's ruling and his question why the Lumberjack punches. Shape and changesBaseline are the filer's guesses: check tools/gate.mjs's demands (variants: a second weapon's basic attack costs zero code).",
+  "variants": [
+   "attack.lumberjack-axe.chop",
+   "attack.longsword.slash"
+  ],
+  "status": "done-needs-review",
+  "sha": "650e7d5"
  },
  {
   "id": "fix.own-area-skips-owner",
@@ -5432,7 +5442,9 @@
   ],
   "spec": "Ruled 2026-10-03 (Andrew, engine DECISIONS.md 'Back Flip's rules; enemies only move together; the motion work comes first'): 'Let's create a backflip. Moves 1 hex back, provokes nothing, ignores terrain costs, and gives +20 dodge until the end of next activation.' / 'Should cost 1 stamina.' / 'I guess backflip is just a visual element. We don't have to have it be related to an enemy. It's just moving into another square that's adjacent to you.' A new movement power, power.back-flip, a second instance of the bonus move Side Roll already is (power.side-roll, movement.powers): move exactly 1 hex into any adjacent hex, provoke nothing, the destination's terrain cost irrelevant, 1 Stamina, cooldown 4, it does not add the Movement stat; and the user gains +20 Dodge until the end of its own next Activation (the read of 'next activation'; the Dodge holds through the Enemy Phase between). Author it in the Codex beside Sidestep, Side Roll and Leap and through the content pipeline into the engine pack; use the existing until-the-end-of-your-next-Turn modifier shape if it means this (Knife in the Back, Careful Aim), and if the engine has no such duration say so and re-shape the item, never a second mechanism. Ruled the same day ('Back Flip: cooldown 4, introduced in class powers'): 'Let's give it a cooldown of 4. Backflip will be introduced in class powers.' And ('Back Flip is a general Rogue and Ranger class power'): 'Make it a general rogue and ranger class power.' It is in the general pool of the Rogue and of the Ranger - the pool a power grant draws its third offer from (content levels.rules.draft) - so a hero of either class unlocks it at a power grant whatever its specialty; it is not a starting bonus move (class.rogue.bonusMove stays power.side-roll). Author it as the Codex authors a general class power for two classes; no hero starts with it. The AI is not taught it. Its look (the back flip) is viewer.special-move-motions.",
   "expect": "A unit granted power.back-flip spends 1 Stamina, moves exactly 1 hex into any adjacent hex without provoking an attack of opportunity and whatever the destination costs, and has +20 Dodge until the end of its next Activation, then no longer; it cannot be used again until its cooldown of 4 has run; Side Roll and Sidestep are unchanged; it is in the Rogue's and the Ranger's general pool and no other class's, and can be offered at their power grants; no hero starts with it, so no existing battle moves.",
-  "note": "Filed by the kingdom chat from Andrew's rulings, 2026-10-03. Shape is the filer's guess (a second instance of an existing bonus move plus a timed stat modifier): check tools/gate.mjs's demands for the shape before building, and whether the control battles move, before claiming changesBaseline."
+  "note": "Filed by the kingdom chat from Andrew's rulings, 2026-10-03. Shape is the filer's guess (a second instance of an existing bonus move plus a timed stat modifier): check tools/gate.mjs's demands for the shape before building, and whether the control battles move, before claiming changesBaseline.",
+  "status": "done",
+  "sha": "0aef492"
  },
  {
   "id": "fix.opening-draft-one-rule",
@@ -5443,7 +5455,9 @@
   ],
   "spec": "Found landing kingdom.opening-draft-modifiers (2026-10-03, kingdom SWITCHES.md openingDraftRuleKingdomSide): the opening draft's rule lives twice. engine/src/content/opening-party.ts (fix.opening-draft) exports only openingHeroesOf(replicate, count), which draws the offers, takes the best one itself and returns that hero's rolls; the two functions a played run needs - firstHero (the bonuses for the hero the player chose) and rolledOffer (each of three offered heroes rolled), with rollStats, pickBadge and modsOf - are private to the file. So the kingdom runs the same procedure a second time in kingdom/src/core/draft-modifiers.ts over the same numbers (progression/OPENING-PARTY.json), held to the engine's by a parity test (kingdom/test/opening-draft-modifiers.test.ts: fed the engine's stream it reproduces the engine's party for 60 replicates). One rule, one home: export from the engine what the run needs - the first hero's bonuses for a chosen hero, and an offer's rolls for a given hero and stream - with no change to what openingHeroesOf returns (the control battles and the opening probes do not move), and have the kingdom call them through its one door (kingdom/src/engine.ts), deleting its copy of the procedure. The parity test becomes a test that the kingdom's draft is the engine's function. Each package commits in its own repository; rebuild the kingdom pages.",
   "expect": "kingdom/src/core/draft-modifiers.ts holds no rolling procedure of its own: it calls the engine's exported functions through kingdom/src/engine.ts; a run at /play shows the same first-hero bonuses and the same later-draft offers for the same run seed as before this item (the page test's seed 11 run is unchanged); openingHeroesOf's party for every replicate is byte-identical to before.",
-  "note": "Filed by the kingdom chat, 2026-10-03, from the worker's report on kingdom.opening-draft-modifiers. Not urgent: the parity test keeps the two copies together meanwhile."
+  "note": "Filed by the kingdom chat, 2026-10-03, from the worker's report on kingdom.opening-draft-modifiers. Not urgent: the parity test keeps the two copies together meanwhile.",
+  "status": "done",
+  "sha": "28b7eb4"
  },
  {
   "id": "capability.burst-paints-ground",
@@ -5460,7 +5474,9 @@
   "changesBaseline": false,
   "spec": "Found landing fix.starting-kit-powers (2026-10-04; engine DECISIONS.md 2026-10-03 'reported: the priest's Holy Texts has no heal in battle - three starting weapons lose their power on the way into the engine'). The Fire Staff's Flame Burst and the Frost Staff's Frost Nova reach the engine as hex-targeted bursts now (their Magic damage to every unit in the seven hexes), but the second half of each Codex sentence does not: 'and those seven hexes become burning' / 'and those seven hexes become frost' ('The blast is the smaller half; the burning ground it leaves is the real payload'). The engine has both halves and no join: a burst (src/core/burst.ts, BurstProfile: shape, side, packets, heal, impact, destroy) names its hexes and paints nothing; ground is painted by paintGround (src/core/ground.ts - the one rule: a layer painted under a standing unit gives that layer's entry beat) from the encounter band, the map, and the layer.paint effect, which measures a radius from a UNIT (origin self or target), never from a burst's centre hex. Missing, exactly: a burst that paints its own hexes with a layer when it resolves - a field on the burst profile (the layer id; layer.burning and layer.frost both exist, src/content/terrain.ts) read by useBurst after its recipients are struck and before settle, through paintGround, with the preview saying so; validated at load (burst-profile.ts), carried by the snapshot, and compiled by content mkenginepack from the sentence it already matches (compiledPowerOf's blast sentence, which today names the clause as the gap 'a burst paints no ground (capability.burst-paints-ground)'). Decide and record as switches: whether the painted ground's entry beat lands on the units the blast just struck (paintGround's rule says yes; the area fall's landing says no - SWITCHES areaFallNoEntryBeat), whether a shielded hex is painted, and whether the AI counts the ground. The same clause is a named gap on three class powers and waits on this too: power.fire-master.fireball ('and then those seven hexes become burning'), power.fire-master.wake-of-cinders and power.grove-keeper.quench (content gen/class-power-gaps.json) - list them, build the staffs, and say which of the class powers the same field lands. Never a Fire-Staff-only hook; the core names no layer and no power.",
   "expect": "A mage's Flame Burst deals its Magic damage and leaves the seven hexes burning (layer.painted for each, cause the power); Frost Nova the same with frost; the two gaps 'a burst paints no ground' are gone from content/gen/enemy-pack-gaps.json and from the two staffs' rows; the action's preview names the ground; a second layer is pure data (the two variants).",
-  "note": "Filed by the engine worker landing fix.starting-kit-powers, 2026-10-04. Shape and changesBaseline are the filer's guess: check tools/gate.mjs's demands and the control battles before building."
+  "note": "Filed by the engine worker landing fix.starting-kit-powers, 2026-10-04. Shape and changesBaseline are the filer's guess: check tools/gate.mjs's demands and the control battles before building.",
+  "status": "done-needs-review",
+  "sha": "a041bb5"
  },
  {
   "id": "capability.counterattack-and-fend",
@@ -5471,7 +5487,18 @@
   ],
   "spec": "Ruled 2026-09-28 (Andrew, engine DECISIONS.md 'counterattack, special free attacks, the opening six, shields, custom weapons') and in no queue until 2026-10-04: 'Counterattack is the one name ... set off by being attacked by an adjacent melee attacker - not by being hit, blocked or dodged. Once per enemy action: every attack of that action resolves, then the one counterattack.' / 'Fend lasts until the end of your next turn, like a counterattack power; it is triggered by an enemy moving into your zone of control. Its damage works as the attack of opportunity's does: it can stop the mover.' / 'The longsword's second power: counterattack with +10 Accuracy, until the end of your next turn, 2 Stamina.' The engine holds neither (no counterattack or fend in src/core). Build them as special free attacks on the one rule rule.free-attack-is-basic-attack lays down (the basic attack, no Stamina, -20 Accuracy): a counterattack state a power grants until the end of the unit's next Turn, set off once per enemy action after all of that action's attacks resolve; a fend state set off by an enemy moving into the unit's zone of control, which can stop the mover as an attack of opportunity's hit does; and the content rows that grant them (the longsword's counterattack with +10 Accuracy for 2 Stamina; Counter Strike and Spear Fend where the Codex holds them) through the content pipeline - list which rows exist and which are gaps. Read ENGINE-CONSTITUTION.md and COMBAT-SEQUENCE.md first: where in the order of operations each fires is the item's first question, answered from the sequence and recorded.",
   "expect": "A hero who has used the longsword's counterattack power, attacked in melee by an adjacent enemy, makes one free basic attack at +10 Accuracy after that enemy's action's attacks have all resolved, once per enemy action, until the end of its next Turn; a unit with fend up makes a free basic attack on an enemy that moves into its zone of control and a hit stops the mover; neither spends Stamina beyond the power's own cost.",
-  "note": "Filed by the kingdom chat, 2026-10-04: ruled 2026-09-28 and never queued. Not urgent - behind the playtest fixes."
+  "note": "Filed by the kingdom chat, 2026-10-04: ruled 2026-09-28 and never queued. Not urgent - behind the playtest fixes.",
+  "probeIds": [
+   "power.longsword.counterattack",
+   "power.test-fend"
+  ],
+  "variants": [
+   "power.longsword.counterattack",
+   "power.test-fend"
+  ],
+  "changesBaseline": true,
+  "status": "done-needs-review",
+  "sha": "7d92124"
  },
  {
   "id": "fix.opening-orphanage-closer-start",
@@ -5499,5 +5526,35 @@
   ],
   "status": "done-needs-review",
   "sha": "da7eed3"
+ },
+ {
+  "id": "tool.viewer-vitest-workers",
+  "kind": "engine",
+  "shape": "plumbing",
+  "spec": "Found 2026-10-04 by the engine and viewer workers (GBH SWITCHES vitest.kingdomConfig, gate.shardFewerWorkersUnderLoad): the viewer has no vitest config of its own, so its gate's checks part runs on vitest's default worker count and, with other workers' gates running, untouched page tests time out (at 60-170 s, and one headless-Chrome verifier hung); every worker has set VITEST_MAX_WORKERS=4 by hand. tool.kingdom-vitest-workers gave kingdom a vitest.config.ts using the engine's cap function. Do the same for the viewer: one cap from the same function (read engine/vitest.config.ts and kingdom/vitest.config.ts first - one shape), the environment still able to override it; viewer/vitest.config.ts is the viewer's code (engine/tools/code-stamp.mjs PACKAGE_CODE - check it is in the viewer's list). No test's own time limit changes (Law 10). The viewer commits in its own repository; record it in GBH SWITCHES.md.",
+  "expect": "With no environment variable set, the viewer gate's checks part runs on the capped number of vitest workers; VITEST_MAX_WORKERS still overrides; `node tools/gate.mjs --part checks` passes in the viewer with another package's gate running on the machine; no test's time limit changed.",
+  "note": "Filed by the kingdom chat, 2026-10-04, from the workers' reports. Small tooling."
+ },
+ {
+  "id": "fix.burst-ground-class-powers",
+  "kind": "engine",
+  "shape": "data",
+  "probeIds": [
+   "power.fire-master.fireball"
+  ],
+  "spec": "Found landing capability.burst-paints-ground (2026-10-04, engine SWITCHES.md burstGroundClassPowers): a burst can now paint its hexes, and the Fire Staff's Flame Burst and the Frost Staff's Frost Nova do; two more burst powers whose Codex words name ground are 'one authored field away (content only)': power.fire-master.fireball and power.wyrmling.scorch. Author the ground on those two rows through the content pipeline as the staffs' rows have it (re-read every content/ file immediately before editing it; commit content after every write; rebuild by the tools), exactly as their Codex text says and no further. Leave wake-of-cinders, quench and broodmother.nest: they deal nothing, so they need ground to count as a payload on its own (engine SWITCHES burstGroundNotAPayload) - list them in CONTENT-GAPS.md, do not build. Rebuild the Codex's outputs, the engine pack, the viewer's dumps and the kingdom pages the change makes stale; say whether the control battles move before claiming changesBaseline.",
+  "expect": "A hero using Fireball (the Fire Master's) leaves its blast's hexes burning, and the Wyrmling's Scorch leaves its hexes as its Codex row says; a test names both and asserts the ground after the burst; the three ground-only powers are listed as gaps.",
+  "note": "Filed by the kingdom chat, 2026-10-04, from the engine worker's report."
+ },
+ {
+  "id": "fix.trigger-ids-and-scopes",
+  "kind": "engine",
+  "shape": "data",
+  "probeIds": [
+   "unit.fire-imp"
+  ],
+  "spec": "Found 2026-10-04 by the engine and viewer workers' reports: (1) the Fire Imp's two triggers - its end-of-Activation burn over every other unit within 2 hexes, and its Blast's on-hit Burn 3 - share one id, trigger.fire-imp.burn, so the log, the kill switch and the viewer cannot tell them apart; (2) the War Axe's on-block 'Block -20' triggers are unscoped, so they also ride a Punch made by the axe's holder (viewer bar audit: attacker-hook triggers shown on attacks). Fix both in the content pipeline, not by hand in the pack: give every trigger of a row a distinct id by the pipeline's own naming rule (find how mkenginepack names triggers and why two collided; fix the rule so no row can produce a duplicate, and fail the build on one), and scope an item's attack-hook triggers to that item's own attacks unless its Codex words say otherwise (the dagger's 'onAttack gain 1 Protection' on Stab is the pattern - `onlyWithAttack`) - read the War Axe's Codex row and decide from its words; then list every other item whose attack-hook trigger is unscoped, by name, and scope those whose words plainly mean their own attacks. Re-read every content/ file immediately before editing it; commit content after every write. Rebuild the Codex's outputs, the engine pack, the viewer's dumps and recordings and the kingdom pages the change makes stale; a renamed trigger id moves logs and fixtures - re-capture the battle-cursor layer; say whether the control battles move before claiming changesBaseline.",
+  "expect": "No two triggers in the engine pack share an id (a test over the whole pack, and the pack build fails on a duplicate); the Fire Imp's end-of-Activation burn and its Blast's burn have different ids in the log; a War Axe holder's Punch does not carry the axe's on-block trigger and its Chop does; the list of other unscoped item triggers is in the report.",
+  "note": "Filed by the kingdom chat, 2026-10-04, from the workers' reports. Andrew is not balancing now: decide the scoping from each row's own words, record the switch."
  }
 ]

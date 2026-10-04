@@ -1,0 +1,1220 @@
+{
+ "sourceCommit": "before fix.opening-draft-one-rule",
+ "note": "openingHeroesOf(replicate, 6) and openingPartyOf(6, replicate), replicates 0-99, hashed over JSON; three replicates whole.",
+ "drafted": 6,
+ "position": 6,
+ "replicates": [
+  {
+   "replicate": 0,
+   "heroes": "8800b7d27b3a0b0bbf6ff9d8ad2039a94740786f8c8ec503dc13d56e4336d667",
+   "party": "17cf00196bc3e0a06f6d68cc1d76ffe1f16787084cdabaa34664afbcf0b9378d"
+  },
+  {
+   "replicate": 1,
+   "heroes": "4e95e77a1fe062b860aefcac38afb90fdd278847ba59fee2640a3586c550bd0b",
+   "party": "02333c328e1a3a2188f8687c9bdc303a37019f3c221581a5012a4b80dd9ef16b"
+  },
+  {
+   "replicate": 2,
+   "heroes": "d6aebd32ed622f6da2899d2c172eb45605228ff541c6bb0e339b169f46529077",
+   "party": "f3776d2a6feef0f197b9656de678b472823d68959894ae56566dce6eec4af10e"
+  },
+  {
+   "replicate": 3,
+   "heroes": "6798f87c3f8a97a62b5eb23a7f9ed2df044e1d2df49086f3fb7199aef27747de",
+   "party": "d3807c777596847fcc89ecb07e945779bafafc76c1cdc9c1ba5e10f93dd44c00"
+  },
+  {
+   "replicate": 4,
+   "heroes": "03245265d20eab4ffaee696e59f45854e644adf8666a7311f6cad80d95f8a1fd",
+   "party": "4e52c9e44400ce96b65dafcbacd0432fbfe9bcd61fb385726befade5e0da443e"
+  },
+  {
+   "replicate": 5,
+   "heroes": "bf45d14491e8ae5429b4b6a35aad6855ded5d69da6ac66b5beb4def0ea96c855",
+   "party": "23173c526c33a475fa8c45b1a66617ac201b0b7789ef4d599532313cad61d0b2"
+  },
+  {
+   "replicate": 6,
+   "heroes": "e87dfb4ba4c2fb248b111996e0b674055ae494777985ab768719834da0d948d0",
+   "party": "6e5f2c5a5c9611318d8ea7f96eca477b08108e39ee28f3d16272920931337c3c"
+  },
+  {
+   "replicate": 7,
+   "heroes": "2ce3c73c14bb331964b2118f3e1c4f0a210a49952afc04481a5f8488ce9f7fee",
+   "party": "6b9c9c62f3155409f9624f602abbecab82fbcd6f97cfeff6e48452dc14685f5f"
+  },
+  {
+   "replicate": 8,
+   "heroes": "bc5bb143189f78a8d2ba564a3b083d1560bb3be1f22cab8d74b31839e137ebe6",
+   "party": "cb0e2139256165ef2f4c8afd6b411313a6071d1e84020c2105e1669d02520fc0"
+  },
+  {
+   "replicate": 9,
+   "heroes": "dbae9c0d8869d7cb7ddd243a852f44bfccba40893296164d68fa6fd095d456c0",
+   "party": "7e738520c349f14916b088d6e9ec6ace35374b71607d36a8ce24a9096a1a2fbb"
+  },
+  {
+   "replicate": 10,
+   "heroes": "eadb93957f5efaa57b606c71538837a1999579832d75c762ffbd93f85279d2a6",
+   "party": "5b54310cea0908adb61323e4c048fa0c85a64651c7717cad12f2255d11e648a9"
+  },
+  {
+   "replicate": 11,
+   "heroes": "f914a31860dcedc8fec075c0f4c1c667b57ae38f4d0b7287698801b88c91f274",
+   "party": "02872bd8bb15b483193aa48ee31b225ad09e723124a439eec496aa062413babc"
+  },
+  {
+   "replicate": 12,
+   "heroes": "a43d97b5d7f6a85319034109f348d520f1cbc89a40fda3810c2e36d11a9a8110",
+   "party": "fbfbc87eb9c8bd1cd9651b7aad9d89073c394f000c6bc5722e886393b4b851fd"
+  },
+  {
+   "replicate": 13,
+   "heroes": "1b57354726f39428bc4e616897a87704bd6ebb391a48c5e9e860e67ac0ff8904",
+   "party": "e3d6af6b11ece735a0db98ae31a9520b4c91a4c230402cb922a9a1e6f4d2873f"
+  },
+  {
+   "replicate": 14,
+   "heroes": "5ae8ad18098ea84263b7ae2c91df648a159b09e0645ae0da0e81d5d0c04a7f3e",
+   "party": "f17c13ff5420138814c3cd94b327bce7935c83117728f53407e5a2805f61494e"
+  },
+  {
+   "replicate": 15,
+   "heroes": "0246e4a07fe66d30b5b3429bfdc18650061f278812ead43a47d73bd49af8f5af",
+   "party": "1926cb39ea537336baa4907080c922626f623af6a0be555756b6e93b3eaea077"
+  },
+  {
+   "replicate": 16,
+   "heroes": "18dc3e66478ba2a041445bad85617230e64f506f4e961c91f5af66be3187a2e1",
+   "party": "0ab3e58b4c8406267218e9b05d3ca35fccff26cb7db5bc9a72512d6451a70e93"
+  },
+  {
+   "replicate": 17,
+   "heroes": "dd7ed8f9ebb3d1119c0335b2f0fee6500c59effc33a48122c8e620230f180a52",
+   "party": "0db6dd6aa3c1f62b797f120677c2d955bcc4fa15998ed96c468e8fdfe0dd4359"
+  },
+  {
+   "replicate": 18,
+   "heroes": "a0ad2ed8ed556ec50772a7a74a33c0a8024254775499472c127861376998730b",
+   "party": "23a45dddab2a6c1a5c28f08f26fd41df2332f69b6d9edc3335d949af05d15bda"
+  },
+  {
+   "replicate": 19,
+   "heroes": "1ffd29bdf987b85bdb1c6a30c87190e512708aa72b93b6d540d1d7e03f283d3d",
+   "party": "dcbb2874e640c8588004c43061dd9c5ded5eedc5d5dc0f0d84b4cb2a95ab1b6b"
+  },
+  {
+   "replicate": 20,
+   "heroes": "52571f44b6c9dfc9fd0765b74e236d95e6c59f86be2ddde4f28694f3963f7416",
+   "party": "fc81c5f9f682276f957ef52e2840aecdd4832863a2fe1dc3e045c6e5609dbb4b"
+  },
+  {
+   "replicate": 21,
+   "heroes": "fa9eddca707bf6e48152610ec453da43df07f400eaa0076deaa6b48b69373b65",
+   "party": "e13d19b837bcec6cbb8065a2df09e997d85e68840aace29b14dadb8afc3337ef"
+  },
+  {
+   "replicate": 22,
+   "heroes": "0220f65babdb75d9518fed629e92dc919e68e7d3cf1f55c401e778d91cb50b9b",
+   "party": "82e60f6c98cecddd45512b0f6766abc23465c55d75c36d43ec1404d0c4ea4680"
+  },
+  {
+   "replicate": 23,
+   "heroes": "22bc315d13e98cce405986ee920f501a76387d77383ccab0d081ec964430a352",
+   "party": "f51ef4ccca4b58e61ed0a744c907e85d2618adf29b12c9935dd62012901d06a7"
+  },
+  {
+   "replicate": 24,
+   "heroes": "5ee3c31e29b16df8e829ad7c51f993e2ebc6beeac409c58ab6a40f5e1414dc91",
+   "party": "1d2508546e89a577d366ea22f7af4e08a1a7bcd1ccf5cf0d6f34902b3a6dee47"
+  },
+  {
+   "replicate": 25,
+   "heroes": "774418a8ddf3cc6c040e79422bfde708ef8db6cf3470a4b66a3c311d802096cc",
+   "party": "f08cddc1c6951766270bfce39d125fbc3b5582872372a8efa672291d7296cbe4"
+  },
+  {
+   "replicate": 26,
+   "heroes": "04d07bbce4ffb4669968b8c39ce70b0f9562b3de8fbd1b71fe6ff2976a13d132",
+   "party": "d89bab1faf2a1937f7c3ad3a7b609021c1dc255e40e6d751e6be4adeea99675f"
+  },
+  {
+   "replicate": 27,
+   "heroes": "27222a1c8b6be77548c3a5de29bbd75096cf47cb62efe0f734a3d118679891ec",
+   "party": "bfed0a4ed49a6ae7fb108dd6c606e062799f0089a71ad18e4b6797c4670c01cd"
+  },
+  {
+   "replicate": 28,
+   "heroes": "4cfbcded0318eeed4d830388bfbb943975d75e5adb33be9c1567dfc3e2b73932",
+   "party": "9eba6c4652edf0dc9faaeb064103b76a4cdec2c114011507cdb4234c71922d59"
+  },
+  {
+   "replicate": 29,
+   "heroes": "23c11221d5907c76297de56f2a1e8cb855cd62245ebf2cd9bfde4d9e28ce6cd3",
+   "party": "1ce7280e3777ec53d37a041a3097449045659c2e35dd81c4a408eac64490cc0c"
+  },
+  {
+   "replicate": 30,
+   "heroes": "2f38423f9628edbd46385814906fcac4970a6b5b7e6adba555d0f64c45573f43",
+   "party": "c00619d6444d10757128147d7d1d98adcf105a11836048ea81a29aaf000fc8b0"
+  },
+  {
+   "replicate": 31,
+   "heroes": "5d175d1c1059eae3d382ffdf8a8cfe835882691c2f35a50edf6924c6c4eb1621",
+   "party": "e3e2cd54e42b7446c30cc52898e9453d43749168cf93bb6c8d13502b4db615c2"
+  },
+  {
+   "replicate": 32,
+   "heroes": "4a61b010ce76e57f19914c5e6f1c6c189c4f9e1969e1a98fc70dc25b837e3691",
+   "party": "db1ef3ba0a40e104a3805a93431fbcf65194bd5a0d37491efced94906aae1973"
+  },
+  {
+   "replicate": 33,
+   "heroes": "045fb8251afcba33154c359d267579e75c595e1d431d64f5a99a174f7166d6e6",
+   "party": "4f746cacad1fefdae9b61c6d4665b9e7d8e470d23a4c567cf1cdcea8dbde4b41"
+  },
+  {
+   "replicate": 34,
+   "heroes": "fffb4bf7f03310de29314dc8bd324c7ae62745b6749260640fe36800968d2770",
+   "party": "5d271ac86ca7445e2c27cd660a74438dce10afc7be83fdcab3fed436088153f6"
+  },
+  {
+   "replicate": 35,
+   "heroes": "3f75c30586cd0fd6aa8d9002a0fd7a5bf34a0f8f030c3e0e0cd11faf70f470ef",
+   "party": "2e5239336da2fca5fbf931ffbc809ec1602eda7175695b133ce8e7f8bdee08c4"
+  },
+  {
+   "replicate": 36,
+   "heroes": "836310415811f6891b4bf6465c7e648c37405cd364b8467a01bb75ffda5f90b3",
+   "party": "08cda66a71f89cd66320a3893d30c3a6df7e2e03692018a4092d0e6fa0d67aa0"
+  },
+  {
+   "replicate": 37,
+   "heroes": "5d965f31c88ff761dd5f377504915ad50184910e2ce5c6df67a48abc2cc88908",
+   "party": "5855fe80600bf803fa8170db7648291fba0b8916148d7f3dcfa40ead0b227a8b"
+  },
+  {
+   "replicate": 38,
+   "heroes": "5952e6b22bb5c08fa89c60c2bf7074ce8c130bdba032b9b97d9b92e59cac4bb5",
+   "party": "086340b7da00c92bf21f34a820121adb3cabacc08bc8e984c6eb67e8765a9fc8"
+  },
+  {
+   "replicate": 39,
+   "heroes": "f40a4b76422dd84788f978e0e94a7291d9cfe00590550f4a3147c284fa6ee652",
+   "party": "4abfd64b3d7a948ed71993651e65b8d6889a6c4987bfb3db2228ff97aa9338c9"
+  },
+  {
+   "replicate": 40,
+   "heroes": "1fbde4d2f9ad20e843beb7ab2349a923fa151d31610359c07dd4ede5d7f76134",
+   "party": "f3f57ef7f5cf808e13a72a5822eccd9a4ac30b22e6f0ab0f6e4ee7a09cf07a5b"
+  },
+  {
+   "replicate": 41,
+   "heroes": "20a22bddf8a6e94917f78cbced215724b7af48943440cbdff5cb59eef63b410a",
+   "party": "df70e7775eec0985ed8dda6cb9a0044f178ccf5a20b9ce1181605bcaaa0b44a8"
+  },
+  {
+   "replicate": 42,
+   "heroes": "81cae771621ff831e151ec98146b949f9d290b6630ed2b96c092305d0fec9f7e",
+   "party": "2b29b73921f24c454d87326fc1fa6aef5ee74ffbaa912489f40ca1c2b5ac82b5"
+  },
+  {
+   "replicate": 43,
+   "heroes": "632dad3a0da304d8397c99cbdb4125d4a4a8c300f588e4693b78ea5cccc702a5",
+   "party": "8bea095820731e6ce1a576b19d5b579d6d8248c1ff38ef39bf2e2c296cb902bc"
+  },
+  {
+   "replicate": 44,
+   "heroes": "fad687e32c2f3c6c237af5c49bbf0e20aeeb5a62ddeb4eea780d45124226f69d",
+   "party": "1ef5dc54a6af91b5d20c3c8b4264c45284f05670e3628679117f3acede463d37"
+  },
+  {
+   "replicate": 45,
+   "heroes": "f575b1360a486218c38e6d636e9573a0392c5e9d10f29eaa73a347f4c087ded8",
+   "party": "b656a3983759a894921a7f5db2beef1d3061096235e4853a4577d4a83f5a0292"
+  },
+  {
+   "replicate": 46,
+   "heroes": "6f857f3024456dd5510d1cfcc0b4826d13d8efd68c411ea5085d91f5ab12a333",
+   "party": "12e7b3c34921048e7e7b65969314294d3bbb8d35b2acee10468bac25867b8f4e"
+  },
+  {
+   "replicate": 47,
+   "heroes": "99c1f2aa6dbef80d74ffd76394c245bed5eec080e09106616bcb75bcbc572f5c",
+   "party": "0a533fefa257b6544bd2b1363e3119c0ecba2cddb5de91b0c6a8c37f4c438ded"
+  },
+  {
+   "replicate": 48,
+   "heroes": "6d63d35e420b670cf558cc0390a75e6d8a30fedd34b7516d8dd5d6e43234f58a",
+   "party": "ad57cb39b4aacb51f2ded92bb69c8b032af84d74aa2cad8a7b17d42da49a586f"
+  },
+  {
+   "replicate": 49,
+   "heroes": "b19e2a2f5a64dcd2d6ce6471dfda199c7c9059923760e90874f96143d9899f77",
+   "party": "38e1b903347ac21dd9def8c96dc9cc47b36533eb0fb9e941c45f38609bc1fc9f"
+  },
+  {
+   "replicate": 50,
+   "heroes": "9654d575ae891d12e9d40c4e62fd75091c97d5b68b366497c227607233e59be1",
+   "party": "e95a828257464340cf4265851dbb5e59e1d2a706f056bdd95f589c3ecf503f0c"
+  },
+  {
+   "replicate": 51,
+   "heroes": "128eed7cae1e43763f4a312007cb0c2c37cada4e66b5ce95af1b023369176d42",
+   "party": "64a0858fc8f09619a4e92421ca989567a6b2026a7f9f8ab8a6e8268ddf0752ec"
+  },
+  {
+   "replicate": 52,
+   "heroes": "17a2183783f88ea96c0cd58186963e2c190c2d7fd758c9ee09a0aeb45717d9cd",
+   "party": "b4d096f25c2692c0959151b013bb7018cd35070fba7fb96295cf9de563f7059b"
+  },
+  {
+   "replicate": 53,
+   "heroes": "6a9b3b2792c064925be6a9dcf052b588b05a7ffbc98a9c40071361e05250c28c",
+   "party": "0c0bcfb3e95df30af4f31d458433b1f8bf499f29ce1559ee690ccb79daed1ae2"
+  },
+  {
+   "replicate": 54,
+   "heroes": "91a0cf8674c8c28d3c87d9776cb3b62049e4653b884349421d11809b2f4ca1f5",
+   "party": "3a9af0c18387d58894b733b3b0a1d454cc8925c3d943f2674c169a8d68fa95bf"
+  },
+  {
+   "replicate": 55,
+   "heroes": "c7d3381275c42fd0766745c084a43423e724e6037972d1ad6c176028665e3083",
+   "party": "f86710496d7fb71364404eb5a80bea8e29ad476ca936e025078e0d5bd613cb4f"
+  },
+  {
+   "replicate": 56,
+   "heroes": "8cd8283fcca43738853530beccfc92669561c3b650d4e8856f041aeca82f2ba9",
+   "party": "c21671ef392186d699d9ec133923dbf37350591ef13cef5d8d7c68feba2dfecf"
+  },
+  {
+   "replicate": 57,
+   "heroes": "fdf4dac9636db6e0196ce805812ffa6566cc42cd1d8f96732604c9cff89468e8",
+   "party": "937db2e2b5faee946f9d3ac8d9ed90bef107a874b74408eb854e71e4c42780ef"
+  },
+  {
+   "replicate": 58,
+   "heroes": "08f76d2a9885a1ad05baa29801b454e589faab0ac23a12881725546fba366101",
+   "party": "6a42762629f234e76e372ae347d59bba0c29eeda5608d4bec70d65582b556b6c"
+  },
+  {
+   "replicate": 59,
+   "heroes": "36e65f851daff728a05c41ba1e44d11f30c8d9d76698b3b68b9aa5cbfb919438",
+   "party": "736ab56bb67c66da097a07522e20df68f7d0aa659060650a5b504c6cdcc22168"
+  },
+  {
+   "replicate": 60,
+   "heroes": "3ff30a6e9456d9b4bd721caca250a6682e95b55ebd8a471d5cb73351b20488eb",
+   "party": "075dfbcecac94c7f92c5d50d28275cd28d8b499ef76813e135e0758f7c6c6936"
+  },
+  {
+   "replicate": 61,
+   "heroes": "e1c09a23396bf190301904c45b22b06d7932a95cfe1556b65f219c6818dc71cd",
+   "party": "f1e406455f2d975f478542d22759746c8d3c564bf9a61eccd61d823ef0326c98"
+  },
+  {
+   "replicate": 62,
+   "heroes": "3f2cc04ca85e6b5deab9d21657114ccf143d668547a62d541f01b34ea32801de",
+   "party": "2d76a25b6235e331f8f1eb5887f3ed55e6a5e16d54ec310f9d6ef8b46ffe66af"
+  },
+  {
+   "replicate": 63,
+   "heroes": "8aa22ae94e9901c264fb6e8faddce3984b70ce89620d1ca309a4b0cb920e42a4",
+   "party": "ab981ae7fde220e74df3b8fdcc7283a903abf861b7444b0d45fee8764d132637"
+  },
+  {
+   "replicate": 64,
+   "heroes": "e1b2c04bb400631d3564c747a23a5283946ddf81c3f9fe5cf2d0896a2ea9df93",
+   "party": "e36f4dcbe45d8d6a7d65c8ded9d40f51bcc9c0fd0f95f57667362780e7a17537"
+  },
+  {
+   "replicate": 65,
+   "heroes": "035303610d9d240593c3409c89b816c38b4ace29f03c56a29a627d5c8f1c4575",
+   "party": "fa4408df59d28d8f2fbad5e12df255fcbb33fc582d06cd66a46412844c3a52f6"
+  },
+  {
+   "replicate": 66,
+   "heroes": "298b191010fc41bafba44671e4d8b7eac4680dc5b8f3fa836db3b6f1985a3b08",
+   "party": "af89a5ed7390097d5f033a502e0d9dedee563441b1c6b4aa55727f27ab8ee262"
+  },
+  {
+   "replicate": 67,
+   "heroes": "c43640f16da938900c81fc844fd44ea0563ce3664f821d39b638c7ede815995b",
+   "party": "a45aabdc9c46294010dc0ce834df2597fafb19f9d3e6165f976ec63bc1cb8473"
+  },
+  {
+   "replicate": 68,
+   "heroes": "0bda1d135f2414cb7ce1556ae2be1fc74c13b56386a0e1e3d011d7b151225e20",
+   "party": "1d192cf0de87ed614793600b69bb494775cc1cc12e32cc53944c29e00f3a2cf0"
+  },
+  {
+   "replicate": 69,
+   "heroes": "d5baa62f96dab9da9fbee8e7fbd89d718124b8c237ba58b6f8529bb2b12d1534",
+   "party": "82039f8835028cb6243a15f237c1533ab13b90fe669fb76a1a10d8953ddbf4c6"
+  },
+  {
+   "replicate": 70,
+   "heroes": "0c8a3a8dde2bfeb65055f954076b02818e4e1bbf04cf42a4188dc5a42a2a09ba",
+   "party": "c30d6461864b1d971a4551cdca9c9c37e6ff48c050774ee4cfe7630a4551ebca"
+  },
+  {
+   "replicate": 71,
+   "heroes": "dd134490be14f3aa83d1595c7dcec25f177ece9a84f78b290463426babcf4d7c",
+   "party": "fda2e387d8ae7ebd1f9528fcd16d79271b1f9952967b8312cdc5c0f854c60f34"
+  },
+  {
+   "replicate": 72,
+   "heroes": "dfef586dbd95a8a7e8c7b527077cf78c6f0f0de3db9d976c48800f6d53bb9a86",
+   "party": "016318e583f6bc9ed3ea401e6ebb1d99149fd9fc3e15e931d1596d20458b0838"
+  },
+  {
+   "replicate": 73,
+   "heroes": "5fcbef3115bef96a5302239b5f663f15e466c09eaf6d0a803167c307b3513479",
+   "party": "c7884c1ff80f2d65e34076ae3ccd626b61bf0b5f1048cb09cb31a2face303f59"
+  },
+  {
+   "replicate": 74,
+   "heroes": "e36a44393649418e70b1f5c32c228b742e84e6df876ba8d378dad2f6bff1c8e5",
+   "party": "1a8bb6cbd4436b4126837fe89a025861bb8ec23e366b53e0087004b7d0f51f97"
+  },
+  {
+   "replicate": 75,
+   "heroes": "18ad4df81335c72cbd20b10e28610bba4820aebeb7933507dbaef08ca7a04aa3",
+   "party": "9143d9066ed80a2dd10856b6f3d62e9520dd51a0274d794a1a7da29947e5bb07"
+  },
+  {
+   "replicate": 76,
+   "heroes": "2f4fdaac1551dcea22b18925250f8b1d61307cfbccc562ff59507d3b50915d56",
+   "party": "379a68b012c228463d82c69a2eda38ab542a913ed6b1259d3cede22005d88ad7"
+  },
+  {
+   "replicate": 77,
+   "heroes": "375442c5cdb728ffcd6f8236e290016a9a87866677b9709e3f88c1a6f366e07c",
+   "party": "a00ee3fda80f9835bd988a56e89dcefab27827ab45b6c2cea53f840917bcde07"
+  },
+  {
+   "replicate": 78,
+   "heroes": "f90d7b4dd9fc5ba6934e9374d9a1845d9860ce106c0d9aee5dc7383c1a919dc6",
+   "party": "fd14ff7703fbb4b29c1755c1f1dbabea602a35fefa95450eb97f023b66dad557"
+  },
+  {
+   "replicate": 79,
+   "heroes": "4e1addbe737322d7467b44937db36481bc00bb0da98eb7bc12760b10842c3652",
+   "party": "ca10094c0bd109b92f900922f7f946b9201e7efa7081c85859315bb5f232c71f"
+  },
+  {
+   "replicate": 80,
+   "heroes": "4033269d501b07e0089d219c56b3b104b33533fcee5cbb27c54f8b53ff2437f5",
+   "party": "588d7425229a1ecd068dcdd0f3bdaa120bd9319bdd5f6f8667528c52b72f7bec"
+  },
+  {
+   "replicate": 81,
+   "heroes": "5726cb2ed46f4191c4846a18cc475b90f67ba3ccdb20e54281244d69c6e92c72",
+   "party": "eafa6de5d45e9ea2e2a6509d8e0442ff6f64d70188b144089bc791bf02912bf1"
+  },
+  {
+   "replicate": 82,
+   "heroes": "3c4e7f82df0a522c985535640abeb6b64f291a5f3b4680a1ff2ad8810c06b84f",
+   "party": "7de368cc93503d2c66963fc427020cb41b7b0231054940d9ffc01323f828935c"
+  },
+  {
+   "replicate": 83,
+   "heroes": "9fac4919981e0dd2496bfff48d4cd01c4454f111d5f40af6328d3f46d54aa57a",
+   "party": "3619ba4cb959157553f9f57d7783e66e82070af34331f5a0ccf01ccfc5d6e69a"
+  },
+  {
+   "replicate": 84,
+   "heroes": "3fe41f549cfd8dda97e1a9d0bce8eb07722292cdc0951a85ba6cbfbc0d74eaa1",
+   "party": "34ac6d2fd05a5fae21e3de7540f88ad3f1938ead37462e9bef94b5361581214a"
+  },
+  {
+   "replicate": 85,
+   "heroes": "860b6bf76d1184132da7e0a782df14becc481ab8a66c77c7388666a272d0186f",
+   "party": "1bbed76310e9b1d42c8f6df16d313d25a3153c67b32d5a13f5ebe2ff2bdfdc4f"
+  },
+  {
+   "replicate": 86,
+   "heroes": "71df4b08e6ba434cbd65c8a717f16df4d258d785489ff92ea6b2240d748c1a95",
+   "party": "8df839f714cb8483d9b6b2a46cfd6b139ba7b3f0b85da6b8753c6b657e4e1588"
+  },
+  {
+   "replicate": 87,
+   "heroes": "0cb4a1eef554d01ce5ed0773542d3e4ddc1a1605a2aa354c4d5da5a4a7894376",
+   "party": "e1c6d785b57c2645de7b797ef7e0818fdf9274a48dd7369fd20b4fe8addfa741"
+  },
+  {
+   "replicate": 88,
+   "heroes": "daca7cccc659d9635d7f9a47df4d5d591c178641780a063b4555815f94ef78c6",
+   "party": "e8cdbaf5a50977ccd8746220b697c7d5af4d6d49f205da524b3f1f8713e28b0a"
+  },
+  {
+   "replicate": 89,
+   "heroes": "17aa48464afb162d3386f74a2ecc75d2c2d1ad41a22bdc0b2213cc9f8b329262",
+   "party": "602dc1e439dbe545b5e392ab9e9a76a8d802a21eac0d9c367fb3c008b3650d90"
+  },
+  {
+   "replicate": 90,
+   "heroes": "8326b01974290efedfa5fc425d18eabfccb7225164baefbea2314f8f0e875192",
+   "party": "3d2f179047e83dc95f8aed4968e4f2d1e7b31b88b10dfa295af32fdaa4397a32"
+  },
+  {
+   "replicate": 91,
+   "heroes": "992b7c2a042a26fe058c9ecb6bca52c256d1a208acfe1f979dfcff5eba48feeb",
+   "party": "d4b1576f45621ed66d9f957c17350c2bd14109d864a9dcaf0f2853a5c806f396"
+  },
+  {
+   "replicate": 92,
+   "heroes": "718a5be1c732194704a45b807933945ddd763a1800d25b48fc3b20917006b0a3",
+   "party": "4786c256e04ab374399627b101b2aec3d99657be8f0c25a31e4b31088ec42ef9"
+  },
+  {
+   "replicate": 93,
+   "heroes": "90df72beab521df7a8c815056ca79c9404677579b5990f371d241d37b9642016",
+   "party": "d5b21d8b5bbe67b3be243009f6785511f9dc7ac510658db2fd380d471d60f873"
+  },
+  {
+   "replicate": 94,
+   "heroes": "085e96817b32cf14847421425a3e6407333939eee7956198543638c47b85fc05",
+   "party": "b7f12e72d1d7f0558bcdae6f5bc274f86bda788064095c14a8ca83d6fe08d16c"
+  },
+  {
+   "replicate": 95,
+   "heroes": "8f98c90cd2962b5a06cf05e5841f4f9c1b40f6be8fb23e5121c9f7bf0951c285",
+   "party": "6fefb9f50bd59f05eae8b1a5571abca261a212f698c0a3765281335f71f3a804"
+  },
+  {
+   "replicate": 96,
+   "heroes": "245749434c5056fae808cff98f12af56cd668d0242d89f7fa40c0cc6e0573020",
+   "party": "0f9044d57b074669eedc33b68dbffd318f315efcb2f41767c2124c8bea7164db"
+  },
+  {
+   "replicate": 97,
+   "heroes": "d119a30aab91ae06d02faf03008add64f37b26b38ef7d91ab6bcaf439d7e51e9",
+   "party": "55c93106ce6a2bcc2264ffca801a75375375ed7ba9fe5a4fc4ed2923657181f4"
+  },
+  {
+   "replicate": 98,
+   "heroes": "3a46643119d51f6f3a9b2419005fc1e1fdb7a7e1adb5cbbd6f1ac10322681e23",
+   "party": "4a1aec80f4bcd84cf5daea1ac043ddf0a35ac65ed8ae31746bcb2c56591cc723"
+  },
+  {
+   "replicate": 99,
+   "heroes": "05c997b29c3e8e89861a625d4e37d08a54eb946a422bbe4ea48771fc60a68e0f",
+   "party": "9dfaad384a56cf68c60acfc2e856c7222d3e0c28d7e64429e933b2e9f5b51fb4"
+  }
+ ],
+ "whole": [
+  {
+   "replicate": 0,
+   "heroes": [
+    {
+     "id": "hero.base.ranger-scantily",
+     "badges": [
+      "badge.leadership",
+      "badge.uncanny"
+     ],
+     "rolls": [
+      {
+       "stat": "accuracy",
+       "amount": 5
+      },
+      {
+       "stat": "health",
+       "amount": 2
+      }
+     ],
+     "mods": {
+      "stats": [
+       {
+        "stat": "maxHp",
+        "add": 2,
+        "source": "rule.opening-first-hero"
+       },
+       {
+        "stat": "accuracy",
+        "add": 5,
+        "source": "rule.crucible-roll"
+       },
+       {
+        "stat": "maxHp",
+        "add": 2,
+        "source": "rule.crucible-roll"
+       }
+      ]
+     },
+     "unfielded": [],
+     "offered": [
+      "hero.base.ranger-scantily"
+     ],
+     "scores": []
+    },
+    {
+     "id": "hero.base.rogue-rose",
+     "badges": [
+      "badge.hunter"
+     ],
+     "rolls": [
+      {
+       "stat": "itemSlots",
+       "amount": 1
+      },
+      {
+       "stat": "resist",
+       "amount": 1
+      }
+     ],
+     "mods": {
+      "stats": [
+       {
+        "stat": "resist",
+        "add": 1,
+        "source": "rule.crucible-roll"
+       }
+      ]
+     },
+     "unfielded": [
+      {
+       "stat": "itemSlots",
+       "amount": 1
+      }
+     ],
+     "offered": [
+      "hero.base.priest-robes",
+      "hero.base.warrior-barbarian",
+      "hero.base.rogue-rose"
+     ],
+     "scores": [
+      0.5,
+      1,
+      11.1
+     ]
+    },
+    {
+     "id": "hero.base.priest-armored",
+     "badges": [
+      "badge.reckless",
+      "badge.frail",
+      "badge.warded"
+     ],
+     "rolls": [
+      {
+       "stat": "precision",
+       "amount": 1
+      },
+      {
+       "stat": "health",
+       "amount": 2
+      },
+      {
+       "stat": "accuracy",
+       "amount": -5
+      }
+     ],
+     "mods": {
+      "stats": [
+       {
+        "stat": "precision",
+        "add": 1,
+        "source": "rule.crucible-roll"
+       },
+       {
+        "stat": "maxHp",
+        "add": 2,
+        "source": "rule.crucible-roll"
+       },
+       {
+        "stat": "accuracy",
+        "add": -5,
+        "source": "rule.crucible-roll"
+       }
+      ]
+     },
+     "unfielded": [],
+     "offered": [
+      "hero.base.warrior-barbarian",
+      "hero.base.priest-armored",
+      "hero.base.priest-robes"
+     ],
+     "scores": [
+      -1,
+      7.2,
+      3.4
+     ]
+    },
+    {
+     "id": "hero.base.warrior-fearsome",
+     "badges": [
+      "badge.accurate"
+     ],
+     "rolls": [
+      {
+       "stat": "strength",
+       "amount": 1
+      },
+      {
+       "stat": "precision",
+       "amount": 1
+      },
+      {
+       "stat": "toughness",
+       "amount": -1
+      }
+     ],
+     "mods": {
+      "stats": [
+       {
+        "stat": "strength",
+        "add": 1,
+        "source": "rule.crucible-roll"
+       },
+       {
+        "stat": "precision",
+        "add": 1,
+        "source": "rule.crucible-roll"
+       }
+      ]
+     },
+     "unfielded": [
+      {
+       "stat": "toughness",
+       "amount": -1
+      }
+     ],
+     "offered": [
+      "hero.base.paladin-shiney",
+      "hero.base.warrior-iron",
+      "hero.base.warrior-fearsome"
+     ],
+     "scores": [
+      2,
+      -0.8999999999999999,
+      3.7
+     ]
+    },
+    {
+     "id": "hero.base.paladin-smug",
+     "badges": [
+      "badge.spiritual",
+      "badge.uncanny"
+     ],
+     "rolls": [
+      {
+       "stat": "health",
+       "amount": 2
+      },
+      {
+       "stat": "itemSlots",
+       "amount": 1
+      },
+      {
+       "stat": "reach",
+       "amount": -1
+      }
+     ],
+     "mods": {
+      "stats": [
+       {
+        "stat": "maxHp",
+        "add": 2,
+        "source": "rule.crucible-roll"
+       },
+       {
+        "stat": "reach",
+        "add": -1,
+        "source": "rule.crucible-roll"
+       }
+      ]
+     },
+     "unfielded": [
+      {
+       "stat": "itemSlots",
+       "amount": 1
+      }
+     ],
+     "offered": [
+      "hero.base.mage-fire",
+      "hero.base.paladin-shiney",
+      "hero.base.paladin-smug"
+     ],
+     "scores": [
+      3.1,
+      5.4,
+      7.65
+     ]
+    },
+    {
+     "id": "hero.base.mage-fireaura",
+     "badges": [
+      "badge.clumsy",
+      "badge.scarred-hide",
+      "badge.greedy"
+     ],
+     "rolls": [
+      {
+       "stat": "itemSlots",
+       "amount": 1
+      },
+      {
+       "stat": "armor",
+       "amount": 1
+      }
+     ],
+     "mods": {
+      "stats": [
+       {
+        "stat": "armor",
+        "add": 1,
+        "source": "rule.crucible-roll"
+       }
+      ]
+     },
+     "unfielded": [
+      {
+       "stat": "itemSlots",
+       "amount": 1
+      }
+     ],
+     "offered": [
+      "hero.base.mage-thinking",
+      "hero.base.mage-sexy",
+      "hero.base.mage-fireaura"
+     ],
+     "scores": [
+      1.45,
+      1.9000000000000001,
+      3.3000000000000007
+     ]
+    }
+   ]
+  },
+  {
+   "replicate": 1,
+   "heroes": [
+    {
+     "id": "hero.base.rogue-rose",
+     "badges": [
+      "badge.leadership",
+      "badge.dodger",
+      "badge.lightning-fast"
+     ],
+     "rolls": [
+      {
+       "stat": "dodge",
+       "amount": 5
+      }
+     ],
+     "mods": {
+      "stats": [
+       {
+        "stat": "maxHp",
+        "add": 2,
+        "source": "rule.opening-first-hero"
+       },
+       {
+        "stat": "dodge",
+        "add": 5,
+        "source": "rule.crucible-roll"
+       }
+      ]
+     },
+     "unfielded": [],
+     "offered": [
+      "hero.base.rogue-rose"
+     ],
+     "scores": []
+    },
+    {
+     "id": "hero.base.paladin-shiney",
+     "badges": [
+      "badge.hardy"
+     ],
+     "rolls": [],
+     "mods": {},
+     "unfielded": [],
+     "offered": [
+      "hero.base.priest-pauper",
+      "hero.base.paladin-shiney",
+      "hero.base.warrior-fearsome"
+     ],
+     "scores": [
+      1.7999999999999998,
+      5,
+      -1
+     ]
+    },
+    {
+     "id": "hero.base.warrior-barbarian",
+     "badges": [
+      "badge.strong",
+      "badge.born-archer"
+     ],
+     "rolls": [
+      {
+       "stat": "reach",
+       "amount": 1
+      }
+     ],
+     "mods": {
+      "stats": [
+       {
+        "stat": "reach",
+        "add": 1,
+        "source": "rule.crucible-roll"
+       }
+      ]
+     },
+     "unfielded": [],
+     "offered": [
+      "hero.base.ranger-ranger",
+      "hero.base.mage-sexy",
+      "hero.base.warrior-barbarian"
+     ],
+     "scores": [
+      6.15,
+      2.4000000000000004,
+      6.4
+     ]
+    },
+    {
+     "id": "hero.base.priest-robes",
+     "badges": [
+      "badge.hunter"
+     ],
+     "rolls": [],
+     "mods": {},
+     "unfielded": [],
+     "offered": [
+      "hero.base.mage-sexy",
+      "hero.base.priest-robes",
+      "hero.base.ranger-ranger"
+     ],
+     "scores": [
+      0.9,
+      2.2,
+      1.35
+     ]
+    },
+    {
+     "id": "hero.base.mage-thinking",
+     "badges": [
+      "badge.resolve",
+      "badge.marksman"
+     ],
+     "rolls": [
+      {
+       "stat": "strength",
+       "amount": 1
+      },
+      {
+       "stat": "magic",
+       "amount": 1
+      },
+      {
+       "stat": "movement",
+       "amount": -1
+      }
+     ],
+     "mods": {
+      "stats": [
+       {
+        "stat": "strength",
+        "add": 1,
+        "source": "rule.crucible-roll"
+       },
+       {
+        "stat": "magic",
+        "add": 1,
+        "source": "rule.crucible-roll"
+       },
+       {
+        "stat": "movement",
+        "add": -1,
+        "source": "rule.crucible-roll"
+       }
+      ]
+     },
+     "unfielded": [],
+     "offered": [
+      "hero.base.mage-fire",
+      "hero.base.ranger-scantily",
+      "hero.base.mage-thinking"
+     ],
+     "scores": [
+      -0.5,
+      0.7,
+      5.5
+     ]
+    },
+    {
+     "id": "hero.base.ranger-aggressive",
+     "badges": [
+      "badge.thick-skinned",
+      "badge.huge"
+     ],
+     "rolls": [
+      {
+       "stat": "itemSlots",
+       "amount": 1
+      }
+     ],
+     "mods": {},
+     "unfielded": [
+      {
+       "stat": "itemSlots",
+       "amount": 1
+      }
+     ],
+     "offered": [
+      "hero.base.ranger-aggressive",
+      "hero.base.ranger-scantily",
+      "hero.base.ranger-nature"
+     ],
+     "scores": [
+      6.25,
+      2.6,
+      4.3
+     ]
+    }
+   ]
+  },
+  {
+   "replicate": 11,
+   "heroes": [
+    {
+     "id": "hero.base.mage-sexy",
+     "badges": [
+      "badge.leadership",
+      "badge.mystic"
+     ],
+     "rolls": [
+      {
+       "stat": "accuracy",
+       "amount": 5
+      }
+     ],
+     "mods": {
+      "stats": [
+       {
+        "stat": "maxHp",
+        "add": 2,
+        "source": "rule.opening-first-hero"
+       },
+       {
+        "stat": "accuracy",
+        "add": 5,
+        "source": "rule.crucible-roll"
+       }
+      ]
+     },
+     "unfielded": [],
+     "offered": [
+      "hero.base.mage-sexy"
+     ],
+     "scores": []
+    },
+    {
+     "id": "hero.base.priest-robes",
+     "badges": [
+      "badge.clumsy",
+      "badge.mystic",
+      "badge.strong"
+     ],
+     "rolls": [
+      {
+       "stat": "itemSlots",
+       "amount": 1
+      }
+     ],
+     "mods": {},
+     "unfielded": [
+      {
+       "stat": "itemSlots",
+       "amount": 1
+      }
+     ],
+     "offered": [
+      "hero.base.priest-robes",
+      "hero.base.rogue-snake",
+      "hero.base.paladin-smug"
+     ],
+     "scores": [
+      3.1999999999999997,
+      3,
+      2.75
+     ]
+    },
+    {
+     "id": "hero.base.rogue-rose",
+     "badges": [
+      "badge.hardy",
+      "badge.greedy",
+      "badge.mystic"
+     ],
+     "rolls": [
+      {
+       "stat": "accuracy",
+       "amount": 5
+      },
+      {
+       "stat": "itemSlots",
+       "amount": 1
+      },
+      {
+       "stat": "health",
+       "amount": -2
+      }
+     ],
+     "mods": {
+      "stats": [
+       {
+        "stat": "accuracy",
+        "add": 5,
+        "source": "rule.crucible-roll"
+       },
+       {
+        "stat": "maxHp",
+        "add": -2,
+        "source": "rule.crucible-roll"
+       }
+      ]
+     },
+     "unfielded": [
+      {
+       "stat": "itemSlots",
+       "amount": 1
+      }
+     ],
+     "offered": [
+      "hero.base.paladin-smug",
+      "hero.base.rogue-skull",
+      "hero.base.rogue-rose"
+     ],
+     "scores": [
+      3.2,
+      0.8999999999999999,
+      5.2
+     ]
+    },
+    {
+     "id": "hero.base.ranger-aggressive",
+     "badges": [
+      "badge.resolve",
+      "badge.hardy"
+     ],
+     "rolls": [
+      {
+       "stat": "health",
+       "amount": 2
+      },
+      {
+       "stat": "precision",
+       "amount": 1
+      }
+     ],
+     "mods": {
+      "stats": [
+       {
+        "stat": "maxHp",
+        "add": 2,
+        "source": "rule.crucible-roll"
+       },
+       {
+        "stat": "precision",
+        "add": 1,
+        "source": "rule.crucible-roll"
+       }
+      ]
+     },
+     "unfielded": [],
+     "offered": [
+      "hero.base.ranger-aggressive",
+      "hero.base.paladin-shiney",
+      "hero.base.ranger-ranger"
+     ],
+     "scores": [
+      8.8,
+      -1.55,
+      2.2
+     ]
+    },
+    {
+     "id": "hero.base.paladin-dark",
+     "badges": [
+      "badge.thick-skinned",
+      "badge.killer-instinct"
+     ],
+     "rolls": [
+      {
+       "stat": "accuracy",
+       "amount": 5
+      },
+      {
+       "stat": "reach",
+       "amount": -1
+      }
+     ],
+     "mods": {
+      "stats": [
+       {
+        "stat": "accuracy",
+        "add": 5,
+        "source": "rule.crucible-roll"
+       },
+       {
+        "stat": "reach",
+        "add": -1,
+        "source": "rule.crucible-roll"
+       }
+      ]
+     },
+     "unfielded": [],
+     "offered": [
+      "hero.base.paladin-dark",
+      "hero.base.warrior-barbarian",
+      "hero.base.warrior-fearsome"
+     ],
+     "scores": [
+      8,
+      2.4,
+      7.4
+     ]
+    },
+    {
+     "id": "hero.base.warrior-barbarian",
+     "badges": [
+      "badge.frail",
+      "badge.huge"
+     ],
+     "rolls": [
+      {
+       "stat": "staminaMax",
+       "amount": 1
+      }
+     ],
+     "mods": {
+      "stats": [
+       {
+        "stat": "maxStamina",
+        "add": 1,
+        "source": "rule.crucible-roll"
+       }
+      ]
+     },
+     "unfielded": [],
+     "offered": [
+      "hero.base.warrior-iron",
+      "hero.base.warrior-barbarian",
+      "hero.base.warrior-brawler"
+     ],
+     "scores": [
+      1.5,
+      4.9,
+      1
+     ]
+    }
+   ]
+  }
+ ]
+}

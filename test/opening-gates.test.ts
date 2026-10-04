@@ -23,6 +23,17 @@ const S = 'test.opening-gates', ENC = 'encounter.opening.gates', FALL = 'trigger
 // on nobody (0 hit). Replicate 6 is the first of replicates 0-11 whose curse lands on a unit and which runs past Turn 7
 // (looked at, as in 2026-10-02's note above; no battle here is asked to be won). The claims below are unchanged.
 // was: const SEEN = 3
+// was: const SEEN = 6 (this copy, fix.opening-probe-cadence)
+// … AND, on master the same day (the two notes kept side by side when the trees were combined, 2026-10-04):
+// Law 10, 2026-10-04 — capability.counterattack-and-fend (2026-10-04; DECISIONS.md 2026-09-28 'counterattack, special free attacks, the opening six, shields, custom weapons'): a paladin's Longsword
+// carries Counterattack and the computer uses it, so replicate 3's fight re-times and its curse lands on nobody (0 hit;
+// replicates 0-39 read again, as on 2026-10-02). Replicate 1 is the first whose curse lands on a unit and runs past Turn 7.
+// Nothing here asks who wins.
+// was: const SEEN = 3
+// was: const SEEN = 1 (master, capability.counterattack-and-fend)
+// Law 10, combine 2026-10-04 (GBH SWITCHES combine.mergeMainFirst): with BOTH changes — five heroes at the Gates and the Longsword's
+// Counterattack — every replicate is another battle again. Replicates read from 0 upward on the combined tree, as the notes above did:
+// replicate 6 is the first whose curse lands on a unit and which runs past Turn 7. Nothing here asks who wins.
 const SEEN = 6
 describe('encounter.opening.gates', () => {
   it('fields the six defenders at the Ground Check\'s markers and carries the curse strike with the ruled numbers', () => {
