@@ -23944,6 +23944,16 @@ index 0000000..832ca72
   PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
   PASS  brought its own tests — kingdom/test/opening-hero-card-art.test.ts, kingdom/test/opening-run-six.test.ts
   PASS  existing tests untouched
+## content.unfielded-tier0-weapons-cut — LANDED `0d6515c` **NEEDS REVIEW**
+2026-10-04 05:25
+
+  PASS  dependencies landed
+  WARN  not already decided — 1 candidate ruling(s) — READ BEFORE ASKING: DECISIONS.md:4659
+  PASS  typecheck
+  PASS  the item's own tests — test/damage-packets.test.ts, test/unit-mods.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — test/damage-packets.test.ts, test/unit-mods.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/damage-packets.test.ts (-1), test/unit-mods.test.ts (-12) — will land FLAGGED for review
   PASS  control battles unchanged
   PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
   PASS  hardcode scan — core knows mechanisms, never names
@@ -23953,3 +23963,83 @@ index 0000000..832ca72
   PASS  naming — new content ids use declared kinds
   PASS  naming — no banned words invented
   PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/damage-packets.test.ts b/test/damage-packets.test.ts
+index d95be82..b72a5f5 100644
+--- a/test/damage-packets.test.ts
++++ b/test/damage-packets.test.ts
+@@ -220,5 +220,10 @@ describe('packet boundary, snapshots and shared command resolver',()=>{
+     }
+   })
+-  for(const [id,amount,want] of [['attack.hand-axe.chop',4,4],['attack.bane-blade.banishing-blow',6,6]] as const)
++  /* Law 10, 2026-10-03 (content.unfielded-tier0-weapons-cut): the Hand Axe was cut (DECISIONS.md 'eleven tier 0 weapons nobody fields
++     are cut'), and its case ['attack.hand-axe.chop',4,4] went with its row. It has no row to move to: the Bane Blade's is the one
++     authored critical rider left, and none is authored onto another weapon to keep a second case (SWITCHES.md
++     `handAxeRiderCaseDropped`). The claim is unchanged and still proven on an authored row; that a rider's amount and type are data
++     is proven by the two TEST packet attacks above. */
++  for(const [id,amount,want] of [['attack.bane-blade.banishing-blow',6,6]] as const)
+     it(id+' provisional rider is physical and separately mitigated on chart-only crit',()=>{
+       const r=rig(),a=ATTACKS[id]!
+diff --git a/test/unit-mods.test.ts b/test/unit-mods.test.ts
+index d7b29b5..dcf9f1d 100644
+--- a/test/unit-mods.test.ts
++++ b/test/unit-mods.test.ts
+@@ -21,7 +21,11 @@ import { restoreBattle, saveBattle } from '../src/core/snapshot.js'
+ import { performSwap } from '../src/core/swap.js'
+ 
+-const AXE = 'item.hand-axe', LID = 'item.pot-lid'
+-const CHOP = 'attack.hand-axe.chop', BASH = 'attack.pot-lid.bash'
+-const base: BattleOptions = { replicate: 3, mapId: 'map.open', heroes: ['test-warrior'], heroItems: [[AXE, LID]], enemies: ['test-zombie'] }
++/* Law 10, 2026-10-03 (content.unfielded-tier0-weapons-cut): the Hand Axe, the Pot Lid and the Cart Chain were cut (DECISIONS.md
++   'eleven tier 0 weapons nobody fields are cut'). The two worn one-handers are the War Axe and the Dagger now — item.hand-axe ->
++   item.war-axe and its attack.hand-axe.chop -> attack.war-axe.chop; item.pot-lid -> item.dagger and attack.pot-lid.bash ->
++   attack.dagger.stab — and the item the hero does not carry is the Club (item.cart-chain -> item.club). Every claim is unchanged. */
++const AXE = 'item.war-axe', DAGGER = 'item.dagger'
++const CHOP = 'attack.war-axe.chop', STAB = 'attack.dagger.stab'
++const base: BattleOptions = { replicate: 3, mapId: 'map.open', heroes: ['test-warrior'], heroItems: [[AXE, DAGGER]], enemies: ['test-zombie'] }
+ const field = (extra: Partial<BattleOptions> = {}): Ctx => createBattle({ ...base, ...extra } as BattleOptions)
+ const hero = (ctx: Ctx) => ctx.state.units.find((u) => u.side === 'hero')!
+@@ -71,5 +75,5 @@ describe('stat mods on one fielded hero', () => {
+ 
+ describe('+damage on one fielded weapon\'s attacks', () => {
+-  it('+2 from set.slaying shows on the hand axe\'s attack only — one ledger row naming the set, before the crit', () => {
++  it('+2 from set.slaying shows on the war axe\'s attack only — one ledger row naming the set, before the crit', () => {
+     const plain = field()
+     const ctx = field({ heroMods: [{ attacks: [{ itemId: AXE, damage: 2, source: 'set.slaying' }] }] })
+@@ -80,6 +84,6 @@ describe('+damage on one fielded weapon\'s attacks', () => {
+     expect(rows[0]!.station).toBeLessThan(450) // before CRIT: a crit multiplies the weapon's own damage
+     // the other weapon's attack, and the body's own, are untouched
+-    expect(hitValue(ctx, BASH)).toBe(hitValue(plain, BASH))
+-    expect(rowsFrom(hitLedger(ctx, BASH), 'set.slaying')).toEqual([])
++    expect(hitValue(ctx, STAB)).toBe(hitValue(plain, STAB))
++    expect(rowsFrom(hitLedger(ctx, STAB), 'set.slaying')).toEqual([])
+     expect(hitValue(ctx, 'attack.punch')).toBe(hitValue(plain, 'attack.punch'))
+     const line = ctx.events.find((e) => e.type === 'unit.modified')!
+@@ -107,10 +111,10 @@ describe('+damage on one fielded weapon\'s attacks', () => {
+ 
+   it('a bonus on a STOWED weapon reaches nothing until that weapon is in hand', () => {
+-    const ctx = field({ heroItems: [[LID]], heroStowed: [[AXE]], heroMods: [{ attacks: [{ itemId: AXE, damage: 2, source: 'set.slaying' }] }] })
+-    const plain = field({ heroItems: [[LID]], heroStowed: [[AXE]] })
+-    expect(hitValue(ctx, BASH)).toBe(hitValue(plain, BASH))
+-    expect(rowsFrom(hitLedger(ctx, BASH), 'set.slaying')).toEqual([])
++    const ctx = field({ heroItems: [[DAGGER]], heroStowed: [[AXE]], heroMods: [{ attacks: [{ itemId: AXE, damage: 2, source: 'set.slaying' }] }] })
++    const plain = field({ heroItems: [[DAGGER]], heroStowed: [[AXE]] })
++    expect(hitValue(ctx, STAB)).toBe(hitValue(plain, STAB))
++    expect(rowsFrom(hitLedger(ctx, STAB), 'set.slaying')).toEqual([])
+     expect(hero(ctx).weaponBonuses).toEqual([{ itemId: AXE, damage: 2, source: 'set.slaying' }])
+-    // swapped into hand, the axe's attack carries it; swapped out, the lid's still does not
++    // swapped into hand, the axe's attack carries it; swapped out, the dagger's still does not
+     const axe = hero(ctx).loadout!.stowed.find((x) => x.itemId === AXE)!.instanceId
+     performSwap(ctx, hero(ctx).id, [axe]); performSwap(plain, hero(plain).id, [axe])
+@@ -142,5 +146,5 @@ describe('refused loudly (Law 9)', () => {
+   })
+   it('a weapon bonus on an item the hero does not carry, or on one that grants no attack', () => {
+-    expect(bad([{ attacks: [{ itemId: 'item.cart-chain', damage: 1, source: 'set.slaying' }] }])).toThrow(/does not carry 'item.cart-chain'/)
++    expect(bad([{ attacks: [{ itemId: 'item.club', damage: 1, source: 'set.slaying' }] }])).toThrow(/does not carry 'item.club'/)
+     expect(bad([{ attacks: [{ itemId: AXE, damage: 0.5, source: 'set.slaying' }] }])).toThrow(/integer/)
+   })
+```
+</details>

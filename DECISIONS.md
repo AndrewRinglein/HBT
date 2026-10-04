@@ -4590,3 +4590,75 @@ Andrew, straight after, on the swap entry above:
 “Just the enhanced gear, not adding gear that you didn't already have. Just the ability to swap hands with inventory”
 
 - **The swap rearranges only what the unit already has: its hands with its own inventory.** No gear is added that it did not already carry ("enhanced", dictated, read as "in-hand"). `viewer.swap-button-rearranges` says so.
+
+## 2026-10-03 — reported: the Fire Imp is not on its own model, and it burns itself at the end of every Activation (question out)
+
+Andrew, in the kingdom chat, playing the opening run (the Bridge):
+
+“The fire imp is not using the fire imp model. Also, it seems like it's dealing fire damage to itself every turn, or trying to do burn that's then being resisted. It means at the end of every turn, it has a damage reaction to itself. It's odd. I don't quite know what's causing that.”
+
+- **The model.** viewer `tools/character-models.mjs:97` stands `unit.fire-imp` on the look `fire-imp` of the demo's winged imp; the reviewed Fire Imp look — the fire skin and flames, `assets/characters/winged-imp/fire-imp.html` and its `review/fire-imp-fire-flames-*` captures — is not what the battle shows. Filed: `viewer.fire-imp-own-model`.
+- **The self-burn.** It is the Fire Imp's own row, not a fault in the playback: `unit.fire-imp` (content bestiary) carries the trigger `onActivationEnd` — "every unit within N hexes", range 2 — apply Burn 1. "Every unit within 2 hexes" counts the imp itself (distance 0) and its own side, so at the end of each of its Activations it applies Burn 1 to itself, its Fire Resist 2 takes it, and the screen shows the reaction. Whether the aura should spare the imp itself, or its allies too, is his to say: asked. Nothing is changed until he answers.
+
+## 2026-10-03 — reported: the priest's Holy Texts has no heal in battle — three starting weapons lose their power on the way into the engine
+
+Andrew, in the kingdom chat, playing the opening run with the Battle Chaplain:
+
+“This priest only has a verse attack.   It seems like he has nothing in his hands. I don't understand what he's equipped with.”
+
+“I don't get where this Holy Text came from. There's no starting hero that's supposed to have one single thing. I'm just a little bit confused.   Why doesn't he have the healing power? Why does he have an item that's supposed to be a tier 1 that only has one thing in it?”
+
+Found, not ruled — he is right, and it is a gap, not the content:
+
+- **The Holy Texts is the Battle Chaplain's own starting weapon**, and in the content it holds two things: `hero.base.priest-armored`'s kit is the Round Shield, the Holy Texts and the Pilgrim's Habit; `item.holy-texts` (tier 1) grants the attack **Verse** and the power **Mercy** — "Heal the target for 2 + half your Spirit", 2 Stamina, one ally within 4 hexes ("the hurt-or-heal choice is the tier-1 shape").
+- **The engine's pack drops Mercy.** `content/gen/enemy-pack-gaps.json`: "item.holy-texts grants power.holy-texts.mercy — item power — shape unparsed"; the generated pack's Holy Texts grants Verse alone. So in battle he has Verse and Punch and no heal.
+- **The same gap takes two more starting powers:** the Fire Staff's **Fireball** (the Emberwright, the Pyre Witch, the Crimson Sorceress) and the Frost Staff's **Frost Nova** (the Archive Scholar). The Holy Symbol's Heal does reach the engine. Of the 24 base heroes, six field a starting weapon with half of what it does.
+
+Filed: `fix.starting-kit-powers`, first in the engine queue.
+
+## 2026-10-03 — the Fire Imp's burn does not hit the imp itself; an end-of-Activation area burn shows an explosion of fire
+
+Andrew, in the kingdom chat, asked "Should the Fire Imp's end-of-activation burn hit only your units, everyone except the imp itself, or stay as it is (everyone, itself included)?":
+
+“It should not hit him. If it's an end-of-activation burn in a certain area, we need to create a VFX that goes along with that. So that should be an explosion of fire. We have the VFX for that.”
+
+Ruled:
+
+- **The Fire Imp's end-of-Activation burn does not hit the Fire Imp itself.** Read as: everyone else within 2 hexes still burns — other units of its own side included; only the imp is spared. Filed: `fix.fire-imp-burn-spares-self`.
+- **An end-of-Activation burn over an area is shown: an explosion of fire over that area**, from the effects the project already has ("We have the VFX for that"). Filed: `viewer.area-trigger-burst`.
+
+## 2026-10-03 — the Imp: Precision down by 1; its Blast burns half the time
+
+Andrew, in the kingdom chat, playing the opening run (the Bridge):
+
+“Change the regular imp's regular main attack to lower their precision by 1 and change it to a 50% chance of burn 2.”
+
+How it is today (content bestiary `unit.imp`): Precision 4; its main attack Imp Blast — one enemy within 4 hexes, damage Precision + 0 — applies Burn 2 on every hit.
+
+Ruled:
+
+- **The Imp's Precision is 3** (4, lowered by 1). Read as: the stat on the Imp's row, which Imp Blast's damage reads — so the Blast deals 1 less; the Imp's Claw (Strength) is unchanged. The Fire Imp, the Poison Imp and the Powerful Imp are not named and stay as they are.
+- **Imp Blast applies Burn 2 on a hit with a 50% chance**, not always.
+
+Filed: `content.imp-blast-tuned`.
+
+## 2026-10-03 — eleven tier 0 weapons nobody fields are cut: the nine the authoring pass invented, the Fishing Net and the Slingshot
+
+Andrew, in a chat at the root, seeing weapon cards drawn for them:
+
+“What are these broken bottle and cart chain items? I'm seeing items I don't know anything about being made.”
+
+“They're improvised. What is that? I don't know where these things came from. They got hallucinated at some point. Are they part of some of someones kit?”
+
+What he was shown. Each row's own `source` field says where it came from: nine in `content/gen/weapons.json` read "new (…)" — written by the authoring pass before the 2026-08-21 handoff so every weapon form had a tier 0 entry, not by him. None of the eleven below is in a hero, civilian or enemy kit, and none is Waystation stock; GEAR-DESIGN.md §2 gives tier 0 two sources only, "kits · the Waystation", the Forge's base shelf is tier 1 and the reward draw deals weapons at tier 3 — so none of them can reach a player. Told that the Hand Axe is the row the Wood Axe card was drawn against, and asked which of the eleven go:
+
+“Yeah, remove all of those 11.”
+
+Ruled:
+
+- **Cut from the game, each with the attacks it grants:** `item.sharpened-stake`, `item.cart-chain`, `item.broken-bottle`, `item.carpenters-mallet`, `item.pot-lid`, `item.rusted-crossbow`, `item.trappers-claws`, `item.practice-sword`, `item.hand-axe` (the nine invented), `item.fishing-net` (`weapons.json`, "Hell-TCG name reused"; the Fishing Net a hero's power grants is a spell and stays) and `item.slingshot` (`settled-items.json`, "settled content", used by nothing). Read as: "remove" takes the rows out of the item sheet, not only out of the model queue — he was asked which of the two and answered "remove".
+- **Their ten cards leave the tiered weapon card set and are not made into models.** The Wood Axe card stays: he named the Wood Axe himself (2026-10-03, 'card art for every weapon at tiers 0 and 1'); with `item.hand-axe` gone it is a dictated weapon with no row yet, like the Sickle. The card set's records (`prompts-v2.json`, `cards-v2.json`, `weapon-card-models/run.json`) are Codex's, mid-conversion when this was ruled; the line to give Codex was handed to him in the chat.
+- **Not cut.** The other tier 0 weapons are fielded or sold: Dagger, Pitchfork and Pile of Rocks (hero and civilian kits), Club (an enemy), Pickaxe and Burning Torch (the Waystation, ruled 2026-09-02). The nine tier 1 rows the same pass wrote (War Axe, Hunting Spear, Glaive, Crossbow, Hand Crossbow, Throwing Knives, Shepherd's Sling, Iron Claws, War Hammer) were listed to him and not named: they are in kits, on the Forge's shelf, or bases for the tier 3 rewards.
+- Tests that use a cut row as a fixture move to a row that stays (Law 10): engine `test/unit-mods.test.ts` and `test/damage-packets.test.ts`, `tools/compare-packet-transition.mts`, kingdom `test/isc-062.test.ts`, content `test/damage-packets.test.mjs`, and the test bestiary unit that fires `attack.rusted-crossbow.bolt`.
+
+Filed: `content.unfielded-tier0-weapons-cut`, first in the content queue.
