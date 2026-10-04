@@ -28106,6 +28106,8 @@ index a343f25..7f337a8 100644
 
 ## fix.affliction-pop-up-words — LANDED `0368ab9` **NEEDS REVIEW**
 2026-10-04 17:03
+## viewer.enemy-type-moves-together — LANDED `4a5f2e7`
+2026-10-04 15:20
 
   PASS  dependencies landed
   PASS  not already decided — no existing ruling matches
@@ -28115,6 +28117,11 @@ index a343f25..7f337a8 100644
   PASS  brought its own tests — test/afflictions-at-zero-content.test.ts, test/battle-cursor.test.ts, test/affliction-pop-up-words.test.ts, test/fixtures/battle-cursor-affliction-pop-up-words.json
   WARN  existing tests untouched — DELETED LINES in test/afflictions-at-zero-content.test.ts (-4), test/battle-cursor.test.ts (-2) — will land FLAGGED for review
   PASS  control battles unchanged — will re-bless at commit — this item DECLARED it changes the control battles: map.highlands 04ddee2d->0e38ab2b, map.thicket c6031170->b7eb5fb4, map.proving.open 396281e6->96e62550, map.proving.ridge b86b8a24->b6fa797e, map.proving.ford 05323666->0887d8aa, map.proving.copse d225b1e1->bc740cc7, map.proving.ruin 6da536d2->07003362, map.courtyard 0c7cf00d->9a8ba081, map.floodplain 5c378345->8f23f023, test.map.embers 8c453a30->656a8d46, test.map.duel-8 f88139ad->b37e7885, test.map.dungeon-16x8 f9d6a241->1d3c153f, test.map.horde-24 f8312af8->45e68cd4, test.map.journey-20x10 c7c65409->38b440e9, test.map.authored-40x40 d8540413->f1fb5b25, test.map.high-prop-single 0f8a4865->667e2d4b, test.map.high-prop-multi c2e90dfb->1318700f, test.map.well-shove e08516ce->44d74fa4
+  PASS  the item's own tests — test/viewer.enemy-type-moves-together.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — viewer/test/viewer.enemy-type-moves-together.test.ts
+  PASS  existing tests untouched
+  SKIPPED  control battles unchanged — engine code 4cb6488349 and the content pack are the ones the control battles last passed on (2026-10-04 11:37, gate tool.tests-follow-what-changed --land, in HBT-worker-engine) — not run
   PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
   PASS  hardcode scan — core knows mechanisms, never names
   PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
@@ -28190,3 +28197,42 @@ index 853d9bb..b9f1cf9 100644
          expect(hash(ctx.state), 'full opening-probe-cadence state').toBe(probeCadenceExpected.state)
 ```
 </details>
+## viewer.camera-shows-edge-units — LANDED `2a92397`
+2026-10-04 16:12
+
+  PASS  dependencies landed
+  WARN  not already decided — 4 candidate ruling(s) — READ BEFORE ASKING: DECISIONS.md:4843 · DECISIONS.md:4849
+  PASS  typecheck
+  PASS  the item's own tests — test/viewer.camera-shows-edge-units.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — viewer/test/viewer.camera-shows-edge-units.test.ts
+  PASS  existing tests untouched
+  SKIPPED  control battles unchanged — engine code 4cb6488349 and the content pack are the ones the control battles last passed on (2026-10-04 11:37, gate tool.tests-follow-what-changed --land, in HBT-worker-engine) — not run
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+## viewer.attack-impact-timing — LANDED `3c22630`
+2026-10-04 17:00
+
+  PASS  dependencies landed
+  WARN  not already decided — 1 candidate ruling(s) — READ BEFORE ASKING: SWITCHES.md:1944
+  PASS  typecheck
+  PASS  the item's own tests — test/viewer.attack-impact-timing.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — viewer/test/viewer.attack-impact-timing.test.ts
+  PASS  existing tests untouched
+  SKIPPED  control battles unchanged — engine code 859cd0f485 and the content pack are the ones the control battles last passed on (2026-10-04 15:13, gate capability.counterattack-and-fend --land, in HBT-worker-engine) — not run
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
