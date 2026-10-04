@@ -4430,3 +4430,20 @@ Ruled:
 
 - **In the opening run a battle in which a hero dies is replayed.** Read as: "the battle they died in is replayed" (dictated). A hero's death in one of the six battles is not kept: that battle is offered again, the party as it stood before it, on new dice (the entry above), and the run goes on only from a battle no hero died in. No hero is replaced by an extra draft, and the party does not get smaller. "Hero" is a drafted hero: a civilian dying is still "its own punishment" and not a loss (2026-09-28). 2026-10-02 'a hero still turned when a battle is lost is lost' is not spoken to and stands.
 - This takes in the whole-party case ruled earlier today ("6 offer replay"): `kingdom.opening-party-dead-replay` is withdrawn before any code and replaced by `kingdom.opening-hero-death-replays`, in its place in the queue.
+
+## 2026-10-03 — an attack's timing: the projectile leaves at the release, the target reacts at the blow, a miss is dodged, a hit shows a red slash
+
+Andrew, in the kingdom chat, playing the opening run:
+
+“Ranged attacks are not synced up well enough for the point at which the attack is launched compared to when the projectile animation then goes. Both the arrow and a priest cast were not synced up very well.   If you do a melee attack and miss, it's supposed to trigger a dodge animation if there is one. That should be synced up. Also, there's no red slash across the target that is part of a hit.   There is a hit animation: a zombie hit my warrior, and the recoil from being hit should be connected to the timing of the attack. What happens is the attack plays, maybe a third of a second later, the reaction plays, and the reaction should just be a little bit delayed behind the attack.”
+
+How it is today (viewer `src/models.js`, `src/board.js`, `src/hexvfx.js`, `tools/character-models.mjs`): the target's hit reaction is started by the fold's flash when the damage lands, not by the attacker's clip; a shot's projectile is the board's own effect, not timed to the bow's or the cast's release; a miss shows the word (MISS, DODGE, COVER) and no body moves — there is no dodge motion word; the slash effects exist (`hexvfx.js` SLASH_STYLES) but are not drawn on the battle he played.
+
+Ruled:
+
+- **A ranged attack's projectile leaves at the moment the attack's motion releases it** — the arrow as the bow looses, the spell as the cast lets go — for every ranged attack and cast, not those two alone.
+- **The target's reaction is tied to the attack's timing: it plays a little behind the blow**, not a third of a second after the attack has finished. One moment — the blow — drives the reaction, whoever attacks.
+- **A melee attack that misses plays the target's dodge, where its body has one, timed to the blow.** A body with no dodge motion is listed, not faked (2026-09-30 'a bunch of motions').
+- **A hit shows a red slash across the target**, at the blow.
+
+Filed: `viewer.attack-impact-timing`, `viewer.miss-dodge-motion`, `viewer.hit-slash`.
