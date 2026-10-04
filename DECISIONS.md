@@ -4472,3 +4472,84 @@ Ruled:
 
 - **When the Activation changes, for whatever reason, the action bar changes with it: the moves, attacks, powers and everything else on it are the newly activated unit's, at once** — not the previous unit's until a move is made. The card at the lower left already changes; the bar must change with it. This is what 'the battle screen's turn-taking, ruled' (2026-10-03: "the bar and its card stay with the activated unit") already says; `viewer.turn-taking` landed without it holding. Filed: `viewer.bar-follows-activation`.
 - **The switch pop-up** ("End activation of X and start activation of Y?", yes or no, any player unit) is `viewer.switch-hero-asks`, filed earlier today and not built. Both are moved up the viewer and kingdom queue, next after the card art, ahead of the remaining opening-run items: they are in the way of playing a battle at all.
+
+## 2026-10-03 — reported: two drafts between battles 1 and 2 where he expects one; the big yellow hex border (questions out)
+
+Andrew, in the kingdom chat, playing the opening run:
+
+“We're only supposed to have one draft between battles 1 and 2. I was getting two drafts.  There's a highlighting of a hex that happens where there's a big yellow border around the hex at some point during unit activation. I don't quite know what that's for visually.”
+
+- **The drafts.** The run does what the standing ruling says: GAME-ARCHITECTURE.md:447-453, "The opening draft cadence — ruled 2026-08-23": "Draft **1 hero before battle 1** … After battle 1, draft **+2** — three drafted heroes … Then **+1 after each battle until six drafted heroes**" (kingdom `src/content/prologue.ts` DRAFT_CADENCE, `src/core/opening.ts` draftsOwedOf). His words now say one draft between battles 1 and 2. Cited to him and asked which stands, and whether it is one draft after every battle (a party of 2, 3, 4, 5, 6 at battles 2 to 6). Not changed until he answers.
+- **The yellow border.** It is not a game mark: viewer `src/styles.css:569`, `.targetHex:focus-visible` — "Native targeting buttons retain a visible keyboard focus within the hex clip" — a 5-pixel yellow inner border on whichever target hex holds the keyboard focus, drawn by the browser once it judges the keyboard is in use. Told to him and asked whether it goes for mouse play. Nothing filed yet.
+
+## 2026-10-03 — one draft after every battle; the yellow focus border goes; a death is tied to the strike; the slash on every damaging hit; a ranged miss is dodged too
+
+Andrew, in the kingdom chat, answering the questions on the two entries above. As asked: (1) "Should the cadence change to one draft after every battle (party of 1, 2, 3, 4, 5, 6), replacing the 2026-08-23 ruling of two drafts after battle 1?"; (2) "Should the yellow focus border be removed, so only the game's own hex marks show?"; (3) "Should the red slash show on every hit that deals damage, ranged included, or only on melee hits?"; (4) "Should a ranged miss also play the target's dodge, or only melee misses?"
+
+“Death animations are happening separately from the strike. They should be more closely connected, just like the other reactions.   One, yes.   That yellow focus border doesn't look good, so just remove it.  3. If it was already doing that, then keep doing it. Red slash on every damage range miss should also play the target's dodge.”
+
+Ruled:
+
+- **The opening draft cadence is one draft after every battle:** one hero before battle 1, then one more after each battle — a party of 1, 2, 3, 4, 5, 6 at battles 1 to 6. Replaces GAME-ARCHITECTURE.md:447-453 "After battle 1, draft **+2**" (ruled 2026-08-23); the rest of that entry (six drafted heroes, the tutorial draft then retires) stands. Filed: `kingdom.opening-draft-cadence`.
+- **The yellow keyboard-focus border on a hex is removed** ("doesn't look good, so just remove it"). Filed: `viewer.no-hex-focus-border`.
+- **A death is tied to the strike, like the other reactions** — it plays at the blow that killed, not separately after it. `viewer.attack-impact-timing` carries it.
+- **The red slash is drawn on every hit that deals damage, ranged included** ("Red slash on every damage"; "If it was already doing that, then keep doing it" — the flat board's slash stays as it is). `viewer.hit-slash` carries it.
+- **A ranged miss plays the target's dodge too**, as a melee miss does. `viewer.miss-dodge-motion` carries it.
+
+## 2026-10-03 — clicking an off-screen bubble selects the unit and slides the screen just far enough to show its hex
+
+Andrew, in the kingdom chat, playing the opening run:
+
+“I should be able to click on one of the bubbles for a unit that's off-screen to both focus it and also scroll the screen over so they are visible, but only just to their hex. Don't focus on it or center the screen on it. Just slide over until they're visible.  Does that make sense?”
+
+How it is today: the off-screen bubbles (viewer `src/board.js` "OFF-SCREEN UNIT INDICATORS", `.edgeBub`) are drawn at the screen's edge and do nothing when clicked.
+
+Ruled:
+
+- **A click on an off-screen unit's bubble selects that unit** — it becomes the unit looked at, as a click on its body or its card does ("focus it").
+- **And the screen slides only as far as it takes for the unit's hex to be visible** — the least movement, the hex just inside the view; the camera does not centre on the unit and does not change its zoom or angle ("only just to their hex", "Don't … center the screen on it. Just slide over until they're visible").
+- Read as: a bubble standing for several units selects the nearest of them and slides until that one's hex shows. Filed: `viewer.bubble-click-reveals`.
+
+## 2026-10-03 — a player unit with nothing left it can do ends its Activation by itself: "No remaining actions possible."
+
+Andrew, in the kingdom chat, playing the opening run:
+
+“If a player unit completes its move and it has a remaining primary action  and there is no attack target in range, and no other powers it can use. You should just auto-end its turn and put a notification on the screen: "No remaining actions possible."”
+
+Ruled:
+
+- **When a player unit has made its move, still has its primary action, has no attack target in range and no other power it can use, its Activation ends by itself**, and the screen shows the notice **"No remaining actions possible."**
+- Read as: the test is the engine's own — after a player unit acts, if the only command the engine would still accept from it is to end its Activation (no move left, no attack with a target, no power or item use it can pay for and aim), the battle screen sends that end itself and says why. A unit that can still do anything — a bonus move, a shield power, an item — is not ended. Any player unit, a civilian the player controls included. Filed: `viewer.auto-end-no-actions`.
+
+## 2026-10-03 — the action bar: the moves grey slightly once the move is done, nothing else greys; every action shows all it does; the Soldier holds no sword
+
+Andrew, in the kingdom chat, playing the opening run:
+
+“There should be a slight graying out of the move actions after move actions are completed.  And I don't know how to visually separate them, but there should be a slight graying out of everything else when the movement actions haven't been done yet.  Also, some of the information and some of the actions are missing.   For example, a dagger giving you one protection is not shown in the dagger attack.”
+
+Asked "Before a unit has moved, should its attacks and powers still be clickable while greyed (my reading), or locked until it moves?":
+
+“Soldier 1 does not appear to be holding a sword.   Yes, they should still be usable before you've moved. However, if you do it, you'll lose your move, so I guess, actually, don't gray them out. Just gray the moves out after a move is done.”
+
+Ruled:
+
+- **Once a unit's move is done, the move actions on its bar are slightly greyed. Nothing else is greyed for not having moved yet** — his second message withdraws the first's "slight graying out of everything else when the movement actions haven't been done yet".
+- **Attacks and powers are usable before the unit has moved; using one loses the move** ("if you do it, you'll lose your move"). Read as: the move is "done" when it is spent or lost, by the engine's own state — if the engine does not in fact take the move away after an action, that is a finding to bring him, not a viewer rule.
+- **An action on the bar shows everything it does.** The dagger's Stab gives 1 Protection (CODEX.md:2671, "`onAttack` gain 1 Protection") and the bar's Stab does not say so; "some of the information and some of the actions are missing". Every attack, power and item use on the bar shows its effects, and every action the unit has is on the bar.
+- **The Soldier should be holding a sword.** How it is today: `unit.soldier` stands on the approved strong skeleton and swings the sword motion with empty hands (viewer `tools/character-models.mjs`: `fill: { attack: 'sword', … }`, no held model); its row assigns no weapon item (its attacks are its own).
+
+Filed: `viewer.bar-moves-grey-when-done`, `viewer.bar-shows-every-effect`, `viewer.enemy-held-weapons`.
+
+## 2026-10-03 — card art on the level-up and reward screens; the specialty choice offers three, not nine
+
+Andrew, in the kingdom chat, playing the opening run:
+
+“Card art not showing in the level-up screen. Card art not showing in the reward screen for the flinging sword.   Also, you're supposed to only get a choice of three different specialty classes, not nine.”
+
+How it is today: the level-up screen draws the hero's card from the same portraits the Equip screen uses, which exist for the old five-hero pool only (the entry 'every draft card shows the hero's card art' above); the kingdom holds no item card art at all (`kingdom/generated/art/index.json`: building cards and hero portraits, no items), so a reward card — the Flaming Longsword's included ("flinging", dictated) — is drawn without art; and the specialty choice at level 2 lists all nine of the class's specialties (content: nine per class).
+
+Ruled:
+
+- **The hero's card art shows on the level-up screen**, as everywhere its card is shown. `kingdom.opening-hero-card-art` carries it.
+- **A reward's card art shows on the reward screen** — the Flaming Longsword's first. Filed: `kingdom.opening-reward-card-art`.
+- **The specialty choice offers three different specialties, not all nine.** Read as: three of the class's nine, drawn for that hero from the run's own stream and the same when the page is reopened; which three is not said. Filed: `kingdom.opening-specialty-three`.
