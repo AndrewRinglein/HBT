@@ -4430,3 +4430,45 @@ Ruled:
 
 - **In the opening run a battle in which a hero dies is replayed.** Read as: "the battle they died in is replayed" (dictated). A hero's death in one of the six battles is not kept: that battle is offered again, the party as it stood before it, on new dice (the entry above), and the run goes on only from a battle no hero died in. No hero is replaced by an extra draft, and the party does not get smaller. "Hero" is a drafted hero: a civilian dying is still "its own punishment" and not a loss (2026-09-28). 2026-10-02 'a hero still turned when a battle is lost is lost' is not spoken to and stands.
 - This takes in the whole-party case ruled earlier today ("6 offer replay"): `kingdom.opening-party-dead-replay` is withdrawn before any code and replaced by `kingdom.opening-hero-death-replays`, in its place in the queue.
+
+## 2026-10-03 — an attack's timing: the projectile leaves at the release, the target reacts at the blow, a miss is dodged, a hit shows a red slash
+
+Andrew, in the kingdom chat, playing the opening run:
+
+“Ranged attacks are not synced up well enough for the point at which the attack is launched compared to when the projectile animation then goes. Both the arrow and a priest cast were not synced up very well.   If you do a melee attack and miss, it's supposed to trigger a dodge animation if there is one. That should be synced up. Also, there's no red slash across the target that is part of a hit.   There is a hit animation: a zombie hit my warrior, and the recoil from being hit should be connected to the timing of the attack. What happens is the attack plays, maybe a third of a second later, the reaction plays, and the reaction should just be a little bit delayed behind the attack.”
+
+How it is today (viewer `src/models.js`, `src/board.js`, `src/hexvfx.js`, `tools/character-models.mjs`): the target's hit reaction is started by the fold's flash when the damage lands, not by the attacker's clip; a shot's projectile is the board's own effect, not timed to the bow's or the cast's release; a miss shows the word (MISS, DODGE, COVER) and no body moves — there is no dodge motion word; the slash effects exist (`hexvfx.js` SLASH_STYLES) but are not drawn on the battle he played.
+
+Ruled:
+
+- **A ranged attack's projectile leaves at the moment the attack's motion releases it** — the arrow as the bow looses, the spell as the cast lets go — for every ranged attack and cast, not those two alone.
+- **The target's reaction is tied to the attack's timing: it plays a little behind the blow**, not a third of a second after the attack has finished. One moment — the blow — drives the reaction, whoever attacks.
+- **A melee attack that misses plays the target's dodge, where its body has one, timed to the blow.** A body with no dodge motion is listed, not faked (2026-09-30 'a bunch of motions').
+- **A hit shows a red slash across the target**, at the blow.
+
+Filed: `viewer.attack-impact-timing`, `viewer.miss-dodge-motion`, `viewer.hit-slash`.
+
+## 2026-10-03 — every draft card shows the hero's card art; the Lumberjack's axe and his wife's knife are still missing
+
+Andrew, in the kingdom chat, playing the opening run with the 24-hero pool and the draft modifiers in:
+
+“Lumberjack is missing an axe. Lumberjack's wife is missing a knife.   Card art for heroes 2 and 3 didn't come through when I was selecting heroes for the battle.   Card art should be present when you're drafting, both the first time and the next ones.”
+
+How it is today: the kingdom's card portraits (`kingdom/generated/art/hero-*.jpg`, made by `tools/prep-heroes.py`) exist for the five heroes of the old pool only, and the tool reads its ids off `hero('…')` literals that `kingdom.opening-draft-pool` replaced with the pack's rows — so 19 of the 24 heroes have a blank card wherever a card is shown (Equip); and the draft screen (`src/ui/draft.ts`) shows no art at all.
+
+Ruled:
+
+- **Card art is present when drafting — on the first draft and on every later one.** With 'the first hero is chosen from three by description only' (above): the first draft's cards show the art and the description, still no stats and no badges.
+- **Every hero's card art comes through wherever its card is shown** — heroes 2 and 3 on the way to the battle were blank. Filed: `kingdom.opening-hero-card-art`, first in the viewer and kingdom queue.
+- **The Lumberjack's axe and his wife's knife** are 'every civilian fields its kit by default' (2026-10-03, above), filed as `fix.civilians-field-kit` at the top of the engine queue and not built yet; the kingdom chat takes it next after the card art, since he has now reported it twice. Whether the weapon is also drawn in the hand is `art.kit-items-held` and `viewer.civilian-held-dagger`'s.
+
+## 2026-10-03 — the action bar changes with the Activation: the new unit's moves, attacks and powers; the switch pop-up is still not built
+
+Andrew, in the kingdom chat, playing the opening run:
+
+“If I double-click on a hero, it looks like you haven't added in the double-click change-your-active-hero-with-a-popup-screen-in-between, saying, "Are you sure you want to end your activation and start this new hero?" That hasn't been implemented yet.    Also, until you've activated your move, it seems like you keep the moves of the previous character.  So when the activation changes, for whatever reason, the card art changes in the lower left, but the moves don't change. They need to change to the character's moves. And attacks and powers and all that”
+
+Ruled:
+
+- **When the Activation changes, for whatever reason, the action bar changes with it: the moves, attacks, powers and everything else on it are the newly activated unit's, at once** — not the previous unit's until a move is made. The card at the lower left already changes; the bar must change with it. This is what 'the battle screen's turn-taking, ruled' (2026-10-03: "the bar and its card stay with the activated unit") already says; `viewer.turn-taking` landed without it holding. Filed: `viewer.bar-follows-activation`.
+- **The switch pop-up** ("End activation of X and start activation of Y?", yes or no, any player unit) is `viewer.switch-hero-asks`, filed earlier today and not built. Both are moved up the viewer and kingdom queue, next after the card art, ahead of the remaining opening-run items: they are in the way of playing a battle at all.
