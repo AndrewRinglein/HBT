@@ -4827,3 +4827,13 @@ Ruled:
 - Not spoken to and unchanged: the 48 ally-side areas and auras that include their owner by rule (the heal and stat-boost circles, the Necromancer, the Lieutenant Demon, the Bone Dragon).
 
 Filed: `fix.own-area-skips-owner`. Also found by the same item and filed with it as notes for the viewer: the unit panel prints an area trigger's target as "[object Object]" (`viewer.panel-area-trigger-text`).
+
+## 2026-10-04 — a victory in which a civilian was hurt is not a decisive victory
+
+Andrew, in the kingdom chat, asked "Should the victory title drop "DECISIVE" when a civilian was wounded or killed?" (the kingdom worker's finding landing `kingdom.opening-recap-civilians`: the title's grade stayed the heroes', so it could read DECISIVE VICTORY above a dead civilian — kingdom SWITCHES `recapCiviliansTitle`):
+
+“if a civilian was hurt it was not a decisive victory.”
+
+Ruled:
+
+- **The victory screen's title is "Decisive" only when nobody on the player's side was hurt — no hero and no civilian wounded or killed.** A wounded or dead civilian takes the "Decisive" away, as a wounded hero does. Settles kingdom SWITCHES `recapCiviliansTitle`. Filed: `kingdom.opening-recap-decisive`.
