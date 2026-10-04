@@ -4626,3 +4626,18 @@ Ruled:
 
 - **The Fire Imp's end-of-Activation burn does not hit the Fire Imp itself.** Read as: everyone else within 2 hexes still burns — other units of its own side included; only the imp is spared. Filed: `fix.fire-imp-burn-spares-self`.
 - **An end-of-Activation burn over an area is shown: an explosion of fire over that area**, from the effects the project already has ("We have the VFX for that"). Filed: `viewer.area-trigger-burst`.
+
+## 2026-10-03 — the Imp: Precision down by 1; its Blast burns half the time
+
+Andrew, in the kingdom chat, playing the opening run (the Bridge):
+
+“Change the regular imp's regular main attack to lower their precision by 1 and change it to a 50% chance of burn 2.”
+
+How it is today (content bestiary `unit.imp`): Precision 4; its main attack Imp Blast — one enemy within 4 hexes, damage Precision + 0 — applies Burn 2 on every hit.
+
+Ruled:
+
+- **The Imp's Precision is 3** (4, lowered by 1). Read as: the stat on the Imp's row, which Imp Blast's damage reads — so the Blast deals 1 less; the Imp's Claw (Strength) is unchanged. The Fire Imp, the Poison Imp and the Powerful Imp are not named and stay as they are.
+- **Imp Blast applies Burn 2 on a hit with a 50% chance**, not always.
+
+Filed: `content.imp-blast-tuned`.
