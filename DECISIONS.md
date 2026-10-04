@@ -4744,3 +4744,22 @@ Andrew, asked "If the main-hand weapon is a bow or other ranged weapon, what sho
 “Question 1: It is a punch. If you have something that does not have a basic melee attack as its number 1 action, then you do not have a basic attack, and you use punch.”
 
 - **A weapon whose first action is not a melee attack gives no basic attack; the unit's free attack is then Punch.** A bow, a staff whose first action is a shot or a cast: the holder punches. `rule.free-attack-is-basic-attack` says so.
+
+## 2026-10-04 — combat is tested only when the engine changed; a visual change does not re-run the fights
+
+Andrew, in the root chat:
+
+“Are we performing tests against combat when we create a visual change? We only need to test that mechanics work and fights work when we've changed the engine.”
+
+What was found, and told to him — yes, in three places:
+
+- **Every landing runs the control battles**, whatever the item changed (`tools/gate.mjs`, the check 'control battles unchanged'; 40 s on his PC on 2026-10-04). Of the 87 gate runs for viewer, kingdom and art items since 2026-10-01, 86 ran it (`.state/gauntlet-log.jsonl`).
+- **`wrap` wants the whole engine suite on the exact tree**, and the tree is every file but `.state/` and the Game Builder (`tools/gate-progress.mjs`, `treeHash`) — so a ruling written into this file, or a visual item's own test, makes the last pass stale.
+- **`tools/combine.mjs` (root) runs the engine's whole suite on every merge-back**, with no condition on what the worker changed (275 s on 2026-10-03).
+
+Ruled:
+
+- **Mechanics and fights are tested when the engine changed, and only then.** Read as: the control battles, the engine suite a wrap requires and the engine suite a combine runs are skipped — and said to be skipped, never reported as passed — when nothing a battle is made of has changed since they last passed. A new content pack is an engine change (`src/content/generated/pack.ts`). The visual checks stay as they are: an item's own tests, the viewer's gate with its battle pages, kingdom's suite.
+- It extends the engine's code stamp (2026-10-01, `tools/code-stamp.mjs`): a ruling, a wrap, a handoff or a log line "is an engine commit too; none of them changes a battle, so none of them may force viewer or kingdom to rebuild."
+
+Filed: `tool.combat-tests-on-engine-change` (engine queue; `fix.civilians-field-kit` stays first, as ruled 2026-10-03).
