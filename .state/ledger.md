@@ -28308,6 +28308,17 @@ index 80fb626..e9ce7a9 100644
   PASS  naming — no banned words invented
   PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
 
+## viewer.hit-slash — LANDED `4c49cae`
+2026-10-04 19:40
+
+  PASS  dependencies landed
+  WARN  not already decided — 1 candidate ruling(s) — READ BEFORE ASKING: SWITCHES.md:1944
+  PASS  typecheck
+  PASS  the item's own tests — test/viewer.hit-slash.test.ts, test/viewer.attack-impact-timing.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — viewer/test/viewer.hit-slash.test.ts, viewer/test/viewer.attack-impact-timing.test.ts
+  PASS  existing tests untouched
+  SKIPPED  control battles unchanged — engine code 859cd0f485 and the content pack are the ones the control battles last passed on (2026-10-04 15:13, gate capability.counterattack-and-fend --land, in HBT-worker-engine) — not run
 ## fix.trigger-ids-and-scopes — LANDED `870ff13` **NEEDS REVIEW**
 2026-10-04 19:20
 
@@ -28323,6 +28334,50 @@ index 80fb626..e9ce7a9 100644
   PASS  hardcode scan — core knows mechanisms, never names
   PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
   PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+## viewer.area-trigger-burst — LANDED `18e50bf`
+2026-10-04 19:41
+
+  PASS  dependencies landed
+  WARN  not already decided — 1 candidate ruling(s) — READ BEFORE ASKING: SWITCHES.md:1944
+  PASS  typecheck
+  PASS  the item's own tests — test/viewer.area-trigger-burst.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — viewer/test/viewer.area-trigger-burst.test.ts
+  PASS  existing tests untouched
+  SKIPPED  control battles unchanged — engine code 859cd0f485 and the content pack are the ones the control battles last passed on (2026-10-04 15:13, gate capability.counterattack-and-fend --land, in HBT-worker-engine) — not run
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+## viewer.plays-turned-units — LANDED `86830ed`
+2026-10-04 20:11
+
+  PASS  dependencies landed
+  WARN  not already decided — 3 candidate ruling(s) — READ BEFORE ASKING: SWITCHES.md:1944 · ..\THREE-PACKAGES-PLAN.md:211
+  PASS  typecheck
+  PASS  the item's own tests — test/viewer.plays-turned-units.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — viewer/test/viewer.plays-turned-units.test.ts
+  PASS  existing tests untouched
+  SKIPPED  control battles unchanged — engine code 859cd0f485 and the content pack are the ones the control battles last passed on (2026-10-04 15:13, gate capability.counterattack-and-fend --land, in HBT-worker-engine) — not run
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
   PASS  generalizes — the second instance costs zero engine code — shape 'data' — not a mechanism, exempt
   PASS  naming — new content ids use declared kinds
   PASS  naming — no banned words invented
@@ -28406,6 +28461,8 @@ superseded: kingdom.opening-run-six (landed 2026-10-02) is the continuous run th
 
 ## kingdom.opening-recap-decisive — LANDED `2ad55f1`
 2026-10-04 20:44
+## viewer.free-attack-kind-words — LANDED `0040dfd`
+2026-10-04 20:55
 
   PASS  dependencies landed
   WARN  not already decided — 2 candidate ruling(s) — READ BEFORE ASKING: SWITCHES.md:1944 · ..\ATLAS-COMBAT-INTEGRATION.md:222
@@ -28475,6 +28532,11 @@ superseded: kingdom.opening-run-six (landed 2026-10-02) is the continuous run th
   PASS  brought its own tests — kingdom/test/tutorial-orphanage-civilians-and-ending.test.ts
   PASS  existing tests untouched
   SKIPPED  control battles unchanged — engine code 96341738c6 and the content pack are the ones the control battles last passed on (2026-10-04 20:25, combine: engine master eec6321 into the kingdom worker copy (golden re-run by tools/baseline.mts on the merged tree), in HBT-worker-kingdom) — not run
+  PASS  the item's own tests — test/viewer.free-attack-kind-words.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — viewer/test/viewer.free-attack-kind-words.test.ts
+  PASS  existing tests untouched
+  SKIPPED  control battles unchanged — engine code 01aa156b6c and the content pack are the ones the control battles last passed on (2026-10-04 19:20, gate fix.trigger-ids-and-scopes --land, in HBT-worker-engine) — not run
   PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
   PASS  hardcode scan — core knows mechanisms, never names
   PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here

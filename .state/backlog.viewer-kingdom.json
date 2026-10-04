@@ -772,7 +772,9 @@
   ],
   "spec": "Ruled 2026-10-03 (Andrew, engine/DECISIONS.md 'an attack's timing ...'): 'Also, there's no red slash across the target that is part of a hit.' The slash effects exist in the viewer (src/hexvfx.js SLASH_STYLES: 'slash at chest height', by damage type) but are not drawn on the battle screen he played (the painted 3D battle). Draw the red slash across the target when an attack hits, at the blow moment (viewer.attack-impact-timing), on every board the battle screen plays - the painted 3D scenes and the flat board. Prior art first: the existing slash and its styles, not a second effect; say why it was not drawn (a path the 3D screen does not take, or a layer hidden) and fix that path. Which hits: every attack that hits and deals damage, melee and ranged (a miss, a full block and a dodge draw none) - record the reading as a viewer switch; the colour is red for a physical hit and the existing style's colour for another damage type unless Andrew says red always. Kingdom's pages are rebuilt. Added 2026-10-03 (the same day, engine/DECISIONS.md 'one draft after every battle; the yellow focus border goes; a death is tied to the strike; the slash on every damaging hit; a ranged miss is dodged too'): asked 'Should the red slash show on every hit that deals damage, ranged included, or only on melee hits?' - '3. If it was already doing that, then keep doing it. Red slash on every damage'. Confirmed: every hit that deals damage draws it, ranged included; where a board already draws the slash it keeps doing so.",
   "expect": "In BATTLE-SANDBOX.html?play=encounter.opening.orphanage a zombie's hit on a hero draws a red slash across the hero at the blow, and a hero's hit on a zombie draws one across the zombie; a miss draws none; a page test finds the slash drawn on the painted 3D board for a hit and absent for a miss. A ranged hit that deals damage draws the slash at the projectile's arrival.",
-  "note": "Filed by the kingdom chat from Andrew's ruling, 2026-10-03."
+  "note": "Filed by the kingdom chat from Andrew's ruling, 2026-10-03.",
+  "status": "done",
+  "sha": "4c49cae"
  },
  {
   "id": "viewer.area-trigger-burst",
@@ -780,7 +782,9 @@
   "shape": "plumbing",
   "spec": "Ruled 2026-10-03 (Andrew, engine/DECISIONS.md 'the Fire Imp's burn does not hit the imp itself; an end-of-Activation area burn shows an explosion of fire'): 'If it's an end-of-activation burn in a certain area, we need to create a VFX that goes along with that. So that should be an explosion of fire. We have the VFX for that.' Today the Fire Imp's end-of-Activation Burn (unit.fire-imp's onActivationEnd trigger over every unit within 2 hexes) shows only each victim's own reaction - nothing says where it came from or how far it reached. When a trigger applies its effect over an area - the engine's log names the trigger, its owner and the units it reached; the area is the trigger's own range from the engine's sheet through the door - the battle screen plays a burst over that area, centred on the owner, before the victims react: for a burn, the explosion of fire the viewer already holds (src/hexvfx.js; viewer.bursts and the burst forecast are the prior art - the same effect path, not a second one), sized to the trigger's reach. The effect is chosen by what the trigger applies (burn: fire) through the viewer's existing status-to-effect table; an area trigger whose status has no burst is listed by name and plays nothing new - not faked. On the painted 3D board and the flat board alike. Kingdom's pages are rebuilt; each package commits in its own repository.",
   "expect": "In BATTLE-SANDBOX.html?play=encounter.opening.bridge a Fire Imp ending its Activation shows an explosion of fire over the hexes within 2 of it, then the burned units react; a page test finds the burst drawn at the Fire Imp's end of Activation with the trigger's radius, and lists every area trigger in the opening battles that has no burst.",
-  "note": "Filed by the kingdom chat from Andrew's ruling, 2026-10-03, while he played the opening run."
+  "note": "Filed by the kingdom chat from Andrew's ruling, 2026-10-03, while he played the opening run.",
+  "status": "done",
+  "sha": "18e50bf"
  },
  {
   "id": "viewer.bubble-click-reveals",
@@ -1089,7 +1093,9 @@
   "shape": "plumbing",
   "spec": "Found 2026-10-04 by the engine worker (viewer SWITCHES.md openingReplayPlayableSeed): the viewer does not fold the engine's unit.transformed and unit.reverted events, so the page cannot play a battle in which a hero is turned by an affliction (rule.afflictions-at-zero: a hero at zero takes its affliction's form - a zombie, a ghoul - and may revert). The Cavern Trail's recording had to move from seed 0 to seed 1 for that reason alone, and a player's own battle in which a hero turns cannot be drawn. Fold both events (viewer src/fold.js; read the engine's event shapes through the door, engine src/core/mutate.ts transformUnit / the revert): the turned unit takes the form's row - its name, side, stats, attacks, body (the form's own model where the viewer has one, listed where not), card and bar - at the moment the log says, and takes its own back when it reverts; seek, step and replay land on the same state. The first-affliction pop-up (viewer src/affliction.js) and the cards above the battle keep working through a turn. Then re-export the Cavern Trail's recording on seed 0 if that is still the lowest seed the opening's rule picks (all six together if any moves). Kingdom's pages are rebuilt; each package commits in its own repository.",
   "expect": "A recorded battle in which a hero is turned plays through on the battle screen: at the turn the hero's unit is drawn and listed as its form, on the form's side, with the form's actions, and at a revert as itself; seeking past and back lands on the same state; a page test plays such a battle and reads the unit before, during and after.",
-  "note": "Filed by the kingdom chat, 2026-10-04, from the engine worker's report."
+  "note": "Filed by the kingdom chat, 2026-10-04, from the engine worker's report.",
+  "status": "done",
+  "sha": "86830ed"
  },
  {
   "id": "viewer.free-attack-kind-words",
@@ -1097,6 +1103,8 @@
   "shape": "plumbing",
   "spec": "Found landing capability.counterattack-and-fend (2026-10-04, engine SWITCHES.md freeAttackKindOnTheLine): a counterattack and a fend reuse the attack-of-opportunity log line (aoo.provoked, with an `as` field naming the kind), so the battle screen plays them but words every one as an attack of opportunity, and shows no icon for the condition a unit has while its Counterattack or Fend is up. Word each by its kind from the line's own field - 'Counterattack', 'Fend', 'Attack of opportunity' - in the log, the floating text and the bar's tooltip for the power, and show the up-state on the unit (its status row and its card) with the viewer's existing status drawing; the icon is an existing glyph proposed for Andrew's eye, listed if none fits. No engine change. Kingdom's pages are rebuilt.",
   "expect": "In a sandbox battle a hero who has used the Longsword's Counterattack shows the condition on its card and panel; when an adjacent enemy attacks it, the log and the floating text say Counterattack, not attack of opportunity; a fend reads Fend; an ordinary attack of opportunity reads as before; a page test reads each wording.",
-  "note": "Filed by the kingdom chat, 2026-10-04, from the engine worker's report. Small."
+  "note": "Filed by the kingdom chat, 2026-10-04, from the engine worker's report. Small.",
+  "status": "done",
+  "sha": "0040dfd"
  }
 ]
