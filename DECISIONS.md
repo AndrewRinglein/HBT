@@ -4827,3 +4827,23 @@ Ruled:
 - Not spoken to and unchanged: the 48 ally-side areas and auras that include their owner by rule (the heal and stat-boost circles, the Necromancer, the Lieutenant Demon, the Bone Dragon).
 
 Filed: `fix.own-area-skips-owner`. Also found by the same item and filed with it as notes for the viewer: the unit panel prints an area trigger's target as "[object Object]" (`viewer.panel-area-trigger-text`).
+
+## 2026-10-04 — a victory in which a civilian was hurt is not a decisive victory
+
+Andrew, in the kingdom chat, asked "Should the victory title drop "DECISIVE" when a civilian was wounded or killed?" (the kingdom worker's finding landing `kingdom.opening-recap-civilians`: the title's grade stayed the heroes', so it could read DECISIVE VICTORY above a dead civilian — kingdom SWITCHES `recapCiviliansTitle`):
+
+“if a civilian was hurt it was not a decisive victory.”
+
+Ruled:
+
+- **The victory screen's title is "Decisive" only when nobody on the player's side was hurt — no hero and no civilian wounded or killed.** A wounded or dead civilian takes the "Decisive" away, as a wounded hero does. Settles kingdom SWITCHES `recapCiviliansTitle`. Filed: `kingdom.opening-recap-decisive`.
+
+## 2026-10-04 — the view may slide past the board's edge to show a unit on an edge column
+
+Andrew, in the kingdom chat, told what `viewer.arrivals-camera` and `viewer.bubble-click-reveals` found — the camera never shows past the board's edge, so a unit on an edge column stays partly off the screen (the Orphanage's Turn 2 Zombie at (19,5) ends half shown; the bottom corner hexes can never be seen; viewer SWITCHES `arrivalsEdgeColumn`, `bubbleEdgeHex`) — and asked "For edge units, should the view be allowed to slide a little past the board's edge so they show fully?":
+
+“1 yes”
+
+Ruled:
+
+- **The view may slide past the board's edge by as much as it takes to show a unit or hex on an edge column whole** — for an arrival, a bubble click and a tutorial look. Read as: the least that shows it, never more; what lies beyond the board is drawn as the screen's own dark surround unless he says to paint ground there. Settles viewer SWITCHES `arrivalsEdgeColumn` and `bubbleEdgeHex`. Filed: `viewer.camera-shows-edge-units`.
