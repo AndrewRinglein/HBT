@@ -8,7 +8,7 @@ const APPLY=process.argv.includes('--apply');
 const HEX=n=>n==1?'1 hex':n+' hexes';
 // a value already in canonical form is returned untouched. This is what makes the pass
 // idempotent, and running it twice was how the first attempt corrupted a dozen entries.
-const CANON=/^(self|your own hex|one enemy in melee reach|one of your own traps within your Vision|one enemy within your Vision|every unit within your Vision|every enemy adjacent to you|an adjacent hex and (the two|one) hexe?s? adjacent to both you and it|one enemy in melee reach and the hex directly behind it|(one enemy|a hex|three hexes|one ally|one downed ally|allies|you and allies|enemies|every unit) within \d+ hexe?s?( and (every hex|every enemy) adjacent to it| and the hex directly behind it)?|up to \d+ (enemies|allies) within \d+ hexe?s?|the hexes you leave this Turn|every enemy you pass)$/;
+const CANON=/^(self|your own hex|one enemy in melee reach|one of your own traps within your Vision|one enemy within your Vision|every unit within your Vision|every enemy adjacent to you|an adjacent hex and (the two|one) hexe?s? adjacent to both you and it|one enemy in melee reach and the hex directly behind it|(one enemy|a hex|three hexes|one ally|one downed ally|allies|you and allies|enemies|every unit|every other unit) within \d+ hexe?s?( and (every hex|every enemy) adjacent to it| and the hex directly behind it)?|up to \d+ (enemies|allies) within \d+ hexe?s?|the hexes you leave this Turn|every enemy you pass)$/;
 function norm(raw){
   if(typeof raw!=='string') return raw;
   if(CANON.test(raw)) return raw;
