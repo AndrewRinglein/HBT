@@ -770,7 +770,9 @@
   ],
   "spec": "Ruled 2026-10-03 (Andrew, engine/DECISIONS.md 'an attack's timing ...'): 'Also, there's no red slash across the target that is part of a hit.' The slash effects exist in the viewer (src/hexvfx.js SLASH_STYLES: 'slash at chest height', by damage type) but are not drawn on the battle screen he played (the painted 3D battle). Draw the red slash across the target when an attack hits, at the blow moment (viewer.attack-impact-timing), on every board the battle screen plays - the painted 3D scenes and the flat board. Prior art first: the existing slash and its styles, not a second effect; say why it was not drawn (a path the 3D screen does not take, or a layer hidden) and fix that path. Which hits: every attack that hits and deals damage, melee and ranged (a miss, a full block and a dodge draw none) - record the reading as a viewer switch; the colour is red for a physical hit and the existing style's colour for another damage type unless Andrew says red always. Kingdom's pages are rebuilt. Added 2026-10-03 (the same day, engine/DECISIONS.md 'one draft after every battle; the yellow focus border goes; a death is tied to the strike; the slash on every damaging hit; a ranged miss is dodged too'): asked 'Should the red slash show on every hit that deals damage, ranged included, or only on melee hits?' - '3. If it was already doing that, then keep doing it. Red slash on every damage'. Confirmed: every hit that deals damage draws it, ranged included; where a board already draws the slash it keeps doing so.",
   "expect": "In BATTLE-SANDBOX.html?play=encounter.opening.orphanage a zombie's hit on a hero draws a red slash across the hero at the blow, and a hero's hit on a zombie draws one across the zombie; a miss draws none; a page test finds the slash drawn on the painted 3D board for a hit and absent for a miss. A ranged hit that deals damage draws the slash at the projectile's arrival.",
-  "note": "Filed by the kingdom chat from Andrew's ruling, 2026-10-03."
+  "note": "Filed by the kingdom chat from Andrew's ruling, 2026-10-03.",
+  "status": "done",
+  "sha": "4c49cae"
  },
  {
   "id": "viewer.area-trigger-burst",
