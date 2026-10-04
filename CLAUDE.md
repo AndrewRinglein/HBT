@@ -28,7 +28,7 @@ node tools/gate.mjs --part checks       door probe · laws 5 and 6 · typecheck 
 node tools/gate.mjs --part verify k/4   k = 1..4: build the candidate into .build/, verify.mjs over slice k of the library (~60 s each)
 node tools/gate.mjs --part tests k/2    k = 1, 2: half of the node --test lists each against the candidate page (~90 s each; one part until 2026-10-01, when it neared Cowork's ~178 s kill)
 node tools/gate.mjs --status            which parts passed on this exact tree (hash in .build/gate-parts.json) + verify's library-wide checks
-node tools/gate.mjs --land              refuses unless every part passed on this tree; writes BATTLE-VIEWER.html from the byte-identical rebuild
+node tools/gate.mjs --land              writes BATTLE-VIEWER.html: verified when every part passed on this tree; when the viewer's CODE has a recorded pass and only regenerated files moved, rebuilt with every part printed SKIPPED (below); refuses otherwise
 node tools/gate.mjs                     every part in one command (no shell time limit only — Cowork kills it at ~178 s)
 node tools/gate.mjs --fresh      re-export every library battle from ../engine and diff byte-for-byte (refuses a dirty engine; --dirty-ok to compare anyway; a scenario's --seed is passed through)
 node tools/play.mjs <page> <export.json>   play ONE export headlessly: every event type folded/ignored/UNKNOWN, every cue, the final board objects, the first throw (asserts nothing — verify is the gate)
@@ -41,6 +41,28 @@ python3 tools/prep-art.py --after-cards      only the heroes' after cards for th
 npm run typecheck                the door, the sheet and the .mts tools — the .js modules are not typed
 ALLOW_EXEMPTION_GROWTH=1 …       only for the one commit that records a review's discovery of an unmarked computation
 ```
+
+**The gate runs when the viewer's code changed, and not otherwise** (Andrew, 2026-10-04,
+`engine/DECISIONS.md` "combat is tested only when the engine changed; a visual change does not
+re-run the fights" and "the same for content and kingdom changes: each kind of change runs its own
+tests"). The viewer's code is `src/`, `tools/`, `test/`, `battles/`, `art-src/`, `package.json`,
+`package-lock.json` and `tsconfig.json` — the one definition is `../engine/tools/code-stamp.mjs`.
+`generated/` (the dumps, the prepared art), `BATTLE-VIEWER.html`, documents and logs are not.
+
+- A viewer **code** change lands as before: every part on this tree, then `--land`.
+- When every part is green the gate appends one line to `.state/passes.jsonl` — commit it with the
+  page. A merge keeps it; the merge-back (`../tools/combine.mjs`) reads it and does not run the
+  gate again on the same code.
+- After a **re-dump** (a new content pack, an engine change: `npm run static`,
+  `node tools/dump-fields.mjs`) with no viewer code changed, `node tools/gate.mjs --land` rebuilds
+  the page without running the parts: each part is printed `SKIPPED` with the reason and the page
+  `REBUILT, NOT RE-VERIFIED` — never PASS for a part that did not run. A part that **fails** is
+  written to `.state/passes.jsonl` as a failure, and `--land` then refuses until the gate passes again.
+- **What it costs, as ruled:** the gate plays the engine's battles and kingdom's built page, and its
+  pass is keyed on the viewer's code alone. A new pack or an engine change that breaks the page's
+  playback is found at the once-per-chat full run (`node ../tools/combine.mjs <worker folder> --full`,
+  or `node ../engine/tools/suites.mjs --run all --full`), which the engine's `wrap` refuses without —
+  not at the rebuild.
 
 **Publishing:** `BATTLE-VIEWER.html` is the one generated page; the artifact is
 published *from it*, never from a copy (ruled 2026-09-02: "one HTML that is just
@@ -59,11 +81,12 @@ commits every changed engine file, including other chats' changes. Land in this 
 1. Commit the viewer sources first, with the item id in the message. The candidate page
    stamps viewer HEAD, so gate parts run before that commit go stale.
 2. `node tools/gate.mjs --part checks`, then `--part verify k/4`, then `--part tests k/2`,
-   then `--land`, then commit `BATTLE-VIEWER.html` on its own. Never edit a viewer file
-   while the parts run, because they hash the tree.
+   then `--land`, then commit `BATTLE-VIEWER.html` (and `.state/passes.jsonl`, the record of the
+   pass) on its own. Never edit a viewer file while the parts run, because they hash the tree.
 3. The item's engine-side test is `test/<item>.test.ts`. It runs the `tools/*.test.mjs`
    page test with `VIEWER_PAGE ?? ''`.
-4. Rebuild `../kingdom` BATTLE-SANDBOX.html and SLICE.html, then commit kingdom. The build
+4. Rebuild `../kingdom` BATTLE-SANDBOX.html and SLICE.html, then commit kingdom (a rebuilt page
+   is not kingdom code: it does not start kingdom's suite). The build
    refuses if the `generated/*.json` stamp is not the engine's: re-dump with `npm run static`
    and `node tools/dump-fields.mjs`. The build spawns `python3` with Pillow. Here that is
    Python 3.12 only, so put a `python3.exe` copy of it first on PATH and set
