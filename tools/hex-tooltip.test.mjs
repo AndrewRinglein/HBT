@@ -61,7 +61,13 @@ function hexesOf(V, terrainId, n = 3) {
   const out = []
   for (const key of Object.keys(POS)) { const h = +key
     if (F.terrainIds[h] !== terrainId || (F.floor && !F.floor[h])) continue
-    if (live.some(u => distance(u.hex, h) <= 3)) continue
+    /* 2026-10-04 (engine fix.opening-orphanage-closer-start, merged with this item's landing; engine DECISIONS.md 2026-10-04
+       '… a closer start'): this read `distance(u.hex, h) <= 3` — a margin round every unit so the pointer's pick is the
+       ground and never a body. On the closer start the Zombie stands at (16,3) under the house and the civilians beside
+       it, so every house tile on the screen is within 3 hexes of somebody and the test had none to read. The margin is 2:
+       still clear of every body (the pick is asserted hex by hex below — a pick that landed on a unit would fail there),
+       and the house's tiles at its far corner are read again. No assertion changed. */
+    if (live.some(u => distance(u.hex, h) <= 2)) continue
     if (V.S.props && V.S.props.some(p => p.footprint.kind === 'hex' && p.footprint.hexes.includes(h))) continue
     const s = screenOf(V, h); if (s.x < 120 || s.y < 80 || s.x > s.W - 120 || s.y > s.H - 160) continue
     out.push(h); if (out.length >= n) break }
