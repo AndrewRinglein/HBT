@@ -619,11 +619,11 @@
  },
  "044": {
   "red": {
-   "at": "2026-09-04 21:04",
-   "sha": "6b8ccb5",
-   "hash": "8719b22da823",
+   "at": "2026-10-04 08:44",
+   "sha": "c8b5891",
+   "hash": "c1aa081e12e9",
    "how": "feature absent",
-   "tail": "       |                                        ^ |      22|     expect(cap).toBeGreaterThanOrEqual(5) |      23|     const ctx = playOpening(makeCtx(makeNewCampaign(21)))"
+   "tail": "       |                                     ^ |      52|     expect(between(bs[1]!, bs[2]!)).toBe(totals[2]! - totals[1]!) |      53|     expect(between(bs[2]!, bs[3]!)).toBe(totals[3]! - totals[2]!)"
   },
   "closed": {
    "at": "2026-09-04 21:05",

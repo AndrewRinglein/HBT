@@ -24,6 +24,12 @@ export type ArtIndex = {
   banners?: Record<string, string>
   /** From the codex's card art (tools/prep-heroes.py): a 2:3 portrait per pool hero, by hero id. */
   heroes?: Record<string, string>
+  /**
+   * From the weapon card references (tools/prep-items.py): the 2:3 card art an item shows, by item id — its own row's
+   * card, or its base row's for an enchanted, masterwork or combined row. An item not listed has no art
+   * (index.json itemsMissing names it) and shows its plain card. kingdom.opening-reward-card-art.
+   */
+  items?: Record<string, string>
   /** From Hell-TCG (tools/prep-after.py): the sounds the after-battle screens play, by Hell-TCG's own ids, and the reward card back. */
   audio?: Record<string, { file: string; volume: number; pitchShift?: number; music?: boolean }>
   cardBack?: string
@@ -122,6 +128,8 @@ export const interiorOf = (buildingId: string): string | null => ART?.data[ART.i
 export const cardOf = (buildingId: string): string | null => ART?.data[ART.cards[slugOf(buildingId)] ?? ''] ?? null
 export const portraitOf = (heroId: string): string | null => ART?.data[ART.heroes?.[heroId] ?? ''] ?? null
 export const portraitIdOf = (hero: Pick<Hero, 'id' | 'templateId'>): string => hero.templateId ?? hero.id
+/** An item's card art, or null — the item has none and shows its plain card, never another item's picture. */
+export const itemArtOf = (itemId: string): string | null => ART?.data[ART.items?.[itemId] ?? ''] ?? null
 export const cardBackOf = (): string | null => ART?.data[ART.cardBack ?? ''] ?? null
 export const bannerOf = (slug: string): string | null => ART?.data[ART.banners?.[slug] ?? ''] ?? null
 

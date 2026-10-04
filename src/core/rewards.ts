@@ -15,11 +15,11 @@
 
 import type { CampaignState, HeroId } from './campaign.js'
 import { type Ctx, setRewardOffer, applyTakeReward, applyEquip, applyLevel, applySpecialty, setCursor } from './mutate.js'
-import { levelRowOf, specialtiesOf, specialtyOf, type SpecialtyRow, type LevelRow } from '../content/progress.js'
+import { levelRowOf, specialtiesOf, specialtyOf, SPECIALTY_OFFER, type SpecialtyRow, type LevelRow } from '../content/progress.js'
 import { SWITCHES } from '../content/switches.js'
-import { rollOf } from './rng.js'
+import { rollOf, drawOf } from './rng.js'
 import { REWARDS, REWARD_ODDS, slotOf, type RewardRow } from '../content/rewards.js'
-import { encounterRewardOf } from '../content/encounter-rewards.js'
+import { encounterRewardOf, rewardTakersOf } from '../content/encounter-rewards.js'
 import { whyNotFit } from './loadout.js'
 import { itemOf } from '../content/items.js'
 import { rewardDrawOf } from './charter.js'
@@ -78,10 +78,53 @@ function takersOf(campaign: CampaignState, itemId: string, takers: readonly stri
     .map((h) => h.id).sort()
 }
 
-/** Who may take this reward — empty for a reward that goes to the stash. */
+/** Who may take this reward — empty for a reward that goes to the stash. An item WAITING in the stash for its classes (below): who may take it now. */
 export function listRewardTakers(campaign: CampaignState, itemId: string): HeroId[] {
   const named = namedTakerOffer(campaign)
-  return named && named.itemId === itemId ? takersOf(campaign, itemId, named.takers) : []
+  if (named && named.itemId === itemId) return takersOf(campaign, itemId, named.takers)
+  const whose = campaign.stash.includes(itemId) ? rewardTakersOf(itemId) : null
+  return whose ? takersOf(campaign, itemId, whose) : []
+}
+
+// ---------- an item that waits for its taker (kingdom.opening-sword-waits, 2026-10-04) ----------
+// Ruled 2026-10-03 (Andrew, engine/DECISIONS.md 'the opening run: the Flaming Longsword waits for its taker; …': asked "If the
+// party has no Warrior or Paladin after battle 2, should the Flaming Longsword wait in the stash until one is drafted?
+// (Today it's never offered again.)" — "One, yes."). A won battle whose row gives an item to named classes, with nobody of
+// those classes able to take it, KEEPS the item: the one writer puts it in the stash (resolveBattleWaiting), where it
+// waits — it is still those classes' only (core/shop.ts whyNotEquip reads the same row) — and it is offered, the carrier
+// named by the player as at the battle, as soon as a living hero of those classes has room for it (listWaitingOffers).
+// Nothing is stored for the wait or the offer: both are read from the stash, the row and the roster.
+
+/** The item a won battle keeps for later: its row's named-class item, when nobody may take it now. Else null. Pure. */
+export function resolveBattleWaiting(campaign: CampaignState, engagementId: string): string | null {
+  const offer = encounterRewardOf(engagementId)?.offer
+  return offer?.kind === 'item' && takersOf(campaign, offer.itemId, offer.takers).length === 0 ? offer.itemId : null
+}
+
+/** The items in the stash that wait for a hero of their row's classes — offered or not yet. Sorted (Law 6). */
+export function listWaitingItems(campaign: CampaignState): string[] {
+  return [...new Set(campaign.stash)].filter((id) => rewardTakersOf(id) !== null).sort()
+}
+
+/** The waiting items somebody may take NOW, each with who may: the offer the page makes before the next battle. */
+export function listWaitingOffers(campaign: CampaignState): { itemId: string; takers: HeroId[] }[] {
+  return listWaitingItems(campaign).map((itemId) => ({ itemId, takers: takersOf(campaign, itemId, rewardTakersOf(itemId)!) })).filter((o) => o.takers.length > 0)
+}
+
+/** Why this hero cannot take this waiting item — or null. */
+export function whyNotTakeWaiting(campaign: CampaignState, itemId: string, heroId: HeroId): string | null {
+  if (campaign.cursor.step !== 'open') return `a waiting item is given between battles — the cursor is at '${campaign.cursor.step}'`
+  const offer = listWaitingOffers(campaign).find((o) => o.itemId === itemId)
+  if (!offer) return listWaitingItems(campaign).includes(itemId) ? `'${itemId}' waits for ${rewardTakersOf(itemId)!.join(' or ')} — nobody can take it yet` : `'${itemId}' is not waiting in the stash`
+  if (!offer.takers.includes(heroId)) return `'${heroId}' cannot take '${itemId}' — it is for ${rewardTakersOf(itemId)!.join(' or ')}, alive, with room for it; ${offer.takers.join(', ')} may`
+  return null
+}
+
+/** Give a waiting item to the hero the player names: out of the stash, onto the hero — as the battle's own offer gives it. */
+export function performTakeWaiting(ctx: Ctx, itemId: string, heroId: HeroId, causeId: string): void {
+  const why = whyNotTakeWaiting(ctx.campaign, itemId, heroId)
+  if (why) throw new Error(`performTakeWaiting refused: ${why}`)
+  applyEquip(ctx, heroId, itemId, causeId)
 }
 
 export function listRewardOffers(campaign: CampaignState): RewardRow[] {
@@ -147,6 +190,20 @@ export const levelTableOfHero = (campaign: CampaignState, heroId: HeroId): { tab
   return { table: levelTableOf(def), classId: classOf(def) }
 }
 
+/**
+ * kingdom.opening-specialty-three — the specialties a hero's specialty choice offers. Ruled 2026-10-03 (Andrew,
+ * engine/DECISIONS.md 'card art on the level-up and reward screens; the specialty choice offers three, not nine': "you're
+ * supposed to only get a choice of three different specialty classes, not nine."; '… the specialty three are random; …':
+ * "It's random: 3 of the 9."): a plain draw without repeats of the content's count (SPECIALTY_OFFER) from the specialties
+ * of the hero's class (content's nine), on the run's own named stream — cup.reward, keyed by what the roll is: this hero's
+ * specialty offer. Nothing is stored for it: the three are DERIVED from the Campaign, so a run saved on the choice and
+ * reopened shows the same three, and two heroes of one class are drawn apart (their keys differ). Pure.
+ * kingdom SWITCHES.md specialtyThreeDraw, specialtyThreeCup.
+ */
+export function specialtyOfferOf(campaign: CampaignState, heroId: HeroId): SpecialtyRow[] {
+  return drawOf(campaign, CUP_IDS.reward, ['specialty', heroId], specialtiesOf(levelTableOfHero(campaign, heroId).classId), SPECIALTY_OFFER)
+}
+
 /** What the next level does (screens.after-battle, G12): the row's grants, the specialty offer at the codex's level, the level-5 pick. Pure. */
 export type LevelUpView = {
   heroId: HeroId
@@ -155,6 +212,7 @@ export type LevelUpView = {
   row: LevelRow
   /** The specialty is chosen here — the first level-up (codex levels.rules) — and only if none is held. */
   needsSpecialty: boolean
+  /** The specialties offered — specialtyOfferOf: three of the class's, the run's own draw for this hero (until 2026-10-04, all nine). */
   specialtyOffers: SpecialtyRow[]
   /** The row carries a choice: one of these, by index. */
   pickOptions: readonly Readonly<Record<string, number>>[] | null
@@ -163,12 +221,12 @@ export type LevelUpView = {
 export function viewLevelUp(campaign: CampaignState, heroId: HeroId): LevelUpView {
   const h = campaign.roster[heroId]
   if (!h) throw new Error(`no hero '${heroId}'`)
-  const { table, classId } = levelTableOfHero(campaign, heroId)
+  const { table } = levelTableOfHero(campaign, heroId)
   const row = levelRowOf(table, h.level + 1)
   const needsSpecialty = row.specialty && !h.specialty
   return {
     heroId, from: h.level, to: h.level + 1, row,
-    needsSpecialty, specialtyOffers: needsSpecialty ? specialtiesOf(classId) : [],
+    needsSpecialty, specialtyOffers: needsSpecialty ? specialtyOfferOf(campaign, heroId) : [],
     pickOptions: row.choice ?? null,
     specialty: h.specialty ? specialtyOf(h.specialty) : null,
   }
@@ -186,7 +244,11 @@ export function whyNotLevelUp(campaign: CampaignState, heroId: HeroId, choice: L
   if (v.needsSpecialty) {
     // the offer is made once; a level taken without a name DECLINES it unless the switch says it must be answered
     if (!choice.specialtyId && SWITCHES.levelUpSpecialtyRequired) return `reaching level ${v.to} chooses a specialty — name one of ${v.specialtyOffers.map((s) => s.id).join(', ')}`
-    if (choice.specialtyId && !v.specialtyOffers.some((s) => s.id === choice.specialtyId)) return `'${choice.specialtyId}' is not a ${levelTableOfHero(campaign, heroId).classId} specialty`
+    if (choice.specialtyId && !v.specialtyOffers.some((s) => s.id === choice.specialtyId)) {
+      const classId = levelTableOfHero(campaign, heroId).classId
+      if (!specialtiesOf(classId).some((s) => s.id === choice.specialtyId)) return `'${choice.specialtyId}' is not a ${classId} specialty`
+      return `'${choice.specialtyId}' is not one of the ${v.specialtyOffers.length} offered to ${campaign.roster[heroId]!.name} — ${v.specialtyOffers.map((s) => s.id).join(', ')}`
+    }
   } else if (choice.specialtyId) return `the specialty is chosen once, at the first level-up — ${campaign.roster[heroId]!.name} already ${campaign.roster[heroId]!.specialty ? 'holds ' + campaign.roster[heroId]!.specialty : 'passed it'}`
   if (v.pickOptions) {
     if (choice.pick === undefined) return `level ${v.to} picks one of ${v.pickOptions.length} — name its index`

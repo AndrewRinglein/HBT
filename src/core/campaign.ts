@@ -90,6 +90,13 @@ export type Cursor = {
   rewardOffer: string[] | null
   /** The opening: the next prologue battle's number (1–5) while the opening runs; null once the Kingdom Territory is taken. */
   prologue: number | null
+  /**
+   * The opening: how many times the battle on `prologue` has been offered again — a lost one that is replayed
+   * (kingdom.opening-replay-rules, 2026-10-03: "New dice."), or one a hero died in (kingdom.opening-hero-death-replays). Its seed takes this count with the battle's number
+   * (core/opening.ts openingBattleSeedOf), so each replay is new dice and a saved replay reopens as itself. Absent is
+   * none (a run saved before the count existed reads as none); back to none when the opening moves on.
+   */
+  replays?: number
   /** The draft on offer — three hero ids, take one — while step === 'draft'. */
   draftOffer: string[] | null
   /**

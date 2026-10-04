@@ -1,0 +1,136 @@
+
+ RUN  v4.1.11 C:/Users/aring/Desktop/HBT-worker-kingdom/kingdom
+
+battle 1: sent Dwarven Brawler L1; at home nobody
+settled battle 1: the strong party, the engine's AI — heroClear on Turn 9, the Engagement's own seed 1
+battle 2: sent Rune-Marked Ascetic L1, The Serpent L1, Dwarven Brawler L2; at home nobody
+settled battle 2 lost: the party held idle, cut at Turn 1 — capped on Turn 1, the Engagement's own seed 2
+settled battle 2 won: the strong party, the engine's AI — heroClear on Turn 2, the Engagement's own seed 2
+battle 3: sent Rune-Marked Ascetic L3, Forest Elf L1, The Serpent L2, Dwarven Brawler L2; at home nobody
+settled battle 3: the strong party, the engine's AI — heroClear on Turn 7, the Engagement's own seed 3
+battle 4: asked who goes — sent Rune-Marked Ascetic, Forest Elf, The Serpent, Dwarven Brawler; home Dawnblade
+battle 4: sent Rune-Marked Ascetic L3, Forest Elf L1, The Serpent L3, Dwarven Brawler L3; at home Dawnblade alive
+settled battle 4: the strong party, the engine's AI — heroClear on Turn 6, the Engagement's own seed 4
+battle 5: asked who goes — sent Dawnblade, Rune-Marked Ascetic, The Serpent, Dwarven Brawler; home Crimson Sorceress, Forest Elf
+battle 5: sent Dawnblade L1, Rune-Marked Ascetic L3, The Serpent L3, Dwarven Brawler L3; at home Crimson Sorceress alive, Forest Elf alive
+settled battle 5: the strong party, the engine's AI — heroClear on Turn 3, the Engagement's own seed 5
+battle 6: asked who goes — sent Crimson Sorceress; home Dawnblade, Rune-Marked Ascetic, Forest Elf, The Serpent, Dwarven Brawler
+battle 6: sent Crimson Sorceress L1; at home Dawnblade alive, Rune-Marked Ascetic alive, Forest Elf alive, The Serpent alive, Dwarven Brawler alive
+settled battle 6 lost: the party held idle, cut at Turn 1 — capped on Turn 1, the Engagement's own seed 6
+battle 6 again: asked who goes — sent Dawnblade, Rune-Marked Ascetic, The Serpent, Dwarven Brawler; home Crimson Sorceress, Forest Elf
+settled battle 6 won: the strong party, the engine's AI — heroClear on Turn 8, the Engagement's own seed 6
+settled by: {"encounter.opening.orphanage":["ai",1,9],"encounter.opening.lumberjack:lost":["idle",2,1],"encounter.opening.lumberjack":["ai",2,2],"encounter.opening.bridge":["ai",3,7],"encounter.opening.cavern-trail":["ai",4,6],"encounter.opening.gates":["ai",5,3],"encounter.opening.cathedral:lost":["idle",6,1],"encounter.opening.cathedral":["ai",6,8]}
+offers: battle 1, draft 1: Crimson Sorceress / Dwarven Brawler / Skullplate Veteran -> Dwarven Brawler; battle 2, draft 1: The Serpent / Hunter / The Raven -> The Serpent; battle 2, draft 2: Battle Chaplain / Rune-Marked Ascetic / Barefoot Mendicant -> Rune-Marked Ascetic; battle 3, draft 1: Forest Fey / Emberwright / Forest Elf -> Forest Elf; battle 4, draft 1: Dawnblade / Black Oath / Crimson Sorceress -> Dawnblade; battle 5, draft 1: Archive Scholar / Emberwright / Crimson Sorceress -> Crimson Sorceress
+drafted with: Dwarven Brawler: leadership, huge, +2 maxHp, +1 toughness (not fielded), +1 itemSlots (on the hero, its item slots); The Serpent: mystic, +5 accuracy, +2 crit; Rune-Marked Ascetic: spiritual, hardy; Forest Elf: dim-sighted, +1 precision, +1 resist; Dawnblade: warded, thick-skinned; Crimson Sorceress: winded, reckless, +2 luck, +1 strength, -2 maxHp
+ ❯ test/opening-draft-cadence.test.ts (5 tests | 4 failed) 8343ms
+     × the cadence is a content row: one before battle 1, one after each battle, until six — and core names no number of its own 7ms
+     × a new run drafts one hero before the Orphanage and exactly one after each battle: a party of 1, 2, 3, 4, 5, 6 at battles 1 to 6 5ms
+     × the draft screen never says two are owed: one draft stands between two battles 5ms
+     × the pages: the six-battle run and the three-battle sitting each take one draft between each pair of battles, and say the party's size at every battle 8325ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/opening-draft-cadence.test.ts > kingdom.opening-draft-cadence — one draft after every battle > the cadence is a content row: one before battle 1, one after each battle, until six — and core names no number of its own
+AssertionError: expected { first: 1, afterFirst: 2, …(2) } to deeply equal { first: 1, afterEach: 1, until: 6 }
+
+- Expected
++ Received
+
+  {
+    "afterEach": 1,
++   "afterFirst": 2,
+    "first": 1,
+    "until": 6,
+  }
+
+ ❯ test/opening-draft-cadence.test.ts:41:27
+     39| describe('kingdom.opening-draft-cadence — one draft after every battle…
+     40|   it('the cadence is a content row: one before battle 1, one after eac…
+     41|     expect(DRAFT_CADENCE).toEqual({ first: 1, afterEach: 1, until: 6 })
+       |                           ^
+     42|     const core = readFileSync('src/core/opening.ts', 'utf8')
+     43|     const body = core.slice(core.indexOf('export function draftsOwedOf…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  test/opening-draft-cadence.test.ts > kingdom.opening-draft-cadence — one draft after every battle > a new run drafts one hero before the Orphanage and exactly one after each battle: a party of 1, 2, 3, 4, 5, 6 at battles 1 to 6
+AssertionError: seed 5: one draft is owed before battle 2: expected 2 to be 1 // Object.is equality
+
+- Expected
++ Received
+
+- 1
++ 2
+
+ ❯ test/opening-draft-cadence.test.ts:56:98
+     54|       for (let n = 1; n <= SECTIONS.length; n++) {
+     55|         expect(ctx.campaign.cursor.prologue).toBe(n)
+     56|         expect(draftsOwedOf(ctx.campaign), `seed ${seed}: one draft is…
+       |                                                                                                  ^
+     57|         // the battle is refused while its one draft is owed
+     58|         expect(() => performFieldOpeningBattle(ctx, battleOf(SECTIONS[…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+ FAIL  test/opening-draft-cadence.test.ts > kingdom.opening-draft-cadence — one draft after every battle > the draft screen never says two are owed: one draft stands between two battles
+AssertionError: expected '<h2>The draft — hero 2 of six</h2>\n …' not to match /to draft before the next battle/
+
+- Expected:
+/to draft before the next battle/
+
++ Received:
+"<h2>The draft — hero 2 of six</h2>
+    <p class=\"meta\">Three come to the fire, each as the Crucible made them: their numbers, the points they rolled against their kind, and their badges. Take the one you want. 2 to draft before the next battle.</p>
+    <div class=\"card\"><div class=\"pick draft-rolled\"><div class=\"opt rolled\" data-act=\"draft\" data-id=\"hero.base.warrior-iron\" data-classes=\"class.warrior\" data-badges=\"badge.mystic\" data-rolls=\"accuracy:5,crit:2\" data-stats=\"maxHp:16,strength:4,precision:3,accuracy:60,reach:1,armor:1,resist:0,dodge:-10,toughness:3,magic:1,spirit:0,crit:2,luck:0,vision:0,movement:4,maxStamina:3,staminaRegen:1,surge:0,itemSlots:2\">
+    <div class=\"art\"><div class=\"noart\"></div></div><b>Iron Dwarf</b><small>warrior</small>
+    <div class=\"stats\"><div class=\"stCols\"><div><div class=\"stRow\"><span class=\"stN\">Health</span> <span class=\"stV\">16</span></div><div class=\"stRow\"><span class=\"stN\">Strength</span> <span class=\"stV\">4</span></div><div class=\"stRow\"><span class=\"stN\">Precision</span> <span class=\"stV\">3</span></div><div class=\"stRow\"><span class=\"stN\">Accuracy</span> <span class=\"stV up\"><em>+5</em> 60%</span></div><div class=\"stRow\"><span class=\"stN\">Reach</span> <span class=\"stV\">1</span></div><div class=\"stRow\"><span class=\"stN\">Armor</span> <span class=\"stV\">1</span></div><div class=\"stRow\"><span class=\"stN\">Resist</span> <span class=\"stV\">0</span></div><div class=\"stRow\"><span class=\"stN\">Dodge</span> <span class=\"stV\">-10%</span></div><div class=\"stRow\"><span class=\"stN\">Toughness</span> <span class=\"stV\">3</span></div><div class=\"stRow\"><span class=\"stN\">Magic</span> <span class=\"stV up\"><em>+1</em> 1</span></div></div><div><div class=\"stRow\"><span class=\"stN\">Spirit</span> <span class=\"stV\">0</span></div><div class=\"stRow\"><span class=\"stN\">Crit</span> <span class=\"stV up\"><em>+2</em> 2%</span></div><div class=\"stRow\"><span class=\"stN\">Luck</span> <span class=\"stV\">0</span></div><div class=\"stRow\"><span class=\"stN\">Vision</span> <span class=\"stV\">0</span></div><div class=\"stRow\"><span class=\"stN\">Movement</span> <span class=\"stV\">4</span></div><div class=\"stRow\"><span class=\"stN\">Max Stamina</span> <span class=\"stV\">3</span></div><div class=\"stRow\"><span class=\"stN\">Stamina Regen</span> <span class=\"stV\">1</span></div><div class=\"stRow\"><span class=\"stN\">Surge</span> <span class=\"stV\">0</span></div><div class=\"stRow\"><span class=\"stN\">Item Slot</span> <span class=\"stV\">2</span></div></div></div></div>
+    <div class=\"rolls\"><span class=\"k\">Rolled</span> <span class=\"delta won\">+5 Accuracy</span> <span class=\"delta won\">+2 Crit</span></div>
+    <div class=\"badges\"><div class=\"badge good\" data-badge=\"badge.mystic\"><b>Mystic</b> <span>+1 Magic</span></div></div>
+  </div><div class=\"opt rolled\" data-act=\"draft\" data-id=\"hero.base.rogue-raven\" data-classes=\"class.rogue\" data-badges=\"badge.born-archer,badge.slow\" data-rolls=\"staminaMax:1,reach:1,toughness:-1\" data-stats=\"maxHp:5,strength:6,precision:4,accuracy:73,reach:4,armor:0,resist:0,dodge:0,toughness:2,magic:0,spirit:0,crit:2,luck:0,vision:0,movement:4,maxStamina:6,staminaRegen:1,surge:0,itemSlots:2\">
+    <div class=\"art\"><div class=\"noart\"></div></div><b>The Raven</b><small>rogue</small>
+    <div class=\"stats\"><div class=\"stCols\"><div><div class=\"stRow\"><span class=\"stN\">Health</span> <span class=\"stV\">5</span></div><div class=\"stRow\"><span class=\"stN\">Strength</span> <span class=\"stV\">6</span></div><div class=\"stRow\"><span class=\"stN\">Precision</span> <span class=\"stV\">4</span></div><div class=\"stRow\"><span class=\"stN\">Accuracy</span> <span class=\"stV\">73%</span></div><div class=\"stRow\"><span class=\"stN\">Reach</span> <span class=\"stV up\"><em>+3</em> 4</span></div><div class=\"stRow\"><span class=\"stN\">Armor</span> <span class=\"stV\">0</span></div><div class=\"stRow\"><span class=\"stN\">Resist</span> <span class=\"stV\">0</span></div><div class=\"stRow\"><span class=\"stN\">Dodge</span> <span class=\"stV\">0%</span></div><div class=\"stRow\"><span class=\"stN\">Toughness</span> <span class=\"stV\">2</span></div><div class=\"stRow\"><span class=\"stN\">Magic</span> <span class=\"stV\">0</span></div></div><div><div class=\"stRow\"><span class=\"stN\">Spirit</span> <span class=\"stV\">0</span></div><div class=\"stRow\"><span class=\"stN\">Crit</span> <span class=\"stV\">2%</span></div><div class=\"stRow\"><span class=\"stN\">Luck</span> <span class=\"stV\">0</span></div><div class=\"stRow\"><span class=\"stN\">Vision</span> <span class=\"stV\">0</span></div><div class=\"stRow\"><span class=\"stN\">Movement</span> <span class=\"stV down\"><em>-1</em> 4</span></div><div class=\"stRow\"><span class=\"stN\">Max Stamina</span> <span class=\"stV up\"><em>+1</em> 6</span></div><div class=\"stRow\"><span class=\"stN\">Stamina Regen</span> <span class=\"stV\">1</span></div><div class=\"stRow\"><span class=\"stN\">Surge</span> <span class=\"stV\">0</span></div><div class=\"stRow\"><span class=\"stN\">Item Slot</span> <span class=\"stV\">2</span></div></div></div></div>
+    <div class=\"rolls\"><span class=\"k\">Rolled</span> <span class=\"delta won\">+1 Max Stamina</span> <span class=\"delta won\">+1 Reach</span> <span class=\"delta lost\">-1 Toughness <i>(not counted in battle yet)</i></span></div>
+    <div class=\"badges\"><div class=\"badge good\" data-badge=\"badge.born-archer\"><b>Born Archer</b> <span>+2 Reach</span></div><div class=\"badge flawed\" data-badge=\"badge.slow\"><b>Slow</b> <span>-1 Movement</span></div></div>
+  </div><div class=\"opt rolled\" data-act=\"draft\" data-id=\"hero.base.warrior-barbarian\" data-classes=\"class.warrior\" data-badges=\"badge.veteran\" data-rolls=\"dodge:5,vision:1\" data-stats=\"maxHp:13,strength:4,precision:3,accuracy:75,reach:1,armor:1,resist:0,dodge:-5,toughness:3,magic:0,spirit:0,crit:0,luck:0,vision:1,movement:4,maxStamina:5,staminaRegen:1,surge:0,itemSlots:2\">
+    <div class=\"art\"><div class=\"noart\"></div></div><b>Mountain Berserker</b><small>warrior</small>
+    <div class=\"stats\"><div class=\"stCols\"><div><div class=\"stRow\"><span class=\"stN\">Health</span> <span class=\"stV\">13</span></div><div class=\"stRow\"><span class=\"stN\">Strength</span> <span class=\"stV\">4</span></div><div class=\"stRow\"><span class=\"stN\">Precision</span> <span class=\"stV\">3</span></div><div class=\"stRow\"><span class=\"stN\">Accuracy</span> <span class=\"stV\">75%</span></div><div class=\"stRow\"><span class=\"stN\">Reach</span> <span class=\"stV\">1</span></div><div class=\"stRow\"><span class=\"stN\">Armor</span> <span class=\"stV\">1</span></div><div class=\"stRow\"><span class=\"stN\">Resist</span> <span class=\"stV\">0</span></div><div class=\"stRow\"><span class=\"stN\">Dodge</span> <span class=\"stV up\"><em>+5</em> -5%</span></div><div class=\"stRow\"><span class=\"stN\">Toughness</span> <span class=\"stV\">3</span></div><div class=\"stRow\"><span class=\"stN\">Magic</span> <span class=\"stV\">0</span></div></div><div><div class=\"stRow\"><span class=\"stN\">Spirit</span> <span class=\"stV\">0</span></div><div class=\"stRow\"><span class=\"stN\">Crit</span> <span class=\"stV\">0%</span></div><div class=\"stRow\"><span class=\"stN\">Luck</span> <span class=\"stV\">0</span></div><div class=\"stRow\"><span class=\"stN\">Vision</span> <span class=\"stV up\"><em>+1</em> 1</span></div><div class=\"stRow\"><span class=\"stN\">Movement</span> <span class=\"stV\">4</span></div><div class=\"stRow\"><span class=\"stN\">Max Stamina</span> <span class=\"stV\">5</span></div><div class=\"stRow\"><span class=\"stN\">Stamina Regen</span> <span class=\"stV\">1</span></div><div class=\"stRow\"><span class=\"stN\">Surge</span> <span class=\"stV\">0</span></div><div class=\"stRow\"><span class=\"stN\">Item Slot</span> <span class=\"stV\">2</span></div></div></div></div>
+    <div class=\"rolls\"><span class=\"k\">Rolled</span> <span class=\"delta won\">+5 Dodge</span> <span class=\"delta won\">+1 Vision</span></div>
+    <div class=\"badges\"><div class=\"badge good\" data-badge=\"badge.veteran\"><b>Veteran</b> <span>nothing in battle yet</span></div></div>
+  </div></div></div>"
+
+ ❯ test/opening-draft-cadence.test.ts:94:43
+     92|     setCursor(ctx, { prologue: 2 }, 'test')
+     93|     performAdvanceOpening(ctx, 'test')
+     94|     expect(draftScreen(ctx.campaign)).not.toMatch(/to draft before the…
+       |                                           ^
+     95|   })
+     96|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+
+ FAIL  test/opening-draft-cadence.test.ts > kingdom.opening-draft-cadence — one draft after every battle > the pages: the six-battle run and the three-battle sitting each take one draft between each pair of battles, and say the party's size at every battle
+AssertionError: expected 'opening run six: six battles from the…' to match /one draft before every battle \(1, 1,…/
+
+- Expected:
+/one draft before every battle \(1, 1, 1, 1, 1, 1\): a party of 1, 2, 3, 4, 5, 6 at battles 1 to 6/
+
++ Received:
+"opening run six: six battles from the map, never the kingdom map (Week 0); six drafts of three, no class twice, Rogues and Mages offered; the first hero chosen by description only and given Leadership, a positive badge and +2 Health; every later draft shown with its rolled modifiers, kept in every battle and to the end of the run, the same after the page is closed and reopened; the party six, one of each class (mage, paladin, priest, ranger, rogue, warrior); four deploy — with five or more free to fight the run asked who goes (battle 4: home Dawnblade; battle 5: home Crimson Sorceress, Forest Elf; battle 6: home Dawnblade, Rune-Marked Ascetic, Forest Elf, The Serpent, Dwarven Brawler; battle 6 again: home Crimson Sorceress, Forest Elf), the four chosen on Equip and on the board, whoever stayed home unharmed and unpaid, the choice kept when the page is closed on it, and asked again for a lost battle; base heroes left out for no kit: none; card art on every hero card (draft 18, whoGoes 28, equip 24, victory 20, rewards 24, carrier 1, levelUp 13; heroes with no art on disk, shown blank: none); party Crimson Sorceress L2, Dawnblade L3, Rune-Marked Ascetic L4, Forest Elf L2, The Serpent L4, Dwarven Brawler L4; closed after battle 3 and reopened at battle 4 with the same party, items, XP and levels; battle 2 lost and offered again with the same party; a run left mid-battle (battle 4) reopens on that battle; the Bridge's item.soaked-plate.runed kept passed
+"
+
+ ❯ test/opening-draft-cadence.test.ts:99:17
+     97|   it('the pages: the six-battle run and the three-battle sitting each …
+     98|     const six = execFileSync(process.execPath, ['tools/opening-run-six…
+     99|     expect(six).toMatch(/one draft before every battle \(1, 1, 1, 1, 1…
+       |                 ^
+    100|     const three = execFileSync(process.execPath, ['tools/opening-loop-…
+    101|     expect(three).toMatch(/draft \(one before every battle: a party of…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/4]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  4 failed | 1 passed (5)
+   Start at  01:42:08
+   Duration  12.65s (transform 3.26s, setup 0ms, import 4.17s, tests 8.34s, environment 0ms)
+

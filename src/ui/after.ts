@@ -33,14 +33,17 @@ import type { CampaignState } from '../core/campaign.js'
 import type { EngagementResult } from '../core/seam.js'
 import type { Reckoning } from '../core/reckoning.js'
 import type { KingdomEvent } from '../core/mutate.js'
-import { listRewardOffers, listRewardTakers, listLevelUps, viewLevelUp, canLevelUp } from '../core/rewards.js'
+import { listRewardOffers, listRewardTakers, listLevelUps, viewLevelUp, canLevelUp, listWaitingItems } from '../core/rewards.js'
+import { encounterRewardOf, rewardTakersOf } from '../content/encounter-rewards.js'
+import { CLASSES } from '../content/classes.js'
 import { hashOf } from '../core/rng.js'
+import { listBattleCivilians } from '../view/civilians.js'
 import { statLabelOf } from '../content/stat-labels.js'
 import { xpForLevel } from '../content/levels.js'
 import { woundNameOf } from '../content/wounds.js'
 import { itemOf } from '../content/items.js'
 import { VICTORY_QUOTES, DEFEAT_QUOTES, type QuoteBank } from '../content/generated/quotes.js'
-import { portraitIdOf, portraitOf, cardBackOf } from './art.js'
+import { portraitIdOf, portraitOf, cardBackOf, itemArtOf } from './art.js'
 import { playSound, playMusic, stopMusic, isMuted, setMuted } from './sound.js'
 
 const esc = (s: string) => s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]!))
@@ -80,6 +83,15 @@ export function quoteOf(bank: QuoteBank, hero: { classes: string[]; personality?
   return bank.fallback
 }
 
+/** kingdom.opening-sword-waits: the item this battle's row gives to named classes, when it lies waiting in the stash — and whose it is, in words. */
+function waitingFromBattle(c: CampaignState, engagementId: string): { itemId: string; whose: string } | null {
+  const offer = encounterRewardOf(engagementId)?.offer
+  if (offer?.kind !== 'item' || !listWaitingItems(c).includes(offer.itemId)) return null
+  return { itemId: offer.itemId, whose: whoseOf(offer.itemId) }
+}
+/** "a Warrior or a Paladin" — the classes an item waits for, by their names. */
+export const whoseOf = (itemId: string): string => (rewardTakersOf(itemId) ?? []).map((id) => 'a ' + (CLASSES.find((r) => r.id === id)?.name ?? id)).join(' or ')
+
 const woundClass = (h: { wound: number; lifeState: string }) => h.lifeState === 'dead' ? 'dead' : h.wound >= 2 ? 'badly-wounded' : h.wound === 1 ? 'wounded' : 'healthy'
 const woundGlyph = (c: string) => c === 'dead' ? '💀' : c === 'badly-wounded' ? '☠' : c === 'wounded' ? '⚠' : ''
 const face = (heroId: string) => { const a = portraitOf(heroId); return a ? `<img src="${a}" alt="">` : '' }
@@ -92,6 +104,11 @@ export function recapScreen(c: CampaignState, events: readonly KingdomEvent[], l
   const won = mine ? mine.reckoning.won : written.some((ev) => ev.type === 'engagement.resolved' && ev['won'] === true)
   const heroes = (e?.deployed ?? []).map((id) => c.roster[id]!)
   const fates = heroes.map((h) => ({ wound: h.wound, dead: h.lifeState === 'dead' }))
+  // kingdom.opening-hero-death-replays (engine DECISIONS.md 2026-10-03 'the opening run: a battle in which a hero dies is
+  // replayed': "If a hero dies, it should be replayed."): an attempt a hero died in is not kept — its own screen,
+  // below, says who fell and offers the battle again
+  const fallen = mine?.reckoning.fallen ?? []
+  if (mine && fallen.length) return fallenScreen(c, mine, heroes, fallen)
   const outcome = outcomeOf(won, fates, mine?.result.turns ?? 25)
   const mvpId = mine?.reckoning.heroes.find((h) => h.mvp)?.heroId ?? (won ? heroes[0]?.id : heroes.find((h) => h.lifeState !== 'dead')?.id ?? heroes[0]?.id)
   const spot = mvpId ? c.roster[mvpId]! : null
@@ -100,15 +117,29 @@ export function recapScreen(c: CampaignState, events: readonly KingdomEvent[], l
   const questGains = questReward ? [...questReward.fixedXp.map(g => `${c.roster[g.heroId]!.name}: +${g.amount} quest XP`), ...questReward.grants.map(g => `${g.amount} ${g.currency.replace('currency.', '')}`)] : []
   const kills = mine ? mine.result.units.filter((u) => u.side === 'hero').reduce((s, u) => s + u.kills, 0) : 0
   const quote = spot ? quoteOf(won ? VICTORY_QUOTES : DEFEAT_QUOTES, spot, outcome, `${e?.id}:${spot.id}`) : ''
-  const report = heroes.length === 0 ? [] : won && fates.every((f) => !f.dead && f.wound === 0)
+  // kingdom.opening-recap-civilians (engine DECISIONS.md 2026-10-03 'the civilians show on the victory screen; …': "The
+  // battle should show in this victory screen too. If they were wounded, if they died, they're in there too." — the
+  // civilians): the civilians who fought, as the battle's own result left them (view/civilians.ts listBattleCivilians) —
+  // drawn in a row of their own under the heroes', each with its portrait and its mark in words, and named in the
+  // report as a hero is. "No wounds sustained" is said only when no hero AND no civilian was wounded or killed
+  // (kingdom SWITCHES.md recapCiviliansNoWounds); the title's grade stays the heroes' (recapCiviliansTitle).
+  const civilians = mine ? listBattleCivilians(c, mine.result) : []
+  const civilianLines = civilians.filter((v) => v.fate !== 'unhurt').map((v) => `<div class="report-line ${v.fate === 'dead' ? 'dead-report' : 'wounded'}"><span class="report-icon">${woundGlyph(v.fate)}</span><span>${esc(v.name)} — ${v.fate === 'dead' ? 'fell in battle' : esc(woundNameOf(1))}</span></div>`)
+  const report = heroes.length === 0 ? [] : won && fates.every((f) => !f.dead && f.wound === 0) && civilianLines.length === 0
     ? [`<div class="report-line decisive"><span class="report-icon">✦</span><span>Decisive Victory — No wounds sustained</span></div>`]
-    : heroes.filter((h) => h.lifeState === 'dead' || h.wound > 0).map((h) => { const k = woundClass(h); return `<div class="report-line ${k === 'dead' ? 'dead-report' : k}"><span class="report-icon">${woundGlyph(k)}</span><span>${esc(h.name)} — ${k === 'dead' ? 'fell in battle' : esc(woundNameOf(h.wound))}</span></div>` })
+    : [...heroes.filter((h) => h.lifeState === 'dead' || h.wound > 0).map((h) => { const k = woundClass(h); return `<div class="report-line ${k === 'dead' ? 'dead-report' : k}"><span class="report-icon">${woundGlyph(k)}</span><span>${esc(h.name)} — ${k === 'dead' ? 'fell in battle' : esc(woundNameOf(h.wound))}</span></div>` }), ...civilianLines]
+  const FATE_WORD = { unhurt: 'Unhurt', wounded: woundNameOf(1), dead: 'Dead' } as const
+  const civilianCards = civilians.map((v) => `<div class="civilian-member" data-unit="${esc(v.typeId)}" data-fate="${v.fate}" data-joins="${v.joins ? 1 : 0}"><div class="civilian-portrait ${v.fate}">${v.heroId ? face(v.heroId) : ''}${woundGlyph(v.fate) ? `<span class="wound-badge">${woundGlyph(v.fate)}</span>` : ''}</div><div class="civilian-name">${esc(v.name)}</div><div class="civilian-fate ${v.fate}">${FATE_WORD[v.fate]}</div>${v.joins ? '<div class="civilian-joins">joins you</div>' : ''}</div>`).join('')
+  // kingdom.opening-sword-waits: the battle's own item, kept for want of a taker, is said to wait
+  const waits = won && e ? waitingFromBattle(c, e.id) : null
+  if (waits) report.push(`<div class="report-line waits"><span class="report-icon">✦</span><span>The ${esc(itemOf(waits.itemId).name)} waits in the stash — for ${esc(waits.whose)}, when one joins you with a hand free.</span></div>`)
   if (questGains.length) report.push(`<div class="report-line">Quest reward — ${esc(questGains.join(' · '))}</div>`)
   const party = heroes.map((h) => { const k = woundClass(h); return `<div class="party-member"><div class="party-portrait ${k}">${face(portraitIdOf(h))}${woundGlyph(k) ? `<span class="wound-badge">${woundGlyph(k)}</span>` : ''}</div><div class="party-name">${esc(h.name)}</div></div>` }).join('')
   return `<div class="hx recap ${won ? '' : 'defeat'}" data-outcome="${outcome}" data-won="${won}">${muteButton()}
     <div class="interstitial-overlay ${won ? 'victory-bg' : 'defeat-bg'}"><div class="interstitial-card ${won ? '' : 'defeat'}">
       <div class="result-title ${won ? 'victory-' + outcome : 'defeat'}" id="rc-title">${TITLE[outcome]}</div>
       ${won ? `<div class="party-row" id="rc-party">${party}</div>` : ''}
+      ${won && civilians.length ? `<div class="civilians-row" id="rc-civilians"><div class="civilians-label">Civilians who fought beside them</div><div class="civilians">${civilianCards}</div></div>` : ''}
       <div class="spotlight-container" id="rc-spot"><div class="spotlight-frame ${won ? 'victory' : 'defeat'}${outcome === 'decisive' ? ' decisive-glow' : ''}">${spot ? face(portraitIdOf(spot)) : ''}</div></div>
       <div class="hero-quote" id="rc-quote"><div class="quote-text">"${esc(quote)}"</div><div class="quote-attribution">— ${esc(spot?.name ?? '')}${spot ? ', ' + esc(spot.classes[0]?.replace('class.', '') ?? '') : ''}${!won && spot?.lifeState === 'dead' ? ' (last words)' : ''}</div></div>
       ${won ? `<div class="stats-block" id="rc-stats">
@@ -117,6 +148,30 @@ export function recapScreen(c: CampaignState, events: readonly KingdomEvent[], l
       </div>
       <div class="report-section" id="rc-report">${report.join('')}</div>` : `<div class="defeat-xp-line" id="rc-stats">XP earned: <b>${xp}</b> — the fight continues</div>`}
       <div class="action-btn-container" id="rc-btn"><button class="action-btn ${won ? 'victory-btn' : 'defeat-btn'}" data-act="exit">${won && c.cursor.rewardOffer ? 'Claim Rewards →' : 'Continue →'}</button></div>
+    </div></div>
+    <div class="skip-hint">Enter — skip · Enter again — continue</div>
+  </div>`
+}
+
+/**
+ * kingdom.opening-hero-death-replays — the screen after an opening battle a drafted hero died in (won or lost, one hero or
+ * all of them): it says plainly who fell and why the battle is offered again — the attempt is not kept, nobody is lost,
+ * nothing was earned — shows the party who went with the fallen marked, and its one way on goes back to the map, where
+ * the same battle is offered again (the recap's own frame and ceremony, as a battle lost: mountRecap).
+ */
+function fallenScreen(c: CampaignState, mine: LastBattle, heroes: readonly CampaignState['roster'][string][], fallen: readonly string[]): string {
+  const names = fallen.map((id) => c.roster[id]?.name ?? id)
+  const said = names.length === 1 ? names[0]! : names.slice(0, -1).join(', ') + ' and ' + names[names.length - 1]
+  const all = fallen.length === heroes.length && heroes.length > 1
+  const wonIt = mine.result.outcome === 'heroClear'
+  const party = heroes.map((h) => { const k = fallen.includes(h.id) ? 'dead' : 'healthy'; return `<div class="party-member fell-member" data-hero="${esc(h.id)}" data-fell="${k === 'dead' ? 1 : 0}"><div class="party-portrait ${k}">${face(portraitIdOf(h))}${k === 'dead' ? `<span class="wound-badge">${woundGlyph('dead')}</span>` : ''}</div><div class="party-name">${esc(h.name)}</div></div>` }).join('')
+  return `<div class="hx recap defeat" data-outcome="casualties" data-won="false" data-voided="1" data-fallen="${esc(fallen.join(','))}">${muteButton()}
+    <div class="interstitial-overlay defeat-bg"><div class="interstitial-card defeat">
+      <div class="result-title defeat" id="rc-title">${all ? 'ALL FELL' : names.length === 1 ? 'A HERO FELL' : 'HEROES FELL'}</div>
+      <div class="party-row fell-row" id="rc-spot">${party}</div>
+      <div class="hero-quote" id="rc-quote"><div class="quote-text fell-text">${esc(said)} fell${wonIt ? ' — though the battle was won' : ''}.</div><div class="quote-attribution">The battle is not kept: no hero is lost to it, and nothing was earned.</div></div>
+      <div class="defeat-xp-line" id="rc-stats">It is fought again — the party as it stood before the battle, ${esc(said)} alive, on new dice.</div>
+      <div class="action-btn-container" id="rc-btn"><button class="action-btn defeat-btn" data-act="exit">Fight it again →</button></div>
     </div></div>
     <div class="skip-hint">Enter — skip · Enter again — continue</div>
   </div>`
@@ -133,6 +188,7 @@ export function mountRecap(root: HTMLElement, onDismiss: () => void): Cleanup {
     if (outcome !== 'devastating') playSound('victory-stinger', { playbackRate: STINGER_PITCH[outcome], pitchVariance: 0 })
     at(100, () => show('rc-title', 'anim-victory-title'))
     at(400, () => { show('rc-party', 'anim-fade-in'); qa(root, '.party-member').forEach((m, i) => at(i * 80, () => m.classList.add('anim-party'))) })
+    at(550, () => show('rc-civilians', 'anim-fade-in'))
     at(700, () => show('rc-spot', 'anim-spotlight'))
     at(1000, () => show('rc-quote', 'anim-fade-in-up'))
     at(1300, () => show('rc-stats', 'anim-fade-in'))
@@ -147,7 +203,7 @@ export function mountRecap(root: HTMLElement, onDismiss: () => void): Cleanup {
     at(1800, () => show('rc-btn', 'anim-fade-in'))
   }
   let skipUsed = false
-  const skipToEnd = () => { timers.forEach(clearTimeout); qa(root, '.result-title,.party-row,.party-member,.spotlight-container,.hero-quote,.stats-block,.report-section,.action-btn-container,.defeat-xp-line').forEach((el) => { el.style.opacity = '1' }) }
+  const skipToEnd = () => { timers.forEach(clearTimeout); qa(root, '.result-title,.party-row,.party-member,.civilians-row,.spotlight-container,.hero-quote,.stats-block,.report-section,.action-btn-container,.defeat-xp-line').forEach((el) => { el.style.opacity = '1' }) }
   const key = (ev: KeyboardEvent) => { if (ev.key !== 'Enter' && ev.key !== ' ') return; ev.preventDefault(); if (!skipUsed) { skipUsed = true; skipToEnd() } else onDismiss() }
   document.addEventListener('keydown', key)
   return () => { timers.forEach(clearTimeout); document.removeEventListener('keydown', key) }
@@ -208,9 +264,13 @@ export function rewardsScreen(c: CampaignState, events: readonly KingdomEvent[],
     const r = itemOf(o.id)
     const tier = Math.max(0, Math.min(6, r.tier))
     const facts = [r.itemClass === 'weapon' ? `${Math.max(1, r.hands)}-hand` : null, r.classRestriction ? r.classRestriction.replace('class.', '') + ' only' : null, Object.entries(r.statModifiers).map(([k, n]) => `${sign(n)} ${label(k)}`).join(' ') || null, r.grants.length ? `${r.grants.length} attack${r.grants.length === 1 ? '' : 's'}/power${r.grants.length === 1 ? '' : 's'}` : null, r.setBonus ? `${r.setBonus.tag} set` : null].filter(Boolean).join(' · ')
+    // kingdom.opening-reward-card-art (engine DECISIONS.md 2026-10-03 'card art on the level-up and reward screens; …': "Card
+    // art not showing in the reward screen for the flinging sword."): the item's card art fills the card's face; an item
+    // with none (index.json itemsMissing) keeps the plain face and its words — never another item's picture
+    const art = itemArtOf(o.id)
     return `<div class="reward-card-wrapper" data-index="${i}">
-      <div class="reward-card face-down" data-index="${i}" data-id="${esc(o.id)}" data-tier="${tier}" ${back ? `style="--card-back:url(${back})"` : ''}>
-        <div class="reward-card-art">no art yet</div>
+      <div class="reward-card face-down" data-index="${i}" data-id="${esc(o.id)}" data-tier="${tier}" data-art="${art ? 1 : 0}" ${back ? `style="--card-back:url(${back})"` : ''}>
+        <div class="reward-card-art">${art ? `<img src="${art}" alt="">` : 'no art yet'}</div>
         <div class="reward-card-content"><div class="reward-type">${esc(r.itemClass)} · tier ${r.tier}</div><div class="reward-name">${esc(r.name)}</div><div class="reward-description">${esc(facts)}</div></div>
       </div>
       <div class="reward-modifier-line">${esc(TIER_WORD[tier] ?? '')}</div>

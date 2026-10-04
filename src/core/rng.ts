@@ -44,6 +44,19 @@ export function rollBelowOf(campaign: CampaignState, cup: string, keys: readonly
 }
 
 /**
+ * `n` distinct picks from `pool` — a plain draw without repeats — in the order drawn, keyed by `keys` plus the pick's
+ * ordinal, each read from its roll's HIGH bits (rollBelowOf: no parity pattern between two picks or two callers whose keys
+ * differ by one). The pool is sorted first (Law 6). kingdom.opening-specialty-three; pickOf below keeps its `%`, so no
+ * earlier draw moves.
+ */
+export function drawOf<T extends { id: string }>(campaign: CampaignState, cup: string, keys: readonly (string | number)[], pool: readonly T[], n: number): T[] {
+  const remaining = [...pool].sort((a, b) => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0))
+  const out: T[] = []
+  for (let i = 0; i < n && remaining.length > 0; i++) out.push(remaining.splice(rollBelowOf(campaign, cup, [...keys, 'draw', i], remaining.length), 1)[0]!)
+  return out
+}
+
+/**
  * `n` distinct picks from `pool`, in a rolled order, keyed by `keys` plus the
  * pick's ordinal — structural, so adding a fourth pick never moves the first
  * three. The pool is sorted first: registry order is never a tiebreak (Law 6).

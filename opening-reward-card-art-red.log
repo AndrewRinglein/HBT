@@ -1,0 +1,153 @@
+
+ RUN  v4.1.11 C:/Users/aring/Desktop/HBT-worker-kingdom/kingdom
+
+settled battle 1: the strong party, the engine's AI — heroClear on Turn 1, the Engagement's own seed 1
+settled battle 2 lost: the party held idle, cut at Turn 1 — capped on Turn 1, the Engagement's own seed 2
+settled battle 2 won: the strong party, the engine's AI — heroClear on Turn 2, the Engagement's own seed 2
+settled battle 3: the strong party, the engine's AI — heroClear on Turn 6, the Engagement's own seed 3
+settled by: {"battle 1":["ai",1,1],"battle 2 lost":["idle",2,1],"battle 2 won":["ai",2,2],"battle 3":["ai",3,6]}
+ ❯ test/opening-reward-card-art.test.ts (7 tests | 7 failed) 2842ms
+     × the prep tool is beside prep-heroes.py and wrote the items into the index: every kingdom item has art or is named as missing 4ms
+     × the Flaming Longsword first: it has card art — its weapon's card, as every enchanted or masterwork row shows its base's 0ms
+     × every item the opening's rewards can offer and every item a base hero's kit holds is covered — art, or named in itemsMissing 1ms
+     × a reward card shows its item's own card art; an item with none shows the plain card — never another item's picture 1ms
+     × Equip shows the art of the items it shows: the ones a hero wears and the ones in the stash; one with no art is plain 3ms
+     × the pages carry the items' art: BATTLE-SANDBOX.html and SLICE.html hold the Flaming Longsword's picture 0ms
+     × the page: the Flaming Longsword's reward card shows its card art; every reward card shows art or its item is named in itemsMissing; Equip's items the same 2830ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 7 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/opening-reward-card-art.test.ts > kingdom.opening-reward-card-art — item card art on the reward cards and on Equip's items > the prep tool is beside prep-heroes.py and wrote the items into the index: every kingdom item has art or is named as missing
+AssertionError: tools/prep-items.py: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ test/opening-reward-card-art.test.ts:62:70
+     60| describe('kingdom.opening-reward-card-art — item card art on the rewar…
+     61|   it('the prep tool is beside prep-heroes.py and wrote the items into …
+     62|     expect(existsSync('tools/prep-items.py'), 'tools/prep-items.py').t…
+       |                                                                      ^
+     63|     expect(INDEX.items, 'index.json items').toBeTypeOf('object'); expe…
+     64|     const have = INDEX.items!, missing = INDEX.itemsMissing!
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/7]⎯
+
+ FAIL  test/opening-reward-card-art.test.ts > kingdom.opening-reward-card-art — item card art on the reward cards and on Equip's items > the Flaming Longsword first: it has card art — its weapon's card, as every enchanted or masterwork row shows its base's
+AssertionError: the Flaming Longsword has card art: expected undefined to be truthy
+
+- Expected:
+true
+
++ Received:
+undefined
+
+ ❯ test/opening-reward-card-art.test.ts:82:63
+     80|   it('the Flaming Longsword first: it has card art — its weapon\'s car…
+     81|     const have = INDEX.items ?? {}
+     82|     expect(have[SWORD], 'the Flaming Longsword has card art').toBeTrut…
+       |                                                               ^
+     83|     expect(itemOf(SWORD).base).toBe('item.longsword')
+     84|     expect(have[SWORD]).toBe(have['item.longsword'])
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/7]⎯
+
+ FAIL  test/opening-reward-card-art.test.ts > kingdom.opening-reward-card-art — item card art on the reward cards and on Equip's items > every item the opening's rewards can offer and every item a base hero's kit holds is covered — art, or named in itemsMissing
+AssertionError: item.longsword.flaming has art or is listed as missing: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ test/opening-reward-card-art.test.ts:94:158
+     92|     const kits = [...HERO_POOL, ...CIVILIANS, ...RESCUABLE_CIVILIANS].…
+     93|     expect(named).toContain(SWORD)
+     94|     for (const id of new Set([...named, ...REWARDS.map((r) => r.id), .…
+       |                                                                                                                                                              ^
+     95|   })
+     96|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/7]⎯
+
+ FAIL  test/opening-reward-card-art.test.ts > kingdom.opening-reward-card-art — item card art on the reward cards and on Equip's items > a reward card shows its item's own card art; an item with none shows the plain card — never another item's picture
+AssertionError: ui/art.ts itemArtOf: expected 'undefined' to be 'function' // Object.is equality
+
+Expected: "function"
+Received: "undefined"
+
+ ❯ test/opening-reward-card-art.test.ts:98:53
+     96|
+     97|   it('a reward card shows its item\'s own card art; an item with none …
+     98|     expect(typeof itemArtOf, 'ui/art.ts itemArtOf').toBe('function')
+       |                                                     ^
+     99|     expect(itemArtOf!(SWORD)).toBe(uriOf(SWORD))
+    100|     const bare = REWARDS.find((r) => !(r.id in art.items))!.id
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/7]⎯
+
+ FAIL  test/opening-reward-card-art.test.ts > kingdom.opening-reward-card-art — item card art on the reward cards and on Equip's items > Equip shows the art of the items it shows: the ones a hero wears and the ones in the stash; one with no art is plain
+AssertionError: the Flaming Longsword in the stash shows its card art: expected [] to deeply equal [ Array(1) ]
+
+- Expected
++ Received
+
+- [
+-   "data:image/jpeg;base64,Y2FyZCBhcnQgb2YgaXRlbS5sb25nc3dvcmQuZmxhbWluZw==",
+- ]
++ []
+
+ ❯ test/opening-reward-card-art.test.ts:124:94
+    122|     const tiles = blocks(html, /<div class="item[ "]/g)
+    123|     const tileOf = (id: string) => tiles.find((x) => x.includes(`data-…
+    124|     expect(imagesIn(tileOf(SWORD)), 'the Flaming Longsword in the stas…
+       |                                                                                              ^
+    125|     expect(imagesIn(tileOf(bare)), `${bare} in the stash is plain`).to…
+    126|     expect(tileOf(bare)).toContain(itemOf(bare).name)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/7]⎯
+
+ FAIL  test/opening-reward-card-art.test.ts > kingdom.opening-reward-card-art — item card art on the reward cards and on Equip's items > the pages carry the items' art: BATTLE-SANDBOX.html and SLICE.html hold the Flaming Longsword's picture
+AssertionError: expected undefined to be truthy
+
+- Expected:
+true
+
++ Received:
+undefined
+
+ ❯ test/opening-reward-card-art.test.ts:140:18
+    138|   it('the pages carry the items\' art: BATTLE-SANDBOX.html and SLICE.h…
+    139|     const file = (INDEX.items ?? {})[SWORD]
+    140|     expect(file).toBeTruthy()
+       |                  ^
+    141|     const uri = 'data:image/jpeg;base64,' + readFileSync('generated/ar…
+    142|     for (const page of ['BATTLE-SANDBOX.html', 'SLICE.html']) expect(r…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/7]⎯
+
+ FAIL  test/opening-reward-card-art.test.ts > kingdom.opening-reward-card-art — item card art on the reward cards and on Equip's items > the page: the Flaming Longsword's reward card shows its card art; every reward card shows art or its item is named in itemsMissing; Equip's items the same
+AssertionError: expected 'opening loop three: map -> draft (one…' to match /the Flaming Longsword's reward card s…/
+
+- Expected:
+/the Flaming Longsword's reward card showed its card art/
+
++ Received:
+"opening loop three: map -> draft (one before every battle: a party of 1, 2, 3; no class twice) -> equip -> battle -> reckoning, rewards, level-ups -> map, three times; the Orphanage's 20 XP and level 2 with a specialty; three specialties offered at every specialty choice (2 choices); battle 2 lost and offered again with the same party, wounds kept; the Flaming Longsword to hero.base.warrior-brawler; the Bridge's three, item.brutes-harness.tainted-blood kept; civilians rescued hero.fixed.lumberjack-and-wife, hero.fixed.lumberjacks-wife, hero.fixed.orphans, hero.fixed.school-teacher; three sections taken passed
+"
+
+ ❯ test/opening-reward-card-art.test.ts:147:19
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/7]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  7 failed (7)
+   Start at  02:21:51
+   Duration  6.84s (transform 2.96s, setup 0ms, import 3.87s, tests 2.84s, environment 0ms)
+

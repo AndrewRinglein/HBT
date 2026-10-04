@@ -175,6 +175,9 @@ svg.world image.ruin{filter:grayscale(.9) brightness(.55)}
 .equip .slot .k i{color:var(--accent);font-style:normal}
 .equip .slot .v{text-align:right}
 .equip .slot .x{padding:0 6px;margin-left:6px;line-height:1.2}
+.equip .itemart{width:24px;height:36px;object-fit:cover;border:1px solid #6b5a3e;border-radius:3px;vertical-align:middle;margin-right:6px;background:#1c1917}
+.equip .item .itemart{float:left;width:40px;height:60px;margin:0 10px 0 0}
+.equip .item::after{content:"";display:block;clear:both}
 .equip .slot.can{border-color:var(--good);cursor:pointer;background:#16201a}
 .equip .slot.cant{opacity:.5;cursor:not-allowed}
 .equip .slot.over{border-color:var(--gold);background:#2a2320}

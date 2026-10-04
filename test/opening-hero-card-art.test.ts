@@ -48,8 +48,13 @@ const uriOf = (id: string) => `data:image/jpeg;base64,${Buffer.from('portrait of
 const art = ART as unknown as { heroes: Record<string, string>; data: Record<string, string> }
 for (const h of [...HERO_POOL, ...CIVILIANS, ...RESCUABLE_CIVILIANS]) { art.heroes[h.id] = fileOf(h.id); art.data[fileOf(h.id)] = uriOf(h.id) }
 
-/** the opening battle before which the cadence has drafted `heroes` (1 · +2 · +1 a battle, to six) */
-const BATTLE_OF: Record<number, number> = { 1: 1, 3: 2, 4: 3, 5: 4, 6: 5 }
+/**
+ * the opening battle before which the cadence has drafted `heroes`: one before every battle, to six.
+ * Law 10, 2026-10-04 (kingdom.opening-draft-cadence; engine DECISIONS.md 2026-10-03 'one draft after every battle; …': "We're only supposed to have one draft between battles 1 and 2. I was getting two drafts." · "One, yes."): this read
+ *   const BATTLE_OF: Record<number, number> = { 1: 1, 3: 2, 4: 3, 5: 4, 6: 5 }
+ * — the 2026-08-23 cadence (two drafts after battle 1) the ruling replaces. A party of N now stands before battle N.
+ */
+const BATTLE_OF: Record<number, number> = { 1: 1, 2: 2, 3: 3, 4: 4, 5: 5, 6: 6 }
 /** A run with `heroes` drafted, standing on the map before the battle the cadence brings them to. `pick`: which offer. */
 function partyOf(seed: number, heroes: number, pick: (offers: readonly { id: string }[]) => string = (o) => o[0]!.id): Ctx {
   const ctx = makeCtx(makeNewCampaign(seed))
@@ -140,7 +145,7 @@ describe('kingdom.opening-hero-card-art — every screen that shows a hero shows
   })
 
   it('every later draft: three cards, each its hero\'s card art with what it already shows — its stats, rolled points and badges', () => {
-    for (const heroes of [1, 3, 4, 5]) {
+    for (const heroes of [1, 2, 3, 4, 5]) {
       // the next battle's draft: stand on the map before it and open the draft
       const next = partyOf(11, heroes)
       next.campaign.cursor.prologue = next.campaign.cursor.prologue! + 1
@@ -239,7 +244,9 @@ describe('kingdom.opening-hero-card-art — every screen that shows a hero shows
     expect(typeof carrierChoice, 'ui/after.ts carrierChoice — the rewards screen\'s carrier').toBe('function')
     let seen = 0
     for (let seed = 1; seed <= 30 && seen < 2; seed++) {
-      const ctx = partyOf(seed, 3), c = ctx.campaign
+      // Law 10, 2026-10-04 (kingdom.opening-draft-cadence): was partyOf(seed, 3) — the party of three the old cadence brought
+      // to the Lumberjack House. Two heroes stand there now; the carrier screen is held the same way, of that party
+      const ctx = partyOf(seed, 2), c = ctx.campaign
       field(ctx)   // the Lumberjack House: its row offers the Flaming Longsword to a Warrior or a Paladin
       const takers = listRewardTakers(c, SWORD)
       if (!takers.length) continue

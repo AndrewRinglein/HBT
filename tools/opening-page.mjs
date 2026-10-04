@@ -13,7 +13,7 @@ import {bootSlice} from './atlas-dom.mjs'
 
 export const TAKERS=['class.warrior','class.paladin']
 const esbuild=createRequire(import.meta.url)('../../engine/node_modules/esbuild')
-const built=esbuild.buildSync({stdin:{contents:`export {createSandbox,saveSandbox,sandboxResult,advanceSandbox,sandboxActivationChoices,commandSandbox,playerPolicy} from './src/core/sandbox.ts';export {runBattle,createBattle,BADGES,draftScoreOf} from './src/engine.ts';export * as HEROES from './src/content/heroes.ts';export * as OPENING from './src/core/opening.ts';export * as SEAM from './src/core/seam.ts';export * as PREP from './src/core/prep.ts';export {WOUND_UNAVAILABLE} from './src/content/wounds.ts'`,resolveDir:process.cwd(),loader:'ts'},bundle:true,platform:'node',format:'esm',write:false,logLevel:'silent'})
+const built=esbuild.buildSync({stdin:{contents:`export {createSandbox,saveSandbox,sandboxResult,advanceSandbox,sandboxActivationChoices,commandSandbox,playerPolicy} from './src/core/sandbox.ts';export {runBattle,createBattle,BADGES,draftScoreOf} from './src/engine.ts';export * as HEROES from './src/content/heroes.ts';export * as OPENING from './src/core/opening.ts';export * as SEAM from './src/core/seam.ts';export * as PREP from './src/core/prep.ts';export * as REWARDS from './src/core/rewards.ts';export * as REWARD_ROWS from './src/content/encounter-rewards.ts';export * as ITEMS from './src/content/items.ts';export * as PROGRESS from './src/content/progress.ts';export {WOUND_UNAVAILABLE} from './src/content/wounds.ts'`,resolveDir:process.cwd(),loader:'ts'},bundle:true,platform:'node',format:'esm',write:false,logLevel:'silent'})
 const E=await import('data:text/javascript;base64,'+Buffer.from(built.outputFiles[0].text).toString('base64'))
 /* kingdom.opening-draft-pool: the sources' draft pool, and the base heroes left out of it for want of a kit — what the
    page's draft is held against */
@@ -39,6 +39,28 @@ export const HEROES_MISSING=[...(ART_INDEX.heroesMissing??[])]
 const portraitCache={}
 const portraitUri=id=>portraitCache[id]??=(f=>f?'data:image/jpeg;base64,'+readFileSync(new URL('../generated/art/'+f,import.meta.url)).toString('base64'):null)(ART_INDEX.heroes?.[id])
 export const ART_SEEN={draft:0,whoGoes:0,equip:0,victory:0,rewards:0,carrier:0,levelUp:0}
+/* kingdom.opening-reward-card-art (engine DECISIONS.md 2026-10-03 'card art on the level-up and reward screens; …': "Card art
+   not showing in the reward screen for the flinging sword." — the Flaming Longsword): the items' card art the page is
+   held against — generated/art, as tools/prep-items.py made it and the build inlines it. An item has art (index.json
+   items: its own row's card, or its base row's) or is named in itemsMissing and shows its plain card, never another's.
+   ITEM_ART_SEEN counts, over a run, the reward cards and the Equip items held each way; `sword` says whether the Flaming
+   Longsword's reward card was on the screen (it is offered only with a Warrior or a Paladin in the party) */
+export const ITEMS_ART={...(ART_INDEX.items??{})},ITEMS_MISSING={...(ART_INDEX.itemsMissing??{})}
+const itemUri=id=>portraitCache['item:'+id]??=(f=>f?'data:image/jpeg;base64,'+readFileSync(new URL('../generated/art/'+f,import.meta.url)).toString('base64'):null)(ITEMS_ART[id])
+/* kingdom.opening-free-equip (engine DECISIONS.md 2026-10-03 'the opening run, audited', question 4: "Should idols and
+   bloodrunes be free to equip during the opening …?" — "4 free"): the sources' row for an item — its class, its name and
+   what its row costs to equip (outside the opening) */
+export const itemRow=id=>{const r=E.ITEMS.itemOf(id);return {id:r.id,name:r.name,itemClass:r.itemClass,equipCost:{...r.equipCost}}}
+/* kingdom.opening-recap-civilians: every victory screen of a run, as it showed the civilians who fought — the battle, and
+   each civilian's unit, name, mark and whether it joined (fightOut) */
+export const CIVILIANS_SEEN=[]
+export const ITEM_ART_SEEN={rewardArt:0,rewardPlain:0,equipArt:0,equipPlain:0,sword:false}
+const FLAMING_LONGSWORD='item.longsword.flaming'
+/* kingdom.opening-specialty-three (engine DECISIONS.md 2026-10-03 'card art on the level-up and reward screens; the specialty
+   choice offers three, not nine': "you're supposed to only get a choice of three different specialty classes, not nine." ·
+   '… the specialty three are random; …': "It's random: 3 of the 9."): every specialty choice a run reached, as the page
+   showed it — the hero, the three offered and the one taken (levelUps). SPECIALTY_OFFER is the sources' row */
+export const SPECIALTY_CHOICES=[],SPECIALTY_OFFER=E.PROGRESS.SPECIALTY_OFFER
 /* what a draft should move each engine stat by: its rolled points (and the first hero's Health), and its badges' own rows */
 const movedBy=d=>{const out={};for(const m of d.mods)out[m.stat]=(out[m.stat]??0)+m.add;for(const b of d.badges)for(const [k,n] of Object.entries(E.BADGES[b].statModifiers??{}))out[k]=(out[k]??0)+n;return out}
 const numbersOf=text=>Object.fromEntries(text.split(',').map(p=>{const [k,n]=p.split(':');return [k,Number(n)]}))
@@ -53,7 +75,8 @@ const numbersOf=text=>Object.fromEntries(text.split(',').map(p=>{const [k,n]=p.s
    the engine's battle, through the engine's own per-hero seam (BattleOptions.heroMods, seam.unit-mods: stat mods naming
    their source, here 'test.strong-party'), and its turn cap (BattleOptions.cfg.turnCap):
      · a battle the test means to WIN: every hero of the party is OVERPOWERED (STRONG_PARTY: Health, Armor, Resist, the
-       four damage stats, Accuracy) and the engine's AI plays both sides; the first and only battle played is won, with
+       four damage stats, Accuracy — and, since kingdom.opening-draft-cadence, Movement and Reach, below) and the engine's
+       AI plays both sides; the first and only battle played is won, with
        nobody of the party dead, down or wounded — or the driver stops and says so (Law 9);
      · a battle the test means to LOSE: the party is made unkillable but stands IDLE (every activation begun and ended),
        and the battle is cut at the end of Turn 1 by the turn cap (HELD_PARTY) — the engine's own 'capped' outcome, a loss
@@ -73,21 +96,55 @@ const numbersOf=text=>Object.fromEntries(text.split(',').map(p=>{const [k,n]=p.s
    Until 2026-10-04 a battle was played with the run's real party on seed after seed (the engine's AI, then scripted
    'hold' and 'press' play) until one ended as wanted, the seeds found kept in tables; every item that moved a battle
    searched again. The search, its seed tables and the 'hold' and 'press' play are gone. */
-export const STRONG_PARTY={source:'test.strong-party',stats:{maxHp:500,armor:50,resist:50,strength:30,precision:30,magic:30,spirit:30,accuracy:100}}
+/* 2026-10-04, kingdom.opening-draft-cadence (GBH SWITCHES.md verify.strongPartyReach): Movement +6 and Reach +12 joined the
+   strong party's mods. Under the cadence ruled 2026-10-03 (one draft after every battle) three heroes go to the Bridge,
+   not four; on run seed 3 those three (a Paladin, a Ranger, a Warrior), unkillable, killed six of the seven and then
+   stood for twenty turns while the last Fire Imp burned them from a hex the engine's AI would not walk them to
+   ("could not reach an enemy", "no target in range") — the battle ended 'capped' on Turn 25, not won. That is the
+   computer's play, which nothing tests now (2026-10-04, above); the test party is made strong enough to end the battle
+   whatever three heroes it is — with either mod alone seeds 3, 11 and 15 win, with both every run seed tried (1 to 16)
+   does. Still one battle, on the Engagement's own seed, nothing sought.
+   2026-10-04, kingdom.opening-specialty-three: raised to Movement +20 and Reach +40 — the whole board. Three specialties
+   offered instead of nine moved the specialty this driver takes (the first shown), and with +6 and +12 the same three
+   heroes at the Bridge on run seed 3 again left one Imp unreached (capped, Turn 25). With +20 and +40 every run seed
+   tried (1 to 20) wins every battle. */
+export const STRONG_PARTY={source:'test.strong-party',stats:{maxHp:500,armor:50,resist:50,strength:30,precision:30,magic:30,spirit:30,accuracy:100,movement:20,reach:40}}
 export const HELD_PARTY={source:'test.strong-party',stats:{maxHp:500,armor:50,resist:50},turnCap:1}
 /* the sandbox the page fields for `config`, its party's heroes given `as`'s stat mods (and its turn cap) */
-function fieldedAs(config,as){
+/* `weak` (kingdom.opening-hero-death-replays): the party's heroes at these places are given, instead, ONE mod — Health down
+   to 1 (the same seam, the same source) — so the battle kills them; never a content row */
+function fieldedAs(config,as,weak=[]){
  const base=E.createSandbox(structuredClone(config)),add=Object.entries(as.stats).map(([stat,n])=>({stat,add:n,source:as.source}))
- const heroMods=base.setup.heroes.map((_,i)=>{const own=base.setup.heroMods?.[i];return {...(own??{}),stats:[...(own?.stats??[]),...add]}})
+ const frail=i=>{const u=base.ctx.state.units.find(x=>x.uid===base.setup.heroUids[i]);return [{stat:'maxHp',add:1-u.maxHp,source:as.source}]}
+ const heroMods=base.setup.heroes.map((_,i)=>{const own=base.setup.heroMods?.[i];return {...(own??{}),stats:[...(own?.stats??[]),...(weak.includes(i)?frail(i):add)]}})
  const setup={...base.setup,heroMods,...(as.turnCap?{cfg:{...(base.setup.cfg??{}),turnCap:as.turnCap}}:{})},ctx=E.createBattle(setup)
  return {...base,setup,ctx,policy:E.playerPolicy(ctx)}
 }
 /* the player's side, played out: 'ai', the engine's AI plays everyone; 'idle', every activation of the player's side
-   begun and ended (the heroes and the civilians stand still), the enemies the engine's AI */
-function playOut(s,how){
+   begun and ended (the heroes and the civilians stand still), the enemies the engine's AI; 'civilian-falls'
+   (kingdom.opening-recap-civilians, 2026-10-04) — a battle the test means to WIN WITH A CIVILIAN DEAD, so the victory
+   screen has a dead civilian to mark: the player's side stands idle, as 'idle', until one of the encounter's own
+   hero-side units has died (the strong party, unkillable, only watches), and from the next choice of who activates the
+   engine's AI plays everyone, as 'ai' — the strong party then ends it. Deliberate, one battle, the Engagement's own
+   seed; if no civilian has died by Turn 12 the driver stops (playedOut) */
+const CIVILIAN_FALLS_BY_TURN=12
+const civilianDead=s=>s.ctx.state.units.some(u=>u.side==='hero'&&!s.setup.heroUids.includes(u.uid)&&u.lifeState==='dead')
+/* 'hero-falls' (kingdom.opening-hero-death-replays, 2026-10-04) — a battle the test means to end WITH HEROES DEAD: the
+   heroes at `fall` are fielded frail (Health 1, fieldedAs) and the rest strong; the player's side stands idle until every
+   frail hero has died, and then the engine's AI plays everyone — the strong heroes win it (a WON battle a hero died
+   in), or, every hero sent being frail, nobody is left and the battle is lost. One battle, the Engagement's own seed;
+   if the frail heroes are not dead by Turn 25 the driver stops (settledAs) */
+const HERO_FALLS_BY_TURN=25
+const heroesDead=(s,fall)=>fall.every(i=>s.ctx.state.units.find(u=>u.uid===s.setup.heroUids[i])?.lifeState==='dead')
+/* (when EVERY hero sent is to fall the battle ends itself the moment the last of them is down — the engine's wipe — with
+   those already bled out dead and the last ones down: that is what "a battle that kills the party" is, and the driver
+   holds it to at least one dead and nobody standing) */
+function playOut(s,how,fall=[]){
  if(how==='ai'){E.runBattle(s.ctx);return}
  E.advanceSandbox(s)
  for(let i=0;i<50000&&!s.ctx.state.outcome;i++){const ctx=s.ctx,at=ctx.battleCursor?.at,seq=ctx.state.seq
+  if(how==='civilian-falls'&&at==='selecting'&&(civilianDead(s)||ctx.state.turn>CIVILIAN_FALLS_BY_TURN)){s.policy={humanUnitUids:[]};E.advanceSandbox(s);if(!s.ctx.state.outcome)E.runBattle(s.ctx);return}
+  if(how==='hero-falls'&&at==='selecting'&&(heroesDead(s,fall)||ctx.state.turn>HERO_FALLS_BY_TURN)){s.policy={humanUnitUids:[]};E.advanceSandbox(s);if(!s.ctx.state.outcome)E.runBattle(s.ctx);return}
   let r=null
   if(at==='selecting')r=E.commandSandbox(s,{kind:'select-activation',unitUid:E.sandboxActivationChoices(s)[0].uid,expectedSeq:seq})
   else if(at==='acting')r=E.commandSandbox(s,{kind:'end-cycle',actor:ctx.battleCursor.actor,expectedSeq:seq})
@@ -97,10 +154,27 @@ function playOut(s,how){
 /* one battle settled as the test means it to end — won (the strong party, the engine's AI) or lost (the party held idle,
    cut at Turn 1) — and the save a person would have made at that moment. One battle, on the Engagement's own seed; a
    battle that does not end as meant, or that hurts the party, is not searched around: the driver stops (Law 9) */
-export function playedOut(config,won){
- const how=won?'ai':'idle',s=fieldedAs(config,won?STRONG_PARTY:HELD_PARTY);playOut(s,how)
- const r=E.sandboxResult(s),party=r.units.filter(u=>u.side==='hero'&&u.role===undefined)
+export function playedOut(config,won){return settledAs(config,won,{})}
+/* kingdom.opening-recap-civilians: … or WON WITH A CIVILIAN DEAD (playOut 'civilian-falls'): the strong party stands idle
+   until one of the encounter's own hero-side units has died, then the engine's AI plays everyone. The same one battle,
+   on the Engagement's own seed; if no civilian dies the driver stops */
+export function playedOutCivilianFalls(config){return settledAs(config,true,{civilianFalls:true})}
+/* kingdom.opening-hero-death-replays: … or ended WITH THE HEROES AT `fall` DEAD (playOut 'hero-falls'; their places in the
+   party sent): won by the rest of the party when anybody is left, lost when every hero sent was to fall. The same one
+   battle, on the Engagement's own seed; if they do not die, or the battle does not end as meant, the driver stops */
+export function playedOutHeroFalls(config,fall){
+ if(!fall.length||fall.some(i=>!(i in config.heroes)))throw Error('playedOutHeroFalls: name the places, in the party sent, of the heroes who are to fall')
+ return settledAs(config,fall.length<config.heroes.length,{heroFalls:[...fall]})
+}
+function settledAs(config,won,o){
+ const fall=o.heroFalls??[]
+ const how=fall.length?'hero-falls':won?(o.civilianFalls?'civilian-falls':'ai'):'idle',s=fieldedAs(config,won||fall.length?STRONG_PARTY:HELD_PARTY,fall);playOut(s,how,fall)
+ const r=E.sandboxResult(s),party=r.units.filter(u=>u.side==='hero'&&u.role===undefined&&!fall.includes(u.index))
+ const everyone=fall.length===config.heroes.length,fell=r.units.filter(u=>u.side==='hero'&&u.role===undefined&&fall.includes(u.index))
+ const alive=everyone?(fell.some(u=>u.lifeState==='dead')?fell.filter(u=>u.lifeState==='standing'):fell):fell.filter(u=>u.lifeState!=='dead')
+ if(alive.length)throw Error(`${config.encounterId} on seed ${config.seed}: meant to end with ${fall.map(i=>config.heroes[i]).join(', ')} dead — ${alive.map(u=>config.heroes[u.index]+' is '+u.lifeState).join(', ')} at the end (Turn ${r.turns}); the driver settles one battle and searches for none`)
  if((r.outcome==='heroClear')!==won)throw Error(`${config.encounterId} on seed ${config.seed}: meant to be ${won?'won by the strong party':'lost by the party held idle'}, it ended '${r.outcome}' on Turn ${r.turns} — the driver settles one battle and searches for none (kingdom.page-test-strong-party)`)
+ if(o.civilianFalls&&!r.units.some(u=>u.side==='hero'&&u.role!==undefined&&u.lifeState==='dead'))throw Error(`${config.encounterId} on seed ${config.seed}: meant to be won with a civilian dead — none had died by Turn ${CIVILIAN_FALLS_BY_TURN} with the player's side standing idle; the driver settles one battle and searches for none`)
  const hurt=party.filter(u=>u.lifeState!=='standing'||u.downed||u.stood)
  if(hurt.length)throw Error(`${config.encounterId} on seed ${config.seed}: the ${won?'strong':'held'} party was hurt (${hurt.map(u=>config.heroes[u.index]+' '+u.lifeState).join(', ')}) — it is meant to end ${won?'won':'lost'} with nobody dead, down or wounded`)
  return {save:E.saveSandbox(s),result:r,how,seed:config.seed,turns:r.turns}
@@ -132,7 +206,18 @@ export function openingPage(page,search,store){
   assert.ok(el,label+': the card');const want=portraitFor(id,label),got=el.querySelectorAll('img').map(i=>i.getAttribute('src'))
   assert.equal(got.length,want?n:0,`${label}: ${id}'s card shows ${want?'its card art':'a blank card (its art is missing on disk)'} — ${got.length} image(s) found`)
   for(const src of got)assert.ok(src===want,`${label}: the image on ${id}'s card is its own card art, not another's`)
-  ART_SEEN[screen]++
+  if(screen)ART_SEEN[screen]++
+ }
+ /* kingdom.opening-reward-card-art: the images inside `el` are exactly one of that ITEM's own card art — or, for an item
+    with none, no image at all and the item named in itemsMissing (its plain card). An item in neither list fails */
+ function showsItemArt(el,id,label,kind){
+  assert.ok(el,label+': the item');const want=itemUri(id),got=el.querySelectorAll('img').map(i=>i.getAttribute('src'))
+  assert.ok(want||id in ITEMS_MISSING,`${label}: ${id} has card art, or is named in itemsMissing`)
+  assert.ok(!(want&&id in ITEMS_MISSING),`${label}: ${id} is not both`)
+  assert.equal(got.length,want?1:0,`${label}: ${id} shows ${want?'its card art':'its plain card (it is named in itemsMissing: '+ITEMS_MISSING[id]+')'} — ${got.length} image(s) found`)
+  for(const src of got)assert.ok(src===want,`${label}: the image on ${id} is its own card art, not another's`)
+  ITEM_ART_SEEN[kind+(want?'Art':'Plain')]++
+  return !!want
  }
 
  function readMap(taken,label){
@@ -165,6 +250,12 @@ export function openingPage(page,search,store){
  function draft(label){
   assert.ok(shown('campaign'),label+': the draft is shown');assert.equal(camp().cursor.step,'draft',label+': the cursor is at the draft')
   const opts=byId('campaign').querySelectorAll('[data-act=draft]')
+  /* kingdom.opening-draft-cadence (2026-10-03, "One, yes."): the screen counts the heroes — 'your first hero', then
+     'hero N of six' for the Nth — and never says more than one is owed before the next battle */
+  const heading=byId('campaign').innerHTML.match(/<h2>([^<]*)<\/h2>/)?.[1]??'',nth=heroIds().length+1
+  assert.equal(heading,nth===1?'The draft — your first hero':`The draft — hero ${nth} of six`,label+': the draft screen counts the heroes')
+  assert.doesNotMatch(byId('campaign').textContent,/to draft before the next battle/,label+': one draft stands between two battles — never "2 to draft"')
+  assert.equal(E.OPENING.draftsOwedOf(camp()),1,label+': exactly one draft is owed')
   assert.equal(opts.length,3,label+': three offered')
   assert.equal(new Set(opts.map(o=>o.dataset.id)).size,3,label+': three different heroes')
   for(const o of opts)assert.ok(POOL.some(h=>h.id===o.dataset.id),`${label}: ${o.dataset.id} is a base hero of the pool`)
@@ -215,7 +306,7 @@ export function openingPage(page,search,store){
   const scoreOf=o=>{const d=E.OPENING.draftedHeroOf(camp(),o.dataset.id).drafted;return E.draftScoreOf(o.dataset.id,d.rolls,d.badges,party)}
   const pick=first?among[0]:among.reduce((best,o)=>scoreOf(o)>scoreOf(best)?o:best,among[0])
   const offered=E.OPENING.draftedHeroOf(camp(),pick.dataset.id)
-  lastOffer={label,first,ids:opts.map(o=>o.dataset.id),classes:opts.flatMap(o=>(o.dataset.classes??'').split(',')),took:pick.dataset.id,leftOut,shown:seen,drafted:structuredClone(offered.drafted)}
+  lastOffer={label,first,heading,ids:opts.map(o=>o.dataset.id),classes:opts.flatMap(o=>(o.dataset.classes??'').split(',')),took:pick.dataset.id,leftOut,shown:seen,drafted:structuredClone(offered.drafted)}
   v.click('draft',pick.dataset.id)
   /* the one picked joins as it was offered: its badges, its points and its item slots are on the hero */
   assert.deepEqual(camp().roster[pick.dataset.id],offered,label+': the hero picked joins with the modifiers it was offered with')
@@ -306,7 +397,18 @@ export function openingPage(page,search,store){
   /* kingdom.opening-hero-card-art: every hero card at Equip shows its hero's card art (the card's hero is its slots') */
   const equipCards=byId('campaign').querySelectorAll('.herocard').map(el=>({el,id:el.querySelectorAll('[data-slot]')[0]?.dataset.hero}))
   assert.deepEqual(equipCards.map(x=>x.id).sort(),party,label+': the hero cards at Equip are the heroes sent')
-  for(const x of equipCards)showsArt(x.el,x.id,label+': Equip','equip')
+  /* Law 10, 2026-10-04 (kingdom.opening-reward-card-art): this read
+       for(const x of equipCards)showsArt(x.el,x.id,label+': Equip','equip')
+     — every image inside the hero's card was held to be the hero's portrait, while the card held no other picture. The
+     card's slots now show the art of the items they hold, so the hero's portrait is held where it is drawn — the card's
+     art frame (.art): exactly one image, the hero's own — and the items' pictures are held beside it, each to its own item */
+  for(const x of equipCards)showsArt(x.el.querySelectorAll('.art')[0],x.id,label+': Equip','equip')
+  /* kingdom.opening-reward-card-art: every item Equip shows — each slot that holds one (data-holds) and each item in the
+     stash — shows its own card art, or its plain line when it has none and is named in itemsMissing */
+  for(const el of byId('campaign').querySelectorAll('[data-holds]'))showsItemArt(el,el.dataset.holds,`${label}: Equip, on ${el.dataset.hero}`,'equip')
+  for(const el of byId('campaign').querySelectorAll('.item'))showsItemArt(el,el.dataset.id,label+': Equip, in the stash','equip')
+  const wornShown=byId('campaign').querySelectorAll('[data-holds]').map(el=>el.dataset.hero+' '+el.dataset.holds).sort()
+  assert.deepEqual(wornShown,party.flatMap(id=>camp().roster[id].equipped.map(item=>id+' '+item)).sort(),label+': Equip shows every item the heroes sent wear, each in a slot')
   v.click('advance');settle()
   return onTheBattle(label)
  }
@@ -343,8 +445,9 @@ export function openingPage(page,search,store){
 
  /* settle the battle on the page — won or lost as the test means it (playedOut) — then the reckoning: the recap, its
     Continue */
- function fightOut(won,label){
-  const e=camp().cursor.engagement,{save,result,how:played,seed}=playedOut(handle.session.config,won)
+ function fightOut(won,label,o={}){
+  if(o.civilianFalls&&!won)throw Error('a civilian is made to fall in a battle the test means to win')
+  const e=camp().cursor.engagement,{save,result,how:played,seed}=(o.civilianFalls?playedOutCivilianFalls(handle.session.config):playedOut(handle.session.config,won))
   w.document.getElementById('transferText').value=save;v.click('import');settle()
   assert.equal(handle.session.ctx.state.outcome==='heroClear',won,label+': the battle ends '+(won?'won':'lost'))
   assert.ok(!shown('conquest'),label+': the outcome stands on the battle');assert.equal(byId('commands').querySelectorAll('[data-act=reckon]').length,1,label+': the outcome offers the reckoning')
@@ -355,6 +458,50 @@ export function openingPage(page,search,store){
      order they were sent) and of the hero in its spotlight; a lost battle's recap has the spotlight alone */
   const faces=recap.querySelectorAll('.party-portrait')
   if(won){assert.equal(faces.length,e.deployed.length,label+': the victory screen shows a face per hero who fought');for(const [i,id] of e.deployed.entries())showsArt(faces[i],id,label+': the victory screen','victory')}
+  /* kingdom.opening-recap-civilians (engine DECISIONS.md 2026-10-03 'the civilians show on the victory screen; …': "The
+     battle should show in this victory screen too. If they were wounded, if they died, they're in there too."): the
+     victory screen shows a card for EVERY player-side unit of the battle — the heroes in their row, as above, and, set
+     apart in a row of their own (#rc-civilians), every hero-side unit of the result that is not a roster hero — each
+     with its name, its own portrait (or none, when it has none on disk), and its mark, in words and on the card:
+     unhurt, wounded (it went down and lives) or dead, as the pasted battle's own tallies left it; one that lived
+     through a won battle and joined the roster is marked as joining; and the report names each one wounded or dead as
+     a hero is named — "No wounds sustained" is said only when no hero and no civilian was. A lost battle shows none. */
+  const fought=result.units.filter(u=>u.side==='hero'&&u.role!==undefined),civs=recap.querySelectorAll('.civilian-member')
+  /* kingdom.opening-replay-rules (engine DECISIONS.md 2026-10-03 '… a lost battle pays no XP; a replay rolls new dice'): a
+     lost battle's screen says no XP was earned */
+  if(!won)assert.match(byId('campaign').innerHTML,/XP earned: <b>0<\/b>/,label+': the lost battle\'s screen says no XP was earned')
+  if(!won)assert.equal(civs.length,0,label+': a lost battle\'s screen shows no civilians')
+  else{
+   assert.equal(civs.length,fought.length,label+': a card for every civilian who fought')
+   assert.equal(faces.length+civs.length,result.units.filter(u=>u.side==='hero').length,label+': a card for every player-side unit of the battle')
+   if(fought.length){
+    const row=byId('rc-civilians');assert.ok(row,label+': the civilians have a row of their own')
+    assert.deepEqual(row.querySelectorAll('.civilian-member').map(c=>c.dataset.unit),fought.map(u=>u.typeId),label+': the civilians\' row holds every civilian who fought, in the battle\'s order')
+    assert.equal(byId('rc-party').querySelectorAll('.civilian-member').length,0,label+': no civilian among the heroes');assert.equal(row.querySelectorAll('.party-portrait').length,0,label+': no hero among the civilians')
+    assert.match(row.textContent,/Civilians/,label+': the row says who they are')
+   }
+   const reportText=byId('rc-report').textContent,seen=[]
+   for(const [i,u] of fought.entries()){
+    const card=civs[i],fate=u.lifeState==='dead'?'dead':u.lifeState==='downed'||u.downed||u.stood?'wounded':'unhurt'
+    const rescued=E.HEROES.RESCUABLE_CIVILIANS.find(h=>h.unitType===u.typeId),name=rescued&&fought.filter(x=>x.typeId===u.typeId).length===1?rescued.name:u.name
+    assert.equal(card.dataset.fate,fate,`${label}: ${u.typeId} is marked ${fate}, as the battle left it`)
+    assert.ok(card.textContent.includes(name),`${label}: ${name} is named`)
+    assert.ok(card.textContent.includes({unhurt:'Unhurt',wounded:'Wounded',dead:'Dead'}[fate]),`${label}: ${name}'s mark is said in words`)
+    assert.ok(card.querySelectorAll('.civilian-portrait')[0].classList.contains(fate),`${label}: ${name}'s card wears its mark`)
+    if(rescued)showsArt(card.querySelectorAll('.civilian-portrait')[0],rescued.id,label+': the victory screen, '+name,null)
+    else assert.equal(card.querySelectorAll('img').length,0,`${label}: ${name} has no row and no portrait`)
+    const joins=fate!=='dead'&&!!rescued&&!!camp().roster[rescued.id]
+    assert.equal(card.dataset.joins,joins?'1':'0',`${label}: ${name} ${joins?'is marked as joining':'is not marked as joining'}`)
+    if(fate!=='dead'&&rescued)assert.ok(camp().roster[rescued.id],`${label}: ${name} lived through a won battle and joined the roster`)
+    if(fate==='dead'&&rescued)assert.ok(!camp().roster[rescued.id],`${label}: ${name} died and did not join`)
+    if(fate!=='unhurt')assert.ok(reportText.includes(`${name} — ${fate==='dead'?'fell in battle':'Wounded'}`),`${label}: the report names ${name}`)
+    else assert.ok(!reportText.includes(name+' —'),`${label}: the report does not name ${name}, who was unhurt`)
+    seen.push({typeId:u.typeId,name,fate,joins})
+   }
+   const heroesHurt=e.deployed.some(id=>camp().roster[id].lifeState==='dead'||camp().roster[id].wound>0)
+   assert.equal(/No wounds sustained/.test(reportText),!heroesHurt&&seen.every(x=>x.fate==='unhurt'),label+': "No wounds sustained" is said only when no hero and no civilian was wounded or killed')
+   CIVILIANS_SEEN.push({label,encounterId:e.id,civilians:seen})
+  }
   const spot=recap.querySelectorAll('.spotlight-frame')[0],spotSrc=spot?.querySelectorAll('img').map(i=>i.getAttribute('src'))??[]
   const spotOf=e.deployed.filter(id=>{const p=portraitFor(id,label+': the spotlight');return p&&spotSrc[0]===p})
   assert.ok(spotSrc.length<=1&&(spotSrc.length===1?spotOf.length>=1:e.deployed.some(id=>!portraitFor(id,label))),label+': the spotlight shows the card art of a hero who fought')
@@ -362,6 +509,16 @@ export function openingPage(page,search,store){
   /* … and the rewards screen, when the battle leads to it: every hero card there is its hero's card art. The portrait is
      a background there (rewards.html's own markup), so it is read off the page's HTML, the card's own block */
   if(byId('campaign').querySelector('.rewards')){
+   /* kingdom.opening-reward-card-art: every reward card on the rewards screen shows its item's own card art, or its
+      plain face when the item has none and is named in itemsMissing; the Flaming Longsword's shows its card art */
+   const offered=[...(camp().cursor.rewardOffer??[])],rewardCards=byId('campaign').querySelectorAll('.reward-card')
+   assert.deepEqual(rewardCards.map(c=>c.dataset.id),camp().cursor.step==='rewards'?offered:[],label+': a reward card for each item offered')
+   for(const c of rewardCards){
+    const has=showsItemArt(c,c.dataset.id,label+': the reward card','reward')
+    assert.equal(c.dataset.art,has?'1':'0',`${label}: ${c.dataset.id}'s card says whether it has art`)
+    if(!has)assert.match(c.textContent,/no art yet/,`${label}: ${c.dataset.id}: the plain card`)
+    if(c.dataset.id===FLAMING_LONGSWORD){assert.ok(has,label+': the Flaming Longsword\'s reward card shows its card art');ITEM_ART_SEEN.sword=true}
+   }
    const html=byId('campaign').innerHTML,cards=byId('campaign').querySelectorAll('.hero-card')
    assert.deepEqual(cards.map(c=>c.dataset.hero),[...e.deployed],label+': the rewards screen shows a card per hero who fought')
    for(const id of e.deployed){
@@ -374,6 +531,69 @@ export function openingPage(page,search,store){
   return {e,result,played,seed}
  }
 
+ /* kingdom.opening-specialty-three: the specialty choice on the level-up sheet (#lu-specialty) — exactly three cards, three
+    different specialties, each of the hero's own class (one of the class's nine), and they are the three the sources' rule
+    draws for that hero on this run (core/rewards.ts specialtyOfferOf); no way to take the level without one; nothing can
+    be confirmed until one is chosen. Returns the three ids, in the order shown */
+ function threeOffered(over,id,label){
+  const cards=over.querySelectorAll('.choice-card'),ids=cards.map(c=>c.dataset.id)
+  assert.equal(ids.length,SPECIALTY_OFFER,`${label}: ${id} is offered exactly three specialties — ${ids.length} shown`);assert.equal(SPECIALTY_OFFER,3)
+  assert.equal(new Set(ids).size,3,`${label}: ${id}: three different specialties`)
+  const classId=E.REWARDS.levelTableOfHero(camp(),id).classId,nine=E.PROGRESS.specialtiesOf(classId).map(s=>s.id)
+  for(const s of ids)assert.ok(nine.includes(s),`${label}: ${id}: ${s} is a ${classId} specialty`)
+  assert.deepEqual(ids,E.REWARDS.specialtyOfferOf(camp(),id).map(s=>s.id),`${label}: ${id}: the three are the run's own draw for this hero`)
+  for(const c of cards)assert.ok(c.textContent.includes(E.PROGRESS.specialtyOf(c.dataset.id).name),`${label}: ${id}: ${c.dataset.id} is named`)
+  assert.equal(over.querySelectorAll('[data-act=lu-decline-specialty]').length,0,`${label}: ${id}: the choice cannot be skipped`)
+  assert.ok(byId('lu-specialty-confirm').disabled,`${label}: ${id}: nothing to confirm until one is chosen`)
+  return ids
+ }
+ /* the level-up sheet opened for the first hero who may level, up to its specialty choice: who, and the three offered.
+    The sheet is left open — the test closes the page on it (and opens it again: the same three) */
+ function specialtyOffer(label){
+  const b=byId('campaign').querySelectorAll('[data-act=level-hero]')[0];assert.ok(b,label+': a hero may level')
+  const id=b.dataset.id;v.click('level-hero',id);wait(1600)
+  const over=byId('lu-specialty');assert.ok(over,`${label}: ${id}'s level-up sheet asks for its specialty`)
+  return {id,offered:threeOffered(over,id,label)}
+ }
+ /* kingdom.opening-hero-death-replays (engine DECISIONS.md 2026-10-03 'the opening run: a battle in which a hero dies is
+    replayed': "If a hero dies, it should be replayed." · "6 offer replay"): the battle on the board settled WITH THE
+    HEROES AT `fall` DEAD (playedOutHeroFalls — won by the others, or lost when everyone sent falls), then its reckoning:
+    the screen that follows names who fell and says the battle is not kept and is fought again; NOTHING of the attempt
+    is written — the roster (every hero alive, with the XP, wounds, levels and items it had), the stash, the purse, the
+    losses counted, the battle owed — only the replay is counted; no reward, no rescue; and its one way on goes back to
+    the map. Returns who fell */
+ function fallOut(fall,label){
+  const e=camp().cursor.engagement,replays=camp().cursor.replays??0,battle=camp().cursor.prologue
+  const held=()=>JSON.stringify({roster:camp().roster,stash:camp().stash,purse:camp().purse,renown:camp().renown,losses:camp().losses})
+  const before=held(),all=fall.length===e.deployed.length
+  const {save,result,seed}=playedOutHeroFalls(handle.session.config,fall)
+  /* who fell: the heroes the battle left dead — every one named when some of the party is to fall; when everyone sent is
+     to fall, those dead when the last of them went down (the rest are down, and the battle is lost) */
+  const sent=result.units.filter(u=>u.side==='hero'&&u.role===undefined),fallen=sent.filter(u=>u.lifeState==='dead').map(u=>e.deployed[u.index])
+  assert.ok(fallen.length>=1,label+': a hero died');if(!all)assert.deepEqual(fallen,fall.map(i=>e.deployed[i]),label+': the heroes meant to fall are the dead')
+  else assert.ok(sent.every(u=>u.lifeState!=='standing'),label+': nobody sent is left standing')
+  w.document.getElementById('transferText').value=save;v.click('import');settle()
+  assert.equal(handle.session.ctx.state.outcome==='heroClear',!all,`${label}: the battle ends ${all?'lost, everyone sent dead or down':'WON, with a hero dead'}`)
+  v.click('reckon');wait(2500)
+  assert.ok(shown('campaign'),label+': the screen after the battle is shown');const recap=byId('campaign').querySelector('.recap')
+  assert.ok(recap,label+': the screen');assert.equal(recap.dataset.voided,'1',label+': it is the screen of a battle not kept');assert.equal(recap.dataset.won,'false')
+  assert.equal(recap.dataset.fallen,fallen.join(','),label+': it names who fell')
+  for(const id of fallen)assert.ok(recap.textContent.includes(camp().roster[id].name),`${label}: ${camp().roster[id].name} is named`)
+  assert.match(recap.textContent,/ fell/,label+': it says they fell');assert.match(recap.textContent,/not kept/,label+': it says the battle is not kept');assert.match(recap.textContent,/fought again/,label+': and that it is fought again')
+  const cards=recap.querySelectorAll('.fell-member')
+  assert.deepEqual(cards.map(c=>c.dataset.hero),[...e.deployed],label+': the party who went is shown');assert.deepEqual(cards.filter(c=>c.dataset.fell==='1').map(c=>c.dataset.hero),fallen,label+': the fallen are marked')
+  for(const c of cards)showsArt(c.querySelectorAll('.party-portrait')[0],c.dataset.hero,label+': who fell',null)
+  assert.equal(recap.querySelectorAll('.civilian-member').length,0);assert.doesNotMatch(recap.textContent,/Claim Rewards|XP Earned/,label+': nothing is claimed, nothing earned')
+  const on=recap.querySelectorAll('[data-act=exit]');assert.equal(on.length,1,label+': one way on');assert.match(on[0].textContent,/again/i,label+': it offers the battle again')
+  /* nothing of that attempt is kept */
+  assert.equal(held(),before,label+': the roster, the stash, the purse and the losses are what they were before the battle')
+  for(const id of e.deployed)assert.equal(camp().roster[id].lifeState,'alive',`${label}: ${id} is alive on the roster`)
+  assert.equal(camp().cursor.rewardOffer,null,label+': no reward is offered');assert.equal(camp().ended,null,label+': the run goes on')
+  assert.deepEqual([camp().cursor.prologue,camp().cursor.replays],[battle,replays+1],label+': the same battle is owed, and the replay is counted')
+  v.click('exit');wait(100)
+  assert.equal(camp().cursor.step,'open',label+': back to the map — never left with nothing to click');assert.ok(shown('conquest'),label+': the map is shown')
+  return {e,result,seed,fallen,all}
+ }
  /* every LEVEL UP the rewards page offers, through the level-up sheet; the specialty chosen where one is owed */
  function levelUps(label){
   for(let guard=0;guard<12;guard++){
@@ -386,12 +606,16 @@ export function openingPage(page,search,store){
    assert.equal(sheet.querySelectorAll('[data-act=lu-decline-specialty]').length,0,`${label}: no level without a specialty here — the engine fields no level-2 hero without one`)
    const over=byId('lu-specialty'),pick=byId('lu-pick')
    /* the specialty owed at the first level-up, then a level's pick, each chosen and confirmed; else the hero is clicked */
-   if(over){const card=over.querySelectorAll('.choice-card')[0];fire(over,'click',card);fire(byId('lu-specialty-confirm'),'click');wait(500)}
+   /* Law 10, 2026-10-04 (kingdom.opening-specialty-three): this took the first of the cards shown — the first of the class's
+      nine. The same click now takes one of the three offered (the first shown), after the three are held (threeOffered) */
+   let chose=null
+   if(over){const offered=threeOffered(over,id,label),card=over.querySelectorAll('.choice-card')[0];chose={label,id,offered,took:card.dataset.id};fire(over,'click',card);fire(byId('lu-specialty-confirm'),'click');wait(500)}
    if(pick){const card=pick.querySelectorAll('.choice-card')[0];fire(pick,'click',card);fire(byId('lu-pick-confirm'),'click')}
    if(!over&&!pick)fire(byId('lu-card'),'click')
    wait(4000)
    assert.equal(camp().roster[id].level,before+1,`${label}: ${id} levels`)
    if(over)assert.ok(camp().roster[id].specialty,`${label}: ${id} holds a specialty`)
+   if(chose){assert.equal(camp().roster[id].specialty,chose.took,`${label}: ${id} has the specialty it took — one of its three`);SPECIALTY_CHOICES.push(chose)}
    fire(byId('lu-continue'),'click');wait(300)
    assert.ok(byId('campaign').querySelector('.rewards'),`${label}: back on the rewards page`)
   }
@@ -410,11 +634,27 @@ export function openingPage(page,search,store){
 
  /* kingdom.opening-hero-card-art: who may carry a reward that names its takers — the heroes offered, each shown with its
     own card art (the rewards screen's carrier); [] when the reward goes to the stash */
+ /* kingdom.opening-sword-waits (engine DECISIONS.md 2026-10-03 'the opening run: the Flaming Longsword waits for its taker;
+    …' — "One, yes."): the offer of an item that has waited in the stash, made between battles once a hero of its
+    classes has room for it — the screen names the item and whose it is, and offers exactly the heroes who may carry it,
+    each with its own card art; null when no such offer is on the screen */
+ function waitingOffer(label){
+  const box=byId('campaign').querySelectorAll('.waitingOffer')[0];if(!box)return null
+  const item=box.dataset.waiting
+  assert.equal(camp().cursor.step,'open',label+': the waiting item is offered between battles');assert.ok(camp().stash.includes(item),`${label}: ${item} is in the stash`)
+  const whose=E.REWARD_ROWS.rewardTakersOf(item);assert.ok(whose,`${label}: ${item} is an item its row gives to named classes`)
+  assert.ok(box.textContent.includes(E.ITEMS.itemOf(item).name)&&/has waited in the stash/.test(box.textContent),label+': the screen says the item has waited')
+  const may=heroIds().filter(id=>{const h=camp().roster[id];return h.lifeState==='alive'&&h.classes.some(c=>whose.includes(c))})
+  const offered=carriers(label+', the waiting item')
+  assert.ok(offered.length>=1&&offered.every(id=>may.includes(id)),`${label}: only a living hero of ${whose.join(' or ')} is offered it`)
+  assert.deepEqual(offered,E.REWARDS.listWaitingOffers(camp()).find(o=>o.itemId===item).takers,label+': the heroes offered are the ones who may take it')
+  return {item,offered,whose}
+ }
  function carriers(label){
   const buttons=byId('campaign').querySelectorAll('[data-act=give]')
   for(const b of buttons)showsArt(b,b.dataset.id,label+': who carries it','carrier')
   return buttons.map(b=>b.dataset.id)
  }
 
- return {get lastOffer(){return lastOffer},v,w,root,handle,store:v.store,camp,byId,shown,heroIds,civilianIds,settle,wait,readMap,draft,freeToFight,whoGoes,deployStands,send,bringHome,toEquip,equipThenFight,onTheBattle,fightOut,levelUps,takeReward,carriers}
+ return {get lastOffer(){return lastOffer},v,w,root,handle,store:v.store,camp,byId,shown,heroIds,civilianIds,settle,wait,readMap,draft,freeToFight,whoGoes,deployStands,send,bringHome,toEquip,equipThenFight,onTheBattle,fightOut,fallOut,levelUps,specialtyOffer,takeReward,carriers,waitingOffer}
 }

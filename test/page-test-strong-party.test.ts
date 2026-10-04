@@ -100,7 +100,15 @@ describe('kingdom.page-test-strong-party — the opening page tests settle each 
     }
   })
 
-  it('the six-battle page test passes on other run seeds with nothing sought: eight battles settled, each the one battle played, in well under a minute', () => {
+  // Law 10, 2026-10-04 (kingdom.opening-replay-rules; engine DECISIONS.md 2026-10-03 '… a lost battle pays no XP; a replay
+  // rolls new dice'): this test was titled '… eight battles settled …' and held
+  //   // six won, and two lost first (battle 2 and battle 6): each line names the Engagement's own seed — none found
+  //   expect(settled.length, `run seed ${seed}: eight battles settled`).toBe(8)
+  //   expect(settled.filter((l) => / lost: the party held idle, cut at Turn 1 — capped on Turn 1/.test(l)).length).toBe(2)
+  // The six-battle run now loses the Orphanage first too (a lost Orphanage pays no XP and is replayed on new dice), so
+  // nine battles are settled, three of them lost first. Each is still the one battle played on the Engagement's own seed
+  // — a replay's seed is the one the Campaign gives that replay, never one found.
+  it('the six-battle page test passes on other run seeds with nothing sought: nine battles settled, each the one battle played, in well under a minute', () => {
     for (const seed of ['3', '15']) {
       const at = Date.now()
       const run = spawnSync(process.execPath, ['tools/opening-run-six.verify.mjs', 'BATTLE-SANDBOX.html'], { cwd: '../kingdom', encoding: 'utf8', maxBuffer: 1 << 24, env: { ...process.env, RUN_SIX_SEED: seed } })
@@ -108,10 +116,10 @@ describe('kingdom.page-test-strong-party — the opening page tests settle each 
       expect(run.status, `run seed ${seed}: ${run.stderr.split('\n').filter((l) => /Error/.test(l)).slice(0, 2).join(' | ')}`).toBe(0)
       expect(run.stdout).toMatch(/opening run six: .*passed/)
       const settled = run.stderr.split('\n').filter((l) => l.startsWith('settled battle '))
-      // six won, and two lost first (battle 2 and battle 6): each line names the Engagement's own seed — none found
-      expect(settled.length, `run seed ${seed}: eight battles settled`).toBe(8)
+      // six won, and three lost first (battles 1, 2 and 6): each line names the Engagement's own seed — none found
+      expect(settled.length, `run seed ${seed}: nine battles settled`).toBe(9)
       for (const line of settled) expect(line).toMatch(/the Engagement's own seed \d+$/)
-      expect(settled.filter((l) => / lost: the party held idle, cut at Turn 1 — capped on Turn 1/.test(l)).length).toBe(2)
+      expect(settled.filter((l) => / lost: the party held idle, cut at Turn 1 — capped on Turn 1/.test(l)).length).toBe(3)
       expect(settled.filter((l) => /the strong party, the engine's AI — heroClear/.test(l)).length).toBe(6)
       expect(took, `run seed ${seed}: ${took} ms`).toBeLessThan(60000)
     }

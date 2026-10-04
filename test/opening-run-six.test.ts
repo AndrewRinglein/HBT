@@ -107,7 +107,13 @@ describe('kingdom.opening-run-six — one run through the six battles, saved', (
     //   expect(out).toMatch(/with five free to fight the run asked who goes \(battle 5: home …; battle 6: home …; battle 6 again: home …\)/)
     // — the battles the run asked before while the Bridge cost a hero. Won by the strong party the Bridge costs nobody, so
     // five are free a battle earlier: the run asks before battle 4 too, and says so. The same rule, held at one more battle.
-    expect(out).toMatch(/with five or more free to fight the run asked who goes \(battle 4: home [^;]+; battle 5: home [^;]+; battle 6: home [^;]+; battle 6 again: home [^)]+\)/)
+    // Law 10, 2026-10-04 (kingdom.opening-draft-cadence; engine DECISIONS.md 2026-10-03 'one draft after every battle; …': "We're only supposed to have one draft between battles 1 and 2. I was getting two drafts." · "One, yes."): the line above's rule moved once more, and read
+    //   expect(out).toMatch(/with five or more free to fight the run asked who goes \(battle 4: home [^;]+; battle 5: home [^;]+; battle 6: home [^;]+; battle 6 again: home [^)]+\)/)
+    // — a party of five at battle 4, under the cadence the ruling replaces. With one draft after every battle the party is
+    // four at battle 4 (no choice is asked) and five at battle 5: the run asks before battle 5, battle 6 and its replay.
+    expect(out).toMatch(/with five or more free to fight the run asked who goes \(battle 5: home [^;]+; battle 6: home [^;]+; battle 6 again: home [^)]+\)/)
+    // kingdom.opening-draft-cadence: … and the run says its cadence — one draft before every battle, the party's size at each
+    expect(out).toMatch(/one draft before every battle \(1, 1, 1, 1, 1, 1\): a party of 1, 2, 3, 4, 5, 6 at battles 1 to 6/)
     // kingdom.opening-hero-card-art (2026-10-03): the same run holds every hero card it shows to that hero's own card art —
     // every draft card (six drafts of three), the Who-goes page, Equip, the victory screen, the rewards screen and its
     // carrier, the level-up screen — and says how many of each it held
