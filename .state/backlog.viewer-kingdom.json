@@ -793,7 +793,9 @@
   "kind": "viewer",
   "shape": "plumbing",
   "spec": "Ruled 2026-10-03 (Andrew, engine DECISIONS.md 'the cards above the battle: the fallen leave, a downed hero's card wears a first-aid mark' and 'size and shadows are the default; the bleeding-out card; switching heroes asks first; movement costs on the grid; a tooltip on every hex'): \"When an enemy goes down, they should no longer have their card above the battle. When a hero is dead, it's the same. When a hero is downed, their card on the battlefield should have a little first aid symbol in the upper right-hand corner.\" - \"The hero card above the battle should show a first aid icon in the upper right-hand corner and the number of turns they have left.\" The unit-card bar above the battle (viewer src/rail.js): an enemy that has gone down and a hero that is dead have no card (today the card stays, greyed, with a cross - the `gone` chip - which this overturns); a downed hero keeps the card with a first-aid icon in its upper right-hand corner and, while bleeding out, the number of turns left beside it. The number is the fold's own bleed-out count from the log (the one board.js already draws over a downed body) - nothing is counted in the viewer (Law 0). The divider between heroes and enemies stays while both sides still have a card. Prior art: rail.js's chips and their marks, the board's bleed-out numeral, src/icons.js - this changes what a chip shows, no new concept.",
-  "expect": "In a battle where an enemy dies its card leaves the bar above the battle; a hero who dies likewise; a downed hero's card stays and shows a first-aid icon in its upper right-hand corner with the same turns-left number the board shows over the body, changing as it does; a hero stood back up has neither."
+  "expect": "In a battle where an enemy dies its card leaves the bar above the battle; a hero who dies likewise; a downed hero's card stays and shows a first-aid icon in its upper right-hand corner with the same turns-left number the board shows over the body, changing as it does; a hero stood back up has neither.",
+  "status": "done",
+  "sha": "145e040"
  },
  {
   "id": "viewer.move-cost-on-grid",
