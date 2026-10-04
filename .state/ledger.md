@@ -28545,3 +28545,162 @@ superseded: kingdom.opening-run-six (landed 2026-10-02) is the continuous run th
   PASS  naming — new content ids use declared kinds
   PASS  naming — no banned words invented
   PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+## kingdom.tutorial-bars-and-stamina — LANDED `748bbeb` **NEEDS REVIEW**
+2026-10-04 21:31
+
+  PASS  dependencies landed
+  WARN  not already decided — 2 candidate ruling(s) — READ BEFORE ASKING: DECISIONS.md:4796 · DECISIONS.md:4811
+  PASS  typecheck
+  PASS  the item's own tests — test/tutorial-bars-and-stamina.test.ts, test/tutorial-orphanage-enemy-turn.test.ts, test/tutorial-orphanage-first-move.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — kingdom/test/lesson-stage.ts, kingdom/test/tutorial-bars-and-stamina.test.ts, kingdom/test/tutorial-orphanage-enemy-turn.test.ts, kingdom/test/tutorial-orphanage-first-move.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/lesson-stage.ts (-3), test/tutorial-orphanage-enemy-turn.test.ts (-1), test/tutorial-orphanage-first-move.test.ts (-1) — will land FLAGGED for review
+  SKIPPED  control battles unchanged — engine code 96341738c6 and the content pack are the ones the control battles last passed on (2026-10-04 20:25, combine: engine master eec6321 into the kingdom worker copy (golden re-run by tools/baseline.mts on the merged tree), in HBT-worker-kingdom) — not run
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+ead14c8
+
+diff --git a/test/lesson-stage.ts b/test/lesson-stage.ts
+index ceb4a00..90f4861 100644
+--- a/test/lesson-stage.ts
++++ b/test/lesson-stage.ts
+@@ -10,5 +10,5 @@ export function lessonStage(seen = new Set<string>()) {
+   const pointers: { target: unknown; word: string | undefined; up: boolean }[] = []
+   /** the battle as the host would answer it: units 0 the hero, 1 and 2 the civilians, 3 the enemy, on a 20-wide board */
+-  const battle = { turn: 1, acting: null as number | null, fresh: true, moved: false, attacked: false, reach: [] as number[], attackInReach: null as string | null,
++  const battle = { turn: 1, acting: null as number | null, fresh: true, moved: false, attacked: false, reach: [] as number[], attackInReach: null as string | null, provoker: null as number | null,
+     acted: { done: 0, left: 0 }, hex: { 0: 110, 1: 32, 2: 53, 3: 76 } as Record<number, number> }
+   let wakes = 0
+@@ -26,5 +26,5 @@ export function lessonStage(seen = new Set<string>()) {
+     distance: (a, b) => Math.abs(a % 20 - b % 20) + Math.abs(Math.floor(a / 20) - Math.floor(b / 20)),
+     turn: () => battle.turn, acting: () => battle.acting, fresh: () => battle.fresh, moved: () => battle.moved, attacked: () => battle.attacked,
+-    basicMove: () => battle.acting === null ? null : 'move.walk', reach: () => battle.reach, attackInReach: () => battle.attackInReach, acted: () => battle.acted,
++    basicMove: () => battle.acting === null ? null : 'move.walk', reach: () => battle.reach, attackInReach: () => battle.attackInReach, acted: () => battle.acted, provoker: () => battle.provoker, isPlayers: (unit) => unit !== 3,
+     seen: (id) => seen.has(id), mark: (id) => { seen.add(id) },
+     wake: () => { wakes++; lessons.still() },
+@@ -32,5 +32,5 @@ export function lessonStage(seen = new Set<string>()) {
+   return { lessons, calls, told, looks, pointers, battle, seen, wakes: () => wakes, up: () => pointers.filter((p) => p.up),
+     /** every row before `id` in the table marked shown, so the runner is ready for `id` */
+-    upTo(id: string) { for (const r of LESSONS) { if (r.id === id) break; seen.add(r.id) } return this } }
++    upTo(id: string) { for (const r of LESSONS) { if (r.id === id) break; seen.add(r.once ?? r.id) } return this } }
+ }
+ export const rowOf = (id: string) => { const r = LESSONS.find((x) => x.id === id); if (!r) throw new Error('no lesson row ' + id); return r }
+diff --git a/test/tutorial-bars-and-stamina.test.ts b/test/tutorial-bars-and-stamina.test.ts
+new file mode 100644
+index 0000000..2342219
+--- /dev/null
++++ b/test/tutorial-bars-and-stamina.test.ts
+@@ -0,0 +1,72 @@
++// kingdom.tutorial-bars-and-stamina — ruled 2026-10-04 (Andrew, engine/DECISIONS.md 'the opening's tutorial: the first hero's class
++// line, no map before battle 1, the Orphanage's lessons, …'). Two of the extra steps the chat offered, as offered and as answered:
++// (b) "What the Health and Protection bars under a unit mean." — "B should happen as soon as damage is inflicted."; (e) "Attacks
++// cost Stamina." — "We need to explain E at some point, but we don't want to front-load every single thing into the first couple
++// of turns. I think we can do stamina on turn 3 or turn 4."
++//
++// Expect: "In a new run's Orphanage, the first blow that deals damage is followed by an arrow on the struck unit's bars and the
++// line that names Health and Protection; nothing about Stamina shows on Turns 1 and 2; on Turn 3 an arrow sits on the stamina strip
++// with its line. A page test asserts both notices' words, targets and triggers, that (e) shows in battle 2 when battle 1 ended
++// before Turn 3, and that neither shows twice in a run."
++//
++// Here: the rows in the lesson table and the runner showing each at its moment over a stand-in battle screen
++// (test/lesson-stage.ts). The page half is tools/tutorial-bars-and-stamina.verify.mjs, on the built BATTLE-SANDBOX.html.
++import { describe, it, expect } from 'vitest'
++import { execFileSync } from 'node:child_process'
++import { LESSONS } from '../src/content/lessons.js'
++import { lessonStage } from './lesson-stage.js'
++
++const ORPHANAGE = 'encounter.opening.orphanage', LUMBERJACK = 'encounter.opening.lumberjack'
++const row = (id: string) => LESSONS.find((r) => r.id === id) as unknown as Record<string, unknown> | undefined
++const BARS = 'lesson.bars', STAMINA = 'lesson.orphanage.stamina', STAMINA2 = 'lesson.lumberjack.stamina'
++const WORDS = ['Attacks and powers cost Stamina — the strip beside the action bar.', 'What an action costs is shown on its slot.', 'Stamina comes back at the end of each Hero Phase.']
++
++describe('kingdom.tutorial-bars-and-stamina — the two bars at the first damage; Stamina on Turn 3', () => {
++  it('the rows are in the lesson table: the bars in whichever battle the first damage is; Stamina in the Orphanage from Turn 3, or in battle 2 — one lesson, told once', () => {
++    expect(row(BARS), BARS).toBeDefined(); expect(row(STAMINA), STAMINA).toBeDefined(); expect(row(STAMINA2), STAMINA2).toBeDefined()
++    expect(row(BARS)).toMatchObject({ starts: 'event', event: { type: 'damage.applied' }, ends: 'time', holds: true, look: 'struck', point: [{ at: 'struck-health' }, { at: 'struck-protection' }],
++      words: ['Under each unit: its Health bar, and beneath it its Protection.', 'A blow takes from Protection first; what is left comes off Health.'] })
++    expect(row(BARS)!['encounterId']).toBeUndefined()
++    expect(row(STAMINA)).toMatchObject({ once: 'lesson.stamina', encounterId: ORPHANAGE, starts: 'activation-begins', of: 'hero', fromTurn: 3, ends: 'time', point: { at: 'stamina' }, words: WORDS })
++    expect(row(STAMINA2)).toMatchObject({ once: 'lesson.stamina', encounterId: LUMBERJACK, starts: 'activation-begins', of: 'hero', ends: 'time', point: { at: 'stamina' }, words: WORDS })
++    expect(row(STAMINA2)!['fromTurn']).toBeUndefined()
++  })
++
++  it('(b) the first line of damage the board plays: the view on the unit struck, an arrow on each of its two bars, the two lines — held; in any battle of the run, once', () => {
++    const s = lessonStage().upTo(BARS), L = s.lessons
++    L.open(LUMBERJACK)
++    L.played({ type: 'attack.hit', target: 2 }); expect(L.up, 'a hit is not yet damage').toBe(null)
++    L.played({ type: 'damage.applied', phase: 'enemy', target: 2 })
++    expect(L.up).toBe(BARS); expect(s.told.at(-1)).toMatchObject({ hold: true, words: ['Under each unit: its Health bar, and beneath it its Protection.', 'A blow takes from Protection first; what is left comes off Health.'] })
++    expect(s.looks.at(-1)!.unit).toBe(2); expect(s.up().map((p) => p.target)).toEqual([{ unit: 2, part: 'health' }, { unit: 2, part: 'protection' }])
++    s.told.at(-1)!.onDone!('time'); expect(L.up).toBe(null); expect(s.up()).toEqual([]); expect(s.calls.at(-1)).toBe('lookBack')
++    L.played({ type: 'damage.applied', target: 3 }); expect(L.up, 'the next blow: not again').toBe(null)
++    expect([...s.seen]).toContain('lesson.bars')
++  })
++
++  it('(e) Stamina: nothing on Turns 1 and 2 of the Orphanage; on Turn 3 as the hero\'s Activation begins, an arrow on the stamina strip', () => {
++    const s = lessonStage().upTo(STAMINA), L = s.lessons
++    L.open(ORPHANAGE); s.battle.acting = 0
++    for (const turn of [1, 2]) { s.battle.turn = turn; L.still(); expect(L.up, `Turn ${turn}: nothing about Stamina`).toBe(null); expect(s.calls).toEqual([]) }
++    s.battle.turn = 3; s.battle.acting = 1; L.still(); expect(L.up, 'a civilian\'s Activation: not it').toBe(null)
++    s.battle.acting = 0; L.still()
++    expect(L.up).toBe(STAMINA); expect(s.told.at(-1)!.words).toEqual(WORDS); expect(s.told.at(-1)!.hold).toBe(false); expect(s.up().map((p) => p.target)).toEqual([{ ui: 'stamina' }])
++    expect([...s.seen], 'remembered as the one lesson').toContain('lesson.stamina')
++    s.told.at(-1)!.onDone!('time'); expect(L.up).toBe(null)
++    // … and battle 2 does not tell it again
++    L.open(LUMBERJACK); s.battle.turn = 1; s.battle.acting = 0; s.battle.fresh = true; L.still(); expect(L.up).toBe(null)
++  })
++
++  it('battle 1 over before Turn 3: Stamina is told on the first hero Activation of battle 2 — and not again in the Orphanage', () => {
++    const s = lessonStage().upTo(STAMINA), L = s.lessons
++    L.open(LUMBERJACK); s.battle.turn = 1; s.battle.acting = 0; L.still()
++    expect(L.up).toBe(STAMINA2); expect(s.told.at(-1)!.words).toEqual(WORDS); expect(s.up().map((p) => p.target)).toEqual([{ ui: 'stamina' }])
++    s.told.at(-1)!.onDone!('time')
++    L.open(ORPHANAGE); s.battle.turn = 3; s.battle.acting = 0; L.still(); expect(L.up, 'one lesson, told once').toBe(null)
++  })
++
++  it('the page: on the built BATTLE-SANDBOX.html the bars show at the first damage and Stamina on Turn 3, or in battle 2 when battle 1 ended before it; neither twice in a run', () => {
++    const out = execFileSync(process.execPath, ['tools/tutorial-bars-and-stamina.verify.mjs', 'BATTLE-SANDBOX.html'], { cwd: '../kingdom', encoding: 'utf8', maxBuffer: 1 << 24 })
++    expect(out).toMatch(/tutorial-bars-and-stamina: .*passed/)
++  }, 420000)
++})
+diff --git a/test/tutorial-orphanage-enemy-turn.test.ts b/test/tutorial-orphanage-enemy-turn.test.ts
+index 5bfa91e..4fa3021 100644
+--- a/test/tutorial-orphanage-enemy-turn.test.ts
++++ b/test/tutorial-orphanage-enemy-turn.test.ts
+@@ -91,5 +91,11 @@ describe('kingdom.tutorial-orphanage-enemy-turn — attacks in reach, the enemy\
+     const other = lessonStage(); other.lessons.open('encounter.opening.lumberjack'); other.battle.acting = 0; other.battle.attackInReach = 'attack.x'
+     other.lessons.played({ type: 'phase.begin', phase: 'enemy' }); other.lessons.happened('enemy-clicked'); other.lessons.played({ type: 'turn.end' }); other.lessons.still()
+-    expect(other.calls).toEqual([])
++    // Law 10, 2026-10-04 (kingdom.tutorial-bars-and-stamina; engine DECISIONS.md 2026-10-04 'the opening's tutorial: …'): was
++    //   expect(other.calls).toEqual([])
++    // — nothing at all was drawn in another battle, true while every row of the table was the Orphanage's. The table now holds
++    // rows for battle 2 and for whichever battle a thing first happens in, so what this test holds is said of ITS four rows:
++    // none of them is shown in another battle.
++    expect([...other.seen].filter((id) => [ATTACK, NUMBERS, PANEL, PHASES].includes(id))).toEqual([])
++    expect(other.told.map((t) => t.words[0])).not.toContain('An enemy is in range.')
+     const free = lessonStage(); free.lessons.open(ORPHANAGE, false); free.lessons.played({ type: 'phase.begin', phase: 'enemy' }); free.lessons.still(); expect(free.calls).toEqual([]); expect(free.lessons.waiting()).toBe(false)
+     const again = lessonStage(new Set(LESSONS.map((r) => r.id))); again.lessons.open(ORPHANAGE); again.battle.acting = 0; again.battle.attackInReach = 'attack.x'
+diff --git a/test/tutorial-orphanage-first-move.test.ts b/test/tutorial-orphanage-first-move.test.ts
+index 0c0088d..8fa88c1 100644
+--- a/test/tutorial-orphanage-first-move.test.ts
++++ b/test/tutorial-orphanage-first-move.test.ts
+@@ -54,5 +54,5 @@ function stage(seen = new Set<string>()) {
+     acting: () => battle.acting, fresh: () => battle.fresh, moved: () => battle.moved,
+     basicMove: () => battle.acting === null ? null : 'move.walk',
+-    turn: () => 1, attacked: () => false, attackInReach: () => null, acted: () => ({ done: 0, left: 0 }),
++    turn: () => 1, attacked: () => false, attackInReach: () => null, acted: () => ({ done: 0, left: 0 }), provoker: () => null, isPlayers: () => true,
+     reach: () => battle.reach,
+     seen: (id: string) => seen.has(id), mark: (id: string) => { seen.add(id) },
+```
+</details>
