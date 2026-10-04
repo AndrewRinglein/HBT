@@ -1,0 +1,12 @@
+       | ^
+     12| import { ENEMY_KINDS, LESSON_INTRODUCES, enemyRevealOf, enemiesToAnnou…
+     13| import { runSaveOf, runOf } from '../src/ui/opening-run.js'
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  no tests
+   Start at  07:20:01
+   Duration  1.77s (transform 1.40s, setup 0ms, import 0ms, tests 0ms, environment 0ms)
+
