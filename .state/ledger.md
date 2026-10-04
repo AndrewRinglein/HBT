@@ -24044,6 +24044,16 @@ index d7b29b5..dcf9f1d 100644
 ```
 </details>
 
+## viewer.bar-follows-activation — LANDED `2a47e4f`
+2026-10-04 07:54
+
+  PASS  dependencies landed
+  WARN  not already decided — 2 candidate ruling(s) — READ BEFORE ASKING: DECISIONS.md:4473 · ..\ATLAS-COMBAT-INTEGRATION.md:222
+  PASS  typecheck
+  PASS  the item's own tests — test/viewer.bar-follows-activation.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — viewer/test/viewer.bar-follows-activation.test.ts
+  PASS  existing tests untouched
 ## fix.starting-kit-powers — LANDED `a44f767` **NEEDS REVIEW**
 2026-10-04 07:42
 
@@ -24513,6 +24523,25 @@ index 6842802..64eccaf 100644
   PASS  naming — no banned words invented
   PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
 
+## viewer.switch-hero-asks — LANDED `05a88cb`
+2026-10-04 08:29
+
+  PASS  dependencies landed
+  PASS  not already decided — decided.mjs unavailable
+  PASS  typecheck
+  PASS  the item's own tests — test/viewer.switch-hero-asks.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — viewer/test/viewer.switch-hero-asks.test.ts
+  PASS  existing tests untouched
+  PASS  control battles unchanged
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
 <details><summary>Existing tests were edited — review this diff</summary>
 
 ```diff
@@ -25028,6 +25057,7 @@ index 1ba14a0..f9a41fc 100644
 </details>
 
 ## kingdom.opening-specialty-three — LANDED `664f1c9` **NEEDS REVIEW**
+## viewer.auto-end-no-actions — LANDED `1627a0a`
 2026-10-04 09:10
 
   PASS  dependencies landed
@@ -25037,6 +25067,10 @@ index 1ba14a0..f9a41fc 100644
   PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
   PASS  brought its own tests — kingdom/test/after-battle.test.ts, kingdom/test/opening-specialty-three.test.ts
   WARN  existing tests untouched — DELETED LINES in test/after-battle.test.ts (-6) — will land FLAGGED for review
+  PASS  the item's own tests — test/viewer.auto-end-no-actions.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — viewer/test/viewer.auto-end-no-actions.test.ts
+  PASS  existing tests untouched
   PASS  control battles unchanged
   PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
   PASS  hardcode scan — core knows mechanisms, never names
@@ -25242,6 +25276,48 @@ index 0000000..acf0fb8
 
 ## kingdom.opening-reward-card-art — LANDED `17a4d96`
 2026-10-04 09:26
+## viewer.no-hex-focus-border — LANDED `2996289`
+2026-10-04 09:30
+
+  PASS  dependencies landed
+  WARN  not already decided — 1 candidate ruling(s) — READ BEFORE ASKING: ..\ATLAS-COMBAT-INTEGRATION.md:222
+  PASS  typecheck
+  PASS  the item's own tests — test/viewer.no-hex-focus-border.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — viewer/test/viewer.no-hex-focus-border.test.ts
+  PASS  existing tests untouched
+  PASS  control battles unchanged
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+## viewer.panel-lists-items — LANDED `054b66b`
+2026-10-04 09:59
+
+  PASS  dependencies landed
+  WARN  not already decided — 2 candidate ruling(s) — READ BEFORE ASKING: DECISIONS.md:4569 · SWITCHES.md:1944
+  PASS  typecheck
+  PASS  the item's own tests — test/viewer.panel-lists-items.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — viewer/test/viewer.panel-lists-items.test.ts
+  PASS  existing tests untouched
+  PASS  control battles unchanged
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+## viewer.swap-button-rearranges — LANDED `ecd7a4d`
+2026-10-04 10:24
 
   PASS  dependencies landed
   WARN  not already decided — 1 candidate ruling(s) — READ BEFORE ASKING: SWITCHES.md:1944
@@ -25249,6 +25325,9 @@ index 0000000..acf0fb8
   PASS  the item's own tests — test/opening-reward-card-art.test.ts
   PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
   PASS  brought its own tests — kingdom/test/opening-reward-card-art.test.ts
+  PASS  the item's own tests — test/viewer.swap-button-rearranges.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — viewer/test/viewer.swap-button-rearranges.test.ts
   PASS  existing tests untouched
   PASS  control battles unchanged
   PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
