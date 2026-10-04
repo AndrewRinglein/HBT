@@ -602,3 +602,17 @@ bound scene hex by hex. Seen in a real browser on the candidate page, both battl
 |---|---|---|---|---|
 | `gatesGround` | The item names `abbotown-complete` (the whole-town model, a 20×50 measured grid) for the Gates; the binder refuses it. | **The Gates stays on the flat board, unbound, and the reason is named: its map was compiled from an Atlas map (`assets/battle-atlas/maps/abbotown-gate-painted.json`), not from a 3D scene; `abbotown-complete` has `abbotown.glb` and a navigation file but no `scene.glb`, and the ground proposal does not name it for the Gates.** Never a borrowed scene. The launcher's "flat board for now" line stays for the Gates alone. | The item's own clause (2): say exactly what is missing. Whether the Gates' scene is cut from the town model was asked of Andrew 2026-10-03 and is not yet answered. | Default — 2026-10-03; open |
 | `unmodelledOnScene` | Battles 4 and 6 field units with no model bound (Zombie Hound, Werewolf, Ghoul). | **They keep their tokens, standing on the 3D scene, until `art.opening-enemy-models` supplies them.** | The item makes no models; a borrowed look is never drawn. | Default — 2026-10-03 |
+
+## viewer.bar-follows-activation — 2026-10-04
+
+Engine DECISIONS.md 2026-10-03 'the action bar changes with the Activation: the new unit's moves, attacks and powers' (Andrew):
+"when the activation changes, for whatever reason, the card art changes in the lower left, but the moves don't change. They
+need to change to the character's moves. And attacks and powers and all that". `src/viewer.js` (`drawActivated`: the card, the
+bar and the stamina strip are one draw, in the full render and in `setPlay`); probes `tools/bar-follows-activation.test.mjs`,
+`test/viewer.bar-follows-activation.test.ts`, kingdom `tools/bar-follows-activation.verify.mjs`; the red is
+`bar-follows-activation-red.log`.
+
+| Switch | Question | Default | Reason | Status |
+|---|---|---|---|---|
+| `barFollowsWhichStale` | The report says the card changes and the bar keeps the last unit's moves; on the built page the reproduced fault is the other way round — after End activation the BAR is the new unit's and the CARD stays the last unit's, until the next full render (the player's move). Fix the reported direction, or the reproduced one? | **The one path both come from: the card was drawn only by the full render, the bar also by `setPlay`. They are now one draw (`drawActivated`), so neither can be the other unit's, whichever way it showed.** The page test reads the bar's buttons AND the card against the activated unit at every change of Activation, and at every tick between that the two are one unit's. | The item's own instruction: "fix that one path so the bar and the card are drawn from the same activated unit at the same moment". No path that leaves the bar stale and the card fresh was found in the headless page; if Andrew still sees it in a browser, it is a second fault and wants its own report. | Default — 2026-10-04 |
+| `barFollowsStaleFacts` | While the host resolves a command, the first beat is rendered with the play facts it handed before the command (the host clears them a moment later, in the same turn of the event loop). Drop the facts in the viewer when events are pushed, or leave them to the host? | **Left to the host: the viewer draws what it is handed; the host clears its facts in the same synchronous step, before anything is painted.** | Clearing in `push` would change what a host that pushes and keeps planning sees; nothing is painted between the two. | Default — 2026-10-04 |

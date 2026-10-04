@@ -212,8 +212,17 @@ export function mountBattleViewer(root, data, opts = {}) {
     syncLayers(V); syncCorpses(V); syncAuras(V)
     drawAim(V); drawTargeting(V)
     syncUnits(V); syncPlayInput(V); drawPlay(V)
-    drawPanel(V); drawPortrait(V); drawRail(V); drawBar(V); drawStam(V); applyCam(V); drawEdges(V); drawChips(); terrain.update(); chrome.sync()
+    drawPanel(V); drawRail(V); drawActivated(); applyCam(V); drawEdges(V); drawChips(); terrain.update(); chrome.sync()
   }
+  /* viewer.bar-follows-activation (engine DECISIONS.md 2026-10-03 'the action bar changes with the Activation: the new unit's
+     moves, attacks and powers'; Andrew: "when the activation changes, for whatever reason, the card art changes in the lower
+     left, but the moves don't change"): the card beside the bar, the action bar and the stamina strip (with its swap) are ONE
+     draw. Whose they are is one rule (subject.js barUnitOf) and all three are drawn from it at the same moment — in the full
+     render AND whenever the host hands or clears its play facts. Was: the card drawn only by the full render, the bar and the
+     strip also by setPlay; when an Activation ended with nothing to play (End activation) the next unit's begin was rendered
+     while the last unit's facts were still in hand, and clearing them redrew the bar alone — the card and the bar showed
+     different units until the next full render (the player's move). */
+  function drawActivated() { drawPortrait(V); drawBar(V); drawStam(V) }
   V.render = render
   V.playCues = cues => playCues(V, cues)      // the verifier injects synthetic cues here
   function drawChips() {
@@ -253,11 +262,11 @@ export function mountBattleViewer(root, data, opts = {}) {
   function clearPlay() { V.play = null; syncPlayInput(V); drawPlay(V); chrome.sync() }
   function setPlay(value) {
     if (disposed) throw new Error('viewer disposed')
-    if (value === null) { if (V.play) { clearPlay(); drawBar(V); drawStam(V) } return }
+    if (value === null) { if (V.play) { clearPlay(); drawActivated() } return }
     if (V.invalid) throw new Error('viewer faulted')
     const next = playFacts(value, V.data.POS)   // validate/detach the WHOLE payload before mutation
     V.play = next
-    try { syncPlayInput(V); drawPlay(V); drawBar(V); drawStam(V); chrome.sync() } catch (err) { fault(err) }
+    try { syncPlayInput(V); drawPlay(V); drawActivated(); chrome.sync() } catch (err) { fault(err) }
     /* fix.shield-power-double-click: a double-click on the bar held while the host resolved is offered now, once (actionbar.js) */
     const held = V.heldPlay; V.heldPlay = null
     if (held && V.play) V.offerPlay(held)
