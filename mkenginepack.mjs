@@ -1440,7 +1440,9 @@ function takeItemAttack(a) {
 // them (digits -> N, 'N hex' -> 'N hexes'). A phrase outside the vocabulary fails the build.
 const TARGET_SHAPES = new Set(JSON.parse(fs.readFileSync('gen/functions.json', 'utf8')).shapes.map((x) => x.name));
 function inVocabulary(tgt, compiled) {
-  if (compiled && tgt && !TARGET_SHAPES.has(String(tgt).replace(/\d+/g, 'N').replace(/\bN hex\b/g, 'N hexes')))
+  // "every other unit within N hexes" is the excluding-self form of the shape "every unit within N hexes" (functions.mjs
+  // counts it under that shape; engine SWITCHES everyOtherUnitPhrase) — legal exactly when that shape is
+  if (compiled && tgt && !TARGET_SHAPES.has(String(tgt).replace(/^every other unit within /, 'every unit within ').replace(/\d+/g, 'N').replace(/\bN hex\b/g, 'N hexes')))
     throw new Error(`mkenginepack: targeting '${tgt}' compiles here but is not a shape in gen/functions.json — run functions.mjs, or the phrase is off-vocabulary`);
   return compiled;
 }
@@ -1641,6 +1643,10 @@ function targetingOfRaw(tgt) {
   if ((r = tgt.match(/^a hex within (\d+) hexes and every hex adjacent to it$/))) return { target: { select: 'area', side: 'any', radius: 1, origin: 'target' }, range: +r[1], hexGap: r[1] };
   if (tgt === 'one enemy in melee reach') return { target: { select: 'unit', side: 'enemy' }, range: 1 };
   if ((r = tgt.match(/^every unit within (\d+) hexes$/))) return { target: { select: 'area', side: 'any', radius: +r[1], origin: 'self' }, range: 0 };
+  // engine fix.own-area-skips-owner (2026-10-04; ruled 2026-10-04, engine DECISIONS.md 'the Poison Imp, the Balrog and the four
+  // caster-centred class powers skip their owner too': "skip the caster"): a power aimed at "every other unit within N
+  // hexes" is the same area with the engine's excludeSelf (core/target.ts) — as a trigger's is, above (fix.fire-imp-burn-spares-self)
+  if ((r = tgt.match(/^every other unit within (\d+) hexes$/))) return { target: { select: 'area', side: 'any', radius: +r[1], origin: 'self', excludeSelf: true }, range: 0 };
   if (tgt === 'every enemy adjacent to you') return { target: { select: 'area', side: 'enemy', radius: 1, origin: 'self' }, range: 0 };
   if ((r = tgt.match(/^one ally within (\d+) hex$/))) return { target: { select: 'unit', side: 'ally' }, range: +r[1] };
   return null;

@@ -24,7 +24,7 @@ const shape=s=>{ if(!s) return null; const t=s.toLowerCase().trim();
   if(/^(your hex|the hex you occupy)$/.test(t)) return R('your own hex');
   if(/one hex within|a hex within/.test(t)) return R('one hex at range');
   // units, by side
-  if(/all units within|every unit within/.test(t)) return R('EVERY unit in a radius (friend and foe)');
+  if(/all units within|every unit within|every other unit within/.test(t)) return R('EVERY unit in a radius (friend and foe)');
   if(/downed all/.test(t)) return R('one downed ally');
   if(/all heroes within|every ally within|allies within|the party|radius-\d|self and allies adjacent/.test(t)) return R('allies in a radius');
   if(/one willing ally|one hero within|one ally|adjacent-ally|ally-within-\d/.test(t)) return R('one ally');

@@ -27,8 +27,13 @@ const sect=(title,blurb,map,extra)=>{
 // 1 HOOKS
 const hooks={}; for(const e of ALL) for(const t of TR(e)) bump(hooks,t.hook,e.id);
 // 2 TARGETS — the locked vocabulary, taken from the data itself
+// engine fix.own-area-skips-owner (2026-10-04; ruled 2026-10-04, engine DECISIONS.md 'the Poison Imp, the Balrog and the four
+// caster-centred class powers skip their owner too'): "every other unit within N hexes" is the excluding-self form of the one
+// area shape "every unit within N hexes" (engine SWITCHES everyOtherUnitPhrase) — it is counted under that shape, never as
+// a shape of its own, so the locked vocabulary is unchanged. mkenginepack and audit read the phrase the same way.
+const shapeOf=s=>s.replace(/^every other unit within /,'every unit within ');
 const shapes={}; for(const e of ALL) if(typeof e.targets==='string')
-  bump(shapes,e.targets.replace(/\d+/g,'N').replace(/\bN hex\b/g,'N hexes'),e.id);
+  bump(shapes,shapeOf(e.targets).replace(/\d+/g,'N').replace(/\bN hex\b/g,'N hexes'),e.id);
 // 3 CONDITIONS
 // A CONDITION gates an effect. A targeting shape is not a condition, even when it names
 // adjacency — that distinction was inflating three of these rows before 2026-08-20.
