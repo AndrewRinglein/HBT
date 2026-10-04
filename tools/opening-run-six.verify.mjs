@@ -15,10 +15,10 @@
 // goes again. The Gates and the Cathedral are won; the map ends with every section taken and says the run is complete — and the Campaign never left the opening (no
 // Week begun, no kingdom map). A reward kept is equipped at Equip before the next battle and fielded on its hero.
 //
-// Battles are settled as tools/opening-page.mjs settles them: the engine plays each out on a seed and the save is pasted
-// into the page. Where the engine's AI cannot win a battle for the party, the party's side is played by the page driver's
-// 'hold' (strike from where it stands) or 'press' (and step toward the nearest enemy) — a win with the fewest of the party
-// dead is taken.
+// Battles are settled as tools/opening-page.mjs settles them (playedOut, kingdom.page-test-strong-party, ruled 2026-10-04:
+// "Go ahead, overpowered power party."): a battle the run means to win is played once by the engine's AI with the run's
+// own party made overpowered for the test only, and its save pasted into the page; a battle it means to lose is the party
+// held idle and cut at Turn 1. No seed is sought and none is kept here; the run passes on any run seed (RUN_SIX_SEED).
 //
 //   node tools/opening-run-six.verify.mjs [BATTLE-SANDBOX.html]
 import assert from 'node:assert/strict'
@@ -27,53 +27,18 @@ const page=process.argv[2]??'BATTLE-SANDBOX.html'
 const ORDER=['orphanage','lumberjack','bridge','cavern-trail','gates','cathedral'].map(x=>'encounter.opening.'+x)
 const [ORPHANAGE,LUMBERJACK,BRIDGE,CAVERN,GATES,CATHEDRAL]=ORDER
 const SWORD='item.longsword.flaming',RUN_KEY='hbt-opening-run'
-/* a loss is sought with nobody dead first (the party is then fielded again whole); a loss that costs lives keeps the living */
-const SEARCH={hows:(process.env.RUN_SIX_HOWS??'ai,hold,press').split(','),how:{partyAlive:false,fewestDead:true,seeds:Number(process.env.RUN_SIX_SEEDS??200)}}
-/* the seeds that settled each battle when this was last run (printed at the end), tried before the search */
-const KNOWN={'encounter.opening.orphanage':[['ai',1]],'encounter.opening.lumberjack:lost':[['idle',5]],'encounter.opening.lumberjack':[['ai',2]],'encounter.opening.bridge':[['hold',61]],
- 'encounter.opening.cavern-trail':[['ai',13]],'encounter.opening.gates':[['hold',74]],'encounter.opening.cathedral:lost':[['idle',1]],'encounter.opening.cathedral':[['press',15]]}
-/* Law 10, 2026-10-03 (kingdom.opening-deploy-choice; engine DECISIONS.md 2026-10-03 'the opening run, audited', question 3:
-   "Should the player choose which four heroes go into each battle?" — "3 yes"): the known seeds of the Gates and the
-   Cathedral are new (they were gates hold 53 and cathedral hold 4), and the Cathedral has a known lost seed; the run's seed
-   stays 11 and battles 1 to 4 are untouched (four or fewer are free to fight there, so nothing is asked and the same heroes
-   go). From battle 5 the run holds five heroes free to fight and now ASKS who goes, so the party sent is the driver's
-   choice and no longer the first four by id (the Crimson Sorceress, the Dawnblade, the Rune-Marked Ascetic and the Forest
-   Elf, with the Dwarven Brawler — the Flaming Longsword's carrier — always left home). Who stays home was searched (each
-   four of the five, 80 seeds of ai, hold and press): at the Gates two fours win with nobody dead — the old four on hold
-   53, and the Sorceress, the Dawnblade, the Forest Elf and the Brawler on hold 74 (the Ascetic home), which is taken; the
-   two fours without the Sorceress or without the Forest Elf win on no seed, and without the Dawnblade the win costs two.
-   At the Cathedral (two of its five fours were searched) the Sorceress, the Dawnblade, the Ascetic and the Brawler win on
-   press 15 with nobody dead (the Forest Elf home); the first four by id win on hold 19 at the cost of one. The Cathedral is first LOST, to hold the replay's
-   choice: by the Sorceress alone — the one hero with no wound, so she is only Wounded by it (idle 1) — and the win on press
-   15 then costs her and the Ascetic; without that loss press 15 costs nobody. What this page test holds — one run through
-   the six battles, saved and reopened, a loss offered again, the drafts and their modifiers — is unchanged, and it now also
-   holds the choice of who goes (kingdom SWITCHES.md openingDeployPageRun). */
-/* Law 10, 2026-10-03 (kingdom.opening-draft-modifiers; engine DECISIONS.md 2026-10-03 'the opening run, audited' and 2026-09-28
-   'the first hero: Leadership …; the draft offers three with the Crucible's modifiers'): the known battle seeds, all but the
-   first two, are new (they were lumberjack ai 12, bridge hold 188, cavern-trail ai 289, gates hold 4, cathedral hold 15); the
-   run's seed stays 11. Every hero now joins with what the draft rolled it, so the party's numbers are other numbers and the
-   old seeds are other battles (the Bridge's hold 188 no longer wins). And the party is another party: the driver now picks
-   a later draft as a player does — the best of the three by the engine's weighted score of what each rolled (opening-page.mjs)
-   — so seed 11 drafts the Dwarven Brawler (first: Leadership, Huge, +2 Health), The Serpent, the Rune-Marked Ascetic, the
-   Forest Elf, the Dawnblade and the Crimson Sorceress. Of run seeds 1 to 24 searched (150 seeds of ai, hold and press a
-   battle; 13, 14, 16-18 and 22-24 were stopped unfinished), seed 11 is again the one found that wins all six: the Bridge on
-   hold 61 costs The Serpent; nobody else dies. Thirteen of the others stop at the Bridge, two at this test's own 'the loss
-   left wounds'. What this page test holds — one run through the six battles, saved and reopened, a loss offered again, the
-   draft's three of 24 — is unchanged, and it now also holds the draft's modifiers (kingdom SWITCHES.md openingDraftPageRun). */
-/* Law 10, 2026-10-03 (kingdom.opening-draft-pool; engine DECISIONS.md 2026-10-03 'the opening draft pool is all 24 heroes,
-   Rogues and Mages included'): the run's seed 15 -> 11, and every known battle seed with it (they were orphanage ai 1,
-   lumberjack lost idle 6, lumberjack ai 12, bridge hold 2, cavern-trail hold 848, gates hold 223, cathedral press 1). The
-   pool is the 24 base heroes now, so seed 15 drafts another party (Lion of the Host, The Raven, Iron Dwarf, …), which loses
-   The Raven and the Iron Dwarf at the Lumberjack House and wins the Bridge on no seed from 1 to 200 of ai, hold or press.
-   Of run seeds 1 to 12, seed 11 is the one found whose party — the Dwarven Brawler, The Serpent, the Battle Chaplain, the
-   Forest Fey, the Dawnblade, the Archive Scholar — wins all six (searching 300 seeds of ai, hold and press a battle, the
-   fewest of the party dead): the Bridge on hold 188 costs the Battle Chaplain; nobody else dies. What this page test holds
-   — one run through the six battles, saved and reopened, a loss offered again — is unchanged, and it now also holds the
-   draft: three at every draft, no class twice, six heroes of six classes, four deployed. That most parties of the 24 cannot
-   win the Bridge under the engine's AI or these drivers is the opening's balance, reported to Andrew (kingdom SWITCHES.md
-   openingPoolPageRun).
-   RUN_SIX_SEED: another run seed (another party) — its battles are searched, the known seeds are this file's run's only */
-const RUN_SEED=Number(process.env.RUN_SIX_SEED??11),FOUND=process.env.RUN_SIX_SEED===undefined?KNOWN:{}
+/* Law 10, 2026-10-04 (kingdom.page-test-strong-party; engine DECISIONS.md 2026-10-04 'no testing that the battles can be won
+   until these items are done; the page tests play an overpowered party; faster landing': "Go ahead, overpowered power
+   party."): here stood the search settings (SEARCH: the engine's AI, then 'hold' and 'press' play, 200 seeds each, the
+   fewest of the party dead taken), the table of seeds that settled each battle (KNOWN, with who stayed home, HOME), and
+   four dated notes on how run seed 11 and each battle seed had been found again after an item moved a battle (the 24-hero
+   pool, the draft's modifiers, the choice of who goes, the XP by tier). They are in git. fix.civilians-field-kit's armed
+   civilians then moved battle 2 and every battle after it, and no seeds were sought again: this item came instead. The run no longer tests that the
+   computer can win an opening battle with a normal party: it tests every step between the battles, which is what it was
+   for. What moved with it, each noted at its edit below: the party is never hurt in a battle won, so nobody dies at the
+   Bridge and the run asks who goes from battle 4 (it was battle 5); and a lost battle hurts nobody.
+   RUN_SIX_SEED: another run seed (another party) — nothing is searched for it either */
+const RUN_SEED=Number(process.env.RUN_SIX_SEED??11)
 const chosen={}
 const browser=new Map()
 /* kingdom.opening-draft-modifiers: … and the badges, the item slots and the modifiers each hero was drafted with */
@@ -81,14 +46,6 @@ const rowsOf=c=>Object.fromEntries(Object.values(c.roster).map(h=>[h.id,{level:h
 /* the draft as the page shows it: each offer's id, its words and what it carries (its stats, rolled points and badges) */
 const draftShown=()=>P.byId('campaign').querySelectorAll('[data-act=draft]').map(o=>({id:o.dataset.id,text:o.textContent,stats:o.dataset.stats,rolls:o.dataset.rolls,badges:o.dataset.badges}))
 
-/* Law 10, 2026-10-02 (merge of kingdom.reads-engine with kingdom.opening-run-six; review finding K7): the run's seed 11 -> 15,
-   and the Cavern Trail's known seed press 9 -> hold 848. A kill pays its victim's tier's XP (2 / 5 / 15 — engine DECISIONS.md
-   2026-09-28 'Let's do 2,515 XP by tier') instead of 3, so seed 11's party reaches the Bridge a level short (the Rune-Marked
-   Ascetic at 18 XP) and no seed from 1 to 200 of ai, hold or press wins it. On seed 15 the known seeds still settle battles 1 to
-   3, the Gates (hold 223) and the Cathedral (press 1); the Cavern Trail's press 9 no longer wins, and hold 848 is the first
-   seed found (searching 1 to 1600 of ai, hold, press) after which the Gates' known seed still wins. The Bridge's hold 2 costs
-   the Dawnblade and the Gates the Rune-Marked Ascetic: what this page test holds — one run through the six battles, saved and
-   reopened — is unchanged; the opening's balance under the ruled XP is fix.opening-levels' question (reported to Andrew). */
 let P=openingPage(page,'?map&new&seed='+RUN_SEED,browser)
 const camp=()=>P.camp()
 const alive=()=>P.heroIds().filter(id=>camp().roster[id].lifeState==='alive')
@@ -102,31 +59,26 @@ const DEPLOY_LIMIT=4
 /* kingdom.opening-deploy-choice (engine DECISIONS.md 2026-10-03 'the opening run, audited', question 3: "Should the player
    choose which four heroes go into each battle?" — "3 yes"): who goes. With four or fewer free to fight the run asks
    nothing and all go (asserted in P.whoGoes). With five or more the Deploy page asks, and this driver chooses.
-   WHO STAYS HOME is found by search, like the seeds, and written here (HOME) for this file's run: of the fives the run
-   holds at the Gates and at the Cathedral, the four that win the battle with nobody dead — at the Gates the Rune-Marked
-   Ascetic stays home, at the Cathedral the Forest Elf; the Dwarven Brawler, who carries the Flaming Longsword, goes both
-   times (until 2026-10-03 the page left him home: he is the last by id). Another run seed (RUN_SIX_SEED) chooses by
-   rule: the sword's carrier goes; then whoever stayed home the last time the run asked; then the most XP; a tie to the
-   earlier id. Every time the run asks is kept in WENT.
+   WHO GOES is chosen by rule, on every run seed: the sword's carrier goes; then whoever stayed home the last time the run
+   asked; then the most XP; a tie to the earlier id. (Until 2026-10-04 this file's run named who stayed home — HOME, found
+   by search like the seeds, because only some fours could win the Gates and the Cathedral; the strong party wins with any
+   four.) Every time the run asks is kept in WENT.
    The choosing itself is played through the page, the heroes sent in id order: two are sent; (the first time) the page
    is closed on the Deploy page and opened again — the same step, the same two sent, the choice saved with the run; then a
    change of mind — a hero who is to stay home is sent, the party filled (and the one still wanted cannot be sent: the
    party is full), that hero brought home and the one wanted sent; then on to Equip. `pick` chooses otherwise (the
    battle to be lost). */
 const WENT=[]
-const HOME=process.env.RUN_SIX_SEED===undefined?{'battle 5':['hero.base.priest-scantily'],'battle 6 again':['hero.base.ranger-scantily']}:{}
 function choose(free,label){
- const home=HOME[label]
- if(home){assert.ok(home.every(id=>free.includes(id)),label+': the heroes to stay home are free to fight');return free.filter(id=>!home.includes(id))}
  const c=camp(),lastHome=WENT.at(-1)?.home??[]
  const rank=id=>[c.roster[id].equipped.includes(SWORD)?0:1,lastHome.includes(id)?0:1,-c.roster[id].xp]
  const by=(a,b)=>{const x=rank(a),y=rank(b);for(let i=0;i<x.length;i++)if(x[i]!==y[i])return x[i]-y[i];return a<b?-1:a>b?1:0}
  return [...free].sort(by).slice(0,DEPLOY_LIMIT)
 }
-/* fewer than four may be sent: the heroes with no wound — a battle that is to be LOST is lost by them, so nobody already
-   Wounded goes down again (sent as four, the Gates lost cost three of them — each already Wounded, each dead in the
-   engine's result) and every hero is still free to fight when the battle is offered again */
-const unwounded=free=>free.filter(id=>camp().roster[id].wound===0).slice(0,DEPLOY_LIMIT)
+/* fewer than four may be sent: one hero alone goes to the battle that is to be LOST — the first free to fight by id. (Until
+   2026-10-04 it was the heroes with no wound: a real loss put a Wounded hero down for good. A lost battle is now the party
+   held idle and cut at Turn 1 — opening-page.mjs HELD_PARTY — and hurts nobody, so the rule is simply that one goes.) */
+const alone=free=>[free[0]]
 function whoGoes(label,pick=choose){
  const who=P.whoGoes(label)
  if(!who.asked)return {asked:false,free:who.free,sent:[...who.free].sort(),home:[]}
@@ -225,9 +177,16 @@ function stayedHome(f,label,paid){
    level-ups, back to the map — the run still in the opening */
 function settle(won,label){
  const id=camp().cursor.engagement.id
- const {result,played,seed}=won?P.fightOut(true,label,SEARCH.hows,{...SEARCH.how,first:FOUND[id]??[]}):P.fightOut(false,label,['idle','hold','ai'],{partyAlive:false,fewestDead:true,seeds:40,first:FOUND[id+':lost']??[]})
- chosen[won?id:id+':lost']=[played,seed]
- console.error(`settled ${label}: ${played} seed ${seed}`)
+ const {e,result,played,seed}=P.fightOut(won,label)
+ chosen[won?id:id+':lost']=[played,seed,result.turns]
+ console.error(`settled ${label}: ${won?'the strong party, the engine\'s AI':'the party held idle, cut at Turn 1'} — ${result.outcome} on Turn ${result.turns}, the Engagement's own seed ${seed}`)
+ /* kingdom.page-test-strong-party: what the page wrote is what the pasted battle did to each hero sent — none dead, and a
+    wound only where the battle took the hero down (the Reckoning's rule: the worse of the wound carried in and the plain
+    wound of going down) */
+ for(const u of result.units.filter(u=>u.side==='hero'&&u.role===undefined)){
+  const hero=camp().roster[e.deployed[u.index]]
+  assert.equal(hero.lifeState,'alive',`${label}: ${hero.name} lives`)
+ }
  let kept=null
  if(won&&camp().cursor.step==='rewards'){
   const offer=[...camp().cursor.rewardOffer]
@@ -267,7 +226,16 @@ assert.equal(whoGoes('battle 2 again').asked,false,'three free to fight: no choi
 const replay=P.equipThenFight(standing,'battle 2 again')
 assert.deepEqual([...replay.config.heroes].sort(),standing,'the same party')
 for(const id of replay.config.heroes)assert.equal(replay.config.heroRows.find(h=>h.id===id).wound,camp().roster[id].wound,`${id} carries its wound into the replay`)
-assert.ok(standing.some(id=>camp().roster[id].wound>0),'the loss left wounds')
+/* Law 10, 2026-10-04 (kingdom.page-test-strong-party; engine DECISIONS.md 2026-10-04 "Go ahead, overpowered power party."):
+   this read
+     assert.ok(standing.some(id=>camp().roster[id].wound>0),'the loss left wounds')
+   — true of a loss found on a seed, in which the party was beaten down. A lost battle is now settled deliberately (the
+   party held idle, the battle cut at Turn 1) and takes nobody down, so there is no wound to find; that a battle can wound
+   is the Reckoning's rule and its tests' (test/isc-034, test/encounter-result-fold). What this run holds of a loss is
+   unchanged otherwise — offered again, no draft, the same party, each hero's wound carried into the replay (above) — and
+   the rule the old line stood on is held exactly: nobody is wounded who was not taken down. */
+assert.deepEqual(standing,b2.deployed,'the loss cost nobody: the same party stands')
+assert.ok(standing.every(id=>camp().roster[id].wound===0),'the loss took nobody down, and wounded nobody')
 settle(true,'battle 2 won')
 assert.ok(Object.values(camp().roster).some(h=>h.equipped.includes(SWORD)&&h.classes.some(c=>TAKERS.includes(c))),'the Flaming Longsword is carried by a Warrior or a Paladin')
 const b3=battle(BRIDGE,3)
@@ -284,25 +252,36 @@ assert.deepEqual(camp().stash,stash,'the same stash')
 assert.equal(camp().cursor.prologue,4,'the Campaign stands at battle 4')
 assert.match(P.byId('runNote').textContent,/saved after every step/,'the map says the run is saved')
 
-/* 4 · battle 4: fielded, then the page closed on the battle and opened again — a run left mid-battle reopens on that
-   battle, from its start; then won */
+/* Law 10, 2026-10-04 (kingdom.page-test-strong-party; engine DECISIONS.md 2026-10-04 "Go ahead, overpowered power party."):
+   sections 4, 5 and 5a hold the same rules at other battles. With battles won by the strong party nobody dies, so the
+   Bridge no longer costs a hero and FIVE are free to fight a battle earlier: the run asks who goes from battle 4, and six
+   are free from battle 5. What was asserted:
+     [b1,b2,b3,b4] asked nothing; the run asked before 'battle 5', 'battle 6' and 'battle 6 again' (five free each time);
+     battle 6 was lost first by the hero with no wound sent alone (WENT[1]); four went to the battles won ([WENT[0],WENT[2]]).
+   What is asserted now — each of those rules, none dropped:
+     [b1,b2,b3] ask nothing (and battle 2's replay, at its fielding); the run asks before 'battle 4', 'battle 5', 'battle 6'
+     and 'battle 6 again' (five or six free); battle 6 is lost first by one hero sent alone (WENT[2]); four go to the
+     battles won ([WENT[0],WENT[1],WENT[3]]). */
+/* 4 · battle 4 — kingdom.opening-deploy-choice: with the fifth hero drafted, five are free to fight, so from here the run
+   asks who goes: four chosen (the page closed on the Deploy page and opened again, whoGoes). Fielded, then the page
+   closed on the battle and opened again — a run left mid-battle reopens on that battle, from its start; then won */
 const b4=field(CAVERN,4,'battle 4',true)
 assert.equal(b4.drafted.length,1,'one more before battle 4')
+assert.equal(b4.who.asked,true,'five free to fight before battle 4: the run asks which four go')
 P=openingPage(page,'?map',browser)
 assert.equal(camp().cursor.step,'battle','a run left mid-battle reopens on that battle')
 P.onTheBattle('battle 4, reopened mid-battle')
-settle(true,'battle 4')
+settle(true,'battle 4');stayedHome(b4,'battle 4',true)
 
-/* 5 · the Gates and the Cathedral — kingdom.opening-deploy-choice: with the sixth hero drafted, five are free to fight (the
-   Bridge cost one), so from here the run asks who goes. The Gates: four chosen, won. The Cathedral is lost first, by the
-   one hero with no wound sent alone (fewer than four may be sent): the map offers it again, and the replay asks who goes
-   AGAIN, with nobody sent — and another party goes, four this time. Then won. */
+/* 5 · the Gates and the Cathedral: with the sixth hero drafted, six are free to fight. The Gates: four chosen, won. The
+   Cathedral is lost first, by one hero sent alone (fewer than four may be sent): the map offers it again, and the replay
+   asks who goes AGAIN, with nobody sent — and another party goes, four this time. Then won. */
 const b5=battle(GATES,5)
 assert.equal(b5.drafted.length,1,'one more before battle 5: the sixth hero')
-assert.equal(b5.who.asked,true,'five free to fight before battle 5: the run asks which four go')
-const b6=field(CATHEDRAL,6,'battle 6',false,unwounded)
+assert.equal(b5.who.asked,true,'six free to fight before battle 5: the run asks which four go')
+const b6=field(CATHEDRAL,6,'battle 6',false,alone)
 assert.equal(b6.drafted.length,0,'six are drafted: no draft before battle 6')
-assert.equal(b6.who.asked,true,'five free to fight before battle 6: the run asks which four go')
+assert.equal(b6.who.asked,true,'six free to fight before battle 6: the run asks which four go')
 settle(false,'battle 6 lost');stayedHome(b6,'battle 6 lost',false)
 assert.equal(P.readMap(ORDER.slice(0,5),'after losing battle 6'),CATHEDRAL,'the lost battle is offered again')
 P.v.click('field',CATHEDRAL)
@@ -318,16 +297,17 @@ assert.deepEqual([...replay6.config.heroes].sort(),again.sent,'the four chosen f
 settle(true,'battle 6 won');stayedHome({home:homeAgain,deployed:again.sent,xpBefore:xpAgain},'battle 6 won',true)
 
 /* 5a · kingdom.opening-deploy-choice, the whole of it: the run never asked while four or fewer were free to fight
-   (battles 1 to 4 and the replay of battle 2 — asserted at each, P.whoGoes), and asked every time five or more were:
-   before battle 5, before battle 6 and before its replay. Each time the four chosen were the four on Equip and on the
-   board (P.equipThenFight, P.onTheBattle), and whoever stayed home was unharmed and earned nothing (stayedHome). */
-assert.deepEqual([b1,b2,b3,b4].map(b=>b.who.asked),[false,false,false,false],'four or fewer free to fight: no choice is asked')
-assert.deepEqual(WENT.map(w=>w.label),['battle 5','battle 6','battle 6 again'],'five free to fight: the run asks who goes, each time')
+   (battles 1 to 3 and the replay of battle 2 — asserted at each, P.whoGoes), and asked every time five or more were:
+   before battle 4, before battle 5, before battle 6 and before its replay. Each time the four chosen were the four on
+   Equip and on the board (P.equipThenFight, P.onTheBattle), and whoever stayed home was unharmed and earned nothing
+   (stayedHome). */
+assert.deepEqual([b1,b2,b3].map(b=>b.who.asked),[false,false,false],'four or fewer free to fight: no choice is asked')
+assert.deepEqual(WENT.map(w=>w.label),['battle 4','battle 5','battle 6','battle 6 again'],'five or more free to fight: the run asks who goes, each time')
 for(const w of WENT){
  assert.ok(w.free.length>=5,w.label+': five or more were free to fight')
  assert.ok(w.sent.length<=DEPLOY_LIMIT,w.label+': never more than four go');assert.equal(w.home.length,w.free.length-w.sent.length,w.label+': the rest stay home')
 }
-assert.ok(WENT[1].sent.length<DEPLOY_LIMIT,'fewer than four may be sent (the lost battle)');assert.deepEqual([WENT[0],WENT[2]].map(w=>w.sent.length),[DEPLOY_LIMIT,DEPLOY_LIMIT],'and four go to the battles won')
+assert.ok(WENT[2].sent.length<DEPLOY_LIMIT,'fewer than four may be sent (the lost battle)');assert.deepEqual([WENT[0],WENT[1],WENT[3]].map(w=>w.sent.length),[DEPLOY_LIMIT,DEPLOY_LIMIT,DEPLOY_LIMIT],'and four go to the battles won')
 /* the four sent are the player's choice: at least once they were not the first four by id (what the page sent by itself
    until 2026-10-03), and the hero left home was not the same one every time */
 assert.ok(WENT.some(w=>JSON.stringify(w.sent)!==JSON.stringify(w.free.slice(0,DEPLOY_LIMIT))),'the four sent are chosen — not always the first four by id')
@@ -393,4 +373,4 @@ const party=P.heroIds()
 console.error('settled by: '+JSON.stringify(chosen))
 console.error('offers: '+OFFERS.map(o=>`${o.label}: ${o.ids.map(id=>POOL.find(h=>h.id===id).name).join(' / ')} -> ${POOL.find(h=>h.id===o.took).name}`).join('; '))
 console.error('drafted with: '+OFFERS.map(o=>`${POOL.find(h=>h.id===o.took).name}: ${[...o.drafted.badges.map(b=>b.replace('badge.','')),...o.drafted.mods.map(m=>(m.add>0?'+':'')+m.add+' '+m.stat),...o.drafted.unfielded.map(r=>(r.amount>0?'+':'')+r.amount+' '+r.stat+(r.stat==='itemSlots'?' (on the hero, its item slots)':' (not fielded)'))].join(', ')}`).join('; '))
-console.log(`opening run six: six battles from the map, never the kingdom map (Week ${camp().week}); six drafts of three, no class twice, Rogues and Mages offered; the first hero chosen by description only and given Leadership, a positive badge and +2 Health; every later draft shown with its rolled modifiers, kept in every battle and to the end of the run, the same after the page is closed and reopened; the party six, one of each class (${party.map(id=>camp().roster[id].classes.find(c=>HERO_CLASSES.includes(c)).replace('class.','')).join(', ')}); four deploy — with five free to fight the run asked who goes (${WENT.map(w=>`${w.label}: home ${w.home.map(h=>camp().roster[h].name).join(', ')}`).join('; ')}), the four chosen on Equip and on the board, whoever stayed home unharmed and unpaid, the choice kept when the page is closed on it, and asked again for a lost battle; base heroes left out for no kit: ${LEFT_OUT.map(h=>h.name).join(', ')||'none'}; card art on every hero card (${Object.entries(ART_SEEN).map(([k,n])=>`${k} ${n}`).join(', ')}; heroes with no art on disk, shown blank: ${artless.map(id=>camp().roster[id].name).join(', ')||'none'}); party ${party.map(id=>`${camp().roster[id].name} L${camp().roster[id].level}${camp().roster[id].lifeState==='alive'?'':' ('+camp().roster[id].lifeState+')'}`).join(', ')}; closed after battle 3 and reopened at battle 4 with the same party, items, XP and levels; battle 2 lost and offered again with the same party; a run left mid-battle (battle 4) reopens on that battle; the Bridge's ${b3.kept} kept passed`)
+console.log(`opening run six: six battles from the map, never the kingdom map (Week ${camp().week}); six drafts of three, no class twice, Rogues and Mages offered; the first hero chosen by description only and given Leadership, a positive badge and +2 Health; every later draft shown with its rolled modifiers, kept in every battle and to the end of the run, the same after the page is closed and reopened; the party six, one of each class (${party.map(id=>camp().roster[id].classes.find(c=>HERO_CLASSES.includes(c)).replace('class.','')).join(', ')}); four deploy — with five or more free to fight the run asked who goes (${WENT.map(w=>`${w.label}: home ${w.home.map(h=>camp().roster[h].name).join(', ')}`).join('; ')}), the four chosen on Equip and on the board, whoever stayed home unharmed and unpaid, the choice kept when the page is closed on it, and asked again for a lost battle; base heroes left out for no kit: ${LEFT_OUT.map(h=>h.name).join(', ')||'none'}; card art on every hero card (${Object.entries(ART_SEEN).map(([k,n])=>`${k} ${n}`).join(', ')}; heroes with no art on disk, shown blank: ${artless.map(id=>camp().roster[id].name).join(', ')||'none'}); party ${party.map(id=>`${camp().roster[id].name} L${camp().roster[id].level}${camp().roster[id].lifeState==='alive'?'':' ('+camp().roster[id].lifeState+')'}`).join(', ')}; closed after battle 3 and reopened at battle 4 with the same party, items, XP and levels; battle 2 lost and offered again with the same party; a run left mid-battle (battle 4) reopens on that battle; the Bridge's ${b3.kept} kept passed`)

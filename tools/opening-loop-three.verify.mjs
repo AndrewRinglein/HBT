@@ -21,36 +21,19 @@ import {openingPage,TAKERS} from './opening-page.mjs'
 const page=process.argv[2]??'BATTLE-SANDBOX.html'
 const ORPHANAGE='encounter.opening.orphanage',LUMBERJACK='encounter.opening.lumberjack',BRIDGE='encounter.opening.bridge',CAVERN='encounter.opening.cavern-trail'
 const SWORD='item.longsword.flaming'
-/* the seeds that settled each battle when this was last run (printed at the end), tried before the search */
-const KNOWN={'battle 1':[['ai',1]],'battle 2 lost':[['idle',5]],'battle 2 won':[['ai',2]],'battle 3':[['hold',61]]}
-/* Law 10, 2026-10-03 (kingdom.opening-draft-modifiers; engine DECISIONS.md 2026-10-03 'the opening run, audited' and 2026-09-28
-   'the first hero: Leadership …; the draft offers three with the Crucible's modifiers'): the known seeds of battle 2 won and
-   battle 3 are new (they were ai 12 and hold 188); the run's seed stays 11. Every hero now joins with what the draft rolled
-   it and a later draft is picked as a player picks it — the best of the three by the engine's weighted score
-   (opening-page.mjs) — so seed 11's party is the Dwarven Brawler (first: Leadership, Huge, +2 Health), The Serpent, the
-   Rune-Marked Ascetic and the Forest Elf: other numbers, other battles. What this page test holds — the loop's flow
-   through three battles — is unchanged; the draft's own assertions (opening-page.mjs) are the new rule's. */
-
-/* Law 10, 2026-10-02 (kingdom.reads-engine, review finding K7): the run's seed 11 → 15. XP per kill became the victim's
-   tier's (2 / 5 / 15 — engine DECISIONS.md 2026-09-28) instead of 3, and seed 11's party reaches the Bridge with the
-   Rune-Marked Ascetic at 18 XP — level 1, two short of 20 — and its 'hold' play wins none of its 1500 Bridge seeds.
-   Seed 12 wins it, but only after ~20 minutes of seeds; seed 15 wins it on Bridge seed 2. What this page test holds —
-   the loop's flow through three battles — is unchanged; the Bridge's balance under the ruled XP is reported to Andrew.
-   (Carried into the opening-page.mjs form when kingdom.opening-run-six moved the steps there, merge 2026-10-02.) */
-/* Law 10, 2026-10-03 (kingdom.opening-draft-pool; engine DECISIONS.md 2026-10-03 'the opening draft pool is all 24 heroes,
-   Rogues and Mages included'): the run's seed 15 -> 11. The pool is the 24 base heroes now, so seed 15 drafts another
-   party, and of run seeds 1 to 14 only 11 was found to pass this test's own searches (2, 3, 6, 7, 8: no 'idle' seed from 1
-   to 1500 loses the Lumberjack House with the party alive; 5: no 'ai' seed wins it with the party alive; the rest were
-   stopped unfinished). Seed 11's party — the Dwarven Brawler, The Serpent, the Battle Chaplain, the Forest Fey — is the
-   one tools/opening-run-six.verify.mjs plays; the Bridge is won on hold 188 (the first 'hold' seed that wins it). The
-   seeds that settle each battle are kept (KNOWN) and tried before the search, so the test does not search 188 battles
-   every run. What this page test holds — the loop's flow through three battles — is unchanged.
-   LOOP_THREE_SEED: another run seed (another party) — its battles are searched; the known seeds are this file's run's only */
-const RUN_SEED=Number(process.env.LOOP_THREE_SEED??11),FOUND=process.env.LOOP_THREE_SEED===undefined?KNOWN:{}
+/* Law 10, 2026-10-04 (kingdom.page-test-strong-party; engine DECISIONS.md 2026-10-04 'no testing that the battles can be won
+   until these items are done; the page tests play an overpowered party; faster landing': "Go ahead, overpowered power
+   party."): here stood the table of seeds that settled each battle (KNOWN) and three dated notes on how the run's seed
+   and each battle's seed had been found again after an item moved a battle (the XP by tier, the 24-hero pool, the draft's
+   modifiers). They are in git. A battle is now settled deliberately by tools/opening-page.mjs (playedOut): won by the
+   run's own party made overpowered for the test only, lost by the party held idle and cut at Turn 1 — one battle, on the
+   Engagement's own seed, nothing sought. What this page test holds — the loop's flow through three battles — is unchanged.
+   LOOP_THREE_SEED: another run seed (another party) — nothing is searched for it either */
+const RUN_SEED=Number(process.env.LOOP_THREE_SEED??11)
 const {handle,camp,byId,heroIds,civilianIds,wait,readMap,draft,whoGoes,equipThenFight,fightOut:settleOn,levelUps,takeReward,carriers,v}=openingPage(page,'?map&seed='+RUN_SEED)
-/* a battle settled, the seed that settled it said (stderr) — a known seed is tried before the search (opening-page.mjs `first`) */
+/* a battle settled as the test means it to end (opening-page.mjs playedOut), and how it went said (stderr) */
 const chosen={}
-function fightOut(won,label,hows,how={}){const r=settleOn(won,label,hows,{...how,first:FOUND[label]??[]});chosen[label]=[r.played,r.seed];console.error(`settled ${label}: ${r.played} seed ${r.seed}`);return r}
+function fightOut(won,label){const r=settleOn(won,label);chosen[label]=[r.played,r.seed,r.result.turns];console.error(`settled ${label}: ${won?'the strong party, the engine\'s AI':'the party held idle, cut at Turn 1'} — ${r.result.outcome} on Turn ${r.result.turns}, the Engagement's own seed ${r.seed}`);return r}
 
 /* 1 · the sitting opens on the map: nothing fielded, nobody drafted, the Orphanage next */
 assert.equal(readMap([],'fresh'),ORPHANAGE)
@@ -83,12 +66,24 @@ assert.deepEqual(heroIds(),party2,'three heroes before battle 2')
 assert.equal(new Set(party2.map(id=>camp().roster[id].classes[0])).size,3,'three classes: none drafted twice')
 assert.equal(whoGoes('battle 2').asked,false,'three heroes: no choice is asked')
 equipThenFight(party2,'battle 2')
-fightOut(false,'battle 2 lost')
+const lost2=fightOut(false,'battle 2 lost')
 if(camp().cursor.step==='levelUp')levelUps('battle 2 lost')
 assert.equal(camp().ended,null,'a lost opening battle does not end the Campaign')
 assert.equal(readMap([ORPHANAGE],'after losing battle 2'),LUMBERJACK,'the lost battle is offered again')
 const wounds=Object.fromEntries(party2.map(id=>[id,camp().roster[id].wound]))
-assert.ok(Object.values(wounds).some(n=>n>0),'the loss left wounds')
+/* Law 10, 2026-10-04 (kingdom.page-test-strong-party; engine DECISIONS.md 2026-10-04 "Go ahead, overpowered power party."):
+   this read
+     assert.ok(Object.values(wounds).some(n=>n>0),'the loss left wounds')
+   — true of a loss found on a seed, in which the party was beaten down. A lost battle is now settled deliberately (the
+   party held idle, the battle cut at Turn 1) and takes nobody down, so there is no wound to find; that a battle can wound
+   is the Reckoning's rule and its tests' (test/isc-034, test/encounter-result-fold). The rule the old line stood on is
+   held exactly — a hero is wounded by a battle only when it took him down — and the replay's assertions below stand as
+   they were: each hero carries the wound it has into the replay and is fielded Wounded or whole by it. */
+for(const u of lost2.result.units.filter(u=>u.side==='hero'&&u.role===undefined)){
+ const id=lost2.e.deployed[u.index]
+ assert.equal(camp().roster[id].lifeState,'alive',`${id} lives through the lost battle`)
+ assert.equal(camp().roster[id].wound,u.downed||u.stood?1:0,`${id} is wounded only if the battle took it down`)
+}
 v.click('field',LUMBERJACK)
 assert.equal(camp().cursor.step,'prep','no draft is owed for the replay')
 assert.equal(whoGoes('battle 2 again').asked,false,'the replay: no choice is asked')
@@ -121,7 +116,7 @@ const party3=[...party2,fourth].sort()
 assert.deepEqual(heroIds(),party3,'four heroes before battle 3')
 assert.equal(whoGoes('battle 3').asked,false,'four heroes: no choice is asked')
 equipThenFight(party3,'battle 3')
-fightOut(true,'battle 3',['hold'],{partyAlive:false})
+fightOut(true,'battle 3')
 assert.equal(camp().cursor.step,'rewards','the Bridge offers its reward')
 const offer=[...camp().cursor.rewardOffer];assert.equal(offer.length,3,'three items offered');assert.equal(new Set(offer).size,3)
 const kept=takeReward(1,'battle 3')
