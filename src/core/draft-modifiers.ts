@@ -130,3 +130,18 @@ export function handDraftedOf(roller: Roller, bases: readonly BaseOf[], ordinal:
     return { badges, rolls, ...modsOf(rolls) }
   })
 }
+
+/**
+ * kingdom.opening-first-hero-class-line (2026-10-04): what a hero joins with, thing by thing, for the first draft's plain
+ * lines — each badge the draft gave it; the Health the first hero's rule gives (the mod its row names the source of);
+ * each stat point it rolled, in the Crucible's word. In that order; a pure reading of the record, nothing rolled.
+ */
+export type JoinedWith = { readonly key: string; readonly badge?: string; readonly stat?: string; readonly amount?: number }
+export function joinsWithOf(drafted: Drafted): JoinedWith[] {
+  const health = drafted.mods.filter((m) => m.source === FIRST_HERO.healthSource).reduce((n, m) => n + m.add, 0)
+  return [
+    ...drafted.badges.map((b) => ({ key: `badge:${b}`, badge: b })),
+    ...(health ? [{ key: 'health', stat: 'health', amount: health }] : []),
+    ...drafted.rolls.map((r) => ({ key: `point:${r.stat}`, stat: r.stat, amount: r.amount })),
+  ]
+}

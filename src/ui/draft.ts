@@ -21,11 +21,23 @@
 // hero's card art — the first draft's above the name, class, description and quote (still no stats and no badges), a
 // later draft's above what it already shows. The art is the hero's own portrait (ui/art.ts portraitOf, made by
 // tools/prep-heroes.py); a hero whose art is missing on disk shows a blank card, never another's.
+//
+// kingdom.opening-first-hero-class-line (2026-10-04, Andrew, engine DECISIONS.md 2026-10-04 'the opening's tutorial: the first hero's class line, …':
+// "When you pick your first hero there should be a description (a line that describes the class) and then some simple way
+// we can describe the changes to this hero." — its badges and bonus Health in plain words, like "Born leader" and "Tougher
+// than most": "3 correct."): EVERY draft card shows, under the class word, the class's one player-facing sentence (the
+// content's row — content/classes.ts classLineOf; nothing when the content gives none); and each card of the FIRST draft
+// shows beneath it what THIS hero joins with — one short plain line for each thing (each badge, the Health, each rolled
+// point; two things with the same words share a line), never a stat table and never a number (kingdom SWITCHES.md
+// classLineNoNumbers). 2026-10-03's "no stats or badges shown, just a description" is replaced only as far as these
+// plain lines go: the later drafts' stat block still does not show on the first draft.
 import type { CampaignState, Hero } from '../core/campaign.js'
 import { listDraftOffers, draftsOwedOf, draftedCountOf, draftedHeroOf } from '../core/opening.js'
 import { fieldedPreviewOf } from '../core/seam.js'
 import { UNKITTED_HEROES, heroDescriptionOf, type HeroRow, type UnkittedHero } from '../content/heroes.js'
-import { CRUCIBLE, crucibleBadgeOf, crucibleStatOf } from '../content/crucible.js'
+import { CRUCIBLE, crucibleBadgeOf, crucibleStatOf, badgeLineOf, statLineOf } from '../content/crucible.js'
+import { classLineOf } from '../content/classes.js'
+import { joinsWithOf } from '../core/draft-modifiers.js'
 import { statLabelOf } from '../content/stat-labels.js'
 import { BADGES, type UnitDef } from '../engine.js'
 import { portraitOf } from './art.js'
@@ -49,10 +61,30 @@ function cardArt(heroId: string): string {
   return `<div class="art">${art ? `<img src="${art}" alt="">` : '<div class="noart"></div>'}</div>`
 }
 
-/** One offer of the first draft: who the hero is — its card art, name, class and the codex's description. No number, no badge, no kit. */
-function firstOffer(h: HeroRow): string {
+/** The class's one player-facing sentence, under the class word — nothing when the content gives the class none. */
+function classLine(h: HeroRow): string {
+  const line = classLineOf(h.classes)
+  return line ? `<p class="classline" data-class-line="${esc(h.classes.find((c) => classLineOf([c]) === line)!)}">${esc(line)}</p>` : ''
+}
+
+/** What this hero joins with, in plain words: one line for each thing, in the record's order; things with the same words share a line. */
+function joinsList(joined: Hero): string {
+  const lines: { words: string; of: string[] }[] = []
+  for (const j of joinsWithOf(joined.drafted!)) {
+    const words = j.badge ? badgeLineOf(j.badge) : statLineOf(j.stat!)
+    const same = lines.find((l) => l.words === words)
+    if (same) same.of.push(j.key); else lines.push({ words, of: [j.key] })
+  }
+  return lines.length ? `<ul class="joins">${lines.map((l) => `<li data-joins="${esc(l.of.join(' '))}">${esc(l.words)}</li>`).join('')}</ul>` : ''
+}
+
+/**
+ * One offer of the first draft: who the hero is — its card art, name, class, the class's sentence, what it joins with in
+ * plain words (`joined`: the hero as it would join), and the codex's description. No number, no badge by name, no kit.
+ */
+function firstOffer(h: HeroRow, joined: Hero): string {
   const d = heroDescriptionOf(h.id)
-  return `<div class="opt" data-act="draft" data-id="${esc(h.id)}" data-classes="${esc(h.classes.join(','))}">${cardArt(h.id)}<b>${esc(h.name)}</b><small>${esc(classesOf(h))}</small>${d ? `<p class="who">${esc(d.description)}</p>${d.quote ? `<p class="quote">“${esc(d.quote)}”</p>` : ''}` : ''}</div>`
+  return `<div class="opt" data-act="draft" data-id="${esc(h.id)}" data-classes="${esc(h.classes.join(','))}">${cardArt(h.id)}<b>${esc(h.name)}</b><small>${esc(classesOf(h))}</small>${classLine(h)}${joinsList(joined)}${d ? `<p class="who">${esc(d.description)}</p>${d.quote ? `<p class="quote">“${esc(d.quote)}”</p>` : ''}` : ''}</div>`
 }
 
 /** What a badge does, in words: the stats the battle fields for it (the engine's row), and the item slots the campaign gives or takes. */
@@ -81,7 +113,7 @@ function rolledOffer(row: HeroRow, h: Hero): string {
   const rolled = d.rolls.map((r) => `<span class="delta ${r.amount > 0 ? 'won' : 'lost'}">${sign(r.amount)} ${esc(statLabelOf(crucibleStatOf(r.stat)))}${idle.has(r.stat) ? ' <i>(not counted in battle yet)</i>' : ''}</span>`).join(' ')
   const badges = d.badges.map((b) => `<div class="badge ${CRUCIBLE.flawed.some((x) => x.id === b) ? 'flawed' : 'good'}" data-badge="${esc(b)}"><b>${esc(BADGES[b]?.name ?? b)}</b> <span>${esc(badgeWordsOf(b))}</span></div>`).join('')
   return `<div class="opt rolled" data-act="draft" data-id="${esc(h.id)}" data-classes="${esc(h.classes.join(','))}" data-badges="${esc(d.badges.join(','))}" data-rolls="${esc(d.rolls.map((r) => `${r.stat}:${r.amount}`).join(','))}" data-stats="${esc(values.map(([k, value]) => `${k}:${value}`).join(','))}">
-    ${cardArt(h.id)}<b>${esc(h.name)}</b><small>${esc(classesOf(h))}</small>
+    ${cardArt(h.id)}<b>${esc(h.name)}</b><small>${esc(classesOf(h))}</small>${classLine(row)}
     <div class="stats"><div class="stCols"><div>${rows.slice(0, half).join('')}</div><div>${rows.slice(half).join('')}</div></div></div>
     <div class="rolls"><span class="k">Rolled</span> ${rolled || '<span class="none">no stat points</span>'}</div>
     <div class="badges">${badges || '<span class="none">no badge</span>'}</div>
@@ -99,7 +131,7 @@ export function draftScreen(c: CampaignState, leftOut: readonly UnkittedHero[] =
   const owed = draftsOwedOf(c) > 1 ? ` ${draftsOwedOf(c)} to draft before the next battle.` : ''
   return `<h2>The draft — ${first ? 'your first hero' : `hero ${draftedCountOf(c) + 1} of six`}</h2>
     <p class="meta">${first
-      ? 'Three come to the fire. You see who they are — never their numbers. Choose the one who will lead.'
+      ? 'Three come to the fire. You see who they are and what each brings — never their numbers. Choose the one who will lead.'
       : 'Three come to the fire, each as the Crucible made them: their numbers, the points they rolled against their kind, and their badges. Take the one you want.'}${owed}</p>
-    <div class="card"><div class="pick${first ? '' : ' draft-rolled'}">${offers.map((h) => (first ? firstOffer(h) : rolledOffer(h, draftedHeroOf(c, h.id)))).join('')}</div></div>${leftOut.length ? `<p class="meta">Not at the fire — no kit in the content: ${leftOut.map((h) => `<span data-unkitted="${esc(h.id)}">${esc(h.name)}</span>`).join(', ')}.</p>` : ''}`
+    <div class="card"><div class="pick${first ? '' : ' draft-rolled'}">${offers.map((h) => (first ? firstOffer(h, draftedHeroOf(c, h.id)) : rolledOffer(h, draftedHeroOf(c, h.id)))).join('')}</div></div>${leftOut.length ? `<p class="meta">Not at the fire — no kit in the content: ${leftOut.map((h) => `<span data-unkitted="${esc(h.id)}">${esc(h.name)}</span>`).join(', ')}.</p>` : ''}`
 }

@@ -8,7 +8,12 @@ import { omitDisabled } from './disable.js'
 import { CLASS_NAMES } from './generated/progress.js'
 
 export type ClassGroup = 'hero' | 'civilian' | 'beast'
-export type ClassRow = { readonly id: string; readonly name: string; readonly group: ClassGroup }
+/**
+ * `line`: the class's one player-facing sentence — what it does in a battle, for a new player. The content's row
+ * (content/gen/classes.json `playerLine`, through the generated table); '' for a class the content gives none.
+ * kingdom.opening-first-hero-class-line (2026-10-04, engine DECISIONS.md 2026-10-04 'the opening's tutorial: the first hero's class line, …': "a line that describes the class").
+ */
+export type ClassRow = { readonly id: string; readonly name: string; readonly group: ClassGroup; readonly line: string }
 
 /**
  * The group of each class — the kingdom's own column. kingdom.reads-engine (review finding K17): the ids and names
@@ -23,7 +28,13 @@ const GROUP_OF: Readonly<Record<string, ClassGroup>> = {
 for (const c of CLASS_NAMES) if (!GROUP_OF[c.id]) throw new Error(`class '${c.id}' (codex) has no group in src/content/classes.ts`)
 for (const id of Object.keys(GROUP_OF)) if (!CLASS_NAMES.some((c) => c.id === id)) throw new Error(`src/content/classes.ts groups '${id}', which is not a codex class`)
 
-export const CLASSES: readonly ClassRow[] = omitDisabled(CLASS_NAMES.map((c) => ({ id: c.id, name: c.name, group: GROUP_OF[c.id]! })))
+export const CLASSES: readonly ClassRow[] = omitDisabled(CLASS_NAMES.map((c) => ({ id: c.id, name: c.name, group: GROUP_OF[c.id]!, line: c.line })))
+
+/** The player-facing sentence of a unit's class — the first of its classes that has a row with one; '' when none has. */
+export function classLineOf(classes: readonly string[]): string {
+  for (const c of classes) { const row = CLASSES.find((r) => r.id === c); if (row?.line) return row.line }
+  return ''
+}
 
 /**
  * A unit's group from its class list. `classes` is plural — any one match

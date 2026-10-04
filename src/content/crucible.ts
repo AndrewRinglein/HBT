@@ -15,6 +15,7 @@
 // openingDraftRuleKingdomSide). The procedure that rolls them is src/core/draft-modifiers.ts.
 
 import OPENING from '../../../progression/OPENING-PARTY.json'
+import { BADGE_LINES, STAT_LINES } from './generated/progress.js'
 
 /** One rollable badge as the Crucible lists it: its rarity (the draw's weight) and its stats in the Crucible's words. */
 export type CrucibleBadge = { readonly id: string; readonly rarity: string; readonly stats: Readonly<Record<string, number>> }
@@ -61,3 +62,24 @@ export function crucibleBadgeOf(id: string): CrucibleBadge | undefined {
 
 /** The engine's name for a stat the Crucible names (health -> maxHp); the word itself when they agree. */
 export const crucibleStatOf = (word: string): string => CRUCIBLE.statOf[word] ?? word
+
+// ---------- what a hero joins with, in plain words (kingdom.opening-first-hero-class-line, 2026-10-04) ----------
+// Ruled 2026-10-04 (Andrew, engine DECISIONS.md 2026-10-04 'the opening's tutorial: the first hero's class line, …'): "some simple way we can
+// describe the changes to this hero" — its badges and bonus Health said in plain words, like "Born leader" and "Tougher
+// than most" ("3 correct."). The words are the content's rows (`playerLine` on the badge, and on the stat for a hero
+// given more of it), read through the generated table — never typed here. A thing with no words is refused loudly
+// (Law 9): the card never shows a blank line or a bare id.
+
+/** What a badge makes the hero, in the content's plain words. */
+export function badgeLineOf(id: string): string {
+  const line = BADGE_LINES[id]
+  if (!line) throw new Error(`badge '${id}' has no plain words — content/gen/badges.json playerLine`)
+  return line
+}
+
+/** What a hero given more of a stat is, in the content's plain words — `stat` in the Crucible's word (health, strength …). */
+export function statLineOf(stat: string): string {
+  const line = STAT_LINES[stat]
+  if (!line) throw new Error(`stat '${stat}' has no plain words — content/gen/classes.json stats playerLine`)
+  return line
+}

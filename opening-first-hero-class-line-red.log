@@ -1,0 +1,142 @@
+
+ RUN  v4.1.11 C:/Users/aring/Desktop/HBT-worker-kingdom/kingdom
+
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: the sitting opens on the first draft, not the map
+    at file:///C:/Users/aring/Desktop/HBT-worker-kingdom/kingdom/tools/opening-loop-three.verify.mjs:52:8 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: false,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}
+
+Node.js v24.12.0
+ ❯ test/opening-first-hero-class-line.test.ts (7 tests | 7 failed) 1900ms
+     × the content holds one player-facing sentence for each of the six hero classes, beside the designer's intent 5ms
+     × the kingdom reads them through its generated table — the line is the content's row, and no class sentence is typed in kingdom/src 1ms
+     × the content holds plain words for everything a first hero can be given: Leadership, every positive badge, and a point of every stat of the pool 0ms
+     × each offer of the first draft: the class line of its own class under the class word, then one plain line for each thing it joins with — no stat table, no number, no badge named 2ms
+     × the page prints the row: another sentence on the class row is the sentence on the card 0ms
+     × a later draft shows the same class line under the class word — and keeps its stats, points and badges 4ms
+     × the page: every draft card of a three-battle sitting carries its class line, and the first draft's cards say what the hero joins with in plain words 1886ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 7 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/opening-first-hero-class-line.test.ts > kingdom.opening-first-hero-class-line — the first draft says what the class does, and what this hero joins with, in plain words > the content holds one player-facing sentence for each of the six hero classes, beside the designer's intent
+AssertionError: class.mage: content/gen/classes.json playerLine, published: expected 'undefined' to be 'string' // Object.is equality
+
+Expected: "string"
+Received: "undefined"
+
+ ❯ test/opening-first-hero-class-line.test.ts:75:84
+     73|     for (const id of HERO_CLASSES) {
+     74|       const line = lineOfClass(id)
+     75|       expect(typeof line, `${id}: content/gen/classes.json playerLine,…
+       |                                                                                    ^
+     76|       expect(line!.trim()).toBe(line)
+     77|       expect(line!, `${id}: one sentence`).toMatch(/^[A-Z][^.!?]*\.$/)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/7]⎯
+
+ FAIL  test/opening-first-hero-class-line.test.ts > kingdom.opening-first-hero-class-line — the first draft says what the class does, and what this hero joins with, in plain words > the kingdom reads them through its generated table — the line is the content's row, and no class sentence is typed in kingdom/src
+AssertionError: expected 'undefined' to be 'function' // Object.is equality
+
+Expected: "function"
+Received: "undefined"
+
+ ❯ test/opening-first-hero-class-line.test.ts:89:36
+     87|       expect(G.CLASS_NAMES.find((c) => c.id === id)?.line, `${id}: gen…
+     88|       expect(C.CLASSES.find((c) => c.id === id)?.line, `${id}: the cla…
+     89|       expect(typeof C.classLineOf).toBe('function')
+       |                                    ^
+     90|       expect(C.classLineOf!([id])).toBe(lineOfClass(id))
+     91|     }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/7]⎯
+
+ FAIL  test/opening-first-hero-class-line.test.ts > kingdom.opening-first-hero-class-line — the first draft says what the class does, and what this hero joins with, in plain words > the content holds plain words for everything a first hero can be given: Leadership, every positive badge, and a point of every stat of the pool
+AssertionError: expected 'undefined' to be 'function' // Object.is equality
+
+Expected: "function"
+Received: "undefined"
+
+ ❯ test/opening-first-hero-class-line.test.ts:119:34
+    117|
+    118|   it('the content holds plain words for everything a first hero can be…
+    119|     expect(typeof W.badgeLineOf).toBe('function'); expect(typeof W.sta…
+       |                                  ^
+    120|     const names = [...FIRST.badges, ...FAVOURABLE, ...FLAWED].map((id)…
+    121|     for (const id of [...FIRST.badges, ...FAVOURABLE]) {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/7]⎯
+
+ FAIL  test/opening-first-hero-class-line.test.ts > kingdom.opening-first-hero-class-line — the first draft says what the class does, and what this hero joins with, in plain words > each offer of the first draft: the class line of its own class under the class word, then one plain line for each thing it joins with — no stat table, no number, no badge named
+AssertionError: seed 1: hero.base.priest-scantily: a class line: expected null not to be null
+ ❯ test/opening-first-hero-class-line.test.ts:154:48
+    152|         // (1) the class line, under the class word and before the des…
+    153|         const cl = classLineOn(o.html)
+    154|         expect(cl, `${who}: a class line`).not.toBeNull()
+       |                                                ^
+    155|         expect([cl![1], cl![2]], `${who}: the line of its own class, t…
+    156|         expect(o.html.indexOf('<small>'), `${who}: under the class wor…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/7]⎯
+
+ FAIL  test/opening-first-hero-class-line.test.ts > kingdom.opening-first-hero-class-line — the first draft says what the class does, and what this hero joins with, in plain words > the page prints the row: another sentence on the class row is the sentence on the card
+TypeError: Cannot read properties of null (reading '2')
+ ❯ test/opening-first-hero-class-line.test.ts:194:33
+    192|       row.line = 'Another sentence, set by this test.'
+    193|       const o = offersOn(draftScreen(c)).find((x) => x.id === offer.id…
+    194|       expect(classLineOn(o.html)![2]).toBe('Another sentence, set by t…
+       |                                 ^
+    195|     } finally { row.line = was }
+    196|     expect(classLineOn(offersOn(draftScreen(c)).find((x) => x.id === o…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/7]⎯
+
+ FAIL  test/opening-first-hero-class-line.test.ts > kingdom.opening-first-hero-class-line — the first draft says what the class does, and what this hero joins with, in plain words > a later draft shows the same class line under the class word — and keeps its stats, points and badges
+AssertionError: seed 3: hero.base.rogue-raven: a class line: expected null not to be null
+ ❯ test/opening-first-hero-class-line.test.ts:205:63
+    203|       for (const o of offers) {
+    204|         const cl = classLineOn(o.html)
+    205|         expect(cl, `seed ${seed}: ${o.id}: a class line`).not.toBeNull…
+       |                                                               ^
+    206|         expect([cl![1], cl![2]]).toEqual([o.classes[0], lineOfClass(o.…
+    207|         expect(o.html.indexOf('<small>')).toBeLessThan(cl!.index!)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/7]⎯
+
+ FAIL  test/opening-first-hero-class-line.test.ts > kingdom.opening-first-hero-class-line — the first draft says what the class does, and what this hero joins with, in plain words > the page: every draft card of a three-battle sitting carries its class line, and the first draft's cards say what the hero joins with in plain words
+Error: Command failed: C:\Program Files\nodejs\node.exe tools/opening-loop-three.verify.mjs BATTLE-SANDBOX.html
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: the sitting opens on the first draft, not the map
+    at file:///C:/Users/aring/Desktop/HBT-worker-kingdom/kingdom/tools/opening-loop-three.verify.mjs:52:8 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: false,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}
+
+Node.js v24.12.0
+
+ ❯ test/opening-first-hero-class-line.test.ts:216:17
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/7]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  7 failed (7)
+   Start at  04:13:11
+   Duration  6.15s (transform 3.08s, setup 0ms, import 4.06s, tests 1.90s, environment 0ms)
+

@@ -58,7 +58,18 @@ const PARTY=JSON.parse(readFileSync(new URL('../../progression/OPENING-PARTY.jso
 export const FIRST_HERO=PARTY.firstHero,ROLL_SOURCE=PARTY.draftScore.rollSource
 export const POSITIVE_BADGES=PARTY.crucible.badges.favourable.map(b=>b.id),FLAWED_BADGES=PARTY.crucible.badges.flawed.map(b=>b.id)
 const BADGE_NAMES=[...FIRST_HERO.badges,...POSITIVE_BADGES,...FLAWED_BADGES].map(id=>E.BADGES[id].name)
-const DESCRIPTION=Object.fromEntries(JSON.parse(readFileSync(new URL('../../content/hbt-content.json',import.meta.url),'utf8')).heroes.heroes.map(h=>[h.id,h.backstory]))
+const CODEX=JSON.parse(readFileSync(new URL('../../content/hbt-content.json',import.meta.url),'utf8'))
+const DESCRIPTION=Object.fromEntries(CODEX.heroes.heroes.map(h=>[h.id,h.backstory]))
+/* kingdom.opening-first-hero-class-line (engine DECISIONS.md 2026-10-04 'the opening's tutorial: the first hero's class line, …':
+   "When you pick your first hero there should be a description (a line that describes the class) and then some simple way
+   we can describe the changes to this hero." — its badges and bonus Health in plain words, like "Born leader" and "Tougher
+   than most": "3 correct."): the published content's own words the page's draft is held against — each class's
+   player-facing sentence, each badge's plain words, and each stat's plain words for a hero given more of it (the rows'
+   playerLine, content/hbt-content.json). LINES_SEEN counts, over a run, the draft cards held to their class line and the
+   first draft's cards held to what the hero joins with */
+const lineRows=rows=>Object.fromEntries(rows.filter(r=>typeof r.playerLine==='string').map(r=>[r.id,r.playerLine]))
+export const CLASS_LINE=lineRows(CODEX.classes),BADGE_LINE=lineRows(CODEX.badges),STAT_LINE=lineRows(CODEX.stats)
+export const LINES_SEEN={classLine:0,joins:0,badgeLines:0}
 /* kingdom.opening-hero-card-art (engine DECISIONS.md 2026-10-03 'every draft card shows the hero's card art …': "Card art
    should be present when you're drafting, both the first time and the next ones."; 'card art on the level-up and reward
    screens …': "Card art not showing in the level-up screen."): the portraits the page is held against — generated/art, as
@@ -303,7 +314,33 @@ export function openingPage(page,search,store){
    const id=o.dataset.id,who=`${label}: ${id}`
    /* kingdom.opening-hero-card-art: every draft card — the first draft's and every later one's — shows its hero's card art */
    showsArt(o,id,who,'draft')
+   /* kingdom.opening-first-hero-class-line: every draft card — the first draft's and every later one's — shows, under the
+      class word, the one sentence of its own class: the content's row, word for word */
+   const lines=o.querySelectorAll('.classline'),ownClass=(o.dataset.classes??'').split(',').find(c=>HERO_CLASSES.includes(c))
+   assert.equal(lines.length,1,who+': one class line');assert.equal(lines[0].dataset.classLine,ownClass,who+': the line of its own class')
+   assert.ok(CLASS_LINE[ownClass],`${who}: the content holds a player-facing sentence for ${ownClass}`)
+   assert.equal(lines[0].textContent,CLASS_LINE[ownClass],who+': the class line is the content\'s row')
+   LINES_SEEN.classLine++
    if(first){
+    /* … and each card of the FIRST draft says what THIS hero joins with, in plain words: one line for each badge (the
+       content's words for it — Leadership is "Born leader"), the Health the first hero's rule gives ("Tougher than
+       most"), and each point it rolled; every thing once, no line twice; never a stat table */
+    const joined=E.OPENING.draftedHeroOf(camp(),id).drafted,said=o.querySelectorAll('[data-joins]').map(li=>({of:li.dataset.joins.split(' '),words:li.textContent}))
+    assert.equal(o.querySelectorAll('.joins').length,1,who+': the list of what it joins with')
+    for(const b of joined.badges){const mine=said.filter(x=>x.of.includes('badge:'+b));assert.equal(mine.length,1,`${who}: one plain line for ${b}`);assert.ok(BADGE_LINE[b],`${who}: the content holds plain words for ${b}`);assert.equal(mine[0].words,BADGE_LINE[b],`${who}: ${b} in the content's plain words`);LINES_SEEN.badgeLines++}
+    assert.equal(said.filter(x=>x.of.some(k=>k.startsWith('badge:'))).length,joined.badges.length,who+': one line per badge it joins with, no more')
+    assert.equal(said[0].words,BADGE_LINE[FIRST_HERO.badges[0]],who+': Leadership first');assert.equal(said[0].words,'Born leader')
+    assert.deepEqual(said.filter(x=>x.of.includes('health')).map(x=>x.words),[STAT_LINE.health],who+': the Health, as words');assert.equal(STAT_LINE.health,'Tougher than most')
+    for(const r of joined.rolls)assert.deepEqual(said.filter(x=>x.of.includes('point:'+r.stat)).map(x=>x.words),[STAT_LINE[r.stat]],`${who}: its rolled point of ${r.stat}, as words`)
+    assert.deepEqual(said.flatMap(x=>x.of).sort(),[...joined.badges.map(b=>'badge:'+b),'health',...joined.rolls.map(r=>'point:'+r.stat)].sort(),who+': every thing it joins with is said, each once')
+    assert.equal(new Set(said.map(x=>x.words)).size,said.length,who+': no line twice')
+    assert.equal(o.querySelectorAll('.stats').length+o.querySelectorAll('.stRow').length+o.querySelectorAll('.badge').length,0,who+': no stat table and no badge block')
+    LINES_SEEN.joins++
+    /* Law 10, 2026-10-04 (kingdom.opening-first-hero-class-line): the comment below read "chosen from three by description
+       only — no stats, no badges, no kit" (2026-10-03 "no stats or badges shown, just a description"). The ruling of
+       2026-10-04 replaces it only as far as the plain lines go, so every assertion below STANDS as written: the card
+       still shows no number at all, no kit, no badge BY NAME (a badge is said as what it makes the hero) and carries no
+       stats, badges or rolls as data */
     /* the first hero: chosen from three by description only — no stats, no badges, no kit */
     assert.ok(DESCRIPTION[id]&&o.textContent.includes(DESCRIPTION[id]),who+' is shown by its description')
     assert.doesNotMatch(o.textContent,/\d/,who+': stat-less — no number at all')
@@ -316,6 +353,7 @@ export function openingPage(page,search,store){
    /* a later draft: the hero as the sources' rule rolls it on this run's own stream, shown — its stats are the numbers the
       battle would field, and they differ from its row by exactly its rolled modifiers */
    assert.ok(o.dataset.stats!==undefined&&o.dataset.badges!==undefined&&o.dataset.rolls!==undefined,who+' is shown with its stats, its rolled points and its badges')
+   assert.equal(o.querySelectorAll('.joins').length,0,who+': the plain lines are the first draft\'s alone — a later draft shows the numbers')
    const want=E.OPENING.draftedHeroOf(camp(),id),d=want.drafted
    assert.equal(o.dataset.badges,d.badges.join(','),who+': its rolled badges');assert.equal(o.dataset.rolls,d.rolls.map(r=>r.stat+':'+r.amount).join(','),who+': its rolled points')
    assert.ok(d.badges.length>=1&&d.badges.every(b=>POSITIVE_BADGES.includes(b)||FLAWED_BADGES.includes(b)),who+': one to three of the Crucible\'s badges')
