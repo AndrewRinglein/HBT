@@ -29445,6 +29445,17 @@ index 0000000..56e88fb
   PASS  brought its own tests — test/battle-cursor.test.ts, test/trigger-ids-and-scopes.test.ts, test/enchant-triggers-own-weapon.test.ts, test/fixtures/battle-cursor-enchant-triggers-own-weapon.json
   WARN  existing tests untouched — DELETED LINES in test/battle-cursor.test.ts (-2), test/trigger-ids-and-scopes.test.ts (-11) — will land FLAGGED for review
   PASS  control battles unchanged
+## viewer.no-target-ring — LANDED `2c45c6c`
+2026-10-04 23:28
+
+  PASS  dependencies landed
+  WARN  not already decided — 2 candidate ruling(s) — READ BEFORE ASKING: DECISIONS.md:4859 · SWITCHES.md:1944
+  PASS  typecheck
+  PASS  the item's own tests — test/viewer.no-target-ring.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — viewer/test/viewer.no-target-ring.test.ts
+  PASS  existing tests untouched
+  SKIPPED  control battles unchanged — engine code 96341738c6 and the content pack are the ones the control battles last passed on (2026-10-04 20:25, combine: engine master eec6321 into the kingdom worker copy (golden re-run by tools/baseline.mts on the merged tree), in HBT-worker-kingdom) — not run
   PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
   PASS  hardcode scan — core knows mechanisms, never names
   PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
@@ -29553,3 +29564,7 @@ index cfdde37..9d5f57b 100644
  
 ```
 </details>
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable

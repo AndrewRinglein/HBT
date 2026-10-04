@@ -4922,3 +4922,23 @@ Ruled:
 - **The named weapons stay single unique rewards**, no series.
 - **A series item's name does not show its tier.**
 - **One page for every item type, to mark up** — yes, "but I don't want to slow down engine work": built beside the engine work, not in front of it.
+
+## 2026-10-04 — reported on the Item Ledger: items that do things the game has no mechanic for, authored by a chat and not by him
+
+Andrew, in the kingdom chat, reading the Item Ledger (https://claude.ai/artifact/MD6dZGa5TDCv9YxTWfdc5q):
+
+“Okay, I see a ton of artifacts in here, maybe items in here that were obviously authored by Claude and were not authored by me, that are doing things that are not mechanics we have in the game.   You need to review all of the items and come back. The Death Bow cannot be healed. That's not a mechanic we have.  Crossbow has a crank mechanism, not a mechanic we have.  And I just went through a couple of items.”
+
+Kept as said: **"cannot be healed" (the Death Bow) and a crossbow's crank are not mechanics the game has.** Every item is being reviewed for two things - whether each thing it does is a mechanic the engine has, and who authored the row (his dictation, or a chat) - and the findings go onto the Item Ledger for him to mark. Nothing is cut or changed until he marks it.
+
+Andrew, minutes later, on the same review:
+
+“I guess we could just ignore all the items not authored by me to start with.”
+
+- **The items he did not author are set aside to start with.** The review still labels every row, but the Item Ledger opens on the rows he dictated - his dictations and rulings, the Armory Ledger's drafted rows, the armor draft - with the rest behind one control. Read as: set aside for the review and the mark-up; whether a set-aside item also leaves the game's rewards is asked, not assumed. A row a chat wrote that a later ruling of his only corrected (a number changed across a family) is still a chat's row.
+
+Andrew, asked "Should the set-aside items also stop appearing as battle rewards for now, or only be left out of the review?":
+
+“One yes. Stop appearing as battle rewards.”
+
+- **The items he did not author stop appearing as battle rewards.** Only items he authored are offered as rewards until he says otherwise. Read as: the reward pool only - the kits the heroes start with and what enemies carry are not touched by this. The list of which items are his comes from the item review now running; the item that applies it (`kingdom.rewards-only-authored`) is filed when that list exists.
