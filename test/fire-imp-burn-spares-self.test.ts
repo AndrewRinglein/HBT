@@ -21,7 +21,7 @@ import { openingBattle } from './opening-helpers.js'
 import { hexId } from './board16.js'
 
 const FIRE_IMP = 'unit.fire-imp'
-/** The Fire Imp's end-of-Activation trigger (its Blast's on-hit rider carries the same id, on another hook). */
+/** The Fire Imp's end-of-Activation trigger (its Blast's on-hit rider carried the same id until fix.trigger-ids-and-scopes, 2026-10-04: it is trigger.fire-imp.burn.blast now). */
 const BURN = 'trigger.fire-imp.burn'
 const HOOK = 'onActivationEnd'
 const eoa = (typeId: string) => UNITS[typeId]!.triggers!.find((t) => t.hook === HOOK)!

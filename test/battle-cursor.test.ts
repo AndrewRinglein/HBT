@@ -345,6 +345,13 @@ const counterattackGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-c
 // painted). The four cases whose Fire Master throws Fireball moved (showcase.assembled-party, progression-surge-0..2: seven
 // strokes each, and the fight re-times from there). A `changed` case is checked here and skips the older layers.
 const classGroundGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-burst-ground-class-powers.json', import.meta.url), 'utf8'))
+// fix.trigger-ids-and-scopes (2026-10-04; SWITCHES.md triggerIdsDistinctInARow, itemTriggerOwnAttacks, testDeltaTriggersOnce), Law 10:
+// no row holds two triggers under one id (the Fire Imp's Blast burn is trigger.fire-imp.burn.blast), a weapon's row-level trigger
+// rides only that weapon's own attacks (the axes' on-block: one trigger per attack, so the triggers a holder lists after them roll
+// on other slots), and a test delta holds its base's triggers once. Every case frozen here (tools/capture-trigger-ids-cursor.mts;
+// the fixture counts each case's rolls under a renamed id and of an own-scoped item trigger). 26 cases moved. A `changed` case is
+// checked here and skips the older layers.
+const triggerIdsGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-trigger-ids.json', import.meta.url), 'utf8'))
 const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
 // Explicit rule migration, not regenerated historical hashes. These nine old
 // cases contain Surge ledger/refresh changes or terminal markers corrected
@@ -472,7 +479,10 @@ describe('resumable battle cursor', () => {
       const freeAttackExpected = freeAttackGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const counterattackExpected = counterattackGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const classGroundExpected = classGroundGolden.cases.find((row:{id:string})=>row.id===fixture.id)
-      const classGroundMoved = classGroundExpected?.changed === true
+      const triggerIdsExpected = triggerIdsGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+      const triggerIdsMoved = triggerIdsExpected?.changed === true
+      // was: const classGroundMoved = classGroundExpected?.changed === true — a trigger-ids-moved case skips the class-ground layer too (fix.trigger-ids-and-scopes 2026-10-04)
+      const classGroundMoved = classGroundExpected?.changed === true || triggerIdsMoved
       // was: const counterattackMoved = counterattackExpected?.changed === true — a class-ground-moved case skips the counterattack layer too (fix.burst-ground-class-powers 2026-10-04)
       const counterattackMoved = counterattackExpected?.changed === true || classGroundMoved
       // was: const freeAttackMoved = freeAttackExpected?.changed === true — a counterattack-moved case skips the free-attack layer too (capability.counterattack-and-fend 2026-10-04)
@@ -585,7 +595,14 @@ describe('resumable battle cursor', () => {
             battle.completeActionCycle(ctx)
           }
         } else result = battle.runBattle(ctx)
-        if (classGroundExpected) {
+        if (triggerIdsExpected) {
+        expect(hash(ctx.events), 'full trigger-ids events').toBe(triggerIdsExpected.events)
+        expect(hash(ctx.state), 'full trigger-ids state').toBe(triggerIdsExpected.state)
+        expect(hash(ctx.rng.log), 'full trigger-ids RNG').toBe(triggerIdsExpected.rng)
+        expect(result).toEqual(triggerIdsExpected.result)
+        }
+        // was: if (classGroundExpected) { — fix.trigger-ids-and-scopes (2026-10-04): a trigger-ids-moved case is checked above instead
+        if (classGroundExpected && !triggerIdsMoved) {
         expect(hash(ctx.events), 'full class-ground events').toBe(classGroundExpected.events)
         expect(hash(ctx.state), 'full class-ground state').toBe(classGroundExpected.state)
         expect(hash(ctx.rng.log), 'full class-ground RNG').toBe(classGroundExpected.rng)
