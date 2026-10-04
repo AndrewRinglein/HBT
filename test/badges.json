@@ -113,5 +113,14 @@
       }
     ],
     "note": "station.vs-target (engine, 2026-09-25): damage by what the target CARRIES \u2014 +3 against a poisoned target, with its own poison rider so a battle reaches it. The second instance, pure data. Never ships. fix.vs-target-worn-and-flat (engine, 2026-09-25): was +50%; Andrew: 'There had been no percentage modifiers to damage' \u2014 a TEST value, flat."
+  },
+  {
+    "id": "test.badge.fender",
+    "name": "Fender (TEST)",
+    "statModifiers": {},
+    "grants": [
+      "power.test-fend"
+    ],
+    "note": "engine capability.counterattack-and-fend (2026-10-04): a badge that grants the test Fend power, so a real hero can carry it into the fielding test.fend. Test data only."
   }
 ]

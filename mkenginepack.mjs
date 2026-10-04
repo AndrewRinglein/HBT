@@ -1044,6 +1044,16 @@ function compiledPowerOf(p, unitId) {
     }
     return { ...base, range: 0, target: { select: 'self', side: 'any' }, effects };
   }
+  // engine capability.counterattack-and-fend (2026-10-04; engine DECISIONS.md 2026-09-28 'counterattack, special free
+  // attacks …'): "Gain Counterattack[ with +N Accuracy] until the end of your next Turn." / "Gain Fend[ …]" — the stat
+  // the engine reads as that special free attack being up, and its own Accuracy stat, as two self statMods with the
+  // existing end-of-next-Turn lifetime. No new effect and no new duration.
+  if ((m = desc.match(/^Gain (Counterattack|Fend)(?: with \+(\d+) Accuracy)? until the end of your next Turn\.$/)) && tgt === 'self') {
+    const stat = m[1] === 'Counterattack' ? 'counterattack' : 'fend';
+    const effects = [{ kind: 'statMod', stat, value: 1, until: 'endOfNextTurn', who: 'self' }];
+    if (m[2]) effects.push({ kind: 'statMod', stat: stat + 'Accuracy', value: +m[2], until: 'endOfNextTurn', who: 'self' });
+    return { ...base, range: 0, target: { select: 'self', side: 'any' }, effects };
+  }
   return null;
 }
 
