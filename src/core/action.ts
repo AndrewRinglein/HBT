@@ -113,12 +113,13 @@ export function isReady(ctx: Ctx, u: Unit, id: string): boolean {
  * usableMoves — asks this first; none keeps its own copy. What the action
  * may DO to its target is that path's question, not this one's.
  */
-export function actionReady(ctx: Ctx, u: Unit, a: ActionDef): boolean {
+export function actionReady(ctx: Ctx, u: Unit, a: ActionDef, free = false): boolean {
   if (!grantedActionIds(ctx, u).includes(a.id)) return false
   // v2.prone (§10): standing is legal only while prone, and while prone it is
   // the only movement (SWITCHES.md proneNoCrawl). Primary actions stay.
   if (a.move !== undefined && standsUp(a) !== holdsProne(ctx, u)) return false
-  if (u.stamina < staminaCostOf(u, a)) return false
+  // `free`: a special free attack asks for no Stamina (rule.free-attack-is-basic-attack) — every other limit stands
+  if (!free && u.stamina < staminaCostOf(u, a)) return false
   if (!isReady(ctx, u, a.id)) return false
   if (a.uses && (u.usesLeft[a.id] ?? 0) <= 0) return false
   return true
@@ -153,11 +154,13 @@ export function resolveActionSlot(ctx: Ctx, u: Unit, a: ActionDef, requested?: A
  */
 export function spendAction(ctx: Ctx, unitId: number, a: ActionDef, slot: 'movement' | 'primary' | 'reaction'): void {
   const u = ctx.state.units[unitId]!
-  spendStamina(ctx, unitId, staminaCostOf(u, a), a.id)
-  // fix.aoo-pays-stamina (2026-09-04, FINDING 40): a REACTION — the attack of
-  // opportunity — happens outside the actor's Activation, so no slot is marked;
-  // stamina, cooldown and uses are paid exactly as for any other use (ruled
-  // 2026-08-20: "They do pay stamina for it. It could have a cooldown").
+  // A REACTION — a special free attack: the attack of opportunity — happens outside the
+  // actor's Activation, so no slot is marked; and it spends no Stamina: nothing is asked for,
+  // nothing is written back, and no stamina.spent line is logged for it
+  // (rule.free-attack-is-basic-attack, 2026-10-04: "that stamina cost is not triggered by
+  // special free attacks" — replacing the 2026-08-20 "They do pay stamina for it" that
+  // fix.aoo-pays-stamina built). The cooldown and a use are spent as for any other use.
+  if (slot !== 'reaction') spendStamina(ctx, unitId, staminaCostOf(u, a), a.id)
   if (!a.free && slot !== 'reaction') { if (slot === 'movement') markMoveUsed(ctx, unitId); else markPrimaryUsed(ctx, unitId) }
   if (a.cooldown) {
     const readyAgain = ctx.state.turn + a.cooldown + 1

@@ -159,7 +159,7 @@ export function reachOf(ctx: Ctx, u: Unit, a: AttackDef): number {
  * Crit reads (final − 100) ÷ 4, so clamping here would silently delete crit surplus.
  * Only the roll comparison clamps.
  */
-export function resolveAccuracy(ctx: Ctx, attacker: Unit, target: Unit, a: AttackDef): Resolved {
+export function resolveAccuracy(ctx: Ctx, attacker: Unit, target: Unit, a: AttackDef, mode?: AttackMode): Resolved {
   const ledger: LedgerRow[] = []
   const d = ctx.geo.distance(attacker.hex, target.hex)
 
@@ -214,6 +214,8 @@ export function resolveAccuracy(ctx: Ctx, attacker: Unit, target: Unit, a: Attac
   for (const { statusId, rule } of proneRulesOf(ctx, target)) v = step(ledger, ACC.PRONE, 'TARGET_PRONE', statusId, v, v + rule.accuracyAgainst)
   // SITUATIONAL — the attack's own modifier (station.accuracy-field, 2026-09-03).
   if (a.attack.accuracy) v = step(ledger, ACC.SITUATIONAL, 'SITUATIONAL', a.id, v, v + a.attack.accuracy)
+  // rule.free-attack-is-basic-attack: a special free attack (the attack of opportunity) swings at the ruled penalty — its own named row
+  if (mode === 'reaction') v = step(ledger, ACC.SITUATIONAL, 'FREE_ATTACK', FREE_ATTACK_CAUSE, v, v + FREE_ATTACK_ACCURACY)
   if (a.attack.kind === 'ranged' && hasLowCover(ctx,attacker.hex,target.hex)) v = step(ledger,ACC.COVER,'COVER','cover',v,v-LOW_COVER_ACCURACY)
   const dodge = effective(ctx, target, 'dodge')
   v = step(ledger, ACC.TARGET_DODGE, 'TARGET_DODGE', `unit.${target.typeId}`, v, v - dodge.value)
@@ -466,14 +468,26 @@ export function attackDef(ctx: Ctx, attackId: string): AttackDef {
 
 /** Can this attack be made right now? The one legality answer (Law 2). */
 /**
- * `mode` — fix.aoo-pays-stamina (2026-09-04): `'reaction'` is the attack of
- * opportunity, made outside the attacker's Activation. The primary slot is not
- * consulted (a unit that has acted this Turn still reacts, and may react more
- * than once — COMBAT-DESIGN "one enemy can make multiple attacks of opportunity
- * per round"); every other gate — stamina, cooldown, uses, reach, sight — is the
- * same one, because the ruling says legal "means what it always means".
+ * `mode` — `'reaction'` is a SPECIAL FREE ATTACK (the attack of opportunity), made outside
+ * the attacker's Activation. The primary slot is not consulted (a unit that has acted this
+ * Turn still reacts, and may react more than once — COMBAT-DESIGN "one enemy can make
+ * multiple attacks of opportunity per round").
+ *
+ * rule.free-attack-is-basic-attack (2026-10-04; DECISIONS.md 2026-09-28 'counterattack,
+ * special free attacks …': "Special free attacks — counterattack, fend, the attack of
+ * opportunity — are one rule: the basic attack, no stamina, −20 Accuracy"; 2026-10-04 'the
+ * basic attack is a weapon's first attack …': "It has a stamina cost, but that stamina cost
+ * is not triggered by special free attacks"). A reaction asks for no Stamina and spends none
+ * — its cost is zero, never paid and refunded (Law 3) — and rolls at FREE_ATTACK_ACCURACY.
+ * Every other gate — granted, cooldown, uses, reach, sight — is the same one. This replaces
+ * fix.aoo-pays-stamina (2026-09-04), which paid Stamina by the 2026-08-20 ruling.
  */
 export type AttackMode = 'movement' | 'primary' | 'reaction'
+
+/** The ruled Accuracy penalty of a special free attack (DECISIONS.md 2026-09-28: "the basic attack, no stamina, −20 Accuracy"). */
+export const FREE_ATTACK_ACCURACY = -20
+/** What the free attack's accuracy row names as its cause (Law 12). */
+export const FREE_ATTACK_CAUSE = 'rule.free-attack'
 
 export function canAttack(ctx: Ctx, attackerId: number, targetId: number, attackId: string, mode?: AttackMode): boolean {
   const at = unit(ctx, attackerId)
@@ -496,8 +510,9 @@ export function canAttack(ctx: Ctx, attackerId: number, targetId: number, attack
   // capability.vision (2026-09-03): you cannot target what you cannot see (SWITCHES.md targetUnseen)
   if (!ctx.cfg.switches.targetUnseen && !canSee(ctx, at, tg)) return false
   if (mode !== 'reaction' && resolveActionSlot(ctx, at, a, mode) === null) return false
-  // refactor.one-action-type: THE ONE LIMITS CHECK — granted, stamina, cooldown/warmup, uses
-  if (!actionReady(ctx, at, a)) return false
+  // refactor.one-action-type: THE ONE LIMITS CHECK — granted, stamina, cooldown/warmup, uses.
+  // A special free attack asks for no Stamina (rule.free-attack-is-basic-attack).
+  if (!actionReady(ctx, at, a, mode === 'reaction')) return false
   // "You cannot use a ranged attack on something adjacent." (Angela, 2026-08-15;
   // GAME-DESIGN.md §4.) A legality rule, so it is answered here rather than as a
   // penalty the shooter can eat — the shot does not exist.
@@ -536,11 +551,11 @@ export function resolveBlock(ctx: Ctx, target: Unit, kind: 'melee' | 'ranged', a
 }
 
 /** Preview: the same pipeline, run without applying. Law 1 — never a second formula. */
-export function preview(ctx: Ctx, attackerId: number, targetId: number, attackId: string) {
+export function preview(ctx: Ctx, attackerId: number, targetId: number, attackId: string, mode?: AttackMode) {
   const at = unit(ctx, attackerId)
   const tg = unit(ctx, targetId)
   const a = attackDef(ctx, attackId)
-  const acc = resolveAccuracy(ctx, at, tg, a)
+  const acc = resolveAccuracy(ctx, at, tg, a, mode)
   const hitChance = Math.max(0, Math.min(100, acc.value))
   const block = resolveBlock(ctx, tg, a.attack.kind, at)
   // hitChance remains the accuracy cup conditioned on passing Block. Bps is
@@ -689,13 +704,15 @@ function performHit(ctx: Ctx, attackerId: number, targetId: number, attackId: st
   // RNG key words are unsigned32; refuse overflow before any payment/mutation.
   if (!Number.isSafeInteger(incomingOrdinal) || incomingOrdinal < 1 || incomingOrdinal > 0xffffffff) throw Error('incoming attack ordinal overflow')
   const ord = ++at.attackOrdinal
-  const pv = preview(ctx, attackerId, targetId, attackId)
+  const pv = preview(ctx, attackerId, targetId, attackId, mode)
 
   // refactor.one-action-type: THE ONE SPEND — stamina, the primary, the cooldown, a use
   if (hitNo === 1) spendAction(ctx, attackerId, a, mode === 'reaction' ? mode : resolveActionSlot(ctx, at, a, mode)!)
 
   emit(ctx, 'attack.declared', a.id, {
     actor: attackerId, target: targetId, attackId, ordinal: ord, ...(of > 1 ? { hit: hitNo, of } : {}),
+    // rule.free-attack-is-basic-attack: a special free attack says so on its own line (Law 12) — the reader need not find the provoke
+    ...(mode === 'reaction' ? { free: true } : {}),
     // kind and damageType are on the event, not looked up from ATTACKS, so a
     // renderer can pick an animation without importing game content.
     kind: a.attack.kind, damageType: a.attack.damageType,
