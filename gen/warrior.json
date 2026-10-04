@@ -345,7 +345,7 @@
     "area"
    ],
    "description": "Apply 2 Weak to every enemy within 3 hexes; every other ally within 3 hexes gains +1 Strength for the rest of the Battle.",
-   "source": "Hell-TCG name reused (Barbarian/Warchief, War Cry) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-10-04 (engine fix.own-area-skips-owner; ruled 2026-10-04, Andrew, engine DECISIONS.md 'the Poison Imp, the Balrog and the four caster-centred class powers skip their owner too': \"One and two, yes, skip the caster.\"): the power is aimed at every OTHER unit within 3 hexes - the caster is skipped: the Strength is the other allies', and the description says so.",
+   "source": "Hell-TCG name reused (Barbarian/Warchief, War Cry) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-10-04 (engine fix.own-area-skips-owner; ruled 2026-10-04, engine DECISIONS.md 'the Poison Imp, the Balrog and the four caster-centred class powers skip their owner too': \"One and two, yes, skip the caster.\"): the power is aimed at every OTHER unit within 3 hexes - the caster is skipped: the Strength is the other allies', and the description says so.",
    "triggers": []
   },
   {

@@ -1069,7 +1069,7 @@
      ]
     }
    ],
-   "source": " | V2 2026-09-16, COMBAT-V2-DESIGN sections 8/18: elemental immunity becomes flat named resistance; one-for-one magnitude is provisional migration tuning, not full immunity. No extra status decay. | 2026-10-04 (engine fix.own-area-skips-owner; ruled 2026-10-04, Andrew, engine DECISIONS.md 'the Poison Imp, the Balrog and the four caster-centred class powers skip their owner too': \"One and two, yes, skip the caster.\"): the end-of-Activation Poison targets every OTHER unit within 2 hexes - it no longer lands on the Poison Imp itself; everyone else in range, its own side included, is hit as before."
+   "source": " | V2 2026-09-16, COMBAT-V2-DESIGN sections 8/18: elemental immunity becomes flat named resistance; one-for-one magnitude is provisional migration tuning, not full immunity. No extra status decay. | 2026-10-04 (engine fix.own-area-skips-owner; ruled 2026-10-04, engine DECISIONS.md 'the Poison Imp, the Balrog and the four caster-centred class powers skip their owner too': \"One and two, yes, skip the caster.\"): the end-of-Activation Poison targets every OTHER unit within 2 hexes - it no longer lands on the Poison Imp itself; everyone else in range, its own side included, is hit as before."
   },
   {
    "id": "unit.terror-imp",
@@ -1488,7 +1488,7 @@
      }
     }
    ],
-   "source": "2026-10-04 (engine fix.own-area-skips-owner; ruled 2026-10-04, Andrew, engine DECISIONS.md 'the Poison Imp, the Balrog and the four caster-centred class powers skip their owner too': \"One and two, yes, skip the caster.\"): the end-of-Activation Burn targets every OTHER unit within 2 hexes - it no longer lands on the Balrog itself; everyone else in range, its own side included, is hit as before."
+   "source": "2026-10-04 (engine fix.own-area-skips-owner; ruled 2026-10-04, engine DECISIONS.md 'the Poison Imp, the Balrog and the four caster-centred class powers skip their owner too': \"One and two, yes, skip the caster.\"): the end-of-Activation Burn targets every OTHER unit within 2 hexes - it no longer lands on the Balrog itself; everyone else in range, its own side included, is hit as before."
   },
   {
    "id": "unit.bloodhound",

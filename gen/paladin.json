@@ -437,7 +437,7 @@
     "heal"
    ],
    "description": "Heal every other ally within 2 hexes for 3 and give every enemy within 2 hexes 2 Burn. As an area effect it cannot crit.",
-   "source": "Hell-TCG name reused (Templar/Holy Champion, Holy Radiance) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-10-04 (engine fix.own-area-skips-owner; ruled 2026-10-04, Andrew, engine DECISIONS.md 'the Poison Imp, the Balrog and the four caster-centred class powers skip their owner too': \"One and two, yes, skip the caster.\"): the power is aimed at every OTHER unit within 2 hexes - the caster is skipped: the heal is the other allies', and the description says so.",
+   "source": "Hell-TCG name reused (Templar/Holy Champion, Holy Radiance) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-10-04 (engine fix.own-area-skips-owner; ruled 2026-10-04, engine DECISIONS.md 'the Poison Imp, the Balrog and the four caster-centred class powers skip their owner too': \"One and two, yes, skip the caster.\"): the power is aimed at every OTHER unit within 2 hexes - the caster is skipped: the heal is the other allies', and the description says so.",
    "triggers": []
   },
   {

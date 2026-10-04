@@ -681,7 +681,7 @@
     "area"
    ],
    "description": "Move up to 5 hexes in a straight line, passing through occupied hexes; every enemy whose hex you passed through or beside takes 4 magic damage, or 6 if it is demon or undead. As an area effect it cannot crit.",
-   "source": "Hell-TCG name reused (Demon Hunter/Havoc, Fel Rush — row damage rebuilt as a line you physically travel, which is what a rush is) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-10-04 (engine fix.own-area-skips-owner; ruled 2026-10-04, Andrew, engine DECISIONS.md 'the Poison Imp, the Balrog and the four caster-centred class powers skip their owner too': \"One and two, yes, skip the caster.\"): the power is aimed at every OTHER unit within 3 hexes - the caster is skipped. The description names enemies only and is unchanged.",
+   "source": "Hell-TCG name reused (Demon Hunter/Havoc, Fel Rush — row damage rebuilt as a line you physically travel, which is what a rush is) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-10-04 (engine fix.own-area-skips-owner; ruled 2026-10-04, engine DECISIONS.md 'the Poison Imp, the Balrog and the four caster-centred class powers skip their owner too': \"One and two, yes, skip the caster.\"): the power is aimed at every OTHER unit within 3 hexes - the caster is skipped. The description names enemies only and is unchanged.",
    "triggers": []
   },
   {
