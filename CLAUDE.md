@@ -68,7 +68,8 @@ stamp). The shards are recorded against that code, not the whole tree:
   them stale.
 - A complete set appends one line to `.state/passes.jsonl` (kept by a merge; committed with a
   landing's bookkeeping). The merge-back (`../tools/combine.mjs`) reads it and does not run the
-  suite again on the same code. A `shards.json` written before 2026-10-04 (a tree, no stamp) is no pass.
+  suite again on the same code. A failed shard is written there too, and takes an older pass on the
+  same code away. A `shards.json` written before 2026-10-04 (a tree, no stamp) is no pass.
 - At a landing the check **full test suite** prints `PASS` only when the shards ran on this exact
   tree; when they ran on the same code and only generated files or documents differ, or the pass is
   another copy's, it prints `SKIPPED` with the reason — never PASS for a suite that was not run.

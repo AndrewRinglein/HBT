@@ -32,7 +32,7 @@ import { readFileSync, writeFileSync, appendFileSync, existsSync, readdirSync, s
 import { join, resolve } from 'node:path'
 import { tmpdir } from 'node:os'
 import { stampOf, allStamps, PACKAGES } from '../../engine/tools/code-stamp.mjs'
-import { readPasses, hasPass, appendPass, logCheck, copyName, PASSES_FILE } from '../../engine/tools/suites.mjs'
+import { readPasses, hasPass, appendPass, appendFail, logCheck, copyName, PASSES_FILE } from '../../engine/tools/suites.mjs'
 import { filesMentioningId } from './source-mentions.mjs'
 
 // ── the suite in four parts (Andrew, 2026-09-23, engine/DECISIONS.md "less
@@ -119,6 +119,8 @@ if (shardArg !== -1) {
   s.at = new Date().toISOString()
   writeFileSync(SHARDS_FILE, JSON.stringify(s, null, 1) + '\n')
   const todo = shardsTodo(code)
+  // a failed shard is recorded too: an older pass on this code is not relied on after it
+  if (!ok && !moved) appendFail('.', { suite: 'kingdom', stamp: code, by: `gate --shard ${k}/${SHARDS}`, in: copyName(resolve(process.cwd(), '..')) })
   if (!todo.length) {
     // the whole suite passed on this code: one line in .state/passes.jsonl. `with` names the other
     // packages' code only when all four shards ran beside the same code (the full run reads it).

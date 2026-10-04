@@ -77,6 +77,9 @@ describe("kingdom's shards are recorded against kingdom's code", () => {
     const green = gate(dir, '--shards-green')
     expect(green.status, green.stdout).toBe(0)
     expect(green.stdout).toContain(`kingdom's suite passed on kingdom code ${stamp}`)
+    // a later run on the same code that FAILED takes the pass away
+    appendFileSync(join(dir, '.state', 'passes.jsonl'), JSON.stringify({ suite: 'kingdom', stamp, failed: true, at: '2026-10-04T11:00:00.000Z', by: 'gate --shard 2/4' }) + '\n')
+    expect(gate(dir, '--shards-green').status).toBe(1)
     writeFileSync(join(dir, '.state', 'passes.jsonl'), JSON.stringify({ suite: 'kingdom', at: '2026-10-04T10:00:00.000Z' }) + '\n')   // no stamp: no pass
     expect(gate(dir, '--shards-green').status).toBe(1)
   }, LONG)
