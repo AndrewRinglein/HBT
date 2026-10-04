@@ -42,6 +42,15 @@ const SWITCH = `<div id="playSwitchBox" role="alertdialog" aria-modal="true" ari
   + `<p id="playSwitchText"></p>`
   + `<div id="playSwitchBtns"><button id="playSwitchNo" type="button" class="pcBtn">No</button><button id="playSwitchYes" type="button" class="pcBtn pcEnd">Yes</button></div></div>`
 
+/* viewer.auto-end-no-actions (engine DECISIONS.md 2026-10-03 'a player unit with nothing left it can do ends its Activation by
+   itself', Andrew: "You should just auto-end its turn and put a notification on the screen: 'No remaining actions
+   possible.'"). The notice: an element on the board, as the phase banner and the End Turn pop-up are — never window.alert.
+   The host gives the words (viewer.notice(text)) when it has ended a unit that had nothing left the engine would take; the
+   chrome shows them for NOTICE_MS — long enough to read — and takes them down by itself. It blocks nothing: no question is
+   asked, the pump is not held, no click is caught (pointer-events: none), and the next Activation begins under it. The time
+   is the wall's, not the pump's: reading does not go faster at 2×. */
+export const NOTICE_MS = 3200
+
 /** V: the viewer context; host: {offer(input), speed(x)} — the viewer's own offer to onPlay and its speed() */
 export function mountPlayChrome(V, host) {
   const left = V.dom.root.querySelector('#left'), wrap = V.dom.stage.parentNode
@@ -50,6 +59,13 @@ export function mountPlayChrome(V, host) {
   const log = document.createElement('div'); log.id = 'playLog'; log.setAttribute('role', 'log'); log.setAttribute('aria-label', 'Battle log'); log.style.display = 'none'
   const top = V.dom.root.querySelector('#topbar'); top.insertAdjacentHTML('beforeend', LOGBTN); const logBtn = top.lastElementChild || top.children[top.children.length - 1]
   const ask = document.createElement('div'); ask.id = 'playAsk'; ask.style.display = 'none'; ask.innerHTML = ASK
+  const note = document.createElement('div'); note.id = 'playNotice'; note.setAttribute('role', 'status'); note.setAttribute('aria-live', 'polite'); note.style.display = 'none'
+  wrap.appendChild(note)
+  let noteTimer = null
+  function endNotice() { if (noteTimer != null) { clearTimeout(noteTimer); noteTimer = null } note.style.display = 'none' }
+  /** show the host's words for NOTICE_MS; a second notice takes the first one's place and its own time */
+  function notice(text) { endNotice(); note.textContent = text; note.style.display = ''
+    noteTimer = setTimeout(() => { noteTimer = null; note.style.display = 'none' }, NOTICE_MS) }
   const sw = document.createElement('div'); sw.id = 'playSwitch'; sw.style.display = 'none'; sw.innerHTML = SWITCH
   wrap.appendChild(bar); V.dom.root.appendChild(log); left.appendChild(ask); left.appendChild(sw)
   V.dom.root.appendChild(ends); V.dom.root.classList.add('pcEndsOn')    /* the screen's corner, not the board (#left) */
@@ -123,6 +139,6 @@ export function mountPlayChrome(V, host) {
     B.speed.classList.toggle('on', fast); B.speed.setAttribute('aria-pressed', String(fast))
     syncLog()
   }
-  function dispose() { document.removeEventListener('keydown', key); V.asking = false; bar.remove(); ends.remove(); log.remove(); ask.remove(); sw.remove(); logBtn.remove(); V.dom.root.classList.remove('pcEndsOn') }
-  return { sync, relog, dispose, dom: { bar, ends, log, ask, sw, ...B } }
+  function dispose() { document.removeEventListener('keydown', key); V.asking = false; endNotice(); note.remove(); bar.remove(); ends.remove(); log.remove(); ask.remove(); sw.remove(); logBtn.remove(); V.dom.root.classList.remove('pcEndsOn') }
+  return { sync, relog, notice, dispose, dom: { bar, ends, log, ask, sw, ...B } }
 }

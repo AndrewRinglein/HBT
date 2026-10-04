@@ -599,6 +599,11 @@ html,body{margin:0;background:#08090b;color:var(--ink);
 .acRow.playChosen{border-color:#bff2ff;box-shadow:0 0 12px rgba(150,205,245,.55)}
 #playNote{position:absolute;left:50%;top:12px;transform:translateX(-50%);z-index:50;padding:4px 12px;border:1px solid #2a251d;border-radius:2px;
   background:rgba(8,9,11,.82);color:#e8dfc8;font:600 13px "Barlow Semi Condensed",ui-sans-serif,system-ui,sans-serif;pointer-events:none}
+/* viewer.auto-end-no-actions: the host's notice ("No remaining actions possible.") — over the board, under the phase banner's
+   place, large enough to read at a glance; it catches no click and holds nothing (src/chrome.js) */
+#playNotice{position:absolute;left:50%;top:84px;transform:translateX(-50%);z-index:53;padding:9px 22px;border:1px solid var(--brass);border-radius:3px;
+  background:rgba(8,9,11,.9);color:var(--gold);font:600 20px "Barlow Semi Condensed",ui-sans-serif,system-ui,sans-serif;letter-spacing:.2px;
+  box-shadow:0 10px 30px rgba(0,0,0,.6);pointer-events:none;white-space:nowrap}
 .playHex:focus-visible{background:rgba(150,205,245,.3)!important;outline:none}
 
 /* ── viewer.play-chrome (2026-09-30): End Turn and its pop-up, End activation, 2×, the battle log (src/chrome.js;

@@ -36,8 +36,10 @@
             answers from the engine and calls setPlay again; the viewer draws and never decides.
             viewer.play-chrome: a host that plays also gets the play chrome (src/chrome.js) — End Turn and its pop-up,
             End activation, 2× speed, the battle log — whose clicks come as {kind:'end-turn'} · {kind:'end-activation'}.
+            viewer.switch-hero-asks: the switch pop-up, while the facts carry ask — its answer comes as {kind:'answer', yes}.
+            viewer.auto-end-no-actions: notice(text) puts the host's words on the board for a time; it blocks nothing.
 
-   Returns { setTargeting, setPlay, push, seek, play, pause, speed, step, setZoom, setBare, inspect,
+   Returns { setTargeting, setPlay, notice, push, seek, play, pause, speed, step, setZoom, setBare, inspect,
              peek, pan, render, dispose, get cursor/events/state/playing/view/invalid/
              speedValue/dom/art/assets, _V (the verifier's handle) }
    ══════════════════════════════════════════════════════════════════════════ */
@@ -203,7 +205,7 @@ export function mountBattleViewer(root, data, opts = {}) {
   const terrain = terrainLayer(V, opts.terrainDriver)
   /* viewer.play-chrome: End Turn, End activation, 2×, the log — for a host that plays; nothing for a replay */
   V.asking = false
-  const chrome = opts.onPlay ? mountPlayChrome(V, { offer: input => V.offerPlay(input), speed: x => api.speed(x) }) : { sync() {}, relog() {}, dispose() {} }
+  const chrome = opts.onPlay ? mountPlayChrome(V, { offer: input => V.offerPlay(input), speed: x => api.speed(x) }) : { sync() {}, relog() {}, notice() {}, dispose() {} }
 
   function render() {
     if (!V.layers.ground) buildGround(V)
@@ -534,6 +536,14 @@ export function mountBattleViewer(root, data, opts = {}) {
     /* viewer.tactical-camera: the camera's named views — angled, lower, raise, left, right, whole, overhead, inspect, focus,
        reset — and what it is doing (stance, elevation, turn, zoom) */
     camera(kind) { cameraView(V, kind) }, get cameraState() { return cameraState(V) },
+    /* viewer.auto-end-no-actions: the host's notice on the battle screen ("No remaining actions possible.") — its words, shown
+       by the play chrome for a time and taken down by itself; it holds nothing and asks nothing (chrome.js). A viewer with
+       no host that plays has no chrome and draws none. */
+    notice(text) {
+      if (disposed) throw new Error('viewer disposed')
+      if (typeof text !== 'string' || !text.trim()) throw new Error('notice needs words to show')
+      chrome.notice(text)
+    },
     /* viewer.affliction-pop-up: whether the first-affliction pop-up is holding the pump */
     get held() { return V.hold },
     dispose() { disposed = true; dropHold(); stopGlide(V); chrome.dispose(); clearTargeting(); V.play = null; V.heldPlay = null; cancelBurst(); cancelOpportunityLabel(); terrain.dispose(); pause(); cancelBeats(V); unbindCamera(); for (const E of V.layers.UEL.values()) if (E.walk) E.walk.cancel(); root.innerHTML = '' },

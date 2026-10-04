@@ -640,3 +640,16 @@ question arises and what yes does are the host's (kingdom SWITCHES `switchAsk*`)
 |---|---|---|---|---|
 | `switchPopUpOwnBox` | Reuse the End Turn pop-up's box for the second question, or its own? | **Its own element, `#playSwitch`, the End Turn pop-up's twin (same place, same look, shared rules in the stylesheet); the two share `V.asking`, and only one stands at a time.** | Two questions with different words, buttons and answers in one box would have each one's handlers guard against the other's state. | Default — 2026-10-04 |
 | `switchPopUpFact` | Does the viewer open the pop-up on the double-click, or when the host says so? | **When the host says so: the double-click is offered as before (`{kind:'choose'}`), and the pop-up stands exactly while the host's facts carry `ask: {kind:'switch', from, to}`; it is closed by the facts, never by the click on Yes or No, which only offers `{kind:'answer', yes}`.** Esc is No. The names are the fold's (`S.U[id].name`), as the End Turn pop-up's are. | Law 0 and the item: whether to ask is the host's fact from the engine; the viewer draws and offers. | Default — 2026-10-04 |
+
+## viewer.auto-end-no-actions — 2026-10-04
+
+Engine DECISIONS.md 2026-10-03 'a player unit with nothing left it can do ends its Activation by itself: "No remaining actions
+possible."' (Andrew: "You should just auto-end its turn and put a notification on the screen: 'No remaining actions
+possible.'"). `src/chrome.js` (`#playNotice`, `NOTICE_MS`), `src/viewer.js` (`notice(text)`), `src/styles.css`; probes
+`tools/auto-end-no-actions.test.mjs`, `test/viewer.auto-end-no-actions.test.ts`; the red is `auto-end-no-actions-red.log`.
+When a unit has nothing left, and the ending itself, are the host's from the engine (kingdom SWITCHES `autoEnd*`).
+
+| Switch | Question | Default | Reason | Status |
+|---|---|---|---|---|
+| `noticeApi` | How does the host's notice reach the screen — a play fact, or a call? | **A call, `notice(text)`, with the host's words: the play facts are withdrawn while the board plays, and the notice must stand across the end of one Activation and the begin of the next.** A viewer with no host that plays has no chrome and draws none. | A fact would vanish with the facts at the very moment it is needed. | Default — 2026-10-04 |
+| `noticeLook` | Where is it, and for how long? | **Over the board, centred, below the phase banner's place; 3.2 seconds of wall time (`NOTICE_MS`), not scaled by the 2× button; a second notice takes the first one's place and its own time. `pointer-events: none`, `role="status"`: it catches no click, takes no key and holds no pump.** | "long enough to read"; "The notice does not block". A look for Andrew to judge. | Default — 2026-10-04 |
