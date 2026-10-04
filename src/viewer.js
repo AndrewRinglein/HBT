@@ -30,7 +30,11 @@
                 are the engine's stamps on the export, never derived here
    opts = { now?: () => ms, autoplay?: bool, onCursor?: (cursor, event) => void,
             onHexClick?: (hex) => boolean, onDrain?: () => void, onPlayState?: (playing) => void, onError?: (err) => void,
-            onPlay?: (input) => boolean, look?: string[] }
+            onPlay?: (input) => boolean, look?: string[], newEnemies?: string[], onNewEnemy?: (typeId) => void }
+     newEnemies (viewer.new-enemy-notice) — the unit kinds (type ids) the host wants announced in this battle: the first
+            time a unit of such a kind is on the board the view shows it and a gold notice reads "New enemy" with the unit
+            sheet's name beneath; onNewEnemy hears each kind as its notice goes up, once. What is new is the host's to say
+            (the run remembers what was met); with none handed — the replay page — nothing is announced.
      look (viewer.characters-stand-out) — the names of the looks shown (stand-out.js LOOKS: size, shadows, ground, rim,
             disc), exactly those; resolved once, here, into the numbers the camera, the bodies and the scene read. Absent:
             the default pair, size and shadows (viewer.size-and-shadows-default); an empty list: none.
@@ -441,6 +445,69 @@ export function mountBattleViewer(root, data, opts = {}) {
      lines play — the Hero Phase and the first Activation, whose own centring (board.js applyCam) takes the view to that hero.
      An arrival already in the view drops in at once and moves nothing. A hand step, a seek, the whole-board fit and a unit
      that enters by another unit's power (a raise, a summon: it names no encounter) are as before (viewer SWITCHES arrivals*). */
+  /* ── NEW ENEMIES ARE NAMED (viewer.new-enemy-notice, 2026-10-04) ───────────────────────────────────────────────────────
+     Engine DECISIONS.md 2026-10-04 'the opening's tutorial: … new enemies are named …' (Andrew: "If a new enemy is introduced
+     there is going to be a notification: \"New enemy\" and their name." — the first time a kind is met: "To first time").
+     What is new is the HOST's to say: it hands the kinds to announce (opts.newEnemies, setNewEnemies) and the viewer never
+     decides it; with none handed nothing is announced. While the pump PLAYS, the first time a unit of such a kind is on the
+     board the view shows it and the gold notice (overlays.js tell) reads "New enemy" with the unit sheet's name beneath:
+       · a kind that arrives in a wave — while the arrivals camera is on its side (waveBeat), its drop-in played;
+       · a kind on the board before a hero's Activation begins (the battle's opening; a unit raised or summoned since) —
+         before that Activation is played: the view slides to each such kind in turn by the bubbles' least-distance slide
+         (board.js revealHex), the notice stands, and the Activation then plays and centres the view on the hero as before.
+     One notice per kind however many of it there are; the pump is held meanwhile; onNewEnemy hears the kind as its notice goes
+     up. A hand step, a seek, a fault drop it, and a kind not yet named stays to be named (viewer SWITCHES newEnemy*). */
+  const clockOfWall = () => now()
+  let newEnemies = new Set(), namedEnemies = new Set(), namingRun = null
+  function setNewEnemies(kinds) {
+    if (!Array.isArray(kinds) || kinds.some(k => typeof k !== 'string' || !k)) throw new Error('viewer: the new enemies are a list of unit type ids')
+    newEnemies = new Set(kinds)
+  }
+  if (opts.newEnemies !== undefined) setNewEnemies(opts.newEnemies)
+  /** the kinds to announce among these units (all standing units of the board when none are named), each with the unit shown
+      for it: the lowest id of that kind */
+  function newKindsAmong(ids) {
+    if (!newEnemies.size) return []
+    const units = (ids ? ids.map(id => V.S.U[id]) : Object.values(V.S.U)).filter(u => u && u.life !== 'dead' && newEnemies.has(u.typeId) && !namedEnemies.has(u.typeId)).sort((a, b) => a.id - b.id)
+    const kinds = []
+    for (const u of units) if (!kinds.some(k => k.typeId === u.typeId)) kinds.push({ typeId: u.typeId, unit: u.id })
+    return kinds
+  }
+  function cancelNaming() { const N = namingRun; if (!N) return; namingRun = null; if (N.timer != null) clearTimeout(N.timer) }
+  /** name each kind in turn, then go on: the view slid to its unit (slide), the notice up for its time, the host told.
+      `owner` is the run this belongs to (the arrivals', or the naming's own) — a run called off stops the chain. */
+  function nameKinds(owner, kinds, slide, then) {
+    const alive = () => owner === arrivalsRun || owner === namingRun
+    const next = i => {
+      if (!alive()) return
+      if (i >= kinds.length) { then(); return }
+      const k = kinds[i], u = V.S.U[k.unit]
+      if (!u || namedEnemies.has(k.typeId)) { next(i + 1); return }
+      const moved = slide && V.camTarget && V.view.zoom !== 'fit' && !V.view.peek && !V.view.overview ? revealHex(V, u.hex) : false
+      if (moved) drawEdges(V)
+      const glide = moved && V.view.glide && typeof requestAnimationFrame === 'function' ? GLIDE_MS : 0
+      const say = () => {
+        if (!alive()) return
+        namedEnemies.add(k.typeId)
+        const sheet = V.data.UD[k.typeId]
+        V.enemiesNamed.push({ typeId: k.typeId, unit: k.unit, hex: u.hex, slid: moved, pose: { ...(V.camTarget || {}) }, at: V.clock() })
+        if (opts.onNewEnemy) { try { opts.onNewEnemy(k.typeId) } catch (err) { fault(err) } }
+        overlays.tell(['New enemy', (sheet && sheet.name) || u.name], { onDone: () => next(i + 1) })
+      }
+      if (glide) owner.timer = setTimeout(() => { owner.timer = null; say() }, glide); else say()
+    }
+    next(0)
+  }
+  /** before a hero's Activation plays: the kinds on the board not yet named. True when the pump is now held for them. */
+  function nameBeforeActivation() {
+    const kinds = newKindsAmong(null)
+    if (!kinds.length) return false
+    const N = namingRun = { timer: null }
+    V.holdPump('newEnemy')
+    nameKinds(N, kinds, true, () => { if (namingRun !== N) return; namingRun = null; V.releasePump('newEnemy') })
+    return true
+  }
+  V.enemiesNamed = []
   const WAVE_LINES = new Set(['unit.enter', 'unit.equipped', 'unit.badged', 'unit.grown', 'unit.modified', 'unit.shunted', 'encounter.roll', 'encounter.objective', 'ai.override', 'ai.hunts'])
   let arrivalsRun = null
   function cancelArrivals() { const R = arrivalsRun; if (!R) return; arrivalsRun = null; if (R.timer != null) clearTimeout(R.timer) }
@@ -474,7 +541,11 @@ export function mountBattleViewer(root, data, opts = {}) {
       else (groups[side] = groups[side] || []).push(c)
     }
     const sides = ARRIVAL_SIDES.filter(s => groups[s])
-    if (!sides.length) return DUR[e.type] ?? 0
+    /* viewer.new-enemy-notice: an arrival of a kind the host wants announced is named while the view is on it — on its side
+       (below), or where it stands when it was in the view already */
+    const inView = arrivals.filter(c => !sides.some(s => groups[s].includes(c)))
+    const fresh = newKindsAmong(inView.map(c => c.id))
+    if (!sides.length && !fresh.length) return DUR[e.type] ?? 0
     const R = arrivalsRun = { timer: null }
     V.holdPump('arrivals')
     const visit = i => {
@@ -487,10 +558,15 @@ export function mountBattleViewer(root, data, opts = {}) {
       R.timer = setTimeout(() => {
         if (arrivalsRun !== R) return
         for (const c of g) showArrival(c, sides[i], moved)
-        R.timer = setTimeout(() => visit(i + 1), Math.max(16, CAM_POLICY.ARRIVAL_HOLD_MS / (V.speed * 0.75)))
+        const held = clockOfWall()
+        /* the side's hold is at least the arrivals' own; a new kind among them is named first, and the hold is what is left */
+        nameKinds(R, newKindsAmong(g.map(c => c.id)), false, () => {
+          if (arrivalsRun !== R) return
+          const left = Math.max(16, CAM_POLICY.ARRIVAL_HOLD_MS / (V.speed * 0.75) - (clockOfWall() - held))
+          R.timer = setTimeout(() => visit(i + 1), left) })
       }, glide)
     }
-    visit(0)
+    nameKinds(R, fresh, false, () => visit(0))
     return DUR[e.type] ?? 0
   }
   function beat(e) {
@@ -534,7 +610,7 @@ export function mountBattleViewer(root, data, opts = {}) {
   V.holds = new Set()
   V.holdPump = (who = 'affliction') => { V.holds.add(who); V.hold = true; if (V.timer != null) { clearTimeout(V.timer); V.timer = null } }
   V.releasePump = (who = 'affliction') => { if (!V.holds.delete(who) || V.holds.size) return; V.hold = false; if (!disposed && !V.invalid && V.playing && V.timer == null) step() }
-  function dropHold() { V.holds.clear(); V.hold = false; closeAffliction(V); overlays.dropped(); cancelArrivals() }
+  function dropHold() { cancelNaming(); cancelArrivals(); V.holds.clear(); V.hold = false; closeAffliction(V); overlays.dropped() }
   function step() {
     V.timer = null
     if (V.invalid || V.hold) return
@@ -544,6 +620,14 @@ export function mountBattleViewer(root, data, opts = {}) {
       return
     }
     let d
+    /* viewer.new-enemy-notice: before a hero's Activation is played, the kinds on the board the host wants announced are named
+       (the pump is held; it comes back here when the last notice has gone) */
+    const nextUp = V.EV[V.cursor]
+    if (V.playing && newEnemies.size && nextUp.type === 'activation.begin' && nextUp.phase === 'hero') {
+      let held = false
+      try { held = nameBeforeActivation() } catch (err) { fault(err) }
+      if (held) return
+    }
     /* Law 9: a beat that throws stops the run and says so — never a silent
        freeze behind a "Pause" button */
     try { d = beat(V.EV[V.cursor]); chrome.sync() }
@@ -620,6 +704,9 @@ export function mountBattleViewer(root, data, opts = {}) {
     point(target, o) { if (disposed) throw new Error('viewer disposed'); return overlays.point(target, o) }, unpoint(id) { return overlays.unpoint(id) },
     look(target, o) { if (disposed) throw new Error('viewer disposed'); return overlays.look(target, o) }, lookBack(o) { return overlays.lookBack(o) },
     get overlays() { return overlays.state },
+    /* viewer.new-enemy-notice: the unit kinds the host wants announced in this battle ("New enemy" and the name, the first time
+       a unit of the kind is on the board while the pump plays); a kind already named in this mount is not named again */
+    setNewEnemies(kinds) { if (disposed) throw new Error('viewer disposed'); setNewEnemies(kinds) },
     /* viewer.bubble-click-reveals (engine DECISIONS.md 2026-10-03 'clicking an off-screen bubble selects the unit and slides the
        screen just far enough to show its hex'): the view slid the least distance that shows a unit's hex, or a hex — the zoom,
        the turn and the tilt kept, never centred, never past the board's edge; true when the view moved */
