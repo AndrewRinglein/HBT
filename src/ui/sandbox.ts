@@ -10,19 +10,19 @@ import {refusalLine} from './refusals.js'
 import {ABBOTOWN_MAP} from '../content/conquest.js'
 import {conquestProgress,takeSection,nextSection} from '../core/conquest.js'
 import {conquestMapHTML} from './conquest-map.js'
-import {makeNewCampaign,performAdvanceOpening,performDraft,performFieldOpeningBattle,draftsOwedOf,openingBattlesWonOf} from '../core/opening.js'
+import {makeNewCampaign,performAdvanceOpening,performDraft,performFieldOpeningBattle,performOpeningDeploy,draftsOwedOf,openingBattlesWonOf} from '../core/opening.js'
 import {readRun,writeRun} from './opening-run.js'
 import {makeCtx,setBattleOutcome,type Ctx} from '../core/mutate.js'
-import {performAdvancePrep,performDeploy,listDeployable,deployLimitOf} from '../core/prep.js'
+import {performAdvancePrep,performDeploy,performUndeploy} from '../core/prep.js'
 import {resolveReckoning,applyBattleResult,performExitBattle} from '../core/reckoning.js'
 import {performTakeReward,listRewardTakers,performLevelUp,performLeaveLevelUp} from '../core/rewards.js'
 import {performEquip,performUnequip} from '../core/shop.js'
 import {sandboxResult} from '../core/sandbox.js'
-import {groupOf} from '../content/classes.js'
 import {itemOf} from '../content/items.js'
 import {encounterDef} from '../engine.js'
 import {equipPage} from './equip.js'
 import {draftScreen} from './draft.js'
+import {deployPage} from './deploy.js'
 import {recapScreen,mountRecap,rewardsScreen,mountRewards,levelUpScreen,mountLevelUp,toggleMute,type LastBattle,type Cleanup} from './after.js'
 import {fontFaces} from './art.js'
 
@@ -108,7 +108,8 @@ function runFooter(){
 /** kingdom.opening-loop-three (PLAYABLE-OPENING-PLAN.md item 12; engine DECISIONS.md 2026-09-29 "the playable opening": "one
     page, one sitting, local server: map -> first hero / draft -> equip -> battle -> rewards -> map"): the ?map sitting is a
     Campaign held in this page's memory — no save ("One sitting is enough for now"). The next section begins the chain: the
-    draft owed (core/opening.ts, the ruled cadence), Combat Prep walked to Equip with the whole party sent (no tactics), the
+    draft owed (core/opening.ts, the ruled cadence), Combat Prep walked to Equip — who goes chosen on the way when more are
+    held than may deploy (kingdom.opening-deploy-choice, 2026-10-03; until then the whole party was sent) — no tactics, the
     encounter's battle fielded with the campaign's own Hero rows, then the one writer, the recap, the rewards and the
     level-ups (the copied Hell-TCG screens, ui/after.ts), and the map again. A lost battle is offered again with the same
     party, wounds kept. Every step is a perform* call; the page decides nothing. kingdom SWITCHES.md opening* */
@@ -134,15 +135,17 @@ function beginSection(id:string){
  if(draftsOwedOf(ctx.campaign)>0)performAdvanceOpening(ctx,sitCause);else fieldBattle(id)
  mapOpen=false;campaignOpen=true;drawCampaign()
 }
-/** the opening battle as its encounter, Combat Prep walked to Equip: Reveal and the War Council passed (no tactics), the
-    party sent — every living hero free to fight, civilians stay home (kingdom SWITCHES.md openingDeployAll) */
+/** the opening battle as its encounter, Combat Prep walked to who goes: Reveal and the War Council passed (no tactics), and
+    at Deploy — kingdom.opening-deploy-choice (engine DECISIONS.md 2026-10-03 'the opening run, audited': "Should the player
+    choose which four heroes go into each battle?" — "3 yes") — with more heroes free to fight than the deploy limit the
+    cursor stays there and the Deploy page asks who goes (ui/deploy.ts; the choice is Combat Prep's own performDeploy /
+    performUndeploy); with the limit or fewer, all go and Equip opens (core/opening.ts performOpeningDeploy). Civilians stay
+    home. Until 2026-10-03 the page sent the first four living heroes by id and asked nothing (kingdom SWITCHES.md
+    openingDeployAll, openingPoolWhoDeploys — both settled by the ruling). */
 function fieldBattle(id:string){
  const ctx=sitting!.ctx
  performFieldOpeningBattle(ctx,{id,mapId:encounterDef(id).mapId!,kind:ABBOTOWN_MAP.engagementKind},sitCause)
- while(ctx.campaign.cursor.prepStep!=='deploy')performAdvancePrep(ctx,sitCause)
- const c=ctx.campaign
- for(const h of listDeployable(c).filter(h=>groupOf(c.roster[h]!.classes)==='hero').slice(0,deployLimitOf(c)))performDeploy(ctx,h,sitCause)
- performAdvancePrep(ctx,sitCause)
+ performOpeningDeploy(ctx,sitCause)
 }
 /** Equip's To the battle: the cursor goes to the battle and the encounter is fielded with the campaign's rows */
 function startCampaignBattle(){
@@ -170,6 +173,8 @@ function clearCampaign(){if(sitting?.mounted){sitting.mounted();sitting.mounted=
 function campaignAct(act:string,el:HTMLElement){
  const s=sitting!,ctx=s.ctx,c=ctx.campaign,id=el.dataset.id
  if(act==='draft'){performDraft(ctx,id!,sitCause);if(draftsOwedOf(ctx.campaign)>0)performAdvanceOpening(ctx,sitCause);else fieldBattle(nextSection(mapOrder,taken)!);drawCampaign()}
+ else if(act==='deploy'){performDeploy(ctx,id!,sitCause);drawCampaign()}
+ else if(act==='undeploy'){performUndeploy(ctx,id!,sitCause);drawCampaign()}
  else if(act==='pick'){s.picked=s.picked===id?null:id!;drawCampaign()}
  else if(act==='drop'){performEquip(ctx,id!,el.dataset.item!,sitCause,el.dataset.displace);s.picked=null;drawCampaign()}
  else if(act==='unequip'){performUnequip(ctx,id!,el.dataset.item!,sitCause);drawCampaign()}
@@ -199,6 +204,7 @@ function drawCampaign(){
   html=levelUpScreen(c,who,'rewards',{specialtyOwed:true})
   mount=hx=>mountLevelUp(hx,choice=>{try{performLevelUp(s.ctx,who,sitCause,choice);persist()}catch(e){error=(e as Error).message}},()=>{s.levelHero=null;drawCampaign()})}
  else if(c.cursor.step==='draft')html=`<div class="sliceView">${draftScreen(c)}</div>`
+ else if(c.cursor.step==='prep'&&c.cursor.prepStep==='deploy'){const e=c.cursor.engagement!;html=`<div class="sliceView">${deployPage(c,{engagementId:sectionOf(e.id)?.name??e.id})}</div>`}
  else if(c.cursor.step==='prep'&&c.cursor.prepStep==='equip'){const e=c.cursor.engagement!;html=`<div class="sliceView">${equipPage(c,e.deployed,{where:'prep',picked:s.picked,engagementId:sectionOf(e.id)?.name??e.id,canAdvance:true})}</div>`}
  else if(c.cursor.step==='reckoning'){html=recapScreen(c,s.ctx.events,s.lastBattle);mount=hx=>mountRecap(hx,()=>act(()=>campaignAct('exit',hx)))}
  else if(c.cursor.step==='rewards'||c.cursor.step==='levelUp'){html=rewardsScreen(c,s.ctx.events,s.lastBattle)+(s.giving?giveChoice(s.giving):'');mount=hx=>mountRewards(hx,id=>act(()=>takeReward(id)))}

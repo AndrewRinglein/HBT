@@ -8,7 +8,11 @@
 // Orphanage, the Lumberjack House (lost first, and offered again with the same party, wounds kept) and the Bridge. Then the
 // page is closed and opened again in the same browser as the launcher's Continue opens it (?map): the map stands at the
 // Cavern Trail, the Campaign is the one left — the same party, items, XP and levels. Battle 4 is fielded and the page
-// closed on it: reopened, it stands on that battle, from its start; then won; the Gates and the Cathedral are won; the map ends with every section taken and says the run is complete — and the Campaign never left the opening (no
+// closed on it: reopened, it stands on that battle, from its start; then won. From the Gates five heroes are free to fight,
+// so the run asks who goes (kingdom.opening-deploy-choice): four are chosen on the Deploy page — the page closed on it and
+// opened again with the same heroes sent — and they are the four on Equip and on the board, while whoever stays home is
+// unharmed and earns nothing; the Cathedral is lost first by one hero sent alone, offered again, and the replay asks who
+// goes again. The Gates and the Cathedral are won; the map ends with every section taken and says the run is complete — and the Campaign never left the opening (no
 // Week begun, no kingdom map). A reward kept is equipped at Equip before the next battle and fielded on its hero.
 //
 // Battles are settled as tools/opening-page.mjs settles them: the engine plays each out on a seed and the save is pasted
@@ -27,7 +31,23 @@ const SWORD='item.longsword.flaming',RUN_KEY='hbt-opening-run'
 const SEARCH={hows:(process.env.RUN_SIX_HOWS??'ai,hold,press').split(','),how:{partyAlive:false,fewestDead:true,seeds:Number(process.env.RUN_SIX_SEEDS??200)}}
 /* the seeds that settled each battle when this was last run (printed at the end), tried before the search */
 const KNOWN={'encounter.opening.orphanage':[['ai',1]],'encounter.opening.lumberjack:lost':[['idle',5]],'encounter.opening.lumberjack':[['ai',2]],'encounter.opening.bridge':[['hold',61]],
- 'encounter.opening.cavern-trail':[['ai',13]],'encounter.opening.gates':[['hold',53]],'encounter.opening.cathedral':[['hold',4]]}
+ 'encounter.opening.cavern-trail':[['ai',13]],'encounter.opening.gates':[['hold',74]],'encounter.opening.cathedral:lost':[['idle',1]],'encounter.opening.cathedral':[['press',15]]}
+/* Law 10, 2026-10-03 (kingdom.opening-deploy-choice; engine DECISIONS.md 2026-10-03 'the opening run, audited', question 3:
+   "Should the player choose which four heroes go into each battle?" — "3 yes"): the known seeds of the Gates and the
+   Cathedral are new (they were gates hold 53 and cathedral hold 4), and the Cathedral has a known lost seed; the run's seed
+   stays 11 and battles 1 to 4 are untouched (four or fewer are free to fight there, so nothing is asked and the same heroes
+   go). From battle 5 the run holds five heroes free to fight and now ASKS who goes, so the party sent is the driver's
+   choice and no longer the first four by id (the Crimson Sorceress, the Dawnblade, the Rune-Marked Ascetic and the Forest
+   Elf, with the Dwarven Brawler — the Flaming Longsword's carrier — always left home). Who stays home was searched (each
+   four of the five, 80 seeds of ai, hold and press): at the Gates two fours win with nobody dead — the old four on hold
+   53, and the Sorceress, the Dawnblade, the Forest Elf and the Brawler on hold 74 (the Ascetic home), which is taken; the
+   two fours without the Sorceress or without the Forest Elf win on no seed, and without the Dawnblade the win costs two.
+   At the Cathedral (two of its five fours were searched) the Sorceress, the Dawnblade, the Ascetic and the Brawler win on
+   press 15 with nobody dead (the Forest Elf home); the first four by id win on hold 19 at the cost of one. The Cathedral is first LOST, to hold the replay's
+   choice: by the Sorceress alone — the one hero with no wound, so she is only Wounded by it (idle 1) — and the win on press
+   15 then costs her and the Ascetic; without that loss press 15 costs nobody. What this page test holds — one run through
+   the six battles, saved and reopened, a loss offered again, the drafts and their modifiers — is unchanged, and it now also
+   holds the choice of who goes (kingdom SWITCHES.md openingDeployPageRun). */
 /* Law 10, 2026-10-03 (kingdom.opening-draft-modifiers; engine DECISIONS.md 2026-10-03 'the opening run, audited' and 2026-09-28
    'the first hero: Leadership …; the draft offers three with the Crucible's modifiers'): the known battle seeds, all but the
    first two, are new (they were lumberjack ai 12, bridge hold 188, cavern-trail ai 289, gates hold 4, cathedral hold 15); the
@@ -79,6 +99,67 @@ const OFFERS=[]
 function drafts(label){const got=[];while(camp().cursor.step==='draft'){got.push(P.draft(label+', draft '+(got.length+1)));OFFERS.push(P.lastOffer)}return got}
 const DEPLOY_LIMIT=4
 
+/* kingdom.opening-deploy-choice (engine DECISIONS.md 2026-10-03 'the opening run, audited', question 3: "Should the player
+   choose which four heroes go into each battle?" — "3 yes"): who goes. With four or fewer free to fight the run asks
+   nothing and all go (asserted in P.whoGoes). With five or more the Deploy page asks, and this driver chooses.
+   WHO STAYS HOME is found by search, like the seeds, and written here (HOME) for this file's run: of the fives the run
+   holds at the Gates and at the Cathedral, the four that win the battle with nobody dead — at the Gates the Rune-Marked
+   Ascetic stays home, at the Cathedral the Forest Elf; the Dwarven Brawler, who carries the Flaming Longsword, goes both
+   times (until 2026-10-03 the page left him home: he is the last by id). Another run seed (RUN_SIX_SEED) chooses by
+   rule: the sword's carrier goes; then whoever stayed home the last time the run asked; then the most XP; a tie to the
+   earlier id. Every time the run asks is kept in WENT.
+   The choosing itself is played through the page, the heroes sent in id order: two are sent; (the first time) the page
+   is closed on the Deploy page and opened again — the same step, the same two sent, the choice saved with the run; then a
+   change of mind — a hero who is to stay home is sent, the party filled (and the one still wanted cannot be sent: the
+   party is full), that hero brought home and the one wanted sent; then on to Equip. `pick` chooses otherwise (the
+   battle to be lost). */
+const WENT=[]
+const HOME=process.env.RUN_SIX_SEED===undefined?{'battle 5':['hero.base.priest-scantily'],'battle 6 again':['hero.base.ranger-scantily']}:{}
+function choose(free,label){
+ const home=HOME[label]
+ if(home){assert.ok(home.every(id=>free.includes(id)),label+': the heroes to stay home are free to fight');return free.filter(id=>!home.includes(id))}
+ const c=camp(),lastHome=WENT.at(-1)?.home??[]
+ const rank=id=>[c.roster[id].equipped.includes(SWORD)?0:1,lastHome.includes(id)?0:1,-c.roster[id].xp]
+ const by=(a,b)=>{const x=rank(a),y=rank(b);for(let i=0;i<x.length;i++)if(x[i]!==y[i])return x[i]-y[i];return a<b?-1:a>b?1:0}
+ return [...free].sort(by).slice(0,DEPLOY_LIMIT)
+}
+/* fewer than four may be sent: the heroes with no wound — a battle that is to be LOST is lost by them, so nobody already
+   Wounded goes down again (sent as four, the Gates lost cost three of them — each already Wounded, each dead in the
+   engine's result) and every hero is still free to fight when the battle is offered again */
+const unwounded=free=>free.filter(id=>camp().roster[id].wound===0).slice(0,DEPLOY_LIMIT)
+function whoGoes(label,pick=choose){
+ const who=P.whoGoes(label)
+ if(!who.asked)return {asked:false,free:who.free,sent:[...who.free].sort(),home:[]}
+ assert.ok(who.free.length>DEPLOY_LIMIT,label+': more are free to fight than may go')
+ assert.deepEqual(camp().cursor.engagement.deployed,[],label+': nobody is sent before the player chooses')
+ P.deployStands(label)
+ const want=pick(who.free,label).sort(),home=who.free.filter(id=>!want.includes(id))
+ assert.ok(want.length>=1&&want.length<=DEPLOY_LIMIT,label+': one to four are chosen');assert.ok(home.length>=1,label+': somebody stays home')
+ const [first,second,...rest]=want,last=rest.pop()
+ P.send(first,label);if(second)P.send(second,label)
+ if(!WENT.length){
+  /* the choice is saved with the run: the page closed on the Deploy page and opened again in the same browser */
+  const sent=[...camp().cursor.engagement.deployed]
+  P=openingPage(page,'?map',browser)
+  assert.deepEqual([camp().cursor.step,camp().cursor.prepStep],['prep','deploy'],label+': reopened, the run stands at who goes')
+  assert.deepEqual(camp().cursor.engagement.deployed,sent,label+': reopened, the same heroes are sent')
+  assert.equal(P.whoGoes(label+', reopened').asked,true);P.deployStands(label+', reopened')
+ }
+ /* a change of mind: a hero who is to stay home is sent, then brought home again */
+ P.send(home[0],label);for(const id of rest)P.send(id,label)
+ if(want.length===DEPLOY_LIMIT){
+  assert.equal(camp().cursor.engagement.deployed.length,DEPLOY_LIMIT,label+': the party is full')
+  assert.throws(()=>P.v.click('deploy',last),/Missing\/disabled/,label+': a fifth cannot be sent')
+ }
+ P.bringHome(home[0],label);if(last)P.send(last,label)
+ const sent=P.toEquip(label)
+ assert.deepEqual([...sent].sort(),[...want].sort(),label+': the heroes chosen are the heroes sent')
+ const asked={asked:true,label,free:who.free,sent:[...sent].sort(),home}
+ WENT.push(asked)
+ console.error(`${label}: asked who goes — sent ${asked.sent.map(h=>camp().roster[h].name).join(', ')}; home ${home.map(h=>camp().roster[h].name).join(', ')}`)
+ return asked
+}
+
 /* Equip: the stash's first item that fits a hero sent is put on that hero (the slot the page marks it can go in) */
 function equipFromStash(label){
  const stash=[...camp().stash];if(!stash.length)return null
@@ -96,7 +177,7 @@ function equipFromStash(label){
 
 /* a section fielded from the map: its drafts, Equip (a stash item put on), To the battle — the party sent is the living
    heroes, up to the deploy limit */
-function field(id,n,label,reopenAtDraft=false){
+function field(id,n,label,reopenAtDraft=false,pick=choose){
  assert.equal(P.readMap(ORDER.slice(0,n-1),label+': the map'),id,label+': the next section')
  P.v.click('field',id)
  if(reopenAtDraft){
@@ -109,15 +190,36 @@ function field(id,n,label,reopenAtDraft=false){
   assert.deepEqual(draftShown(),before,label+': reopened, the same heroes with the same modifiers')
  }
  const drafted=drafts(label)
+ const who=whoGoes(label,pick)
  const deployed=[...camp().cursor.engagement.deployed].sort()
+ /* Law 10, 2026-10-03 (kingdom.opening-deploy-choice): until now the party sent was whatever the page sent — the first
+    four living heroes by id — and only its size was held. The rule now: the heroes sent are the heroes the player chose
+    (or everyone free to fight when no choice was owed), held here and again on Equip and on the board. The size
+    assertions below stand as they were. */
+ assert.deepEqual(deployed,who.sent,label+': the heroes sent are the heroes chosen')
  console.error(`${label}: sent ${deployed.map(h=>{const r=camp().roster[h];return `${r.name} L${r.level}${r.wound?' wound '+r.wound:''}`}).join(', ')}; at home ${P.heroIds().filter(h=>!deployed.includes(h)).map(h=>camp().roster[h].name+' '+camp().roster[h].lifeState).join(', ')||'nobody'}`)
  assert.ok(deployed.length>0&&deployed.every(id=>alive().includes(id)),label+': living heroes are sent')
  /* kingdom.opening-draft-pool: four deploy — the deploy limit is unchanged, whoever of the party is alive */
- assert.equal(deployed.length,Math.min(DEPLOY_LIMIT,alive().length),label+': four deploy (or everyone alive, when fewer are)')
+ /* Law 10, 2026-10-03 (kingdom.opening-deploy-choice): this read
+      assert.equal(deployed.length,Math.min(DEPLOY_LIMIT,alive().length),label+': four deploy (or everyone alive, when fewer are)')
+    — the page sent as many as it could. Now the player chooses "up to the limit": when no choice is asked everyone free
+    to fight goes (as before); when it is asked, never more than four go, and four go unless the driver chose fewer (the
+    battle it means to lose) */
+ if(!who.asked)assert.equal(deployed.length,Math.min(DEPLOY_LIMIT,alive().length),label+': four deploy (or everyone alive, when fewer are)')
+ else assert.ok(deployed.length>=1&&deployed.length<=DEPLOY_LIMIT&&(pick!==choose||deployed.length===DEPLOY_LIMIT),label+': up to four deploy — four, unless fewer were chosen')
  const equipped=equipFromStash(label)
+ /* who stays home, as they stand when the battle begins: every living hero not sent */
+ const home=Object.fromEntries(alive().filter(id=>!deployed.includes(id)).map(id=>[id,structuredClone(camp().roster[id])]))
+ const xpBefore=Object.fromEntries(deployed.map(id=>[id,camp().roster[id].xp]))
  const s=P.equipThenFight(deployed,label)
  if(equipped&&s.config.heroes.includes(equipped.hero))assert.ok(s.config.heroRows.find(h=>h.id===equipped.hero).equipped.includes(equipped.item),label+': the item equipped is fielded on its hero')
- return {drafted,deployed,equipped,s}
+ return {drafted,deployed,equipped,s,who,home,xpBefore}
+}
+/* kingdom.opening-deploy-choice: after the battle is written and its rewards and level-ups are taken, a hero who stayed
+   home is the row it was — unharmed, no XP, no level, nothing moved; `paid`: and somebody who went was paid XP */
+function stayedHome(f,label,paid){
+ for(const [id,before] of Object.entries(f.home))assert.deepEqual(camp().roster[id],before,`${label}: ${id} stayed home — unharmed, and earned nothing`)
+ if(paid)assert.ok(f.deployed.some(id=>camp().roster[id].xp>f.xpBefore[id]),label+': the heroes who went were paid XP')
 }
 /* the battle on the board settled, then its reckoning, its reward kept (a named-class item to its first taker) and the
    level-ups, back to the map — the run still in the opening */
@@ -139,7 +241,7 @@ function settle(won,label){
  assert.equal(camp().week,0,label+': no Week begun — the run never reaches the kingdom');assert.equal(camp().ended,null,label+': the run goes on')
  return {result,kept}
 }
-function battle(id,n,label=`battle ${n}`){const f=field(id,n,label);return {...f,...settle(true,label)}}
+function battle(id,n,label=`battle ${n}`){const f=field(id,n,label),done=settle(true,label);stayedHome(f,label,true);return {...f,...done}}
 
 /* 1 · a new run: nothing fielded, nobody drafted, the Orphanage next; the run is kept from the first screen */
 assert.equal(P.readMap([],'a new run'),ORPHANAGE)
@@ -160,6 +262,7 @@ const standing=b2.deployed.filter(id=>camp().roster[id].lifeState==='alive')
 assert.equal(P.readMap(ORDER.slice(0,1),'after losing battle 2'),LUMBERJACK,'the lost battle is offered again')
 P.v.click('field',LUMBERJACK)
 assert.equal(camp().cursor.step,'prep','no draft is owed for the replay')
+assert.equal(whoGoes('battle 2 again').asked,false,'three free to fight: no choice is asked for the replay')
 const replay=P.equipThenFight(standing,'battle 2 again')
 assert.deepEqual([...replay.config.heroes].sort(),standing,'the same party')
 for(const id of replay.config.heroes)assert.equal(replay.config.heroRows.find(h=>h.id===id).wound,camp().roster[id].wound,`${id} carries its wound into the replay`)
@@ -189,11 +292,45 @@ assert.equal(camp().cursor.step,'battle','a run left mid-battle reopens on that 
 P.onTheBattle('battle 4, reopened mid-battle')
 settle(true,'battle 4')
 
-/* 5 · the Gates and the Cathedral */
+/* 5 · the Gates and the Cathedral — kingdom.opening-deploy-choice: with the sixth hero drafted, five are free to fight (the
+   Bridge cost one), so from here the run asks who goes. The Gates: four chosen, won. The Cathedral is lost first, by the
+   one hero with no wound sent alone (fewer than four may be sent): the map offers it again, and the replay asks who goes
+   AGAIN, with nobody sent — and another party goes, four this time. Then won. */
 const b5=battle(GATES,5)
 assert.equal(b5.drafted.length,1,'one more before battle 5: the sixth hero')
-const b6=battle(CATHEDRAL,6)
+assert.equal(b5.who.asked,true,'five free to fight before battle 5: the run asks which four go')
+const b6=field(CATHEDRAL,6,'battle 6',false,unwounded)
 assert.equal(b6.drafted.length,0,'six are drafted: no draft before battle 6')
+assert.equal(b6.who.asked,true,'five free to fight before battle 6: the run asks which four go')
+settle(false,'battle 6 lost');stayedHome(b6,'battle 6 lost',false)
+assert.equal(P.readMap(ORDER.slice(0,5),'after losing battle 6'),CATHEDRAL,'the lost battle is offered again')
+P.v.click('field',CATHEDRAL)
+assert.equal(camp().cursor.step,'prep','no draft is owed for the replay')
+const again=whoGoes('battle 6 again')
+assert.equal(again.asked,true,'the replayed battle asks who goes again')
+assert.notDeepEqual(again.sent,b6.who.sent,'and another party may go')
+assert.ok(b6.who.home.some(id=>again.sent.includes(id)),'heroes who stayed home the first time go this time')
+const homeAgain=Object.fromEntries(again.home.map(id=>[id,structuredClone(camp().roster[id])]))
+const xpAgain=Object.fromEntries(again.sent.map(id=>[id,camp().roster[id].xp]))
+const replay6=P.equipThenFight(again.sent,'battle 6 again')
+assert.deepEqual([...replay6.config.heroes].sort(),again.sent,'the four chosen for the replay are the four on the board')
+settle(true,'battle 6 won');stayedHome({home:homeAgain,deployed:again.sent,xpBefore:xpAgain},'battle 6 won',true)
+
+/* 5a · kingdom.opening-deploy-choice, the whole of it: the run never asked while four or fewer were free to fight
+   (battles 1 to 4 and the replay of battle 2 — asserted at each, P.whoGoes), and asked every time five or more were:
+   before battle 5, before battle 6 and before its replay. Each time the four chosen were the four on Equip and on the
+   board (P.equipThenFight, P.onTheBattle), and whoever stayed home was unharmed and earned nothing (stayedHome). */
+assert.deepEqual([b1,b2,b3,b4].map(b=>b.who.asked),[false,false,false,false],'four or fewer free to fight: no choice is asked')
+assert.deepEqual(WENT.map(w=>w.label),['battle 5','battle 6','battle 6 again'],'five free to fight: the run asks who goes, each time')
+for(const w of WENT){
+ assert.ok(w.free.length>=5,w.label+': five or more were free to fight')
+ assert.ok(w.sent.length<=DEPLOY_LIMIT,w.label+': never more than four go');assert.equal(w.home.length,w.free.length-w.sent.length,w.label+': the rest stay home')
+}
+assert.ok(WENT[1].sent.length<DEPLOY_LIMIT,'fewer than four may be sent (the lost battle)');assert.deepEqual([WENT[0],WENT[2]].map(w=>w.sent.length),[DEPLOY_LIMIT,DEPLOY_LIMIT],'and four go to the battles won')
+/* the four sent are the player's choice: at least once they were not the first four by id (what the page sent by itself
+   until 2026-10-03), and the hero left home was not the same one every time */
+assert.ok(WENT.some(w=>JSON.stringify(w.sent)!==JSON.stringify(w.free.slice(0,DEPLOY_LIMIT))),'the four sent are chosen — not always the first four by id')
+assert.ok(new Set(WENT.map(w=>w.home.join())).size>1,'and not the same hero left home every time')
 
 /* 5b · kingdom.opening-draft-pool (engine DECISIONS.md 2026-10-03 'the opening draft pool is all 24 heroes, Rogues and Mages
    included'; 2026-09-28 'the draft never repeats a class until all six are drafted'): the pool is the 24 base heroes, four
@@ -241,4 +378,4 @@ const party=P.heroIds()
 console.error('settled by: '+JSON.stringify(chosen))
 console.error('offers: '+OFFERS.map(o=>`${o.label}: ${o.ids.map(id=>POOL.find(h=>h.id===id).name).join(' / ')} -> ${POOL.find(h=>h.id===o.took).name}`).join('; '))
 console.error('drafted with: '+OFFERS.map(o=>`${POOL.find(h=>h.id===o.took).name}: ${[...o.drafted.badges.map(b=>b.replace('badge.','')),...o.drafted.mods.map(m=>(m.add>0?'+':'')+m.add+' '+m.stat),...o.drafted.unfielded.map(r=>(r.amount>0?'+':'')+r.amount+' '+r.stat+(r.stat==='itemSlots'?' (on the hero, its item slots)':' (not fielded)'))].join(', ')}`).join('; '))
-console.log(`opening run six: six battles from the map, never the kingdom map (Week ${camp().week}); six drafts of three, no class twice, Rogues and Mages offered; the first hero chosen by description only and given Leadership, a positive badge and +2 Health; every later draft shown with its rolled modifiers, kept in every battle and to the end of the run, the same after the page is closed and reopened; the party six, one of each class (${party.map(id=>camp().roster[id].classes.find(c=>HERO_CLASSES.includes(c)).replace('class.','')).join(', ')}); four deploy; base heroes left out for no kit: ${LEFT_OUT.map(h=>h.name).join(', ')||'none'}; party ${party.map(id=>`${camp().roster[id].name} L${camp().roster[id].level}${camp().roster[id].lifeState==='alive'?'':' ('+camp().roster[id].lifeState+')'}`).join(', ')}; closed after battle 3 and reopened at battle 4 with the same party, items, XP and levels; battle 2 lost and offered again with the same party; a run left mid-battle (battle 4) reopens on that battle; the Bridge's ${b3.kept} kept passed`)
+console.log(`opening run six: six battles from the map, never the kingdom map (Week ${camp().week}); six drafts of three, no class twice, Rogues and Mages offered; the first hero chosen by description only and given Leadership, a positive badge and +2 Health; every later draft shown with its rolled modifiers, kept in every battle and to the end of the run, the same after the page is closed and reopened; the party six, one of each class (${party.map(id=>camp().roster[id].classes.find(c=>HERO_CLASSES.includes(c)).replace('class.','')).join(', ')}); four deploy — with five free to fight the run asked who goes (${WENT.map(w=>`${w.label}: home ${w.home.map(h=>camp().roster[h].name).join(', ')}`).join('; ')}), the four chosen on Equip and on the board, whoever stayed home unharmed and unpaid, the choice kept when the page is closed on it, and asked again for a lost battle; base heroes left out for no kit: ${LEFT_OUT.map(h=>h.name).join(', ')||'none'}; party ${party.map(id=>`${camp().roster[id].name} L${camp().roster[id].level}${camp().roster[id].lifeState==='alive'?'':' ('+camp().roster[id].lifeState+')'}`).join(', ')}; closed after battle 3 and reopened at battle 4 with the same party, items, XP and levels; battle 2 lost and offered again with the same party; a run left mid-battle (battle 4) reopens on that battle; the Bridge's ${b3.kept} kept passed`)

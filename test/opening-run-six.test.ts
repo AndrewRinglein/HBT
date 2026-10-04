@@ -101,5 +101,7 @@ describe('kingdom.opening-run-six — one run through the six battles, saved', (
   it('the page: six battles from the map, never the kingdom map; closed after battle 3 and opened again, it goes on at battle 4 with the same party, items, XP and levels; a loss offered again with the same party', () => {
     const out = execFileSync(process.execPath, ['tools/opening-run-six.verify.mjs', 'BATTLE-SANDBOX.html'], { cwd: '../kingdom', encoding: 'utf8', maxBuffer: 1 << 24 })
     expect(out).toMatch(/opening run six: .*passed/)
+    // kingdom.opening-deploy-choice (2026-10-03): the same run asks who goes once five are free to fight, and says so
+    expect(out).toMatch(/with five free to fight the run asked who goes \(battle 5: home [^;]+; battle 6: home [^;]+; battle 6 again: home [^)]+\)/)
   }, 1800000)
 })

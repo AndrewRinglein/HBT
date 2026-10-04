@@ -47,7 +47,7 @@ const KNOWN={'battle 1':[['ai',1]],'battle 2 lost':[['idle',5]],'battle 2 won':[
    every run. What this page test holds — the loop's flow through three battles — is unchanged.
    LOOP_THREE_SEED: another run seed (another party) — its battles are searched; the known seeds are this file's run's only */
 const RUN_SEED=Number(process.env.LOOP_THREE_SEED??11),FOUND=process.env.LOOP_THREE_SEED===undefined?KNOWN:{}
-const {handle,camp,byId,heroIds,civilianIds,wait,readMap,draft,equipThenFight,fightOut:settleOn,levelUps,takeReward,v}=openingPage(page,'?map&seed='+RUN_SEED)
+const {handle,camp,byId,heroIds,civilianIds,wait,readMap,draft,whoGoes,equipThenFight,fightOut:settleOn,levelUps,takeReward,v}=openingPage(page,'?map&seed='+RUN_SEED)
 /* a battle settled, the seed that settled it said (stderr) — a known seed is tried before the search (opening-page.mjs `first`) */
 const chosen={}
 function fightOut(won,label,hows,how={}){const r=settleOn(won,label,hows,{...how,first:FOUND[label]??[]});chosen[label]=[r.played,r.seed];console.error(`settled ${label}: ${r.played} seed ${r.seed}`);return r}
@@ -61,6 +61,10 @@ assert.deepEqual(heroIds(),[],'the Campaign starts with nobody')
 v.click('field',ORPHANAGE)
 const first=draft('battle 1')
 assert.deepEqual(heroIds(),[first],'one hero before battle 1')
+/* kingdom.opening-deploy-choice (2026-10-03): through these three battles four or fewer heroes are free to fight, so the run
+   asks nothing — no Deploy page, everyone goes, Equip opens at once (opening-page.mjs whoGoes); the choice itself is
+   tools/opening-run-six.verify.mjs's, from battle 5 */
+assert.equal(whoGoes('battle 1').asked,false,'one hero: no choice is asked')
 equipThenFight([first],'battle 1')
 const b1=fightOut(true,'battle 1')
 assert.equal(camp().roster[first].xp,20,'the Orphanage pays its 20 XP')
@@ -77,6 +81,7 @@ const second=draft('battle 2, draft 1');const third=draft('battle 2, draft 2')
 const party2=[first,second,third].sort()
 assert.deepEqual(heroIds(),party2,'three heroes before battle 2')
 assert.equal(new Set(party2.map(id=>camp().roster[id].classes[0])).size,3,'three classes: none drafted twice')
+assert.equal(whoGoes('battle 2').asked,false,'three heroes: no choice is asked')
 equipThenFight(party2,'battle 2')
 fightOut(false,'battle 2 lost')
 if(camp().cursor.step==='levelUp')levelUps('battle 2 lost')
@@ -86,6 +91,7 @@ const wounds=Object.fromEntries(party2.map(id=>[id,camp().roster[id].wound]))
 assert.ok(Object.values(wounds).some(n=>n>0),'the loss left wounds')
 v.click('field',LUMBERJACK)
 assert.equal(camp().cursor.step,'prep','no draft is owed for the replay')
+assert.equal(whoGoes('battle 2 again').asked,false,'the replay: no choice is asked')
 const replay=equipThenFight(party2,'battle 2 again')
 for(const id of party2){
  assert.equal(replay.config.heroRows.find(h=>h.id===id).wound,wounds[id],`${id} carries its wound into the replay`)
@@ -111,6 +117,7 @@ v.click('field',BRIDGE)
 const fourth=draft('battle 3')
 const party3=[...party2,fourth].sort()
 assert.deepEqual(heroIds(),party3,'four heroes before battle 3')
+assert.equal(whoGoes('battle 3').asked,false,'four heroes: no choice is asked')
 equipThenFight(party3,'battle 3')
 fightOut(true,'battle 3',['hold'],{partyAlive:false})
 assert.equal(camp().cursor.step,'rewards','the Bridge offers its reward')

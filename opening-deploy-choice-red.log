@@ -1,0 +1,152 @@
+kingdom.opening-deploy-choice - the probe and the page test, RED on the old code (the run walks past Deploy: the page sends the first four living heroes by id and asks nothing), 2026-10-03
+(the probes as landed, run with src/core/opening.ts, src/ui/sandbox.ts, src/ui/slice.css and the built page stashed back to kingdom 5cbc10d; src/ui/deploy.ts, the new page, left in place - with it away too the suite fails whole: "Cannot find module '../src/ui/deploy.js'")
+--- test/opening-deploy-choice.test.ts ---
+
+ RUN  v4.1.11 C:/Users/aring/Desktop/HBT-worker-kingdom/kingdom
+
+ ❯ test/opening-deploy-choice.test.ts (8 tests | 8 failed) 14ms
+     × with the deploy limit or fewer free to fight, all go and no choice is asked: Equip opens at once 4ms
+     × with five or six free to fight the run stops at Deploy with nobody sent: the player chooses, up to the limit, and those are the heroes Equip shows 2ms
+     × fewer than the limit may be sent — but never nobody 1ms
+     × the four chosen are the four on the board; the fifth stays home unharmed and earns nothing 1ms
+     × who is counted: heroes free to fight — a civilian, the dead and the Severely wounded stay home and are never offered 1ms
+     × the choice is saved with the run: closed at Deploy with two chosen, or at Equip with four, it reads back the same 1ms
+     × a lost battle fielded again offers the choice again, with nobody sent — and another four may go 1ms
+     × the Deploy page: one card per hero who may go, a click sends or brings home, the count and the way on 1ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 8 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/opening-deploy-choice.test.ts > kingdom.opening-deploy-choice — the player chooses which four go > with the deploy limit or fewer free to fight, all go and no choice is asked: Equip opens at once
+TypeError: performOpeningDeploy is not a function
+ ❯ test/opening-deploy-choice.test.ts:73:14
+     71|       const ctx = partyOf(11, heroes)
+     72|       field(ctx)
+     73|       expect(performOpeningDeploy(ctx, 'test'), `${heroes} heroes: no …
+       |              ^
+     74|       expect(ctx.campaign.cursor.prepStep, `${heroes} heroes: at Equip…
+     75|       expect(deployed(ctx).sort(), `${heroes} heroes: all go`).toEqual…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/8]⎯
+
+ FAIL  test/opening-deploy-choice.test.ts > kingdom.opening-deploy-choice — the player chooses which four go > with five or six free to fight the run stops at Deploy with nobody sent: the player chooses, up to the limit, and those are the heroes Equip shows
+TypeError: performOpeningDeploy is not a function
+ ❯ test/opening-deploy-choice.test.ts:84:14
+     82|       const ctx = partyOf(11, heroes), c = ctx.campaign
+     83|       field(ctx)
+     84|       expect(performOpeningDeploy(ctx, 'test'), `${heroes} heroes: the…
+       |              ^
+     85|       expect([c.cursor.step, c.cursor.prepStep]).toEqual(['prep', 'dep…
+     86|       expect(isDeployChoiceOwed(c)).toBe(true)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/8]⎯
+
+ FAIL  test/opening-deploy-choice.test.ts > kingdom.opening-deploy-choice — the player chooses which four go > fewer than the limit may be sent — but never nobody
+TypeError: performOpeningDeploy is not a function
+ ❯ test/opening-deploy-choice.test.ts:120:17
+    118|   it('fewer than the limit may be sent — but never nobody', () => {
+    119|     const ctx = partyOf(11, 5)
+    120|     field(ctx); performOpeningDeploy(ctx, 'test')
+       |                 ^
+    121|     performDeploy(ctx, listOpeningParty(ctx.campaign)[2]!, 'test')
+    122|     expect(canAdvancePrep(ctx.campaign)).toBe(true)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/8]⎯
+
+ FAIL  test/opening-deploy-choice.test.ts > kingdom.opening-deploy-choice — the player chooses which four go > the four chosen are the four on the board; the fifth stays home unharmed and earns nothing
+TypeError: performOpeningDeploy is not a function
+ ❯ test/opening-deploy-choice.test.ts:132:12
+    130|     c.cursor.prologue = 1
+    131|     field(ctx)
+    132|     expect(performOpeningDeploy(ctx, 'test')).toBe(true)
+       |            ^
+    133|     const party = listOpeningParty(c), chosen = party.slice(-4), home …
+    134|     for (const h of chosen) performDeploy(ctx, h, 'test')
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/8]⎯
+
+ FAIL  test/opening-deploy-choice.test.ts > kingdom.opening-deploy-choice — the player chooses which four go > who is counted: heroes free to fight — a civilian, the dead and the Severely wounded stay home and are never offered
+TypeError: performOpeningDeploy is not a function
+ ❯ test/opening-deploy-choice.test.ts:163:12
+    161|     dead.campaign.roster[heroIds(dead)[1]!]!.lifeState = 'dead'
+    162|     field(dead)
+    163|     expect(performOpeningDeploy(dead, 'test')).toBe(false)
+       |            ^
+    164|     expect(deployed(dead).sort()).toEqual(heroIds(dead).filter((h) => …
+    165|     // six held, one Severely wounded: five free — the choice is asked…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/8]⎯
+
+ FAIL  test/opening-deploy-choice.test.ts > kingdom.opening-deploy-choice — the player chooses which four go > the choice is saved with the run: closed at Deploy with two chosen, or at Equip with four, it reads back the same
+TypeError: performOpeningDeploy is not a function
+ ❯ test/opening-deploy-choice.test.ts:190:17
+    188|   it('the choice is saved with the run: closed at Deploy with two chos…
+    189|     const ctx = partyOf(11, 5), c = ctx.campaign
+    190|     field(ctx); performOpeningDeploy(ctx, 'test')
+       |                 ^
+    191|     const party = listOpeningParty(c)
+    192|     performDeploy(ctx, party[4]!, 'test'); performDeploy(ctx, party[1]…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/8]⎯
+
+ FAIL  test/opening-deploy-choice.test.ts > kingdom.opening-deploy-choice — the player chooses which four go > a lost battle fielded again offers the choice again, with nobody sent — and another four may go
+TypeError: performOpeningDeploy is not a function
+ ❯ test/opening-deploy-choice.test.ts:207:17
+    205|   it('a lost battle fielded again offers the choice again, with nobody…
+    206|     const ctx = partyOf(11, 5), c = ctx.campaign
+    207|     field(ctx); performOpeningDeploy(ctx, 'test')
+       |                 ^
+    208|     const party = listOpeningParty(c), chosen = party.slice(0, 4)
+    209|     for (const h of chosen) performDeploy(ctx, h, 'test')
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/8]⎯
+
+ FAIL  test/opening-deploy-choice.test.ts > kingdom.opening-deploy-choice — the player chooses which four go > the Deploy page: one card per hero who may go, a click sends or brings home, the count and the way on
+TypeError: performOpeningDeploy is not a function
+ ❯ test/opening-deploy-choice.test.ts:238:17
+    236|   it('the Deploy page: one card per hero who may go, a click sends or …
+    237|     const ctx = partyOf(11, 5), c = ctx.campaign
+    238|     field(ctx); performOpeningDeploy(ctx, 'test')
+       |                 ^
+    239|     const party = listOpeningParty(c)
+    240|     let html = deployPage(c, { engagementId: 'the Cavern Trail' })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/8]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  8 failed (8)
+   Start at  20:46:06
+   Duration  4.11s (transform 2.80s, setup 0ms, import 3.97s, tests 14ms, environment 0ms)
+
+
+--- node tools/opening-run-six.verify.mjs BATTLE-SANDBOX.html (the committed page, 5cbc10d) ---
+settled battle 1: ai seed 1
+battle 2: sent Rune-Marked Ascetic L1, The Serpent L1, Dwarven Brawler L2; at home nobody
+settled battle 2 lost: idle seed 5
+settled battle 2 won: ai seed 2
+battle 3: sent Rune-Marked Ascetic L2 wound 1, Forest Elf L1, The Serpent L2 wound 1, Dwarven Brawler L2 wound 1; at home nobody
+settled battle 3: hold seed 61
+battle 4: sent Dawnblade L1, Rune-Marked Ascetic L2 wound 1, Forest Elf L2, Dwarven Brawler L2 wound 1; at home The Serpent dead
+settled battle 4: ai seed 13
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: battle 5: 5 free to fight — the run asks which 4 go
+
+'equip' !== 'deploy'
+
+    at Object.whoGoes (file:///C:/Users/aring/Desktop/HBT-worker-kingdom/kingdom/tools/opening-page.mjs:206:10)
+    at whoGoes (file:///C:/Users/aring/Desktop/HBT-worker-kingdom/kingdom/tools/opening-run-six.verify.mjs:131:14)
+    at field (file:///C:/Users/aring/Desktop/HBT-worker-kingdom/kingdom/tools/opening-run-six.verify.mjs:193:12)
+    at battle (file:///C:/Users/aring/Desktop/HBT-worker-kingdom/kingdom/tools/opening-run-six.verify.mjs:244:51)
+    at file:///C:/Users/aring/Desktop/HBT-worker-kingdom/kingdom/tools/opening-run-six.verify.mjs:299:10 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: 'equip',
+  expected: 'deploy',
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.12.0

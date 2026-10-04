@@ -16,12 +16,12 @@
 
 import type { CampaignState, Engagement, Hero, HeroId } from './campaign.js'
 import { makeCampaign } from './campaign.js'
-import { type Ctx, setCursor, setDraftOffer, applyDraft, applyRescue, setEnded } from './mutate.js'
+import { type Ctx, engagementOf, setCursor, setDraftOffer, applyDraft, applyRescue, setEnded } from './mutate.js'
 import { pickOf, rollBelowOf } from './rng.js'
 import { firstHeroDraftedOf, handDraftedOf, type Roller, type BaseOf, type Drafted } from './draft-modifiers.js'
 import { UNITS } from '../engine.js'
 import { crucibleBadgeOf, crucibleStatOf } from '../content/crucible.js'
-import { beginCombatPrep } from './prep.js'
+import { beginCombatPrep, prepStepOf, performAdvancePrep, performDeploy, listDeployable, deployLimitOf } from './prep.js'
 import { beginWeek } from './week.js'
 import { listTerritories } from './map.js'
 import { tickAssignments } from './assignments.js'
@@ -247,6 +247,50 @@ export function performFieldOpeningBattle(ctx: Ctx, battle: { readonly id: strin
   setCursor(ctx, { engagement: e, fought: 0 }, causeId)
   beginCombatPrep(ctx, causeId)
   return e
+}
+
+// ---------- who goes (kingdom.opening-deploy-choice, 2026-10-03) ----------
+// Ruled 2026-10-03 (Andrew, engine/DECISIONS.md 'the opening run, audited', question 3: "Should the player choose which
+// four heroes go into each battle?" — "3 yes"; his post: "Hero selection."). The choice is Combat Prep's own Deploy step
+// (prep.ts performDeploy, performUndeploy, performAdvancePrep) — the kingdom's one Deploy mechanism, never a second: the
+// chosen are the Engagement's `deployed`, in the Campaign, so they are saved with the run; a lost battle fielded again
+// is a new Engagement with nobody sent, so the choice is asked again. Until this item the run walked past Deploy and the
+// page sent the first four by id (kingdom SWITCHES.md openingDeployAll, openingPoolWhoDeploys).
+
+/**
+ * Who may go to the opening battle on the cursor: the heroes sent and the heroes free to be (prep.ts listDeployable —
+ * alive, not Severely wounded, not held elsewhere), the hero group only — civilians stay home, the encounter fields its
+ * own (kingdom SWITCHES.md openingDeployAll). Sorted by id (Law 6), the same list whoever is chosen.
+ */
+export function listOpeningParty(campaign: CampaignState): HeroId[] {
+  const e = engagementOf(campaign)
+  return [...e.deployed, ...listDeployable(campaign)].filter((id) => groupOf(campaign.roster[id]!.classes) === 'hero').sort()
+}
+
+/** Is the player's choice owed — the cursor at Deploy with more heroes who may go than the deploy limit? */
+export function isDeployChoiceOwed(campaign: CampaignState): boolean {
+  return campaign.cursor.step === 'prep' && campaign.cursor.prepStep === 'deploy' && listOpeningParty(campaign).length > deployLimitOf(campaign)
+}
+
+/**
+ * The opening battle just fielded (performFieldOpeningBattle), walked to who goes: Reveal and the War Council are passed
+ * with no tactic ("tactics are out", PLAYABLE-OPENING-PLAN.md), and at Deploy —
+ *   · with the deploy limit or fewer who may go, all are sent and Equip opens: no choice is asked (returns false);
+ *   · with more, nobody is sent and the cursor STAYS at Deploy: the player chooses, up to the limit (performDeploy /
+ *     performUndeploy), and goes on to Equip by performAdvancePrep, which refuses while nobody is sent (returns true).
+ * Refused off the prep steps before Equip.
+ */
+export function performOpeningDeploy(ctx: Ctx, causeId: string): boolean {
+  const c = ctx.campaign
+  if (c.cursor.prologue === null) throw new Error('performOpeningDeploy refused: the opening is done')
+  for (let guard = 0; prepStepOf(c) !== 'deploy'; guard++) {
+    if (prepStepOf(c) === 'equip' || guard > 8) throw new Error(`performOpeningDeploy refused: the cursor is past Deploy, at prep step '${c.cursor.prepStep}'`)
+    performAdvancePrep(ctx, causeId)
+  }
+  if (isDeployChoiceOwed(c)) return true
+  for (const h of listOpeningParty(c)) if (!engagementOf(c).deployed.includes(h)) performDeploy(ctx, h, causeId)
+  performAdvancePrep(ctx, causeId)
+  return false
 }
 
 /**

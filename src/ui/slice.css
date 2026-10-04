@@ -186,6 +186,20 @@ svg.world image.ruin{filter:grayscale(.9) brightness(.55)}
 /* Equip as its own screen (ruled 2026-09-04) */
 .equip-page>.bar{position:sticky;top:0;z-index:5}
 .equip-page .bar h2{font-size:19px}
+/* the Deploy page (kingdom.opening-deploy-choice, 2026-10-03): who goes into the opening battle — the roster's card per
+   hero who may go, the whole card the button; going is lit, the rest wait, and a full party dims who is left */
+.deploy-page>.bar{position:sticky;top:0;z-index:5}
+.deploy-page .bar h2{font-size:19px}
+.deploy-page .bar .count{color:var(--gold);font-style:normal}
+.deploy-page .deploycard{flex:0 0 212px;width:212px;min-width:0;box-sizing:border-box;overflow:hidden;display:flex;flex-direction:column;border:2px solid var(--line);border-radius:8px;background:#000;cursor:pointer;opacity:.82;transition:opacity .12s,border-color .12s}
+.deploy-page .deploycard:hover{opacity:1;border-color:var(--dim)}
+.deploy-page .deploycard.on{opacity:1;border-color:var(--gold);box-shadow:0 0 14px rgba(232,200,74,.28)}
+.deploy-page .deploycard.off{opacity:.4;cursor:not-allowed}
+.deploy-page .deploycard .going{font:700 12px Cinzel,"Palatino Linotype",Georgia,serif;letter-spacing:.12em;text-transform:uppercase;text-align:center;padding:5px 0;color:var(--faint);border-bottom:1px solid var(--line)}
+.deploy-page .deploycard.on .going{color:#14110f;background:var(--gold);border-bottom-color:var(--gold);border-radius:5px 5px 0 0}
+.deploy-page .deploycard .herocard{flex:1 1 auto;border:0;min-width:0}
+.deploy-page .equip .stCols{gap:0 8px} .deploy-page .equip .stN{font-size:11px;white-space:nowrap} .deploy-page .equip .stV{font-size:12.5px;white-space:nowrap}
+.deploy-page .bar .meta{margin:0}
 
 /* the roster (ISC-049, rewritten 2026-09-03): the Equip card, plus what the campaign knows */
 .roster-screen .rosterrow{align-items:flex-start}

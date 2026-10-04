@@ -1,5 +1,5 @@
 // The opening's page, driven — the steps tools/opening-loop-three.verify.mjs and tools/opening-run-six.verify.mjs take on
-// the BUILT sandbox opened with ?map, through the page's own controls: the map, the draft, Equip, the battle settled by a
+// the BUILT sandbox opened with ?map, through the page's own controls: the map, the draft, who goes, Equip, the battle settled by a
 // pasted engine save, the reckoning, the rewards and the level-ups. One copy for both (kingdom.opening-run-six).
 //
 // A battle is settled the way tools/abbotown-map.verify.mjs settles one: the engine plays it out on a seed and the save is
@@ -13,7 +13,7 @@ import {bootSlice} from './atlas-dom.mjs'
 
 export const TAKERS=['class.warrior','class.paladin']
 const esbuild=createRequire(import.meta.url)('../../engine/node_modules/esbuild')
-const built=esbuild.buildSync({stdin:{contents:`export {createSandbox,saveSandbox,sandboxResult,advanceSandbox,sandboxActivationChoices,sandboxChoices,commandSandbox} from './src/core/sandbox.ts';export {runBattle,BADGES,draftScoreOf} from './src/engine.ts';export * as HEROES from './src/content/heroes.ts';export * as OPENING from './src/core/opening.ts';export * as SEAM from './src/core/seam.ts'`,resolveDir:process.cwd(),loader:'ts'},bundle:true,platform:'node',format:'esm',write:false,logLevel:'silent'})
+const built=esbuild.buildSync({stdin:{contents:`export {createSandbox,saveSandbox,sandboxResult,advanceSandbox,sandboxActivationChoices,sandboxChoices,commandSandbox} from './src/core/sandbox.ts';export {runBattle,BADGES,draftScoreOf} from './src/engine.ts';export * as HEROES from './src/content/heroes.ts';export * as OPENING from './src/core/opening.ts';export * as SEAM from './src/core/seam.ts';export * as PREP from './src/core/prep.ts';export {WOUND_UNAVAILABLE} from './src/content/wounds.ts'`,resolveDir:process.cwd(),loader:'ts'},bundle:true,platform:'node',format:'esm',write:false,logLevel:'silent'})
 const E=await import('data:text/javascript;base64,'+Buffer.from(built.outputFiles[0].text).toString('base64'))
 /* kingdom.opening-draft-pool: the sources' draft pool, and the base heroes left out of it for want of a kit — what the
    page's draft is held against */
@@ -183,11 +183,78 @@ export function openingPage(page,search,store){
   return pick.dataset.id
  }
 
- /* the Equip step: the deployed party, fitted, then To the battle */
+ /* kingdom.opening-deploy-choice (engine DECISIONS.md 2026-10-03 'the opening run, audited', question 3: "Should the player
+    choose which four heroes go into each battle?" — "3 yes"): who goes. The heroes free to fight are the living heroes not
+    Severely wounded (civilians stay home). With the deploy limit or fewer of them the run asks nothing: Equip is on the
+    screen and all of them are sent. With more, the Deploy page is on the screen — a card for each of them, nobody sent, no
+    way on until somebody is — and the player sends up to the limit (send / bringHome), then goes on (toEquip). */
+ const LIMIT=()=>E.PREP.deployLimitOf(camp())
+ const freeToFight=()=>heroIds().filter(id=>{const h=camp().roster[id];return h.lifeState==='alive'&&h.wound<E.WOUND_UNAVAILABLE})
+ const deployCards=()=>byId('campaign').querySelectorAll('.deploycard').map(el=>({id:el.dataset.hero,act:el.dataset.act,actId:el.dataset.id,going:el.classList.contains('on'),off:el.classList.contains('off'),text:el.textContent}))
+ const sentNow=()=>[...camp().cursor.engagement.deployed]
+ function whoGoes(label){
+  const free=freeToFight(),limit=LIMIT()
+  assert.ok(shown('campaign'),label+': the campaign screen is shown');assert.equal(camp().cursor.step,'prep',label+': the battle is fielded, in Combat Prep')
+  if(free.length<=limit){
+   /* four or fewer: no choice is asked */
+   assert.equal(camp().cursor.prepStep,'equip',`${label}: ${free.length} free to fight — no choice is asked, Equip is on the screen`)
+   assert.equal(byId('campaign').querySelectorAll('.deploy-page').length,0,label+': no Deploy page');assert.equal(byId('campaign').querySelectorAll('.deploycard').length,0,label+': no hero to choose')
+   assert.deepEqual(sentNow().sort(),free,label+': everyone free to fight is sent')
+   return {asked:false,free,limit}
+  }
+  /* more than four: the run asks who goes, before Equip */
+  assert.equal(camp().cursor.prepStep,'deploy',`${label}: ${free.length} free to fight — the run asks which ${limit} go`)
+  assert.equal(byId('campaign').querySelectorAll('.deploy-page').length,1,label+': the Deploy page is on the screen');assert.equal(byId('campaign').querySelectorAll('.equip-page').length,0,label+': and not Equip yet')
+  assert.match(byId('campaign').textContent,/Who goes/,label+': it asks who goes')
+  const cards=deployCards()
+  assert.deepEqual(cards.map(x=>x.id),free,label+': a card for each hero free to fight, and nobody else — no civilian, nobody dead')
+  for(const x of cards)assert.ok(x.text.includes(camp().roster[x.id].name),`${label}: ${x.id} is named`)
+  return {asked:true,free,limit}
+ }
+ /* the Deploy page as it stands against the Campaign: the cards going are the heroes sent, the count says how many, and
+    with the party full the rest cannot be sent; the way on is open only once somebody is sent */
+ function deployStands(label){
+  const sent=sentNow(),limit=LIMIT(),cards=deployCards()
+  assert.deepEqual(cards.filter(x=>x.going).map(x=>x.id),[...sent].sort(),label+': the cards marked going are the heroes sent')
+  assert.match(byId('campaign').textContent,new RegExp(`${sent.length} of ${limit} chosen`),label+': the count')
+  for(const x of cards){
+   if(x.going)assert.deepEqual([x.act,x.actId,x.off],['undeploy',x.id,false],`${label}: ${x.id} goes — a click brings them home`)
+   else if(sent.length<limit)assert.deepEqual([x.act,x.actId,x.off],['deploy',x.id,false],`${label}: ${x.id} may be sent`)
+   else assert.deepEqual([x.act,x.off],[undefined,true],`${label}: ${x.id} cannot be sent — the party is full`)
+  }
+  const on=byId('campaign').querySelectorAll('[data-act=advance]')[0];assert.ok(on,label+': the way on to Equip')
+  assert.equal(on.disabled,sent.length===0,label+': the way on is shut until somebody is sent')
+  if(!sent.length){assert.throws(()=>v.click('advance'),/Missing\/disabled/,label+': nobody sent — no way on');assert.equal(camp().cursor.prepStep,'deploy')}
+  return sent
+ }
+ function send(id,label){
+  const before=sentNow();v.click('deploy',id)
+  assert.deepEqual(sentNow(),[...before,id],`${label}: ${id} is sent`);deployStands(label)
+ }
+ function bringHome(id,label){
+  const before=sentNow();v.click('undeploy',id)
+  assert.deepEqual(sentNow(),before.filter(x=>x!==id),`${label}: ${id} comes home`);deployStands(label)
+ }
+ function toEquip(label){
+  const sent=sentNow();v.click('advance')
+  assert.equal(camp().cursor.prepStep,'equip',label+': on to Equip');assert.deepEqual(sentNow(),sent,label+': with the heroes chosen')
+  return sent
+ }
+
+ /* the Equip step: the heroes sent, fitted, then To the battle.
+    Law 10, 2026-10-03 (kingdom.opening-deploy-choice; engine DECISIONS.md 2026-10-03 'the opening run, audited': "Should the
+    player choose which four heroes go into each battle?" — "3 yes"): the first assertion read
+      assert.deepEqual([...camp().cursor.engagement.deployed].sort(),party,label+': the whole party is sent')
+    — true while the page sent everyone it could, the first four by id. The rule now: the heroes sent are the ones the
+    player chose (or everyone free to fight, when no choice was owed — whoGoes), and Equip shows exactly those: a card and
+    slots for each of them, and none for a hero left home. */
  function equipThenFight(party,label){
   assert.ok(shown('campaign'),label+': Equip is shown');assert.equal(camp().cursor.prepStep,'equip',label+': the cursor is at Equip')
-  assert.deepEqual([...camp().cursor.engagement.deployed].sort(),party,label+': the whole party is sent')
+  assert.deepEqual([...camp().cursor.engagement.deployed].sort(),party,label+': the heroes sent are the heroes chosen')
   assert.equal(byId('campaign').querySelectorAll('.herocard').length,party.length,label+': a card per hero sent')
+  const fitted=new Set(byId('campaign').querySelectorAll('[data-slot]').map(el=>el.dataset.hero))
+  assert.deepEqual([...fitted].sort(),party,label+': Equip shows the heroes sent, and nobody left home')
+  for(const id of party)assert.ok(byId('campaign').textContent.includes(camp().roster[id].name),`${label}: ${id} is named on Equip`)
   v.click('advance');settle()
   return onTheBattle(label)
  }
@@ -197,6 +264,9 @@ export function openingPage(page,search,store){
   const s=handle.session,e=camp().cursor.engagement
   assert.equal(s.config.encounterId,e.id,label+': the encounter is fielded');assert.deepEqual(s.config.heroes,e.deployed,label+': with the deployed heroes')
   assert.deepEqual(s.config.heroRows,e.deployed.map(id=>camp().roster[id]),label+': as the campaign\'s own Hero rows')
+  /* kingdom.opening-deploy-choice: the heroes on the board are the heroes sent — nobody left home is fielded */
+  assert.equal(s.setup.heroUids.length,e.deployed.length,label+': one unit on the board per hero sent')
+  for(const id of heroIds().filter(id=>!e.deployed.includes(id)))assert.ok(!s.ctx.state.units.some(u=>u.side==='hero'&&u.typeId===camp().roster[id].unitType),`${label}: ${id}, left home, is not on the board`)
   /* kingdom.opening-draft-modifiers: what a hero was drafted with is on it in the battle — its badges on the unit, its
      Health the fielded number, and each source's points said by the engine as it fields them (unit.modified) */
   for(const [i,id] of e.deployed.entries()){
@@ -264,5 +334,5 @@ export function openingPage(page,search,store){
   return card.dataset.id
  }
 
- return {get lastOffer(){return lastOffer},v,w,root,handle,store:v.store,camp,byId,shown,heroIds,civilianIds,settle,wait,readMap,draft,equipThenFight,onTheBattle,fightOut,levelUps,takeReward}
+ return {get lastOffer(){return lastOffer},v,w,root,handle,store:v.store,camp,byId,shown,heroIds,civilianIds,settle,wait,readMap,draft,freeToFight,whoGoes,deployStands,send,bringHome,toEquip,equipThenFight,onTheBattle,fightOut,levelUps,takeReward}
 }
