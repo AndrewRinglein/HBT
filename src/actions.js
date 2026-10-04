@@ -155,7 +155,24 @@ export function shortStatus(id, SN) {
    TABLE, never typed (Law 4). The action bar and the panel both call this: they
    carried two diverging copies of the logic, which is why the panel and the bar
    could disagree about the same trigger. */
+/* HOW MUCH, IN WORDS (viewer.panel-area-trigger-text, 2026-10-04): an effect's amount is a number or the engine's scaling
+   rule (core/trigger.ts ValueSpec: base + mult × what ÷ div, rounded as stated — what is the party's Magic or Spirit, the
+   enemy side's Power, or one of the acting unit's own stats). The panel printed the rule as a string — the Bruiser Demon's
+   "Protection [object Object]". The rule is SAID, never worked out (Law 0): "0.334 × Power", "4 + ARMOR". */
+const SCALE_WORD = { partyMagic: 'party Magic', partySpirit: 'party Spirit', power: 'Power' }
+export function valueWords(v) {
+  if (v == null || typeof v !== 'object') return v
+  const what = v.scale === 'stat' ? (STATSHORT[v.stat] || v.stat) : SCALE_WORD[v.scale]
+  if (!what) throw new Error('viewer: unknown value scale ' + JSON.stringify(v))
+  const term = (v.mult != null && v.mult !== 1 ? v.mult + ' × ' : '') + what + (v.div != null && v.div !== 1 ? ' ÷ ' + v.div : '')
+  return (v.base ? v.base + ' + ' : '') + term + (v.round ? ' (rounded ' + v.round + ')' : '')
+}
 export function effectWord(ef, D, SN) {
+  const w = effectWordOf(ef, D, SN)
+  if (w && w.val != null && typeof w.val === 'object') w.val = valueWords(w.val)
+  return w
+}
+function effectWordOf(ef, D, SN) {
   if (!ef || !ef.kind) return null
   const BD = (D && D.BADGES) || {}, LY = (D && D.LAYERS) || {}
   const layerName = id => String(id || '').replace(/^layer\./, '')
@@ -184,6 +201,27 @@ export function effectWord(ef, D, SN) {
        the engine's own word rather than invent one, and it is a viewer finding */
     default: return { word: ef.kind, unknown: true }
   }
+}
+
+/* ── WHO A TRIGGER OR A POWER LANDS ON, IN WORDS (viewer.panel-area-trigger-text, 2026-10-04) ─────────────
+   A trigger's `select` is a word ('self' · 'target') or the engine's Targeting row (core/target.ts: select, side,
+   radius, origin, requireTags, excludeSelf). The panel printed the row as a string — "→ [object Object]" on every
+   area trigger (found landing fix.fire-imp-burn-spares-self). The words are made of the row's OWN fields, in the
+   engine's own phrase for them (core/target.ts: "every OTHER unit within N hexes", "every other ally"): nothing is
+   typed per unit, and a shape the viewer has not been taught throws rather than guess (Law 1). The engine has no
+   namer of its own to read (viewer SWITCHES areaTargetWords). */
+export function targetWords(sel) {
+  if (sel === 'self') return 'self'
+  if (sel === 'target') return 'the target'
+  if (!sel || typeof sel !== 'object') throw new Error('viewer: unknown target ' + JSON.stringify(sel))
+  const tags = (sel.requireTags || []).join(' ')
+  const who = (tags ? tags + ' ' : '') + ({ any: 'unit', ally: 'ally', enemy: 'enemy' }[sel.side] || 'unit')
+  if (sel.select === 'self') return 'self'
+  if (sel.select === 'unit') return 'one ' + who
+  if (sel.select !== 'area') throw new Error('viewer: unknown target select ' + JSON.stringify(sel.select))
+  const every = 'every ' + (sel.excludeSelf ? 'other ' : '') + who
+  if (sel.radius == null) return every                     // the whole side, unbounded — "heal all rangers"
+  return every + ' within ' + sel.radius + ' hex' + (sel.radius === 1 ? '' : 'es') + (sel.origin === 'target' ? ' of the target' : '')
 }
 
 export function effectTag(a, u, D, SN) {
