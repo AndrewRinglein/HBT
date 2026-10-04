@@ -318,7 +318,7 @@
  "shapes": [
   {
    "name": "self",
-   "uses": 155,
+   "uses": 156,
    "ids": [
     "item.loaded-dice-of-mirran",
     "item.mug-of-endless-dregs",
@@ -1079,7 +1079,7 @@
   },
   {
    "name": "grant a stat until end of next Turn",
-   "uses": 47,
+   "uses": 48,
    "ids": [
     "item.rapier",
     "item.mirage-dagger",
@@ -2639,7 +2639,7 @@
   },
   {
    "name": "until the end of your next Turn",
-   "uses": 40,
+   "uses": 41,
    "ids": [
     "item.rapier",
     "item.ghost-thread-cloak",
@@ -2680,7 +2680,7 @@
     "power.serpent.shed",
     "power.stalker.patience",
     "power.wyrmling.kindle",
-    "enchant.recklessness"
+    "power.longsword.counterattack"
    ]
   },
   {
