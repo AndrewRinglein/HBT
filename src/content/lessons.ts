@@ -43,6 +43,8 @@ export type LessonTarget =
   | 'struck' | 'struck-health' | 'struck-protection' | 'struck-card'
   /** the enemy that would strike the acting unit on the path it has planned */
   | 'provoker'
+  /** the party's heroes' cards in the top bar — every one of them */
+  | 'hero-cards'
 
 /** What starts a row: the battle put on the screen (before anyone acts) · a unit's Activation begun · its move chosen on the bar ·
     an enemy in reach of one of the acting unit's attacks · a line of the battle's log just played (`event`) · the player
@@ -73,6 +75,8 @@ export interface LessonRow {
   /** a row of a screen between battles (`starts: 'screen'`): the screen it is the gold line of — shown at its top the first time that
       screen comes up in a run, for as long as it is up; no battle is on the screen and the runner has no part in it */
   readonly screen?: LessonScreen
+  /** not before this many of the party's heroes have been activated in the battle (2: as the second hero's Activation begins) */
+  readonly nthHero?: number
   /** not before this Turn */
   readonly fromTurn?: number
   /** the gold notice across the board's centre, one to three lines; it lasts for a time and goes by itself */
@@ -169,6 +173,16 @@ export const LESSONS: readonly LessonRow[] = [
   { id: 'lesson.downed', starts: 'event', event: { type: 'life.downed', of: 'player' }, ends: 'time', holds: true,
     words: ['This unit is down and bleeding out.', 'The number on its card is the Turns it has left; an enemy\'s blow takes one away.', 'Win the battle before it runs out and it lives, wounded.'],
     look: 'struck', point: { at: 'struck-card' } },
+
+  // ── kingdom.tutorial-second-battle (2026-10-04; the same entry, the extra step (h): "Battle 2: several heroes take turns one at a
+  //    time, plus the camera controls." — not answered by its letter; read as a yes with every other step) ──
+  // (h1) as battle 2's first Hero Phase begins: how the units take turns
+  { id: 'lesson.lumberjack.turns', encounterId: LUMBERJACK, starts: 'activation-begins', ends: 'time', of: 'hero',
+    words: ['Your units act one at a time: finish one Activation before the next begins.', 'Double-click another unit to switch to it, while the one acting has done nothing.'],
+    point: { at: 'hero-cards' } },
+  // (h2) as the second hero's Activation begins: the camera's controls, as the screen has them
+  { id: 'lesson.lumberjack.camera', encounterId: LUMBERJACK, starts: 'activation-begins', ends: 'time', of: 'hero', nthHero: 2,
+    words: ['Q and E, or the left and right arrows, turn the view.', 'The wheel looks closer or further, and the view springs back.', 'Point at an edge of the screen to scroll the map.'] },
 
   // ── kingdom.tutorial-after-battle-lines (2026-10-04; the same entry, the extra step (g)): "One line each, the first time, on the XP,
   //    level-up, reward and equip screens." — "Yep, we need tutorials there." One gold line at the top of each screen between the

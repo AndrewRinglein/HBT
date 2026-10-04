@@ -5,12 +5,12 @@ import { LESSONS } from '../src/content/lessons.js'
 import { createLessons } from '../src/ui/lessons.js'
 
 export type Told = { words: string[]; hold: boolean; onDone: ((why: string) => void) | undefined }
-export function lessonStage(seen = new Set<string>()) {
+export function lessonStage(seen = new Set<string>(), party: number[] = [0]) {
   const calls: string[] = [], told: Told[] = [], looks: { unit: number; onDone: ((why: string) => void) | undefined }[] = []
   const pointers: { target: unknown; word: string | undefined; up: boolean }[] = []
-  /** the battle as the host would answer it: units 0 the hero, 1 and 2 the civilians, 3 the enemy, on a 20-wide board */
+  /** the battle as the host would answer it: units 0 the hero (and 4, when the party is two), 1 and 2 the civilians, 3 the enemy, on a 20-wide board */
   const battle = { turn: 1, acting: null as number | null, fresh: true, moved: false, attacked: false, reach: [] as number[], attackInReach: null as string | null, provoker: null as number | null,
-    acted: { done: 0, left: 0 }, hex: { 0: 110, 1: 32, 2: 53, 3: 76 } as Record<number, number> }
+    acted: { done: 0, left: 0 }, hex: { 0: 110, 1: 32, 2: 53, 3: 76, 4: 111 } as Record<number, number> }
   let wakes = 0
   const viewer = {
     tell: (words: string[], o: { hold?: boolean; onDone?: (why: string) => void } = {}) => { calls.push('tell'); told.push({ words, hold: o.hold === true, onDone: o.onDone }); return {} },
@@ -21,7 +21,7 @@ export function lessonStage(seen = new Set<string>()) {
   }
   const lessons = createLessons(LESSONS, {
     viewer: () => viewer,
-    units: (which) => which === 'civilians' ? [1, 2] : which === 'enemy' ? [3] : [0],
+    units: (which) => which === 'civilians' ? [1, 2] : which === 'enemy' ? [3] : party,
     hexOf: (unit) => battle.hex[unit]!,
     distance: (a, b) => Math.abs(a % 20 - b % 20) + Math.abs(Math.floor(a / 20) - Math.floor(b / 20)),
     turn: () => battle.turn, acting: () => battle.acting, fresh: () => battle.fresh, moved: () => battle.moved, attacked: () => battle.attacked,

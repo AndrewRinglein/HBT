@@ -68,6 +68,8 @@ export function createLessons(rows: readonly LessonRow[], host: LessonHost) {
   let begun = false
   let ups: Up[] = []
   let token = 0
+  /** the party's heroes that have been activated in this battle */
+  const heroesBegun = new Set<number>()
   /** what the player did, waiting for a still board to be answered */
   const did = new Set<string>()
 
@@ -75,7 +77,7 @@ export function createLessons(rows: readonly LessonRow[], host: LessonHost) {
   const mine = (r: LessonRow) => open && r.starts !== 'screen' && (r.encounterId === undefined || r.encounterId === battle) && !host.seen(lessonKeyOf(r))
   const pending = (starts: LessonRow['starts']) => rows.filter((r) => r.starts === starts && mine(r))
   const fits = (row: LessonRow, actor: number | null) => row.of === undefined || (actor !== null && host.units(row.of).includes(actor))
-  const due = (row: LessonRow) => row.fromTurn === undefined || host.turn() >= row.fromTurn
+  const due = (row: LessonRow) => (row.fromTurn === undefined || host.turn() >= row.fromTurn) && (row.nthHero === undefined || heroesBegun.size >= row.nthHero)
   const pointersOf = (row: LessonRow): readonly LessonPointer[] => row.point === undefined ? [] : Array.isArray(row.point) ? row.point : [row.point as LessonPointer]
 
   /** what a row's target is on the board now, for the viewer's calls; none when the battle holds no such thing */
@@ -85,6 +87,7 @@ export function createLessons(rows: readonly LessonRow[], host: LessonHost) {
     if (at === 'provoker') { const unit = host.provoker(); return unit === null ? [] : [{ unit }] }
     if (at === 'civilians') return host.units('civilians').map((unit) => ({ unit }))
     if (at === 'enemy' || at === 'hero') return host.units(at).slice(0, 1).map((unit) => ({ unit }))
+    if (at === 'hero-cards') return host.units('hero').map((card) => ({ card }))
     if (at === 'enemy-move-number' || at === 'enemy-attack-number') return host.units('enemy').slice(0, 1).map((unit) => ({ unit, part: at === 'enemy-move-number' ? 'move' : 'attack' }))
     if (at === 'acting') return actor === null ? [] : [{ unit: actor }]
     if (at === 'basic-move') { const action = host.basicMove(); return action === null ? [] : [{ action }] }
@@ -149,7 +152,7 @@ export function createLessons(rows: readonly LessonRow[], host: LessonHost) {
   function next(): { row: LessonRow; actor: number | null } | null {
     const actor = host.acting()
     if (!begun && actor === null) { const row = pending('battle-begins')[0]; return row ? { row, actor: null } : null }
-    if (actor !== null) begun = true
+    if (actor !== null) { begun = true; if (host.units('hero').includes(actor)) heroesBegun.add(actor) }
     for (const row of rows) {
       if (!mine(row) || !due(row) || !fits(row, actor) || ups.some((u) => u.row === row)) continue
       if (row.starts === 'activation-begins') { if (actor !== null && host.fresh()) return { row, actor } }
@@ -164,7 +167,7 @@ export function createLessons(rows: readonly LessonRow[], host: LessonHost) {
 
   return {
     /** a battle is put on the screen: the encounter whose rows may show; `inRun` false — a battle outside a run has no memory, and shows none */
-    open(encounterId: string | null, inRun = encounterId !== null): void { ups = []; token++; did.clear(); battle = encounterId; open = inRun; begun = false },
+    open(encounterId: string | null, inRun = encounterId !== null): void { ups = []; token++; did.clear(); heroesBegun.clear(); battle = encounterId; open = inRun; begun = false },
     /** while true the host begins no Activation and takes no order: a row that waits is up, or is about to be */
     waiting(): boolean { return ups.some((u) => u.row.waits === true) || (!begun && pending('battle-begins').length > 0) },
     /** the Activation about to begin for this unit begins with no move chosen */
