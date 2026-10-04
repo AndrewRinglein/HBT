@@ -1676,6 +1676,7 @@
      ]
     }
    },
+   "heroZoneRuling": "engine DECISIONS.md 2026-10-04 'the opening's tutorial: the first hero's class line, no map before battle 1, the Orphanage's lessons, the camera shows what arrives, new enemies are named, a closer start': \"bring the hero forward to the end of the bridge\" - the zone is at the bridge's east end, east of the board's middle, by that ruling",
    "setup": [
     {
      "unit": "hero.fixed.orphans",
