@@ -1079,7 +1079,9 @@
   "shape": "plumbing",
   "spec": "Found 2026-10-04 by the engine worker (viewer SWITCHES.md openingReplayPlayableSeed): the viewer does not fold the engine's unit.transformed and unit.reverted events, so the page cannot play a battle in which a hero is turned by an affliction (rule.afflictions-at-zero: a hero at zero takes its affliction's form - a zombie, a ghoul - and may revert). The Cavern Trail's recording had to move from seed 0 to seed 1 for that reason alone, and a player's own battle in which a hero turns cannot be drawn. Fold both events (viewer src/fold.js; read the engine's event shapes through the door, engine src/core/mutate.ts transformUnit / the revert): the turned unit takes the form's row - its name, side, stats, attacks, body (the form's own model where the viewer has one, listed where not), card and bar - at the moment the log says, and takes its own back when it reverts; seek, step and replay land on the same state. The first-affliction pop-up (viewer src/affliction.js) and the cards above the battle keep working through a turn. Then re-export the Cavern Trail's recording on seed 0 if that is still the lowest seed the opening's rule picks (all six together if any moves). Kingdom's pages are rebuilt; each package commits in its own repository.",
   "expect": "A recorded battle in which a hero is turned plays through on the battle screen: at the turn the hero's unit is drawn and listed as its form, on the form's side, with the form's actions, and at a revert as itself; seeking past and back lands on the same state; a page test plays such a battle and reads the unit before, during and after.",
-  "note": "Filed by the kingdom chat, 2026-10-04, from the engine worker's report."
+  "note": "Filed by the kingdom chat, 2026-10-04, from the engine worker's report.",
+  "status": "done",
+  "sha": "86830ed"
  },
  {
   "id": "viewer.free-attack-kind-words",
