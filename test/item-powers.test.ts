@@ -170,7 +170,15 @@ describe('they run — no power is dead content in a real battle', () => {
     // Law 10, 2026-09-23 (v2.shields): Osric's guard is the Kite Shield's now — either of its two powers.
     const guarded = () => used.has('power.kite-shield.shield-wall') || used.has('power.kite-shield.raise-guard')
     const both = () => used.has('power.holy-symbol.heal') && guarded()
-    for (let r = 0; r < 20 && !both(); r++) {
+    // Law 10, 2026-10-04 (rule.free-attack-is-basic-attack): every attack of opportunity is the basic attack at −20 now, so the
+    // fights re-time again and Osric's first raised shield moved from a seed under 20 to seed 24. The claim (both powers are
+    // live) is unchanged; the search is wider — 20 to 40 — as on 2026-09-04. Neither assertion changed.
+    // Law 10, 2026-10-04 (capability.counterattack-and-fend): Osric's Longsword carries Counterattack now, and it is listed
+    // before his shield, so the computer — which uses the first self power its kit lists that is ready — raises it in the
+    // moments it used to raise the shield. The shield's powers are still live but rare for him: the first Shield Wall is on
+    // seed 64 (was a seed under 40). The claim (both powers are live) is unchanged; the search is wider — 40 to 100.
+    // FOUND, engine SWITCHES.md counterattackDisplacesShieldPowers: this is the computer's order of preference, not a rule.
+    for (let r = 0; r < 100 && !both(); r++) {
       const ctx = createBattle({ ...scenarioOptions(scenarioDef(SC)), replicate: r })
       runBattle(ctx)
       for (const e of ctx.events) {
@@ -180,7 +188,7 @@ describe('they run — no power is dead content in a real battle', () => {
     }
     expect(used.has('power.holy-symbol.heal'), 'the priest never healed — dead content').toBe(true)
     expect(guarded(), 'Osric never raised his shield — dead content').toBe(true)
-  })
+  }, 120_000)   // up to a hundred whole battles since 2026-10-04 (the shield's first use is on seed 64): a time limit is not the assertion
 
   it('Storm opens showcase.item-powers — the boxed-mage fielding exists for exactly this', () => {
     // A kiting mage holds at bolt range, beyond Storm's 4 — in the open

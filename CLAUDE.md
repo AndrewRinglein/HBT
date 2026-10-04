@@ -138,7 +138,7 @@ A package's tests run when that package's own code changed, and not otherwise:
 | engine code — `src/` without `src/content/generated/`, `test/`, `tools/`, `package.json`, `package-lock.json`, `tsconfig.json`, `vitest.config.ts` | the engine suite and the control battles |
 | content — `gen/`, `settled.json`, the pipeline scripts, `test/` | content's suite (`node --test test/*.test.mjs`; its publication tests dry-ship a copy, so the linter, the level check and the codex verifier run inside it) |
 | viewer code — `src/`, `tools/`, `test/`, `battles/`, `art-src/`, package and compiler config | the viewer's gate |
-| kingdom code — `src/` without `src/content/generated/`, `test/`, `tools/`, `fixtures/`, package and compiler config | kingdom's suite |
+| kingdom code — `src/` without `src/content/generated/`, `test/`, `tools/`, `fixtures/`, `package.json`, `tsconfig.json`, `vitest.config.ts` | kingdom's suite |
 | a regenerated file (the content pack, content's published outputs, the viewer's dumps, a built page, kingdom's generated items), a document, a ruling, `.state/`, a `.log` | nothing |
 
 - **One definition** of each package's code: `tools/code-stamp.mjs` `PACKAGE_CODE`. Its gate, `wrap`

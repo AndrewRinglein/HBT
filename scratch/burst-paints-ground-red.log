@@ -1,0 +1,1568 @@
+
+ RUN  v4.1.11 C:/Users/aring/Desktop/HBT-worker-engine/engine
+
+ ❯ test/burst-paints-ground.test.ts (23 tests | 21 failed) 794ms
+     × hero.base.mage-fire's power.fire-staff.fireball paints layer.burning — a field on its burst profile, and nothing else about the burst changed 4ms
+     × hero.base.mage-thinking's power.frost-staff.frost-nova paints layer.frost — a field on its burst profile, and nothing else about the burst changed 0ms
+     × the two staffs name no gap any more 2ms
+     × content's gap list no longer says a burst paints no ground 2ms
+     × deals its Magic damage and leaves the seven hexes painted — one layer.painted for each, cause the power 9ms
+     × the ground is painted after the recipients are struck and before the burst settles 2ms
+     × the one ground rule: every standing unit on a painted hex takes that layer's entry beat — the ally and the caster's own side too 1ms
+     × the preview says so: it names the ground and the hexes it will be painted on 1ms
+     × burst.declared carries the ground, so the log says what the burst will leave 2ms
+     × a shielded hex is painted too: the unit there is not struck, and still meets the ground it now stands on 4ms
+     × deals its Magic damage and leaves the seven hexes painted — one layer.painted for each, cause the power 1ms
+     × the ground is painted after the recipients are struck and before the burst settles 1ms
+     × the one ground rule: every standing unit on a painted hex takes that layer's entry beat — the ally and the caster's own side too 1ms
+     × the preview says so: it names the ground and the hexes it will be painted on 1ms
+     × burst.declared carries the ground, so the log says what the burst will leave 1ms
+     × a shielded hex is painted too: the unit there is not struck, and still meets the ground it now stands on 1ms
+     × Frost Nova onto ground a Flame Burst left burning leaves it bare — burning and frost cancel, hex for hex 1ms
+     × a burst profile may name the layer it paints; anything that is not a layer id is refused 1ms
+     × a layer that is not one of the ground layers fails loudly when the burst is used, never silently paints nothing 1ms
+     × a snapshot taken after a Flame Burst restores the burning ground, and the burst rows are part of what it is bound to 47ms
+     × the Emberwright's Flame Burst leaves burning ground at the kiln, and units burn for standing in it 707ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 21 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/burst-paints-ground.test.ts > the rows: the ground is on the burst, and the gap is gone > hero.base.mage-fire's power.fire-staff.fireball paints layer.burning — a field on its burst profile, and nothing else about the burst changed
+AssertionError: expected undefined to be 'layer.burning' // Object.is equality
+
+- Expected:
+"layer.burning"
+
++ Received:
+undefined
+
+ ❯ test/burst-paints-ground.test.ts:57:29
+     55| describe('the rows: the ground is on the burst, and the gap is gone', …
+     56|   it.each(VARIANTS)('%s\'s %s paints %s — a field on its burst profile…
+     57|     expect(paintsOf(power)).toBe(layer)
+       |                             ^
+     58|     expect(BURSTS[power]).toMatchObject({
+     59|       range: 4, staminaCost: 3, cooldown: 0,
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/21]⎯
+
+ FAIL  test/burst-paints-ground.test.ts > the rows: the ground is on the burst, and the gap is gone > hero.base.mage-thinking's power.frost-staff.frost-nova paints layer.frost — a field on its burst profile, and nothing else about the burst changed
+AssertionError: expected undefined to be 'layer.frost' // Object.is equality
+
+- Expected:
+"layer.frost"
+
++ Received:
+undefined
+
+ ❯ test/burst-paints-ground.test.ts:57:29
+     55| describe('the rows: the ground is on the burst, and the gap is gone', …
+     56|   it.each(VARIANTS)('%s\'s %s paints %s — a field on its burst profile…
+     57|     expect(paintsOf(power)).toBe(layer)
+       |                             ^
+     58|     expect(BURSTS[power]).toMatchObject({
+     59|       range: 4, staminaCost: 3, cooldown: 0,
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/21]⎯
+
+ FAIL  test/burst-paints-ground.test.ts > the rows: the ground is on the burst, and the gap is gone > the two staffs name no gap any more
+AssertionError: expected [ Array(1) ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   "power.fire-staff.fireball: those seven hexes become burning — a burst paints no ground (capability.burst-paints-ground)",
++ ]
+
+ ❯ test/burst-paints-ground.test.ts:66:50
+     64|
+     65|   it('the two staffs name no gap any more', () => {
+     66|     expect(ITEMS['item.fire-staff']!.gaps ?? []).toEqual([])
+       |                                                  ^
+     67|     expect(ITEMS['item.frost-staff']!.gaps ?? []).toEqual([])
+     68|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/21]⎯
+
+ FAIL  test/burst-paints-ground.test.ts > the rows: the ground is on the burst, and the gap is gone > content's gap list no longer says a burst paints no ground
+AssertionError: expected '{\n "_note": "GENERATED by mkenginepa…' not to contain 'a burst paints no ground'
+
+- Expected
++ Received
+
+- a burst paints no ground
++ {
++  "_note": "GENERATED by mkenginepack.mjs — clauses the engine cannot yet express, dropped with their reason. Regenerate, never hand-edit.",
++  "gaps": [
++   {
++    "unit": "power.pray",
++    "what": "Pray: A bonus move: zero movement, costs 1 Stamina, gain 1 Faith. A bonus mo…",
++    "needs": "no Faith quantity in the engine"
++   },
++   {
++    "unit": "unit.balrog",
++    "what": "(unit) onTakingDamage: set a ground layer",
++    "needs": "set a ground layer"
++   },
++   {
++    "unit": "unit.doombringer",
++    "what": "attack.doombringer.hammer onDamage: Knockback N",
++    "needs": "Knockback N"
++   },
++   {
++    "unit": "unit.eyeblight",
++    "what": "attack.eyeblight.gaze damage reads no stat (flat 1)",
++    "needs": "attack shape: stat-less (flat) damage"
++   },
++   {
++    "unit": "unit.imp-master",
++    "what": "aura 'allies within N hexes' — range null, N never stated",
++    "needs": "content: range unstated"
++   },
++   {
++    "unit": "unit.iron-colossus",
++    "what": "move.iron-colossus.buff: ai 'use whenever available'",
++    "needs": "action hint on the row (AI-DESIGN.md §3D) — waits on ai.scorer"
++   },
++   {
++    "unit": "unit.lieutenant-demon",
++    "what": "aura aura-1: Immunity N weak",
++    "needs": "aura: status immunity"
++   },
++   {
++    "unit": "unit.lieutenant-demon",
++    "what": "aura aura-1: Immunity N poison",
++    "needs": "aura: status immunity"
++   },
++   {
++    "unit": "unit.lieutenant-demon",
++    "what": "aura aura-1: Immunity N burn",
++    "needs": "aura: status immunity"
++   },
++   {
++    "unit": "unit.nightstalker",
++    "what": "(unit) onActivationEnd: enter stealth",
++    "needs": "capability.stealth"
++   },
++   {
++    "unit": "unit.nightstalker",
++    "what": "attack.nightstalker.rend onAttack: grant a stat until end of your Activation — condition 'you are standing on darkness'",
++    "needs": "trigger condition"
++   },
++   {
++    "unit": "unit.nightstalker",
++    "what": "attack.nightstalker.rend onAttack: deal 2 crits — condition 'you are standing on darkness'",
++    "needs": "trigger condition"
++   },
++   {
++    "unit": "unit.shadow-sorcerer",
++    "what": "(unit) onActivationEnd: gain Power — condition 'you are standing on darkness'",
++    "needs": "trigger condition"
++   },
++   {
++    "unit": "unit.shadow-sorcerer",
++    "what": "attack.shadow-sorcerer.shadow-strike onHit: knockback",
++    "needs": "knockback"
++   },
++   {
++    "unit": "unit.shadow-sorcerer",
++    "what": "attack.shadow-sorcerer.shadow-rend onHit: pull",
++    "needs": "pull"
++   },
++   {
++    "unit": "unit.shadow-sorcerer",
++    "what": "attack.shadow-sorcerer.shadow-grasp onHit: knockback",
++    "needs": "knockback"
++   },
++   {
++    "unit": "unit.skeletal-archer",
++    "what": "attack.skeletal-archer.shoot onHit: grant a stat until end of next Turn (movement)",
++    "needs": "trigger-effect: statMod"
++   },
++   {
++    "unit": "unit.werewolf",
++    "what": "attack.werewolf.claw-frenzy onAttack: grant a stat for the Battle (strength) — a pre-damage stat grant is a STATION question (Law 1)",
++    "needs": "trigger-effect: statMod before damage"
++   },
++   {
++    "unit": "hero.base.ranger-ranger",
++    "what": "attack.elfbow.elf-shot onHit: \"gain 1 Precision\"",
++    "needs": "trigger shape unparsed"
++   },
++   {
++    "unit": "hero.base.ranger-scantily",
++    "what": "attack.elfbow.elf-shot onHit: \"gain 1 Precision\"",
++    "needs": "trigger shape unparsed"
++   },
++   {
++    "unit": "hero.base.mage-thinking",
++    "what": "item.frost-staff grants power.frost-staff.frost-nova: those seven hexes become frost",
++    "needs": "a burst paints no ground (capability.burst-paints-ground)"
++   },
++   {
++    "unit": "hero.base.mage-sexy",
++    "what": "item.fire-staff grants power.fire-staff.fireball: those seven hexes become burning",
++    "needs": "a burst paints no ground (capability.burst-paints-ground)"
++   },
++   {
++    "unit": "hero.base.mage-fire",
++    "what": "item.fire-staff grants power.fire-staff.fireball: those seven hexes become burning",
++    "needs": "a burst paints no ground (capability.burst-paints-ground)"
++   },
++   {
++    "unit": "hero.base.mage-fireaura",
++    "what": "item.fire-staff grants power.fire-staff.fireball: those seven hexes become burning",
++    "needs": "a burst paints no ground (capability.burst-paints-ground)"
++   },
++   {
++    "unit": "hero.base.priest-robes",
++    "what": "item.peddlers-vest statModifier 'itemSlots' 1",
++    "needs": "stat: itemSlots (no UnitDef field)"
++   },
++   {
++    "unit": "hero.base.priest-scantily",
++    "what": "attack.iron-mace.crush onHit: \"the target loses 1 Armor for the rest of the Battle\"",
++    "needs": "trigger shape unparsed"
++   },
++   {
++    "unit": "hero.base.rogue-raven",
++    "what": "item.peddlers-vest statModifier 'itemSlots' 1",
++    "needs": "stat: itemSlots (no UnitDef field)"
++   },
++   {
++    "unit": "hero.base.rogue-rose",
++    "what": "attack.obsidian-fang-dagger.fang onHit: \"target loses 1 Strength\"",
++    "needs": "trigger shape unparsed"
++   },
++   {
++    "unit": "hero.base.rogue-rose",
++    "what": "attack.obsidian-fang-dagger.gut onHit: \"target loses 1 Strength\"",
++    "needs": "trigger shape unparsed"
++   },
++   {
++    "unit": "hero.base.rogue-skull",
++    "what": "attack.daggers.thrown-dagger onKill: \"gain 50 Surge\"",
++    "needs": "trigger shape unparsed"
++   },
++   {
++    "unit": "hero.fixed.lumberjack-and-wife",
++    "what": "attack.lumberjack-axe.cleave targets 'an adjacent hex and one hex adjacent to both you a' — lands SINGLE-TARGET",
++    "needs": "area attack shape"
++   },
++   {
++    "unit": "item.iron-mace",
++    "what": "attack.iron-mace.crush onHit: \"the target loses 1 Armor for the rest of the Battle\"",
++    "needs": "trigger shape unparsed"
++   },
++   {
++    "unit": "item.war-hammer",
++    "what": "onCrit: Knockback 1 — the target is moved 1 hex directly a",
++    "needs": "trigger shape unparsed"
++   },
++   {
++    "unit": "item.glaive",
++    "what": "attack.glaive.sweep targets 'an adjacent hex and one hex adjacent to both you a' — lands SINGLE-TARGET",
++    "needs": "area attack shape"
++   },
++   {
++    "unit": "item.crossbow",
++    "what": "attack.crossbow.punch-through onHit: \"ignore 2 of the target's Armor\"",
++    "needs": "trigger shape unparsed"
++   },
++   {
++    "unit": "item.rapier",
++    "what": "attack.rapier.pierce onHit: \"ignore 1 of the target's Armor\"",
++    "needs": "trigger shape unparsed"
++   },
++   {
++    "unit": "item.rapier",
++    "what": "onAttack: gain +10 Dodge until the end of your next Turn",
++    "needs": "trigger shape unparsed"
++   },
++   {
++    "unit": "item.poison-stars",
++    "what": "attack.poison-stars.venom-spread onHit: \"apply 2 Poison to each target hit\"",
++    "needs": "trigger shape unparsed"
++   },
++   {
++    "unit": "item.obsidian-fang-dagger",
++    "what": "attack.obsidian-fang-dagger.fang onHit: \"target loses 1 Strength\"",
++    "needs": "trigger shape unparsed"
++   },
++   {
++    "unit": "item.obsidian-fang-dagger",
++    "what": "attack.obsidian-fang-dagger.gut onHit: \"target loses 1 Strength\"",
++    "needs": "trigger shape unparsed"
++   },
++   {
++    "unit": "item.crippling-whip",
++    "what": "attack.crippling-whip.hamstring onHit: \"apply 2 Weak and the target gains 1 Slow\"",
++    "needs": "trigger shape unparsed"
++   },
++   {
++    "unit": "item.sword-of-the-fallen",
++    "what": "attack.sword-of-the-fallen.remembrance onHit: \"heal 1\"",
++    "needs": "trigger shape unparsed"
++   },
++   {
++    "unit": "item.sword-of-the-fallen",
++    "what": "attack.sword-of-the-fallen.honour-the-dead onKill: \"heal 3\"",
++    "needs": "trigger shape unparsed"
++   },
++   {
++    "unit": "item.hammer-of-justice",
++    "what": "onHit: the target loses 1 Armor for the rest of the Battl",
++    "needs": "trigger shape unparsed"
++   },
++   {
++    "unit": "item.holy-shield",
++    "what": "attack.holy-shield.aegis-slam onHit: \"push the target 1 hex and it gains 1 Slow\"",
++    "needs": "trigger shape unparsed"
++   },
++   {
++    "unit": "item.holy-shield",
++    "what": "aura: AURA radius 1 — an enemy adjacent to you takes -10",
++    "needs": "hook: aura (declared, engine never fires it)"
++   },
++   {
++    "unit": "item.death-blade",
++    "what": "attack.death-blade.death-stroke onHit: \"heal 3 and gain +1 Strength for the rest of the Battle, sta",
++    "needs": "trigger shape unparsed"
++   },
++   {
++    "unit": "item.death-blade",
++    "what": "onKill: heal 3 and gain +1 Strength for the rest of the Ba",
++    "needs": "trigger shape unparsed"
++   },
++   {
++    "unit": "item.sniper-bow",
++    "what": "onKill: gain +5 Accuracy for the rest of the Battle, stack",
++    "needs": "trigger shape unparsed"
++   },
++   {
++    "unit": "item.runed-crossbow",
++    "what": "onHit: if the target is demon or undead, apply 2 Burn",
++    "needs": "trigger shape unparsed"
++   },
++   {
++    "unit": "item.poison-throwing-knives",
++    "what": "attack.poison-throwing-knives.venom-fan onHit: \"apply 2 Poison to each target hit\"",
++    "needs": "trigger shape unparsed"
++   },
++   {
++    "unit": "item.shadow-dagger",
++    "what": "onKill: gain +5 Dodge for the rest of the Battle",
++    "needs": "trigger shape unparsed"
++   },
++   {
++    "unit": "item.stormforged-blade",
++    "what": "onCrit: deal 3 magic damage to every enemy adjacent to the",
++    "needs": "trigger shape unparsed"
++   },
++   {
++    "unit": "item.book-of-exorcisms",
++    "what": "attack.book-of-exorcisms.rite-of-expulsion targets 'one enemy within 3 hexes and every enemy adjacent ' — lands SINGLE-TARGET",
++    "needs": "area attack shape"
++   },
++   {
++    "unit": "item.cursed-sand-blade",
++    "what": "startOfBattle: take 2 true damage",
++    "needs": "trigger shape unparsed"
++   },
++   {
++    "unit": "item.skyforged-halberd",
++    "what": "attack.skyforged-halberd.sky-sweep targets 'every enemy adjacent to you' — lands SINGLE-TARGET",
++    "needs": "area attack shape"
++   },
++   {
++    "unit": "item.skyforged-halberd",
++    "what": "startOfBattle: every ally within 2 hexes gains +1 Armor for the r",
++    "needs": "trigger shape unparsed"
++   },
++   {
++    "unit": "item.mirage-dagger",
++    "what": "attack.mirage-dagger.two-places-at-once onHit: \"after the attack resolves you may move 1 hex\"",
++    "needs": "trigger shape unparsed"
++   },
++   {
++    "unit": "item.mirage-dagger",
++    "what": "onKill: gain +10 Dodge until the start of your next Turn",
++    "needs": "trigger shape unparsed"
++   },
++   {
++    "unit": "item.seraph-bow",
++    "what": "onKill: heal 2",
++    "needs": "trigger shape unparsed"
++   },
++   {
++    "unit": "item.death-bow",
++    "what": "attack.death-bow.the-last-arrow onKill: \"make one free Death Shot against a different enemy\"",
++    "needs": "trigger shape unparsed"
++   },
++   {
++    "unit": "item.death-bow",
++    "what": "onHit: the target cannot be healed until the end of its n",
++    "needs": "trigger shape unparsed"
++   },
++   {
++    "unit": "item.death-bow",
++    "what": "onKill: regain 1 Stamina",
++    "needs": "trigger shape unparsed"
++   },
++   {
++    "unit": "item.holy-avenger",
++    "what": "startOfBattle: gain +2 Strength against demon and undead for the ",
++    "needs": "trigger shape unparsed"
++   },
++   {
++    "unit": "item.holy-avenger",
++    "what": "onKill: every ally within 3 hexes heals 2",
++    "needs": "trigger shape unparsed"
++   },
++   {
++    "unit": "item.demon-whip",
++    "what": "attack.demon-whip.hellcoil onHit: \"apply 3 Burn to each target hit\"",
++    "needs": "trigger shape unparsed"
++   },
++   {
++    "unit": "item.demon-whip",
++    "what": "onAttack: apply 2 Burn to the target",
++    "needs": "trigger shape unparsed"
++   },
++   {
++    "unit": "item.demonic-shiv",
++    "what": "onKill: deal 5 true damage to up to two enemies within 4 h",
++    "needs": "trigger shape unparsed"
++   },
++   {
++    "unit": "item.blade-of-demon-slaying",
++    "what": "onDamage: apply 5 Burn if the target is demon, otherwise 2 B",
++    "needs": "trigger shape unparsed"
++   },
++   {
++    "unit": "item.scepter-of-salvation",
++    "what": "grants power.scepter-of-salvation.salvation",
++    "needs": "item power — shape unparsed"
++   },
++   {
++    "unit": "item.tomb-sentinels-blade",
++    "what": "onKill: gain +1 Armor for the rest of the Battle, stacking",
++    "needs": "trigger shape unparsed"
++   },
++   {
++    "unit": "item.siege-crossbow",
++    "what": "onHit: ignore 3 of the target's Armor",
++    "needs": "trigger shape unparsed"
++   },
++   {
++    "unit": "item.stormforged-halberd",
++    "what": "attack.stormforged-halberd.storm-sweep targets 'every enemy adjacent to you' — lands SINGLE-TARGET",
++    "needs": "area attack shape"
++   },
++   {
++    "unit": "item.fangs",
++    "what": "natural: true",
++    "needs": "item field: natural"
++   },
++   {
++    "unit": "item.tail",
++    "what": "attack.tail.lash onHit: \"the target gains 1 Slow\"",
++    "needs": "trigger shape unparsed"
++   },
++   {
++    "unit": "item.tail",
++    "what": "natural: true",
++    "needs": "item field: natural"
++   },
++   {
++    "unit": "item.horns",
++    "what": "attack.horns.ram onHit: \"the target is knocked back 1 hex\"",
++    "needs": "trigger shape unparsed"
++   },
++   {
++    "unit": "item.horns",
++    "what": "natural: true",
++    "needs": "item field: natural"
++   },
++   {
++    "unit": "item.hooves",
++    "what": "natural: true",
++    "needs": "item field: natural"
++   },
++   {
++    "unit": "item.daggers",
++    "what": "attack.daggers.thrown-dagger onKill: \"gain 50 Surge\"",
++    "needs": "trigger shape unparsed"
++   },
++   {
++    "unit": "item.pickaxe",
++    "what": "attack.pickaxe.pick onHit: \"the target loses 1 Armor for the rest of the Battle\"",
++    "needs": "trigger shape unparsed"
++   },
++   {
++    "unit": "item.peddlers-vest",
++    "what": "statModifier 'itemSlots' 1",
++    "needs": "stat: itemSlots (no UnitDef field)"
++   },
++   {
++    "unit": "item.ghost-thread-cloak",
++    "what": "onDodge: gain +10 Dodge until the end of your next Turn",
++    "needs": "hook: onDodge (declared, engine never fires it)"
++   },
++   {
++    "unit": "item.wind-blessed-leather",
++    "what": "onActivationEnd: heal 1",
++    "needs": "trigger shape unparsed"
++   },
++   {
++    "unit": "item.wraithform-cloak",
++    "what": "onDodge: take 2 true damage",
++    "needs": "hook: onDodge (declared, engine never fires it)"
++   },
++   {
++    "unit": "item.wraithform-cloak",
++    "what": "onTakingDamage: heal half the party's Magic, rounded down",
++    "needs": "trigger shape unparsed"
++   },
++   {
++    "unit": "item.qi-wraps",
++    "what": "onKill: regain 1 Stamina",
++    "needs": "trigger shape unparsed"
++   },
++   {
++    "unit": "item.gale-shroud",
++    "what": "grants power.flight-labored",
++    "needs": "item power — shape unparsed"
++   },
++   {
++    "unit": "item.gale-shroud",
++    "what": "onDodge: gain +10 Accuracy for the rest of the Battle",
++    "needs": "hook: onDodge (declared, engine never fires it)"
++   },
++   {
++    "unit": "item.scorpion-carapace",
++    "what": "onTakingDamage: Thorns 2, and the attacker gains 2 Poison",
++    "needs": "trigger shape unparsed"
++   },
++   {
++    "unit": "item.scorpion-carapace",
++    "what": "thorns: 2",
++    "needs": "item field: thorns"
++   },
++   {
++    "unit": "item.chains-of-the-faithful",
++    "what": "aura: AURA radius 2 -- allies inside have Immunity to Bu",
++    "needs": "hook: aura (declared, engine never fires it)"
++   },
++   {
++    "unit": "item.cloudsteel-plate",
++    "what": "passive: You have AIRWALK: no trap and no terrain status fr",
++    "needs": "hook: passive (declared, engine never fires it)"
++   },
++   {
++    "unit": "item.cloudsteel-plate",
++    "what": "airwalk: true",
++    "needs": "item field: airwalk"
++   },
++   {
++    "unit": "item.divine-bulwark",
++    "what": "startOfBattle: you may not act on Turn 1; from Turn 2 you have +1",
++    "needs": "trigger shape unparsed"
++   },
++   {
++    "unit": "item.stoneskin-hauberk",
++    "what": "onActivationEnd: gain +1 Armor until the end of your next Turn",
++    "needs": "trigger shape unparsed"
++   },
++   {
++    "unit": "item.cloak-of-ghostform",
++    "what": "onDodge: gain +50 Dodge until the end of your next Turn",
++    "needs": "hook: onDodge (declared, engine never fires it)"
++   },
++   {
++    "unit": "item.phantoms-mantle",
++    "what": "onKill: enters stealth: you cannot be seen and cannot be t",
++    "needs": "trigger shape unparsed"
++   },
++   {
++    "unit": "item.skypriests-vestments",
++    "what": "passive: You have AIRWALK: no trap and no terrain status fr",
++    "needs": "hook: passive (declared, engine never fires it)"
++   },
++   {
++    "unit": "item.skypriests-vestments",
++    "what": "airwalk: true",
++    "needs": "item field: airwalk"
++   },
++   {
++    "unit": "item.wind-dancers-cloak",
++    "what": "grants power.flight",
++    "needs": "item power — shape unparsed"
++   },
++   {
++    "unit": "item.wind-dancers-cloak",
++    "what": "onDodge: Surge Chance +30",
++    "needs": "hook: onDodge (declared, engine never fires it)"
++   },
++   {
++    "unit": "item.drakescale-coat",
++    "what": "startOfBattle: gain +2 Resist against dragon for the rest of the ",
++    "needs": "trigger shape unparsed"
++   },
++   {
++    "unit": "item.drakescale-coat",
++    "what": "onTakingDamage: Burn applied to you is halved, rounded down, befor",
++    "needs": "trigger shape unparsed"
++   },
++   {
++    "unit": "item.aegis-of-the-fleet",
++    "what": "grants power.flight-swift",
++    "needs": "item power — shape unparsed"
++   },
++   {
++    "unit": "item.mystic-armor",
++    "what": "startOfBattle: gain Protection equal to 2 plus the party's Magic",
++    "needs": "trigger shape unparsed"
++   },
++   {
++    "unit": "item.patrocoleas-armor",
++    "what": "startOfBattle: heal 1 at the end of each of your Turns for the re",
++    "needs": "trigger shape unparsed"
++   },
++   {
++    "unit": "item.storm-bastion",
++    "what": "aura: AURA radius 1 — an enemy that ends its movement in",
++    "needs": "hook: aura (declared, engine never fires it)"
++   },
++   {
++    "unit": "item.elfbow",
++    "what": "attack.elfbow.elf-shot onHit: \"gain 1 Precision\"",
++    "needs": "trigger shape unparsed"
++   },
++   {
++    "unit": "item.fire-staff",
++    "what": "power.fire-staff.fireball: those seven hexes become burning",
++    "needs": "a burst paints no ground (capability.burst-paints-ground)"
++   },
++   {
++    "unit": "item.frost-staff",
++    "what": "power.frost-staff.frost-nova: those seven hexes become frost",
++    "needs": "a burst paints no ground (capability.burst-paints-ground)"
++   },
++   {
++    "unit": "item.earth-staff",
++    "what": "grants power.earth-staff.earth-shield",
++    "needs": "item power — shape unparsed"
++   },
++   {
++    "unit": "item.priest-chain",
++    "what": "grants power.priest-chain.benediction",
++    "needs": "item power — shape unparsed"
++   },
++   {
++    "unit": "item.fire-gauntlet",
++    "what": "grants power.fire-gauntlet.stoke",
++    "needs": "item power — shape unparsed"
++   },
++   {
++    "unit": "item.fire-gauntlet",
++    "what": "attack.fire-gauntlet.fire-punch onHit: \"apply Burn equal to half your Magic, rounded nearest, 0.5 u",
++    "needs": "trigger shape unparsed"
++   },
++   {
++    "unit": "item.staff-of-summoning",
++    "what": "grants power.staff-of-summoning.call-the-wolf",
++    "needs": "item power — shape unparsed"
++   },
++   {
++    "unit": "item.staff-of-the-magi",
++    "what": "grants power.staff-of-the-magi.power-ward",
++    "needs": "item power — shape unparsed"
++   },
++   {
++    "unit": "item.staff-of-the-magi",
++    "what": "grants power.staff-of-the-magi.vortex",
++    "needs": "item power — shape unparsed"
++   },
++   {
++    "unit": "item.staff-of-the-destroyer",
++    "what": "attack.staff-of-the-destroyer.ruin onKill: \"the corpse is destroyed\"",
++    "needs": "trigger shape unparsed"
++   },
++   {
++    "unit": "item.staff-of-the-destroyer",
++    "what": "attack.staff-of-the-destroyer.sundering onKill: \"the corpse is destroyed\"",
++    "needs": "trigger shape unparsed"
++   },
++   {
++    "unit": "item.staff-of-the-ultimate-destroyer",
++    "what": "grants power.staff-of-the-ultimate-destroyer.perfect-sight",
++    "needs": "item power — shape unparsed"
++   },
++   {
++    "unit": "item.chains-of-the-wrathful",
++    "what": "grants power.chains-of-the-wrathful.weight-of-sin",
++    "needs": "item power — shape unparsed"
++   },
++   {
++    "unit": "item.chains-of-the-wrathful",
++    "what": "attack.chains-of-the-wrathful.wrathful-sweep targets 'every enemy within 3 hexes' — lands SINGLE-TARGET",
++    "needs": "area attack shape"
++   },
++   {
++    "unit": "item.benevolent-rod",
++    "what": "grants power.benevolent-rod.restoration",
++    "needs": "item power — shape unparsed"
++   },
++   {
++    "unit": "item.benevolent-rod",
++    "what": "grants power.benevolent-rod.small-mercy",
++    "needs": "item power — shape unparsed"
++   },
++   {
++    "unit": "item.book-of-karma",
++    "what": "grants power.book-of-karma.balance-the-ledger",
++    "needs": "item power — shape unparsed"
++   },
++   {
++    "unit": "item.rod-of-imprisonment",
++    "what": "grants power.rod-of-imprisonment.imprison",
++    "needs": "item power — shape unparsed"
++   },
++   {
++    "unit": "item.rod-of-imprisonment",
++    "what": "grants power.rod-of-imprisonment.sanctuary",
++    "needs": "item power — shape unparsed"
++   },
++   {
++    "unit": "item.crows-eye-pendant",
++    "what": "active: Reveal every hidden, stealthed or obscured unit wi",
++    "needs": "an ability with charges/targets — capability.consumables"
++   },
++   {
++    "unit": "item.poison-caltrops",
++    "what": "active: Place three unseen traps: that hex and any two adj",
++    "needs": "an ability with charges/targets — capability.consumables"
++   },
++   {
++    "unit": "item.featherstep-boots",
++    "what": "active: You have AIRWALK: you take no trap and no terrain ",
++    "needs": "an ability with charges/targets — capability.consumables"
++   },
++   {
++    "unit": "item.featherstep-boots",
++    "what": "airwalk: true",
++    "needs": "item field: airwalk"
++   },
++   {
++    "unit": "item.wayfinders-compass",
++    "what": "startOfBattle: gain +2 Vision for the rest of the Battle, and you",
++    "needs": "trigger shape unparsed"
++   },
++   {
++    "unit": "item.lucky-charm",
++    "what": "onMiss: gain +2 Accuracy for the rest of the Battle",
++    "needs": "trigger shape unparsed"
++   },
++   {
++    "unit": "item.mark-of-suffering",
++    "what": "onTakingDamage: gain +1 Strength and +1 Precision until the end of",
++    "needs": "trigger shape unparsed"
++   },
++   {
++    "unit": "item.mask-of-the-velvet-hand",
++    "what": "active: Free. Enter stealth, and gain +10 Luck for the res",
++    "needs": "an ability with charges/targets — capability.consumables"
++   },
++   {
++    "unit": "item.brass-spyglass-of-thessan",
++    "what": "active: Free. Until the end of the Turn every attack you o",
++    "needs": "an ability with charges/targets — capability.consumables"
++   },
++   {
++    "unit": "item.vial-of-abyssal-essence",
++    "what": "onCrit: the target gains 3 Poison and you take 1 true dama",
++    "needs": "trigger shape unparsed"
++   },
++   {
++    "unit": "item.blink-ring",
++    "what": "active: Free. This is not movement and cannot be interrupt",
++    "needs": "an ability with charges/targets — capability.consumables"
++   },
++   {
++    "unit": "item.astrolabe-of-the-threshold",
++    "what": "active: Once per Battle, an ally within 6 hexes may immedi",
++    "needs": "an ability with charges/targets — capability.consumables"
++   },
++   {
++    "unit": "item.council-of-echoes",
++    "what": "onMiss: until the end of your next Turn your attacks gain ",
++    "needs": "trigger shape unparsed"
++   },
++   {
++    "unit": "item.tandras-blood-vial",
++    "what": "onCrit: deal 2 crits",
++    "needs": "trigger shape unparsed"
++   },
++   {
++    "unit": "item.heart-of-vyrmothax",
++    "what": "onKill: gain 4 Protection and +1 Strength for the rest of ",
++    "needs": "trigger shape unparsed"
++   },
++   {
++    "unit": "item.velans-ferryman-coin",
++    "what": "startOfBattle: +20 Deathbed Fighting",
++    "needs": "trigger shape unparsed"
++   },
++   {
++    "unit": "item.velans-ferryman-coin",
++    "what": "active: Free. Stabilise a downed ally within 2 hexes, remo",
++    "needs": "an ability with charges/targets — capability.consumables"
++   },
++   {
++    "unit": "item.tongue-of-xarveth",
++    "what": "statModifier 'corruption' 2",
++    "needs": "stat: corruption (no UnitDef field)"
++   },
++   {
++    "unit": "item.tongue-of-xarveth",
++    "what": "aura: AURA — every enemy within 4 hexes of you takes -10",
++    "needs": "hook: aura (declared, engine never fires it)"
++   },
++   {
++    "unit": "item.starweaver-loom-fragment",
++    "what": "aura: AURA radius 3 — every ally inside has +3 Luck, and",
++    "needs": "hook: aura (declared, engine never fires it)"
++   },
++   {
++    "unit": "item.shard-of-the-shattered-spire",
++    "what": "active: Place three unseen traps on any three hexes within",
++    "needs": "an ability with charges/targets — capability.consumables"
++   },
++   {
++    "unit": "item.banner-assassin",
++    "what": "grants power.banner-assassin.plant",
++    "needs": "item power — shape unparsed"
++   },
++   {
++    "unit": "item.banner-mystic-power",
++    "what": "grants power.banner-mystic-power.plant",
++    "needs": "item power — shape unparsed"
++   },
++   {
++    "unit": "item.banner-vigil",
++    "what": "grants power.banner-vigil.plant",
++    "needs": "item power — shape unparsed"
++   },
++   {
++    "unit": "item.banner-courage",
++    "what": "grants power.banner-courage.plant",
++    "needs": "item power — shape unparsed"
++   },
++   {
++    "unit": "item.banner-heroism",
++    "what": "grants power.banner-heroism.plant",
++    "needs": "item power — shape unparsed"
++   },
++   {
++    "unit": "item.bandages",
++    "what": "active: Free, 0 Stamina: stabilize a downed ally — their b",
++    "needs": "an ability with charges/targets — capability.consumables"
++   },
++   {
++    "unit": "item.bandages",
++    "what": "uses: 1 — no active compiled to carry the charge",
++    "needs": "charges spent in battle — capability.consumables"
++   },
++   {
++    "unit": "item.backpack",
++    "what": "statModifier 'itemSlots' 2",
++    "needs": "stat: itemSlots (no UnitDef field)"
++   },
++   {
++    "unit": "item.burning-oil",
++    "what": "power.burning-oil.use: and the hex it stands on gains Burning — a painted layer from a power (not yet an ability effect)",
++    "needs": "item active clause"
++   },
++   {
++    "unit": "item.poison-coating",
++    "what": "active: Once per Battle, 1 Stamina: for the rest of the Ba",
++    "needs": "an ability with charges/targets — capability.consumables"
++   },
++   {
++    "unit": "item.poison-coating",
++    "what": "uses: 1 — no active compiled to carry the charge",
++    "needs": "charges spent in battle — capability.consumables"
++   },
++   {
++    "unit": "item.winter-cloak",
++    "what": "active: Once per Battle, 1 Stamina: gain Immunity to Frost",
++    "needs": "an ability with charges/targets — capability.consumables"
++   },
++   {
++    "unit": "item.winter-cloak",
++    "what": "uses: 1 — no active compiled to carry the charge",
++    "needs": "charges spent in battle — capability.consumables"
++   },
++   {
++    "unit": "item.brilliant-torch",
++    "what": "active: +5 Vision. Once per Battle, 1 Stamina: reveal ever",
++    "needs": "an ability with charges/targets — capability.consumables"
++   },
++   {
++    "unit": "item.brilliant-torch",
++    "what": "uses: 1 — no active compiled to carry the charge",
++    "needs": "charges spent in battle — capability.consumables"
++   },
++   {
++    "unit": "item.bear-trap",
++    "what": "active: Once per Battle: place two traps on empty hexes wi",
++    "needs": "an ability with charges/targets — capability.consumables"
++   },
++   {
++    "unit": "item.bear-trap",
++    "what": "uses: 1 — no active compiled to carry the charge",
++    "needs": "charges spent in battle — capability.consumables"
++   },
++   {
++    "unit": "item.magic-trap",
++    "what": "active: Once per Battle: place two traps on empty hexes wi",
++    "needs": "an ability with charges/targets — capability.consumables"
++   },
++   {
++    "unit": "item.magic-trap",
++    "what": "uses: 1 — no active compiled to carry the charge",
++    "needs": "charges spent in battle — capability.consumables"
++   },
++   {
++    "unit": "item.fire-trap",
++    "what": "active: Once per Battle: place two traps on empty hexes wi",
++    "needs": "an ability with charges/targets — capability.consumables"
++   },
++   {
++    "unit": "item.fire-trap",
++    "what": "uses: 1 — no active compiled to carry the charge",
++    "needs": "charges spent in battle — capability.consumables"
++   },
++   {
++    "unit": "item.explosive-trap",
++    "what": "active: Once per Battle: place one trap on an empty hex wi",
++    "needs": "an ability with charges/targets — capability.consumables"
++   },
++   {
++    "unit": "item.explosive-trap",
++    "what": "uses: 1 — no active compiled to carry the charge",
++    "needs": "charges spent in battle — capability.consumables"
++   },
++   {
++    "unit": "item.marching-orders",
++    "what": "statModifier 'itemSlots' -1",
++    "needs": "stat: itemSlots (no UnitDef field)"
++   },
++   {
++    "unit": "item.quartermasters-manifest",
++    "what": "statModifier 'itemSlots' 1",
++    "needs": "stat: itemSlots (no UnitDef field)"
++   },
++   {
++    "unit": "item.rune-bashing",
++    "what": "onCrit: apply 1 Stun to the target and Knockback 1 — it is",
++    "needs": "trigger shape unparsed"
++   },
++   {
++    "unit": "item.rune-plant-killer",
++    "what": "onKill: if the kill had the plant tag, immediately regain ",
++    "needs": "trigger shape unparsed"
++   },
++   {
++    "unit": "item.rune-horror-breaker",
++    "what": "onKill: gain +5 Accuracy for the rest of the Battle",
++    "needs": "trigger shape unparsed"
++   },
++   {
++    "unit": "item.rune-elemental-bane",
++    "what": "onHit: if the target has the elemental or dragon tag it l",
++    "needs": "trigger shape unparsed"
++   },
++   {
++    "unit": "item.rune-executioner",
++    "what": "onKill: regain 1 stamina, and until the end of your next T",
++    "needs": "trigger shape unparsed"
++   },
++   {
++    "unit": "item.rune-hunters-mark",
++    "what": "onHit: the target gains 2 Bleed",
++    "needs": "trigger shape unparsed"
++   },
++   {
++    "unit": "item.rune-crushing",
++    "what": "onHit: the target loses 1 Armor for the rest of the Battl",
++    "needs": "trigger shape unparsed"
++   },
++   {
++    "unit": "item.rune-catblood",
++    "what": "grants tag.catfolk",
++    "needs": "attack row unauthored"
++   },
++   {
++    "unit": "item.rune-aura-of-dread",
++    "what": "aura: AURA — every enemy within 3 hexes gains 2 Weak",
++    "needs": "hook: aura (declared, engine never fires it)"
++   },
++   {
++    "unit": "item.rune-berserker-blood",
++    "what": "onKill: gain +1 Strength for the rest of the Battle, and h",
++    "needs": "trigger shape unparsed"
++   },
++   {
++    "unit": "item.rune-deathdealer",
++    "what": "grants tag.outcast",
++    "needs": "attack row unauthored"
++   },
++   {
++    "unit": "item.rune-deathdealer",
++    "what": "onDodge: gain +10 Crit for the rest of the Battle",
++    "needs": "hook: onDodge (declared, engine never fires it)"
++   },
++   {
++    "unit": "item.rune-deathdealer",
++    "what": "onCrit: gain +10 Dodge for the rest of the Battle",
++    "needs": "trigger shape unparsed"
++   },
++   {
++    "unit": "item.rune-kairin",
++    "what": "onActivationEnd: heal 2",
++    "needs": "trigger shape unparsed"
++   },
++   {
++    "unit": "item.rune-avatar-of-war",
++    "what": "onKill: Surge Chance +20 for the rest of the Battle, stack",
++    "needs": "trigger shape unparsed"
++   },
++   {
++    "unit": "item.rune-perfect-hunter",
++    "what": "startOfBattle: every slayer bonus you have from any source — weap",
++    "needs": "trigger shape unparsed"
++   },
++   {
++    "unit": "item.rune-hells-chosen",
++    "what": "grants tag.demon",
++    "needs": "attack row unauthored"
++   },
++   {
++    "unit": "item.rune-hells-chosen",
++    "what": "aura: AURA — every unit within 3 hexes takes -10 Accurac",
++    "needs": "hook: aura (declared, engine never fires it)"
++   },
++   {
++    "unit": "item.finger-of-saint-aldwyn",
++    "what": "aura: AURA radius 2 — an ally who ends its Activation in",
++    "needs": "hook: aura (declared, engine never fires it)"
++   },
++   {
++    "unit": "item.censer-of-true-light",
++    "what": "passive: Immunity to Burn 1",
++    "needs": "hook: passive (declared, engine never fires it)"
++   },
++   {
++    "unit": "item.vigils-shield",
++    "what": "startOfBattle: +10 to your Deathbed Fighting roll. The modifier h",
++    "needs": "trigger shape unparsed"
++   },
++   {
++    "unit": "item.scorpion-shield",
++    "what": "onTakingDamage: Thorns 2, and the attacker gains 2 Poison and 1 Bl",
++    "needs": "trigger shape unparsed"
++   },
++   {
++    "unit": "item.scorpion-shield",
++    "what": "thorns: 2",
++    "needs": "item field: thorns"
++   },
++   {
++    "unit": "item.blessing-of-the-hearthmother",
++    "what": "onActivationEnd: heal 2 and remove 1 Weak",
++    "needs": "trigger shape unparsed"
++   },
++   {
++    "unit": "item.stormcallers-orb",
++    "what": "immunity: {\"frost\":1}",
++    "needs": "item field: immunity"
++   },
++   {
++    "unit": "item.ring-of-divine-protection",
++    "what": "startOfBattle: gain Protection equal to 4 + the party's Spirit",
++    "needs": "trigger shape unparsed"
++   },
++   {
++    "unit": "item.kals-mercy",
++    "what": "passive: Immunity to Bleed 1. One point of Bleed is removed",
++    "needs": "hook: passive (declared, engine never fires it)"
++   },
++   {
++    "unit": "item.roster-of-the-fallen",
++    "what": "onDeath: your name goes on the roster: every ally gains +1 ",
++    "needs": "trigger shape unparsed"
++   },
++   {
++    "unit": "item.necklace-of-weakness-immunity",
++    "what": "immunity: {\"weak\":1}",
++    "needs": "item field: immunity"
++   },
++   {
++    "unit": "item.necklace-of-frost-immunity",
++    "what": "immunity: {\"frost\":1}",
++    "needs": "item field: immunity"
++   },
++   {
++    "unit": "item.lumberjack-axe",
++    "what": "attack.lumberjack-axe.cleave targets 'an adjacent hex and one hex adjacent to both you a' — lands SINGLE-TARGET",
++    "needs": "area attack shape"
++   },
++   {
++    "unit": "critChart",
++    "what": "knocked-sprawling: -50 Surge",
++    "needs": "no surge quantity in the engine"
++   }
++  ]
++ }
++
+
+ ❯ test/burst-paints-ground.test.ts:72:22
+     70|   it('content\'s gap list no longer says a burst paints no ground', ()…
+     71|     const text = readFileSync(fileURLToPath(new URL('../../content/gen…
+     72|     expect(text).not.toContain('a burst paints no ground')
+       |                      ^
+     73|     expect(text).not.toMatch(/(fire-staff\.fireball|frost-staff\.frost…
+     74|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/21]⎯
+
+ FAIL  test/burst-paints-ground.test.ts > hero.base.mage-fire casts power.fire-staff.fireball > deals its Magic damage and leaves the seven hexes painted — one layer.painted for each, cause the power
+ FAIL  test/burst-paints-ground.test.ts > hero.base.mage-thinking casts power.frost-staff.frost-nova > deals its Magic damage and leaves the seven hexes painted — one layer.painted for each, cause the power
+AssertionError: expected [] to deeply equal [ 119, 120, 135, 136, 137, 151, 152 ]
+
+- Expected
++ Received
+
+- [
+-   119,
+-   120,
+-   135,
+-   136,
+-   137,
+-   151,
+-   152,
+- ]
++ []
+
+ ❯ test/burst-paints-ground.test.ts:93:88
+     91|     expect(far.hp).toBe(far.maxHp)
+     92|     const strokes = painted(ctx, power)
+     93|     expect(strokes.map((e) => e['hex']).sort((a, b) => (a as number) -…
+       |                                                                                        ^
+     94|     expect(strokes.every((e) => e.type === 'layer.painted' && e['layer…
+     95|     for (const h of hexes) expect(layerIdOf(layerAt(ctx, h)), `hex ${h…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/21]⎯
+
+ FAIL  test/burst-paints-ground.test.ts > hero.base.mage-fire casts power.fire-staff.fireball > the ground is painted after the recipients are struck and before the burst settles
+ FAIL  test/burst-paints-ground.test.ts > hero.base.mage-thinking casts power.frost-staff.frost-nova > the ground is painted after the recipients are struck and before the burst settles
+AssertionError: expected -1 to be greater than 8
+ ❯ test/burst-paints-ground.test.ts:108:24
+    106|     const lastStruck = types.lastIndexOf('burst.struck'), firstPaint =…
+    107|     expect(lastStruck).toBeGreaterThanOrEqual(0)
+    108|     expect(firstPaint).toBeGreaterThan(lastStruck)
+       |                        ^
+    109|   })
+    110|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/21]⎯
+
+ FAIL  test/burst-paints-ground.test.ts > hero.base.mage-fire casts power.fire-staff.fireball > the one ground rule: every standing unit on a painted hex takes that layer's entry beat — the ally and the caster's own side too
+AssertionError: hero.base.warrior-iron status.burn: expected +0 to be 1 // Object.is equality
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ test/burst-paints-ground.test.ts:116:121
+    114|     useBurst(ctx, mage.id, centre, power)
+    115|     const beat = layerAppliesOnEnter(layerNo)
+    116|     for (const u of [ally, z1, z2]) for (const [status, n] of beat) ex…
+       |                                                                                                                         ^
+    117|     for (const [status] of beat) {
+    118|       expect(valueOf(far, status), 'outside the seven hexes').toBe(0)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/21]⎯
+
+ FAIL  test/burst-paints-ground.test.ts > hero.base.mage-fire casts power.fire-staff.fireball > the preview says so: it names the ground and the hexes it will be painted on
+AssertionError: expected undefined to deeply equal { layer: 'layer.burning', …(1) }
+
+- Expected:
+{
+  "hexes": [
+    119,
+    120,
+    135,
+    136,
+    137,
+    151,
+    152,
+  ],
+  "layer": "layer.burning",
+}
+
++ Received:
+undefined
+
+ ❯ test/burst-paints-ground.test.ts:129:22
+    127|     const { ctx, mage, centre } = rig(mageId)
+    128|     const p = previewBurst(ctx, mage.id, centre, power) as ReturnType<…
+    129|     expect(p.paints).toEqual({ layer, hexes: p.hexes })
+       |                      ^
+    130|     expect(ctx.events.filter((e) => e.type === 'layer.painted')).toEqu…
+    131|     expect(ctx.state.layers?.some((l) => l !== 0) ?? false).toBe(false)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/21]⎯
+
+ FAIL  test/burst-paints-ground.test.ts > hero.base.mage-fire casts power.fire-staff.fireball > burst.declared carries the ground, so the log says what the burst will leave
+AssertionError: expected { seq: 16, turn: +0, …(15) } to match object { paints: 'layer.burning' }
+(19 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "paints": "layer.burning",
++   "actor": 0,
++   "causeId": "power.fire-staff.fireball",
++   "centre": 136,
++   "heal": 0,
++   "hexes": [
++     119,
++     120,
++     135,
++     136,
++     137,
++     151,
++     152,
++   ],
++   "ordinal": 1,
++   "origin": 132,
++   "packets": [
++     {
++       "damageType": "magic",
++       "id": "base",
++       "ledger": [
++         {
++           "after": 0,
++           "before": 0,
++           "delta": 0,
++           "effectId": "power.fire-staff.fireball",
++           "name": "DECLARE",
++           "station": 100,
++         },
++         {
++           "after": 3,
++           "before": 0,
++           "delta": 3,
++           "effectId": "unit.hero.base.mage-fire",
++           "name": "SOURCE_STAT",
++           "station": 200,
++         },
++       ],
++       "value": 3,
++     },
++   ],
++   "phase": "hero",
++   "seq": 16,
++   "shape": {
++     "kind": "radius",
++     "radius": 1,
++   },
++   "side": "any",
++   "tags": [],
++   "target": null,
++   "targets": [
++     {
++       "hex": 120,
++       "id": 1,
++       "uid": 101,
++     },
++     {
++       "hex": 136,
++       "id": 2,
++       "uid": 200,
++     },
++     {
++       "hex": 137,
++       "id": 3,
++       "uid": 201,
++     },
++   ],
++   "turn": 0,
++   "type": "burst.declared",
+  }
+
+ ❯ test/burst-paints-ground.test.ts:138:88
+    136|     beginActivation(ctx, mage.id, 'test')
+    137|     useBurst(ctx, mage.id, centre, power)
+    138|     expect(ctx.events.find((e) => e.type === 'burst.declared' && e.cau…
+       |                                                                                        ^
+    139|   })
+    140|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/21]⎯
+
+ FAIL  test/burst-paints-ground.test.ts > hero.base.mage-fire casts power.fire-staff.fireball > a shielded hex is painted too: the unit there is not struck, and still meets the ground it now stands on
+ FAIL  test/burst-paints-ground.test.ts > hero.base.mage-thinking casts power.frost-staff.frost-nova > a shielded hex is painted too: the unit there is not struck, and still meets the ground it now stands on
+AssertionError: expected [] to deeply equal [ 119, 120, 135, 136, 137, 151, 152 ]
+
+- Expected
++ Received
+
+- [
+-   119,
+-   120,
+-   135,
+-   136,
+-   137,
+-   151,
+-   152,
+- ]
++ []
+
+ ❯ test/burst-paints-ground.test.ts:152:100
+    150|     expect(z2.hp, 'shielded: no blast damage').toBe(z2.maxHp)
+    151|     expect(z1.hp).toBe(z1.maxHp - mage.magic)
+    152|     expect(painted(ctx, power).map((e) => e['hex']).sort((x, y) => (x …
+       |                                                                                                    ^
+    153|     expect(layerIdOf(layerAt(ctx, z2.hex))).toBe(layer)
+    154|     for (const [status, n] of layerAppliesOnEnter(layerNo)) expect(val…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/21]⎯
+
+ FAIL  test/burst-paints-ground.test.ts > hero.base.mage-thinking casts power.frost-staff.frost-nova > the one ground rule: every standing unit on a painted hex takes that layer's entry beat — the ally and the caster's own side too
+AssertionError: hero.base.warrior-iron status.frost: expected +0 to be 1 // Object.is equality
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ test/burst-paints-ground.test.ts:116:121
+    114|     useBurst(ctx, mage.id, centre, power)
+    115|     const beat = layerAppliesOnEnter(layerNo)
+    116|     for (const u of [ally, z1, z2]) for (const [status, n] of beat) ex…
+       |                                                                                                                         ^
+    117|     for (const [status] of beat) {
+    118|       expect(valueOf(far, status), 'outside the seven hexes').toBe(0)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/21]⎯
+
+ FAIL  test/burst-paints-ground.test.ts > hero.base.mage-thinking casts power.frost-staff.frost-nova > the preview says so: it names the ground and the hexes it will be painted on
+AssertionError: expected undefined to deeply equal { layer: 'layer.frost', …(1) }
+
+- Expected:
+{
+  "hexes": [
+    119,
+    120,
+    135,
+    136,
+    137,
+    151,
+    152,
+  ],
+  "layer": "layer.frost",
+}
+
++ Received:
+undefined
+
+ ❯ test/burst-paints-ground.test.ts:129:22
+    127|     const { ctx, mage, centre } = rig(mageId)
+    128|     const p = previewBurst(ctx, mage.id, centre, power) as ReturnType<…
+    129|     expect(p.paints).toEqual({ layer, hexes: p.hexes })
+       |                      ^
+    130|     expect(ctx.events.filter((e) => e.type === 'layer.painted')).toEqu…
+    131|     expect(ctx.state.layers?.some((l) => l !== 0) ?? false).toBe(false)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/21]⎯
+
+ FAIL  test/burst-paints-ground.test.ts > hero.base.mage-thinking casts power.frost-staff.frost-nova > burst.declared carries the ground, so the log says what the burst will leave
+AssertionError: expected { seq: 16, turn: +0, …(15) } to match object { paints: 'layer.frost' }
+(19 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "paints": "layer.frost",
++   "actor": 0,
++   "causeId": "power.frost-staff.frost-nova",
++   "centre": 136,
++   "heal": 0,
++   "hexes": [
++     119,
++     120,
++     135,
++     136,
++     137,
++     151,
++     152,
++   ],
++   "ordinal": 1,
++   "origin": 132,
++   "packets": [
++     {
++       "damageType": "magic",
++       "id": "base",
++       "ledger": [
++         {
++           "after": 0,
++           "before": 0,
++           "delta": 0,
++           "effectId": "power.frost-staff.frost-nova",
++           "name": "DECLARE",
++           "station": 100,
++         },
++         {
++           "after": 2,
++           "before": 0,
++           "delta": 2,
++           "effectId": "unit.hero.base.mage-thinking",
++           "name": "SOURCE_STAT",
++           "station": 200,
++         },
++       ],
++       "value": 2,
++     },
++   ],
++   "phase": "hero",
++   "seq": 16,
++   "shape": {
++     "kind": "radius",
++     "radius": 1,
++   },
++   "side": "any",
++   "tags": [],
++   "target": null,
++   "targets": [
++     {
++       "hex": 120,
++       "id": 1,
++       "uid": 101,
++     },
++     {
++       "hex": 136,
++       "id": 2,
++       "uid": 200,
++     },
++     {
++       "hex": 137,
++       "id": 3,
++       "uid": 201,
++     },
++   ],
++   "turn": 0,
++   "type": "burst.declared",
+  }
+
+ ❯ test/burst-paints-ground.test.ts:138:88
+    136|     beginActivation(ctx, mage.id, 'test')
+    137|     useBurst(ctx, mage.id, centre, power)
+    138|     expect(ctx.events.find((e) => e.type === 'burst.declared' && e.cau…
+       |                                                                                        ^
+    139|   })
+    140|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/21]⎯
+
+ FAIL  test/burst-paints-ground.test.ts > the two layers meet as ground always has > Frost Nova onto ground a Flame Burst left burning leaves it bare — burning and frost cancel, hex for hex
+AssertionError: expected [] to have a length of 7 but got +0
+
+- Expected
++ Received
+
+- 7
++ 0
+
+ ❯ test/burst-paints-ground.test.ts:171:32
+    169|     for (const h of hexes) expect(layerAt(ctx, h), `hex ${h}`).toBe(0)
+    170|     expect(painted(ctx, NOVA).every((e) => e.type === 'layer.cancelled…
+    171|     expect(painted(ctx, NOVA)).toHaveLength(7)
+       |                                ^
+    172|   })
+    173|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/21]⎯
+
+ FAIL  test/burst-paints-ground.test.ts > the field is validated at load and carried by a snapshot > a burst profile may name the layer it paints; anything that is not a layer id is refused
+AssertionError: expected [Function] to not throw an error but 'Error: burst: unknown field or access…' was thrown
+
+- Expected:
+undefined
+
++ Received:
+"Error: burst: unknown field or accessor"
+
+ ❯ test/burst-paints-ground.test.ts:188:74
+    186|
+    187|   it('a burst profile may name the layer it paints; anything that is n…
+    188|     expect(() => burstProfile({ ...base, paints: 'layer.burning' })).n…
+       |                                                                          ^
+    189|     expect(() => burstProfile({ ...base, paints: 'layer.frost' })).not…
+    190|     for (const bad of ['burning', '', 7, null, ['layer.burning'], 'sta…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[15/21]⎯
+
+ FAIL  test/burst-paints-ground.test.ts > the field is validated at load and carried by a snapshot > a layer that is not one of the ground layers fails loudly when the burst is used, never silently paints nothing
+AssertionError: expected [Function] to not throw an error but 'Error: burst: unknown field or access…' was thrown
+
+- Expected:
+undefined
+
++ Received:
+"Error: burst: unknown field or accessor"
+
+ ❯ test/burst-paints-ground.test.ts:197:50
+    195|     const { ctx, mage, centre } = rig(EMBERWRIGHT)
+    196|     const rogue = { ...(BURSTS[FLAME] as BurstDef), id: 'power.test.ro…
+    197|     expect(() => validateBurstAction(rogue)).not.toThrow()   // the sh…
+       |                                                  ^
+    198|     ;(ctx.actions as Record<string, ActionDef>)[rogue.id] = rogue
+    199|     mage.actions.push(rogue.id)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[16/21]⎯
+
+ FAIL  test/burst-paints-ground.test.ts > the field is validated at load and carried by a snapshot > a snapshot taken after a Flame Burst restores the burning ground, and the burst rows are part of what it is bound to
+TypeError: Cannot read properties of undefined (reading 'filter')
+ ❯ test/burst-paints-ground.test.ts:211:31
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[17/21]⎯
+
+ FAIL  test/burst-paints-ground.test.ts > in a real battle > the Emberwright's Flame Burst leaves burning ground at the kiln, and units burn for standing in it
+AssertionError: no Flame Burst painted ground in ten fights at the kiln: expected 0 to be greater than 0
+ ❯ test/burst-paints-ground.test.ts:228:80
+    226|       burned += ctx.events.filter((e) => e.type === 'status.applied' &…
+    227|     }
+    228|     expect(strokes, 'no Flame Burst painted ground in ten fights at th…
+       |                                                                                ^
+    229|     expect(burned, 'nobody burned for standing on it').toBeGreaterThan…
+    230|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[18/21]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  21 failed | 2 passed (23)
+   Start at  05:11:50
+   Duration  2.14s (transform 969ms, setup 0ms, import 1.17s, tests 794ms, environment 0ms)
+

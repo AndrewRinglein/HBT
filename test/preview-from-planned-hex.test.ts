@@ -81,7 +81,11 @@ describe('preview.from-planned-hex — the forecast from where the unit WOULD st
     untouched(ctx, () => { f = forecastFrom(ctx, move) })
     if (!f.ok) throw new Error(f.reason)
     expect(f.arrives).toBe(true)   // the plan is forecast as arriving; the swing is shown, not rolled
-    expect(f.provokes).toEqual([{ at: hexId(5, 5), from: 1, attackId: BITE, preview: preview(ctx, 1, 0, BITE) }])
+    // Law 10, 2026-10-04 (rule.free-attack-is-basic-attack): the swing's preview is the FREE attack's — the same attack at
+    // the ruled −20 Accuracy (was: preview(ctx, 1, 0, BITE), the attack as made on the holder's own Activation). The claim
+    // is unchanged: the forecast records the holder's chosen swing and THAT swing's own preview.
+    expect(f.provokes).toEqual([{ at: hexId(5, 5), from: 1, attackId: BITE, preview: preview(ctx, 1, 0, BITE, 'reaction') }])
+    expect(preview(ctx, 1, 0, BITE, 'reaction').accuracy).toBe(preview(ctx, 1, 0, BITE).accuracy - 20)
     expect(ctx.events.some((e) => e.type === 'aoo.provoked')).toBe(false)
     const step = forecastFrom(ctx, { actor: 0, actionId: 'power.sidestep', destination: hexId(5, 4) })
     expect(step.ok && step.provokes).toEqual([])

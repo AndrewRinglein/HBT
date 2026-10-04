@@ -34,6 +34,8 @@ export type Provoke = {
   attackId: string | null
   /** Why the holder would not swing (its choice rule found no legal melee attack). */
   skipped?: string
+  /** capability.counterattack-and-fend: which special free attack it is when it is not the attack of opportunity — a fend, drawn by walking INTO the zone. */
+  as?: import('./pipeline.js').FreeAttackKind
   preview: AttackPreview | null
 }
 

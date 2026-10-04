@@ -26867,6 +26867,17 @@ index e0bd22a..c1dda3f 100644
 ```
 </details>
 
+## tool.kingdom-vitest-workers — LANDED `d7fa58e` **NEEDS REVIEW**
+2026-10-04 11:56
+
+  PASS  dependencies landed
+  WARN  not already decided — 1 candidate ruling(s) — READ BEFORE ASKING: SWITCHES.md:1944
+  PASS  typecheck
+  PASS  the item's own tests — test/tests-follow-what-changed.test.ts, test/kingdom-vitest-workers.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — test/tests-follow-what-changed.test.ts, test/kingdom-vitest-workers.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/tests-follow-what-changed.test.ts (-3) — will land FLAGGED for review
+  PASS  control battles unchanged
 ## viewer.arrivals-camera — LANDED `3f9ab39`
 2026-10-04 12:18
 
@@ -26887,6 +26898,159 @@ index e0bd22a..c1dda3f 100644
   PASS  naming — no banned words invented
   PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
 
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/tests-follow-what-changed.test.ts b/test/tests-follow-what-changed.test.ts
+index 059741f..cc728ff 100644
+--- a/test/tests-follow-what-changed.test.ts
++++ b/test/tests-follow-what-changed.test.ts
+@@ -311,8 +311,16 @@ describe('what a change runs', () => {
+     expect(ranSuites(f)).toEqual(['kingdom'])
+     expect(ranLines(f).map((l) => l.match(/--shard=(\d\/4)/)?.[1])).toEqual(['1/4', '2/4', '3/4', '4/4'])   // in four quarters, as combine ran it
+-    // each quarter on four vitest workers, so its child-process tests keep their 5 s beside other workers' suites — unless the caller's environment says otherwise
++    // Rewritten 2026-10-04 (tool.kingdom-vitest-workers), a rule moved, not an assertion weakened: this
++    // read "each quarter on four vitest workers … workers=4" while the runner set VITEST_MAX_WORKERS=4
++    // itself, kingdom having no vitest config. The four are now kingdom/vitest.config.ts's (the engine's
++    // own cap, one place for the gate, a landing and this runner) and test/kingdom-vitest-workers.test.ts
++    // holds that vitest resolves them there. What is left to hold here: the runner sets no cap of its
++    // own, and what the caller's environment says still reaches every quarter.
+     clearRan(f)
+-    expect(node(join(f.main, 'engine'), { ...f.env, FIXTURE_WORKERS: '1' }, 'tools/suites.mjs', '--run', 'kingdom').status).toBe(0)
+-    expect(ranLines(f).every((l) => l.endsWith(' workers=4')), ranLines(f).join(' | ')).toBe(true)
++    const noCap: Record<string, string | undefined> = { ...process.env, ...f.env, FIXTURE_WORKERS: '1' }
++    delete noCap.VITEST_MAX_WORKERS
++    expect(spawnSync(process.execPath, ['tools/suites.mjs', '--run', 'kingdom'], { cwd: join(f.main, 'engine'), encoding: 'utf8', env: noCap }).status).toBe(0)
++    expect(ranLines(f)).toHaveLength(4)
++    expect(ranLines(f).every((l) => l.endsWith(' workers=unset')), ranLines(f).join(' | ')).toBe(true)
+     clearRan(f)
+     expect(node(join(f.main, 'engine'), { ...f.env, FIXTURE_WORKERS: '1', VITEST_MAX_WORKERS: '2' }, 'tools/suites.mjs', '--run', 'kingdom').status).toBe(0)
+```
+</details>
+
+## movement.back-flip — LANDED `0aef492`
+2026-10-04 12:07
+
+  PASS  dependencies landed
+  WARN  not already decided — 2 candidate ruling(s) — READ BEFORE ASKING: SWITCHES.md:2001 · ..\CODEX.md:1815
+  PASS  typecheck
+  PASS  the item's own tests — test/back-flip.test.ts
+  PASS  gate 1 — the id appears in a real battle — power.back-flip: 6 log lines, 6 fired, 2 changed state
+  PASS  brought its own tests — test/back-flip.test.ts
+  PASS  existing tests untouched
+  PASS  control battles unchanged
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — shape 'data' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without power.back-flip — they genuinely test it
+
+## capability.burst-paints-ground — LANDED `a041bb5` **NEEDS REVIEW**
+2026-10-04 13:27
+
+  PASS  dependencies landed
+  WARN  not already decided — 1 candidate ruling(s) — READ BEFORE ASKING: SWITCHES.md:1971
+  PASS  typecheck
+  PASS  the item's own tests — test/battle-cursor.test.ts, test/starting-kit-powers.test.ts, test/burst-paints-ground.test.ts
+  PASS  gate 1 — the id appears in a real battle — power.fire-staff.fireball: 1 log lines, 1 fired, 1 changed state · power.frost-staff.frost-nova: 1 log lines, 1 fired, 1 changed state
+  PASS  brought its own tests — test/battle-cursor.test.ts, test/starting-kit-powers.test.ts, test/burst-paints-ground.test.ts, test/fixtures/battle-cursor-burst-paints-ground.json
+  WARN  existing tests untouched — DELETED LINES in test/battle-cursor.test.ts (-2), test/starting-kit-powers.test.ts (-3) — will land FLAGGED for review
+  PASS  control battles unchanged
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — power.fire-staff.fireball live · power.frost-staff.frost-nova live
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without power.fire-staff.fireball,power.frost-staff.frost-nova — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/battle-cursor.test.ts b/test/battle-cursor.test.ts
+index 7e68d4d..efbf600 100644
+--- a/test/battle-cursor.test.ts
++++ b/test/battle-cursor.test.ts
+@@ -318,4 +318,12 @@ const impBlastTunedGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-c
+ // `changed` case is checked here and skips the older layers; the rest run down this copy's three layers, then master's, as before.
+ const combineCiviliansKitGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-combine-civilians-kit.json', import.meta.url), 'utf8'))
++// capability.burst-paints-ground (2026-10-04; DECISIONS.md 2026-10-03 'reported: the priest's Holy Texts has no heal in battle'),
++// Law 10: a burst leaves its ground — Flame Burst's seven hexes burn, Frost Nova's frost — and the two staffs name no gap. Every
++// case frozen here (tools/capture-burst-paints-ground-cursor.mts). Moved for real (state, RNG and result): the four cases in which a
++// staff mage casts one — showcase.kiln, showcase.rime, showcase.supper and test.opening-cathedral (the fixture counts each case's
++// painted hexes). Moved in text only: the nine other cases that field a staff, whose unit.equipped line no longer carries the gap
++// sentence — showcase.assembled-party, showcase.eve-24-b, showcase.horrors, showcase.surrounded, showcase.waystation,
++// test.opening-gates and progression-surge-0/1/2. A `changed` case is checked here and skips the older layers.
++const burstPaintsGroundGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-burst-paints-ground.json', import.meta.url), 'utf8'))
+ const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
+ // Explicit rule migration, not regenerated historical hashes. These nine old
+@@ -441,5 +449,8 @@ describe('resumable battle cursor', () => {
+       const impBlastTunedExpected = impBlastTunedGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+       const combineCiviliansKitExpected = combineCiviliansKitGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+-      const combineCiviliansKitMoved = combineCiviliansKitExpected?.changed === true
++      const burstPaintsGroundExpected = burstPaintsGroundGolden.cases.find((row:{id:string})=>row.id===fixture.id)
++      const burstPaintsGroundMoved = burstPaintsGroundExpected?.changed === true
++      // was: const combineCiviliansKitMoved = combineCiviliansKitExpected?.changed === true — a burst-paints-ground-moved case skips the combine layer too (capability.burst-paints-ground 2026-10-04)
++      const combineCiviliansKitMoved = combineCiviliansKitExpected?.changed === true || burstPaintsGroundMoved
+       // was: const impBlastTunedMoved = impBlastTunedExpected?.changed === true — a case the combined tree moved skips the imp-blast-tuned layer too (combine 2026-10-04)
+       const impBlastTunedMoved = impBlastTunedExpected?.changed === true || combineCiviliansKitMoved
+@@ -546,5 +557,12 @@ describe('resumable battle cursor', () => {
+           }
+         } else result = battle.runBattle(ctx)
+-        if (combineCiviliansKitExpected) {
++        if (burstPaintsGroundExpected) {
++        expect(hash(ctx.events), 'full burst-paints-ground events').toBe(burstPaintsGroundExpected.events)
++        expect(hash(ctx.state), 'full burst-paints-ground state').toBe(burstPaintsGroundExpected.state)
++        expect(hash(ctx.rng.log), 'full burst-paints-ground RNG').toBe(burstPaintsGroundExpected.rng)
++        expect(result).toEqual(burstPaintsGroundExpected.result)
++        }
++        // was: if (combineCiviliansKitExpected) { — capability.burst-paints-ground (2026-10-04): a burst-paints-ground-moved case is checked above instead
++        if (combineCiviliansKitExpected && !burstPaintsGroundMoved) {
+         expect(hash(ctx.events), 'full combine-civilians-kit events').toBe(combineCiviliansKitExpected.events)
+         expect(hash(ctx.state), 'full combine-civilians-kit state').toBe(combineCiviliansKitExpected.state)
+diff --git a/test/starting-kit-powers.test.ts b/test/starting-kit-powers.test.ts
+index f2862bf..78da0a9 100644
+--- a/test/starting-kit-powers.test.ts
++++ b/test/starting-kit-powers.test.ts
+@@ -60,7 +60,17 @@ describe('the pack carries the three powers, each in its Codex words', () => {
+   })
+ 
+-  it('what the engine cannot do yet is named on the two staffs: a burst paints no ground', () => {
+-    expect(ITEMS['item.fire-staff']!.gaps).toEqual([`${FLAME}: those seven hexes become burning — a burst paints no ground (capability.burst-paints-ground)`])
+-    expect(ITEMS['item.frost-staff']!.gaps).toEqual([`${NOVA}: those seven hexes become frost — a burst paints no ground (capability.burst-paints-ground)`])
++  // LAW 10 — rewritten 2026-10-04 by capability.burst-paints-ground, as a RULE, not the frozen text. This read
++  // "what the engine cannot do yet is named on the two staffs: a burst paints no ground" and held each staff's
++  // `gaps` to the one sentence naming that missing capability. The claim under test was never the sentence: it
++  // was "the ground clause of each Codex row is never silently dropped" — named as a gap while the engine could
++  // not do it. The engine does it now (the burst's own `paints`; test/burst-paints-ground.test.ts holds what it
++  // does), so the same claim reads: the clause is on the burst, and the staff names no gap for it.
++  it('the ground clause of each staff is never dropped: it is on the burst, and the staff names no gap for it', () => {
++    expect((BURSTS[FLAME]!.burst as { paints?: string }).paints).toBe('layer.burning')
++    expect((BURSTS[NOVA]!.burst as { paints?: string }).paints).toBe('layer.frost')
++    expect((ITEMS['item.fire-staff']!.gaps ?? []).filter((g) => g.includes('those seven hexes'))).toEqual([])
++    expect((ITEMS['item.frost-staff']!.gaps ?? []).filter((g) => g.includes('those seven hexes'))).toEqual([])
++    expect(ITEMS['item.fire-staff']!.gaps ?? []).toEqual([])
++    expect(ITEMS['item.frost-staff']!.gaps ?? []).toEqual([])
+   })
+ 
+```
+</details>
+
+## fix.opening-draft-one-rule — LANDED `28b7eb4`
+2026-10-04 13:38
+
+  PASS  dependencies landed
+  WARN  not already decided — 2 candidate ruling(s) — READ BEFORE ASKING: SWITCHES.md:1944 · DECISIONS.md:4731
+  PASS  typecheck
+  PASS  the item's own tests — test/opening-draft-one-rule.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — test/fixtures/opening-draft-one-rule.json, test/opening-draft-one-rule.test.ts
+  PASS  existing tests untouched
+  PASS  control battles unchanged
 ## viewer.hex-tooltip — LANDED `66d3243`
 2026-10-04 14:12
 
@@ -26907,6 +27071,17 @@ index e0bd22a..c1dda3f 100644
   PASS  naming — no banned words invented
   PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
 
+## rule.free-attack-is-basic-attack — LANDED `650e7d5` **NEEDS REVIEW**
+2026-10-04 14:25
+
+  PASS  dependencies landed
+  WARN  not already decided — 3 candidate ruling(s) — READ BEFORE ASKING: DECISIONS.md:4731 · SWITCHES.md:1932
+  PASS  typecheck
+  PASS  the item's own tests — test/action-spent.test.ts, test/aoo-pays-stamina.test.ts, test/audit.test.ts, test/authored-slots.test.ts, test/battle-cursor.test.ts, test/civilians-field-kit.test.ts, test/high-cell-los.test.ts, test/item-powers.test.ts, test/preview-from-planned-hex.test.ts, test/rulings-2026-08-15.test.ts, test/free-attack-is-basic-attack.test.ts
+  PASS  gate 1 — the id appears in a real battle — attack.lumberjack-axe.chop: 18 log lines, 18 fired, 5 changed state · attack.longsword.slash: 1 log lines, 1 fired, 1 changed state
+  PASS  brought its own tests — test/action-spent.test.ts, test/aoo-pays-stamina.test.ts, test/audit.test.ts, test/authored-slots.test.ts, test/battle-cursor.test.ts, test/civilians-field-kit.test.ts, test/high-cell-los.test.ts, test/item-powers.test.ts, test/preview-from-planned-hex.test.ts, test/rulings-2026-08-15.test.ts, test/fixtures/battle-cursor-free-attack.json, test/free-attack-is-basic-attack.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/action-spent.test.ts (-2), test/aoo-pays-stamina.test.ts (-35), test/authored-slots.test.ts (-2), test/battle-cursor.test.ts (-2), test/civilians-field-kit.test.ts (-10), test/high-cell-los.test.ts (-2), test/item-powers.test.ts (-1), test/preview-from-planned-hex.test.ts (-1), test/rulings-2026-08-15.test.ts (-5) — will land FLAGGED for review
+  PASS  control battles unchanged — will re-bless at commit — this item DECLARED it changes the control battles: map.open b52001ce->32d99613, map.ridge ef8ade8b->dea75a79, map.flanks 9a0e1af5->df5fe22c, map.highlands 04ddee2d->afc885da, map.field 1595c9e3->2955b12b, map.thicket c6031170->da750c56, map.proving.open 396281e6->a33c47dc, map.proving.ridge b86b8a24->6017fcf8, map.proving.ford 05323666->37dee6b7, map.proving.copse d225b1e1->e85289b7, map.proving.ruin 6da536d2->261ef5db, map.courtyard 0c7cf00d->53034727, map.floodplain 5c378345->bcbeb38b, test.map.embers 8c453a30->d17fe0a1, test.map.showcase 0eff263f->5319362c, test.map.duel-8 f88139ad->815e8021, test.map.dungeon-16x8 f9d6a241->336947bb, test.map.horde-24 f8312af8->c8879f4c, test.map.journey-20x10 c7c65409->34ac1c54, test.map.authored-40x40 d8540413->c6c1b72e, test.map.high-prop-single 0f8a4865->b5387772, test.map.high-prop-multi c2e90dfb->ea8c7986, test.map.well-shove e08516ce->420cd0b6
 ## viewer.move-cost-on-grid — LANDED `b9a0e6d`
 2026-10-04 14:13
 
@@ -26922,6 +27097,421 @@ index e0bd22a..c1dda3f 100644
   PASS  hardcode scan — core knows mechanisms, never names
   PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
   PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — attack.lumberjack-axe.chop live · attack.longsword.slash live
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without attack.lumberjack-axe.chop,attack.longsword.slash — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/action-spent.test.ts b/test/action-spent.test.ts
+index 393b35e..ace9ef0 100644
+--- a/test/action-spent.test.ts
++++ b/test/action-spent.test.ts
+@@ -71,10 +71,15 @@ describe('universal action expenditure', () => {
+     expect(ctx.state.units[0]!.stamina).toBe(91)
+   })
+-  it.each([false, true])('reaction free=%s preserves both closed flags but pays resources', free => {
++  // LAW 10 — rewritten 2026-10-04 by rule.free-attack-is-basic-attack (2026-10-04; DECISIONS.md 2026-09-28 'counterattack, special free attacks …': "the basic attack, no stamina, −20 Accuracy"; 2026-10-04 'the basic attack is a weapon's first attack …': "that stamina cost is not triggered by special free attacks").
++  // This read 'reaction free=%s preserves both closed flags but pays resources' and held the reaction's Stamina to 97 (100 less
++  // the attack's 3), by the 2026-08-20 ruling that an attack of opportunity pays. A reaction is a special free attack now: it
++  // spends no Stamina. Its use and its cooldown are still spent, and both closed flags still stand — every other line is as it was.
++  it.each([false, true])('reaction free=%s preserves both closed flags, spends its use and its cooldown, and no Stamina', free => {
+     const ctx = fixture(), id = grant(ctx, 'attack.test-slot-movement', { staminaCost: 3, cooldown: 1, uses: 2, free })
+     ctx.state.units[0]!.moveUsed = ctx.state.units[0]!.primaryUsed = true
+     performAttack(ctx, 0, 1, id, 'reaction')
+     event(ctx, id, 'reaction', free, true, true)
+-    expect(ctx.state.units[0]!.stamina).toBe(97)
++    expect(ctx.state.units[0]!.stamina).toBe(100)   // was 97: a special free attack spends no Stamina
++    expect(ctx.events.filter(e => e.type === 'stamina.spent')).toEqual([])
+     expect(ctx.state.units[0]!.usesLeft[id]).toBe(1)
+     const after = saveBattle(ctx)
+diff --git a/test/aoo-pays-stamina.test.ts b/test/aoo-pays-stamina.test.ts
+index 19351e6..afdb3c1 100755
+--- a/test/aoo-pays-stamina.test.ts
++++ b/test/aoo-pays-stamina.test.ts
+@@ -1,12 +1,19 @@
+-// fix.aoo-pays-stamina (2026-09-04) — FINDING 40 of the log-invariant audit.
++// fix.aoo-pays-stamina (2026-09-04) — FINDING 40 of the log-invariant audit — REWRITTEN 2026-10-04.
+ //
+-// Ruled 2026-08-20 (DECISIONS "The attack of opportunity, final form"): "The
+-// attacker chooses one of their attacks. They do pay stamina for it. It could
+-// have a cooldown, and if it was on cooldown, they can't use it." The engine
+-// forced the holder's stamina up to the cost, ran the attack (which EMITTED
+-// stamina.spent), then wrote the old stamina back by hand — the log lied (Law
+-// 3) and an exhausted holder swung anyway. Now the swing is a REACTION: chosen
+-// among the legal attacks, paid like any other, the primary slot alone left
+-// out of it (it happens outside the holder's Activation).
++// LAW 10, the written reason. This file held the 2026-08-20 ruling (DECISIONS "The attack of opportunity, final
++// form"): "The attacker chooses one of their attacks. They do pay stamina for it. It could have a cooldown, and if
++// it was on cooldown, they can't use it." — the holder's CHEAPEST legal melee attack, paid like any other. That
++// ruling was replaced on 2026-09-28 ('counterattack, special free attacks, the opening six, shields, custom
++// weapons': "we're changing attack of opportunity, so it's using the same rules as everything else. No stamina,
++// uses the basic attack." — "the basic attack, no stamina, −20 Accuracy") and the replacement was built by
++// rule.free-attack-is-basic-attack on 2026-10-04 ("It has a stamina cost, but that stamina cost is not triggered by
++// special free attacks").
++//
++// What FINDING 40 was about stands, and is what this file still holds: THE LOG AND THE STATE AGREE (Law 3). The
++// engine once forced the holder's stamina up to the cost, ran the attack — which emitted stamina.spent — and wrote
++// the old stamina back by hand. Under the new rule the free attack's Stamina cost is ZERO: nothing is asked for,
++// nothing is spent, no stamina.spent line is logged, nothing is written back. Each test below is the old test's
++// claim read under the rule that replaced its ruling; the old assertion is named where it changed. The rule's own
++// probe is test/free-attack-is-basic-attack.test.ts.
+ import { describe, expect, it } from 'vitest'
+ import { createCustomBattle } from '../src/core/setup.js'
+@@ -16,9 +23,8 @@ import type { Ctx } from '../src/core/types.js'
+ import { hexId } from './board16.js'
+ 
+-/** A warrior beside a zombie; the warrior is the ZoC holder, the zombie the mover. Punch (0 stamina) removed so the cheapest melee costs 1. */
++/** A warrior beside a zombie; the warrior is the ZoC holder, the zombie the mover. Its row's own attacks, in order: massive (2 Stamina), axe (1), Punch (0). */
+ function rig(): { ctx: Ctx; w: number; z: number } {
+   const ctx = createCustomBattle([{ type: 'test-warrior', hex: hexId(5, 5) }], [{ type: 'test-zombie', hex: hexId(5, 6) }])
+   const w = ctx.state.units[0]!
+-  w.actions = w.actions.filter((a) => a !== 'attack.punch')
+   w.mods.push({ stat: 'accuracy', op: 'add', value: 100, source: 'test', scope: 'unit' })
+   beginActivation(ctx, 1, 'test')
+@@ -35,6 +41,7 @@ const staminaFromLog = (ctx: Ctx, id: number, start: number): number => {
+ }
+ 
+-describe('the attack of opportunity pays like any other attack', () => {
+-  it('stamina is spent for real — the state agrees with the log, nothing is written back', () => {
++describe('the attack of opportunity is a special free attack: the state agrees with the log, and no Stamina moves', () => {
++  it('no Stamina is spent — the state agrees with the log, nothing is written back', () => {
++    // was: 'stamina is spent for real' — the cheapest legal melee (axe, 1) chosen and paid, one stamina.spent line
+     const { ctx, w, z } = rig()
+     const u = ctx.state.units[w]!
+@@ -42,26 +49,30 @@ describe('the attack of opportunity pays like any other attack', () => {
+     expect(attackOfOpportunity(ctx, w, z)).toBe(true)
+     const provoked = ctx.events.find((e) => e.type === 'aoo.provoked')!
+-    expect(provoked['attackId']).toBe('attack.test-warrior.axe')   // the cheapest legal melee: axe (1), not massive (2)
+-    expect(u.stamina).toBe(before - 1)
+-    const spent = ctx.events.filter((e) => e.type === 'stamina.spent' && e['actor'] === w)
+-    expect(spent.length).toBe(1)
+-    expect(spent[0]!.causeId).toBe('attack.test-warrior.axe')
++    expect(provoked['attackId']).toBe('attack.test-warrior.massive')   // the row's first attack — its basic attack — not the cheapest
++    expect(u.stamina).toBe(before)
++    expect(ctx.events.filter((e) => e.type === 'stamina.spent' && e['actor'] === w)).toEqual([])
+     expect(staminaFromLog(ctx, w, before)).toBe(u.stamina)
+   })
+ 
+-  it('an exhausted holder does not swing — the skip names it, and no stamina.spent is emitted', () => {
++  it('an exhausted holder still swings — a free attack asks for no Stamina', () => {
++    // was: 'an exhausted holder does not swing — the skip names it'
+     const { ctx, w, z } = rig()
+     ctx.state.units[w]!.stamina = 0
+-    expect(attackOfOpportunity(ctx, w, z)).toBe(false)
+-    expect(ctx.events.find((e) => e.type === 'aoo.skipped')!['reason']).toBe('not legal')
+-    expect(ctx.events.some((e) => e.type === 'aoo.provoked' || e.type === 'attack.declared' || e.type === 'stamina.spent')).toBe(false)
++    expect(attackOfOpportunity(ctx, w, z)).toBe(true)
++    expect(ctx.events.some((e) => e.type === 'aoo.skipped')).toBe(false)
++    expect(ctx.events.find((e) => e.type === 'aoo.provoked')!['attackId']).toBe('attack.test-warrior.massive')
++    expect(ctx.events.some((e) => e.type === 'stamina.spent')).toBe(false)
++    expect(ctx.state.units[w]!.stamina).toBe(0)
+   })
+ 
+-  it('the choice is among the LEGAL attacks: with 1 stamina the axe (1) is legal and massive (2) is not; with 2 the axe is still cheapest', () => {
+-    const { ctx, w, z } = rig()
+-    ctx.state.units[w]!.stamina = 1
+-    attackOfOpportunity(ctx, w, z)
+-    expect(ctx.events.find((e) => e.type === 'aoo.provoked')!['attackId']).toBe('attack.test-warrior.axe')
+-    expect(ctx.state.units[w]!.stamina).toBe(0)
++  it('the choice is the basic attack whatever the holder could afford: at 1 Stamina and at 2 it is the same swing', () => {
++    // was: 'the choice is among the LEGAL attacks: with 1 stamina the axe (1) is legal and massive (2) is not'
++    for (const stamina of [1, 2]) {
++      const { ctx, w, z } = rig()
++      ctx.state.units[w]!.stamina = stamina
++      attackOfOpportunity(ctx, w, z)
++      expect(ctx.events.find((e) => e.type === 'aoo.provoked')!['attackId'], `at ${stamina} Stamina`).toBe('attack.test-warrior.massive')
++      expect(ctx.state.units[w]!.stamina).toBe(stamina)
++    }
+   })
+ 
+@@ -78,11 +89,13 @@ describe('the attack of opportunity pays like any other attack', () => {
+   })
+ 
+-  it('a cooldown set by the reaction is real: the golem\'s Slam (cooldown 2) reacts once, and the next provocation must pick another attack', () => {
++  it('a cooldown set by the reaction is real: the golem\'s Slam (cooldown 2) reacts once; the next provocation takes its next melee attack, free of its 4 Stamina', () => {
+     const ctx = createCustomBattle([{ type: 'test-arc-golem', hex: hexId(5, 5) }], [{ type: 'test-zombie', hex: hexId(5, 6) }, { type: 'test-zombie', hex: hexId(6, 5) }])
+     const g = ctx.state.units[0]!
+     g.mods.push({ stat: 'accuracy', op: 'add', value: 100, source: 'test', scope: 'unit' })
+-    // leave the golem exactly one free melee with a cooldown and one it must pay 4 for
+-    g.actions = g.actions.filter((a) => a === 'attack.test-ram.slam' || a === 'attack.test-ram.overhead' || a === 'power.move')
++    // leave the golem exactly one melee with a cooldown, listed first, and one that costs 4 Stamina it does not have
++    for (const a of ['attack.test-ram.slam', 'attack.test-ram.overhead', 'power.move']) expect(g.actions).toContain(a)
++    g.actions = ['attack.test-ram.slam', 'attack.test-ram.overhead', 'power.move']
+     g.stamina = 0
++    ctx.state.turn = 2   // past Overhead's warmup: its Stamina is the only thing the golem lacks for it
+     beginActivation(ctx, 1, 'test')
+     expect(attackOfOpportunity(ctx, 0, 1)).toBe(true)
+@@ -90,8 +103,23 @@ describe('the attack of opportunity pays like any other attack', () => {
+     expect(ctx.events.some((e) => e.type === 'cooldown.set' && e['actionId'] === 'attack.test-ram.slam' && e['actor'] === 0)).toBe(true)
+     expect(g.cooldowns['attack.test-ram.slam']).toBe(ctx.state.turn + 3)
+-    // the second mover: Slam is on cooldown, Overhead costs 4 the golem does not have — no legal attack
++    // the second mover: Slam is on cooldown, so the free attack is the golem's next own melee — Overhead — and its 4 Stamina is not asked for
++    // (was: 'Overhead costs 4 the golem does not have — no legal attack', an aoo.skipped 'not legal')
+     beginActivation(ctx, 2, 'test')
+-    expect(attackOfOpportunity(ctx, 0, 2)).toBe(false)
++    attackOfOpportunity(ctx, 0, 2)   // whether it lands is the dice's; that it is swung is the rule
++    expect(ctx.events.filter((e) => e.type === 'aoo.skipped')).toEqual([])
++    expect(ctx.events.filter((e) => e.type === 'aoo.provoked').at(-1)!['attackId']).toBe('attack.test-ram.overhead')
++    expect(g.stamina).toBe(0)
++    expect(ctx.events.some((e) => e.type === 'stamina.spent' && e['actor'] === 0)).toBe(false)
++  })
++
++  it('when no melee attack of its own is legal the skip names it: both on cooldown', () => {
++    const ctx = createCustomBattle([{ type: 'test-arc-golem', hex: hexId(5, 5) }], [{ type: 'test-zombie', hex: hexId(5, 6) }])
++    const g = ctx.state.units[0]!
++    g.actions = g.actions.filter((a) => a === 'attack.test-ram.slam' || a === 'power.move')
++    g.cooldowns['attack.test-ram.slam'] = ctx.state.turn + 3
++    beginActivation(ctx, 1, 'test')
++    expect(attackOfOpportunity(ctx, 0, 1)).toBe(false)
+     expect(ctx.events.filter((e) => e.type === 'aoo.skipped').at(-1)!['reason']).toBe('not legal')
++    expect(ctx.events.some((e) => e.type === 'aoo.provoked' || e.type === 'attack.declared' || e.type === 'stamina.spent')).toBe(false)
+   })
+ 
+@@ -107,5 +135,6 @@ describe('the attack of opportunity pays like any other attack', () => {
+   })
+ 
+-  it('an enemy holder (no stamina bar) pays nothing and is still legal — staminaCostOf is the one rule', () => {
++  it('an enemy holder (no stamina bar) swings its own first attack, and no stamina line of any amount is logged', () => {
++    // was: 'pays nothing and is still legal' — every stamina.spent line of the swing had amount 0; now there is none
+     const ctx = createCustomBattle([{ type: 'test-warrior', hex: hexId(5, 5) }], [{ type: 'test-zombie', hex: hexId(5, 6) }])
+     const z = ctx.state.units[1]!
+@@ -114,5 +143,5 @@ describe('the attack of opportunity pays like any other attack', () => {
+     expect(attackOfOpportunity(ctx, 1, 0)).toBe(true)
+     expect(z.stamina).toBe(0)
+-    expect(ctx.events.filter((e) => e.type === 'stamina.spent' && e['actor'] === 1).every((e) => e['amount'] === 0)).toBe(true)
++    expect(ctx.events.filter((e) => e.type === 'stamina.spent' && e['actor'] === 1)).toEqual([])
+   })
+ })
+diff --git a/test/audit.test.ts b/test/audit.test.ts
+index 264b9b8..7d786e6 100644
+--- a/test/audit.test.ts
++++ b/test/audit.test.ts
+@@ -266,4 +266,9 @@ describe('independent audit of logged battles', () => {
+             // war-axe's Hack −5, the longbow's +10 — lands at SITUATIONAL.
+             acc += a.attack.accuracy ?? 0
++            // The auditor learned the SPECIAL FREE ATTACK on 2026-10-04 (rule.free-attack-is-basic-attack; DECISIONS.md
++            // 2026-09-28: "the basic attack, no stamina, −20 Accuracy"): an attack of opportunity's declared line says
++            // `free`, and it swings at −20. EXTENDED, not weakened — every other swing is recomputed as before, and a
++            // free swing that spent Stamina would break the stamina ledger below (no stamina.spent line is its rule).
++            if (e['free'] === true) acc -= 20
+             // The auditor learned TARGET_DODGE on 2026-08-20 — the Codex
+             // cohort brought the first nonzero dodge (Dusk Hawk 5), and dodge
+diff --git a/test/authored-slots.test.ts b/test/authored-slots.test.ts
+index 635a621..03dc0d2 100644
+--- a/test/authored-slots.test.ts
++++ b/test/authored-slots.test.ts
+@@ -105,9 +105,12 @@ describe('authored action slots', () => {
+     rejectUnchanged(ctx, { actor: 0, actionId: free, target: 0 })
+   })
+-  it('reactions ignore authored slots and the closed cycle, but pay resources', () => {
++  // LAW 10 — rewritten 2026-10-04 by rule.free-attack-is-basic-attack (2026-10-04; DECISIONS.md 2026-09-28 'counterattack, special free attacks …': "the basic attack, no stamina, −20 Accuracy"; 2026-10-04 'the basic attack is a weapon's first attack …': "that stamina cost is not triggered by special free attacks").
++  // This read '… but pay resources' and held the reaction's Stamina to 97. A reaction is a special free attack: no Stamina.
++  // Its use and cooldown are still spent; the authored slot and the closed cycle are still ignored.
++  it('reactions ignore authored slots and the closed cycle; they spend a use and the cooldown, and no Stamina', () => {
+     const ctx = fixture(), id = grant(ctx, { slot: 'movement', staminaCost: 3, uses: 2, cooldown: 1 })
+     ctx.state.units[0]!.moveUsed = ctx.state.units[0]!.primaryUsed = true
+     performAttack(ctx, 0, 1, id, 'reaction')
+-    expect(ctx.state.units[0]!.stamina).toBe(97)
++    expect(ctx.state.units[0]!.stamina).toBe(100)   // was 97: a special free attack spends no Stamina
+     expect(ctx.state.units[0]!.usesLeft[id]).toBe(1)
+     expect(ctx.state.units[0]!.cooldowns[id]).toBe(ctx.state.turn + 2)
+diff --git a/test/battle-cursor.test.ts b/test/battle-cursor.test.ts
+index efbf600..bf0e69d 100644
+--- a/test/battle-cursor.test.ts
++++ b/test/battle-cursor.test.ts
+@@ -326,4 +326,12 @@ const combineCiviliansKitGolden = JSON.parse(readFileSync(new URL('./fixtures/ba
+ // test.opening-gates and progression-surge-0/1/2. A `changed` case is checked here and skips the older layers.
+ const burstPaintsGroundGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-burst-paints-ground.json', import.meta.url), 'utf8'))
++// rule.free-attack-is-basic-attack (2026-10-04; DECISIONS.md 2026-09-28 'counterattack, special free attacks …' and 2026-10-04 'the
++// basic attack is a weapon's first attack, and every free attack uses it without paying stamina'), Law 10: the attack of opportunity
++// is the holder's basic attack, spends no Stamina (no stamina.spent line) and rolls at −20 Accuracy, and its declared line says
++// `free`. Every case frozen here (tools/capture-free-attack-cursor.mts; the fixture counts each case's attacks of opportunity).
++// The 32 cases in which a unit leaves a zone of control moved — for real (state, RNG or result) where the swing changed or its roll
++// now falls the other side of the chance, in text only where the same swing lands the same way. A `changed` case is checked here
++// and skips the older layers.
++const freeAttackGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-free-attack.json', import.meta.url), 'utf8'))
+ const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
+ // Explicit rule migration, not regenerated historical hashes. These nine old
+@@ -450,5 +458,8 @@ describe('resumable battle cursor', () => {
+       const combineCiviliansKitExpected = combineCiviliansKitGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+       const burstPaintsGroundExpected = burstPaintsGroundGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+-      const burstPaintsGroundMoved = burstPaintsGroundExpected?.changed === true
++      const freeAttackExpected = freeAttackGolden.cases.find((row:{id:string})=>row.id===fixture.id)
++      const freeAttackMoved = freeAttackExpected?.changed === true
++      // was: const burstPaintsGroundMoved = burstPaintsGroundExpected?.changed === true — a free-attack-moved case skips the burst-paints-ground layer too (rule.free-attack-is-basic-attack 2026-10-04)
++      const burstPaintsGroundMoved = burstPaintsGroundExpected?.changed === true || freeAttackMoved
+       // was: const combineCiviliansKitMoved = combineCiviliansKitExpected?.changed === true — a burst-paints-ground-moved case skips the combine layer too (capability.burst-paints-ground 2026-10-04)
+       const combineCiviliansKitMoved = combineCiviliansKitExpected?.changed === true || burstPaintsGroundMoved
+@@ -557,5 +568,12 @@ describe('resumable battle cursor', () => {
+           }
+         } else result = battle.runBattle(ctx)
+-        if (burstPaintsGroundExpected) {
++        if (freeAttackExpected) {
++        expect(hash(ctx.events), 'full free-attack events').toBe(freeAttackExpected.events)
++        expect(hash(ctx.state), 'full free-attack state').toBe(freeAttackExpected.state)
++        expect(hash(ctx.rng.log), 'full free-attack RNG').toBe(freeAttackExpected.rng)
++        expect(result).toEqual(freeAttackExpected.result)
++        }
++        // was: if (burstPaintsGroundExpected) { — rule.free-attack-is-basic-attack (2026-10-04): a free-attack-moved case is checked above instead
++        if (burstPaintsGroundExpected && !freeAttackMoved) {
+         expect(hash(ctx.events), 'full burst-paints-ground events').toBe(burstPaintsGroundExpected.events)
+         expect(hash(ctx.state), 'full burst-paints-ground state').toBe(burstPaintsGroundExpected.state)
+diff --git a/test/civilians-field-kit.test.ts b/test/civilians-field-kit.test.ts
+index 93e98bf..dec6500 100644
+--- a/test/civilians-field-kit.test.ts
++++ b/test/civilians-field-kit.test.ts
+@@ -49,12 +49,13 @@ function fielded(encounterId: string): Ctx {
+ 
+ describe('fix.civilians-field-kit', () => {
+-  // "never Punch" is held on the unit's own Activation — the attack it CHOOSES. An attack of opportunity is not chosen
+-  // here: by its own ruling (DECISIONS.md 2026-08-20 'The attack of opportunity, final form'; movement.ts aooChoice) it is
+-  // the holder's cheapest legal melee attack, and Chop costs 1 Stamina where Punch costs none — so the Lumberjack's
+-  // reaction is still a Punch, and his wife's (the Dagger's stab is free) is a stab. Reported; SWITCHES.md placedKitAoo.
++  // LAW 10 — rewritten 2026-10-04 by rule.free-attack-is-basic-attack (2026-10-04; DECISIONS.md 2026-09-28 'counterattack, special free attacks …': "the basic attack, no stamina, −20 Accuracy"; 2026-10-04 'the basic attack is a weapon's first attack …': "that stamina cost is not triggered by special free attacks").
++  // This held "never Punch" on the unit's own Activation only, and asserted that the Lumberjack's attack of opportunity WAS a
++  // Punch — the cheapest legal melee attack, by the 2026-08-20 ruling SWITCHES.md placedKitAoo cited. That ruling was replaced
++  // on 2026-09-28 and the replacement is built now: a free attack is the basic attack, the weapon's first — "Chop should be the
++  // basic attack". So "never Punch" holds on every blow he strikes, his reactions included: they are Chops.
+   it('in encounter.opening.lumberjack the Lumberjack attacks with his axe (Chop or Cleave) and his wife with her dagger — never Punch', () => {
+     expect(UNITS[LUMBERJACK]!.defaultItems).toEqual(['item.lumberjack-axe'])
+     expect(UNITS[WIFE]!.defaultItems).toEqual(['item.dagger', 'item.basic-armor'])
+-    let axe = 0, stabs = 0, aooPunches = 0
++    let axe = 0, stabs = 0, aooChops = 0
+     for (const replicate of [0, 1, 2, 3, 4, 5, 6, 7]) {
+       const ctx = openingBattle('test.opening-lumberjack', replicate)
+@@ -76,16 +77,17 @@ describe('fix.civilians-field-kit', () => {
+       expect(wifeBlows.map((b) => b.attack).filter((a) => a !== STAB), `replicate ${replicate}: his wife strikes only with her dagger`).toEqual([])
+       expect([...chosen, ...wifeBlows.map((b) => b.attack)], `replicate ${replicate}: never Punch`).not.toContain(PUNCH)
+-      // his attack of opportunity is the cheapest legal melee — Punch, while the axe's blows cost Stamina
++      // his attack of opportunity is his basic attack — his axe's first, Chop — never Punch, never the second blow (was: the cheapest legal melee, Punch)
+       const reactions = jackBlows.filter((b) => b.slot === 'reaction').map((b) => b.attack)
+-      expect(reactions.filter((a) => a !== PUNCH && a !== CHOP && a !== CLEAVE), `replicate ${replicate}: his reactions are his own attacks`).toEqual([])
+-      axe += chosen.length; stabs += wifeBlows.length; aooPunches += reactions.filter((a) => a === PUNCH).length
++      expect(reactions.filter((a) => a !== CHOP), `replicate ${replicate}: his reactions are Chops`).toEqual([])
++      axe += chosen.length; stabs += wifeBlows.length; aooChops += reactions.filter((a) => a === CHOP).length
+     }
+     expect(axe, 'the axe is used').toBeGreaterThan(0)
+     expect(stabs, 'the dagger is used').toBeGreaterThan(0)
+-    // the reason a reaction is a Punch: the attack of opportunity takes the cheapest, and the axe is not free
++    // the cheaper blow is not the one taken: Punch is free and Chop is not, and the reaction is still the Chop
+     expect(ACTIONS[PUNCH]!.staminaCost).toBe(0)
+     expect(ACTIONS[CHOP]!.staminaCost).toBeGreaterThan(0)
+     expect(ACTIONS[STAB]!.staminaCost).toBe(0)
+-    expect(aooPunches, "the Lumberjack's attacks of opportunity over these battles are Punches").toBeGreaterThan(0)
++    expect(ITEMS['item.lumberjack-axe']!.grants[0]).toBe(CHOP)
++    expect(aooChops, "the Lumberjack's attacks of opportunity over these battles are Chops (was: Punches)").toBeGreaterThan(0)
+   })
+ 
+diff --git a/test/high-cell-los.test.ts b/test/high-cell-los.test.ts
+index 0826d16..37e545e 100644
+--- a/test/high-cell-los.test.ts
++++ b/test/high-cell-los.test.ts
+@@ -72,5 +72,9 @@ describe('V2 high cell attack lines', () => {
+   })
+ 
+-  it('real reactions are denied before payment, then pay once without consuming activation slots', () => {
++  // LAW 10 — rewritten 2026-10-04 by rule.free-attack-is-basic-attack (2026-10-04; DECISIONS.md 2026-09-28 'counterattack, special free attacks …': "the basic attack, no stamina, −20 Accuracy"; 2026-10-04 'the basic attack is a weapon's first attack …': "that stamina cost is not triggered by special free attacks").
++  // This read '… then pay once without consuming activation slots' and held the reaction's Stamina to the attack's cost. A
++  // reaction spends no Stamina now; it is still denied by a blocked line before anything is spent, still spends once (one
++  // action.spent), and still consumes no activation slot.
++  it('real reactions are denied before anything is spent, then spend once — no Stamina, no activation slot', () => {
+     const ctx = battle(), actor = ctx.state.units[0]!
+     actor.moveUsed = true; actor.primaryUsed = true
+@@ -81,5 +85,6 @@ describe('V2 high cell attack lines', () => {
+     const stamina = actor.stamina
+     performAttack(ctx, 0, 1, bow, 'reaction')
+-    expect(actor.stamina).toBe(stamina - ctx.actions[bow]!.staminaCost)
++    expect(ctx.actions[bow]!.staminaCost).toBeGreaterThan(0)
++    expect(actor.stamina).toBe(stamina)   // was stamina - cost: a special free attack spends no Stamina
+     expect([actor.moveUsed, actor.primaryUsed]).toEqual([true, true])
+     expect(ctx.events.filter(e => e.type === 'action.spent')).toHaveLength(1)
+diff --git a/test/item-powers.test.ts b/test/item-powers.test.ts
+index bcba10f..a3e1e64 100644
+--- a/test/item-powers.test.ts
++++ b/test/item-powers.test.ts
+@@ -171,5 +171,8 @@ describe('they run — no power is dead content in a real battle', () => {
+     const guarded = () => used.has('power.kite-shield.shield-wall') || used.has('power.kite-shield.raise-guard')
+     const both = () => used.has('power.holy-symbol.heal') && guarded()
+-    for (let r = 0; r < 20 && !both(); r++) {
++    // Law 10, 2026-10-04 (rule.free-attack-is-basic-attack): every attack of opportunity is the basic attack at −20 now, so the
++    // fights re-time again and Osric's first raised shield moved from a seed under 20 to seed 24. The claim (both powers are
++    // live) is unchanged; the search is wider — 20 to 40 — as on 2026-09-04. Neither assertion changed.
++    for (let r = 0; r < 40 && !both(); r++) {
+       const ctx = createBattle({ ...scenarioOptions(scenarioDef(SC)), replicate: r })
+       runBattle(ctx)
+diff --git a/test/preview-from-planned-hex.test.ts b/test/preview-from-planned-hex.test.ts
+index 4ff951b..9a1dbcf 100644
+--- a/test/preview-from-planned-hex.test.ts
++++ b/test/preview-from-planned-hex.test.ts
+@@ -82,5 +82,9 @@ describe('preview.from-planned-hex — the forecast from where the unit WOULD st
+     if (!f.ok) throw new Error(f.reason)
+     expect(f.arrives).toBe(true)   // the plan is forecast as arriving; the swing is shown, not rolled
+-    expect(f.provokes).toEqual([{ at: hexId(5, 5), from: 1, attackId: BITE, preview: preview(ctx, 1, 0, BITE) }])
++    // Law 10, 2026-10-04 (rule.free-attack-is-basic-attack): the swing's preview is the FREE attack's — the same attack at
++    // the ruled −20 Accuracy (was: preview(ctx, 1, 0, BITE), the attack as made on the holder's own Activation). The claim
++    // is unchanged: the forecast records the holder's chosen swing and THAT swing's own preview.
++    expect(f.provokes).toEqual([{ at: hexId(5, 5), from: 1, attackId: BITE, preview: preview(ctx, 1, 0, BITE, 'reaction') }])
++    expect(preview(ctx, 1, 0, BITE, 'reaction').accuracy).toBe(preview(ctx, 1, 0, BITE).accuracy - 20)
+     expect(ctx.events.some((e) => e.type === 'aoo.provoked')).toBe(false)
+     const step = forecastFrom(ctx, { actor: 0, actionId: 'power.sidestep', destination: hexId(5, 4) })
+diff --git a/test/rulings-2026-08-15.test.ts b/test/rulings-2026-08-15.test.ts
+index a7b7c23..cdf0223 100644
+--- a/test/rulings-2026-08-15.test.ts
++++ b/test/rulings-2026-08-15.test.ts
+@@ -117,14 +117,31 @@ describe('bleed-out (Angela 2026-08-15)', () => {
+   // sixteen (the ruled pressure ceiling) and the test demands at least one
+   // drop across the sample, not one per seed. Same rule, honest fielding.
+-  it('a hero who drops is set to five, every time', () => {
+-    let drops = 0
++  // LAW 10 — rewritten 2026-10-04 as a RULE, not the number alone (found by rule.free-attack-is-basic-attack, whose re-timed
++  // fights drop the Sky Pirate on replicate 0 AFTER a zombie has given him Rotting Flesh). This read `for (const e of set)
++  // expect(e['bleedOut']).toBe(5)` — true while no hero in the sample carried a badge that moves the count. The rule was
++  // always "five, plus the unit's own Turns to Bleed out" (settle.ts bleedOutCounterOf; Rotting Flesh is +5, ruled
++  // 2026-09-04): a hero carrying nothing that moves it is set to five, every time, and one that does is set to five plus it.
++  it('a hero who drops is set to five, every time — plus its own Turns to Bleed out, when a badge it carries moves them', () => {
++    let drops = 0, plain = 0
+     for (let r = 0; r < 8; r++) {
+       const ctx = createBattle({ replicate: r, enemyCount: 16, mapId: 'map.open' })
++      // what each unit's Turns to Bleed out are as the battle goes: what it was fielded with, then each badge it gains
++      const turns = new Map(ctx.state.units.map((u) => [u.id, u.bleedOutTurns ?? 0]))
++      const from = ctx.events.length
+       runBattle(ctx)
+-      const set = ctx.events.filter((e) => e.type === 'bleedout.set')
+-      drops += set.length
+-      for (const e of set) expect(e['bleedOut']).toBe(5)
++      for (const e of ctx.events.slice(from)) {
++        if (e.type === 'badge.gained') {
++          const id = (e.target ?? e.actor) as number
++          turns.set(id, (turns.get(id) ?? 0) + ((ctx.badges[e['badgeId'] as string]?.statModifiers as Readonly<Record<string, number | undefined>> | undefined)?.['bleedOutTurns'] ?? 0))
++        }
++        if (e.type !== 'bleedout.set') continue
++        drops++
++        const own = turns.get(e.target as number) ?? 0
++        if (own === 0) plain++
++        expect(e['bleedOut'], `replicate ${r}: unit ${e.target}, own Turns to Bleed out ${own}`).toBe(Math.max(1, 5 + own))
++      }
+     }
+     expect(drops, 'eight seeds at sixteen zombies put nobody down — the sample proved nothing').toBeGreaterThan(0)
++    expect(plain, 'no hero dropped carrying nothing that moves the count — the plain five was never seen').toBeGreaterThan(0)
+   })
+ 
+```
+</details>
+
+## capability.counterattack-and-fend — LANDED `7d92124` **NEEDS REVIEW**
+2026-10-04 15:13
+
+  PASS  dependencies landed
+  WARN  not already decided — 3 candidate ruling(s) — READ BEFORE ASKING: SWITCHES.md:2087 · DECISIONS.md:4731
+  PASS  typecheck
+  PASS  the item's own tests — test/ai-scorer.test.ts, test/alpha-team.test.ts, test/audit.test.ts, test/battle-cursor.test.ts, test/item-powers.test.ts, test/opening-cavern-trail.test.ts, test/opening-gates.test.ts, test/zone-of-control.test.ts, test/counterattack-and-fend.test.ts
+  PASS  gate 1 — the id appears in a real battle — power.longsword.counterattack: 1 log lines, 1 fired, 1 changed state · power.test-fend: 7 log lines, 7 fired, 3 changed state
+  PASS  brought its own tests — test/ai-scorer.test.ts, test/alpha-team.test.ts, test/audit.test.ts, test/battle-cursor.test.ts, test/item-powers.test.ts, test/opening-cavern-trail.test.ts, test/opening-gates.test.ts, test/zone-of-control.test.ts, test/counterattack-and-fend.test.ts, test/fixtures/battle-cursor-counterattack.json
+  WARN  existing tests untouched — DELETED LINES in test/ai-scorer.test.ts (-1), test/alpha-team.test.ts (-1), test/battle-cursor.test.ts (-2), test/item-powers.test.ts (-2), test/opening-cavern-trail.test.ts (-1), test/opening-gates.test.ts (-1), test/zone-of-control.test.ts (-1) — will land FLAGGED for review
+  PASS  control battles unchanged — will re-bless at commit — this item DECLARED it changes the control battles: map.open 32d99613->2c365882, map.ridge dea75a79->6db868b4, map.flanks df5fe22c->3505d381, map.highlands afc885da->f2813442, map.field 2955b12b->3383b07f, map.thicket da750c56->86c57255, map.proving.open a33c47dc->16d5c09d, map.proving.ridge 6017fcf8->5fc0a8e8, map.proving.ford 37dee6b7->f6db810e, map.proving.copse e85289b7->864a747c, map.proving.ruin 261ef5db->2f63cfe5, map.courtyard 53034727->66d0fd90, map.floodplain bcbeb38b->a56426bf, test.map.embers d17fe0a1->bb7b4797, test.map.showcase 5319362c->84e05fc3, test.map.duel-8 815e8021->24bf5b9a, test.map.dungeon-16x8 336947bb->27f02d6f, test.map.horde-24 c8879f4c->d7d8f422, test.map.journey-20x10 34ac1c54->ec0ae060, test.map.authored-40x40 c6c1b72e->22bb7785, test.map.high-prop-single b5387772->48e82bf3, test.map.high-prop-multi ea8c7986->ff400453, test.map.well-shove 420cd0b6->167f8568
   PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
   PASS  naming — new content ids use declared kinds
   PASS  naming — no banned words invented
@@ -26942,6 +27532,172 @@ index e0bd22a..c1dda3f 100644
   PASS  hardcode scan — core knows mechanisms, never names
   PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
   PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — power.longsword.counterattack live · power.test-fend live
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without power.longsword.counterattack,power.test-fend — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/ai-scorer.test.ts b/test/ai-scorer.test.ts
+index a1f86e1..4ffb0f8 100644
+--- a/test/ai-scorer.test.ts
++++ b/test/ai-scorer.test.ts
+@@ -102,5 +102,9 @@ describe('every AI decision logs its top three plans', () => {
+     const ctx = createBattle({ replicate })
+     runBattle(ctx)
+-    const spent = ctx.events.filter((e) => e.type === 'action.spent').length
++    // Law 10, 2026-10-04 — capability.counterattack-and-fend (2026-10-04; DECISIONS.md 2026-09-28 'counterattack, special free attacks, the opening six, shields, custom weapons'): this counted every `action.spent` line.
++    // The claim is one log line per action the AI TOOK; a special free attack (an attack of opportunity, a counterattack, a
++    // fend) is a reaction nobody chose — its `action.spent` line says slot 'reaction' — and the standard battle's paladin
++    // counterattacks now. Chosen actions are counted, as the claim always meant.
++    const spent = ctx.events.filter((e) => e.type === 'action.spent' && e['slot'] !== 'reaction').length
+     expect(ctx.aiLog.length).toBeGreaterThan(10)
+     expect(ctx.aiLog.length).toBe(spent)
+diff --git a/test/alpha-team.test.ts b/test/alpha-team.test.ts
+index 15d762c..6d68d2a 100644
+--- a/test/alpha-team.test.ts
++++ b/test/alpha-team.test.ts
+@@ -169,5 +169,10 @@ describe('the pack carries the six alpha heroes with their real stat bodies', ()
+     // Law 10, 2026-09-23 (v2.shields): Osric's Knight Shield retired with V2 R1 and his kit
+     // carries the Kite Shield; the rule is unchanged — his powers are exactly his shield's.
+-    expect(fieldedDef('alpha-osric').abilities).toEqual([...ITEMS['item.kite-shield']!.abilities])
++    // Law 10, 2026-10-04 — capability.counterattack-and-fend (2026-10-04; DECISIONS.md 2026-09-28 'counterattack, special free attacks, the opening six, shields, custom weapons'): his Longsword carries a
++    // power now (Counterattack). The rule is unchanged and said whole: his powers are exactly his KIT's, item by item
++    // (was: `[...ITEMS['item.kite-shield'].abilities]`, true while only the shield had any).
++    expect(ITEMS['item.kite-shield']!.abilities.length).toBeGreaterThan(0)
++    expect(fieldedDef('alpha-osric').abilities).toEqual((UNITS['alpha-osric']!.defaultItems ?? []).flatMap((id) => ITEMS[id]!.abilities))
++    for (const a of ITEMS['item.kite-shield']!.abilities) expect(fieldedDef('alpha-osric').abilities).toContain(a)
+   })
+ })
+diff --git a/test/audit.test.ts b/test/audit.test.ts
+index 7d786e6..8eb49e0 100644
+--- a/test/audit.test.ts
++++ b/test/audit.test.ts
+@@ -271,4 +271,7 @@ describe('independent audit of logged battles', () => {
+             // free swing that spent Stamina would break the stamina ledger below (no stamina.spent line is its rule).
+             if (e['free'] === true) acc -= 20
++            // … and on 2026-10-04 (capability.counterattack-and-fend) that a counterattack and a fend add the swinging
++            // unit's own Accuracy for that free attack — "counterattack with +10 Accuracy" — read through the mod ledger.
++            if (e['free'] === true && typeof e['as'] === 'string') acc += modded(e.actor!, e['as'] + 'Accuracy', 0, e.turn)
+             // The auditor learned TARGET_DODGE on 2026-08-20 — the Codex
+             // cohort brought the first nonzero dodge (Dusk Hawk 5), and dodge
+diff --git a/test/battle-cursor.test.ts b/test/battle-cursor.test.ts
+index bf0e69d..80fb626 100644
+--- a/test/battle-cursor.test.ts
++++ b/test/battle-cursor.test.ts
+@@ -334,4 +334,10 @@ const burstPaintsGroundGolden = JSON.parse(readFileSync(new URL('./fixtures/batt
+ // and skips the older layers.
+ const freeAttackGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-free-attack.json', import.meta.url), 'utf8'))
++// capability.counterattack-and-fend (2026-10-04; DECISIONS.md 2026-09-28 'counterattack, special free attacks, the opening six,
++// shields, custom weapons'), Law 10: the Longsword carries a Counterattack power, the computer uses it, and a unit with
++// Counterattack up answers a melee attack. Every case frozen here (tools/capture-counterattack-cursor.mts; the fixture counts each
++// case's counterattacks and fends). The 19 cases that field a Longsword moved (its `unit.equipped` line names the power; where the
++// power is used the fight re-times). A `changed` case is checked here and skips the older layers.
++const counterattackGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-counterattack.json', import.meta.url), 'utf8'))
+ const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
+ // Explicit rule migration, not regenerated historical hashes. These nine old
+@@ -459,5 +465,8 @@ describe('resumable battle cursor', () => {
+       const burstPaintsGroundExpected = burstPaintsGroundGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+       const freeAttackExpected = freeAttackGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+-      const freeAttackMoved = freeAttackExpected?.changed === true
++      const counterattackExpected = counterattackGolden.cases.find((row:{id:string})=>row.id===fixture.id)
++      const counterattackMoved = counterattackExpected?.changed === true
++      // was: const freeAttackMoved = freeAttackExpected?.changed === true — a counterattack-moved case skips the free-attack layer too (capability.counterattack-and-fend 2026-10-04)
++      const freeAttackMoved = freeAttackExpected?.changed === true || counterattackMoved
+       // was: const burstPaintsGroundMoved = burstPaintsGroundExpected?.changed === true — a free-attack-moved case skips the burst-paints-ground layer too (rule.free-attack-is-basic-attack 2026-10-04)
+       const burstPaintsGroundMoved = burstPaintsGroundExpected?.changed === true || freeAttackMoved
+@@ -568,5 +577,12 @@ describe('resumable battle cursor', () => {
+           }
+         } else result = battle.runBattle(ctx)
+-        if (freeAttackExpected) {
++        if (counterattackExpected) {
++        expect(hash(ctx.events), 'full counterattack events').toBe(counterattackExpected.events)
++        expect(hash(ctx.state), 'full counterattack state').toBe(counterattackExpected.state)
++        expect(hash(ctx.rng.log), 'full counterattack RNG').toBe(counterattackExpected.rng)
++        expect(result).toEqual(counterattackExpected.result)
++        }
++        // was: if (freeAttackExpected) { — capability.counterattack-and-fend (2026-10-04): a counterattack-moved case is checked above instead
++        if (freeAttackExpected && !counterattackMoved) {
+         expect(hash(ctx.events), 'full free-attack events').toBe(freeAttackExpected.events)
+         expect(hash(ctx.state), 'full free-attack state').toBe(freeAttackExpected.state)
+diff --git a/test/item-powers.test.ts b/test/item-powers.test.ts
+index a3e1e64..0e38ef2 100644
+--- a/test/item-powers.test.ts
++++ b/test/item-powers.test.ts
+@@ -174,5 +174,10 @@ describe('they run — no power is dead content in a real battle', () => {
+     // fights re-time again and Osric's first raised shield moved from a seed under 20 to seed 24. The claim (both powers are
+     // live) is unchanged; the search is wider — 20 to 40 — as on 2026-09-04. Neither assertion changed.
+-    for (let r = 0; r < 40 && !both(); r++) {
++    // Law 10, 2026-10-04 (capability.counterattack-and-fend): Osric's Longsword carries Counterattack now, and it is listed
++    // before his shield, so the computer — which uses the first self power its kit lists that is ready — raises it in the
++    // moments it used to raise the shield. The shield's powers are still live but rare for him: the first Shield Wall is on
++    // seed 64 (was a seed under 40). The claim (both powers are live) is unchanged; the search is wider — 40 to 100.
++    // FOUND, engine SWITCHES.md counterattackDisplacesShieldPowers: this is the computer's order of preference, not a rule.
++    for (let r = 0; r < 100 && !both(); r++) {
+       const ctx = createBattle({ ...scenarioOptions(scenarioDef(SC)), replicate: r })
+       runBattle(ctx)
+@@ -184,5 +189,5 @@ describe('they run — no power is dead content in a real battle', () => {
+     expect(used.has('power.holy-symbol.heal'), 'the priest never healed — dead content').toBe(true)
+     expect(guarded(), 'Osric never raised his shield — dead content').toBe(true)
+-  })
++  }, 120_000)   // up to a hundred whole battles since 2026-10-04 (the shield's first use is on seed 64): a time limit is not the assertion
+ 
+   it('Storm opens showcase.item-powers — the boxed-mage fielding exists for exactly this', () => {
+diff --git a/test/opening-cavern-trail.test.ts b/test/opening-cavern-trail.test.ts
+index b4e5b00..9c249e5 100644
+--- a/test/opening-cavern-trail.test.ts
++++ b/test/opening-cavern-trail.test.ts
+@@ -44,5 +44,14 @@ describe('encounter.opening.cavern-trail', () => {
+     }
+   })
+-  it('is won when the last enemy dies', () => {
++  // SKIPPED BY NAME 2026-10-04 — Andrew (engine DECISIONS.md 2026-10-04 'no testing that the battles can be won until these
++  // items are done; the page tests play an overpowered party; faster landing'): "I'm okay forgoing all testing battle until
++  // we're done with all these items." This test's only purpose is to show the computer can win the Cavern Trail with the
++  // drafted party on one replicate (WIN). With capability.counterattack-and-fend (2026-10-04; DECISIONS.md 2026-09-28 'counterattack, special free attacks, the opening six, shields, custom weapons')
++  // a paladin's Longsword carries Counterattack and the computer uses it; that replicate is a wipe now. No seed was searched
++  // for. The rule itself — a battle with no `win` of its own ends heroClear when the last enemy is down — is the engine's
++  // victory check, tested on its own (test/encounter-runner.test.ts, test/encounter-commands.test.ts).
++  // Un-skip when the queued items are done and a winning replicate is recorded again.
++  // was: it('is won when the last enemy dies', () => {
++  it.skip('is won when the last enemy dies', () => {
+     const ctx = openingBattle(S, WIN, true)
+     expect(ctx.state.outcome).toBe('heroClear')
+diff --git a/test/opening-gates.test.ts b/test/opening-gates.test.ts
+index 993b743..4591062 100644
+--- a/test/opening-gates.test.ts
++++ b/test/opening-gates.test.ts
+@@ -20,5 +20,10 @@ const S = 'test.opening-gates', ENC = 'encounter.opening.gates', FALL = 'trigger
+ // curse lands on nobody (0 hit; replicates 0-39 searched). Replicate 3 is the first whose curse lands on a hero and runs past Turn 7.
+ // was: const SEEN = 7
+-const SEEN = 3
++// Law 10, 2026-10-04 — capability.counterattack-and-fend (2026-10-04; DECISIONS.md 2026-09-28 'counterattack, special free attacks, the opening six, shields, custom weapons'): a paladin's Longsword
++// carries Counterattack and the computer uses it, so replicate 3's fight re-times and its curse lands on nobody (0 hit;
++// replicates 0-39 read again, as on 2026-10-02). Replicate 1 is the first whose curse lands on a unit and runs past Turn 7.
++// Nothing here asks who wins.
++// was: const SEEN = 3
++const SEEN = 1
+ describe('encounter.opening.gates', () => {
+   it('fields the six defenders at the Ground Check\'s markers and carries the curse strike with the ruled numbers', () => {
+diff --git a/test/zone-of-control.test.ts b/test/zone-of-control.test.ts
+index a343f25..7f337a8 100644
+--- a/test/zone-of-control.test.ts
++++ b/test/zone-of-control.test.ts
+@@ -122,5 +122,9 @@ describe('attack of opportunity', () => {
+         ctx.cfg.switches.zoneOfControl = zoc
+         runBattle(ctx)
+-        n += ctx.events.filter((e) => e.type === 'aoo.provoked').length
++        // Law 10, 2026-10-04 — capability.counterattack-and-fend (2026-10-04; DECISIONS.md 2026-09-28 'counterattack, special free attacks, the opening six, shields, custom weapons'): a counterattack and a
++        // fend write this same line (they are special free attacks too), named by `as`. This measures the attack of
++        // opportunity — the zone-of-control switch's own consequence — so it counts the lines with no `as`
++        // (was: every aoo.provoked line, when the attack of opportunity was the only one). A counterattack needs no zone.
++        n += ctx.events.filter((e) => e.type === 'aoo.provoked' && e['as'] === undefined).length
+       }
+       return n
+```
+</details>
   PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
   PASS  naming — new content ids use declared kinds
   PASS  naming — no banned words invented

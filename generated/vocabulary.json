@@ -28,7 +28,11 @@
   "thorns",
   "swapCost",
   "bleedOutTurns",
-  "deathbedFighting"
+  "deathbedFighting",
+  "counterattack",
+  "counterattackAccuracy",
+  "fend",
+  "fendAccuracy"
  ],
  "statBase": {
   "swapCost": 1
@@ -64,7 +68,11 @@
   "luck",
   "vision",
   "thorns",
-  "swapCost"
+  "swapCost",
+  "counterattack",
+  "counterattackAccuracy",
+  "fend",
+  "fendAccuracy"
  ],
  "hooks": [
   "onAttack",

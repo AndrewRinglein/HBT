@@ -56,19 +56,17 @@ const PACK_FILE = 'src/content/generated/pack.ts'
 // kingdom's suite runs as four quarters, as its own gate does (kingdom/tools/gate.mjs --shard k/4):
 // run whole on a busy PC, its tests that spawn a child process pass their 5 s limit on any tree
 // (GBH SWITCHES combine.kingdomQuarters, 2026-10-03). Every test still runs.
-// Each quarter runs on four vitest workers unless the environment says otherwise (GBH SWITCHES
-// vitest.kingdomShardWorkers and suites.kingdomWorkers, 2026-10-04): kingdom has no vitest config of
-// its own, so vitest takes one worker per CPU — sixteen here — and beside other workers' suites its
-// child-process tests pass their 5 s limit. The engine's own config has capped its workers at four
-// for the same reason. The same files, the same assertions, the same 5 s.
+// Each quarter runs on the workers kingdom/vitest.config.ts names — four, the engine's own cap
+// (tools/gate-progress.mjs vitestWorkersFor) — unless the environment says otherwise. This runner
+// set VITEST_MAX_WORKERS=4 itself while kingdom had no config (GBH SWITCHES suites.kingdomWorkers);
+// since tool.kingdom-vitest-workers (2026-10-04, GBH SWITCHES vitest.kingdomConfig) the config is
+// the one place, and nothing is set here. The same files, the same assertions, the same 5 s.
 export const KINGDOM_QUARTERS = 4
-export const KINGDOM_WORKERS = '4'
 /** The four suites, cheapest first — the one list; combine and wrap read it, neither keeps a copy. */
 export const SUITES = [
   { suite: 'content', why: "content's suite", cmds: [['node', '--test', 'test/*.test.mjs']] },
   { suite: 'kingdom', why: "kingdom's suite", cmds: Array.from({ length: KINGDOM_QUARTERS }, (_, i) =>
-    ['node', '../engine/node_modules/vitest/vitest.mjs', 'run', '--reporter=dot', `--shard=${i + 1}/${KINGDOM_QUARTERS}`]),
-    env: { VITEST_MAX_WORKERS: KINGDOM_WORKERS } },
+    ['node', '../engine/node_modules/vitest/vitest.mjs', 'run', '--reporter=dot', `--shard=${i + 1}/${KINGDOM_QUARTERS}`]) },
   { suite: 'engine', why: "the engine's whole suite", cmds: [['node', 'tools/gate.mjs', '--shard', '1/1']] },
   { suite: 'viewer', why: "the viewer's whole gate", cmds: [['node', 'tools/gate.mjs']] },
 ]

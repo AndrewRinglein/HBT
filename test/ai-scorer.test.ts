@@ -101,7 +101,11 @@ describe('every AI decision logs its top three plans', () => {
   for (const replicate of [0, 1]) it(`standard battle r${replicate}: one log line per action taken, the taken plan first`, () => {
     const ctx = createBattle({ replicate })
     runBattle(ctx)
-    const spent = ctx.events.filter((e) => e.type === 'action.spent').length
+    // Law 10, 2026-10-04 — capability.counterattack-and-fend (2026-10-04; DECISIONS.md 2026-09-28 'counterattack, special free attacks, the opening six, shields, custom weapons'): this counted every `action.spent` line.
+    // The claim is one log line per action the AI TOOK; a special free attack (an attack of opportunity, a counterattack, a
+    // fend) is a reaction nobody chose — its `action.spent` line says slot 'reaction' — and the standard battle's paladin
+    // counterattacks now. Chosen actions are counted, as the claim always meant.
+    const spent = ctx.events.filter((e) => e.type === 'action.spent' && e['slot'] !== 'reaction').length
     expect(ctx.aiLog.length).toBeGreaterThan(10)
     expect(ctx.aiLog.length).toBe(spent)
     for (const d of ctx.aiLog) {

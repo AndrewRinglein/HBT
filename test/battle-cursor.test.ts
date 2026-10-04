@@ -317,6 +317,28 @@ const impBlastTunedGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-c
 // `changed` marks the cases that differ from the content.imp-blast-tuned capture — every case fix.civilians-field-kit moves. A
 // `changed` case is checked here and skips the older layers; the rest run down this copy's three layers, then master's, as before.
 const combineCiviliansKitGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-combine-civilians-kit.json', import.meta.url), 'utf8'))
+// capability.burst-paints-ground (2026-10-04; DECISIONS.md 2026-10-03 'reported: the priest's Holy Texts has no heal in battle'),
+// Law 10: a burst leaves its ground — Flame Burst's seven hexes burn, Frost Nova's frost — and the two staffs name no gap. Every
+// case frozen here (tools/capture-burst-paints-ground-cursor.mts). Moved for real (state, RNG and result): the four cases in which a
+// staff mage casts one — showcase.kiln, showcase.rime, showcase.supper and test.opening-cathedral (the fixture counts each case's
+// painted hexes). Moved in text only: the nine other cases that field a staff, whose unit.equipped line no longer carries the gap
+// sentence — showcase.assembled-party, showcase.eve-24-b, showcase.horrors, showcase.surrounded, showcase.waystation,
+// test.opening-gates and progression-surge-0/1/2. A `changed` case is checked here and skips the older layers.
+const burstPaintsGroundGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-burst-paints-ground.json', import.meta.url), 'utf8'))
+// rule.free-attack-is-basic-attack (2026-10-04; DECISIONS.md 2026-09-28 'counterattack, special free attacks …' and 2026-10-04 'the
+// basic attack is a weapon's first attack, and every free attack uses it without paying stamina'), Law 10: the attack of opportunity
+// is the holder's basic attack, spends no Stamina (no stamina.spent line) and rolls at −20 Accuracy, and its declared line says
+// `free`. Every case frozen here (tools/capture-free-attack-cursor.mts; the fixture counts each case's attacks of opportunity).
+// The 32 cases in which a unit leaves a zone of control moved — for real (state, RNG or result) where the swing changed or its roll
+// now falls the other side of the chance, in text only where the same swing lands the same way. A `changed` case is checked here
+// and skips the older layers.
+const freeAttackGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-free-attack.json', import.meta.url), 'utf8'))
+// capability.counterattack-and-fend (2026-10-04; DECISIONS.md 2026-09-28 'counterattack, special free attacks, the opening six,
+// shields, custom weapons'), Law 10: the Longsword carries a Counterattack power, the computer uses it, and a unit with
+// Counterattack up answers a melee attack. Every case frozen here (tools/capture-counterattack-cursor.mts; the fixture counts each
+// case's counterattacks and fends). The 19 cases that field a Longsword moved (its `unit.equipped` line names the power; where the
+// power is used the fight re-times). A `changed` case is checked here and skips the older layers.
+const counterattackGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-counterattack.json', import.meta.url), 'utf8'))
 const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
 // Explicit rule migration, not regenerated historical hashes. These nine old
 // cases contain Surge ledger/refresh changes or terminal markers corrected
@@ -440,7 +462,16 @@ describe('resumable battle cursor', () => {
       const fireImpBurnExpected = fireImpBurnGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const impBlastTunedExpected = impBlastTunedGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const combineCiviliansKitExpected = combineCiviliansKitGolden.cases.find((row:{id:string})=>row.id===fixture.id)
-      const combineCiviliansKitMoved = combineCiviliansKitExpected?.changed === true
+      const burstPaintsGroundExpected = burstPaintsGroundGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+      const freeAttackExpected = freeAttackGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+      const counterattackExpected = counterattackGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+      const counterattackMoved = counterattackExpected?.changed === true
+      // was: const freeAttackMoved = freeAttackExpected?.changed === true — a counterattack-moved case skips the free-attack layer too (capability.counterattack-and-fend 2026-10-04)
+      const freeAttackMoved = freeAttackExpected?.changed === true || counterattackMoved
+      // was: const burstPaintsGroundMoved = burstPaintsGroundExpected?.changed === true — a free-attack-moved case skips the burst-paints-ground layer too (rule.free-attack-is-basic-attack 2026-10-04)
+      const burstPaintsGroundMoved = burstPaintsGroundExpected?.changed === true || freeAttackMoved
+      // was: const combineCiviliansKitMoved = combineCiviliansKitExpected?.changed === true — a burst-paints-ground-moved case skips the combine layer too (capability.burst-paints-ground 2026-10-04)
+      const combineCiviliansKitMoved = combineCiviliansKitExpected?.changed === true || burstPaintsGroundMoved
       // was: const impBlastTunedMoved = impBlastTunedExpected?.changed === true — a case the combined tree moved skips the imp-blast-tuned layer too (combine 2026-10-04)
       const impBlastTunedMoved = impBlastTunedExpected?.changed === true || combineCiviliansKitMoved
       // was: const fireImpBurnMoved = fireImpBurnExpected?.changed === true — an imp-blast-tuned-moved case skips the fire-imp-burn layer too (content.imp-blast-tuned 2026-10-04)
@@ -545,7 +576,28 @@ describe('resumable battle cursor', () => {
             battle.completeActionCycle(ctx)
           }
         } else result = battle.runBattle(ctx)
-        if (combineCiviliansKitExpected) {
+        if (counterattackExpected) {
+        expect(hash(ctx.events), 'full counterattack events').toBe(counterattackExpected.events)
+        expect(hash(ctx.state), 'full counterattack state').toBe(counterattackExpected.state)
+        expect(hash(ctx.rng.log), 'full counterattack RNG').toBe(counterattackExpected.rng)
+        expect(result).toEqual(counterattackExpected.result)
+        }
+        // was: if (freeAttackExpected) { — capability.counterattack-and-fend (2026-10-04): a counterattack-moved case is checked above instead
+        if (freeAttackExpected && !counterattackMoved) {
+        expect(hash(ctx.events), 'full free-attack events').toBe(freeAttackExpected.events)
+        expect(hash(ctx.state), 'full free-attack state').toBe(freeAttackExpected.state)
+        expect(hash(ctx.rng.log), 'full free-attack RNG').toBe(freeAttackExpected.rng)
+        expect(result).toEqual(freeAttackExpected.result)
+        }
+        // was: if (burstPaintsGroundExpected) { — rule.free-attack-is-basic-attack (2026-10-04): a free-attack-moved case is checked above instead
+        if (burstPaintsGroundExpected && !freeAttackMoved) {
+        expect(hash(ctx.events), 'full burst-paints-ground events').toBe(burstPaintsGroundExpected.events)
+        expect(hash(ctx.state), 'full burst-paints-ground state').toBe(burstPaintsGroundExpected.state)
+        expect(hash(ctx.rng.log), 'full burst-paints-ground RNG').toBe(burstPaintsGroundExpected.rng)
+        expect(result).toEqual(burstPaintsGroundExpected.result)
+        }
+        // was: if (combineCiviliansKitExpected) { — capability.burst-paints-ground (2026-10-04): a burst-paints-ground-moved case is checked above instead
+        if (combineCiviliansKitExpected && !burstPaintsGroundMoved) {
         expect(hash(ctx.events), 'full combine-civilians-kit events').toBe(combineCiviliansKitExpected.events)
         expect(hash(ctx.state), 'full combine-civilians-kit state').toBe(combineCiviliansKitExpected.state)
         expect(hash(ctx.rng.log), 'full combine-civilians-kit RNG').toBe(combineCiviliansKitExpected.rng)

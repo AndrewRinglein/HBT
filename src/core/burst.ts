@@ -14,6 +14,8 @@ import { DMG, finishDamage, planPackets, resolveSourceDamage, type LedgerRow, ty
 import { fireTriggers, HOOKS, type BurstAdjustment } from './trigger.js'
 import { settle } from './settle.js'
 import { kdbForecast, resolveKdb } from './kdb.js'
+import { paintGround } from './ground.js'
+import { layerOfId } from '../content/maps.js'
 
 /**
  * v2.kdb (SWITCHES.md kdbBursts): physical burst damage can cause KDB, per
@@ -119,7 +121,10 @@ export function previewBurst(ctx: Ctx, actorId: number, centre: number, actionId
     return { ...t, damage: plan.value, applied: result.applied, heal: units[t.id]!.hp - hp,
       packets: result.packets, conditional: target.triggers.some(x => x.hook === 'onBurst'), kdbChance: burstKdbChance(ctx, target, a, result) }
   })
-  return { centre, hexes: prepared.hexes, targets, damage: targets.reduce((n, t) => n + t.damage, 0), heal: targets.reduce((n, t) => n + t.heal, 0) }
+  return { centre, hexes: prepared.hexes, targets, damage: targets.reduce((n, t) => n + t.damage, 0), heal: targets.reduce((n, t) => n + t.heal, 0),
+    // capability.burst-paints-ground: the ground the burst will leave, named before it is used. The entry beat of
+    // that ground on the units standing there is not forecast here (the ground's own rows say what it gives).
+    ...(a.burst.paints !== undefined ? { paints: { layer: a.burst.paints, hexes: prepared.hexes } } : {}) }
 }
 
 export function useBurst(ctx: Ctx, actorId: number, centre: number, actionId: string, slot?: import('./types.js').ActionSlot): void {
@@ -132,7 +137,7 @@ export function useBurst(ctx: Ctx, actorId: number, centre: number, actionId: st
   breakStatuses(ctx, actorId, a.attack !== undefined ? 'attack' : 'power', a.id)
   const ordinal = beginBurst(ctx, actorId, actionId, { centre, origin: actor.hex, shape: a.burst.shape, hexes: prepared.hexes,
     targets: prepared.targets.map(t => ({uid: t.uid, id: t.id, hex: t.hex})), side: a.burst.side, tags: a.burst.requireTags ?? [], packets: prepared.payload, heal: prepared.heal,
-    ...(a.burst.destroy ? { destroy: a.burst.destroy } : {}) })
+    ...(a.burst.destroy ? { destroy: a.burst.destroy } : {}), ...(a.burst.paints !== undefined ? { paints: a.burst.paints } : {}) })
   for (const t of prepared.targets) {
     const target = unit(ctx, t.id)
     if (target.uid !== t.uid || target.lifeState !== 'standing' || target.hp <= 0) continue
@@ -158,5 +163,9 @@ export function useBurst(ctx: Ctx, actorId: number, centre: number, actionId: st
   // touching the shape — shielded or not, a unit there or not — once, at the end
   // of the burst's resolution, so its own low-cover crossings were already paid.
   if ((a.burst.destroy ?? 0) > 0 && !ctx.state.outcome) for (const p of propsTouching(ctx, prepared.hexes)) damageProp(ctx, p.id, a.burst.destroy!, a.id, actorId)
+  // capability.burst-paints-ground: the burst leaves its ground on every hex of its shape - shielded or not, a
+  // unit there or not - once, after the recipients are struck and before the settle. Through paintGround, the
+  // one rule: a standing unit on a painted hex takes that layer's entry beat (SWITCHES.md burstGroundEntryBeat).
+  if (a.burst.paints !== undefined && !ctx.state.outcome) paintGround(ctx, prepared.hexes, layerOfId(a.burst.paints), a.id)
   settle(ctx, a.id)
 }

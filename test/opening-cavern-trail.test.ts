@@ -43,7 +43,16 @@ describe('encounter.opening.cavern-trail', () => {
       expect(ctx.events.some((e) => e.type === 'status.applied' && e.causeId === FALL && e['statusId'] === 'status.burn')).toBe(true)
     }
   })
-  it('is won when the last enemy dies', () => {
+  // SKIPPED BY NAME 2026-10-04 — Andrew (engine DECISIONS.md 2026-10-04 'no testing that the battles can be won until these
+  // items are done; the page tests play an overpowered party; faster landing'): "I'm okay forgoing all testing battle until
+  // we're done with all these items." This test's only purpose is to show the computer can win the Cavern Trail with the
+  // drafted party on one replicate (WIN). With capability.counterattack-and-fend (2026-10-04; DECISIONS.md 2026-09-28 'counterattack, special free attacks, the opening six, shields, custom weapons')
+  // a paladin's Longsword carries Counterattack and the computer uses it; that replicate is a wipe now. No seed was searched
+  // for. The rule itself — a battle with no `win` of its own ends heroClear when the last enemy is down — is the engine's
+  // victory check, tested on its own (test/encounter-runner.test.ts, test/encounter-commands.test.ts).
+  // Un-skip when the queued items are done and a winning replicate is recorded again.
+  // was: it('is won when the last enemy dies', () => {
+  it.skip('is won when the last enemy dies', () => {
     const ctx = openingBattle(S, WIN, true)
     expect(ctx.state.outcome).toBe('heroClear')
     expect(ctx.state.units.filter((u) => u.side === 'enemy').every((u) => u.lifeState !== 'standing')).toBe(true)

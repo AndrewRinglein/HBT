@@ -438,6 +438,22 @@ export function packClassPowers(): Readonly<Record<string, AbilityDef>> {
   return raw
 }
 
+/**
+ * The general pool, by class - movement.back-flip (2026-10-04). Codex levels.rules.draft: "Each power
+ * grant offers three: two from the specialty, one from the general pool." Each class's list is the
+ * powers a hero of that class may be offered from it, in the Codex's order; a class with none is absent.
+ */
+export function packGeneralPool(): Readonly<Record<string, readonly string[]>> {
+  const raw = (UNIT_PACK as unknown as { generalPool?: Readonly<Record<string, readonly string[]>> }).generalPool ?? {}
+  for (const [k, ids] of Object.entries(raw)) {
+    if (!k.startsWith('class.')) throw new Error(`general pool: bad key '${k}' - a pool belongs to a class.*`)
+    if (!Array.isArray(ids) || !ids.length) throw new Error(`general pool: '${k}' lists nothing - a class with no general power is left out`)
+    for (const id of ids) if (typeof id !== 'string' || !id.startsWith('power.')) throw new Error(`general pool: '${k}' lists '${String(id)}', which is not a power.* id`)
+    if (new Set(ids).size !== ids.length) throw new Error(`general pool: '${k}' lists a power twice`)
+  }
+  return raw
+}
+
 export type SpecialtyDef = { readonly id: string; readonly name: string; readonly class: string; readonly statModifiers: Readonly<Record<string, number>>; readonly gaps?: readonly string[] }
 export function packSpecialties(): Readonly<Record<string, SpecialtyDef>> {
   const raw = (UNIT_PACK as unknown as { specialties?: Readonly<Record<string, SpecialtyDef>> }).specialties ?? {}
@@ -736,6 +752,8 @@ export function packBursts(): Readonly<Record<string, import('../core/types.js')
     if (a.id !== k || !a.burst) throw Error('invalid burst row')
     validateActionMetadata(a)
     validateBurstAction(a)
+    // capability.burst-paints-ground: the layer a burst paints is one of the ground's layers, checked at load (layerOfId throws on any other)
+    if (a.burst.paints !== undefined) layerOfId(a.burst.paints)
   }
   return rows
 }

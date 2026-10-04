@@ -71,7 +71,11 @@ describe('V2 high cell attack lines', () => {
     expect(ctx.events.filter(e => e.type === 'action.spent' && e.actionId === bow)).toHaveLength(1)
   })
 
-  it('real reactions are denied before payment, then pay once without consuming activation slots', () => {
+  // LAW 10 — rewritten 2026-10-04 by rule.free-attack-is-basic-attack (2026-10-04; DECISIONS.md 2026-09-28 'counterattack, special free attacks …': "the basic attack, no stamina, −20 Accuracy"; 2026-10-04 'the basic attack is a weapon's first attack …': "that stamina cost is not triggered by special free attacks").
+  // This read '… then pay once without consuming activation slots' and held the reaction's Stamina to the attack's cost. A
+  // reaction spends no Stamina now; it is still denied by a blocked line before anything is spent, still spends once (one
+  // action.spent), and still consumes no activation slot.
+  it('real reactions are denied before anything is spent, then spend once — no Stamina, no activation slot', () => {
     const ctx = battle(), actor = ctx.state.units[0]!
     actor.moveUsed = true; actor.primaryUsed = true
     const before = saveBattle(ctx)
@@ -80,7 +84,8 @@ describe('V2 high cell attack lines', () => {
     setHigh(ctx, 7, false)
     const stamina = actor.stamina
     performAttack(ctx, 0, 1, bow, 'reaction')
-    expect(actor.stamina).toBe(stamina - ctx.actions[bow]!.staminaCost)
+    expect(ctx.actions[bow]!.staminaCost).toBeGreaterThan(0)
+    expect(actor.stamina).toBe(stamina)   // was stamina - cost: a special free attack spends no Stamina
     expect([actor.moveUsed, actor.primaryUsed]).toEqual([true, true])
     expect(ctx.events.filter(e => e.type === 'action.spent')).toHaveLength(1)
   })
