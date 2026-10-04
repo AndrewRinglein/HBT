@@ -1687,8 +1687,14 @@ const SPIRIT = (base, mult = 1) => ({ scale: 'partySpirit', base, mult });
 const untilOf = (scope) => scope === 'until-end-of-your-next-turn' ? 'endOfNextTurn' : scope === 'until-end-of-turn' ? 'endOfTurn' : scope === 'battle' || scope === 'rest-of-battle' ? 'battle' : null;
 
 // One sentence, one shape. Returns { effects, gaps } or null when nothing matched.
+// engine fix.burst-ground-class-powers (2026-10-04; engine SWITCHES.md burstGroundClassPowers): a blast sentence may
+// end in the ground clause the item bursts' sentence has — "[, and | — and then] those seven hexes become
+// burning|frost" — which is the burst profile's own `paints` (engine capability.burst-paints-ground), returned as
+// `ground` and held to the row's field both ways by compileClassPower. Whatever else the rider says stays a named gap
+// (Fireball: "plus every stack of Burn that unit is already carrying — the blast CONSUMES that Burn").
 function compileSentences(desc) {
   const effects = [], gaps = [];
+  let ground = null;
   // split on sentence ends, keep the semicolon halves too
   const parts = desc.split(/(?<=[.;])\s+|;\s+/).map((x) => x.trim()).filter(Boolean);
   for (const sRaw of parts) {
@@ -1699,7 +1705,9 @@ function compileSentences(desc) {
     if ((m = s0.match(/^Those seven hexes become (burning|poisoned) ground$/))) { effects.push({ kind: 'layer.paint', layer: 'layer.' + m[1], radius: 1, origin: 'target' }); continue; }
     if ((m = s0.match(/^Deal (\d+) \+ (Magic|Spirit|Strength|Precision) (magic|physical|fire|poison|shadow|true) damage to every unit in the blast(?:, (.*))?$/))) {
       effects.push({ kind: 'statDamage', stat: m[2].toLowerCase(), bonus: +m[1], damageType: m[3] });
-      if (m[4]) gaps.push(`rider: ${m[4]}`);
+      const g = m[4] && m[4].match(/^(?:(.+?) — )?and (?:then )?those seven hexes become (burning|frost)$/);
+      if (g) { ground = `layer.${g[2]}`; if (g[1]) gaps.push(`rider: ${g[1]}`); }
+      else if (m[4]) gaps.push(`rider: ${m[4]}`);
       continue;
     }
     if ((m = s0.match(/^Every unit in those hexes, ally or enemy, takes (Precision|Strength|Magic|Spirit) - (\d+) (physical|magic|fire|poison|shadow|true) damage(?:, .*)?$/))) {
@@ -1739,7 +1747,7 @@ function compileSentences(desc) {
     if (/^Until the end of your next Turn, your attacks/.test(s0)) continue;   // the `modifies` field carries it
     gaps.push(`unparsed: ${s0.slice(0, 80)}`);
   }
-  return { effects, gaps };
+  return { effects, gaps, ground };
 }
 
 function compileClassPower(p, cls) {
@@ -1750,7 +1758,7 @@ function compileClassPower(p, cls) {
     ...(p.warmup ? { warmup: p.warmup } : {}), ...(p.free ? { free: true } : {}) };
   if (!tg) return { ...base, range: 0, effects: [], target: { select: 'self', side: 'any' }, gaps: [`targets '${p.targets}' unparsed — the power is inert`] };
   if (tg.hexGap && !p.burst) gaps.push(`targets 'a hex within ${tg.hexGap}' — engine centres the blast on a UNIT`);
-  const { effects, gaps: g2 } = compileSentences(desc);
+  const { effects, gaps: g2, ground } = compileSentences(desc);
   gaps.push(...g2);
   if (p.modifies) {
     const until = untilOf(p.modifies.scope);
@@ -1768,8 +1776,11 @@ function compileClassPower(p, cls) {
     if (burst.shape.kind !== 'radius' || burst.shape.radius !== tg.target.radius || burst.side !== tg.target.side
       || burst.heal !== undefined || burst.requireTags !== undefined || burst.packets.length !== effects.length
       || burst.packets.some((packet, i) => packet.stat !== effects[i].stat || packet.amount !== effects[i].bonus || packet.damageType !== effects[i].damageType)) throw Error(`Class burst '${p.id}' disagrees with its authored base payload`);
+    // the ground the blast leaves: the sentence's clause and the profile's `paints` must say the same thing, both ways
+    if ((burst.paints ?? null) !== ground) throw Error(`Class burst '${p.id}' disagrees with its authored sentence: the ground it leaves`);
     return { ...base, range: tg.range, burst, source: 'class', ...(gaps.length ? { gaps } : {}) };
   }
+  if (ground) gaps.push(`rider: and those seven hexes become ${ground.replace(/^layer./, '')} — a blast that is not a burst paints no ground`);
   if (tg.target.select === 'area' && tg.target.origin === 'target' && effects.some(e => e.kind === 'statDamage')) throw Error(`Travelling area damage '${p.id}' requires an explicit burst profile`);
   if (!effects.length) gaps.push('no effect compiled — the power is inert');
   // a power that only paints the hex area paints it ONCE, around the one unit it is aimed at — an area
