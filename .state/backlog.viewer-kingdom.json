@@ -739,7 +739,9 @@
   ],
   "spec": "Ruled 2026-10-03 (Andrew, engine/DECISIONS.md 'the action bar: the moves grey slightly once the move is done, nothing else greys ...'): 'There should be a slight graying out of the move actions after move actions are completed.' / 'Yes, they should still be usable before you've moved. However, if you do it, you'll lose your move, so I guess, actually, don't gray them out. Just gray the moves out after a move is done.' On the activated unit's action bar: once its move is done - its movement spent, or lost because it used an attack or power first, read from the engine's own state through the host (kingdom src/ui/play-input.ts offers), never guessed - the move actions (Move and its movement powers) are slightly greyed. Nothing else is greyed for not having moved: attacks, powers and item uses stay at full strength and usable before the unit moves. The slight grey must be told apart at a glance from an action the engine refuses outright (disabled, as today). Check the rule he states - 'if you do it, you'll lose your move': say what the engine does to a unit's move after it uses its primary action first, with the test that shows it; if the engine still lets it move, do not invent the loss in the viewer - report it for Andrew. A screenshot of the bar before and after the move is saved for his eye. Kingdom's pages are rebuilt.",
   "expect": "In BATTLE-SANDBOX.html?play=encounter.opening.orphanage a hero beginning its Activation shows every action at full strength; after its movement is spent its move actions are slightly greyed and its attacks and powers are not; an action the engine refuses still looks disabled, not merely greyed; a page test reads the move buttons' state before and after the move, and reports what the engine does to the move after an attack made first.",
-  "note": "Filed by the kingdom chat from Andrew's ruling, 2026-10-03, while he played the opening run."
+  "note": "Filed by the kingdom chat from Andrew's ruling, 2026-10-03, while he played the opening run.",
+  "status": "done",
+  "sha": "5b97dcb"
  },
  {
   "id": "viewer.attack-impact-timing",
