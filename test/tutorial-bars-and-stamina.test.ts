@@ -54,7 +54,12 @@ describe('kingdom.tutorial-bars-and-stamina — the two bars at the first damage
     expect([...s.seen], 'remembered as the one lesson').toContain('lesson.stamina')
     s.told.at(-1)!.onDone!('time'); expect(L.up).toBe(null)
     // … and battle 2 does not tell it again
-    L.open(LUMBERJACK); s.battle.turn = 1; s.battle.acting = 0; s.battle.fresh = true; L.still(); expect(L.up).toBe(null)
+    // Law 10, 2026-10-04 (kingdom.tutorial-second-battle; engine DECISIONS.md 2026-10-04 'the opening's tutorial: …'): this read
+    //   L.open(LUMBERJACK); …; L.still(); expect(L.up).toBe(null)
+    // — nothing at all went up in battle 2, true while Stamina's was battle 2's only row. Battle 2 has its own lessons now, so
+    // what this test holds is said of Stamina: its words are told once, and battle 2 does not tell them again.
+    L.open(LUMBERJACK); s.battle.turn = 1; s.battle.acting = 0; s.battle.fresh = true; L.still()
+    expect(L.all).not.toContain(STAMINA2); expect(s.told.filter((t) => t.words[0] === WORDS[0]).length, 'Stamina is told once').toBe(1)
   })
 
   it('battle 1 over before Turn 3: Stamina is told on the first hero Activation of battle 2 — and not again in the Orphanage', () => {
