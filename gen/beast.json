@@ -715,12 +715,12 @@
    "cooldown": 4,
    "warmup": 0,
    "free": false,
-   "targets": "every unit within 3 hexes",
+   "targets": "every other unit within 3 hexes",
    "tags": [
     "area"
    ],
-   "description": "Every enemy within 3 hexes gains 2 Weak. You and every ally within 3 hexes remove 2 Weak.",
-   "source": "new 2026-08-20 —: \"we need to create a new class, Beast, and change the Spirit to just be a Civilian so there are no outliers on classes.\" Beast was four heroes with class:null; Spirit was one.",
+   "description": "Every enemy within 3 hexes gains 2 Weak. Every other ally within 3 hexes removes 2 Weak.",
+   "source": "new 2026-08-20 —: \"we need to create a new class, Beast, and change the Spirit to just be a Civilian so there are no outliers on classes.\" Beast was four heroes with class:null; Spirit was one. | 2026-10-04 (engine fix.own-area-skips-owner; ruled 2026-10-04, Andrew, engine DECISIONS.md 'the Poison Imp, the Balrog and the four caster-centred class powers skip their owner too': \"One and two, yes, skip the caster.\"): the power is aimed at every OTHER unit within 3 hexes - the caster is skipped: \"You and every ally\" is now every other ally, and the description says so.",
    "triggers": []
   },
   {
