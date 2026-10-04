@@ -36,7 +36,13 @@ const ENDING_KEYS = ['endTurn', 'endActivation']
    actions are DONE for this Activation, optional too — moveDone [action ids], the host's word from the engine (its unit has
    moved and the engine lists no further use of that action). The bar greys those rows slightly and nothing else; absent or
    empty: nothing is greyed. Whether a move is done is never read off the log here. */
-const OPTIONAL_KEYS = [...ENDING_KEYS, 'swap', 'ask', 'moveDone']
+/* viewer.move-cost-on-grid (engine DECISIONS.md 2026-10-03 '... movement costs on the grid ...', Andrew: "When the movement grid
+   is up (the blue movement grid on the board), tiles that require extra movement points should have that movement cost, I
+   think, maybe on them in gray."): what entering each reach hex costs the acting unit, optional too — reachCost
+   [{hex, cost}], the host's word from the engine's own movement rule (the step onto that hex at the end of the engine's walk
+   to it), for hexes of the reach, each once. The board writes the number on the tiles that cost more than one and adds
+   nothing up; absent or empty: no numbers. */
+const OPTIONAL_KEYS = [...ENDING_KEYS, 'swap', 'ask', 'moveDone', 'reachCost']
 const AIM_KEYS = ['from', 'to', 'target', 'hit', 'dmg', 'hpAfter', 'lethal', 'locked']
 export function playFacts(value, positions) {
   const fail = why => { throw new Error('invalid play facts: ' + why) }
@@ -101,6 +107,15 @@ export function playFacts(value, positions) {
     if (!Array.isArray(v.moveDone) || v.moveDone.some(x => typeof x !== 'string' || !x)) fail('moveDone is not a list of action ids')
     if (new Set(v.moveDone).size !== v.moveDone.length) fail('moveDone repeats an action')
     moveDone = [...v.moveDone] }
-  return { endTurn, endActivation: v.endActivation === true, swap, ask, moveDone, actor: intOrNull(v.actor, 'actor'), slot: v.slot, reach: hexes(v.reach, 'reach'), zoc: hexes(v.zoc, 'zoc'),
+  const reach = hexes(v.reach, 'reach')
+  let reachCost = []
+  if (v.reachCost != null) {
+    if (!Array.isArray(v.reachCost)) fail('reachCost is not an array')
+    reachCost = v.reachCost.map((c, i) => { const at = 'reachCost[' + i + ']'; object(c, ['hex', 'cost'], at)
+      if (!reach.includes(hex(c.hex, at + '.hex'))) fail(at + '.hex is not a hex of the reach')
+      if (int(c.cost, at + '.cost') < 0) fail(at + '.cost is negative')
+      return { hex: c.hex, cost: c.cost } })
+    if (new Set(reachCost.map(c => c.hex)).size !== reachCost.length) fail('reachCost repeats a hex') }
+  return { endTurn, endActivation: v.endActivation === true, swap, ask, moveDone, reachCost, actor: intOrNull(v.actor, 'actor'), slot: v.slot, reach, zoc: hexes(v.zoc, 'zoc'),
     path: hexes(v.path, 'path', false), provokes: hexes(v.provokes, 'provokes'), ghost, threat, targets: hexes(v.targets, 'targets'), aim, note: v.note }
 }

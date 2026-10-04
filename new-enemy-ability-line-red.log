@@ -1,0 +1,97 @@
+TAP version 13
+# Subtest: battle 2's "New enemy / Skeleton Archer" notice carries a line beginning "This enemy can" that says it shoots from range
+not ok 1 - battle 2's "New enemy / Skeleton Archer" notice carries a line beginning "This enemy can" that says it shoots from range
+  ---
+  duration_ms: 592.6549
+  type: 'test'
+  location: 'C:\\Users\\aring\\Desktop\\HBT-worker-content\\viewer\\tools\\new-enemy-ability-line.test.mjs:50:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    three lines: ["New enemy","Skeleton Archer"]
+    
+    2 !== 3
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 3
+  actual: 2
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/new-enemy-ability-line.test.mjs:52:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1106:25)
+    Test.start (node:internal/test_runner/test:1003:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:358:17)
+  ...
+# Subtest: every enemy kind of the six opening battles has a sentence, or is listed in the content as having none; each is the content's own row
+not ok 2 - every enemy kind of the six opening battles has a sentence, or is listed in the content as having none; each is the content's own row
+  ---
+  duration_ms: 568.5198
+  type: 'test'
+  location: 'C:\\Users\\aring\\Desktop\\HBT-worker-content\\viewer\\tools\\new-enemy-ability-line.test.mjs:57:1'
+  failureType: 'testCodeFailure'
+  error: 'the page carries unitLines'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/new-enemy-ability-line.test.mjs:61:44)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1106:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+    Test.postRun (node:internal/test_runner/test:1235:19)
+    Test.run (node:internal/test_runner/test:1163:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:358:3)
+  ...
+# Subtest: a kind with no sentence shows its name alone; changing the row changes the page
+not ok 3 - a kind with no sentence shows its name alone; changing the row changes the page
+  ---
+  duration_ms: 159.2397
+  type: 'test'
+  location: 'C:\\Users\\aring\\Desktop\\HBT-worker-content\\viewer\\tools\\new-enemy-ability-line.test.mjs:75:1'
+  failureType: 'testCodeFailure'
+  error: 'Cannot convert undefined or null to object'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    Object.entries (<anonymous>)
+    file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/new-enemy-ability-line.test.mjs:76:80
+    boot (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/new-enemy-ability-line.test.mjs:28:16)
+    archerNotice (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/new-enemy-ability-line.test.mjs:42:27)
+    TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/new-enemy-ability-line.test.mjs:76:16)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1106:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+    Test.postRun (node:internal/test_runner/test:1235:19)
+    Test.run (node:internal/test_runner/test:1163:12)
+  ...
+# Subtest: no "This enemy can" sentence is typed in viewer/src or kingdom/src
+not ok 4 - no "This enemy can" sentence is typed in viewer/src or kingdom/src
+  ---
+  duration_ms: 200.432
+  type: 'test'
+  location: 'C:\\Users\\aring\\Desktop\\HBT-worker-content\\viewer\\tools\\new-enemy-ability-line.test.mjs:84:1'
+  failureType: 'testCodeFailure'
+  error: 'Cannot convert undefined or null to object'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    Object.keys (<anonymous>)
+    TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/new-enemy-ability-line.test.mjs:92:30)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1106:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+    Test.postRun (node:internal/test_runner/test:1235:19)
+    Test.run (node:internal/test_runner/test:1163:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:788:7)
+  ...
+1..4
+# tests 4
+# suites 0
+# pass 0
+# fail 4
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1651.6793

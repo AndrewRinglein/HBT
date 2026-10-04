@@ -1,0 +1,175 @@
+TAP version 13
+# Subtest: a kind that arrives: battle 2's Turn 2 shows "New enemy" over the Skeleton Archer while the view is on the arriving archer — once, though more archers come on Turn 3
+not ok 1 - a kind that arrives: battle 2's Turn 2 shows "New enemy" over the Skeleton Archer while the view is on the arriving archer — once, though more archers come on Turn 3
+  ---
+  duration_ms: 1024.9369
+  type: 'test'
+  location: 'C:\\Users\\aring\\Desktop\\HBT-worker-content\\viewer\\tools\\new-enemy-notice.test.mjs:52:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    one notice
+    
+    0 !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/new-enemy-notice.test.mjs:63:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1106:25)
+    Test.start (node:internal/test_runner/test:1003:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:358:17)
+  ...
+# Subtest: a kind on the board when the battle begins: battle 3 opens by showing "New enemy" over the Imp before the first hero is activated — one notice for all the Imps — then centres on the hero; the Fire Imp is named when it arrives
+not ok 2 - a kind on the board when the battle begins: battle 3 opens by showing "New enemy" over the Imp before the first hero is activated — one notice for all the Imps — then centres on the hero; the Fire Imp is named when it arrives
+  ---
+  duration_ms: 1394.7431
+  type: 'test'
+  location: 'C:\\Users\\aring\\Desktop\\HBT-worker-content\\viewer\\tools\\new-enemy-notice.test.mjs:75:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + null
+    - [
+    -   'New enemy',
+    -   'Imp'
+    - ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 'New enemy'
+    1: 'Imp'
+  actual: ~
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/new-enemy-notice.test.mjs:82:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1106:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+    Test.postRun (node:internal/test_runner/test:1235:19)
+    Test.run (node:internal/test_runner/test:1163:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:358:3)
+  ...
+# Subtest: one notice for a kind though four of it arrive at once; two kinds on the board at the start are each named in turn
+not ok 3 - one notice for a kind though four of it arrive at once; two kinds on the board at the start are each named in turn
+  ---
+  duration_ms: 364.6552
+  type: 'test'
+  location: 'C:\\Users\\aring\\Desktop\\HBT-worker-content\\viewer\\tools\\new-enemy-notice.test.mjs:106:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    the two kinds on the board, one after the other
+    + actual - expected
+    
+    + []
+    - [
+    -   [
+    -     'New enemy',
+    -     'Bloodhound'
+    -   ],
+    -   [
+    -     'New enemy',
+    -     'Hellhound'
+    -   ]
+    - ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0:
+      0: 'New enemy'
+      1: 'Bloodhound'
+    1:
+      0: 'New enemy'
+      1: 'Hellhound'
+  actual:
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/new-enemy-notice.test.mjs:111:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1106:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+    Test.postRun (node:internal/test_runner/test:1235:19)
+    Test.run (node:internal/test_runner/test:1163:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:788:7)
+  ...
+# Subtest: with nothing handed over (the replay page) nothing is announced; a hand step and a seek announce nothing and tell the host nothing
+not ok 4 - with nothing handed over (the replay page) nothing is announced; a hand step and a seek announce nothing and tell the host nothing
+  ---
+  duration_ms: 1197.5237
+  type: 'test'
+  location: 'C:\\Users\\aring\\Desktop\\HBT-worker-content\\viewer\\tools\\new-enemy-notice.test.mjs:121:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The expression evaluated to a falsy value:
+    
+      assert.ok(said(v))
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: ~
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/new-enemy-notice.test.mjs:134:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1106:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+    Test.postRun (node:internal/test_runner/test:1235:19)
+    Test.run (node:internal/test_runner/test:1163:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:788:7)
+  ...
+# Subtest: the host may hand the kinds after mounting, and names only unit kinds: a malformed list is refused
+not ok 5 - the host may hand the kinds after mounting, and names only unit kinds: a malformed list is refused
+  ---
+  duration_ms: 260.033
+  type: 'test'
+  location: 'C:\\Users\\aring\\Desktop\\HBT-worker-content\\viewer\\tools\\new-enemy-notice.test.mjs:138:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The input did not match the regular expression /new enemies/i. Input:
+    
+    'TypeError: v.setNewEnemies is not a function'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+  error: 'v.setNewEnemies is not a function'
+  name: 'TypeError'
+  stack: |-
+    file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/new-enemy-notice.test.mjs:140:25
+    getActual (node:assert:611:5)
+    strict.throws (node:assert:759:24)
+    TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/new-enemy-notice.test.mjs:140:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1106:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+    Test.postRun (node:internal/test_runner/test:1235:19)
+    Test.run (node:internal/test_runner/test:1163:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:788:7)
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/new-enemy-notice.test.mjs:140:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1106:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+    Test.postRun (node:internal/test_runner/test:1235:19)
+    Test.run (node:internal/test_runner/test:1163:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:788:7)
+  ...
+1..5
+# tests 5
+# suites 0
+# pass 0
+# fail 5
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 4491.6638

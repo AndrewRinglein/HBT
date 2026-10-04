@@ -226,6 +226,36 @@ export function syncLayers(V) {
     L.layL.appendChild(node); L.LAY.set(+hex, { layer, node })
   }
 }
+/* ── THE FALL WARNINGS (viewer.area-fall-warning, 2026-10-04) ───────────────────────────────────────────────────────────────
+   Engine DECISIONS.md 2026-10-03 'the opening replays show the heroes winning; one recording of each; the fall warnings are
+   drawn' (asked whether to draw the meteor and curse warning areas on the board — Andrew: "Two, yes."). The fold holds each
+   fall marked and not yet landed (S.falls, the area.marked event's own hexes); every marked hex is drawn once, on the ground
+   right after the painted layers, from the mark until it lands — in the replay page and a host's battle screen alike. The
+   look is not ruled (viewer SWITCHES fallMarkLook): hatched in the hue of what will land (the status the falling layer
+   applies), pulsing slowly, each area's centre ringed; no countdown is worked out — the Turn it lands after is the event's
+   own number, on the mark's title and in the banner and the log. */
+export function syncFalls(V) {
+  const L = V.layers, falls = V.S.falls || []
+  const key = JSON.stringify(falls)
+  if (L.fallKey === key && (L.fallL || !falls.length)) return
+  L.fallL?.remove(); L.fallL = null; L.fallKey = key
+  if (!falls.length) return
+  const { POS, LAYOUT } = V.data
+  const layer = el('fallMarks', 'position:absolute;left:0;top:0;transform-style:preserve-3d;pointer-events:none')
+  for (const m of falls) {
+    const hue = layerHue(m.layer, V.data.LAYER_STATUS), centres = new Set(m.areas.map(a => a[0])), seen = new Set()
+    for (const hex of m.areas.flat()) {
+      if (seen.has(hex)) continue; seen.add(hex)
+      const p = POS[hex]
+      if (!p) throw new Error(`area.marked names hex ${JSON.stringify(hex)}, which is not on this ${V.data.BOARD.width}×${V.data.BOARD.height} board — the engine owes a hex`)
+      const n = el('fallMark' + (centres.has(hex) ? ' fallCentre' : ''), `left:${p.px - LAYOUT.W / 2}px;top:${p.py - LAYOUT.H / 2}px;width:${LAYOUT.W}px;height:${LAYOUT.H}px;--fall:${hue}`)
+      n.dataset.hex = String(hex); n.dataset.fall = m.fall; n.dataset.lands = String(m.lands); n.dataset.hue = hue
+      n.style.transform = `translateZ(${heightOf(V, hex) + 1}px)`
+      layer.appendChild(n)
+    }
+  }
+  placeAfter(L.layL || L.ground, layer); L.fallL = layer
+}
 export const isDark = (V, hex) => { const n = (V.data.LAYERS || {})[(V.S.layers || {})[hex]]; return n === 'layer.darkness' }
 
 /* ── CORPSES (2026-09-03, §3) — board objects, not a dead unit's leftover ──
@@ -1158,6 +1188,15 @@ export function drawPlay(V) {
   const ring = (hex, cls, colour) => { const n = el('ring ' + cls, `left:${POS[hex].px - LAYOUT.W / 2}px;top:${POS[hex].py - LAYOUT.H / 2}px;background:${colour};pointer-events:none`)
     n.dataset.hex = String(hex); n.style.transform = `translateZ(${heightOf(V, hex) + 2}px)`; layer.appendChild(n); return n }
   for (const h of P.reach) tile(h, 'playReach', `background:${PLAY_HUE.reach};${HEXCLIP}`)
+  /* viewer.move-cost-on-grid (engine DECISIONS.md 2026-10-03, Andrew: "tiles that require extra movement points should have
+     that movement cost, I think, maybe on them in gray"): the host's cost of entering each reach hex (play.js reachCost — the
+     engine's), written small and grey on the tiles that cost more than one. It lies on the tile and reads upright at any
+     quarter-turn; nothing is added up here, and a hex the host named no cost for carries none (viewer SWITCHES moveCost*). */
+  for (const c of P.reachCost || []) { if (!(c.cost > 1)) continue
+    const p = POS[c.hex], n = el('playCost', `left:${p.px}px;top:${p.py}px`)
+    n.dataset.hex = String(c.hex); n.dataset.cost = String(c.cost); n.textContent = String(c.cost)
+    n.style.transform = `translate(-50%,-50%) translateZ(${heightOf(V, c.hex) + 2}px) rotateZ(var(--unspin, 0deg))`
+    layer.appendChild(n) }
   for (const h of P.zoc) tile(h, 'playZoc', `background:repeating-linear-gradient(45deg,${PLAY_HUE.zoc} 0 5px,transparent 5px 14px);${HEXCLIP}`)
   if (P.threat) {
     for (const h of P.threat.move) tile(h, 'playThreatMove', `background:${PLAY_HUE.threatMove};${HEXCLIP}`)
@@ -1450,6 +1489,8 @@ export function showPose(V, pose) {
     st.setProperty('--anti', (-pose.tilt) + 'deg'); st.setProperty('--unspin', (pose.yaw ? -pose.yaw : 0) + 'deg')
     st.setProperty('--aniso', String(anisoOf(A))) }
   V.camShown = pose; V.camVersion = (V.camVersion || 0) + 1
+  /* viewer.hex-tooltip: what is pinned to a board point on the screen follows the pose, frame by frame through a glide */
+  if (V.afterPose) V.afterPose()
 }
 /* ── the turned camera (viewer.painted-board; engine DECISIONS.md 2026-09-29 "the playable battle
    screen": "You should be able to rotate around, but there should be a button to reset. You should be
@@ -1780,7 +1821,9 @@ export function clickHex(V, hex) {
     springs back; the pointer at an edge scrolls; a right-click (no drag) steps the plan back (viewer SWITCHES xcom*). */
 export function bindCamera(V) {
   const wrap = V.dom.stage.parentNode; if (!wrap || !wrap.addEventListener) return () => {}
-  let drag = null, dragged = false, pointed
+  let drag = null, dragged = false, pointed, tipped = null
+  /* viewer.hex-tooltip: the hex under the pointer, said once per change — in a replay and under a host that plays alike */
+  const tipAt = hex => { if (hex === tipped) return; tipped = hex; if (V.onPoint) V.onPoint(hex) }
   V.clickSuppressed = e => e.detail !== 0 && dragged
   const down = e => { if (e.button !== 0 && e.button !== 1 && e.button !== 2) return; dragged = false
     drag = { x: e.clientX, y: e.clientY, originX: e.clientX, originY: e.clientY } }
@@ -1789,6 +1832,7 @@ export function bindCamera(V) {
     const at = pointerAt(V, e), hit = at ? pickAt(V, at.x, at.y) : null
     const T = V.targeting
     wrap.style.cursor = !hit ? '' : hit.unit == null && T && T.legalHexes.includes(hit.hex) ? 'crosshair' : (hit.unit != null || V.play) ? 'pointer' : ''
+    tipAt(hit ? hit.hex : null)
     if (!V.play) { pointed = undefined; return }
     const hex = hit ? hit.hex : null
     if (hex !== pointed) { pointed = hex; V.offerPlay({ kind: 'point', hex }) }
@@ -1850,7 +1894,7 @@ export function bindCamera(V) {
      focus — two viewers on one page must not both pan, and a host page keeps
      its arrow keys (review 2026-09-03) */
   let over = false
-  const enter = () => { over = true }, leave = () => { over = false; up(); pointed = undefined; if (V.play) V.offerPlay({ kind: 'point', hex: null }) }
+  const enter = () => { over = true }, leave = () => { over = false; up(); pointed = undefined; tipAt(null); if (V.play) V.offerPlay({ kind: 'point', hex: null }) }
   const key = e => {
     if (e.target && /INPUT|TEXTAREA|SELECT/.test(e.target.tagName)) return
     if (!over && !(V.dom.root.contains && document.activeElement && V.dom.root.contains(document.activeElement))) return
