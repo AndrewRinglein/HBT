@@ -48,7 +48,9 @@
   ],
   "spec": "Ruled 2026-10-03 (Andrew, engine DECISIONS.md 'the Imp: Precision down by 1; its Blast burns half the time'): 'Change the regular imp's regular main attack to lower their precision by 1 and change it to a 50% chance of burn 2.' Today unit.imp (content bestiary; CODEX) has Precision 4 and its main attack attack.imp.blast - one enemy within 4 hexes, damage Precision + 0 - applies Burn 2 on every hit (trigger onHit, no chance). Change the Codex and its sources (re-read every content/ file immediately before editing it; commit content after every write; rebuild by the tools, never by hand): the Imp's Precision becomes 3, and Imp Blast's onHit Burn 2 takes a 50% chance (the trigger's `chance: 50`, the shape other rows already use - e.g. unit.soldier's Heavy Blow carries `chance: 100`; the roll is the trigger's own named roll, COMBAT-SEQUENCE). The Imp's Claw, and the Fire Imp, the Poison Imp and the Powerful Imp, are unchanged. Rebuild the Codex's outputs, the engine pack, the viewer's generated dumps and the kingdom pages, and the opening replays and page-test seeds the change makes stale (the Bridge and the Gates field Imps); say whether the control battles move before claiming changesBaseline.",
   "expect": "In encounter.opening.bridge an Imp's Blast deals damage from Precision 3 and its Burn 2 lands on about half of its hits (a test over many seeded hits finds the chance at 50%, never 0 or 100); the Fire Imp's Blast still applies Burn 3 on every hit; the Codex row and the engine pack agree.",
-  "note": "Filed by the kingdom chat from Andrew's ruling, 2026-10-03, while he played the opening run. Shape is the filer's guess (a numbers change to one row): check tools/gate.mjs's demands before building."
+  "note": "Filed by the kingdom chat from Andrew's ruling, 2026-10-03, while he played the opening run. Shape is the filer's guess (a numbers change to one row): check tools/gate.mjs's demands before building.",
+  "status": "done-needs-review",
+  "sha": "0487e30"
  },
  {
   "id": "fix.transformed-snapshot-order",

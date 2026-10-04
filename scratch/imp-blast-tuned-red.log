@@ -1,0 +1,142 @@
+
+ RUN  v4.1.11 C:/Users/aring/Desktop/HBT-worker-engine/engine
+
+xxx·xxx
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 6 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/imp-blast-tuned.test.ts > the row: the Imp's Precision is 3 and Imp Blast's Burn 2 is a 50% chance > unit.imp: Precision 3 (was 4); Strength, Health, Dodge, Movement and Accuracy as they were
+AssertionError: expected 4 to be 3 // Object.is equality
+
+- Expected
++ Received
+
+- 3
++ 4
+
+ ❯ test/imp-blast-tuned.test.ts:29:27
+     27|   it('unit.imp: Precision 3 (was 4); Strength, Health, Dodge, Movement…
+     28|     const imp = UNITS[IMP]!
+     29|     expect(imp.precision).toBe(3)
+       |                           ^
+     30|     expect([imp.strength, imp.maxHp, imp.dodge, imp.movement, imp.accu…
+     31|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/6]⎯
+
+ FAIL  test/imp-blast-tuned.test.ts > the row: the Imp's Precision is 3 and Imp Blast's Burn 2 is a 50% chance > Imp Blast is still one enemy within 4, Precision + 0; its on-hit rider is Burn 2 at chance 50
+AssertionError: expected [ { id: 'trigger.imp.burn', …(6) } ] to deeply equal [ { id: 'trigger.imp.burn', …(6) } ]
+
+- Expected
++ Received
+
+@@ -1,8 +1,8 @@
+  [
+    {
+-     "chance": 50,
++     "chance": 100,
+      "effect": {
+        "kind": "status.apply",
+        "statusId": "status.burn",
+        "value": 2,
+      },
+
+ ❯ test/imp-blast-tuned.test.ts:35:31
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/6]⎯
+
+ FAIL  test/imp-blast-tuned.test.ts > the row: the Imp's Precision is 3 and Imp Blast's Burn 2 is a 50% chance > the Codex row and the engine pack agree
+AssertionError: expected [ [ 'onHit', undefined, 'burn', 2 ] ] to deeply equal [ [ 'onHit', 50, 'burn', 2 ] ]
+
+- Expected
++ Received
+
+  [
+    [
+      "onHit",
+-     50,
++     undefined,
+      "burn",
+      2,
+    ],
+  ]
+
+ ❯ test/imp-blast-tuned.test.ts:43:103
+     41|     expect(row.stats['precision']).toBe(UNITS[IMP]!.precision)
+     42|     const blast = row.attacks.find((a) => a.id === BLAST)!
+     43|     expect(blast.triggers!.map((t) => [t.hook, t.chance, t.effects[0]!…
+       |                                                                                                       ^
+     44|     expect(rider(IMP, BLAST)[0]!.chance).toBe(blast.triggers![0]!.chan…
+     45|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/6]⎯
+
+ FAIL  test/imp-blast-tuned.test.ts > in a small fight: the Blast's damage is the Imp's Precision, 3; the Claw's is its Strength, 3 > the preview's source row is 3 for the Blast (was 4) and 3 for the Claw
+AssertionError: expected 4 to be 3 // Object.is equality
+
+- Expected
++ Received
+
+- 3
++ 4
+
+ ❯ test/imp-blast-tuned.test.ts:68:31
+     66|     const { ctx, hero, imp } = rig()
+     67|     const stat = (attackId: string) => preview(ctx, imp.id, hero.id, a…
+     68|     expect(stat(BLAST).delta).toBe(3)
+       |                               ^
+     69|     expect(preview(ctx, imp.id, hero.id, BLAST).packetsOnHit[0]!.raw).…
+     70|     const near = rig(1, [hexId(6, 5), hexId(5, 5)])
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/6]⎯
+
+ FAIL  test/imp-blast-tuned.test.ts > in a small fight: the Blast's damage is the Imp's Precision, 3; the Claw's is its Strength, 3 > over three hundred seeded Blasts the Burn lands on about half of the hits — never none, never all — and each firing is Burn 2
+AssertionError: seed 0: expected [ [ 'onHit', 100 ] ] to deeply equal [ [ 'onHit', 50 ] ]
+
+- Expected
++ Received
+
+  [
+    [
+      "onHit",
+-     50,
++     100,
+    ],
+  ]
+
+ ❯ test/imp-blast-tuned.test.ts:85:72
+     83|       if (!rolled.length) { expect(applied, `seed ${r}: no roll, no Bu…
+     84|       // one roll per hit, at the row's chance; a failed roll still lo…
+     85|       expect(rolled.map((e) => [e['hook'], e['chance']]), `seed ${r}`)…
+       |                                                                        ^
+     86|       expect(hit, `seed ${r}: the rider rolls only on a hit`).toBe(tru…
+     87|       hits++
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/6]⎯
+
+ FAIL  test/imp-blast-tuned.test.ts > in encounter.opening.bridge: the Imps' Blasts burn about half the time; the Fire Imps' burn every time > over forty seeds
+AssertionError: expected 100 to be 50 // Object.is equality
+
+- Expected
++ Received
+
+- 50
++ 100
+
+ ❯ test/imp-blast-tuned.test.ts:109:86
+    107|       const imps = new Set(ctx.state.units.filter((u) => u.typeId === …
+    108|       for (const e of ctx.events) {
+    109|         if (e.type === 'trigger.rolled' && e.causeId === BURN) { expec…
+       |                                                                                      ^
+    110|         if (e.type === 'trigger.rolled' && e.causeId === 'trigger.fire…
+    111|         if (e.type === 'attack.declared' && e.causeId === BLAST && imp…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/6]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  6 failed | 1 passed (7)
+   Start at  01:06:39
+   Duration  1.13s (transform 653ms, setup 0ms, import 815ms, tests 198ms, environment 0ms)
+

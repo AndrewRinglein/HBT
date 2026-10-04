@@ -294,6 +294,12 @@ const startingKitPowersGolden = JSON.parse(readFileSync(new URL('./fixtures/batt
 // real, the ruling working (state, RNG and result): exactly the four cases that field a Fire Imp — showcase.kiln,
 // showcase.prologue-enemies, test.opening-bridge and test.props-viewer-ranged-zoc. A `changed` case is checked here and skips the older layers.
 const fireImpBurnGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-fire-imp-burn.json', import.meta.url), 'utf8'))
+// content.imp-blast-tuned (2026-10-04; DECISIONS.md 2026-10-03 'the Imp: Precision down by 1; its Blast burns half the time'),
+// Law 10: the Imp's Precision is 3 (was 4) and Imp Blast's on-hit Burn 2 takes a 50% chance (was certain). Every case frozen here
+// (tools/capture-imp-blast-tuned-cursor.mts). Moved for real, the ruling working (state, RNG and result): exactly the six cases
+// that field an Imp — showcase.alpha-team, showcase.kiln, showcase.prologue-enemies, test.caravan-aftermath, test.opening-bridge
+// and test.opening-gates. A `changed` case is checked here and skips the older layers.
+const impBlastTunedGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-imp-blast-tuned.json', import.meta.url), 'utf8'))
 const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
 // Explicit rule migration, not regenerated historical hashes. These nine old
 // cases contain Surge ledger/refresh changes or terminal markers corrected
@@ -415,7 +421,10 @@ describe('resumable battle cursor', () => {
       const afflictionsAtZeroRuleExpected = afflictionsAtZeroRuleGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const startingKitPowersExpected = startingKitPowersGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const fireImpBurnExpected = fireImpBurnGolden.cases.find((row:{id:string})=>row.id===fixture.id)
-      const fireImpBurnMoved = fireImpBurnExpected?.changed === true
+      const impBlastTunedExpected = impBlastTunedGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+      const impBlastTunedMoved = impBlastTunedExpected?.changed === true
+      // was: const fireImpBurnMoved = fireImpBurnExpected?.changed === true — an imp-blast-tuned-moved case skips the fire-imp-burn layer too (content.imp-blast-tuned 2026-10-04)
+      const fireImpBurnMoved = fireImpBurnExpected?.changed === true || impBlastTunedMoved
       // was: const startingKitPowersMoved = startingKitPowersExpected?.changed === true — a fire-imp-burn-moved case skips the starting-kit-powers layer too (fix.fire-imp-burn-spares-self 2026-10-04)
       const startingKitPowersMoved = startingKitPowersExpected?.changed === true || fireImpBurnMoved
       // was: const afflictionsAtZeroRuleMoved = afflictionsAtZeroRuleExpected?.changed === true — a starting-kit-powers-moved case skips the afflictions-at-zero-rule layer too (fix.starting-kit-powers 2026-10-04)
@@ -513,7 +522,14 @@ describe('resumable battle cursor', () => {
             battle.completeActionCycle(ctx)
           }
         } else result = battle.runBattle(ctx)
-        if (fireImpBurnExpected) {
+        if (impBlastTunedExpected) {
+        expect(hash(ctx.events), 'full imp-blast-tuned events').toBe(impBlastTunedExpected.events)
+        expect(hash(ctx.state), 'full imp-blast-tuned state').toBe(impBlastTunedExpected.state)
+        expect(hash(ctx.rng.log), 'full imp-blast-tuned RNG').toBe(impBlastTunedExpected.rng)
+        expect(result).toEqual(impBlastTunedExpected.result)
+        }
+        // was: if (fireImpBurnExpected) { — content.imp-blast-tuned (2026-10-04): an imp-blast-tuned-moved case is checked above instead
+        if (fireImpBurnExpected && !impBlastTunedMoved) {
         expect(hash(ctx.events), 'full fire-imp-burn events').toBe(fireImpBurnExpected.events)
         expect(hash(ctx.state), 'full fire-imp-burn state').toBe(fireImpBurnExpected.state)
         expect(hash(ctx.rng.log), 'full fire-imp-burn RNG').toBe(fireImpBurnExpected.rng)

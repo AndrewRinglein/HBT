@@ -24278,3 +24278,92 @@ index 854c9d0..3392f6d 100644
  
 ```
 </details>
+
+## content.imp-blast-tuned — LANDED `0487e30` **NEEDS REVIEW**
+2026-10-04 08:35
+
+  PASS  dependencies landed
+  WARN  not already decided — 4 candidate ruling(s) — READ BEFORE ASKING: SWITCHES.md:1957 · COMBAT-SEQUENCE.md:381
+  PASS  typecheck
+  PASS  the item's own tests — test/battle-cursor.test.ts, test/opening-bridge.test.ts, test/imp-blast-tuned.test.ts
+  PASS  gate 1 — the id appears in a real battle — unit.imp: 74 log lines, 74 fired, 43 changed state
+  PASS  brought its own tests — test/battle-cursor.test.ts, test/opening-bridge.test.ts, test/fixtures/battle-cursor-imp-blast-tuned.json, test/imp-blast-tuned.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/battle-cursor.test.ts (-2), test/opening-bridge.test.ts (-1) — will land FLAGGED for review
+  PASS  control battles unchanged
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — shape 'numbers' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without unit.imp — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/battle-cursor.test.ts b/test/battle-cursor.test.ts
+index e0a609e..4f4cc4b 100644
+--- a/test/battle-cursor.test.ts
++++ b/test/battle-cursor.test.ts
+@@ -295,4 +295,10 @@ const startingKitPowersGolden = JSON.parse(readFileSync(new URL('./fixtures/batt
+ // showcase.prologue-enemies, test.opening-bridge and test.props-viewer-ranged-zoc. A `changed` case is checked here and skips the older layers.
+ const fireImpBurnGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-fire-imp-burn.json', import.meta.url), 'utf8'))
++// content.imp-blast-tuned (2026-10-04; DECISIONS.md 2026-10-03 'the Imp: Precision down by 1; its Blast burns half the time'),
++// Law 10: the Imp's Precision is 3 (was 4) and Imp Blast's on-hit Burn 2 takes a 50% chance (was certain). Every case frozen here
++// (tools/capture-imp-blast-tuned-cursor.mts). Moved for real, the ruling working (state, RNG and result): exactly the six cases
++// that field an Imp — showcase.alpha-team, showcase.kiln, showcase.prologue-enemies, test.caravan-aftermath, test.opening-bridge
++// and test.opening-gates. A `changed` case is checked here and skips the older layers.
++const impBlastTunedGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-imp-blast-tuned.json', import.meta.url), 'utf8'))
+ const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
+ // Explicit rule migration, not regenerated historical hashes. These nine old
+@@ -416,5 +422,8 @@ describe('resumable battle cursor', () => {
+       const startingKitPowersExpected = startingKitPowersGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+       const fireImpBurnExpected = fireImpBurnGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+-      const fireImpBurnMoved = fireImpBurnExpected?.changed === true
++      const impBlastTunedExpected = impBlastTunedGolden.cases.find((row:{id:string})=>row.id===fixture.id)
++      const impBlastTunedMoved = impBlastTunedExpected?.changed === true
++      // was: const fireImpBurnMoved = fireImpBurnExpected?.changed === true — an imp-blast-tuned-moved case skips the fire-imp-burn layer too (content.imp-blast-tuned 2026-10-04)
++      const fireImpBurnMoved = fireImpBurnExpected?.changed === true || impBlastTunedMoved
+       // was: const startingKitPowersMoved = startingKitPowersExpected?.changed === true — a fire-imp-burn-moved case skips the starting-kit-powers layer too (fix.fire-imp-burn-spares-self 2026-10-04)
+       const startingKitPowersMoved = startingKitPowersExpected?.changed === true || fireImpBurnMoved
+@@ -514,5 +523,12 @@ describe('resumable battle cursor', () => {
+           }
+         } else result = battle.runBattle(ctx)
+-        if (fireImpBurnExpected) {
++        if (impBlastTunedExpected) {
++        expect(hash(ctx.events), 'full imp-blast-tuned events').toBe(impBlastTunedExpected.events)
++        expect(hash(ctx.state), 'full imp-blast-tuned state').toBe(impBlastTunedExpected.state)
++        expect(hash(ctx.rng.log), 'full imp-blast-tuned RNG').toBe(impBlastTunedExpected.rng)
++        expect(result).toEqual(impBlastTunedExpected.result)
++        }
++        // was: if (fireImpBurnExpected) { — content.imp-blast-tuned (2026-10-04): an imp-blast-tuned-moved case is checked above instead
++        if (fireImpBurnExpected && !impBlastTunedMoved) {
+         expect(hash(ctx.events), 'full fire-imp-burn events').toBe(fireImpBurnExpected.events)
+         expect(hash(ctx.state), 'full fire-imp-burn state').toBe(fireImpBurnExpected.state)
+diff --git a/test/opening-bridge.test.ts b/test/opening-bridge.test.ts
+index bde7689..a7e5530 100644
+--- a/test/opening-bridge.test.ts
++++ b/test/opening-bridge.test.ts
+@@ -61,5 +61,18 @@ describe('encounter.opening.bridge', () => {
+     }
+   })
+-  it('is won when the last enemy dies', () => {
++  // SKIPPED BY NAME, content.imp-blast-tuned (2026-10-04), not deleted and not rewritten. Ruled 2026-10-04 (Andrew,
++  // DECISIONS.md 'no testing that the battles can be won until these items are done; the page tests play an overpowered
++  // party; faster landing'): "I'm okay forgoing all testing battle until we're done with all these items." — "A test that
++  // exists only to show a battle is winnable by the computer's play is skipped until then, by name, with this entry cited."
++  // This one needs a replicate the drafted party wins by the computer's play: replicate 4 was the one win of replicates
++  // 0-99, and with the Imp's Precision 3 and its Blast's 50% Burn (DECISIONS.md 2026-10-03 'the Imp: Precision down by 1;
++  // its Blast burns half the time') replicate 4 is a wipe. No seed was searched for. The rule itself — a battle with no
++  // `win` of its own ends heroClear when the last enemy is down — is the engine's victory check, tested on its own
++  // (test/encounter-runner.test.ts, test/encounter-commands.test.ts), and this encounter carrying no `win` is the first
++  // test above. The ruling is on engine master's DECISIONS.md (its last entry on 2026-10-04) and reaches this file's
++  // repository with the next merge.
++  // Un-skip when the queued items are done and a winning replicate is recorded again.
++  // was: it('is won when the last enemy dies', () => {
++  it.skip('is won when the last enemy dies', () => {
+     const ctx = openingBattle(S, WIN)
+     expect(ctx.state.outcome).toBe('heroClear')
+```
+</details>
