@@ -29,8 +29,10 @@ import { revertTree } from './revert-tree.mjs'
 import { codeStamp } from '../../engine/tools/code-stamp.mjs'
 import { changedPaths, commitOnly } from '../../engine/tools/commit-only.mjs'
 import { readFileSync, writeFileSync, appendFileSync, existsSync, readdirSync, statSync, copyFileSync, rmSync } from 'node:fs'
-import { join } from 'node:path'
+import { join, resolve } from 'node:path'
 import { tmpdir } from 'node:os'
+import { stampOf, allStamps, PACKAGES } from '../../engine/tools/code-stamp.mjs'
+import { readPasses, hasPass, appendPass, logCheck, copyName, PASSES_FILE } from '../../engine/tools/suites.mjs'
 import { filesMentioningId } from './source-mentions.mjs'
 
 // ── the suite in four parts (Andrew, 2026-09-23, engine/DECISIONS.md "less
@@ -43,6 +45,18 @@ import { filesMentioningId } from './source-mentions.mjs'
 // A landing's "full test suite" check passes only when all four passed on the
 // exact tree it is gating — edit one file and every shard must run again. The
 // P-tier probes are test files, so the shards are also "nothing regresses".
+//
+// TESTS FOLLOW WHAT CHANGED (Andrew, 2026-10-04, engine/DECISIONS.md 'the same for content and
+// kingdom changes: each kind of change runs its own tests'; engine/tools/code-stamp.mjs,
+// engine/tools/suites.mjs). The shards are recorded against KINGDOM'S CODE — src/ without the
+// generated items, test/, tools/, the fixture, package and compiler config — not the whole tree: a
+// regenerated file, a rebuilt page, a document or .state/ makes no pass stale, and kingdom code does.
+// A complete set appends one line to .state/passes.jsonl (the record a merge keeps, and combine and
+// wrap read); a record with a tree and no stamp, as written before this day, is no pass. A landing
+// whose shards ran on the same code but another tree prints SKIPPED with the reason, never PASS.
+// What it costs, as ruled: this suite imports the engine and plays the viewer's page, and its pass
+// is keyed on kingdom's code alone — an engine or viewer change that breaks a kingdom test is found
+// at the once-per-chat full run (combine --full), not here.
 const SHARDS = 4
 const SHARDS_FILE = '.state/shards.json'
 function treeHash() {
@@ -57,18 +71,27 @@ function treeHash() {
   } finally { try { rmSync(idx, { force: true }) } catch {} }
 }
 function readShards() { try { return JSON.parse(readFileSync(SHARDS_FILE, 'utf8')) } catch { return null } }
-function shardsTodo(tree) {
+/** kingdom's code as it stands (the one definition: engine/tools/code-stamp.mjs PACKAGE_CODE.kingdom) */
+const codeNow = () => stampOf('kingdom', process.cwd())
+/** the shard record for this code, or null — another code's, or an older tool's (a tree and no stamp) */
+function shardsOn(code) {
   const s = readShards()
-  const passed = s && s.tree === tree && s.total === SHARDS ? s.passed : []
+  return s && /^[0-9a-f]{10}$/.test(code) && s.stamp === code && s.total === SHARDS ? s : null
+}
+function shardsTodo(code) {
+  const passed = shardsOn(code)?.passed ?? []
   return Array.from({ length: SHARDS }, (_, i) => i + 1).filter((x) => !passed.includes(x))
 }
+const when = (p) => `${String(p.at).slice(0, 16).replace('T', ' ')}${p.by ? ', ' + p.by : ''}${p.in ? ', in ' + p.in : ''}`
 
 if (process.argv.includes('--shards-green')) {
-  const tree = treeHash(), todo = shardsTodo(tree)
-  console.log(todo.length
-    ? `${SHARDS - todo.length} of ${SHARDS} shards passed on tree ${tree.slice(0, 10)} — run ${todo.map((x) => `node tools/gate.mjs --shard ${x}/${SHARDS}`).join(' · ')}`
-    : `${SHARDS} of ${SHARDS} shards passed on tree ${tree.slice(0, 10)}`)
-  process.exit(todo.length ? 1 : 0)
+  const code = codeNow(), todo = shardsTodo(code)
+  // a suite pass on this code recorded elsewhere — another copy's run, the merge-back — counts too
+  const pass = todo.length ? hasPass(readPasses('.'), 'kingdom', code) : null
+  console.log(!todo.length ? `${SHARDS} of ${SHARDS} shards passed on kingdom code ${code}`
+    : pass ? `kingdom's suite passed on kingdom code ${code} (${when(pass)}) — recorded in ${PASSES_FILE}`
+      : `${SHARDS - todo.length} of ${SHARDS} shards passed on kingdom code ${code} — run ${todo.map((x) => `node tools/gate.mjs --shard ${x}/${SHARDS}`).join(' · ')}`)
+  process.exit(todo.length && !pass ? 1 : 0)
 }
 
 const shardArg = process.argv.indexOf('--shard')
@@ -79,23 +102,33 @@ if (shardArg !== -1) {
     console.error(`usage: node tools/gate.mjs --shard <k>/${SHARDS}   (k = 1..${SHARDS})`)
     process.exit(2)
   }
-  const tree = treeHash()
-  let s = readShards()
-  if (!s || s.tree !== tree || s.total !== SHARDS) s = { tree, total: SHARDS, passed: [] }
+  // recorded against kingdom's code as it stood when the shard started, with the other packages' code beside it
+  const before = allStamps(resolve(process.cwd(), '..')), code = codeNow()
+  const withKey = PACKAGES.map((p) => before[p]).join('.')
   let ok = true, out = ''
   try { out = execSync(`node ../engine/node_modules/vitest/vitest.mjs run --shard=${k}/${SHARDS} --reporter=dot`, { encoding: 'utf8', stdio: 'pipe', env: { ...process.env, NO_COLOR: '1' } }) }
   catch (e) { ok = false; out = (e.stdout ?? '') + (e.stderr ?? '') }
   const count = out.replace(/\x1b\[[0-9;]*m/g, '').match(/Tests\s+(?:(\d+) failed \| )?(\d+) passed/)
+  const moved = codeNow() !== code   // kingdom's code changed while the shard ran: nothing is recorded for it
+  const s = shardsOn(code) ?? { stamp: code, total: SHARDS, passed: [], withs: {} }
+  s.tree = treeHash()
   s.passed = s.passed.filter((x) => x !== k)
-  if (ok) s.passed.push(k)
+  if (ok && !moved) s.passed.push(k)
   s.passed.sort((a, b) => a - b)
+  s.withs = { ...(s.withs ?? {}), [k]: withKey }
   s.at = new Date().toISOString()
   writeFileSync(SHARDS_FILE, JSON.stringify(s, null, 1) + '\n')
-  const todo = shardsTodo(tree)
+  const todo = shardsTodo(code)
+  if (!todo.length) {
+    // the whole suite passed on this code: one line in .state/passes.jsonl. `with` names the other
+    // packages' code only when all four shards ran beside the same code (the full run reads it).
+    const together = s.passed.every((x) => s.withs[x] === withKey) && PACKAGES.every((p) => /^[0-9a-f]{10}$/.test(before[p]))
+    appendPass('.', { suite: 'kingdom', stamp: code, with: together ? before : null, at: s.at, by: `gate --shard (${SHARDS} of ${SHARDS})`, in: copyName(resolve(process.cwd(), '..')) })
+  }
   const failed = ok ? '' : ' — ' + out.replace(/\x1b\[[0-9;]*m/g, '').split('\n').filter((l) => /FAIL|AssertionError|Error:/.test(l)).slice(0, 6).join(' | ')
-  console.log(`shard ${k}/${SHARDS}: ${ok ? 'PASS' : 'FAIL'}${count ? ` — ${count[1] ? count[1] + ' failed, ' : ''}${count[2]} passed` : ''}${failed}`)
-  console.log(`tree ${tree.slice(0, 10)}: ${SHARDS - todo.length} of ${SHARDS} shards passed` +
-    (todo.length ? ` — still to run: ${todo.map((x) => `--shard ${x}/${SHARDS}`).join(', ')}` : ' — the suite is green on this tree'))
+  console.log(`shard ${k}/${SHARDS}: ${ok ? 'PASS' : 'FAIL'}${count ? ` — ${count[1] ? count[1] + ' failed, ' : ''}${count[2]} passed` : ''}${failed}${ok && moved ? " — NOT RECORDED: kingdom's code changed while it ran" : ''}`)
+  console.log(`kingdom code ${code}: ${SHARDS - todo.length} of ${SHARDS} shards passed` +
+    (todo.length ? ` — still to run: ${todo.map((x) => `--shard ${x}/${SHARDS}`).join(', ')}` : ' — the suite is green on this code'))
   process.exit(ok ? 0 : 1)
 }
 
@@ -121,12 +154,14 @@ const checks = []
 let ok = true
 let needsReview = false
 let exemptions = 0
+/* a check may answer { skipped: true, note } — its suite was not run because its code did not change
+   (2026-10-04). It blocks nothing, and it is printed and logged SKIPPED, never PASS (Law 9). */
 const check = (name, fn) => {
   const r = fn()
   checks.push({ name, ...r })
-  if (!r.skipPrint) console.log(`  ${r.ok ? 'PASS' : 'FAIL'}  ${name}${r.note ? '  — ' + r.note : ''}`)
-  if (!r.ok) ok = false
-  return r.ok
+  if (!r.skipPrint) console.log(`  ${r.skipped ? 'SKIPPED' : r.ok ? 'PASS' : 'FAIL'}  ${name}${r.note ? '  — ' + r.note : ''}`)
+  if (!r.ok && !r.skipped) ok = false
+  return !!r.ok || !!r.skipped
 }
 /** A flag, not a gate: lands, but loudly, and withholds the seal. */
 const flag = (name, fn) => {
@@ -150,7 +185,7 @@ function logRun(disposition, extra = {}) {
       at: new Date().toISOString(), id, mode: MODE, disposition,
       attempt: (item.attempts ?? 0) + (disposition === 'failed-checks' ? 0 : 1),
       engine: engineSha(),
-      checks: checks.map((c) => ({ name: c.name, ok: !!c.ok, warn: !!c.warn, note: c.note || undefined })),
+      checks: checks.map(logCheck),   // the engine's one shape: a SKIPPED check is logged skipped: true, ok: false
       ...extra,
     }) + '\n')
   } catch { /* best-effort; the verdict never depends on it */ }
@@ -209,10 +244,20 @@ check('typecheck', () => {
 })
 
 // The suite is not run here: it ran as the four shards (above), and this reads
-// whether all four passed on this exact tree (2026-09-23).
-check('full test suite — four shards green on this tree', () => {
-  const tree = treeHash(), todo = shardsTodo(tree)
-  return { ok: todo.length === 0, note: todo.length ? `run ${todo.map((x) => `node tools/gate.mjs --shard ${x}/${SHARDS}`).join(' · ')}` : `${SHARDS} of ${SHARDS} on tree ${tree.slice(0, 10)}` }
+// whether all four passed (2026-09-23) — since 2026-10-04, on kingdom's CODE. PASS only when
+// they ran on this exact tree; when they ran on the same code but the tree has since changed in
+// a regenerated file, a built page or a document — or the pass is another copy's — the suite is
+// not run again and the check says SKIPPED, with why.
+check('full test suite — four shards green on this code', () => {
+  const code = codeNow(), todo = shardsTodo(code)
+  if (!todo.length) {
+    const s = shardsOn(code), tree = treeHash()
+    if (s.tree === tree) return { ok: true, note: `${SHARDS} of ${SHARDS} on tree ${tree.slice(0, 10)} (kingdom code ${code})` }
+    return { skipped: true, note: `kingdom code ${code} is unchanged since the four shards passed (${String(s.at).slice(0, 16).replace('T', ' ')}); only generated files, built pages, documents or .state/ differ on this tree — not run again` }
+  }
+  const pass = hasPass(readPasses('.'), 'kingdom', code)
+  if (pass) return { skipped: true, note: `kingdom's suite passed on kingdom code ${code} (${when(pass)}) — not run again` }
+  return { ok: false, note: `kingdom code ${code}: run ${todo.map((x) => `node tools/gate.mjs --shard ${x}/${SHARDS}`).join(' · ')}` }
 })
 
 // ── gate 1: every criterion this item claims holds ──────────────────────────
@@ -360,7 +405,7 @@ check('one door to the engine', () => {
 })
 
 // ── verdict ─────────────────────────────────────────────────────────────────
-const body = checks.map((c) => `  ${c.ok ? 'PASS' : c.warn ? 'WARN' : 'FAIL'}  ${c.name}${c.note ? ' — ' + c.note : ''}`).join('\n')
+const body = checks.map((c) => `  ${c.skipped ? 'SKIPPED' : c.ok ? 'PASS' : c.warn ? 'WARN' : 'FAIL'}  ${c.name}${c.note ? ' — ' + c.note : ''}`).join('\n')
 
 if (MODE === 'abandon') {
   // Cowork-safe revert (2026-09-24, engine DECISIONS.md "abandon works in Cowork"):
@@ -369,7 +414,7 @@ if (MODE === 'abandon') {
   console.log(`reverted ${rv.restored.length} file(s) to HEAD${rv.parked.length ? `; parked ${rv.parked.length} file(s) HEAD does not have in ${rv.parkedAt}` : ''}`)
   item.status = 'failed'
   item.failedAt = stamp
-  item.reason = checks.filter((c) => !c.ok).map((c) => `${c.name}: ${c.note}`).join(' | ')
+  item.reason = checks.filter((c) => !c.ok && !c.skipped).map((c) => `${c.name}: ${c.note}`).join(' | ')
   writeFileSync(BACKLOG, JSON.stringify(backlog, null, 1))
   appendFileSync(LEDGER, `\n## ${id} — ABANDONED\n${stamp}\n\n${body}\n`)
   logRun('abandoned', { reason: item.reason })
@@ -444,7 +489,8 @@ logRun('landed', { sha, seal: gauntletPassed ? 'passed' : gauntletNotes.join('; 
 // and every sha written down is one you can check out.
 // the gate's records, and what the closing step changed since the landing (slice-gate syncs a criteria document)
 const closed = changedPaths().filter((p) => !before.has(p) && !p.startsWith('.state/'))
-commitOnly([BACKLOG, LEDGER, RUNLOG, '.state/isc.json', ...closed], { message: `bookkeeping for ${id} (${sha})`, author: KINGDOM })
+// …and the record of what passed on this code (.state/passes.jsonl), so the merge-back does not run the suite again
+commitOnly([BACKLOG, LEDGER, RUNLOG, '.state/isc.json', PASSES_FILE, ...closed], { message: `bookkeeping for ${id} (${sha})`, author: KINGDOM })
 console.log(gauntletPassed
   ? `\n⛓  IRON GAUNTLET: PASSED — every check, no flags, no exemptions.`
   : `\n⛓  IRON GAUNTLET: NOT PASSED — ${gauntletNotes.join('; ')}. The landing stands; the seal is withheld.`)
