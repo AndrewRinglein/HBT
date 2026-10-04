@@ -90,7 +90,13 @@ describe('kingdom.tutorial-orphanage-enemy-turn — attacks in reach, the enemy\
   it('none of them in another battle, outside a run, or once shown', () => {
     const other = lessonStage(); other.lessons.open('encounter.opening.lumberjack'); other.battle.acting = 0; other.battle.attackInReach = 'attack.x'
     other.lessons.played({ type: 'phase.begin', phase: 'enemy' }); other.lessons.happened('enemy-clicked'); other.lessons.played({ type: 'turn.end' }); other.lessons.still()
-    expect(other.calls).toEqual([])
+    // Law 10, 2026-10-04 (kingdom.tutorial-bars-and-stamina; engine DECISIONS.md 2026-10-04 'the opening's tutorial: …'): was
+    //   expect(other.calls).toEqual([])
+    // — nothing at all was drawn in another battle, true while every row of the table was the Orphanage's. The table now holds
+    // rows for battle 2 and for whichever battle a thing first happens in, so what this test holds is said of ITS four rows:
+    // none of them is shown in another battle.
+    expect([...other.seen].filter((id) => [ATTACK, NUMBERS, PANEL, PHASES].includes(id))).toEqual([])
+    expect(other.told.map((t) => t.words[0])).not.toContain('An enemy is in range.')
     const free = lessonStage(); free.lessons.open(ORPHANAGE, false); free.lessons.played({ type: 'phase.begin', phase: 'enemy' }); free.lessons.still(); expect(free.calls).toEqual([]); expect(free.lessons.waiting()).toBe(false)
     const again = lessonStage(new Set(LESSONS.map((r) => r.id))); again.lessons.open(ORPHANAGE); again.battle.acting = 0; again.battle.attackInReach = 'attack.x'
     again.lessons.played({ type: 'phase.begin', phase: 'enemy' }); again.lessons.happened('enemy-clicked'); again.lessons.played({ type: 'turn.end' }); again.lessons.still()

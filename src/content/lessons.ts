@@ -36,14 +36,19 @@ export type LessonTarget =
   | 'attack-slot'
   /** the two numbers under the first enemy: its movement, and the damage of its first attack */
   | 'enemy-move-number' | 'enemy-attack-number'
-  /** the right-hand panel · the End Turn button */
-  | 'panel' | 'end-turn'
+  /** the right-hand panel · the End Turn button · the stamina strip beside the action bar */
+  | 'panel' | 'end-turn' | 'stamina'
+  /** the unit the line of the log that started the row is about (the unit struck, the unit that went down): itself, its two
+      bars under it, its card in the top bar */
+  | 'struck' | 'struck-health' | 'struck-protection' | 'struck-card'
+  /** the enemy that would strike the acting unit on the path it has planned */
+  | 'provoker'
 
 /** What starts a row: the battle put on the screen (before anyone acts) · a unit's Activation begun · its move chosen on the bar ·
     an enemy in reach of one of the acting unit's attacks · a line of the battle's log just played (`event`) · the player
     clicked an enemy · a unit's Activation ended because its primary action resolved · some of the player's units have acted
-    this Hero Phase and some have not. */
-export type LessonStart = 'battle-begins' | 'activation-begins' | 'move-chosen' | 'attack-in-reach' | 'event' | 'enemy-clicked' | 'primary-ended' | 'some-acted'
+    this Hero Phase and some have not · the path the acting unit has planned would draw a free attack. */
+export type LessonStart = 'battle-begins' | 'activation-begins' | 'move-chosen' | 'attack-in-reach' | 'event' | 'enemy-clicked' | 'primary-ended' | 'some-acted' | 'path-provokes'
 /** What ends a row: its notice's time · its look, held · the acting unit's move chosen on the bar · the acting unit moved · the
     acting unit used its primary action. */
 export type LessonEnd = 'time' | 'look' | 'move-chosen' | 'moved' | 'attacked'
@@ -53,6 +58,8 @@ export interface LessonPointer { readonly at: LessonTarget; readonly word?: stri
 export interface LessonRow {
   /** `lesson.<battle>.<step>` — its reveal is `reveal.<id>` */
   readonly id: string
+  /** the lesson this row is one telling of: rows that share it share one memory — shown once between them (its reveal is `reveal.<once>`) */
+  readonly once?: string
   /** the battle it is taught in: the encounter's id; absent — whichever battle of the run it first happens in */
   readonly encounterId?: string
   readonly starts: LessonStart
@@ -60,7 +67,7 @@ export interface LessonRow {
   /** whose Activation a row that waits on one is for: a hero of the party, or one of the encounter's civilians */
   readonly of?: 'hero' | 'civilians'
   /** the line of the battle's log a row that `starts` on an event waits for: its type, and its phase when the row names one */
-  readonly event?: { readonly type: string; readonly phase?: string }
+  readonly event?: { readonly type: string; readonly phase?: string; readonly of?: 'player' }
   /** not before this Turn */
   readonly fromTurn?: number
   /** the gold notice across the board's centre, one to three lines; it lasts for a time and goes by itself */
@@ -73,11 +80,13 @@ export interface LessonRow {
   readonly waits?: true
   /** the battle's playback waits under the notice, for its time: nothing is played on while the words are up */
   readonly holds?: true
+  /** the walk it warns of does not go at once: the path stays shown and one more click confirms it */
+  readonly asks?: true
   /** the Activation this row begins with has NO move chosen: the press on the bar is a real act (kingdom SWITCHES lessonMoveNotArmed) */
   readonly unarmed?: true
 }
 
-const ORPHANAGE = 'encounter.opening.orphanage'
+const ORPHANAGE = 'encounter.opening.orphanage', LUMBERJACK = 'encounter.opening.lumberjack'
 
 export const LESSONS: readonly LessonRow[] = [
   // ── kingdom.tutorial-orphanage-first-move: battle 1's first lesson, steps 1 to 6 (7 is the end of 6: everything goes) ──
@@ -130,7 +139,24 @@ export const LESSONS: readonly LessonRow[] = [
   { id: 'lesson.orphanage.end-turn', encounterId: ORPHANAGE, starts: 'some-acted', ends: 'time', fromTurn: 2,
     words: ['When all of your units have acted, the Enemy Phase begins.', 'End Turn begins it now: units that have not acted lose their Activation.'],
     point: { at: 'end-turn' } },
+
+  // ── kingdom.tutorial-bars-and-stamina (2026-10-04; the same entry, the extra steps (b) and (e)): "What the Health and Protection bars
+  //    under a unit mean." — "B should happen as soon as damage is inflicted."; "Attacks cost Stamina." — "We need to explain E at
+  //    some point, but we don't want to front-load every single thing into the first couple of turns. I think we can do stamina
+  //    on turn 3 or turn 4." ──
+  // (b) the first time any unit takes damage, in whichever battle of the run that is
+  { id: 'lesson.bars', starts: 'event', event: { type: 'damage.applied' }, ends: 'time', holds: true,
+    words: ['Under each unit: its Health bar, and beneath it its Protection.', 'A blow takes from Protection first; what is left comes off Health.'],
+    look: 'struck', point: [{ at: 'struck-health' }, { at: 'struck-protection' }] },
+  // (e) on Turn 3 of the Orphanage as the hero's Activation begins — or, battle 1 won before Turn 3, on the first hero Activation of battle 2
+  { id: 'lesson.orphanage.stamina', once: 'lesson.stamina', encounterId: ORPHANAGE, starts: 'activation-begins', ends: 'time', of: 'hero', fromTurn: 3,
+    words: ['Attacks and powers cost Stamina — the strip beside the action bar.', 'What an action costs is shown on its slot.', 'Stamina comes back at the end of each Hero Phase.'], point: { at: 'stamina' } },
+  { id: 'lesson.lumberjack.stamina', once: 'lesson.stamina', encounterId: LUMBERJACK, starts: 'activation-begins', ends: 'time', of: 'hero',
+    words: ['Attacks and powers cost Stamina — the strip beside the action bar.', 'What an action costs is shown on its slot.', 'Stamina comes back at the end of each Hero Phase.'], point: { at: 'stamina' } },
+
 ]
 
 /** The reveal that says a lesson's row has been shown in this run. */
 export const lessonRevealOf = (id: string): string => 'reveal.' + id
+/** What a row's showing is remembered under: its own id, or the lesson it shares with other rows. */
+export const lessonKeyOf = (row: LessonRow): string => row.once ?? row.id

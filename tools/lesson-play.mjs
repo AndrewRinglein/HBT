@@ -45,5 +45,15 @@ export function board(P){
  /** the first lesson done as a player does it: the opening rows clicked past, the basic move pressed, the hex pointed at walked to */
  const firstMove=()=>{pastOpening();until(()=>h.lesson==='lesson.orphanage.two-actions','the two-actions row');press(basicMove(hero()))
   const at=ptrs().map(p=>p.target.match(/^hex:(\d+)$/)).find(Boolean);assert.ok(at,'the move row points at a hex');walkTo(+at[1]);return +at[1]}
- return {P,h,w,v,V,ctx,O,lines,ptrs,flush,until,stage,hexBtn,figure,drawn,barRow,party,units,heroes,hero,civilians,enemies,actor,settle,pastOpening,press,walkTo,endActivation,endTurn,basicMove,firstMove}
+ /** the lessons' rows now up */
+ const up=()=>h.lessons
+ /** the battle played as a player in no hurry plays it, until `done()` — looked at every 20 ms of the page's clock — or the battle
+     ends: each Activation the board waits on is given to `act` (true: it did something that plays), else ended. Nothing is
+     sought: the battle is the page's own, on its own seed. */
+ const playUntil=(done,act=()=>false,ms=600000)=>{for(let t=0;t<ms;t+=20){if(done())return true
+   if(ctx().state.outcome&&!h.busy)return done()   /* the battle over and its last lines played */
+   if(!h.busy&&ctx().battleCursor?.at==='acting'&&!h.lesson?.startsWith?.('lesson.orphanage.protect')){if(!act(actor())){V().dom.root.querySelector('#playEndAct').handlers.click({})}}
+   w._flush(20)}
+  return done()}
+ return {up,playUntil,P,h,w,v,V,ctx,O,lines,ptrs,flush,until,stage,hexBtn,figure,drawn,barRow,party,units,heroes,hero,civilians,enemies,actor,settle,pastOpening,press,walkTo,endActivation,endTurn,basicMove,firstMove}
 }

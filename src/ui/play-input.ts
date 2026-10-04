@@ -77,7 +77,8 @@ const asc=(a:Iterable<number>)=>[...new Set(a)].sort((x,y)=>x-y)
 
 /** viewer.turn-taking: the host's undo for an Activation that did nothing — save() before a hero is begun, restore(saved) puts
     the battle (and the board) back as it was then. Without it a begun hero cannot be switched away from. */
-export type PlayUndo={save():unknown;restore(saved:unknown):boolean}
+/** (kingdom.tutorial-free-attack-and-downed: holdWalk — the host may hold, once, a walk that would draw a free attack) */
+export type PlayUndo={save():unknown;restore(saved:unknown):boolean;holdWalk?:()=>boolean}
 export function createPlayInput(session:()=>Sandbox|null,run:(command:BattleCommand)=>CommandResult,undo:PlayUndo|null=null){
  let chosen:string|null=null,ghost:Ghost|null=null,aim:{hex:number;locked:boolean}|null=null,point:number|null=null,note:string|null=null
  let owner:string|null=null
@@ -468,7 +469,11 @@ export function createPlayInput(session:()=>Sandbox|null,run:(command:BattleComm
      note=r.ok?null:said(s,r.reason,actor,null,mv.actionId)}
     return false}
    const g={actionId:c.command.actionId,slot:c.command.slot??'movement',destination:hex} as Ghost
-   if(ghost&&ghost.destination===hex&&ghost.actionId===g.actionId){const r=run(moveCommand(s,actor,g));note=r.ok?null:said(s,r.reason,actor,null,g.actionId);done();return true}
+   if(ghost&&ghost.destination===hex&&ghost.actionId===g.actionId){
+    /* kingdom.tutorial-free-attack-and-downed: a walk the engine forecasts a free attack on may be held this once by the host
+       (its lesson is telling the player so): the path stays shown, and the next click on it walks */
+    {const fc=forecastOf(s,actor,g);if(fc.ok&&fc.provokes.length&&undo?.holdWalk?.()){note=null;return true}}
+    const r=run(moveCommand(s,actor,g));note=r.ok?null:said(s,r.reason,actor,null,g.actionId);done();return true}
    ghost=g;note=null;return true}
   if(chosen===null){
    /* nothing armed and no move left: the engine's reason a walk there is refused (its movement is spent) */
@@ -502,10 +507,14 @@ export function createPlayInput(session:()=>Sandbox|null,run:(command:BattleComm
   return null}
  /** kingdom.tutorial-orphanage-civilians-and-ending: this Hero Phase, how many of the player's standing units have acted and how
      many have yet to (the engine's heroesYetToAct, and the one acting now) */
+ /** kingdom.tutorial-free-attack-and-downed: the enemy that would strike the acting unit on the path it has planned — the first
+     provoke on the engine's forecast of that walk — or null */
+ function provoker():number|null{const s=session();if(!s||!ghost)return null;const a=actorOf(s);if(a===null)return null
+  const fc=forecastOf(s,a,ghost);return fc.ok&&fc.provokes.length?fc.provokes[0]!.from:null}
  function acted():{done:number;left:number}{const s=session();if(!s||s.ctx.state.outcome)return {done:0,left:0}
   const left=heroesYetToAct(s.ctx,s.policy).length+(actorOf(s)!==null?1:0)
   const mine=s.ctx.state.units.filter(u=>u.side==='hero'&&u.lifeState==='standing'&&controllerOf(s.ctx,u.id,s.policy)==='human').length
   return {done:Math.max(0,mine-left),left}}
- return {facts,ending,input,next,rest,upcoming,fresh,basicMove,attackInReach,acted,get shown(){return shown as readonly Shown[]},get point(){return point}}
+ return {facts,ending,input,next,rest,upcoming,fresh,basicMove,attackInReach,acted,provoker,get shown(){return shown as readonly Shown[]},get point(){return point}}
 }
 export type PlayInput=ReturnType<typeof createPlayInput>

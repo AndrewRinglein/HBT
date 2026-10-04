@@ -14,9 +14,9 @@
 // What starts a row is one of a few plain moments, each the host's to report: the battle put on the screen; a unit's
 // Activation begun; something true of the board when it is still (a move chosen, an enemy in reach, some units acted);
 // something the player did (`happened`); a line of the battle's log just played (`played`). Later lessons are rows.
-import type { LessonRow, LessonTarget, LessonPointer } from '../content/lessons.js'
+import { lessonKeyOf, type LessonRow, type LessonTarget, type LessonPointer } from '../content/lessons.js'
 
-type Aim = { unit: number; part?: string } | { hex: number } | { action: string } | { ui: string }
+type Aim = { unit: number; part?: string } | { hex: number } | { action: string } | { ui: string } | { card: number }
 /** The battle screen's lesson calls (viewer src/overlays.js, on the mounted viewer). */
 export type LessonViewer = {
   tell(words: string[], o?: { hold?: boolean; onDone?: (why: string) => void }): unknown
@@ -51,12 +51,16 @@ export type LessonHost = {
   attackInReach(): string | null
   /** this Hero Phase: how many of the player's units have acted, how many have yet to */
   acted(): { done: number; left: number }
+  /** the enemy that would strike the acting unit on the path it has planned (the engine's forecast of the walk), or null */
+  provoker(): number | null
+  /** is this unit the player's — a hero of the party or one of the encounter's civilians */
+  isPlayers(unit: number): boolean
   seen(rowId: string): boolean
   mark(rowId: string): void
   /** the runner let something go: look again (begin the Activation it held, draw the facts) */
   wake(): void
 }
-type Up = { row: LessonRow; pointers: { clear(): unknown }[]; token: number; actor: number | null; from: number | null; gone: boolean; telling: boolean }
+type Up = { row: LessonRow; pointers: { clear(): unknown }[]; token: number; actor: number | null; from: number | null; gone: boolean; telling: boolean; asked: boolean }
 
 export function createLessons(rows: readonly LessonRow[], host: LessonHost) {
   let battle: string | null = null, open = false
@@ -67,21 +71,24 @@ export function createLessons(rows: readonly LessonRow[], host: LessonHost) {
   /** what the player did, waiting for a still board to be answered */
   const did = new Set<string>()
 
-  const mine = (r: LessonRow) => open && (r.encounterId === undefined || r.encounterId === battle) && !host.seen(r.id)
+  const mine = (r: LessonRow) => open && (r.encounterId === undefined || r.encounterId === battle) && !host.seen(lessonKeyOf(r))
   const pending = (starts: LessonRow['starts']) => rows.filter((r) => r.starts === starts && mine(r))
   const fits = (row: LessonRow, actor: number | null) => row.of === undefined || (actor !== null && host.units(row.of).includes(actor))
   const due = (row: LessonRow) => row.fromTurn === undefined || host.turn() >= row.fromTurn
   const pointersOf = (row: LessonRow): readonly LessonPointer[] => row.point === undefined ? [] : Array.isArray(row.point) ? row.point : [row.point as LessonPointer]
 
   /** what a row's target is on the board now, for the viewer's calls; none when the battle holds no such thing */
-  function targets(at: LessonTarget, actor: number | null): Aim[] {
+  function targets(at: LessonTarget, actor: number | null, struck: number | null = null): Aim[] {
+    if (at === 'struck' || at === 'struck-health' || at === 'struck-protection') return struck === null ? [] : [at === 'struck' ? { unit: struck } : { unit: struck, part: at === 'struck-health' ? 'health' : 'protection' }]
+    if (at === 'struck-card') return struck === null ? [] : [{ card: struck }]
+    if (at === 'provoker') { const unit = host.provoker(); return unit === null ? [] : [{ unit }] }
     if (at === 'civilians') return host.units('civilians').map((unit) => ({ unit }))
     if (at === 'enemy' || at === 'hero') return host.units(at).slice(0, 1).map((unit) => ({ unit }))
     if (at === 'enemy-move-number' || at === 'enemy-attack-number') return host.units('enemy').slice(0, 1).map((unit) => ({ unit, part: at === 'enemy-move-number' ? 'move' : 'attack' }))
     if (at === 'acting') return actor === null ? [] : [{ unit: actor }]
     if (at === 'basic-move') { const action = host.basicMove(); return action === null ? [] : [{ action }] }
     if (at === 'attack-slot') { const action = host.attackInReach(); return action === null ? [] : [{ action }] }
-    if (at === 'panel' || at === 'end-turn') return [{ ui: at }]
+    if (at === 'panel' || at === 'end-turn' || at === 'stamina') return [{ ui: at }]
     /* 'reach-toward-civilians': of the hexes the blue grid draws, the one with the least distance to the civilians (the sum over
        them), then to the nearest enemy, then the lowest hex — the engine's reach and the engine's distance, never a typed hex */
     const civilians = host.units('civilians').map(host.hexOf), enemies = host.units('enemy').map(host.hexOf)
@@ -91,23 +98,23 @@ export function createLessons(rows: readonly LessonRow[], host: LessonHost) {
     return best === undefined ? [] : [{ hex: best }]
   }
 
-  function show(row: LessonRow, actor: number | null): void {
+  function show(row: LessonRow, actor: number | null, struck: number | null = null): void {
     const v = host.viewer(); if (!v) return
-    host.mark(row.id)
+    host.mark(lessonKeyOf(row))
     const my = ++token, pointers: { clear(): unknown }[] = []
-    const u: Up = { row, pointers, token: my, actor, from: actor === null ? null : host.hexOf(actor), gone: false, telling: false }
+    const u: Up = { row, pointers, token: my, actor, from: actor === null ? null : host.hexOf(actor), gone: false, telling: false, asked: false }
     ups.push(u)
     const live = () => ups.includes(u)
     const done = () => { if (live()) finish(u) }
     /* the board may drop what the row waits on — a seek (the host's Show current state), a fault: the row is then over the
        next time the board is still, never in the middle of the board's own work (it may be going away) */
     const gone = () => { if (live()) u.gone = true }
-    for (const p of pointersOf(row)) for (const [i, t] of targets(p.at, actor).entries()) pointers.push(v.point(t, i === 0 && p.word ? { word: p.word } : {}))
+    for (const p of pointersOf(row)) for (const [i, t] of targets(p.at, actor, struck).entries()) pointers.push(v.point(t, i === 0 && p.word ? { word: p.word } : {}))
     /* a notice ends by its time, by a click on it, when the next notice takes its place or when it is cleared; one notice stands
        at a time, so the row knows whether the words on the screen are still its own */
     if (row.words) { u.telling = true
       v.tell([...row.words], { ...(row.holds ? { hold: true } : {}), onDone: (why) => { u.telling = false; if (row.ends !== 'time') return; if (why === 'time' || why === 'click' || why === 'replaced' || why === 'cleared') done(); else if (why === 'dropped') gone() } }) }
-    const seen = row.look ? targets(row.look, actor)[0] : undefined
+    const seen = row.look ? targets(row.look, actor, struck)[0] : undefined
     if (seen && 'unit' in seen) v.look({ unit: seen.unit }, { back: false, onDone: (why) => { if (row.ends !== 'look') return; if (why === 'held') done(); else if (why === 'dropped' || why === 'cancelled') gone() } })
     else if (row.ends === 'look') done()
   }
@@ -128,6 +135,7 @@ export function createLessons(rows: readonly LessonRow[], host: LessonHost) {
     if (u.gone) return true
     if (u.row.ends === 'time' || u.row.ends === 'look') return false
     if (u.actor !== null && host.acting() !== u.actor) return true
+    if (u.row.starts === 'path-provokes' && host.provoker() === null) return true   // the path was taken back, or walked
     if (u.row.ends === 'move-chosen') return host.reach().length > 0 || host.moved()
     if (u.row.ends === 'moved') return host.moved() || (u.actor !== null && host.hexOf(u.actor) !== u.from)
     if (u.row.ends === 'attacked') return host.attacked()
@@ -146,6 +154,7 @@ export function createLessons(rows: readonly LessonRow[], host: LessonHost) {
       if (row.starts === 'activation-begins') { if (actor !== null && host.fresh()) return { row, actor } }
       else if (row.starts === 'move-chosen') { if (actor !== null && host.reach().length > 0 && !host.moved()) return { row, actor } }
       else if (row.starts === 'attack-in-reach') { if (actor !== null && !host.attacked() && host.attackInReach() !== null) return { row, actor } }
+      else if (row.starts === 'path-provokes') { if (actor !== null && host.provoker() !== null) return { row, actor } }
       else if (row.starts === 'some-acted') { const a = host.acted(); if (a.done > 0 && a.left > 0) return { row, actor: null } }
       else if (row.starts !== 'battle-begins' && row.starts !== 'event' && did.has(row.starts)) { did.delete(row.starts); return { row, actor: null } }
     }
@@ -164,11 +173,15 @@ export function createLessons(rows: readonly LessonRow[], host: LessonHost) {
     /** the player did something a row may start on (the host's word for it: a row's `starts`) */
     happened(what: string): void { if (rows.some((r) => r.starts === what && mine(r))) did.add(what) },
     /** a line of the battle's log has just been played on the board: a row that starts on it goes up now, and may hold the playback */
-    played(e: { type: string; phase?: string | undefined; side?: string | undefined } | null): void {
+    played(e: { type: string; phase?: string | undefined; target?: number | null | undefined } | null): void {
       if (!e || !host.viewer()) return
-      const row = pending('event').find((r) => r.event !== undefined && r.event.type === e.type && (r.event.phase === undefined || r.event.phase === e.phase) && due(r))
-      if (row) show(row, null)
+      const struck = typeof e.target === 'number' ? e.target : null
+      const row = pending('event').find((r) => r.event !== undefined && r.event.type === e.type && (r.event.phase === undefined || r.event.phase === e.phase)
+        && (r.event.of === undefined || (struck !== null && host.isPlayers(struck))) && due(r))
+      if (row) show(row, null, struck)
     },
+    /** the player confirmed a walk a row warns of: true — it is held this once (the path stays shown; the next click walks) */
+    holdsBack(): boolean { const u = ups.find((x) => x.row.asks === true && !x.asked); if (!u) return false; u.asked = true; return true },
     /** the host calls it whenever the board is still: rows that are up may be over; the next row may begin */
     still(): void {
       if (!open || !host.viewer()) return

@@ -53,7 +53,7 @@ function stage(seen = new Set<string>()) {
     distance: (a: number, b: number) => Math.abs(a % 20 - b % 20) + Math.abs(Math.floor(a / 20) - Math.floor(b / 20)),
     acting: () => battle.acting, fresh: () => battle.fresh, moved: () => battle.moved,
     basicMove: () => battle.acting === null ? null : 'move.walk',
-    turn: () => 1, attacked: () => false, attackInReach: () => null, acted: () => ({ done: 0, left: 0 }),
+    turn: () => 1, attacked: () => false, attackInReach: () => null, acted: () => ({ done: 0, left: 0 }), provoker: () => null, isPlayers: () => true,
     reach: () => battle.reach,
     seen: (id: string) => seen.has(id), mark: (id: string) => { seen.add(id) },
     wake: () => { wakes++; lessons.still() },

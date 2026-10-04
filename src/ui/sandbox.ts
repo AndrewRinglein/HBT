@@ -53,6 +53,8 @@ const LOOK:string[]|null=(()=>{const p=typeof location!=='undefined'&&location.s
 // cut back to it (viewer rewind). The engine has no command to take a begun Activation back (kingdom SWITCHES turnSwitchUndo).
 const play=createPlayInput(()=>session,runPlay,{
  save:()=>session?{text:saveSandbox(session),events:session.ctx.events.length}:null,
+ /* kingdom.tutorial-free-attack-and-downed: a walk that would draw a free attack is held once while its lesson is up */
+ holdWalk:()=>lessons.holdsBack(),
  restore:(saved)=>{const m=saved as {text:string;events:number}|null;if(!m||!session||!surface?.viewer||busy||fault)return false
   const back=restoreSandbox(m.text) as Sandbox,atlas=session.atlasScene
   if(back.ctx.events.length!==m.events)throw Error('The restored battle does not hold the events saved with it')
@@ -87,6 +89,8 @@ const lessons=createLessons(LESSONS,{
  attacked:()=>{const a=session?play.facts().actor:null;return a!==null&&session!.ctx.state.units[a]!.primaryUsed},
  attackInReach:()=>play.attackInReach(),
  acted:()=>play.acted(),
+ provoker:()=>play.provoker(),
+ isPlayers:id=>session?.ctx.state.units[id]?.side==='hero',
  reach:()=>session&&!session.ctx.state.outcome?play.facts().reach:[],
  seen:id=>!sitting||sitting.ctx.campaign.revealed.includes(lessonRevealOf(id)),
  mark:id=>{const c=sitting?.ctx;if(!c)return;const r=lessonRevealOf(id);if(canReveal(c.campaign,r)){performReveal(c,r,sitCause);persist()}},
@@ -425,7 +429,7 @@ function install(next:Sandbox){
   onNewEnemy:(typeId:string)=>{if(epoch===generation&&session&&isCampaignBattle(session))meet(typeId)},
   /* kingdom.tutorial-orphanage-enemy-turn: each line of the battle's log as the board plays it (never a seek's) — a lesson's row
      that starts on a line goes up then, and its notice holds the playback for its time */
-  onCursor:(_cursor:number,e:{type:string;phase?:string}|null)=>{if(epoch===generation&&busy&&!seeking&&!fault)lessons.played(e)},onHexClick:(hex:number)=>{
+  onCursor:(_cursor:number,e:{type:string;phase?:string;target?:number|null}|null)=>{if(epoch===generation&&busy&&!seeking&&!fault)lessons.played(e)},onHexClick:(hex:number)=>{
   if(epoch!==generation||!session||busy||fault||session.ctx.state.outcome||session.ctx.battleCursor?.at!=='acting')return false
   const actor=session.ctx.battleCursor.actor
   if(actor==null||controllerOf(session.ctx,actor,session.policy)!=='human')return false
@@ -517,4 +521,4 @@ bind(q('transfer'));bind(q('battleNav'));setup();controls()
    if(straightIn())openStraight(()=>beginSection(nextSection(mapOrder,taken)!))
    else{drawMap();controls()}}}}
 // A read-only integration handle for the built-page smoke; commands still use UI listeners.
-Object.defineProperty(window,'__sandbox',{value:{get session(){return session},get busy(){return busy},get fault(){return fault},get viewer(){return surface?.viewer},get generation(){return generation},get campaign(){return sitting?structuredClone(sitting.ctx.campaign):null},get lesson(){return lessons.up}}})
+Object.defineProperty(window,'__sandbox',{value:{get session(){return session},get busy(){return busy},get fault(){return fault},get viewer(){return surface?.viewer},get generation(){return generation},get campaign(){return sitting?structuredClone(sitting.ctx.campaign):null},get lesson(){return lessons.up},get lessons(){return lessons.all}}})
