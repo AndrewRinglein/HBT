@@ -18,7 +18,7 @@
 //
 //   node tools/opening-loop-three.verify.mjs [BATTLE-SANDBOX.html]
 import assert from 'node:assert/strict'
-import {openingPage,TAKERS} from './opening-page.mjs'
+import {openingPage,TAKERS,SPECIALTY_CHOICES} from './opening-page.mjs'
 const page=process.argv[2]??'BATTLE-SANDBOX.html'
 const ORPHANAGE='encounter.opening.orphanage',LUMBERJACK='encounter.opening.lumberjack',BRIDGE='encounter.opening.bridge',CAVERN='encounter.opening.cavern-trail'
 const SWORD='item.longsword.flaming'
@@ -55,6 +55,11 @@ assert.equal(camp().roster[first].xp,20,'the Orphanage pays its 20 XP')
 assert.equal(camp().cursor.step,'levelUp','battle 1 offers no item: straight to the level-ups')
 levelUps('battle 1')
 assert.equal(camp().roster[first].level,2,'the first hero is level 2');assert.ok(camp().roster[first].specialty,'with a specialty')
+/* kingdom.opening-specialty-three (2026-10-03: "you're supposed to only get a choice of three different specialty classes,
+   not nine."): the first hero was offered exactly three specialties of its own class and took one (opening-page.mjs
+   threeOffered, at the level-up) */
+assert.deepEqual(SPECIALTY_CHOICES.map(x=>x.id),[first],'the first hero chose its specialty');assert.equal(SPECIALTY_CHOICES[0].offered.length,3,'from three')
+assert.equal(camp().roster[first].specialty,SPECIALTY_CHOICES[0].took,'and has the one it took')
 const saved1=b1.result.units.filter(u=>u.side==='hero'&&u.role==='encounter'&&u.lifeState!=='dead').map(u=>u.typeId).sort()
 assert.deepEqual(civilianIds(),saved1,'the Orphanage\'s civilians who lived join the roster; the dead do not')
 assert.equal(readMap([ORPHANAGE],'after battle 1'),LUMBERJACK)
@@ -156,5 +161,6 @@ levelUps('battle 3')
 assert.equal(readMap([ORPHANAGE,LUMBERJACK,BRIDGE],'after battle 3'),CAVERN,'three sections taken')
 assert.deepEqual(camp().unavailable,[],'nobody fatigued');assert.deepEqual(camp().foughtThisWeek,[],'nobody marked fought')
 assert.equal(camp().ended,null)
+for(const x of SPECIALTY_CHOICES){assert.equal(x.offered.length,3,x.label+': three offered');assert.ok(x.offered.includes(x.took),x.label+': one of the three is taken')}
 console.error('settled by: '+JSON.stringify(chosen))
-console.log(`opening loop three: map -> draft (one before every battle: a party of ${[1,party2.length,party3.length].join(', ')}; no class twice) -> equip -> battle -> reckoning, rewards, level-ups -> map, three times; the Orphanage's 20 XP and level 2 with a specialty; battle 2 lost and offered again with the same party, wounds kept; the Flaming Longsword ${givers.length?'to '+givers[0]:'to nobody (no Warrior or Paladin in the party of two)'}; the Bridge's three, ${kept} kept; civilians rescued ${civilianIds().join(', ')||'none'}; three sections taken passed`)
+console.log(`opening loop three: map -> draft (one before every battle: a party of ${[1,party2.length,party3.length].join(', ')}; no class twice) -> equip -> battle -> reckoning, rewards, level-ups -> map, three times; the Orphanage's 20 XP and level 2 with a specialty; three specialties offered at every specialty choice (${SPECIALTY_CHOICES.length} choices); battle 2 lost and offered again with the same party, wounds kept; the Flaming Longsword ${givers.length?'to '+givers[0]:'to nobody (no Warrior or Paladin in the party of two)'}; the Bridge's three, ${kept} kept; civilians rescued ${civilianIds().join(', ')||'none'}; three sections taken passed`)

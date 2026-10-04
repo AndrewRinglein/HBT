@@ -15,9 +15,9 @@
 
 import type { CampaignState, HeroId } from './campaign.js'
 import { type Ctx, setRewardOffer, applyTakeReward, applyEquip, applyLevel, applySpecialty, setCursor } from './mutate.js'
-import { levelRowOf, specialtiesOf, specialtyOf, type SpecialtyRow, type LevelRow } from '../content/progress.js'
+import { levelRowOf, specialtiesOf, specialtyOf, SPECIALTY_OFFER, type SpecialtyRow, type LevelRow } from '../content/progress.js'
 import { SWITCHES } from '../content/switches.js'
-import { rollOf } from './rng.js'
+import { rollOf, drawOf } from './rng.js'
 import { REWARDS, REWARD_ODDS, slotOf, type RewardRow } from '../content/rewards.js'
 import { encounterRewardOf } from '../content/encounter-rewards.js'
 import { whyNotFit } from './loadout.js'
@@ -147,6 +147,20 @@ export const levelTableOfHero = (campaign: CampaignState, heroId: HeroId): { tab
   return { table: levelTableOf(def), classId: classOf(def) }
 }
 
+/**
+ * kingdom.opening-specialty-three — the specialties a hero's specialty choice offers. Ruled 2026-10-03 (Andrew,
+ * engine/DECISIONS.md 'card art on the level-up and reward screens; the specialty choice offers three, not nine': "you're
+ * supposed to only get a choice of three different specialty classes, not nine."; '… the specialty three are random; …':
+ * "It's random: 3 of the 9."): a plain draw without repeats of the content's count (SPECIALTY_OFFER) from the specialties
+ * of the hero's class (content's nine), on the run's own named stream — cup.reward, keyed by what the roll is: this hero's
+ * specialty offer. Nothing is stored for it: the three are DERIVED from the Campaign, so a run saved on the choice and
+ * reopened shows the same three, and two heroes of one class are drawn apart (their keys differ). Pure.
+ * kingdom SWITCHES.md specialtyThreeDraw, specialtyThreeCup.
+ */
+export function specialtyOfferOf(campaign: CampaignState, heroId: HeroId): SpecialtyRow[] {
+  return drawOf(campaign, CUP_IDS.reward, ['specialty', heroId], specialtiesOf(levelTableOfHero(campaign, heroId).classId), SPECIALTY_OFFER)
+}
+
 /** What the next level does (screens.after-battle, G12): the row's grants, the specialty offer at the codex's level, the level-5 pick. Pure. */
 export type LevelUpView = {
   heroId: HeroId
@@ -155,6 +169,7 @@ export type LevelUpView = {
   row: LevelRow
   /** The specialty is chosen here — the first level-up (codex levels.rules) — and only if none is held. */
   needsSpecialty: boolean
+  /** The specialties offered — specialtyOfferOf: three of the class's, the run's own draw for this hero (until 2026-10-04, all nine). */
   specialtyOffers: SpecialtyRow[]
   /** The row carries a choice: one of these, by index. */
   pickOptions: readonly Readonly<Record<string, number>>[] | null
@@ -163,12 +178,12 @@ export type LevelUpView = {
 export function viewLevelUp(campaign: CampaignState, heroId: HeroId): LevelUpView {
   const h = campaign.roster[heroId]
   if (!h) throw new Error(`no hero '${heroId}'`)
-  const { table, classId } = levelTableOfHero(campaign, heroId)
+  const { table } = levelTableOfHero(campaign, heroId)
   const row = levelRowOf(table, h.level + 1)
   const needsSpecialty = row.specialty && !h.specialty
   return {
     heroId, from: h.level, to: h.level + 1, row,
-    needsSpecialty, specialtyOffers: needsSpecialty ? specialtiesOf(classId) : [],
+    needsSpecialty, specialtyOffers: needsSpecialty ? specialtyOfferOf(campaign, heroId) : [],
     pickOptions: row.choice ?? null,
     specialty: h.specialty ? specialtyOf(h.specialty) : null,
   }
@@ -186,7 +201,11 @@ export function whyNotLevelUp(campaign: CampaignState, heroId: HeroId, choice: L
   if (v.needsSpecialty) {
     // the offer is made once; a level taken without a name DECLINES it unless the switch says it must be answered
     if (!choice.specialtyId && SWITCHES.levelUpSpecialtyRequired) return `reaching level ${v.to} chooses a specialty — name one of ${v.specialtyOffers.map((s) => s.id).join(', ')}`
-    if (choice.specialtyId && !v.specialtyOffers.some((s) => s.id === choice.specialtyId)) return `'${choice.specialtyId}' is not a ${levelTableOfHero(campaign, heroId).classId} specialty`
+    if (choice.specialtyId && !v.specialtyOffers.some((s) => s.id === choice.specialtyId)) {
+      const classId = levelTableOfHero(campaign, heroId).classId
+      if (!specialtiesOf(classId).some((s) => s.id === choice.specialtyId)) return `'${choice.specialtyId}' is not a ${classId} specialty`
+      return `'${choice.specialtyId}' is not one of the ${v.specialtyOffers.length} offered to ${campaign.roster[heroId]!.name} — ${v.specialtyOffers.map((s) => s.id).join(', ')}`
+    }
   } else if (choice.specialtyId) return `the specialty is chosen once, at the first level-up — ${campaign.roster[heroId]!.name} already ${campaign.roster[heroId]!.specialty ? 'holds ' + campaign.roster[heroId]!.specialty : 'passed it'}`
   if (v.pickOptions) {
     if (choice.pick === undefined) return `level ${v.to} picks one of ${v.pickOptions.length} — name its index`

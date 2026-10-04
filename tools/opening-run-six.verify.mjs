@@ -23,7 +23,7 @@
 //
 //   node tools/opening-run-six.verify.mjs [BATTLE-SANDBOX.html]
 import assert from 'node:assert/strict'
-import {openingPage,TAKERS,POOL,LEFT_OUT,HERO_CLASSES,FIRST_HERO,POSITIVE_BADGES,ART_SEEN,HEROES_MISSING} from './opening-page.mjs'
+import {openingPage,TAKERS,POOL,LEFT_OUT,HERO_CLASSES,FIRST_HERO,POSITIVE_BADGES,ART_SEEN,HEROES_MISSING,SPECIALTY_CHOICES} from './opening-page.mjs'
 const page=process.argv[2]??'BATTLE-SANDBOX.html'
 const ORDER=['orphanage','lumberjack','bridge','cavern-trail','gates','cathedral'].map(x=>'encounter.opening.'+x)
 const [ORPHANAGE,LUMBERJACK,BRIDGE,CAVERN,GATES,CATHEDRAL]=ORDER
@@ -183,7 +183,8 @@ function stayedHome(f,label,paid){
 }
 /* the battle on the board settled, then its reckoning, its reward kept (a named-class item to its first taker) and the
    level-ups, back to the map — the run still in the opening */
-function settle(won,label){
+const REOPENED_ON_CHOICE=[]
+function settle(won,label,reopenOnSpecialty=false){
  const id=camp().cursor.engagement.id
  const {e,result,played,seed}=P.fightOut(won,label)
  chosen[won?id:id+':lost']=[played,seed,result.turns]
@@ -204,12 +205,24 @@ function settle(won,label){
   if(givers.length){P.v.click('give',givers[0]);P.wait(100)}
   assert.ok(offer.includes(kept),label+': a reward offered is kept')
  }
+ /* kingdom.opening-specialty-three: the first time a specialty is owed (the first hero, after the Orphanage) the page is
+    closed on the choice — the sheet open, three offered — and opened again in the same browser: the run stands on the
+    same step, and the hero's sheet offers the same three (P.levelUps then holds them once more and takes one) */
+ if(reopenOnSpecialty&&!REOPENED_ON_CHOICE.length){
+  const before=P.specialtyOffer(label),step=camp().cursor.step
+  P=openingPage(page,'?map',browser)
+  assert.equal(camp().cursor.step,step,label+': reopened on the specialty choice, the run stands on the same step')
+  const after=P.specialtyOffer(label+', reopened')
+  assert.deepEqual(after,before,label+': reopened, the same hero is offered the same three specialties')
+  REOPENED_ON_CHOICE.push(before)
+  P=openingPage(page,'?map',browser)
+ }
  if(camp().cursor.step==='levelUp'||camp().cursor.step==='rewards')P.levelUps(label)
  assert.equal(camp().cursor.step,'open',label+': back to the map')
  assert.equal(camp().week,0,label+': no Week begun — the run never reaches the kingdom');assert.equal(camp().ended,null,label+': the run goes on')
  return {result,kept}
 }
-function battle(id,n,label=`battle ${n}`){const f=field(id,n,label),done=settle(true,label);stayedHome(f,label,true);return {...f,...done}}
+function battle(id,n,label=`battle ${n}`){const f=field(id,n,label),done=settle(true,label,n===1);stayedHome(f,label,true);return {...f,...done}}
 
 /* 1 · a new run: nothing fielded, nobody drafted, the Orphanage next; the run is kept from the first screen */
 assert.equal(P.readMap([],'a new run'),ORPHANAGE)
@@ -419,6 +432,19 @@ for(const [screen,n] of Object.entries(ART_SEEN)){
 assert.ok(ART_SEEN.whoGoes>=5*WENT.length,'every card of the Who-goes page, each time the run asked')
 const artless=P.heroIds().filter(id=>HEROES_MISSING.includes(id))
 
+/* 5e · kingdom.opening-specialty-three (engine DECISIONS.md 2026-10-03 'card art on the level-up and reward screens; the
+   specialty choice offers three, not nine': "you're supposed to only get a choice of three different specialty classes,
+   not nine." · '… the specialty three are random; …': "It's random: 3 of the 9."): every specialty choice of the run
+   offered exactly three different specialties of the hero's own class — the run's own draw for that hero — with no way
+   past it, and the hero took one of them (each asserted at its level-up, tools/opening-page.mjs threeOffered); the first
+   of them was closed on and reopened to the same three (settle). Every hero who reached level 2 chose once. */
+assert.ok(SPECIALTY_CHOICES.length>=1,'the run reached a specialty choice')
+assert.equal(REOPENED_ON_CHOICE.length,1,'the page was closed on a specialty choice and opened again')
+assert.deepEqual(SPECIALTY_CHOICES[0].offered,REOPENED_ON_CHOICE[0].offered,'the three taken from are the three shown before the page was closed');assert.equal(SPECIALTY_CHOICES[0].id,REOPENED_ON_CHOICE[0].id)
+for(const x of SPECIALTY_CHOICES){assert.equal(x.offered.length,3,x.label+': three offered');assert.ok(x.offered.includes(x.took),x.label+': one of the three is taken')}
+assert.equal(new Set(SPECIALTY_CHOICES.map(x=>x.id)).size,SPECIALTY_CHOICES.length,'a hero chooses its specialty once')
+assert.deepEqual(SPECIALTY_CHOICES.map(x=>x.id).sort(),P.heroIds().concat(P.civilianIds()).filter(id=>camp().roster[id].level>=2).sort(),'everybody at level 2 or more chose a specialty from three')
+
 /* 6 · the end: every section taken, the run complete — and never the kingdom map */
 assert.equal(P.readMap(ORDER,'the end'),null,'every section is taken')
 assert.match(P.byId('runNote').textContent,/the opening run is complete/,'the map says the run is complete')
@@ -429,4 +455,4 @@ const party=P.heroIds()
 console.error('settled by: '+JSON.stringify(chosen))
 console.error('offers: '+OFFERS.map(o=>`${o.label}: ${o.ids.map(id=>POOL.find(h=>h.id===id).name).join(' / ')} -> ${POOL.find(h=>h.id===o.took).name}`).join('; '))
 console.error('drafted with: '+OFFERS.map(o=>`${POOL.find(h=>h.id===o.took).name}: ${[...o.drafted.badges.map(b=>b.replace('badge.','')),...o.drafted.mods.map(m=>(m.add>0?'+':'')+m.add+' '+m.stat),...o.drafted.unfielded.map(r=>(r.amount>0?'+':'')+r.amount+' '+r.stat+(r.stat==='itemSlots'?' (on the hero, its item slots)':' (not fielded)'))].join(', ')}`).join('; '))
-console.log(`opening run six: six battles from the map, never the kingdom map (Week ${camp().week}); one draft before every battle (${CADENCE.map(x=>x.drafts).join(', ')}): a party of ${CADENCE.map(x=>x.party).join(', ')} at battles 1 to 6; six drafts of three, no class twice, Rogues and Mages offered; the first hero chosen by description only and given Leadership, a positive badge and +2 Health; every later draft shown with its rolled modifiers, kept in every battle and to the end of the run, the same after the page is closed and reopened; the party six, one of each class (${party.map(id=>camp().roster[id].classes.find(c=>HERO_CLASSES.includes(c)).replace('class.','')).join(', ')}); four deploy — with five or more free to fight the run asked who goes (${WENT.map(w=>`${w.label}: home ${w.home.map(h=>camp().roster[h].name).join(', ')}`).join('; ')}), the four chosen on Equip and on the board, whoever stayed home unharmed and unpaid, the choice kept when the page is closed on it, and asked again for a lost battle; base heroes left out for no kit: ${LEFT_OUT.map(h=>h.name).join(', ')||'none'}; card art on every hero card (${Object.entries(ART_SEEN).map(([k,n])=>`${k} ${n}`).join(', ')}; heroes with no art on disk, shown blank: ${artless.map(id=>camp().roster[id].name).join(', ')||'none'}); party ${party.map(id=>`${camp().roster[id].name} L${camp().roster[id].level}${camp().roster[id].lifeState==='alive'?'':' ('+camp().roster[id].lifeState+')'}`).join(', ')}; closed after battle 3 and reopened at battle 4 with the same party, items, XP and levels; battle 2 lost and offered again with the same party; a run left mid-battle (battle 4) reopens on that battle; the Bridge's ${b3.kept} kept passed`)
+console.log(`opening run six: six battles from the map, never the kingdom map (Week ${camp().week}); one draft before every battle (${CADENCE.map(x=>x.drafts).join(', ')}): a party of ${CADENCE.map(x=>x.party).join(', ')} at battles 1 to 6; six drafts of three, no class twice, Rogues and Mages offered; three specialties of its own class offered at every specialty choice (${SPECIALTY_CHOICES.length} choices), one taken each time; the page closed on the choice and opened again showed the same three; the first hero chosen by description only and given Leadership, a positive badge and +2 Health; every later draft shown with its rolled modifiers, kept in every battle and to the end of the run, the same after the page is closed and reopened; the party six, one of each class (${party.map(id=>camp().roster[id].classes.find(c=>HERO_CLASSES.includes(c)).replace('class.','')).join(', ')}); four deploy — with five or more free to fight the run asked who goes (${WENT.map(w=>`${w.label}: home ${w.home.map(h=>camp().roster[h].name).join(', ')}`).join('; ')}), the four chosen on Equip and on the board, whoever stayed home unharmed and unpaid, the choice kept when the page is closed on it, and asked again for a lost battle; base heroes left out for no kit: ${LEFT_OUT.map(h=>h.name).join(', ')||'none'}; card art on every hero card (${Object.entries(ART_SEEN).map(([k,n])=>`${k} ${n}`).join(', ')}; heroes with no art on disk, shown blank: ${artless.map(id=>camp().roster[id].name).join(', ')||'none'}); party ${party.map(id=>`${camp().roster[id].name} L${camp().roster[id].level}${camp().roster[id].lifeState==='alive'?'':' ('+camp().roster[id].lifeState+')'}`).join(', ')}; closed after battle 3 and reopened at battle 4 with the same party, items, XP and levels; battle 2 lost and offered again with the same party; a run left mid-battle (battle 4) reopens on that battle; the Bridge's ${b3.kept} kept passed`)

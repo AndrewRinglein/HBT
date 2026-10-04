@@ -13,7 +13,7 @@ import {bootSlice} from './atlas-dom.mjs'
 
 export const TAKERS=['class.warrior','class.paladin']
 const esbuild=createRequire(import.meta.url)('../../engine/node_modules/esbuild')
-const built=esbuild.buildSync({stdin:{contents:`export {createSandbox,saveSandbox,sandboxResult,advanceSandbox,sandboxActivationChoices,commandSandbox,playerPolicy} from './src/core/sandbox.ts';export {runBattle,createBattle,BADGES,draftScoreOf} from './src/engine.ts';export * as HEROES from './src/content/heroes.ts';export * as OPENING from './src/core/opening.ts';export * as SEAM from './src/core/seam.ts';export * as PREP from './src/core/prep.ts';export {WOUND_UNAVAILABLE} from './src/content/wounds.ts'`,resolveDir:process.cwd(),loader:'ts'},bundle:true,platform:'node',format:'esm',write:false,logLevel:'silent'})
+const built=esbuild.buildSync({stdin:{contents:`export {createSandbox,saveSandbox,sandboxResult,advanceSandbox,sandboxActivationChoices,commandSandbox,playerPolicy} from './src/core/sandbox.ts';export {runBattle,createBattle,BADGES,draftScoreOf} from './src/engine.ts';export * as HEROES from './src/content/heroes.ts';export * as OPENING from './src/core/opening.ts';export * as SEAM from './src/core/seam.ts';export * as PREP from './src/core/prep.ts';export * as REWARDS from './src/core/rewards.ts';export * as PROGRESS from './src/content/progress.ts';export {WOUND_UNAVAILABLE} from './src/content/wounds.ts'`,resolveDir:process.cwd(),loader:'ts'},bundle:true,platform:'node',format:'esm',write:false,logLevel:'silent'})
 const E=await import('data:text/javascript;base64,'+Buffer.from(built.outputFiles[0].text).toString('base64'))
 /* kingdom.opening-draft-pool: the sources' draft pool, and the base heroes left out of it for want of a kit — what the
    page's draft is held against */
@@ -39,6 +39,11 @@ export const HEROES_MISSING=[...(ART_INDEX.heroesMissing??[])]
 const portraitCache={}
 const portraitUri=id=>portraitCache[id]??=(f=>f?'data:image/jpeg;base64,'+readFileSync(new URL('../generated/art/'+f,import.meta.url)).toString('base64'):null)(ART_INDEX.heroes?.[id])
 export const ART_SEEN={draft:0,whoGoes:0,equip:0,victory:0,rewards:0,carrier:0,levelUp:0}
+/* kingdom.opening-specialty-three (engine DECISIONS.md 2026-10-03 'card art on the level-up and reward screens; the specialty
+   choice offers three, not nine': "you're supposed to only get a choice of three different specialty classes, not nine." ·
+   '… the specialty three are random; …': "It's random: 3 of the 9."): every specialty choice a run reached, as the page
+   showed it — the hero, the three offered and the one taken (levelUps). SPECIALTY_OFFER is the sources' row */
+export const SPECIALTY_CHOICES=[],SPECIALTY_OFFER=E.PROGRESS.SPECIALTY_OFFER
 /* what a draft should move each engine stat by: its rolled points (and the first hero's Health), and its badges' own rows */
 const movedBy=d=>{const out={};for(const m of d.mods)out[m.stat]=(out[m.stat]??0)+m.add;for(const b of d.badges)for(const [k,n] of Object.entries(E.BADGES[b].statModifiers??{}))out[k]=(out[k]??0)+n;return out}
 const numbersOf=text=>Object.fromEntries(text.split(',').map(p=>{const [k,n]=p.split(':');return [k,Number(n)]}))
@@ -81,8 +86,12 @@ const numbersOf=text=>Object.fromEntries(text.split(',').map(p=>{const [k,n]=p.s
    ("could not reach an enemy", "no target in range") — the battle ended 'capped' on Turn 25, not won. That is the
    computer's play, which nothing tests now (2026-10-04, above); the test party is made strong enough to end the battle
    whatever three heroes it is — with either mod alone seeds 3, 11 and 15 win, with both every run seed tried (1 to 16)
-   does. Still one battle, on the Engagement's own seed, nothing sought. */
-export const STRONG_PARTY={source:'test.strong-party',stats:{maxHp:500,armor:50,resist:50,strength:30,precision:30,magic:30,spirit:30,accuracy:100,movement:6,reach:12}}
+   does. Still one battle, on the Engagement's own seed, nothing sought.
+   2026-10-04, kingdom.opening-specialty-three: raised to Movement +20 and Reach +40 — the whole board. Three specialties
+   offered instead of nine moved the specialty this driver takes (the first shown), and with +6 and +12 the same three
+   heroes at the Bridge on run seed 3 again left one Imp unreached (capped, Turn 25). With +20 and +40 every run seed
+   tried (1 to 20) wins every battle. */
+export const STRONG_PARTY={source:'test.strong-party',stats:{maxHp:500,armor:50,resist:50,strength:30,precision:30,magic:30,spirit:30,accuracy:100,movement:20,reach:40}}
 export const HELD_PARTY={source:'test.strong-party',stats:{maxHp:500,armor:50,resist:50},turnCap:1}
 /* the sandbox the page fields for `config`, its party's heroes given `as`'s stat mods (and its turn cap) */
 function fieldedAs(config,as){
@@ -389,6 +398,30 @@ export function openingPage(page,search,store){
   return {e,result,played,seed}
  }
 
+ /* kingdom.opening-specialty-three: the specialty choice on the level-up sheet (#lu-specialty) — exactly three cards, three
+    different specialties, each of the hero's own class (one of the class's nine), and they are the three the sources' rule
+    draws for that hero on this run (core/rewards.ts specialtyOfferOf); no way to take the level without one; nothing can
+    be confirmed until one is chosen. Returns the three ids, in the order shown */
+ function threeOffered(over,id,label){
+  const cards=over.querySelectorAll('.choice-card'),ids=cards.map(c=>c.dataset.id)
+  assert.equal(ids.length,SPECIALTY_OFFER,`${label}: ${id} is offered exactly three specialties — ${ids.length} shown`);assert.equal(SPECIALTY_OFFER,3)
+  assert.equal(new Set(ids).size,3,`${label}: ${id}: three different specialties`)
+  const classId=E.REWARDS.levelTableOfHero(camp(),id).classId,nine=E.PROGRESS.specialtiesOf(classId).map(s=>s.id)
+  for(const s of ids)assert.ok(nine.includes(s),`${label}: ${id}: ${s} is a ${classId} specialty`)
+  assert.deepEqual(ids,E.REWARDS.specialtyOfferOf(camp(),id).map(s=>s.id),`${label}: ${id}: the three are the run's own draw for this hero`)
+  for(const c of cards)assert.ok(c.textContent.includes(E.PROGRESS.specialtyOf(c.dataset.id).name),`${label}: ${id}: ${c.dataset.id} is named`)
+  assert.equal(over.querySelectorAll('[data-act=lu-decline-specialty]').length,0,`${label}: ${id}: the choice cannot be skipped`)
+  assert.ok(byId('lu-specialty-confirm').disabled,`${label}: ${id}: nothing to confirm until one is chosen`)
+  return ids
+ }
+ /* the level-up sheet opened for the first hero who may level, up to its specialty choice: who, and the three offered.
+    The sheet is left open — the test closes the page on it (and opens it again: the same three) */
+ function specialtyOffer(label){
+  const b=byId('campaign').querySelectorAll('[data-act=level-hero]')[0];assert.ok(b,label+': a hero may level')
+  const id=b.dataset.id;v.click('level-hero',id);wait(1600)
+  const over=byId('lu-specialty');assert.ok(over,`${label}: ${id}'s level-up sheet asks for its specialty`)
+  return {id,offered:threeOffered(over,id,label)}
+ }
  /* every LEVEL UP the rewards page offers, through the level-up sheet; the specialty chosen where one is owed */
  function levelUps(label){
   for(let guard=0;guard<12;guard++){
@@ -401,12 +434,16 @@ export function openingPage(page,search,store){
    assert.equal(sheet.querySelectorAll('[data-act=lu-decline-specialty]').length,0,`${label}: no level without a specialty here — the engine fields no level-2 hero without one`)
    const over=byId('lu-specialty'),pick=byId('lu-pick')
    /* the specialty owed at the first level-up, then a level's pick, each chosen and confirmed; else the hero is clicked */
-   if(over){const card=over.querySelectorAll('.choice-card')[0];fire(over,'click',card);fire(byId('lu-specialty-confirm'),'click');wait(500)}
+   /* Law 10, 2026-10-04 (kingdom.opening-specialty-three): this took the first of the cards shown — the first of the class's
+      nine. The same click now takes one of the three offered (the first shown), after the three are held (threeOffered) */
+   let chose=null
+   if(over){const offered=threeOffered(over,id,label),card=over.querySelectorAll('.choice-card')[0];chose={label,id,offered,took:card.dataset.id};fire(over,'click',card);fire(byId('lu-specialty-confirm'),'click');wait(500)}
    if(pick){const card=pick.querySelectorAll('.choice-card')[0];fire(pick,'click',card);fire(byId('lu-pick-confirm'),'click')}
    if(!over&&!pick)fire(byId('lu-card'),'click')
    wait(4000)
    assert.equal(camp().roster[id].level,before+1,`${label}: ${id} levels`)
    if(over)assert.ok(camp().roster[id].specialty,`${label}: ${id} holds a specialty`)
+   if(chose){assert.equal(camp().roster[id].specialty,chose.took,`${label}: ${id} has the specialty it took — one of its three`);SPECIALTY_CHOICES.push(chose)}
    fire(byId('lu-continue'),'click');wait(300)
    assert.ok(byId('campaign').querySelector('.rewards'),`${label}: back on the rewards page`)
   }
@@ -431,5 +468,5 @@ export function openingPage(page,search,store){
   return buttons.map(b=>b.dataset.id)
  }
 
- return {get lastOffer(){return lastOffer},v,w,root,handle,store:v.store,camp,byId,shown,heroIds,civilianIds,settle,wait,readMap,draft,freeToFight,whoGoes,deployStands,send,bringHome,toEquip,equipThenFight,onTheBattle,fightOut,levelUps,takeReward,carriers}
+ return {get lastOffer(){return lastOffer},v,w,root,handle,store:v.store,camp,byId,shown,heroIds,civilianIds,settle,wait,readMap,draft,freeToFight,whoGoes,deployStands,send,bringHome,toEquip,equipThenFight,onTheBattle,fightOut,levelUps,specialtyOffer,takeReward,carriers}
 }

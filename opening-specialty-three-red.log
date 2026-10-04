@@ -1,0 +1,148 @@
+
+ RUN  v4.1.11 C:/Users/aring/Desktop/HBT-worker-kingdom/kingdom
+
+battle 1: sent Dwarven Brawler L1; at home nobody
+settled battle 1: the strong party, the engine's AI — heroClear on Turn 6, the Engagement's own seed 1
+battle 2: sent The Serpent L1, Dwarven Brawler L2; at home nobody
+settled battle 2 lost: the party held idle, cut at Turn 1 — capped on Turn 1, the Engagement's own seed 2
+settled battle 2 won: the strong party, the engine's AI — heroClear on Turn 2, the Engagement's own seed 2
+battle 3: sent Rune-Marked Ascetic L1, The Serpent L2, Dwarven Brawler L3; at home nobody
+settled battle 3: the strong party, the engine's AI — heroClear on Turn 6, the Engagement's own seed 3
+battle 4: sent Rune-Marked Ascetic L1, Forest Elf L1, The Serpent L3, Dwarven Brawler L3; at home nobody
+settled battle 4: the strong party, the engine's AI — heroClear on Turn 3, the Engagement's own seed 4
+battle 5: asked who goes — sent Rune-Marked Ascetic, Forest Elf, The Serpent, Dwarven Brawler; home Dawnblade
+battle 5: sent Rune-Marked Ascetic L2, Forest Elf L2, The Serpent L3, Dwarven Brawler L4; at home Dawnblade alive
+settled battle 5: the strong party, the engine's AI — heroClear on Turn 2, the Engagement's own seed 5
+battle 6: asked who goes — sent Crimson Sorceress; home Dawnblade, Rune-Marked Ascetic, Forest Elf, The Serpent, Dwarven Brawler
+battle 6: sent Crimson Sorceress L1; at home Dawnblade alive, Rune-Marked Ascetic alive, Forest Elf alive, The Serpent alive, Dwarven Brawler alive
+settled battle 6 lost: the party held idle, cut at Turn 1 — capped on Turn 1, the Engagement's own seed 6
+battle 6 again: asked who goes — sent Rune-Marked Ascetic, Forest Elf, The Serpent, Dwarven Brawler; home Crimson Sorceress, Dawnblade
+settled battle 6 won: the strong party, the engine's AI — heroClear on Turn 3, the Engagement's own seed 6
+settled by: {"encounter.opening.orphanage":["ai",1,6],"encounter.opening.lumberjack:lost":["idle",2,1],"encounter.opening.lumberjack":["ai",2,2],"encounter.opening.bridge":["ai",3,6],"encounter.opening.cavern-trail":["ai",4,3],"encounter.opening.gates":["ai",5,2],"encounter.opening.cathedral:lost":["idle",6,1],"encounter.opening.cathedral":["ai",6,3]}
+offers: battle 1, draft 1: Crimson Sorceress / Dwarven Brawler / Skullplate Veteran -> Dwarven Brawler; battle 2, draft 1: The Serpent / Hunter / The Raven -> The Serpent; battle 3, draft 1: Battle Chaplain / Rune-Marked Ascetic / Barefoot Mendicant -> Rune-Marked Ascetic; battle 4, draft 1: Forest Fey / Emberwright / Forest Elf -> Forest Elf; battle 5, draft 1: Dawnblade / Black Oath / Crimson Sorceress -> Dawnblade; battle 6, draft 1: Archive Scholar / Emberwright / Crimson Sorceress -> Crimson Sorceress
+drafted with: Dwarven Brawler: leadership, huge, +2 maxHp, +1 toughness (not fielded), +1 itemSlots (on the hero, its item slots); The Serpent: mystic, +5 accuracy, +2 crit; Rune-Marked Ascetic: spiritual, hardy; Forest Elf: dim-sighted, +1 precision, +1 resist; Dawnblade: warded, thick-skinned; Crimson Sorceress: winded, reckless, +2 luck, +1 strength, -2 maxHp
+ ❯ test/opening-specialty-three.test.ts (7 tests | 7 failed) 9149ms
+     × how many are offered is a content row (three); the nine are content's; the draw is core's, on a named stream — no Math.random, no clock 4ms
+     × a hero reaching level 2 is offered exactly three different specialties of its own class 2ms
+     × it must take one of the three, and has it afterwards; a specialty of its class that was not offered is refused 1ms
+     × the three are the run's own: the same when the run is saved and reopened, whatever else has happened — and nothing is stored for them 2ms
+     × it is random, three of the nine: over many runs every one of a class's nine is offered, and two heroes of one class on one run need not be offered the same three 1ms
+     × every Campaign's specialty choice follows it — the slice too: its heroes take a specialty from their three 417ms
+     × the pages: three offered at every specialty choice, one taken; the page closed on the choice and opened again shows the same three 8721ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 7 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/opening-specialty-three.test.ts > kingdom.opening-specialty-three — the specialty choice offers three of the class's nine > how many are offered is a content row (three); the nine are content's; the draw is core's, on a named stream — no Math.random, no clock
+AssertionError: expected undefined to be 3 // Object.is equality
+
+- Expected:
+3
+
++ Received:
+undefined
+
+ ❯ test/opening-specialty-three.test.ts:45:19
+     43| describe('kingdom.opening-specialty-three — the specialty choice offer…
+     44|   it('how many are offered is a content row (three); the nine are cont…
+     45|     expect(OFFER).toBe(3)
+       |                   ^
+     46|     for (const c of HERO_CLASSES) expect(specialtiesOf(c), `${c} has n…
+     47|     expect(typeof specialtyOfferOf, 'core/rewards.ts specialtyOfferOf'…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/7]⎯
+
+ FAIL  test/opening-specialty-three.test.ts > kingdom.opening-specialty-three — the specialty choice offers three of the class's nine > a hero reaching level 2 is offered exactly three different specialties of its own class
+AssertionError: seed 3, hero.base.mage-fire: three offered: expected [ 'specialty.blightcaller', …(8) ] to have a length of 3 but got 9
+
+- Expected
++ Received
+
+- 3
++ 9
+
+ ❯ test/opening-specialty-three.test.ts:59:59
+     57|       expect(v.needsSpecialty).toBe(true)
+     58|       const three = v.specialtyOffers.map((s) => s.id), nine = special…
+     59|       expect(three, `seed ${seed}, ${id}: three offered`).toHaveLength…
+       |                                                           ^
+     60|       expect(new Set(three).size, `seed ${seed}, ${id}: three differen…
+     61|       for (const s of three) expect(nine, `seed ${seed}, ${id}: ${s} i…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/7]⎯
+
+ FAIL  test/opening-specialty-three.test.ts > kingdom.opening-specialty-three — the specialty choice offers three of the class's nine > it must take one of the three, and has it afterwards; a specialty of its class that was not offered is refused
+TypeError: .toMatch() expects to receive a string, but got object
+ ❯ test/opening-specialty-three.test.ts:71:96
+     69|     const [id] = firstOf('class.warrior'), ctx = owed(11, [id!]), c = …
+     70|     const three = offered(ctx, id!), nine = specialtiesOf('class.warri…
+     71|     expect(whyNotLevelUp(c, id!, { specialtyId: other }), 'one of the …
+       |                                                                                                ^
+     72|     expect(() => performLevelUp(ctx, id!, 'test', { specialtyId: other…
+     73|     expect(whyNotLevelUp(c, id!, { specialtyId: 'specialty.assassin' }…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/7]⎯
+
+ FAIL  test/opening-specialty-three.test.ts > kingdom.opening-specialty-three — the specialty choice offers three of the class's nine > the three are the run's own: the same when the run is saved and reopened, whatever else has happened — and nothing is stored for them
+AssertionError: the three differ from run to run: expected 1 to be greater than 1
+ ❯ test/opening-specialty-three.test.ts:95:59
+     93|     // another run offers another three (over a handful of seeds the t…
+     94|     const seen = new Set([3, 5, 7, 11, 15, 21].map((seed) => offered(o…
+     95|     expect(seen.size, 'the three differ from run to run').toBeGreaterT…
+       |                                                           ^
+     96|   })
+     97|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/7]⎯
+
+ FAIL  test/opening-specialty-three.test.ts > kingdom.opening-specialty-three — the specialty choice offers three of the class's nine > it is random, three of the nine: over many runs every one of a class's nine is offered, and two heroes of one class on one run need not be offered the same three
+AssertionError: two Warriors on one run are offered different threes on most runs: expected 0 to be greater than 30
+ ❯ test/opening-specialty-three.test.ts:108:89
+    106|     }
+    107|     expect([...all].sort()).toEqual(specialtiesOf('class.warrior').map…
+    108|     expect(differ, 'two Warriors on one run are offered different thre…
+       |                                                                                         ^
+    109|   })
+    110|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/7]⎯
+
+ FAIL  test/opening-specialty-three.test.ts > kingdom.opening-specialty-three — the specialty choice offers three of the class's nine > every Campaign's specialty choice follows it — the slice too: its heroes take a specialty from their three
+AssertionError: expected [ 'specialty.deathknight', …(8) ] to have a length of 3 but got 9
+
+- Expected
++ Received
+
+- 3
++ 9
+
+ ❯ test/opening-specialty-three.test.ts:120:30
+    118|     const id = Object.keys(run.campaign.roster)[0]!
+    119|     run.campaign.roster[id]!.xp = xpForLevel(2)!
+    120|     expect(offered(run, id)).toHaveLength(3)
+       |                              ^
+    121|   })
+    122|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/7]⎯
+
+ FAIL  test/opening-specialty-three.test.ts > kingdom.opening-specialty-three — the specialty choice offers three of the class's nine > the pages: three offered at every specialty choice, one taken; the page closed on the choice and opened again shows the same three
+AssertionError: expected 'opening run six: six battles from the…' to match /three specialties of its own class of…/
+
+- Expected:
+/three specialties of its own class offered at every specialty choice \([1-9]\d* choices\), one taken each time; the page closed on the choice and opened again showed the same three/
+
++ Received:
+"opening run six: six battles from the map, never the kingdom map (Week 0); one draft before every battle (1, 1, 1, 1, 1, 1): a party of 1, 2, 3, 4, 5, 6 at battles 1 to 6; six drafts of three, no class twice, Rogues and Mages offered; the first hero chosen by description only and given Leadership, a positive badge and +2 Health; every later draft shown with its rolled modifiers, kept in every battle and to the end of the run, the same after the page is closed and reopened; the party six, one of each class (mage, paladin, priest, ranger, rogue, warrior); four deploy — with five or more free to fight the run asked who goes (battle 5: home Dawnblade; battle 6: home Dawnblade, Rune-Marked Ascetic, Forest Elf, The Serpent, Dwarven Brawler; battle 6 again: home Crimson Sorceress, Dawnblade), the four chosen on Equip and on the board, whoever stayed home unharmed and unpaid, the choice kept when the page is closed on it, and asked again for a lost battle; base heroes left out for no kit: none; card art on every hero card (draft 18, whoGoes 22, equip 21, victory 18, rewards 19, carrier 1, levelUp 11; heroes with no art on disk, shown blank: none); party Crimson Sorceress L2, Dawnblade L1, Rune-Marked Ascetic L3, Forest Elf L3, The Serpent L4, Dwarven Brawler L4; closed after battle 3 and reopened at battle 4 with the same party, items, XP and levels; battle 2 lost and offered again with the same party; a run left mid-battle (battle 4) reopens on that battle; the Bridge's item.soaked-plate.runed kept passed
+"
+
+ ❯ test/opening-specialty-three.test.ts:125:17
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/7]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  7 failed (7)
+   Start at  02:02:52
+   Duration  14.56s (transform 4.33s, setup 0ms, import 5.27s, tests 9.15s, environment 0ms)
+
