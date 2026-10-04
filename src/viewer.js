@@ -16,6 +16,9 @@
      layers   — ground layer number -> name (static.json.layers)
      actionKinds — actionId -> 'charge'|'attack'|'move'|'burst'|'power', the engine's classification (static.json)
      statusRows  — statusId -> {flags, tickDamageType?, standAction?}, each status's behaviour (static.json)
+     items — itemId -> {name, itemClass, hands, slots, grants, abilities, mods}, each item's own row (static.json), and
+                   hands — the engine's count of hands: the panel's items section (viewer.panel-lists-items); a host that
+                   hands neither gets the items by their ids, with no empty hand drawn
      itemClasses — itemId -> the engine's item class (weapon, shield, …; static.json): a power a held shield grants raises the
                    shield (viewer.shield-guard-motion); a host that hands none gets no raised shield
      layerStatus · terrainApplies — what each painted layer and ground applies (static.json)
@@ -36,8 +39,10 @@
             answers from the engine and calls setPlay again; the viewer draws and never decides.
             viewer.play-chrome: a host that plays also gets the play chrome (src/chrome.js) — End Turn and its pop-up,
             End activation, 2× speed, the battle log — whose clicks come as {kind:'end-turn'} · {kind:'end-activation'}.
+            viewer.switch-hero-asks: the switch pop-up, while the facts carry ask — its answer comes as {kind:'answer', yes}.
+            viewer.auto-end-no-actions: notice(text) puts the host's words on the board for a time; it blocks nothing.
 
-   Returns { setTargeting, setPlay, push, seek, play, pause, speed, step, setZoom, setBare, inspect,
+   Returns { setTargeting, setPlay, notice, push, seek, play, pause, speed, step, setZoom, setBare, inspect,
              peek, pan, render, dispose, get cursor/events/state/playing/view/invalid/
              speedValue/dom/art/assets, _V (the verifier's handle) }
    ══════════════════════════════════════════════════════════════════════════ */
@@ -155,7 +160,9 @@ export function mountBattleViewer(root, data, opts = {}) {
       LAYERS: data.layers || {}, LAYER_STATUS: data.layerStatus || {}, TERRAIN_APPLIES: data.terrainApplies || {}, distance: prepared.distance, BOARD: { width: F.width, height: F.height },
       ACT: data.actions || {}, BADGES: data.badges || {},
       /* viewer.reads-engine: what each action IS (the engine's predicates) and what each status DOES (its row's flags) */
-      KINDS: data.actionKinds || {}, STATUS_ROWS: data.statusRows || {}, ITEM_CLASSES: data.itemClasses || {}, ARTMAP: data.artmap, ASSETS: data.assets, atlas, displayHeights: null,
+      KINDS: data.actionKinds || {}, STATUS_ROWS: data.statusRows || {}, ITEM_CLASSES: data.itemClasses || {},
+      /* viewer.panel-lists-items: each item's own row (name, class, hands, what it gives) and the engine's count of hands */
+      ITEMS: data.items || {}, HANDS: Number.isInteger(data.hands) ? data.hands : null, ARTMAP: data.artmap, ASSETS: data.assets, atlas, displayHeights: null,
       /* viewer.true-3d-camera: the board's map from the scene's metres to board px — the battle's 3D scene's own, else the
          flat board's (camera3d.js); the one camera, the stage and the 3D layer all stand on it */
       boardAffine: atlas ? (atlas.kind === 'painted' ? paintedToCSS(atlas) : worldToCSS(atlas, F)) : flatAffine(F),
@@ -203,7 +210,7 @@ export function mountBattleViewer(root, data, opts = {}) {
   const terrain = terrainLayer(V, opts.terrainDriver)
   /* viewer.play-chrome: End Turn, End activation, 2×, the log — for a host that plays; nothing for a replay */
   V.asking = false
-  const chrome = opts.onPlay ? mountPlayChrome(V, { offer: input => V.offerPlay(input), speed: x => api.speed(x) }) : { sync() {}, relog() {}, dispose() {} }
+  const chrome = opts.onPlay ? mountPlayChrome(V, { offer: input => V.offerPlay(input), speed: x => api.speed(x) }) : { sync() {}, relog() {}, notice() {}, dispose() {} }
 
   function render() {
     if (!V.layers.ground) buildGround(V)
@@ -212,8 +219,17 @@ export function mountBattleViewer(root, data, opts = {}) {
     syncLayers(V); syncCorpses(V); syncAuras(V)
     drawAim(V); drawTargeting(V)
     syncUnits(V); syncPlayInput(V); drawPlay(V)
-    drawPanel(V); drawPortrait(V); drawRail(V); drawBar(V); drawStam(V); applyCam(V); drawEdges(V); drawChips(); terrain.update(); chrome.sync()
+    drawPanel(V); drawRail(V); drawActivated(); applyCam(V); drawEdges(V); drawChips(); terrain.update(); chrome.sync()
   }
+  /* viewer.bar-follows-activation (engine DECISIONS.md 2026-10-03 'the action bar changes with the Activation: the new unit's
+     moves, attacks and powers'; Andrew: "when the activation changes, for whatever reason, the card art changes in the lower
+     left, but the moves don't change"): the card beside the bar, the action bar and the stamina strip (with its swap) are ONE
+     draw. Whose they are is one rule (subject.js barUnitOf) and all three are drawn from it at the same moment — in the full
+     render AND whenever the host hands or clears its play facts. Was: the card drawn only by the full render, the bar and the
+     strip also by setPlay; when an Activation ended with nothing to play (End activation) the next unit's begin was rendered
+     while the last unit's facts were still in hand, and clearing them redrew the bar alone — the card and the bar showed
+     different units until the next full render (the player's move). */
+  function drawActivated() { drawPortrait(V); drawBar(V); drawStam(V) }
   V.render = render
   V.playCues = cues => playCues(V, cues)      // the verifier injects synthetic cues here
   function drawChips() {
@@ -253,11 +269,11 @@ export function mountBattleViewer(root, data, opts = {}) {
   function clearPlay() { V.play = null; syncPlayInput(V); drawPlay(V); chrome.sync() }
   function setPlay(value) {
     if (disposed) throw new Error('viewer disposed')
-    if (value === null) { if (V.play) { clearPlay(); drawBar(V); drawStam(V) } return }
+    if (value === null) { if (V.play) { clearPlay(); drawActivated() } return }
     if (V.invalid) throw new Error('viewer faulted')
     const next = playFacts(value, V.data.POS)   // validate/detach the WHOLE payload before mutation
     V.play = next
-    try { syncPlayInput(V); drawPlay(V); drawBar(V); drawStam(V); chrome.sync() } catch (err) { fault(err) }
+    try { syncPlayInput(V); drawPlay(V); drawActivated(); chrome.sync() } catch (err) { fault(err) }
     /* fix.shield-power-double-click: a double-click on the bar held while the host resolved is offered now, once (actionbar.js) */
     const held = V.heldPlay; V.heldPlay = null
     if (held && V.play) V.offerPlay(held)
@@ -525,6 +541,14 @@ export function mountBattleViewer(root, data, opts = {}) {
     /* viewer.tactical-camera: the camera's named views — angled, lower, raise, left, right, whole, overhead, inspect, focus,
        reset — and what it is doing (stance, elevation, turn, zoom) */
     camera(kind) { cameraView(V, kind) }, get cameraState() { return cameraState(V) },
+    /* viewer.auto-end-no-actions: the host's notice on the battle screen ("No remaining actions possible.") — its words, shown
+       by the play chrome for a time and taken down by itself; it holds nothing and asks nothing (chrome.js). A viewer with
+       no host that plays has no chrome and draws none. */
+    notice(text) {
+      if (disposed) throw new Error('viewer disposed')
+      if (typeof text !== 'string' || !text.trim()) throw new Error('notice needs words to show')
+      chrome.notice(text)
+    },
     /* viewer.affliction-pop-up: whether the first-affliction pop-up is holding the pump */
     get held() { return V.hold },
     dispose() { disposed = true; dropHold(); stopGlide(V); chrome.dispose(); clearTargeting(); V.play = null; V.heldPlay = null; cancelBurst(); cancelOpportunityLabel(); terrain.dispose(); pause(); cancelBeats(V); unbindCamera(); for (const E of V.layers.UEL.values()) if (E.walk) E.walk.cancel(); root.innerHTML = '' },

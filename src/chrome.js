@@ -29,6 +29,44 @@ const ASK = `<div id="playAskBox" role="alertdialog" aria-modal="true" aria-labe
   + `<p id="playAskText"></p><p id="playAskWho"></p>`
   + `<div id="playAskBtns"><button id="playAskNo" type="button" class="pcBtn">Keep playing</button><button id="playAskYes" type="button" class="pcBtn pcEnd">End Turn</button></div></div>`
 
+/* viewer.switch-hero-asks (engine DECISIONS.md 2026-10-03 'size and shadows are the default; ... switching heroes asks first
+   ...', Andrew: "when you double-click on a hero but you still have a hero primary activation left, it should pop up and
+   say, 'End activation of X hero and start activation of Y hero.' ... there needs to be some kind of check to make sure that
+   I'm willing to end the activation of that other hero."; '... the switch pop-up is for any player unit': "by hero, I just
+   mean any player unit ... And you can click yes or no."). One more question on the same path as End Turn's: an element on the
+   page, never window.confirm. The chrome decides nothing — the pop-up stands exactly while the host's facts carry the
+   question (play facts ask, src/play.js), names the two units as the fold names them, and offers the answer back
+   ({kind:'answer', yes}); Esc is No. */
+export const switchAsk = (from, to) => `End activation of ${from} and start activation of ${to}?`
+const SWITCH = `<div id="playSwitchBox" role="alertdialog" aria-modal="true" aria-labelledby="playSwitchText">`
+  + `<p id="playSwitchText"></p>`
+  + `<div id="playSwitchBtns"><button id="playSwitchNo" type="button" class="pcBtn">No</button><button id="playSwitchYes" type="button" class="pcBtn pcEnd">Yes</button></div></div>`
+
+/* viewer.auto-end-no-actions (engine DECISIONS.md 2026-10-03 'a player unit with nothing left it can do ends its Activation by
+   itself', Andrew: "You should just auto-end its turn and put a notification on the screen: 'No remaining actions
+   possible.'"). The notice: an element on the board, as the phase banner and the End Turn pop-up are — never window.alert.
+   The host gives the words (viewer.notice(text)) when it has ended a unit that had nothing left the engine would take; the
+   chrome shows them for NOTICE_MS — long enough to read — and takes them down by itself. It blocks nothing: no question is
+   asked, the pump is not held, no click is caught (pointer-events: none), and the next Activation begins under it. The time
+   is the wall's, not the pump's: reading does not go faster at 2×. */
+export const NOTICE_MS = 3200
+
+/* viewer.swap-button-rearranges (engine DECISIONS.md 2026-10-03 'the swap button says "Swap" and opens a rearranging of the
+   unit's gear', Andrew: "when you press it, it should give you the option to rearrange your gear." · "Just the enhanced gear,
+   not adding gear that you didn't already have. Just the ability to swap hands with inventory"). The gear panel: an element
+   on the page, as the End Turn pop-up is — never window.prompt. It shows everything the unit carries (the host's swap fact:
+   carried), in hand or stowed; a press on an item moves it to the other side; under them one line says what the engine makes
+   of the arrangement now shown — its cost when it is one of the hand lists the engine would take (choices), else the engine's
+   own reason (refused). Confirm is live only for an arrangement the engine takes, and offers it to the host
+   ({kind:'swap', index, unit}); Cancel and Esc change nothing. Nothing is decided here: no hands are counted, no cost worked
+   out — an arrangement is looked up among the host's. Only what the unit carries is ever shown. */
+const GEAR = `<div id="playGearBox" role="dialog" aria-modal="true" aria-labelledby="playGearTitle" aria-describedby="playGearSay">`
+  + `<p id="playGearTitle"></p>`
+  + `<div id="playGearCols"><div class="gearCol"><div class="gearHead">In hand</div><div id="playGearHand" class="gearList"></div></div>`
+  + `<div class="gearCol"><div class="gearHead">Stowed</div><div id="playGearStowed" class="gearList"></div></div></div>`
+  + `<p id="playGearSay" role="status"></p>`
+  + `<div id="playGearBtns"><button id="playGearNo" type="button" class="pcBtn">Cancel</button><button id="playGearYes" type="button" class="pcBtn pcEnd" aria-disabled="true">Swap</button></div></div>`
+
 /** V: the viewer context; host: {offer(input), speed(x)} — the viewer's own offer to onPlay and its speed() */
 export function mountPlayChrome(V, host) {
   const left = V.dom.root.querySelector('#left'), wrap = V.dom.stage.parentNode
@@ -37,23 +75,78 @@ export function mountPlayChrome(V, host) {
   const log = document.createElement('div'); log.id = 'playLog'; log.setAttribute('role', 'log'); log.setAttribute('aria-label', 'Battle log'); log.style.display = 'none'
   const top = V.dom.root.querySelector('#topbar'); top.insertAdjacentHTML('beforeend', LOGBTN); const logBtn = top.lastElementChild || top.children[top.children.length - 1]
   const ask = document.createElement('div'); ask.id = 'playAsk'; ask.style.display = 'none'; ask.innerHTML = ASK
-  wrap.appendChild(bar); V.dom.root.appendChild(log); left.appendChild(ask)
+  const note = document.createElement('div'); note.id = 'playNotice'; note.setAttribute('role', 'status'); note.setAttribute('aria-live', 'polite'); note.style.display = 'none'
+  wrap.appendChild(note)
+  let noteTimer = null
+  function endNotice() { if (noteTimer != null) { clearTimeout(noteTimer); noteTimer = null } note.style.display = 'none' }
+  /** show the host's words for NOTICE_MS; a second notice takes the first one's place and its own time */
+  function notice(text) { endNotice(); note.textContent = text; note.style.display = ''
+    noteTimer = setTimeout(() => { noteTimer = null; note.style.display = 'none' }, NOTICE_MS) }
+  const sw = document.createElement('div'); sw.id = 'playSwitch'; sw.style.display = 'none'; sw.innerHTML = SWITCH
+  const gear = document.createElement('div'); gear.id = 'playGear'; gear.style.display = 'none'; gear.innerHTML = GEAR
+  wrap.appendChild(bar); V.dom.root.appendChild(log); left.appendChild(ask); left.appendChild(sw); left.appendChild(gear)
   V.dom.root.appendChild(ends); V.dom.root.classList.add('pcEndsOn')    /* the screen's corner, not the board (#left) */
   const q = (root, id) => root.querySelector('#' + id)
   const B = { log: logBtn, speed: q(bar, 'playSpeed'), endAct: q(ends, 'playEndAct'), endTurn: q(ends, 'playEndTurn'),
-    text: q(ask, 'playAskText'), who: q(ask, 'playAskWho'), no: q(ask, 'playAskNo'), yes: q(ask, 'playAskYes') }
+    text: q(ask, 'playAskText'), who: q(ask, 'playAskWho'), no: q(ask, 'playAskNo'), yes: q(ask, 'playAskYes'),
+    swText: q(sw, 'playSwitchText'), swNo: q(sw, 'playSwitchNo'), swYes: q(sw, 'playSwitchYes'),
+    gTitle: q(gear, 'playGearTitle'), gHand: q(gear, 'playGearHand'), gStowed: q(gear, 'playGearStowed'), gSay: q(gear, 'playGearSay'), gNo: q(gear, 'playGearNo'), gYes: q(gear, 'playGearYes') }
   B.text.textContent = END_TURN_ASK
   const off = b => b.getAttribute('aria-disabled') === 'true'
   const enable = (b, on) => { b.setAttribute('aria-disabled', on ? 'false' : 'true'); b.classList.toggle('pcOff', !on) }
   /* the chrome sits on the board: a press on it is not the camera's drag, a wheel over the log scrolls the log */
   const stop = e => { e.stopPropagation() }
-  for (const n of [bar, ends, log, ask, logBtn]) { n.addEventListener('pointerdown', stop); n.addEventListener('pointerup', stop); n.addEventListener('click', stop) }
+  for (const n of [bar, ends, log, ask, sw, gear, logBtn]) { n.addEventListener('pointerdown', stop); n.addEventListener('pointerup', stop); n.addEventListener('click', stop) }
   log.addEventListener('wheel', stop)
 
   /* ── the pop-up ── */
   const names = ids => ids.map(id => (V.S.U[id] && V.S.U[id].name) || ('#' + id)).join(', ')
-  function open(ids) { V.asking = true; B.who.textContent = 'Not yet acted: ' + names(ids) + '.'; ask.style.display = ''; B.no.focus() }
-  function close() { V.asking = false; ask.style.display = 'none' }
+  /* the pop-ups share V.asking (the board's keys wait on the answer); only one stands at a time */
+  const switching = () => sw.style.display !== 'none', ending = () => ask.style.display !== 'none', gearing = () => gear.style.display !== 'none'
+  function open(ids) { if (gearing()) closeGear(); V.asking = true; B.who.textContent = 'Not yet acted: ' + names(ids) + '.'; ask.style.display = ''; B.no.focus() }
+  function close() { ask.style.display = 'none'; V.asking = switching() || gearing() }
+  /* ── the gear panel (viewer.swap-button-rearranges) ── */
+  let picked = null, gearUnit = null                 /* the instances chosen for the hands, while the panel is open; whose gear it is */
+  const sameList = (a, b) => a.length === b.length && a.every((x, i) => x === b[i])
+  /** the arrangement shown, as the host lists them: the instances chosen for the hands, in carried order */
+  const arrangement = S => S.carried.filter(c => picked.has(c.instance)).map(c => c.instance)
+  function drawGear() {
+    const S = V.play && V.play.swap; if (!S) return
+    const now = arrangement(S), choice = S.choices.findIndex(c => sameList(c.hands, now)), no = S.refused.find(r => sameList(r.hands, now))
+    B.gTitle.textContent = 'Swap — what ' + names([gearUnit]) + ' carries'
+    for (const [side, held] of [[B.gHand, true], [B.gStowed, false]]) {
+      const items = S.carried.filter(c => picked.has(c.instance) === held)
+      side.innerHTML = items.length ? '' : '<span class="gearNone">' + (held ? 'nothing in hand' : 'nothing stowed') + '</span>'
+      for (const c of items) { const b = document.createElement('button'); b.setAttribute('type', 'button'); b.className = 'gearItem'; b.dataset.instance = c.instance; b.dataset.item = c.item
+        b.textContent = c.name; b.setAttribute('title', held ? 'Stow ' + c.name : 'Take ' + c.name + ' in hand')
+        b.addEventListener('click', ev => { ev.stopPropagation(); if (picked.has(c.instance)) picked.delete(c.instance); else picked.add(c.instance); drawGear() })
+        side.appendChild(b) }
+    }
+    /* one line: the engine's cost for an arrangement it would take, else its own reason, said as a sentence */
+    const sentence = why => why.charAt(0).toUpperCase() + why.slice(1) + (/[.!?]$/.test(why) ? '' : '.')
+    B.gSay.textContent = choice >= 0 ? 'Cost: ' + S.cost + ' stamina.' : no ? sentence(no.why) : 'The engine does not offer this arrangement.'
+    gear.dataset.choice = choice >= 0 ? String(choice) : ''
+    enable(B.gYes, choice >= 0)
+  }
+  function openGear() { const P = V.play, S = P && P.swap; if (!S || P.actor == null || V.asking) return
+    gearUnit = P.actor; picked = new Set(S.carried.filter(c => c.held).map(c => c.instance))
+    V.asking = true; gear.style.display = ''; drawGear(); B.gNo.focus() }
+  function closeGear() { gear.style.display = 'none'; picked = null; gearUnit = null; V.asking = ending() || switching() }
+  V.openGear = openGear
+  B.gNo.addEventListener('click', closeGear)
+  B.gYes.addEventListener('click', () => { const S = V.play && V.play.swap; if (off(B.gYes) || !S || !gearing()) return
+    const index = S.choices.findIndex(c => sameList(c.hands, arrangement(S))), unit = gearUnit
+    closeGear(); if (index >= 0) host.offer({ kind: 'swap', index, unit }) })
+  /* viewer.switch-hero-asks: shown while the host asks, with the names the fold holds for the two units */
+  function openSwitch(a) { const text = switchAsk(names([a.from]), names([a.to]))
+    if (switching() && B.swText.textContent === text) return
+    if (ending()) close()
+    if (gearing()) closeGear()
+    V.asking = true; B.swText.textContent = text; sw.style.display = ''; B.swNo.focus() }
+  function closeSwitch() { sw.style.display = 'none'; V.asking = ending() || gearing() }
+  const answer = yes => { if (switching() && V.play && V.play.ask) host.offer({ kind: 'answer', yes }) }
+  B.swNo.addEventListener('click', () => answer(false))
+  B.swYes.addEventListener('click', () => answer(true))
   B.endTurn.addEventListener('click', () => {
     const end = V.play && V.play.endTurn
     if (off(B.endTurn) || !end) return
@@ -63,7 +156,9 @@ export function mountPlayChrome(V, host) {
   B.no.addEventListener('click', close)
   B.yes.addEventListener('click', () => { const end = V.play && V.play.endTurn; close(); if (end) host.offer({ kind: 'end-turn' }) })
   B.endAct.addEventListener('click', () => { if (!off(B.endAct) && V.play && V.play.endActivation) host.offer({ kind: 'end-activation' }) })
-  const key = e => { if (V.asking && e.key === 'Escape') { close(); e.preventDefault() } }
+  const key = e => { if (!V.asking || e.key !== 'Escape') return
+    if (switching()) answer(false); else if (gearing()) closeGear(); else close()
+    e.preventDefault() }
   document.addEventListener('keydown', key)
 
   /* ── 2× (engine DECISIONS.md 2026-09-29: "Enemy turns play out in full animation. Have a double-speed button.") ── */
@@ -88,12 +183,15 @@ export function mountPlayChrome(V, host) {
   function sync() {
     const P = V.play
     enable(B.endTurn, !!(P && P.endTurn)); enable(B.endAct, !!(P && P.endActivation))
-    if (V.asking && !(P && P.endTurn)) close()                  /* the host took End Turn away (a beat is playing, the battle ended) */
-    else if (V.asking) B.who.textContent = 'Not yet acted: ' + names(P.endTurn.yetToAct) + '.'
+    if (ending() && !(P && P.endTurn)) close()                  /* the host took End Turn away (a beat is playing, the battle ended) */
+    else if (ending()) B.who.textContent = 'Not yet acted: ' + names(P.endTurn.yetToAct) + '.'
+    if (P && P.ask) openSwitch(P.ask); else if (switching()) closeSwitch()   /* the pop-up stands exactly while the host asks */
+    /* the gear panel stands only while the host still offers that unit's swap; its lines follow the facts */
+    if (gearing()) { if (!P || !P.swap || P.actor !== gearUnit) closeGear(); else drawGear() }
     const fast = V.speed === 2
     B.speed.classList.toggle('on', fast); B.speed.setAttribute('aria-pressed', String(fast))
     syncLog()
   }
-  function dispose() { document.removeEventListener('keydown', key); V.asking = false; bar.remove(); ends.remove(); log.remove(); ask.remove(); logBtn.remove(); V.dom.root.classList.remove('pcEndsOn') }
-  return { sync, relog, dispose, dom: { bar, ends, log, ask, ...B } }
+  function dispose() { document.removeEventListener('keydown', key); V.asking = false; delete V.openGear; gear.remove(); endNotice(); note.remove(); bar.remove(); ends.remove(); log.remove(); ask.remove(); sw.remove(); logBtn.remove(); V.dom.root.classList.remove('pcEndsOn') }
+  return { sync, relog, notice, dispose, dom: { bar, ends, log, ask, sw, gear, ...B } }
 }

@@ -22,19 +22,24 @@ export function drawStam(V) {
   if (!u || !u.maxStam) { el2.innerHTML = ''; return }
   const pips = Array.from({ length: u.maxStam }, (_, i) => `<i class="sPip${i < u.stam ? ' on' : ''}"></i>`).join('')
   el2.innerHTML = `<div class="cell1"><span class="lab">Stamina</span><span class="track">${pips}</span><span class="num">${u.stam} / ${u.maxStam}</span></div>` + swapHTML(V, id)
-  /* movement.swap-and-shields: a hand list clicked is offered to the host, which gives the engine its swap command */
+  /* viewer.swap-button-rearranges: the one Swap button opens the gear panel (chrome.js), where the arrangement is chosen and
+     confirmed — was: one button per hand list, each offered to the host at once (movement.swap-and-shields) */
   el2.querySelectorAll('.swBtn').forEach(b => b.addEventListener('click', ev => { if (!V.play) return; ev.stopPropagation()
-    V.offerPlay({ kind: 'swap', index: Number(b.dataset.swap), unit: id }) }))
+    if (V.openGear) V.openGear() }))
 }
 /* movement.swap-and-shields (engine DECISIONS.md 2026-10-01 'the movements'): the swap on the action bar — beside the stamina
-   it is paid from, over the bar's attack and power columns: one button per hand list the host says the engine would take,
-   the engine's cost, or with none to make the engine's own reason. Only for the hero the host is planning with; a host
-   that hands no swap fact (a hero with nothing to swap, or no host at all) gets none (viewer SWITCHES swapStrip). */
+   it is paid from, over the bar's attack and power columns. Only for the hero the host is planning with; a host that hands
+   no swap fact (a hero with nothing to swap, or no host at all) gets none (viewer SWITCHES swapStrip).
+   viewer.swap-button-rearranges (engine DECISIONS.md 2026-10-03 'the swap button says "Swap" and opens a rearranging of the
+   unit's gear', Andrew: "The button for swapping should say 'Swap'. And when you press it, it should give you the option to
+   rearrange your gear."): ONE button that reads Swap, with the engine's cost beside it — or, with no arrangement the engine
+   would take, its own reason. Pressing it opens the gear panel (chrome.js). Was: a 'SWAP' heading over one button per hand
+   list ('Nothing in hand', 'Longsword', …), each a fixed exchange. */
 function swapHTML(V, id) {
   const P = V.play, sw = P && P.actor === id ? P.swap : null
   if (!sw) return ''
-  const btns = sw.choices.map((c, i) => `<button type="button" class="swBtn" data-swap="${i}" title="Swap: hold ${escape(c.label)} afterwards">${escape(c.label)}</button>`).join('')
-  return `<div class="swapCell"><span class="lab">Swap</span>${btns}${sw.choices.length ? `<span class="swCost">${sw.cost} stamina</span>` : `<span class="swWhy">${escape(sw.why || '')}</span>`}</div>`
+  const can = sw.choices.length > 0
+  return `<div class="swapCell"><button type="button" class="swBtn${can ? '' : ' swNone'}" title="Rearrange what this unit holds and what it has stowed">Swap</button>${can ? `<span class="swCost">${sw.cost} stamina</span>` : `<span class="swWhy">${escape(sw.why || '')}</span>`}</div>`
 }
 
 export function drawBar(V) {

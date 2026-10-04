@@ -627,3 +627,95 @@ opening battle that drafts a priest or a mage plays differently on the same seed
 | `openingReplaySeedAfterImpTuned` | Engine content.imp-blast-tuned (engine DECISIONS.md 2026-10-03 'the Imp: Precision down by 1; its Blast burns half the time') moves the two opening battles that field an Imp, the Bridge and the Gates. Which seeds? | **The same rule read again (seeds 0–99): Bridge 19 (was 32; wins now 19, 24, 32, 41, 45, …: 13 of 100), Gates 0 (still no win in 0–99); Orphanage 5, Lumberjack House 0, Cavern Trail 0 and Cathedral 10 unchanged.** All six re-exported at engine code stamp 5feadc6660. | `openingReplaySeed`; "current with the engine". | provisional — 2026-10-04 |
 | `surgedHeroMayIdle` | `tools/verify.mjs` held "after `surge.hit` the hero acts again with no `activation.begin` between" by finding the next `move.begin` or `attack.declared`; in the Bridge's new recording (seed 19) a surged ranger has no target in range, so the engine logs `activation.idle` for its second go and the next move is another unit's. | **The rule is kept and the finder knows every kind of go: a move, an attack, a power (`power.used`), a burst (`burst.declared`) or the engine's own `activation.idle`, by the same hero, before any `activation.begin`.** The old line is quoted at the edit (Law 10). | The recording is a legal log (the engine's Surge grants another movement and primary; nothing obliges the hero to have a target); the check was about whose go it is, not that the go does damage. Choosing another seed would only hide it. | Default — 2026-10-04 |
 | `openingReplaySeedAfterCombine` | Master (fix.civilians-field-kit: the Lumberjack House on seed 3) and this copy (the three engine items: Bridge 19, Cavern Trail 0, Cathedral 10) each moved the recordings' seeds; combined, which? | **Each rule read again on the combined engine (code stamp 08ebc86fc4, seeds 0–99): Orphanage 5; Lumberjack House 3 (`civiliansKitReplays`: the lowest winning seed on which the whole cast comes on, the Skeleton Archer shoots and the Soldier strikes — still 3); Bridge 19; Cavern Trail 0; Cathedral 10; Gates 0 (no win).** `library.json` merged to exactly these with no conflict; all six re-exported together on the combined engine, the dumps re-dumped, the page landed by the gate's parts. | GBH SWITCHES `combine.mergeMainFirst`: a generated output in conflict is regenerated on the merged tree, never picked by hand. | provisional — 2026-10-04 |
+
+## viewer.bar-follows-activation — 2026-10-04
+
+Engine DECISIONS.md 2026-10-03 'the action bar changes with the Activation: the new unit's moves, attacks and powers' (Andrew):
+"when the activation changes, for whatever reason, the card art changes in the lower left, but the moves don't change. They
+need to change to the character's moves. And attacks and powers and all that". `src/viewer.js` (`drawActivated`: the card, the
+bar and the stamina strip are one draw, in the full render and in `setPlay`); probes `tools/bar-follows-activation.test.mjs`,
+`test/viewer.bar-follows-activation.test.ts`, kingdom `tools/bar-follows-activation.verify.mjs`; the red is
+`bar-follows-activation-red.log`.
+
+| Switch | Question | Default | Reason | Status |
+|---|---|---|---|---|
+| `barFollowsWhichStale` | The report says the card changes and the bar keeps the last unit's moves; on the built page the reproduced fault is the other way round — after End activation the BAR is the new unit's and the CARD stays the last unit's, until the next full render (the player's move). Fix the reported direction, or the reproduced one? | **The one path both come from: the card was drawn only by the full render, the bar also by `setPlay`. They are now one draw (`drawActivated`), so neither can be the other unit's, whichever way it showed.** The page test reads the bar's buttons AND the card against the activated unit at every change of Activation, and at every tick between that the two are one unit's. | The item's own instruction: "fix that one path so the bar and the card are drawn from the same activated unit at the same moment". No path that leaves the bar stale and the card fresh was found in the headless page; if Andrew still sees it in a browser, it is a second fault and wants its own report. | Default — 2026-10-04 |
+| `barFollowsStaleFacts` | While the host resolves a command, the first beat is rendered with the play facts it handed before the command (the host clears them a moment later, in the same turn of the event loop). Drop the facts in the viewer when events are pushed, or leave them to the host? | **Left to the host: the viewer draws what it is handed; the host clears its facts in the same synchronous step, before anything is painted.** | Clearing in `push` would change what a host that pushes and keeps planning sees; nothing is painted between the two. | Default — 2026-10-04 |
+
+## viewer.switch-hero-asks — 2026-10-04
+
+Engine DECISIONS.md 2026-10-03 'size and shadows are the default; the bleeding-out card; switching heroes asks first ...',
+'the opening draft pool is all 24 heroes ...; the switch pop-up is for any player unit' (Andrew: "it should pop up and say,
+'End activation of X hero and start activation of Y hero.'" · "by hero, I just mean any player unit ... And you can click yes
+or no."). `src/chrome.js` (the pop-up, `#playSwitch`), `src/play.js` (the optional `ask` fact), `src/styles.css`; probes
+`tools/switch-hero-asks.test.mjs`, `test/viewer.switch-hero-asks.test.ts`; the red is `switch-hero-asks-red.log`. When the
+question arises and what yes does are the host's (kingdom SWITCHES `switchAsk*`).
+
+| Switch | Question | Default | Reason | Status |
+|---|---|---|---|---|
+| `switchPopUpOwnBox` | Reuse the End Turn pop-up's box for the second question, or its own? | **Its own element, `#playSwitch`, the End Turn pop-up's twin (same place, same look, shared rules in the stylesheet); the two share `V.asking`, and only one stands at a time.** | Two questions with different words, buttons and answers in one box would have each one's handlers guard against the other's state. | Default — 2026-10-04 |
+| `switchPopUpFact` | Does the viewer open the pop-up on the double-click, or when the host says so? | **When the host says so: the double-click is offered as before (`{kind:'choose'}`), and the pop-up stands exactly while the host's facts carry `ask: {kind:'switch', from, to}`; it is closed by the facts, never by the click on Yes or No, which only offers `{kind:'answer', yes}`.** Esc is No. The names are the fold's (`S.U[id].name`), as the End Turn pop-up's are. | Law 0 and the item: whether to ask is the host's fact from the engine; the viewer draws and offers. | Default — 2026-10-04 |
+
+## viewer.auto-end-no-actions — 2026-10-04
+
+Engine DECISIONS.md 2026-10-03 'a player unit with nothing left it can do ends its Activation by itself: "No remaining actions
+possible."' (Andrew: "You should just auto-end its turn and put a notification on the screen: 'No remaining actions
+possible.'"). `src/chrome.js` (`#playNotice`, `NOTICE_MS`), `src/viewer.js` (`notice(text)`), `src/styles.css`; probes
+`tools/auto-end-no-actions.test.mjs`, `test/viewer.auto-end-no-actions.test.ts`; the red is `auto-end-no-actions-red.log`.
+When a unit has nothing left, and the ending itself, are the host's from the engine (kingdom SWITCHES `autoEnd*`).
+
+| Switch | Question | Default | Reason | Status |
+|---|---|---|---|---|
+| `noticeApi` | How does the host's notice reach the screen — a play fact, or a call? | **A call, `notice(text)`, with the host's words: the play facts are withdrawn while the board plays, and the notice must stand across the end of one Activation and the begin of the next.** A viewer with no host that plays has no chrome and draws none. | A fact would vanish with the facts at the very moment it is needed. | Default — 2026-10-04 |
+| `noticeLook` | Where is it, and for how long? | **Over the board, centred, below the phase banner's place; 3.2 seconds of wall time (`NOTICE_MS`), not scaled by the 2× button; a second notice takes the first one's place and its own time. `pointer-events: none`, `role="status"`: it catches no click, takes no key and holds no pump.** | "long enough to read"; "The notice does not block". A look for Andrew to judge. | Default — 2026-10-04 |
+
+## viewer.no-hex-focus-border — 2026-10-04
+
+Engine DECISIONS.md 2026-10-03 'one draft after every battle; the yellow focus border goes; ...' (Andrew: "There's a highlighting
+of a hex that happens where there's a big yellow border around the hex at some point during unit activation." / "That yellow
+focus border doesn't look good, so just remove it."). `src/styles.css` (`.targetHex:focus-visible` is now `outline:none` only);
+probes `tools/no-hex-focus-border.test.mjs`, `test/viewer.no-hex-focus-border.test.ts`, kingdom
+`tools/no-hex-focus-border.verify.mjs` (real Chrome, computed style); the red is `no-hex-focus-border-red.log`.
+
+| Switch | Question | Default | Reason | Status |
+|---|---|---|---|---|
+| `hexFocusTargetBare` | With the yellow border and tint gone, what marks a target hex that holds the keyboard focus? | **Nothing: `.targetHex:focus-visible{outline:none}`. No border, no tint, and the browser's own ring stays off, so a hex shows only the game's own marks.** The hex is still a button: Tab reaches it and Enter chooses it, but the keyboard player has no cursor on a target hex. | The ruling: "just remove it"; the item: "Remove that border and tint so a hex shows only the game's own marks". A quieter focus mark for keyboard targeting is Andrew's to ask for. | Default — 2026-10-04 |
+| `hexFocusPlayKept` | The item: check `.playHex:focus-visible` (a pale blue tint) "and remove it if it shows as a stray highlight in mouse play - say which". | **Kept. It does not show in mouse play:** the hex buttons take no pointer events (the board's pick reads the click), so a click focuses none, and Esc or an arrow key afterwards gives none the focus — measured in Chrome on the built sandbox, before and after the change. It shows only on a hex reached with Tab, where it is the keyboard player's only cursor for moving. | The item's own test for removing it is not met; it is blue, not the yellow ruled out. | Default — 2026-10-04 |
+| `hexFocusNotWhatWasSeen` | Is the removed rule the "big yellow border around the hex at some point during unit activation" Andrew saw in the opening run? | **Almost certainly not, and nothing else was removed.** A `.targetHex` exists only while a host hands targeting facts (a free battle's launcher, aiming a burst); an opening battle is played on the board alone and hands none, and no hex can be focused with the mouse. The yellow hex outline that DOES appear during an Activation there is the game's own target mark: `board.js` draws a hex ring in `PLAY_HUE.target` (`rgba(255,215,100,.9)`, the same yellow) on every hex the chosen action — or the planned path's end — can strike, the hero's own hex included when a power aimed at itself is chosen. The item says the target marks stay. | The item names the rule to remove and says "a hex shows only the game's own marks (the path, the target marks, the planned hex)". Whether the target ring is the border Andrew meant, and what it should look like, is his to say — reported to the home chat. | Default — 2026-10-04 |
+
+## viewer.panel-lists-items — 2026-10-04
+
+Engine DECISIONS.md 2026-10-03 'the civilians show on the victory screen; the specialty three are random; the battle's unit
+panel lists what the unit is equipped with' (Andrew: "This priest only has a verse attack. It seems like he has nothing in his
+hands. I don't understand what he's equipped with. We need the items listed under the characters on the right in battle.").
+`src/items.js` (`itemsOf`, pure), `src/panel.js` (the items section), `src/sheet.ts` + `tools/dump-static.mts`
+(`static.json` `items`, `hands`), `src/engine.ts` (the door: the engine's `HANDS` and `handsOf`), `src/styles.css`; probes
+`tools/panel-lists-items.test.mjs`, `test/viewer.panel-lists-items.test.ts`, kingdom `tools/panel-lists-items.verify.mjs`; the
+red is `panel-lists-items-red.log`. Seen in real Chrome on the candidate sandbox (the Battle Chaplain's panel).
+
+| Switch | Question | Default | Reason | Status |
+|---|---|---|---|---|
+| `panelItemsSource` | "From the engine's own loadout and sheet through the door ... never a hand table" — the log says which items a unit has in hand or worn (`unit.equipped`) and stowed (`unit.enter`), but not which of them is a hand, an armor or a slot. Where does that come from? | **Each item's own row, dumped through the door: `static.json` `items` (name, itemClass, the hands it takes by the engine's `handsOf`, slots, grants, abilities, stat modifiers) and `hands` (the engine's `HANDS`).** In a hand: its row takes hands; armor: its class is armor; an item slot: anything else worn. What a held item gives is the log's (the event's grants, powers and modifiers, as fielded); what a stowed one would give is its row's. | The door is the only way in, and the engine already answers "how many hands" (`core/items.ts`). ENGINE-FINDINGS: `unit.equipped` could say where the item sits (hand / worn), which would retire the class lookup. | Default — 2026-10-04 |
+| `panelItemsPlace` | Where is "under the character"? | **Directly under the card art and status column, above Keywords: a boxed "Items" list — one row per hand, then Armor, Item slot, Stowed.** The keywords, triggers and modifiers below it scroll as before, in less height. | The ruling: "listed under the characters on the right". A look for Andrew to judge. | Default — 2026-10-04 |
+| `panelItemsGives` | "On hover or click what it gives." | **Both on the row and on hover: a second line under the name (attacks and powers by name, then stat changes as `BLOCK +10`), and the same in the row's tooltip.** No click opens anything. | The Battle Chaplain's question was what he is equipped with and what it does; a line read at a glance answers it without a pointer. | Default — 2026-10-04 |
+| `panelItemsNoArt` | "With its icon or card art where the page has one." | **Text only: the battle page carries no item art (the art manifest is unit cards and tokens), so no item shows a picture.** | "Where the page has one": it has none. Carrying the kingdom's item cards into the viewer's art is its own item. | Default — 2026-10-04 |
+| `panelItemsEmpty` | Which places are named when nothing fills them, and for whom? | **For any unit that carries something, and for every unit on the player's side: each of the engine's two hands (`empty`), Armor (`none`), one Item slot row (`empty` — how many slots a hero has is the kingdom's, not the battle's) and Stowed (`nothing`). A unit that carries nothing and is not the player's (a zombie) has no items section.** | "An empty hand or slot says so." "Every unit that carries items shows them: heroes, civilians, and an enemy with a weapon assigned." | Default — 2026-10-04 |
+| `panelItemsHandNames` | Are the hands named (main, off; right, left)? | **No: each is "Hand", in the order the log put the items there; an item that takes every hand is "Both hands".** | The engine's loadout is an ordered list of hands, not a left and a right; naming them would be inventing. | Default — 2026-10-04 |
+
+## viewer.swap-button-rearranges — 2026-10-04
+
+Engine DECISIONS.md 2026-10-03 'the swap button says "Swap" and opens a rearranging of the unit's gear' (Andrew: "The button
+for swapping should say 'Swap'. And when you press it, it should give you the option to rearrange your gear." · "Just the
+enhanced gear, not adding gear that you didn't already have. Just the ability to swap hands with inventory"). `src/actionbar.js`
+(the one Swap button), `src/chrome.js` (the gear panel, `#playGear`), `src/play.js` (the swap fact's new shape),
+`src/styles.css`; probes `tools/swap-button-rearranges.test.mjs`, `test/viewer.swap-button-rearranges.test.ts`, kingdom
+`tools/swap-button-rearranges.verify.mjs`; `tools/swap-bar.test.mjs` rewritten as the rule with dated notes; the red is
+`swap-button-rearranges-red.log`. Overturned here: `swapStrip`'s "one button per hand list the host says the engine would
+take" (2026-10-01). Seen in real Chrome on the candidate sandbox (the button, the panel with an item moved across).
+
+| Switch | Question | Default | Reason | Status |
+|---|---|---|---|---|
+| `gearPanelShape` | How is the gear rearranged? | **Two lists, "In hand" and "Stowed", holding exactly what the unit carries; a press on an item moves it to the other list; one line under them says what the engine makes of the arrangement shown; "Cancel" and "Swap" (the confirm).** No dragging, no left or right hand (the engine's hands are a list — `panelItemsHandNames`). | "Which item is in which hand" is, to the engine, which instances are held; the smallest thing that rearranges them. A look for Andrew to judge. | Default — 2026-10-04 |
+| `gearPanelLookup` | How does the viewer know whether an arrangement may be confirmed, and what to say? | **It looks the arrangement up in the host's swap fact: among `choices` (the hand lists the engine takes — Confirm is live, the line reads "Cost: N stamina.") or `refused` (every other arrangement, with the engine's reason — said as a sentence, Confirm dead).** No hands are counted and no cost is worked out in the viewer. | Law 0. The item: "the panel offers only arrangements the engine accepts, shows the cost, and says why one is refused in one line". | Default — 2026-10-04 |
+| `gearPanelSpent` | With no arrangement the engine would take (the swap spent, no stamina), is there still a Swap button? | **Yes: the button stays, greyed in tone, with the engine's reason beside it as before; the panel opens and says that reason for every arrangement; nothing can be confirmed.** | The button is also how the player looks at what the unit carries; removing it would move the bar about. | Default — 2026-10-04 |
+| `gearPanelOpensOnHeld` | What does the panel show when it opens, and after a Cancel? | **Always what the unit holds now; an arrangement tried and cancelled is forgotten. The panel closes by itself when the host stops offering that unit's swap (its Activation ended, the board is playing).** | Cancelling changes nothing — including what the panel remembers. | Default — 2026-10-04 |

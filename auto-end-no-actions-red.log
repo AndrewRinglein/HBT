@@ -1,0 +1,49 @@
+== viewer tools/auto-end-no-actions.test.mjs on the landed BATTLE-VIEWER.html (viewer 8a7321d) ==
+✖ a host that plays has a notice on the battle screen, hidden until it is given; it shows the host's words (688.636ms)
+✖ the notice stays long enough to read and leaves by itself; a second notice starts its time again (733.9323ms)
+✖ the notice blocks nothing: the pump is not held, the keys are not taken, the facts are still drawn and offers still go to the host (279.8666ms)
+✖ only words are a notice; a replay has none; dispose drops it (256.1118ms)
+ℹ tests 4
+ℹ pass 0
+ℹ fail 4
+✖ failing tests:
+✖ a host that plays has a notice on the battle screen, hidden until it is given; it shows the host's words (688.636ms)
+  AssertionError [ERR_ASSERTION]: the notice is an element on the page
+✖ the notice stays long enough to read and leaves by itself; a second notice starts its time again (733.9323ms)
+  TypeError: v.notice is not a function
+✖ the notice blocks nothing: the pump is not held, the keys are not taken, the facts are still drawn and offers still go to the host (279.8666ms)
+  TypeError: v.notice is not a function
+✖ only words are a notice; a replay has none; dispose drops it (256.1118ms)
+  TypeError: v.notice is not a function
+
+== kingdom tools/auto-end-no-actions.verify.mjs on the built BATTLE-SANDBOX.html (kingdom 2144e4c) ==
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: the notice is an element on the page
+    at file:///C:/Users/aring/Desktop/HBT-worker-content/kingdom/tools/auto-end-no-actions.verify.mjs:31:8
+    at ModuleJob.run (node:internal/modules/esm/module_job:413:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:660:26)
+
+== kingdom test/auto-end-no-actions.test.ts ==
+     × the ruled words 4ms
+     × a civilian that walks its full movement to a hex with no enemy in reach: the engine would take nothing more, and its Activation is ended 95ms
+     × a hero with a usable shield power or a bonus move after moving is left alone 44ms
+     × the same walk ending beside an enemy leaves the unit acting, its attack offered 191ms
+     × a swap: putting away what is held is not a thing left to do; drawing what is stowed is 28ms
+     × never while a question stands, and never anyone but the unit acting 22ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 6 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  test/auto-end-no-actions.test.ts > a player unit with nothing left it can do ends its Activation by itself > the ruled words
+AssertionError: expected undefined to be 'No remaining actions possible.' // Object.is equality
+ FAIL  test/auto-end-no-actions.test.ts > a player unit with nothing left it can do ends its Activation by itself > a civilian that walks its full movement to a hex with no enemy in reach: the engine would take nothing more, and its Activation is ended
+TypeError: P.rest is not a function
+ FAIL  test/auto-end-no-actions.test.ts > a player unit with nothing left it can do ends its Activation by itself > a hero with a usable shield power or a bonus move after moving is left alone
+TypeError: P.rest is not a function
+ FAIL  test/auto-end-no-actions.test.ts > a player unit with nothing left it can do ends its Activation by itself > the same walk ending beside an enemy leaves the unit acting, its attack offered
+TypeError: P.rest is not a function
+ FAIL  test/auto-end-no-actions.test.ts > a player unit with nothing left it can do ends its Activation by itself > a swap: putting away what is held is not a thing left to do; drawing what is stowed is
+TypeError: P.rest is not a function
+ FAIL  test/auto-end-no-actions.test.ts > a player unit with nothing left it can do ends its Activation by itself > never while a question stands, and never anyone but the unit acting
+TypeError: P.rest is not a function
+      Tests  6 failed (6)

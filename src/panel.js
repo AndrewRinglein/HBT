@@ -5,6 +5,7 @@
 import { stStyle } from './theme.js'
 import { sgn, STATSHORT, modOf, effectWord, absorbOf } from './actions.js'
 import { subjectOf, barUnitOf } from './subject.js'
+import { itemsOf, SLOT_LABEL } from './items.js'
 import { MOD_UP, MOD_DOWN, BADGE_HUE } from './theme.js'
 
 /* every engine hook has a label — tools/vocabulary.test.mjs checks it against the engine's export */
@@ -139,6 +140,15 @@ export function drawPanel(V) {
     (() => { const gone = [...(u.spentItems || []), ...Object.entries(u.itemUses || {}).filter(([, x]) => x.left === 0).map(([id, x]) => `${x.itemId.replace(/^item\./, '')} ${id}`)]
       return gone.length ? `<b style="color:#cbc3ae">Spent</b> ${gone.join(', ')}<br>` : '' })() +
     (u.grown ? `<b style="color:#cbc3ae">Grown</b> ${u.grown.table} · level ${u.grown.level}${u.grown.specialtyId ? ' · ' + u.grown.specialtyId.replace(/^specialty\./, '') : ''}<br>` : '')
+  /* viewer.panel-lists-items (engine DECISIONS.md 2026-10-03, Andrew: "We need the items listed under the characters on the
+     right in battle."): under the character — each hand, the armor, the item slots, what is stowed — each item by its name
+     with what it gives, said on the row and on hover (items.js itemsOf: the log and the item's own row; nothing typed here) */
+  const esc = x => String(x).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]))
+  const itemRows = itemsOf(u, V.data)
+  const itemsBlock = itemRows.length ? '<div class="pItems"><div class="pItemsHead">Items</div>' + itemRows.map(r =>
+    '<div class="pItem' + (r.item ? '' : ' empty') + '" data-slot="' + r.slot + '" data-item="' + esc(r.item || '') + '"' + (r.title ? ' title="' + esc(r.title) + '"' : '') + '>' +
+    '<span class="pItemSlot">' + (SLOT_LABEL[r.slot] || r.slot) + '</span><span class="pItemName">' + esc(r.name) + '</span>' +
+    (r.gives ? '<span class="pItemGives">' + esc(r.gives) + '</span>' : '') + '</div>').join('') + '</div>' : ''
   const factsBlock = facts.length ? `<div style="margin:0 18px 8px;padding:6px 9px;background:#14120e;border:1px solid var(--border);border-radius:2px;font-size:11.5px;line-height:1.6;color:#a9a394">${facts.join('<br>')}</div>` : ''
   const statsOpen = view.statsOpen
   P.innerHTML = `
@@ -210,6 +220,7 @@ export function drawPanel(V) {
     </div></div>`
   : `<div style="padding:0 18px 12px">
       <div style="font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);margin-bottom:6px">Status effects</div>${stCol}</div>`}
+  ${itemsBlock}
   <div class="pAb">
     <div style="font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);margin:2px 0 7px">Keywords</div>
     ${tagChips.length ? `<div style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:9px">${

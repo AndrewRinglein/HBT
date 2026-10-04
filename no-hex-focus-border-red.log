@@ -1,0 +1,27 @@
+== viewer tools/no-hex-focus-border.test.mjs on the landed BATTLE-VIEWER.html (viewer 97dea4e) ==
+✖ the stylesheet paints nothing on a focused target hex: no border, no tint, and no browser ring in its place (1.9503ms)
+✖ the removed yellow is on no hex rule at all (0.542ms)
+✔ the focused play hex keeps no border either: whatever marks it, it is not yellow and not a box-shadow (0.7137ms)
+✔ the hexes stay buttons, so the keyboard still plays: a target hex's click is offered to the targeting host, a play hex's to the play host (654.8933ms)
+ℹ tests 4
+ℹ pass 2
+ℹ fail 2
+✖ failing tests:
+✖ the stylesheet paints nothing on a focused target hex: no border, no tint, and no browser ring in its place (1.9503ms)
+  AssertionError [ERR_ASSERTION]: .targetHex:focus-visible draws a border inside the hex: background:rgba(255,215,100,.35)!important;box-shadow:inset 0 0 0 5px #ffd764;outline:none
+✖ the removed yellow is on no hex rule at all (0.542ms)
+  AssertionError [ERR_ASSERTION]: .targetHex:focus-visible carries the yellow border's colour
+
+== kingdom tools/no-hex-focus-border.verify.mjs on the built BATTLE-SANDBOX.html (kingdom f2f236d), real Chrome ==
+  the board is shown (25 s for the 3D scene)
+  1 the mouse: two hexes clicked, the path planned to hex 23; no hex focused, none yellow
+  2 Esc and an arrow key pressed: still no hex focused, none yellow
+  3 hex 22 keyboard-focused: box-shadow none, background rgba(150, 205, 245, 0.3) - no yellow
+    Enter, Enter: the hero walked from hex 85 to hex 22 by keyboard
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+AssertionError [ERR_ASSERTION]: no box-shadow on the focused target hex (was inset 0 0 0 5px #ffd764): rgb(255, 215, 100) 0px 0px 0px 5px inset
++ actual - expected
++ 'rgb(255, 215, 100) 0px 0px 0px 5px inset'
+- 'none'

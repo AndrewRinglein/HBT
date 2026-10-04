@@ -1,0 +1,51 @@
+== viewer tools/switch-hero-asks.test.mjs on the landed BATTLE-VIEWER.html (viewer 627c3c9) ==
+✖ a replay has no switch pop-up; a host that plays has one, hidden until the host asks (16045.0462ms)
+✖ a double-click on another unit is offered to the host; the pop-up shows only when the host's facts carry the question (1830.5271ms)
+✖ No, and Esc, offer the answer no; Yes offers yes; the pop-up leaves when the host stops asking (863.5265ms)
+✖ either unit may be a civilian the player controls: the pop-up names whoever the host names (395.4823ms)
+✔ a malformed question is the host's error, never drawn; the End Turn pop-up is untouched (287.7072ms)
+ℹ tests 5
+ℹ pass 1
+ℹ fail 4
+✖ failing tests:
+✖ a replay has no switch pop-up; a host that plays has one, hidden until the host asks (16045.0462ms)
+  AssertionError [ERR_ASSERTION]: the pop-up is an element on the page
+✖ a double-click on another unit is offered to the host; the pop-up shows only when the host's facts carry the question (1830.5271ms)
+  Error: invalid play facts: the facts must carry exactly actor, slot, reach, zoc, path, provokes, ghost, threat, targets, aim, note (and may carry endTurn, endActivation, swap)
+✖ No, and Esc, offer the answer no; Yes offers yes; the pop-up leaves when the host stops asking (863.5265ms)
+  Error: invalid play facts: the facts must carry exactly actor, slot, reach, zoc, path, provokes, ghost, threat, targets, aim, note (and may carry endTurn, endActivation, swap)
+✖ either unit may be a civilian the player controls: the pop-up names whoever the host names (395.4823ms)
+  Error: invalid play facts: the facts must carry exactly actor, slot, reach, zoc, path, provokes, ghost, threat, targets, aim, note (and may carry endTurn, endActivation, swap)
+
+== kingdom tools/switch-hero-asks.verify.mjs on the built BATTLE-SANDBOX.html (kingdom 108b5e1, viewer 627c3c9) ==
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: the pop-up shows
+    at asks (file:///C:/Users/aring/Desktop/HBT-worker-content/kingdom/tools/switch-hero-asks.verify.mjs:22:27)
+    at file:///C:/Users/aring/Desktop/HBT-worker-content/kingdom/tools/switch-hero-asks.verify.mjs:32:13
+    at ModuleJob.run (node:internal/modules/esm/module_job:413:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:660:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5) {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+
+== kingdom test/switch-hero-asks.test.ts ==
+     × a unit that has moved and still has its primary action: a double-click on another un-acted unit asks, and changes nothing 100ms
+     × the answer no leaves the one acting exactly as it was 50ms
+     × the answer yes ends the one acting by the engine's end-cycle and begins the one asked for; the first does not come back 25ms
+     × any player unit: a civilian left, a civilian asked for 19ms
+     × the question does not outlive what it was asked about: any other order drops it; a stale answer does nothing 23ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 5 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  test/switch-hero-asks.test.ts > switching heroes asks first > a unit that has moved and still has its primary action: a double-click on another un-acted unit asks, and changes nothing
+AssertionError: expected false to be true // Object.is equality
+ FAIL  test/switch-hero-asks.test.ts > switching heroes asks first > the answer no leaves the one acting exactly as it was
+AssertionError: expected false to be true // Object.is equality
+ FAIL  test/switch-hero-asks.test.ts > switching heroes asks first > the answer yes ends the one acting by the engine's end-cycle and begins the one asked for; the first does not come back
+AssertionError: expected false to be true // Object.is equality
+ FAIL  test/switch-hero-asks.test.ts > switching heroes asks first > any player unit: a civilian left, a civilian asked for
+AssertionError: expected false to be true // Object.is equality
+ FAIL  test/switch-hero-asks.test.ts > switching heroes asks first > the question does not outlive what it was asked about: any other order drops it; a stale answer does nothing
+AssertionError: expected undefined to be truthy
+      Tests  5 failed | 2 passed (7)
