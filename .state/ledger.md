@@ -26703,6 +26703,16 @@ index 1ba14a0..f9a41fc 100644
   PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
   PASS  brought its own tests — viewer/test/viewer.panel-area-trigger-text.test.ts
   PASS  existing tests untouched
+## tool.tests-follow-what-changed — LANDED `e3ac2e3` **NEEDS REVIEW**
+2026-10-04 11:37
+
+  PASS  dependencies landed
+  WARN  not already decided — 1 candidate ruling(s) — READ BEFORE ASKING: DECISIONS.md:4762
+  PASS  typecheck
+  PASS  the item's own tests — test/gate-resume.test.ts, test/tests-follow-what-changed.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — test/gate-resume.test.ts, test/tests-follow-what-changed.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/gate-resume.test.ts (-5) — will land FLAGGED for review
   PASS  control battles unchanged
   PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
   PASS  hardcode scan — core knows mechanisms, never names
@@ -26792,3 +26802,67 @@ index 1ba14a0..f9a41fc 100644
   PASS  naming — new content ids use declared kinds
   PASS  naming — no banned words invented
   PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/gate-resume.test.ts b/test/gate-resume.test.ts
+index e0bd22a..c1dda3f 100644
+--- a/test/gate-resume.test.ts
++++ b/test/gate-resume.test.ts
+@@ -13,4 +13,5 @@ import {
+   parseShard, normalizeShards, recordShard, shardStatus, treeHash,
+ } from '../tools/gate-progress.mjs'
++import { stampOf } from '../tools/code-stamp.mjs'
+ 
+ const key = { id: 'item.a', tree: 'tree-1', ctx: 'ctx-1' }
+@@ -124,4 +125,6 @@ describe('end to end, on a scratch repository', () => {
+     git('init', '-q')
+     writeFileSync(join(dir, 'a.txt'), 'one\n')
++    mkdirSync(join(dir, 'src'))
++    writeFileSync(join(dir, 'src', 'a.ts'), 'export const a = 1\n')
+     mkdirSync(join(dir, '.state'))
+     writeFileSync(join(dir, '.state', 'backlog.json'), '[]')
+@@ -130,20 +133,36 @@ describe('end to end, on a scratch repository', () => {
+   const run = (dir: string, ...args: string[]) => spawnSync(process.execPath, [gate, ...args], { cwd: dir, encoding: 'utf8' })
+ 
+-  it('--shards-green accepts a complete set of eight on this tree and names the gap in a partial one', () => {
++  // Changed 2026-10-04 (tool.tests-follow-what-changed; Andrew, DECISIONS.md 'combat is tested only
++  // when the engine changed; a visual change does not re-run the fights'): the record is keyed on the
++  // engine's CODE (tools/code-stamp.mjs), not on every file in the tree. What this test held is kept —
++  // a complete set is green, a partial one names its gap, a changed tree is not green — with "tree"
++  // now meaning the code: the edit that must discard the set is an edit under src/, and an edit to a
++  // file that is not code (a.txt) must NOT. A record with a tree and no stamp, as the gate wrote
++  // before this day, is no pass.
++  it('--shards-green accepts a complete set of eight on this code and names the gap in a partial one', () => {
+     const dir = repo()
+     const tree = treeHash(dir)
++    const stamp = stampOf('engine', dir)
++    expect(stamp).toMatch(/^[0-9a-f]{10}$/)
+     const sets = { 8: [1, 2, 3, 4, 5, 6, 7, 8] }
+-    writeFileSync(join(dir, '.state', 'shards.json'), JSON.stringify({ tree, sets }))
++    writeFileSync(join(dir, '.state', 'shards.json'), JSON.stringify({ stamp, tree, sets }))
+     const green = run(dir, '--shards-green')
+     expect(green.status).toBe(0)
+     expect(green.stdout).toContain('8 of 8 shards passed')
+-    writeFileSync(join(dir, '.state', 'shards.json'), JSON.stringify({ tree, sets: { 8: [1, 2, 3, 4, 5, 6, 7] } }))
++    writeFileSync(join(dir, '.state', 'shards.json'), JSON.stringify({ stamp, tree, sets: { 8: [1, 2, 3, 4, 5, 6, 7] } }))
+     const partial = run(dir, '--shards-green')
+     expect(partial.status).toBe(1)
+     expect(partial.stdout).toContain('node tools/gate.mjs --shard 8/8')
+-    writeFileSync(join(dir, 'a.txt'), 'two\n')
++    // an older tool's record — the same complete set against the tree, no stamp — is no pass
+     writeFileSync(join(dir, '.state', 'shards.json'), JSON.stringify({ tree, sets }))
+     expect(run(dir, '--shards-green').status).toBe(1)
+-  }, 30_000)
++    // a file that is not the engine's code changes: the set still stands
++    writeFileSync(join(dir, 'a.txt'), 'two\n')
++    writeFileSync(join(dir, '.state', 'shards.json'), JSON.stringify({ stamp, tree, sets }))
++    expect(run(dir, '--shards-green').status).toBe(0)
++    // the engine's code changes: every shard must run again
++    writeFileSync(join(dir, 'src', 'a.ts'), 'export const a = 2\n')
++    expect(run(dir, '--shards-green').status).toBe(1)
++  }, 60_000)
+   it('--shard refuses a k outside 1..N before running anything', () => {
+     const r = run(repo(), '--shard', '9/8')
+```
+</details>

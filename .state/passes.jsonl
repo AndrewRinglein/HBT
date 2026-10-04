@@ -1,0 +1,4 @@
+{"suite":"engine","stamp":"09dc4c6d91","with":{"engine":"09dc4c6d91","content":"07edc3f143","viewer":"74061129fd","kingdom":"9a0c763d53"},"at":"2026-10-04T10:42:04.905Z","by":"gate --shard (1 of 1)","in":"HBT-worker-engine","tests":2557}
+{"suite":"engine","stamp":"4cb6488349","failed":true,"at":"2026-10-04T11:23:28.251Z","by":"gate --shard 1/1","in":"HBT-worker-engine"}
+{"suite":"engine","stamp":"4cb6488349","with":{"engine":"4cb6488349","content":"07edc3f143","viewer":"74061129fd","kingdom":"c605b47f78"},"at":"2026-10-04T11:35:23.303Z","by":"gate --shard (1 of 1)","in":"HBT-worker-engine","tests":2557}
+{"suite":"control","stamp":"4cb6488349","pack":"476c0b5f74","golden":"cacc471e2f","at":"2026-10-04T11:37:36.974Z","by":"gate tool.tests-follow-what-changed --land","in":"HBT-worker-engine","moved":null}

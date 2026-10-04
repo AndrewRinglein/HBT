@@ -45,7 +45,8 @@ const abandoned = backlog.filter((b) => b.status === 'failed' || b.status === 'r
 const failCounts = {}
 for (const r of runs) { if (r.type === 'batch-end') continue
   for (const c of r.checks ?? []) {
-  if (!c.ok) failCounts[c.name] = (failCounts[c.name] ?? 0) + 1
+  // a SKIPPED check (2026-10-04: its suite did not run because its code did not change) is neither a failure nor a pass
+  if (!c.ok && !c.skipped) failCounts[c.name] = (failCounts[c.name] ?? 0) + 1
 } }
 const failRows = Object.entries(failCounts).sort((a, b) => b[1] - a[1])
 
@@ -135,9 +136,10 @@ const itemCardsFor = (itemsOrdered) => itemsOrdered.map(([id, rs]) => {
   const last = rs[rs.length - 1]
   const state = last.disposition === 'landed' ? (last.seal === 'passed' ? 'sealed' : 'landed') : 'failing'
   const attempts = rs.map((r) => {
-    const fails = (r.checks ?? []).filter((c) => !c.ok)
+    const fails = (r.checks ?? []).filter((c) => !c.ok && !c.skipped)
+    const skips = (r.checks ?? []).filter((c) => c.skipped)
     const warns = (r.checks ?? []).filter((c) => c.ok && c.warn)
-    const notes = (r.checks ?? []).filter((c) => c.note && (!c.ok || c.warn))
+    const notes = (r.checks ?? []).filter((c) => c.note && (!c.ok || c.warn))   // a skipped check's reason is listed too
     return `
     <div class="run">
       <div class="runhead">
@@ -148,6 +150,7 @@ const itemCardsFor = (itemsOrdered) => itemsOrdered.map(([id, rs]) => {
       </div>
       ${fails.length ? `<div class="fails">${fails.map((c) => `<span class="b b-crit">✗ ${esc(c.name)}</span>`).join(' ')}</div>` : ''}
       ${warns.length ? `<div class="fails">${warns.map((c) => `<span class="b b-warn">⚑ ${esc(c.name)}</span>`).join(' ')}</div>` : ''}
+      ${skips.length ? `<div class="fails">${skips.map((c) => `<span class="b b-warn">SKIPPED ${esc(c.name)}</span>`).join(' ')}</div>` : ''}
       ${notes.length ? `<ul class="notes">${notes.map((c) => `<li>${esc(c.note)}</li>`).join('')}</ul>` : ''}
       ${r.effect ? `<div class="effect">${measurementLabel(r)}: ${esc(r.effect)}</div>` : ''}
     </div>`
