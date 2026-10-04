@@ -4584,3 +4584,9 @@ Ruled:
 
 - **The button for swapping reads "Swap".**
 - **Pressing it gives the option to rearrange the unit's gear** — which of the things it carries goes in which hand — rather than making one fixed exchange. Read as: the choices offered and what a swap costs are the engine's own swap rules (movement.swap-and-shields); the screen offers every arrangement the engine allows and sends the one chosen. Filed: `viewer.swap-button-rearranges`.
+
+Andrew, straight after, on the swap entry above:
+
+“Just the enhanced gear, not adding gear that you didn't already have. Just the ability to swap hands with inventory”
+
+- **The swap rearranges only what the unit already has: its hands with its own inventory.** No gear is added that it did not already carry ("enhanced", dictated, read as "in-hand"). `viewer.swap-button-rearranges` says so.
