@@ -874,3 +874,17 @@ says the hex once per change: `V.onPoint`; `showPose` calls `V.afterPose`), `src
 | `hexTipAfterPropFalls` | The engine's field is the board at `map.loaded`; `prop.damaged` and `prop.destroyed` do not say whether a closed hex has opened. | **Where a hex was closed at the start and a prop on it has since been damaged or destroyed, the tooltip says neither "Cannot be entered" nor a cost.** | The viewer does not work out the engine's passability rule (Law 0). An engine gap if it matters: `prop.destroyed` could say which hexes opened. | Default — 2026-10-04 |
 | `hexTipInside` | "Below it" at the bottom of the screen has no room. | **Just below the lowest point of the hex as the camera shows it, centred on its middle; kept inside the battle area sideways, and drawn above the hex where there is no room below.** It follows the hex through every redraw and every frame of a camera move, and goes when the pointer leaves the board. | It must be readable wherever the hex is. Where the camera's edge bound bites (`arrivalsEdgeColumn`, `bubbleEdgeHex`): a hex of an edge column the view cannot show cannot be pointed at, so it has no tooltip until the view is slid to it. | Default — 2026-10-04 |
 | `hexTipOnBody` | The pointer's pick over a unit's body is that unit's hex. | **Pointing at a body shows the tooltip of the ground it stands on (never the unit's name).** | One pick, one hex; the ground under a unit is still ground. | Default — 2026-10-04 |
+
+## viewer.move-cost-on-grid — 2026-10-04
+
+Engine DECISIONS.md 2026-10-03 'size and shadows are the default; the bleeding-out card; switching heroes asks first; movement
+costs on the grid; a tooltip on every hex' (Andrew: "When the movement grid is up (the blue movement grid on the board), tiles
+that require extra movement points should have that movement cost, I think, maybe on them in gray." — "a look to judge").
+`src/play.js` (the optional `reachCost` fact), `src/board.js` `drawPlay` (`.playCost`), `src/styles.css`; probes
+`tools/move-cost-on-grid.test.mjs`, `test/viewer.move-cost-on-grid.test.ts`, kingdom `test/move-cost-on-grid.test.ts` and
+`tools/move-cost-on-grid.verify.mjs`.
+
+| Switch | Question | Default | Reason | Status |
+|---|---|---|---|---|
+| `moveCostHostWord` | Where does the number on a tile come from? | **The host's play facts gain `reachCost` — `[{hex, cost}]` for hexes of the reach, each once, validated whole (`play.js`); the board writes the number where `cost > 1` and nowhere else. No cost sent, no number drawn, whatever the ground.** | The cost is the engine's for that unit on that hex (an edge to climb or a structure's stairs add to the ground's own cost); the viewer adds nothing up (Law 0) and keeps no cost table. | Default — 2026-10-04 |
+| `moveCostLook` | "I think, maybe on them in gray" — how? | **A bold 19 px numeral in grey (`#b4b1a8`, dark edge) at the middle of the tile, lying on the ground with the grid and turned to read upright at any quarter-turn (`--unspin`); it takes no pointer.** | "A number on tiles already drawn" — the reach tint is the tile, the movement numeral under a unit is the grey. A look for Andrew to judge. | Default — 2026-10-04 |

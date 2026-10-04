@@ -1158,6 +1158,15 @@ export function drawPlay(V) {
   const ring = (hex, cls, colour) => { const n = el('ring ' + cls, `left:${POS[hex].px - LAYOUT.W / 2}px;top:${POS[hex].py - LAYOUT.H / 2}px;background:${colour};pointer-events:none`)
     n.dataset.hex = String(hex); n.style.transform = `translateZ(${heightOf(V, hex) + 2}px)`; layer.appendChild(n); return n }
   for (const h of P.reach) tile(h, 'playReach', `background:${PLAY_HUE.reach};${HEXCLIP}`)
+  /* viewer.move-cost-on-grid (engine DECISIONS.md 2026-10-03, Andrew: "tiles that require extra movement points should have
+     that movement cost, I think, maybe on them in gray"): the host's cost of entering each reach hex (play.js reachCost — the
+     engine's), written small and grey on the tiles that cost more than one. It lies on the tile and reads upright at any
+     quarter-turn; nothing is added up here, and a hex the host named no cost for carries none (viewer SWITCHES moveCost*). */
+  for (const c of P.reachCost || []) { if (!(c.cost > 1)) continue
+    const p = POS[c.hex], n = el('playCost', `left:${p.px}px;top:${p.py}px`)
+    n.dataset.hex = String(c.hex); n.dataset.cost = String(c.cost); n.textContent = String(c.cost)
+    n.style.transform = `translate(-50%,-50%) translateZ(${heightOf(V, c.hex) + 2}px) rotateZ(var(--unspin, 0deg))`
+    layer.appendChild(n) }
   for (const h of P.zoc) tile(h, 'playZoc', `background:repeating-linear-gradient(45deg,${PLAY_HUE.zoc} 0 5px,transparent 5px 14px);${HEXCLIP}`)
   if (P.threat) {
     for (const h of P.threat.move) tile(h, 'playThreatMove', `background:${PLAY_HUE.threatMove};${HEXCLIP}`)
