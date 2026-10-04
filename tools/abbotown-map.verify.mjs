@@ -109,7 +109,15 @@ assert.ok(!v.shown()&&v.map().querySelectorAll('[data-section]').length===0,'sti
 assert.ok(v.w.document.body.classList.contains('battle-view'),'the battle is its own full screen')
 // Law 10, viewer.turn-taking (engine DECISIONS.md 2026-10-03 'a hero starts its Activation with its basic move armed'; kingdom
 // SWITCHES playQueueProposal overturned): the Hero Phase begins its first hero at once — was: 'selecting', waiting for a click
-assert.equal(v.handle.session.ctx.battleCursor.at,'acting','the Hero Phase begins its first hero')
+// Law 10, 2026-10-04 (kingdom.tutorial-orphanage-first-move; engine DECISIONS.md 2026-10-04 'the opening's tutorial: …': "It then
+// zooms back to your hero and says \"Your Hero,\" and your hero is activated."): was
+//   assert.equal(v.handle.session.ctx.battleCursor.at,'acting','the Hero Phase begins its first hero')
+// — at once. In a run's battle 1 the lesson's four opening rows come first and nobody is begun while they are up; when they
+// are over (each clicked past here: a click moves on) the Hero Phase begins its first hero, as it did.
+assert.equal(v.handle.session.ctx.battleCursor.at,'selecting','battle 1 of a run opens on its lesson: nobody is begun yet');assert.equal(v.handle.lesson,'lesson.orphanage.protect')
+for(let i=0;i<20&&v.handle.lesson&&v.handle.session.ctx.battleCursor.at==='selecting';i++){v.handle.viewer._V.dom.stage.querySelectorAll('.playHex')[0].handlers.click({detail:1});v.w._flush(20)}
+for(let i=0;i<4000&&(v.handle.busy||v.handle.session.ctx.battleCursor.at!=='acting');i++)v.w._flush(20)
+assert.equal(v.handle.session.ctx.battleCursor.at,'acting','the lesson\'s opening rows over, the Hero Phase begins its first hero')
 
 /* 3 · a hero win: "Back to the map", and the map shows the Orphanage taken and the Lumberjack House next */
 const transfer=()=>v.w.document.getElementById('transferText')
