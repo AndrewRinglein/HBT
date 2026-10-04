@@ -38,9 +38,15 @@ function afterOrphanage() {
   for (const h of Object.keys(ctx.campaign.roster)) performDeploy(ctx, h, 'test')
   performAdvancePrep(ctx, 'test'); performAdvancePrep(ctx, 'test')
   const e = ctx.campaign.cursor.engagement!
-  const s = createSandbox({ mapId: e.mapId, heroes: [...e.deployed], heroRows: e.deployed.map((id) => structuredClone(ctx.campaign.roster[id]!)), enemies: [], seed: 1, encounterId: e.id })
-  runBattle(s.ctx)
-  const r = sandboxResult(s), k = resolveReckoning(ctx.campaign, e, r)
+  // Law 10, 2026-10-03 (kingdom.opening-draft-pool; engine DECISIONS.md 2026-10-03 'the opening draft pool is all 24 heroes,
+  // Rogues and Mages included'): was one battle on `seed: 1`, which the five-hero pool's first offer on Campaign seed 5 won.
+  // The pool is the 24 base heroes now; that first offer is the Forest Elf, who alone loses the Orphanage on seed 1 and wins
+  // it on seed 5. "A won Orphanage" is found — the first seed the engine's AI wins on — and asserted won.
+  const fight = (seed: number) => { const s = createSandbox({ mapId: e.mapId, heroes: [...e.deployed], heroRows: e.deployed.map((id) => structuredClone(ctx.campaign.roster[id]!)), enemies: [], seed, encounterId: e.id }); runBattle(s.ctx); return sandboxResult(s) }
+  let r = fight(1)
+  for (let seed = 2; seed <= 40 && r.outcome !== 'heroClear'; seed++) r = fight(seed)
+  expect(r.outcome).toBe('heroClear')
+  const k = resolveReckoning(ctx.campaign, e, r)
   setBattleOutcome(ctx, r, k, 'test')
   applyBattleResult(ctx, e, r, k)
   return { ctx, last: { engagementId: e.id, result: r, reckoning: k } }

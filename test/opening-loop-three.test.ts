@@ -46,6 +46,18 @@ function played(ctx: Ctx, seed = 1): EngagementResult {
   runBattle(s.ctx)
   return sandboxResult(s)
 }
+/**
+ * The battle on the cursor WON: the first seed the engine's AI wins it on.
+ * Law 10, 2026-10-03 (kingdom.opening-draft-pool; engine DECISIONS.md 2026-10-03 'the opening draft pool is all 24 heroes,
+ * Rogues and Mages included'): the won battles below (and the one `lost` turns into a loss) were `played(ctx)` — seed 1, which the five-hero pool's first
+ * offer on Campaign seed 5 won. The pool is the 24 base heroes now and that first offer is the Forest Elf, who alone loses
+ * the Orphanage on seed 1 (a wipe) and wins it on seed 5. What the tests hold is unchanged — `expect(r.outcome)
+ * .toBe('heroClear')` still stands — the won battle is found, not assumed on seed 1.
+ */
+function playedWon(ctx: Ctx): EngagementResult {
+  for (let seed = 1; seed <= 40; seed++) { const r = played(ctx, seed); if (r.outcome === 'heroClear') return r }
+  throw new Error(`no seed from 1 to 40 wins ${ctx.campaign.cursor.engagement!.id} for ${ctx.campaign.cursor.engagement!.deployed.join(', ')}`)
+}
 function write(ctx: Ctx, r: EngagementResult): void {
   const e = ctx.campaign.cursor.engagement!
   const k = resolveReckoning(ctx.campaign, e, r)
@@ -79,13 +91,15 @@ describe('kingdom.opening-loop-three — the opening fielded as its encounters',
 
   it('a won battle advances the opening, pays its row and rescues the civilians who lived — never the dead', () => {
     const ctx = atOrphanage()
-    const r = played(ctx)
+    const r = playedWon(ctx)
     expect(r.outcome).toBe('heroClear')
     const civ = r.units.filter((u) => u.side === 'hero' && u.role === 'encounter')
     expect(civ.map((u) => u.typeId).sort()).toEqual(['hero.fixed.orphans', 'hero.fixed.school-teacher'])
     // one lives, one dies: only the living one joins
+    // (2026-10-03, kingdom.opening-draft-pool: the one made dead is also marked downed — 'no hero dies standing', core/result.ts;
+    // on the old seed-1 battle that civilian happened to have gone down already, on the battle found now it had not)
     const i = r.units.indexOf(civ[0]!), j = r.units.indexOf(civ[1]!)
-    const fates = (x: EngagementResult) => ({ ...x, units: x.units.map((u, k) => k === i ? { ...u, lifeState: 'standing' as const, dead: false } : k === j ? { ...u, lifeState: 'dead' as const, dead: true } : u) })
+    const fates = (x: EngagementResult) => ({ ...x, units: x.units.map((u, k) => k === i ? { ...u, lifeState: 'standing' as const, dead: false } : k === j ? { ...u, lifeState: 'dead' as const, dead: true, downed: true } : u) })
     write(ctx, fates(r))
     expect(ctx.campaign.cursor.prologue).toBe(2)
     const civilians = Object.values(ctx.campaign.roster).filter((h) => h.classes.includes('class.civilian'))
@@ -97,7 +111,7 @@ describe('kingdom.opening-loop-three — the opening fielded as its encounters',
 
   it('a lost opening battle is replayed: the Campaign goes on, nothing advances, nobody is rescued, the wounds stay', () => {
     const ctx = atOrphanage()
-    write(ctx, lost(played(ctx)))
+    write(ctx, lost(playedWon(ctx)))
     expect(ctx.campaign.ended).toBeNull()
     expect(ctx.campaign.cursor.prologue).toBe(1)
     expect(Object.values(ctx.campaign.roster).filter((h) => h.classes.includes('class.civilian'))).toEqual([])
@@ -113,7 +127,7 @@ describe('kingdom.opening-loop-three — the opening fielded as its encounters',
 
   it('the next battle is refused until its drafts are taken; the cadence is 1, then 2 after battle 1', () => {
     const ctx = atOrphanage()
-    write(ctx, played(ctx))
+    write(ctx, playedWon(ctx))
     toOpen(ctx)
     expect(() => performFieldOpeningBattle(ctx, battleOf(LUMBERJACK), 'test')).toThrow(/refused: 2 to draft before battle 2/)
   })
