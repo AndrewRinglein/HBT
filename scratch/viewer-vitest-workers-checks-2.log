@@ -1,0 +1,109 @@
+door probe: only src/engine.ts imports the engine
+laws 5 and 6: no mode below the intent layer, no status hue outside theme.js
+typecheck (the door, the sheet, the .mts tools — the .js is not typed): clean
+✔ real support histories retain live ordinary power and boosted-healing coverage (2.6931ms)
+✔ real burst declaration preserves detached engine footprint/UIDs and clears ordinary attack state (0.2554ms)
+✔ burst action details show authored packets, filter, shape and healing without scalar guesses or attack hooks (7.0207ms)
+✔ real save events: HP/float ownership, durable seek facts and every-event cue parity (1.0987ms)
+✔ real shielding events: HP/float ownership, durable seek facts and every-event cue parity (0.6973ms)
+✔ real healing events: HP/float ownership, durable seek facts and every-event cue parity (0.5662ms)
+✔ real friendly events: HP/float ownership, durable seek facts and every-event cue parity (1.5276ms)
+✔ real zero events: HP/float ownership, durable seek facts and every-event cue parity (0.7232ms)
+✔ real fixture explicitly covers empty centre, shielding, saves, friendly fire and zero payload (0.2069ms)
+✔ imported burst names, props and payload fields remain escaped log text (0.977ms)
+✔ packet floats carry exact nested applied fields and distinct types, never the base aggregate label (2.8055ms)
+✔ onHit hook damage cannot steal a confirmed chart-only weapon critical (0.3753ms)
+✔ packet log prints supplied per-type mitigation and actual HP facts without relabeling the total physical (1.4915ms)
+✔ action details expose authored packets and physical penetration verbatim (0.2924ms)
+✔ scalar damage keeps direct event provenance (0.1945ms)
+✔ packet attacks await an engine total instead of displaying a base-only forecast (0.1968ms)
+✔ seek cancellation cannot let old float timers release new packet slots (1.4784ms)
+✔ imported packet field strings remain escaped log text (0.2467ms)
+✔ imported packet damage remains literal text in the actual float DOM (0.6838ms)
+✔ all six damage types keep engine aim numbers and never invent sheet mitigation (1.5866ms)
+✔ published sheets retain named authored defenses and absorption metadata (7.0986ms)
+✔ passive source no longer owns a future status-damage or lethal forecast (1.1124ms)
+✔ innerHTML replacement detaches the old subtree and permits reattachment (0.9571ms)
+✔ textContent replacement detaches the old subtree and permits reattachment (0.1496ms)
+✔ the fixture: two drinks by one warrior, from two instances, each spent (0.8142ms)
+✔ the fold carries the instances spent on arrival, from unit.enter (2.0038ms)
+✔ the fold keeps each instance's uses left as charge.spent states them (0.468ms)
+✔ the log names the instance that paid, and says when it is spent (1.5193ms)
+✔ the fixture is the engine log of one swap: stamina.spent, loadout.swapped, then unit.equipped for what arrived (0.6117ms)
+✔ the fold knows loadout.swapped and the pump gives it a beat (0.3192ms)
+✔ before the swap: hands from unit.equipped (by instance), stowed from unit.enter (1.6684ms)
+✔ after the swap: the hands are the event's, the rest is stowed, the kit and its modifiers follow the hands (0.4438ms)
+✔ the bar's icons change: the longsword's attacks leave, the shield's powers arrive (0.697ms)
+✔ one float names the swap and the stamina spent, verbatim from the event (0.3243ms)
+✔ seeking to any point after the swap equals stepping to it (0.4039ms)
+✔ the log line names the hands before and after and the stamina spent (1.2812ms)
+✔ the fixture: three blows at hex 10 — damaged, destroyed to low cover with a remnant, damaged again (0.828ms)
+✔ the fold knows the three events and the pump gives each a beat (0.3585ms)
+✔ the fold follows the prop: intact, damaged 1/2, the remnant exactly, then the remnant damaged (1.4957ms)
+✔ scrubbing never edits the map.loaded fact it started from (0.1385ms)
+✔ a prop that leaves nothing is removed; low cover with no remnant is refused loudly (0.3676ms)
+✔ floats: the blow names the props it struck; a step shows n/of; the fall says what is left (0.1743ms)
+✔ the log says each step and what the fall leaves, in the engine's own fields (1.0051ms)
+✔ actual browser entry emits no catalog loader or gameplay modules (207.723ms)
+✔ guard distinguishes emitted bytes from parsed or tree-shaken inputs (0.4175ms)
+✔ normal static generator still validates and exports identical data (307.588ms)
+✔ normal static generator rejects malformed catalog before writing (144.4898ms)
+✔ every engine hook has a panel label (0.7916ms)
+✔ the action bar's attack hooks are the engine's attacker hooks (1.0568ms)
+✔ every effect kind has a word (0.3351ms)
+✔ every ground the engine decodes has a swatch — nothing falls back to plains in silence (0.1094ms)
+✔ the painted layers' statuses are the engine's, as generated/static.json carries them (0.1412ms)
+ℹ tests 52
+ℹ suites 0
+ℹ pass 52
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 798.8651
+candidate: reusing .build/gate-candidate.html · sha256 e97ace37381a (built once on this tree)
+
+ RUN  v4.1.11 C:/Users/aring/Desktop/HBT-worker-engine/viewer
+
+···································································································································x······x·······················
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/character-models.test.ts > the character models stand on the engine roster > every file is the one its hash names
+Error: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ test/character-models.test.ts:48:3
+     46|     expect(look.missing).toEqual([])
+     47|   })
+     48|   it('every file is the one its hash names', () => {
+       |   ^
+     49|     const files = new Map<string, string>()
+     50|     for (const b of Object.values(models)) for (const look of b.looks)…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  test/opening-cast.test.ts > battles 2 and 3's cast in the new screen > every file is the one its hash names
+Error: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ test/opening-cast.test.ts:77:3
+     75|     }
+     76|   })
+     77|   it('every file is the one its hash names', () => {
+       |   ^
+     78|     const files = new Map<string, string>()
+     79|     for (const b of Object.values(models)) for (const look of b.looks)…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  2 failed | 45 passed (47)
+      Tests  2 failed | 160 passed (162)
+   Start at  09:17:48
+   Duration  314.93s (transform 13.16s, setup 0ms, import 90.87s, tests 1112.61s, environment 4ms)
+
+
+part checks: FAIL — test/ — the page tests against the engine (318 s) · tree be9500df22
+
+real	5m17.802s
+user	0m0.000s
+sys	0m0.000s

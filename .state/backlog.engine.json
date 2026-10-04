@@ -5520,7 +5520,9 @@
   "shape": "plumbing",
   "spec": "Found 2026-10-04 by the engine and viewer workers (GBH SWITCHES vitest.kingdomConfig, gate.shardFewerWorkersUnderLoad): the viewer has no vitest config of its own, so its gate's checks part runs on vitest's default worker count and, with other workers' gates running, untouched page tests time out (at 60-170 s, and one headless-Chrome verifier hung); every worker has set VITEST_MAX_WORKERS=4 by hand. tool.kingdom-vitest-workers gave kingdom a vitest.config.ts using the engine's cap function. Do the same for the viewer: one cap from the same function (read engine/vitest.config.ts and kingdom/vitest.config.ts first - one shape), the environment still able to override it; viewer/vitest.config.ts is the viewer's code (engine/tools/code-stamp.mjs PACKAGE_CODE - check it is in the viewer's list). No test's own time limit changes (Law 10). The viewer commits in its own repository; record it in GBH SWITCHES.md.",
   "expect": "With no environment variable set, the viewer gate's checks part runs on the capped number of vitest workers; VITEST_MAX_WORKERS still overrides; `node tools/gate.mjs --part checks` passes in the viewer with another package's gate running on the machine; no test's time limit changed.",
-  "note": "Filed by the kingdom chat, 2026-10-04, from the workers' reports. Small tooling."
+  "note": "Filed by the kingdom chat, 2026-10-04, from the workers' reports. Small tooling.",
+  "status": "done",
+  "sha": "af84889"
  },
  {
   "id": "fix.burst-ground-class-powers",

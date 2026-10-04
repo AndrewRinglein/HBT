@@ -81,11 +81,13 @@ export const PACKAGE_CODE = {
     code: ['gen', 'test', 'settled.json', 'package.json', ':(glob)*.mjs', ':(glob)*.mts', ':(glob)*.ts'],
     not: ['gen/functions.json', 'gen/enemy-pack-gaps.json', 'gen/class-power-gaps.json', LOGS],
   },
-  // viewer: its sources, its tools, its tests and the battle library its gate plays (GBH
-  // SWITCHES tests.viewerLibraryIsCode) → the viewer's gate. Not generated/ (the dumps,
-  // the prepared art) and not BATTLE-VIEWER.html (the built page).
+  // viewer: its sources, its tools, its tests, the battle library its gate plays (GBH
+  // SWITCHES tests.viewerLibraryIsCode) and its package, compiler and test-runner config
+  // (vitest.config.ts: how many workers its page tests run on — tool.viewer-vitest-workers)
+  // → the viewer's gate. Not generated/ (the dumps, the prepared art) and not
+  // BATTLE-VIEWER.html (the built page).
   viewer: {
-    code: ['src', 'tools', 'test', 'battles', 'art-src', 'package.json', 'package-lock.json', 'tsconfig.json'],
+    code: ['src', 'tools', 'test', 'battles', 'art-src', 'package.json', 'package-lock.json', 'tsconfig.json', 'vitest.config.ts'],
     not: [LOGS],
   },
   // kingdom: its sources without the generated items, its tests, its tools, its one
