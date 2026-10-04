@@ -4599,3 +4599,19 @@ Andrew, in the kingdom chat, playing the opening run (the Bridge):
 
 - **The model.** viewer `tools/character-models.mjs:97` stands `unit.fire-imp` on the look `fire-imp` of the demo's winged imp; the reviewed Fire Imp look — the fire skin and flames, `assets/characters/winged-imp/fire-imp.html` and its `review/fire-imp-fire-flames-*` captures — is not what the battle shows. Filed: `viewer.fire-imp-own-model`.
 - **The self-burn.** It is the Fire Imp's own row, not a fault in the playback: `unit.fire-imp` (content bestiary) carries the trigger `onActivationEnd` — "every unit within N hexes", range 2 — apply Burn 1. "Every unit within 2 hexes" counts the imp itself (distance 0) and its own side, so at the end of each of its Activations it applies Burn 1 to itself, its Fire Resist 2 takes it, and the screen shows the reaction. Whether the aura should spare the imp itself, or its allies too, is his to say: asked. Nothing is changed until he answers.
+
+## 2026-10-03 — reported: the priest's Holy Texts has no heal in battle — three starting weapons lose their power on the way into the engine
+
+Andrew, in the kingdom chat, playing the opening run with the Battle Chaplain:
+
+“This priest only has a verse attack.   It seems like he has nothing in his hands. I don't understand what he's equipped with.”
+
+“I don't get where this Holy Text came from. There's no starting hero that's supposed to have one single thing. I'm just a little bit confused.   Why doesn't he have the healing power? Why does he have an item that's supposed to be a tier 1 that only has one thing in it?”
+
+Found, not ruled — he is right, and it is a gap, not the content:
+
+- **The Holy Texts is the Battle Chaplain's own starting weapon**, and in the content it holds two things: `hero.base.priest-armored`'s kit is the Round Shield, the Holy Texts and the Pilgrim's Habit; `item.holy-texts` (tier 1) grants the attack **Verse** and the power **Mercy** — "Heal the target for 2 + half your Spirit", 2 Stamina, one ally within 4 hexes ("the hurt-or-heal choice is the tier-1 shape").
+- **The engine's pack drops Mercy.** `content/gen/enemy-pack-gaps.json`: "item.holy-texts grants power.holy-texts.mercy — item power — shape unparsed"; the generated pack's Holy Texts grants Verse alone. So in battle he has Verse and Punch and no heal.
+- **The same gap takes two more starting powers:** the Fire Staff's **Fireball** (the Emberwright, the Pyre Witch, the Crimson Sorceress) and the Frost Staff's **Frost Nova** (the Archive Scholar). The Holy Symbol's Heal does reach the engine. Of the 24 base heroes, six field a starting weapon with half of what it does.
+
+Filed: `fix.starting-kit-powers`, first in the engine queue.
