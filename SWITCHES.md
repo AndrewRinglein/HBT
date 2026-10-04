@@ -752,6 +752,18 @@ through the gear panel; its record unchanged, so engine `test/movement-swap-and-
 | `swapFactOwnGearOnly` | Could the panel ever show the stash, or an item of another unit? | **No: `carried` is read from the unit's own loadout in the battle; a hand list names only those instances (the viewer refuses a fact that names another).** | Ruled the same day: "not adding gear that you didn't already have". | Default — 2026-10-04 |
 | `swapLauncherUnchanged` | Does a free battle's launcher (the Swap dropdown and its button) change too? | **No: it already reads "Swap (N stamina)" beside a list of the hands to hold; the ruling is about the battle screen's bar.** | `sandboxSwapControl` is the launcher's own control, retired for battles played on the board. | Default — 2026-10-04 |
 
+## viewer.bar-moves-grey-when-done — 2026-10-04
+
+Engine DECISIONS.md 2026-10-03 'the action bar: the moves grey slightly once the move is done, nothing else greys; every action
+shows all it does; the Soldier holds no sword' (Andrew: "There should be a slight graying out of the move actions after move
+actions are completed." / "Yes, they should still be usable before you've moved. However, if you do it, you'll lose your move,
+so I guess, actually, don't gray them out. Just gray the moves out after a move is done."). `src/ui/play-input.ts` (the
+`moveDone` fact); probes `test/bar-moves-grey-when-done.test.ts`, `tools/bar-moves-grey-when-done.verify.mjs`;
+`tools/bar-moves-grey-when-done.shot.mjs` takes the bar before and after a whole walk in real Chrome for Andrew's eye.
+
+| Switch | Question | Default | Reason | Status |
+|---|---|---|---|---|
+| `moveDoneFact` | "Once its move is done — its movement spent, or lost because it used an attack or power first, read from the engine's own state through the host." The engine has no one flag for that: a paid attack or power ends the Activation at once (there is no bar left to grey); a walk spends the movement ACTION (`moveUsed`) but the engine still takes a move as the PRIMARY action — the rest of a walk cut short, or a Leap or Side Roll after a whole walk. Which move actions does the host name as done? | **Per move action: the acting unit has moved (`moveUsed`) and the engine lists no further use of that action (no destination among `sandboxChoices` — what `validateBattleCommand` takes, in either slot).** So the basic move greys once its movement is walked out; a move the engine still takes stays at full strength; before the unit has moved nothing is named, whatever the engine refuses for other reasons (a cooldown keeps its own disabled look). A Charge is one of the unit's attacks and is never named. | "Grey a move action only when the engine no longer offers it its use" — the viewer must not grey a button that still works, nor invent a loss the engine does not impose. FOUND for Andrew: his "just gray the moves out after a move is done" is not what the engine does today — after moving, a hero may still Leap, Side Roll, or walk on with what is left, spending its primary action. If every move should grey (and be refused) once the unit has moved, that is an engine rule to change, not a viewer one. | Default — 2026-10-04 |
 
 ## kingdom.opening-sword-waits — the Flaming Longsword waits for its taker (2026-10-04)
 

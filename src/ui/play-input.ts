@@ -43,7 +43,7 @@ import type {BattleCommand,Forecast} from '../engine.js'
 export type PlayEvent={kind:'hex';hex:number}|{kind:'point';hex:number|null}|{kind:'unit';id:number;hex:number}|{kind:'choose';id:number}|{kind:'back'}|{kind:'slot';actionId:string;unit:number|null}|{kind:'end-turn'}|{kind:'end-activation'}|{kind:'swap';index:number;unit:number|null}|{kind:'answer';yes:boolean}
 export type PlayAim={from:number;to:number;target:number|null;hit:number|null;dmg:number|null;hpAfter:number|null;lethal:boolean;locked:boolean}
 /** What the viewer draws (viewer src/play.js validates the same shape). Hexes ascending unless named a walk. */
-export type PlayFacts={actor:number|null;slot:string|null;reach:number[];zoc:number[];path:number[];provokes:number[];ghost:{unit:number;hex:number}|null;threat:{unit:number;move:number[];hit:number[]}|null;targets:number[];aim:PlayAim|null;note:string|null;swap?:PlaySwap|null;ask?:PlayAsk|null}
+export type PlayFacts={actor:number|null;slot:string|null;reach:number[];zoc:number[];path:number[];provokes:number[];ghost:{unit:number;hex:number}|null;threat:{unit:number;move:number[];hit:number[]}|null;targets:number[];aim:PlayAim|null;note:string|null;swap?:PlaySwap|null;ask?:PlayAsk|null;moveDone?:string[]}
 /** viewer.switch-hero-asks: the question the battle screen must put before anything else is done — end the Activation of the
     unit acting (`from`) and begin the unit double-clicked (`to`)? Unit ids; the viewer draws the pop-up with their names and
     offers {kind:'answer', yes} back (viewer src/play.js's optional ask fact). */
@@ -251,6 +251,19 @@ export function createPlayInput(session:()=>Sandbox|null,run:(command:BattleComm
  /** a movement power that goes nowhere (Devotion: stepRange 0): its only legal destination is the hero's own hex */
  const standsStill=(s:Sandbox,actor:number,choices:SandboxChoice[])=>choices.length>0&&choices.every(c=>(c.command as {destination:number}).destination===s.ctx.state.units[actor]!.hex)
 
+ /** viewer.bar-moves-grey-when-done (engine DECISIONS.md 2026-10-03 'the action bar: the moves grey slightly once the move is
+     done, nothing else greys', Andrew: "Just gray the moves out after a move is done."): the acting unit's move actions that
+     are DONE for this Activation — read from the engine's own state, never guessed: its unit has moved (the engine's
+     `moveUsed`: its movement action is spent) and the engine lists no further use of that action (no destination among the
+     choices validateBattleCommand takes, in either slot). So the basic move greys once its movement is walked out; a move the
+     engine still offers — the rest of a walk cut short, a Leap or a Side Roll taken as the primary action — stays at full
+     strength; and before the unit has moved nothing is done, whatever the engine refuses (kingdom SWITCHES moveDoneFact). */
+ const moveDoneOf=(s:Sandbox,actor:number):string[]=>{
+  const u=s.ctx.state.units[actor]!
+  if(!u.moveUsed)return []
+  const offered=new Set(choicesOf(s).map(c=>c.command.actionId))
+  return u.actions.filter(id=>{const a=s.ctx.actions[id];return !!a&&isMove(a)&&!isAttack(a)&&!offered.has(id)})
+ }
  function facts():PlayFacts{
   const s=session(),empty:PlayFacts={actor:null,slot:null,reach:[],zoc:[],path:[],provokes:[],ghost:null,threat:null,targets:[],aim:null,note}
   if(!s||s.ctx.state.outcome)return {...empty,note:null}
@@ -258,7 +271,7 @@ export function createPlayInput(session:()=>Sandbox|null,run:(command:BattleComm
   const threat=chosen===null&&point!==null?threatAt(s,point):null
   if(actor===null)return {...empty,threat}
   const here=s.ctx.state.units[actor]!.hex
-  const f:PlayFacts={...empty,actor,threat,slot:chosen,ghost:ghost?{unit:actor,hex:ghost.destination}:null,swap:swapFact(s),...(asking?{ask:{kind:'switch' as const,from:asking.from,to:asking.to}}:{})}
+  const f:PlayFacts={...empty,actor,threat,slot:chosen,ghost:ghost?{unit:actor,hex:ghost.destination}:null,swap:swapFact(s),moveDone:moveDoneOf(s,actor),...(asking?{ask:{kind:'switch' as const,from:asking.from,to:asking.to}}:{})}
   const mv=moveOf(s,actor)
   if(mv){f.slot=mv.actionId
    f.reach=asc(mv.choices.map(c=>(c.command as {destination:number}).destination))
