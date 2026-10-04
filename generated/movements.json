@@ -2375,10 +2375,10 @@
     "item.fire-staff"
    ],
    "action": "power.fire-staff.fireball",
-   "name": "power.fire-staff.fireball",
-   "kind": null,
-   "engine": "no",
-   "bar": null,
+   "name": "Flame Burst",
+   "kind": "burst",
+   "engine": "yes",
+   "bar": "power",
    "motion": null,
    "bodies": {
     "Ancient Elf": null,
@@ -2404,9 +2404,14 @@
     "The Skull": null
    },
    "motionStatus": "missing",
-   "selected": null,
+   "selected": {
+    "key": "spell",
+    "label": "Casting / power gesture",
+    "clip": "Spell_Simple_Shoot",
+    "record": "assets/characters/oathblade-armor/rebuild/free-motion-study/selections.json"
+   },
    "ruling": null,
-   "note": "the pack names it; the engine has no row (item power — shape unparsed)",
+   "note": null,
    "variants": 0
   },
   {
@@ -2495,10 +2500,10 @@
     "item.frost-staff"
    ],
    "action": "power.frost-staff.frost-nova",
-   "name": "power.frost-staff.frost-nova",
-   "kind": null,
-   "engine": "no",
-   "bar": null,
+   "name": "Frost Nova",
+   "kind": "burst",
+   "engine": "yes",
+   "bar": "power",
    "motion": null,
    "bodies": {
     "Ancient Elf": null,
@@ -2524,9 +2529,14 @@
     "The Skull": null
    },
    "motionStatus": "missing",
-   "selected": null,
+   "selected": {
+    "key": "spell",
+    "label": "Casting / power gesture",
+    "clip": "Spell_Simple_Shoot",
+    "record": "assets/characters/oathblade-armor/rebuild/free-motion-study/selections.json"
+   },
    "ruling": null,
-   "note": "the pack names it; the engine has no row (item power — shape unparsed)",
+   "note": null,
    "variants": 0
   },
   {
@@ -3310,10 +3320,10 @@
     "item.holy-texts"
    ],
    "action": "power.holy-texts.mercy",
-   "name": "power.holy-texts.mercy",
-   "kind": null,
-   "engine": "no",
-   "bar": null,
+   "name": "Mercy",
+   "kind": "power",
+   "engine": "yes",
+   "bar": "power",
    "motion": null,
    "bodies": {
     "Ancient Elf": null,
@@ -3339,9 +3349,14 @@
     "The Skull": null
    },
    "motionStatus": "missing",
-   "selected": null,
+   "selected": {
+    "key": "spell",
+    "label": "Casting / power gesture",
+    "clip": "Spell_Simple_Shoot",
+    "record": "assets/characters/oathblade-armor/rebuild/free-motion-study/selections.json"
+   },
    "ruling": null,
-   "note": "the pack names it; the engine has no row (item power — shape unparsed)",
+   "note": null,
    "variants": 0
   },
   {
@@ -22209,10 +22224,10 @@
  "counts": {
   "rows": 510,
   "missing": 351,
-  "noEngine": 40,
+  "noEngine": 37,
   "inert": 239,
   "noMotion": 351,
-  "selectedUnbound": 304,
+  "selectedUnbound": 307,
   "partial": 73
  }
 }

@@ -24033,3 +24033,145 @@ index d7b29b5..dcf9f1d 100644
    })
 ```
 </details>
+
+## fix.starting-kit-powers — LANDED `a44f767` **NEEDS REVIEW**
+2026-10-04 07:42
+
+  PASS  dependencies landed
+  PASS  not already decided — no existing ruling matches
+  PASS  typecheck
+  PASS  the item's own tests — test/battle-cursor.test.ts, test/field-eve-24.test.ts, test/items-per-unit.test.ts, test/opening-cavern-trail.test.ts, test/starting-kit-powers.test.ts
+  PASS  gate 1 — the id appears in a real battle — power.holy-texts.mercy: 7 log lines, 7 fired, 5 changed state
+  PASS  brought its own tests — test/battle-cursor.test.ts, test/field-eve-24.test.ts, test/items-per-unit.test.ts, test/opening-cavern-trail.test.ts, test/fixtures/battle-cursor-starting-kit-powers.json, test/starting-kit-powers.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/battle-cursor.test.ts (-2), test/field-eve-24.test.ts (-1), test/items-per-unit.test.ts (-3), test/opening-cavern-trail.test.ts (-1) — will land FLAGGED for review
+  PASS  control battles unchanged
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — shape 'data' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without power.holy-texts.mercy — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/battle-cursor.test.ts b/test/battle-cursor.test.ts
+index 2521813..b0bfb7d 100644
+--- a/test/battle-cursor.test.ts
++++ b/test/battle-cursor.test.ts
+@@ -281,4 +281,12 @@ const openingLevelsGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-c
+ // affliction's badge.gained line names its rule). A `changed` case is checked here and skips the older layers.
+ const afflictionsAtZeroRuleGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-afflictions-at-zero-rule.json', import.meta.url), 'utf8'))
++// fix.starting-kit-powers (2026-10-04; DECISIONS.md 2026-10-03 'reported: the priest's Holy Texts has no heal in battle — three
++// starting weapons lose their power on the way into the engine'), Law 10: the Holy Texts' Mercy, the Fire Staff's Flame Burst and
++// the Frost Staff's Frost Nova reach the engine, so six of the 24 base heroes field a power they did not have and the AI plays it.
++// Every case frozen here (tools/capture-starting-kit-powers-cursor.mts). Moved for real, the report answered (state, RNG and
++// result): the nineteen cases that field one of the six — showcase.assembled-party, .eve-24-b, .horrors, .kiln, .prologue-party,
++// .rime, .supper, .surrounded and .waystation, test.caravan-aftermath, test.item-uses, test.opening-bridge, -cathedral,
++// -cavern-trail, -gates and -lumberjack, and progression-surge-0, -1 and -2. A `changed` case is checked here and skips the older layers.
++const startingKitPowersGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-starting-kit-powers.json', import.meta.url), 'utf8'))
+ const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
+ // Explicit rule migration, not regenerated historical hashes. These nine old
+@@ -400,5 +408,8 @@ describe('resumable battle cursor', () => {
+       const orphansKnifeExpected = orphansKnifeGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+       const afflictionsAtZeroRuleExpected = afflictionsAtZeroRuleGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+-      const afflictionsAtZeroRuleMoved = afflictionsAtZeroRuleExpected?.changed === true
++      const startingKitPowersExpected = startingKitPowersGolden.cases.find((row:{id:string})=>row.id===fixture.id)
++      const startingKitPowersMoved = startingKitPowersExpected?.changed === true
++      // was: const afflictionsAtZeroRuleMoved = afflictionsAtZeroRuleExpected?.changed === true — a starting-kit-powers-moved case skips the afflictions-at-zero-rule layer too (fix.starting-kit-powers 2026-10-04)
++      const afflictionsAtZeroRuleMoved = afflictionsAtZeroRuleExpected?.changed === true || startingKitPowersMoved
+       const openingLevelsExpected = openingLevelsGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+       // was: const openingLevelsMoved = openingLevelsExpected?.changed === true — an afflictions-at-zero-rule-moved case skips the opening-levels layer too (rule.afflictions-at-zero-refiled-2 2026-10-02)
+@@ -494,5 +505,12 @@ describe('resumable battle cursor', () => {
+           }
+         } else result = battle.runBattle(ctx)
+-        if (afflictionsAtZeroRuleExpected) {
++        if (startingKitPowersExpected) {
++        expect(hash(ctx.events), 'full starting-kit-powers events').toBe(startingKitPowersExpected.events)
++        expect(hash(ctx.state), 'full starting-kit-powers state').toBe(startingKitPowersExpected.state)
++        expect(hash(ctx.rng.log), 'full starting-kit-powers RNG').toBe(startingKitPowersExpected.rng)
++        expect(result).toEqual(startingKitPowersExpected.result)
++        }
++        // was: if (afflictionsAtZeroRuleExpected) { — fix.starting-kit-powers (2026-10-04): a starting-kit-powers-moved case is checked above instead
++        if (afflictionsAtZeroRuleExpected && !startingKitPowersMoved) {
+         expect(hash(ctx.events), 'full afflictions-at-zero-rule events').toBe(afflictionsAtZeroRuleExpected.events)
+         expect(hash(ctx.state), 'full afflictions-at-zero-rule state').toBe(afflictionsAtZeroRuleExpected.state)
+diff --git a/test/field-eve-24.test.ts b/test/field-eve-24.test.ts
+index 60f48d2..6eac795 100644
+--- a/test/field-eve-24.test.ts
++++ b/test/field-eve-24.test.ts
+@@ -75,6 +75,15 @@ describe('all twenty-four field', () => {
+       for (const p of kit.flatMap((it) => (items.get(it)?.grants ?? []).filter((x) => x.startsWith('power.')))) {
+         const compiled = u.abilities.includes(p) && ACTIONS[p] !== undefined
+-        const gapped = g.some((x) => x.unit === id && x.what.includes(p))
++        // Law 10, fix.starting-kit-powers (2026-10-04; DECISIONS.md 2026-10-03 "reported: the priest's Holy Texts has no heal
++        // in battle"): the rule is still "compiled or gapped, never silently dropped" — a power that did not compile is named
++        // as an 'item power' gap, and never beside a compiled one. A power that DID compile may name a clause the engine
++        // cannot do yet (Flame Burst and Frost Nova: 'a burst paints no ground'); that clause gap is checked below, by name.
++        // was: const gapped = g.some((x) => x.unit === id && x.what.includes(p))
++        const gapped = g.some((x) => x.unit === id && x.what.includes(p) && /^item power/.test(x.needs))
+         expect(compiled !== gapped, `${id}: ${p} compiled=${compiled} gapped=${gapped}`).toBe(true)
++        for (const x of g.filter((r) => r.unit === id && r.what.includes(p) && !/^item power/.test(r.needs))) {
++          expect(compiled, `${id}: ${p} names the clause '${x.what}' only as a compiled power`).toBe(true)
++          expect(x.needs, `${id}: ${p}'s clause gap names what the engine lacks`).toBe('a burst paints no ground (capability.burst-paints-ground)')
++        }
+       }
+       expect(u.tags, `${id} is a hero`).toContain('hero')
+diff --git a/test/items-per-unit.test.ts b/test/items-per-unit.test.ts
+index cab4e00..b507c9b 100644
+--- a/test/items-per-unit.test.ts
++++ b/test/items-per-unit.test.ts
+@@ -75,9 +75,18 @@ describe('the invariant — no heroItems means the hero the converter used to fo
+       'hero.base.paladin-dark': ['crit'],
+       'hero.base.priest-armored': ['attacks'],
+-      'hero.base.mage-fireaura': ['luck'],
+-      'hero.base.priest-pauper': ['attacks', 'luck'],
++      // Law 10, fix.starting-kit-powers (2026-10-04; DECISIONS.md 2026-10-03 "reported: the priest's Holy Texts has no heal
++      // in battle — three starting weapons lose their power on the way into the engine"): the Holy Texts' Mercy, the Fire
++      // Staff's Flame Burst and the Frost Staff's Frost Nova compile now, so the five rows that hold one of those weapons
++      // carry a power the frozen oracle never had — content moved, not the fold. (The Battle Chaplain holds the Holy Texts
++      // too; his `abilities` already differed by his Round Shield's powers, the R1 allowance above.) Their powers are named below.
++      // was: 'hero.base.mage-fireaura': ['luck'], 'hero.base.priest-pauper': ['attacks', 'luck'], 'hero.base.mage-thinking': ['triggers'],
++      //      and no row for 'hero.base.mage-fire' or 'hero.base.mage-sexy'
++      'hero.base.mage-fire': ['abilities'],
++      'hero.base.mage-sexy': ['abilities'],
++      'hero.base.mage-fireaura': ['abilities', 'luck'],
++      'hero.base.priest-pauper': ['attacks', 'abilities', 'luck'],
+       // capability.frost (2026-09-03): the Thinking Mage's staff applies Frost,
+       // which compiles now that the status exists — a trigger the oracle never had.
+-      'hero.base.mage-thinking': ['triggers'],
++      'hero.base.mage-thinking': ['abilities', 'triggers'],
+       // FINDING 39 (2026-09-04): the oracle froze Second Wind, Brace and Arcane Ward
+       // aimed at the ATTACKER — the converter bug the audit found. The rows say
+@@ -109,4 +118,10 @@ describe('the invariant — no heroItems means the hero the converter used to fo
+     expect(fieldedDef('hero.base.paladin-dark').crit).toBe((o['hero.base.paladin-dark']!['crit'] as number) - CRIT_BASE + ITEMS['item.rusted-plate']!.statModifiers.crit!)   // Law 10, fix.codex-numbers: the oracle's total, less the base (above)
+     expect(fieldedDef('hero.base.priest-pauper').luck).toBe(ITEMS['item.nice-robes']!.statModifiers.luck)
++    // fix.starting-kit-powers (2026-10-04): the `abilities` that differ are exactly the three powers, and nothing else
++    for (const [id, power] of [['hero.base.mage-fire', 'power.fire-staff.fireball'], ['hero.base.mage-sexy', 'power.fire-staff.fireball'], ['hero.base.mage-fireaura', 'power.fire-staff.fireball'],
++      ['hero.base.mage-thinking', 'power.frost-staff.frost-nova'], ['hero.base.priest-pauper', 'power.holy-texts.mercy']] as const) {
++      expect(fieldedDef(id).abilities, id).toEqual([...((o[id]!['abilities'] as string[] | undefined) ?? []), power])
++    }
++    expect(fieldedDef('hero.base.priest-armored').abilities).toContain('power.holy-texts.mercy')
+   })
+ 
+diff --git a/test/opening-cavern-trail.test.ts b/test/opening-cavern-trail.test.ts
+index d0a349c..b4e5b00 100644
+--- a/test/opening-cavern-trail.test.ts
++++ b/test/opening-cavern-trail.test.ts
+@@ -13,5 +13,11 @@ const S = 'test.opening-cavern-trail', FALL = 'trigger.cavern-trail.meteor-fall'
+ // fix.opening-party (2026-09-29): on the party drafted by battle 4 (five heroes, not four Alpha heroes)
+ // replicate 1 is still a win; 7 of 50 are.
+-const WIN = 1
++// Law 10, fix.starting-kit-powers (2026-10-04; DECISIONS.md 2026-10-03 "reported: the priest's Holy Texts has no heal in
++// battle — three starting weapons lose their power on the way into the engine"): the drafted priests and mages field Mercy,
++// Flame Burst and Frost Nova now and play them, so every battle that drafts one moves — replicate 1 is a wipe whose meteors
++// land on nobody. Replicate 0 is a battle the heroes win with the meteors landing on four units; 19 of replicates 0-49 are
++// wins now (7 before: the party is stronger with its whole weapons). The claims below are unchanged.
++// was: const WIN = 1
++const WIN = 0
+ describe('encounter.opening.cavern-trail', () => {
+   it('carries the meteor fall with the ruled numbers', () => {
+```
+</details>

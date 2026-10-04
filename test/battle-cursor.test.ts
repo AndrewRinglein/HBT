@@ -280,6 +280,14 @@ const openingLevelsGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-c
 // to 0. Moved by log TEXT only: test.afflictions-at-zero and test.vampire-bite (the badge rows' at-0 gaps became data; an
 // affliction's badge.gained line names its rule). A `changed` case is checked here and skips the older layers.
 const afflictionsAtZeroRuleGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-afflictions-at-zero-rule.json', import.meta.url), 'utf8'))
+// fix.starting-kit-powers (2026-10-04; DECISIONS.md 2026-10-03 'reported: the priest's Holy Texts has no heal in battle — three
+// starting weapons lose their power on the way into the engine'), Law 10: the Holy Texts' Mercy, the Fire Staff's Flame Burst and
+// the Frost Staff's Frost Nova reach the engine, so six of the 24 base heroes field a power they did not have and the AI plays it.
+// Every case frozen here (tools/capture-starting-kit-powers-cursor.mts). Moved for real, the report answered (state, RNG and
+// result): the nineteen cases that field one of the six — showcase.assembled-party, .eve-24-b, .horrors, .kiln, .prologue-party,
+// .rime, .supper, .surrounded and .waystation, test.caravan-aftermath, test.item-uses, test.opening-bridge, -cathedral,
+// -cavern-trail, -gates and -lumberjack, and progression-surge-0, -1 and -2. A `changed` case is checked here and skips the older layers.
+const startingKitPowersGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-starting-kit-powers.json', import.meta.url), 'utf8'))
 const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
 // Explicit rule migration, not regenerated historical hashes. These nine old
 // cases contain Surge ledger/refresh changes or terminal markers corrected
@@ -399,7 +407,10 @@ describe('resumable battle cursor', () => {
       const bridgeDeckExpected = bridgeDeckGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const orphansKnifeExpected = orphansKnifeGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const afflictionsAtZeroRuleExpected = afflictionsAtZeroRuleGolden.cases.find((row:{id:string})=>row.id===fixture.id)
-      const afflictionsAtZeroRuleMoved = afflictionsAtZeroRuleExpected?.changed === true
+      const startingKitPowersExpected = startingKitPowersGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+      const startingKitPowersMoved = startingKitPowersExpected?.changed === true
+      // was: const afflictionsAtZeroRuleMoved = afflictionsAtZeroRuleExpected?.changed === true — a starting-kit-powers-moved case skips the afflictions-at-zero-rule layer too (fix.starting-kit-powers 2026-10-04)
+      const afflictionsAtZeroRuleMoved = afflictionsAtZeroRuleExpected?.changed === true || startingKitPowersMoved
       const openingLevelsExpected = openingLevelsGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       // was: const openingLevelsMoved = openingLevelsExpected?.changed === true — an afflictions-at-zero-rule-moved case skips the opening-levels layer too (rule.afflictions-at-zero-refiled-2 2026-10-02)
       const openingLevelsMoved = openingLevelsExpected?.changed === true || afflictionsAtZeroRuleMoved
@@ -493,7 +504,14 @@ describe('resumable battle cursor', () => {
             battle.completeActionCycle(ctx)
           }
         } else result = battle.runBattle(ctx)
-        if (afflictionsAtZeroRuleExpected) {
+        if (startingKitPowersExpected) {
+        expect(hash(ctx.events), 'full starting-kit-powers events').toBe(startingKitPowersExpected.events)
+        expect(hash(ctx.state), 'full starting-kit-powers state').toBe(startingKitPowersExpected.state)
+        expect(hash(ctx.rng.log), 'full starting-kit-powers RNG').toBe(startingKitPowersExpected.rng)
+        expect(result).toEqual(startingKitPowersExpected.result)
+        }
+        // was: if (afflictionsAtZeroRuleExpected) { — fix.starting-kit-powers (2026-10-04): a starting-kit-powers-moved case is checked above instead
+        if (afflictionsAtZeroRuleExpected && !startingKitPowersMoved) {
         expect(hash(ctx.events), 'full afflictions-at-zero-rule events').toBe(afflictionsAtZeroRuleExpected.events)
         expect(hash(ctx.state), 'full afflictions-at-zero-rule state').toBe(afflictionsAtZeroRuleExpected.state)
         expect(hash(ctx.rng.log), 'full afflictions-at-zero-rule RNG').toBe(afflictionsAtZeroRuleExpected.rng)
