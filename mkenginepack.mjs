@@ -371,6 +371,10 @@ function compileGeneralPool(powers, compiled) {
 const generalPool = compileGeneralPool(SETTLED.powers || [], moves);
 // The hooks the engine fires are the engine's list (ENGINE_HOOKS, read from its vocabulary).
 const TRIG_HOOKS = ENGINE_HOOKS;
+// The hooks whose firing is the ATTACKER's own attack (engine COMBAT-SEQUENCE.md "Triggers": onAttack, onMiss, onHit,
+// onCrit and onDamage belong to the attacker, onKill to the killer; the engine fires each with the attack as its cause).
+// onBlock is the attacker's only in its 'attacker' role, read where it is asked.
+const ATTACKER_HOOKS = new Set(['onAttack', 'onMiss', 'onHit', 'onCrit', 'onDamage', 'onKill']);
 
 // ── BADGES (badge.mechanism, 2026-09-04) ───────────────────────────────────
 // Ruled 2026-09-04: badges are an engine type — the Hero badge, Wounded, the
@@ -1916,18 +1920,33 @@ for (const combo of TIER3) {
     // content.flaming-longsword (engine, 2026-09-28): an enchant trigger that names `attack: 'basic'`
     // fires only with the base's BASIC attack — its first attack (the Armory Ledger's rule, approved
     // 2026-09-28: "Almost every weapon has one: the first attack listed"). Anything else is a gap.
-    if (t.attack !== undefined && t.attack !== 'basic') { gaps.push(`enchant ${t.hook}: attack '${t.attack}' — only 'basic' is read`); continue; }
-    const scope = t.attack === 'basic' ? (b.grants?.[0] ? { onlyWithAttack: b.grants[0] } : null) : {};
-    if (scope === null) { gaps.push(`enchant ${t.hook}: ${eff.slice(0, 50)} — the base has no basic attack`); continue; }
+    // engine fix.enchant-triggers-own-weapon (2026-10-04; engine DECISIONS.md 2026-10-04 'after the backlog run: … an
+    // enchant is its own weapon's …': "If you have a fiery longsword and a dagger with a stab ability on it that stab
+    // ability does not use the fiery that's on the longsword."). These rows are ARTIFACT ATTRIBUTES — the tier-3 rows
+    // that come already on a reward item (GLOSSARY.md 'Settled, 2026-10-04'; an enchantment is the Forge's tier-2
+    // attribute only) — and the field that names one is still `enchant`. An attribute's trigger on an ATTACKER's hook
+    // rides the attacks of the weapon it is on and no other — not a Punch, not the weapon in the other hand. The rule is
+    // here, not on the attribute rows: unstated on such a hook is `attack: 'own'` (one compiled trigger per attack the
+    // base grants, each onlyWithAttack, told apart by the attack's name — distinctTriggerIds — as a weapon row's own
+    // `attack: 'own'` is); a row may still say 'own' or 'basic' itself. A hook that is not an attacker's (the victim's
+    // onTakingDamage, the unit's onActivationEnd) is not an attack's and keeps no scope; neither does an attribute on a
+    // base that grants no attack (worn armor: the wearer's).
+    if (t.attack !== undefined && t.attack !== 'basic' && t.attack !== 'own') { gaps.push(`enchant ${t.hook}: attack '${t.attack}' — only 'basic' and 'own' are read`); continue; }
+    const attackersHook = ATTACKER_HOOKS.has(t.hook) || (t.hook === 'onBlock' && t.role === 'attacker');
+    const baseAttacks = b.grants || [];
+    const scopes = t.attack === 'basic' ? (baseAttacks[0] ? [{ onlyWithAttack: baseAttacks[0] }] : null)
+      : t.attack === 'own' ? (baseAttacks.length ? baseAttacks.map((a) => ({ onlyWithAttack: a })) : null)
+      : attackersHook && baseAttacks.length ? baseAttacks.map((a) => ({ onlyWithAttack: a })) : [{}];
+    if (scopes === null) { gaps.push(`enchant ${t.hook}: ${eff.slice(0, 50)} — the base has no ${t.attack === 'basic' ? 'basic attack' : 'attack of its own'}`); continue; }
     if (TRIG_HOOKS.has(t.hook) && (m = eff.match(/^deal (\d+) (physical|magic|fire|poison|shadow|true) damage$/))) {
-      triggers.push({ id: `trigger.${combo.id.replace(/^item\./, '')}.${m[2]}-damage${t.hook === 'onCrit' ? '-crit' : ''}`, hook: t.hook, chance: t.chance ?? 100,
+      for (const scope of scopes) triggers.push({ id: `trigger.${combo.id.replace(/^item\./, '')}.${m[2]}-damage${t.hook === 'onCrit' ? '-crit' : ''}`, hook: t.hook, chance: t.chance ?? 100,
         select: 'target', effect: { kind: 'damage', amount: +m[1], damageType: m[2] }, source: combo.id, ...scope });
       continue;
     }
     // v2.thorns: the enchant's "Thorns N" is the same magnitude its base items carry.
     if (t.hook === 'onTakingDamage' && (m = eff.match(/^Thorns (\d+)$/))) { statModifiers.thorns = (statModifiers.thorns ?? 0) + +m[1]; continue; }
     if (TRIG_HOOKS.has(t.hook) && (m = eff.match(/^(apply|gain) (\d+) (?:more )?([A-Za-z]+)$/)) && STATUS_OK.has(m[3].toLowerCase())) {
-      triggers.push({ id: `trigger.${combo.id.replace(/^item\./, '')}.${m[3].toLowerCase()}${t.hook === 'onCrit' ? '-crit' : ''}`, hook: t.hook, chance: t.chance ?? 100,
+      for (const scope of scopes) triggers.push({ id: `trigger.${combo.id.replace(/^item\./, '')}.${m[3].toLowerCase()}${t.hook === 'onCrit' ? '-crit' : ''}`, hook: t.hook, chance: t.chance ?? 100,
         select: m[1] === 'gain' ? 'self' : 'target', effect: { kind: 'status.apply', statusId: 'status.' + m[3].toLowerCase(), value: +m[2] }, source: combo.id, ...scope });
     } else gaps.push(`enchant ${t.hook}: ${eff.slice(0, 50)} — trigger shape unparsed`);
   }

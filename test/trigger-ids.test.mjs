@@ -131,3 +131,38 @@ test('the nine weapons that say attack: own, and the three rows whose words are 
   if(attacks.length>1)assert.ok(attacks.every(a=>mine.some(t=>t.onlyWithAttack===a&&t.id.endsWith('.'+a.split('.').pop()))),id+': each attack has the row-level trigger named for it');
  }
 });
+
+// engine fix.enchant-triggers-own-weapon (2026-10-04; engine DECISIONS.md 2026-10-04 'after the backlog run: … an enchant is its
+// own weapon's …'): an ARTIFACT ATTRIBUTE (a tier-3 row of `enchants`, put on a base by gen/tier3-combinations.json; the field
+// is still `enchant`) brings its attacker-hook triggers to the attacks of the weapon it is on, and to no other — by the
+// compiler's rule, not by a word on each attribute row.
+const ATTACKERS=new Set(['onAttack','onMiss','onHit','onCrit','onDamage','onKill']);
+test('an attribute on a weapon: every trigger it adds on an attacker\'s hook is scoped to an attack that weapon grants — over every tier-3 row',()=>{
+ const rows=Object.values(live.pack.enchanted).filter(i=>i.grants.length);
+ const added=rows.flatMap(i=>i.triggers.filter(t=>t.source===i.id&&ATTACKERS.has(t.hook)).map(t=>({i,t})));
+ assert.ok(added.length>80,String(added.length));
+ assert.deepEqual(added.filter(({i,t})=>!i.grants.includes(t.onlyWithAttack)).map(({i,t})=>`${i.id}: ${t.id}`),[]);
+ const hammer=live.pack.enchanted['item.war-hammer.frost'];
+ assert.deepEqual(hammer.triggers.filter(t=>t.source===hammer.id).map(t=>[t.id,t.hook,t.onlyWithAttack]),[
+  ['trigger.war-hammer.frost.frost.smash','onHit','attack.war-hammer.smash'],['trigger.war-hammer.frost.frost.skullsplitter','onHit','attack.war-hammer.skullsplitter'],
+  ['trigger.war-hammer.frost.frost-crit.smash','onCrit','attack.war-hammer.smash'],['trigger.war-hammer.frost.frost-crit.skullsplitter','onCrit','attack.war-hammer.skullsplitter']]);
+ // a weapon with one attack keeps the plain id, scoped
+ assert.deepEqual(live.pack.enchanted['item.longsword.taunting'].triggers.filter(t=>t.source==='item.longsword.taunting').map(t=>[t.id,t.onlyWithAttack]),[['trigger.longsword.taunting.taunt','attack.longsword.slash']]);
+});
+test('the attribute\'s own word still decides: basic is the first attack alone (Flaming), own is said the same as unsaid, another word is a named gap',()=>{
+ const axe=live.pack.enchanted['item.war-axe.flaming'];
+ assert.deepEqual(axe.triggers.filter(t=>t.source===axe.id).map(t=>t.onlyWithAttack),[axe.grants[0],axe.grants[0]]);
+ const said=candidate(edit=>edit('gen/armor-enchants.json',data=>{for(const t of data.enchants.find(e=>e.id==='enchant.frost').triggers)t.attack='own'}));
+ assert.equal(said.status,0,said.stderr);
+ assert.deepEqual(said.pack.enchanted['item.war-hammer.frost'].triggers,live.pack.enchanted['item.war-hammer.frost'].triggers);
+ const odd=candidate(edit=>edit('gen/armor-enchants.json',data=>{data.enchants.find(e=>e.id==='enchant.frost').triggers[0].attack='every'}));
+ assert.equal(odd.status,0,odd.stderr);
+ assert.ok(odd.pack.enchanted['item.war-hammer.frost'].gaps.some(g=>/attack 'every'/.test(g)),JSON.stringify(odd.pack.enchanted['item.war-hammer.frost'].gaps));
+ assert.deepEqual(odd.pack.enchanted['item.war-hammer.frost'].triggers.filter(t=>t.source==='item.war-hammer.frost'&&t.hook==='onHit'),[]);
+});
+test('a hook that is not the attacker\'s keeps no scope: an attribute on worn armor is its wearer\'s',()=>{
+ const worn=Object.values(live.pack.enchanted).filter(i=>!i.grants.length).flatMap(i=>i.triggers.filter(t=>t.source===i.id));
+ assert.ok(worn.length>0);
+ assert.deepEqual(worn.filter(t=>t.onlyWithAttack).map(t=>t.id),[]);
+ assert.deepEqual([...new Set(worn.map(t=>t.hook))].filter(h=>ATTACKERS.has(h)),[]);
+});

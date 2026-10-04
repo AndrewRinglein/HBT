@@ -1,0 +1,230 @@
+✔ the pack compiles, and no row in it holds two triggers under one id (5.7424ms)
+✔ the Fire Imp: the end-of-Activation burn keeps the plain id; the burn of its Blast is named for the Blast (0.1531ms)
+✔ the three parts of the rule, each on the row that needs it: the attack, then the hook, then the effect (0.2279ms)
+✔ a row whose every trigger already has its own id keeps every id as it was (0.1365ms)
+✔ two triggers the rule cannot tell apart fail the build, naming the row and the id (207.9856ms)
+✔ a test unit that is a delta over another holds the triggers of its base once (0.2178ms)
+✔ the War Axe says attack: own — its on-block pair rides Chop and Hack, each scoped; its copies follow their own attacks (0.1445ms)
+✔ the scope is the word on the row: without it the trigger rides every attack its holder makes, as before (277.1762ms)
+✔ a scope word the compiler does not read, or a row with no attack of its own, is a named gap — never a guessed scope (622.5576ms)
+✔ the nine weapons that say attack: own, and the three rows whose words are every strike of their bearer (0.4474ms)
+✖ an attribute on a weapon: every trigger it adds on an attacker's hook is scoped to an attack that weapon grants — over every tier-3 row (1.4056ms)
+✖ the attribute's own word still decides: basic is the first attack alone (Flaming), own is said the same as unsaid, another word is a named gap (269.9589ms)
+✔ a hook that is not the attacker's keeps no scope: an attribute on worn armor is its wearer's (0.2262ms)
+ℹ tests 13
+ℹ suites 0
+ℹ pass 11
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1733.0772
+
+✖ failing tests:
+
+test at test\trigger-ids.test.mjs:140:1
+✖ an attribute on a weapon: every trigger it adds on an attacker's hook is scoped to an attack that weapon grants — over every tier-3 row (1.4056ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + [
+  +   'item.greatsword.bloodletting: trigger.greatsword.bloodletting.bleed-crit',
+  +   'item.war-axe.bloodletting: trigger.war-axe.bloodletting.bleed-crit',
+  +   'item.war-axe.taunting: trigger.war-axe.taunting.taunt',
+  +   'item.war-hammer.frost: trigger.war-hammer.frost.frost',
+  +   'item.war-hammer.frost: trigger.war-hammer.frost.frost-crit',
+  +   'item.war-hammer.taunting: trigger.war-hammer.taunting.taunt',
+  +   'item.hunting-spear.venomous: trigger.hunting-spear.venomous.poison',
+  +   'item.hunting-spear.venomous: trigger.hunting-spear.venomous.poison-crit',
+  +   'item.glaive.bloodletting: trigger.glaive.bloodletting.bleed-crit',
+  +   'item.glaive.taunting: trigger.glaive.taunting.taunt',
+  +   'item.crossbow.venomous: trigger.crossbow.venomous.poison',
+  +   'item.crossbow.venomous: trigger.crossbow.venomous.poison-crit',
+  +   'item.crossbow.goading: trigger.crossbow.goading.taunt',
+  +   'item.hand-crossbow.venomous: trigger.hand-crossbow.venomous.poison',
+  +   'item.hand-crossbow.venomous: trigger.hand-crossbow.venomous.poison-crit',
+  +   'item.rapier.frost: trigger.rapier.frost.frost',
+  +   'item.rapier.frost: trigger.rapier.frost.frost-crit',
+  +   'item.raiders-cutlass.bloodletting: trigger.raiders-cutlass.bloodletting.bleed-crit',
+  +   'item.throwing-knives.venomous: trigger.throwing-knives.venomous.poison',
+  +   'item.throwing-knives.venomous: trigger.throwing-knives.venomous.poison-crit',
+  +   'item.poison-stars.venomous: trigger.poison-stars.venomous.poison',
+  +   'item.poison-stars.venomous: trigger.poison-stars.venomous.poison-crit',
+  +   'item.poison-stars.frost: trigger.poison-stars.frost.frost',
+  +   'item.poison-stars.frost: trigger.poison-stars.frost.frost-crit',
+  +   'item.obsidian-fang-dagger.venomous: trigger.obsidian-fang-dagger.venomous.poison',
+  +   'item.obsidian-fang-dagger.venomous: trigger.obsidian-fang-dagger.venomous.poison-crit',
+  +   'item.obsidian-fang-dagger.bloodletting: trigger.obsidian-fang-dagger.bloodletting.bleed-crit',
+  +   'item.obsidian-fang-dagger.addling: trigger.obsidian-fang-dagger.addling.confusion',
+  +   'item.obsidian-fang-dagger.hobbling: trigger.obsidian-fang-dagger.hobbling.slow',
+  +   'item.duel-runeblades.bloodletting: trigger.duel-runeblades.bloodletting.bleed-crit',
+  +   'item.duel-runeblades.frost: trigger.duel-runeblades.frost.frost',
+  +   'item.duel-runeblades.frost: trigger.duel-runeblades.frost.frost-crit',
+  +   'item.shepherds-sling.venomous: trigger.shepherds-sling.venomous.poison',
+  +   'item.shepherds-sling.venomous: trigger.shepherds-sling.venomous.poison-crit',
+  +   'item.crippling-whip.frost: trigger.crippling-whip.frost.frost',
+  +   'item.crippling-whip.frost: trigger.crippling-whip.frost.frost-crit',
+  +   'item.iron-claws.venomous: trigger.iron-claws.venomous.poison',
+  +   'item.iron-claws.venomous: trigger.iron-claws.venomous.poison-crit',
+  +   'item.iron-claws.bloodletting: trigger.iron-claws.bloodletting.bleed-crit',
+  +   'item.grappling-harpoon.frost: trigger.grappling-harpoon.frost.frost',
+  +   'item.grappling-harpoon.frost: trigger.grappling-harpoon.frost.frost-crit',
+  +   'item.apprentice-wand.eternal-ice: trigger.apprentice-wand.eternal-ice.frost',
+  +   'item.ancient-tome.eternal-ice: trigger.ancient-tome.eternal-ice.frost',
+  +   'item.daggers.venomous: trigger.daggers.venomous.poison',
+  +   'item.daggers.venomous: trigger.daggers.venomous.poison-crit',
+  +   'item.daggers.addling: trigger.daggers.addling.confusion',
+  +   'item.daggers.hobbling: trigger.daggers.hobbling.slow',
+  +   'item.daggers.bloodletting: trigger.daggers.bloodletting.bleed-crit',
+  +   'item.longbow.rooting: trigger.longbow.rooting.root',
+  +   'item.longbow.venomous: trigger.longbow.venomous.poison',
+  +   'item.longbow.venomous: trigger.longbow.venomous.poison-crit',
+  +   'item.longbow.goading: trigger.longbow.goading.taunt',
+  +   'item.longbow.frost: trigger.longbow.frost.frost',
+  +   'item.longbow.frost: trigger.longbow.frost.frost-crit',
+  +   'item.shortbow.rooting: trigger.shortbow.rooting.root',
+  +   'item.shortbow.venomous: trigger.shortbow.venomous.poison',
+  +   'item.shortbow.venomous: trigger.shortbow.venomous.poison-crit',
+  +   'item.shortbow.goading: trigger.shortbow.goading.taunt',
+  +   'item.shortbow.fire: trigger.shortbow.fire.burn',
+  +   'item.shortbow.fire: trigger.shortbow.fire.burn-crit',
+  +   'item.elfbow.rooting: trigger.elfbow.rooting.root',
+  +   'item.elfbow.fire: trigger.elfbow.fire.burn',
+  +   'item.elfbow.fire: trigger.elfbow.fire.burn-crit',
+  +   'item.barbarian-bow.fire: trigger.barbarian-bow.fire.burn',
+  +   'item.barbarian-bow.fire: trigger.barbarian-bow.fire.burn-crit',
+  +   'item.barbarian-bow.rooting: trigger.barbarian-bow.rooting.root',
+  +   'item.javelin.venomous: trigger.javelin.venomous.poison',
+  +   'item.javelin.venomous: trigger.javelin.venomous.poison-crit',
+  +   'item.javelin.frost: trigger.javelin.frost.frost',
+  +   'item.javelin.frost: trigger.javelin.frost.frost-crit',
+  +   'item.longsword.bloodletting: trigger.longsword.bloodletting.bleed-crit',
+  +   'item.longsword.taunting: trigger.longsword.taunting.taunt',
+  +   'item.halberd.bloodletting: trigger.halberd.bloodletting.bleed-crit',
+  +   'item.halberd.taunting: trigger.halberd.taunting.taunt',
+  +   'item.fire-staff.maddening: trigger.fire-staff.maddening.confusion',
+  +   'item.fire-staff.bewildering: trigger.fire-staff.bewildering.confusion',
+  +   'item.frost-staff.eternal-ice: trigger.frost-staff.eternal-ice.frost',
+  +   'item.frost-staff.bewildering: trigger.frost-staff.bewildering.confusion',
+  +   'item.earth-staff.maddening: trigger.earth-staff.maddening.confusion',
+  +   'item.earth-staff.eternal-ice: trigger.earth-staff.eternal-ice.frost',
+  +   'item.lightning-staff.bewildering: trigger.lightning-staff.bewildering.confusion',
+  +   'item.lightning-staff.maddening: trigger.lightning-staff.maddening.confusion',
+  +   'item.force-staff.eternal-ice: trigger.force-staff.eternal-ice.frost',
+  +   'item.force-staff.bewildering: trigger.force-staff.bewildering.confusion',
+  +   'item.holy-symbol.bewildering: trigger.holy-symbol.bewildering.confusion'
+  + ]
+  - []
+  
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-engine/content/test/trigger-ids.test.mjs:144:9)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+      at Test.postRun (node:internal/test_runner/test:1235:19)
+      at Test.run (node:internal/test_runner/test:1163:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [
+      'item.greatsword.bloodletting: trigger.greatsword.bloodletting.bleed-crit',                     'item.war-axe.bloodletting: trigger.war-axe.bloodletting.bleed-crit',
+      'item.war-axe.taunting: trigger.war-axe.taunting.taunt',                                        'item.war-hammer.frost: trigger.war-hammer.frost.frost',
+      'item.war-hammer.frost: trigger.war-hammer.frost.frost-crit',                                   'item.war-hammer.taunting: trigger.war-hammer.taunting.taunt',
+      'item.hunting-spear.venomous: trigger.hunting-spear.venomous.poison',                           'item.hunting-spear.venomous: trigger.hunting-spear.venomous.poison-crit',
+      'item.glaive.bloodletting: trigger.glaive.bloodletting.bleed-crit',                             'item.glaive.taunting: trigger.glaive.taunting.taunt',
+      'item.crossbow.venomous: trigger.crossbow.venomous.poison',                                     'item.crossbow.venomous: trigger.crossbow.venomous.poison-crit',
+      'item.crossbow.goading: trigger.crossbow.goading.taunt',                                        'item.hand-crossbow.venomous: trigger.hand-crossbow.venomous.poison',
+      'item.hand-crossbow.venomous: trigger.hand-crossbow.venomous.poison-crit',                      'item.rapier.frost: trigger.rapier.frost.frost',
+      'item.rapier.frost: trigger.rapier.frost.frost-crit',                                           'item.raiders-cutlass.bloodletting: trigger.raiders-cutlass.bloodletting.bleed-crit',
+      'item.throwing-knives.venomous: trigger.throwing-knives.venomous.poison',                       'item.throwing-knives.venomous: trigger.throwing-knives.venomous.poison-crit',
+      'item.poison-stars.venomous: trigger.poison-stars.venomous.poison',                             'item.poison-stars.venomous: trigger.poison-stars.venomous.poison-crit',
+      'item.poison-stars.frost: trigger.poison-stars.frost.frost',                                    'item.poison-stars.frost: trigger.poison-stars.frost.frost-crit',
+      'item.obsidian-fang-dagger.venomous: trigger.obsidian-fang-dagger.venomous.poison',             'item.obsidian-fang-dagger.venomous: trigger.obsidian-fang-dagger.venomous.poison-crit',
+      'item.obsidian-fang-dagger.bloodletting: trigger.obsidian-fang-dagger.bloodletting.bleed-crit', 'item.obsidian-fang-dagger.addling: trigger.obsidian-fang-dagger.addling.confusion',
+      'item.obsidian-fang-dagger.hobbling: trigger.obsidian-fang-dagger.hobbling.slow',               'item.duel-runeblades.bloodletting: trigger.duel-runeblades.bloodletting.bleed-crit',
+      'item.duel-runeblades.frost: trigger.duel-runeblades.frost.frost',                              'item.duel-runeblades.frost: trigger.duel-runeblades.frost.frost-crit',
+      'item.shepherds-sling.venomous: trigger.shepherds-sling.venomous.poison',                       'item.shepherds-sling.venomous: trigger.shepherds-sling.venomous.poison-crit',
+      'item.crippling-whip.frost: trigger.crippling-whip.frost.frost',                                'item.crippling-whip.frost: trigger.crippling-whip.frost.frost-crit',
+      'item.iron-claws.venomous: trigger.iron-claws.venomous.poison',                                 'item.iron-claws.venomous: trigger.iron-claws.venomous.poison-crit',
+      'item.iron-claws.bloodletting: trigger.iron-claws.bloodletting.bleed-crit',                     'item.grappling-harpoon.frost: trigger.grappling-harpoon.frost.frost',
+      'item.grappling-harpoon.frost: trigger.grappling-harpoon.frost.frost-crit',                     'item.apprentice-wand.eternal-ice: trigger.apprentice-wand.eternal-ice.frost',
+      'item.ancient-tome.eternal-ice: trigger.ancient-tome.eternal-ice.frost',                        'item.daggers.venomous: trigger.daggers.venomous.poison',
+      'item.daggers.venomous: trigger.daggers.venomous.poison-crit',                                  'item.daggers.addling: trigger.daggers.addling.confusion',
+      'item.daggers.hobbling: trigger.daggers.hobbling.slow',                                         'item.daggers.bloodletting: trigger.daggers.bloodletting.bleed-crit',
+      'item.longbow.rooting: trigger.longbow.rooting.root',                                           'item.longbow.venomous: trigger.longbow.venomous.poison',
+      'item.longbow.venomous: trigger.longbow.venomous.poison-crit',                                  'item.longbow.goading: trigger.longbow.goading.taunt',
+      'item.longbow.frost: trigger.longbow.frost.frost',                                              'item.longbow.frost: trigger.longbow.frost.frost-crit',
+      'item.shortbow.rooting: trigger.shortbow.rooting.root',                                         'item.shortbow.venomous: trigger.shortbow.venomous.poison',
+      'item.shortbow.venomous: trigger.shortbow.venomous.poison-crit',                                'item.shortbow.goading: trigger.shortbow.goading.taunt',
+      'item.shortbow.fire: trigger.shortbow.fire.burn',                                               'item.shortbow.fire: trigger.shortbow.fire.burn-crit',
+      'item.elfbow.rooting: trigger.elfbow.rooting.root',                                             'item.elfbow.fire: trigger.elfbow.fire.burn',
+      'item.elfbow.fire: trigger.elfbow.fire.burn-crit',                                              'item.barbarian-bow.fire: trigger.barbarian-bow.fire.burn',
+      'item.barbarian-bow.fire: trigger.barbarian-bow.fire.burn-crit',                                'item.barbarian-bow.rooting: trigger.barbarian-bow.rooting.root',
+      'item.javelin.venomous: trigger.javelin.venomous.poison',                                       'item.javelin.venomous: trigger.javelin.venomous.poison-crit',
+      'item.javelin.frost: trigger.javelin.frost.frost',                                              'item.javelin.frost: trigger.javelin.frost.frost-crit',
+      'item.longsword.bloodletting: trigger.longsword.bloodletting.bleed-crit',                       'item.longsword.taunting: trigger.longsword.taunting.taunt',
+      'item.halberd.bloodletting: trigger.halberd.bloodletting.bleed-crit',                           'item.halberd.taunting: trigger.halberd.taunting.taunt',
+      'item.fire-staff.maddening: trigger.fire-staff.maddening.confusion',                            'item.fire-staff.bewildering: trigger.fire-staff.bewildering.confusion',
+      'item.frost-staff.eternal-ice: trigger.frost-staff.eternal-ice.frost',                          'item.frost-staff.bewildering: trigger.frost-staff.bewildering.confusion',
+      'item.earth-staff.maddening: trigger.earth-staff.maddening.confusion',                          'item.earth-staff.eternal-ice: trigger.earth-staff.eternal-ice.frost',
+      'item.lightning-staff.bewildering: trigger.lightning-staff.bewildering.confusion',              'item.lightning-staff.maddening: trigger.lightning-staff.maddening.confusion',
+      'item.force-staff.eternal-ice: trigger.force-staff.eternal-ice.frost',                          'item.force-staff.bewildering: trigger.force-staff.bewildering.confusion',
+      'item.holy-symbol.bewildering: trigger.holy-symbol.bewildering.confusion'
+    ],
+    expected: [],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at test\trigger-ids.test.mjs:152:1
+✖ the attribute's own word still decides: basic is the first attack alone (Flaming), own is said the same as unsaid, another word is a named gap (269.9589ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  ... Skipped lines
+  
+    [
+      {
+        chance: 100,
+        effect: {
+          kind: 'status.apply',
+  ...
+      },
+  -   {
+  -     chance: 100,
+  -     effect: {
+  -       kind: 'status.apply',
+  -       statusId: 'status.frost',
+  -       value: 1
+  -     },
+  -     hook: 'onHit',
+  -     id: 'trigger.war-hammer.frost.frost',
+  -     select: 'target',
+  -     source: 'item.war-hammer.frost'
+  -   },
+  -   {
+  -     chance: 100,
+  -     effect: {
+  -       kind: 'status.apply',
+  -       statusId: 'status.frost',
+  -       value: 2
+  -     },
+  -     hook: 'onCrit',
+  -     id: 'trigger.war-hammer.frost.frost-crit',
+  -     select: 'target',
+  -     source: 'item.war-hammer.frost'
+  -   }
+    ]
+  
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-engine/content/test/trigger-ids.test.mjs:157:9)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+      at Test.postRun (node:internal/test_runner/test:1235:19)
+      at Test.run (node:internal/test_runner/test:1163:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ { id: 'trigger.war-hammer.skullsplitter.stun', hook: 'onHit', chance: 100, select: 'target', effect: [Object], source: 'item.war-hammer', onlyWithAttack: 'attack.war-hammer.skullsplitter' } ],
+    expected: [ { id: 'trigger.war-hammer.skullsplitter.stun', hook: 'onHit', chance: 100, select: 'target', effect: [Object], source: 'item.war-hammer', onlyWithAttack: 'attack.war-hammer.skullsplitter' }, { id: 'trigger.war-hammer.frost.frost', hook: 'onHit', chance: 100, select: 'target', effect: [Object], source: 'item.war-hammer.frost' }, { id: 'trigger.war-hammer.frost.frost-crit', hook: 'onCrit', chance: 100, select: 'target', effect: [Object], source: 'item.war-hammer.frost' } ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
