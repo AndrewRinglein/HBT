@@ -110,7 +110,9 @@ const { outputFiles, warnings, metafile } = esbuild.buildSync({
          what each painted layer and ground applies (fix.ground-one-funnel's tables, which the page never carried) */
       actionKinds: statics.actionKinds, statusRows: statics.statusRows, layerStatus: statics.layerStatus, terrainApplies: statics.terrainApplies,
       /* viewer.shield-guard-motion: each item's own class — a power a held shield grants raises the shield */
-      itemClasses: statics.itemClasses }),
+      itemClasses: statics.itemClasses,
+      /* viewer.panel-lists-items: each item's own row and the engine's count of hands — the panel's items section */
+      items: statics.items, hands: statics.hands }),
     __BUNDLED_FIELDS__: JSON.stringify(Object.fromEntries(Object.entries(fields).filter(([k]) => !k.startsWith('_')))),
     /* noAfterArt (viewer.affliction-pop-up): the heroes with no after card, listed by prep-art — never faked */
     __BUNDLED_ART__: JSON.stringify({ artmap: manifest.artmap, assets, noAfterArt: manifest.noAfterArt || {} }),

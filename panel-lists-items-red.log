@@ -1,0 +1,28 @@
+== viewer tools/panel-lists-items.test.mjs on the landed BATTLE-VIEWER.html (viewer 44fa3d5) ==
+✖ the page carries the engine's own item rows and its count of hands, through the door (1809.7618ms)
+✖ a hero: each hand, its armor, its item slots and what is stowed — by name, with what each gives, from the log (1664.8522ms)
+✖ a civilian: its dagger in one hand, the other hand empty, no armor — said, not left out (447.6198ms)
+✖ an enemy that carries nothing has no items section; an enemy with a weapon assigned would list it (377.1827ms)
+✔ the swap moves an item between the hands and what is stowed: the rows follow the log (the engine log of one swap) (11.5109ms)
+ℹ tests 5
+ℹ pass 1
+ℹ fail 4
+✖ failing tests:
+✖ the page carries the engine's own item rows and its count of hands, through the door (1809.7618ms)
+  AssertionError [ERR_ASSERTION]: static.json items
+✖ a hero: each hand, its armor, its item slots and what is stowed — by name, with what each gives, from the log (1664.8522ms)
+  AssertionError [ERR_ASSERTION]: the items section
+✖ a civilian: its dagger in one hand, the other hand empty, no armor — said, not left out (447.6198ms)
+  TypeError: Cannot read properties of undefined (reading 'item.dagger')
+✖ an enemy that carries nothing has no items section; an enemy with a weapon assigned would list it (377.1827ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+
+== kingdom tools/panel-lists-items.verify.mjs on the built BATTLE-SANDBOX.html (kingdom, viewer 44fa3d5) ==
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+AssertionError [ERR_ASSERTION]: Iron Dwarf A: the items section under the character
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: null,
+  expected: true,

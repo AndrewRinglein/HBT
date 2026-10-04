@@ -1,0 +1,42 @@
+  1 Turn 1 opens: Iron Dwarf A — 7 buttons, card and stamina its own, power.move armed
+  2 after its walk: Iron Dwarf A — 7 buttons, card and stamina its own
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: End activation after a walk, at once: the card is hero.base.warrior-iron's and the bar is hero.base.ranger-aggressive's (attack.longbow.long-shot, attack.longbow.shot, attack.punch, power.move, power.side-roll)
+    at together (file:///C:/Users/aring/Desktop/HBT-worker-content/kingdom/tools/bar-follows-activation.verify.mjs:31:9)
+    at settle (file:///C:/Users/aring/Desktop/HBT-worker-content/kingdom/tools/bar-follows-activation.verify.mjs:35:2)
+    at file:///C:/Users/aring/Desktop/HBT-worker-content/kingdom/tools/bar-follows-activation.verify.mjs:68:17
+    at ModuleJob.run (node:internal/modules/esm/module_job:413:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:660:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5) {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: false,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}
+
+Node.js v24.12.0
+exit 1
+
+== viewer tools/bar-follows-activation.test.mjs on the landed BATTLE-VIEWER.html (viewer bef30e3) ==
+✔ the recording has two different heroes acting one after the other (3548.7082ms)
+✖ the Activation changes while the host still holds the last unit's facts: once it clears them, the card, the bar and the stamina are the new unit's — together (1748.1427ms)
+✖ whenever the host hands its facts, the card is drawn with the bar from the unit they name (1247.4299ms)
+✔ the standalone page (no host) is unchanged: the card and the bar follow whoever is looked at, together (526.6695ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 2
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 7206.1737
+✖ failing tests:
+✖ the Activation changes while the host still holds the last unit's facts: once it clears them, the card, the bar and the stamina are the new unit's — together (1748.1427ms)
+  AssertionError [ERR_ASSERTION]: the card is the new unit's the moment the old facts are cleared
+✖ whenever the host hands its facts, the card is drawn with the bar from the unit they name (1247.4299ms)
+  AssertionError [ERR_ASSERTION]: and the card beside it is the same unit's, drawn at the same moment

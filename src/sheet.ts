@@ -10,7 +10,7 @@
 // FIRST entry in tools/exemptions.json — EXEMPTION sheet. It reads content only, through the
 // door, and computes nothing: every field is copied from a definition.
 import { readCatalog } from './engine.js'
-const { UNITS, ACTIONS, ATTACKS, ABILITIES, MOVES, BADGES, STATUSES, LAYER_IDS, VOCABULARY, ACTION_KIND, ITEMS } = await readCatalog()
+const { UNITS, ACTIONS, ATTACKS, ABILITIES, MOVES, BADGES, STATUSES, LAYER_IDS, VOCABULARY, ACTION_KIND, ITEMS, LOADOUT } = await readCatalog()
 
 const plain = (o: unknown) => (o ? JSON.parse(JSON.stringify(o)) : undefined)
 const many = (ids: readonly string[] | undefined, table: Record<string, unknown>) =>
@@ -76,6 +76,19 @@ export function itemClasses(): Record<string, string> {
   for (const [id, item] of Object.entries(ITEMS) as [string, any][]) out[id] = item.itemClass
   return out
 }
+
+/** viewer.panel-lists-items (engine DECISIONS.md 2026-10-03 'the battle's unit panel lists what the unit is equipped with'):
+    every item's own row, copied — its name, its class, the hands it takes (the engine's handsOf: a weapon or shield its
+    hands, a worn item none), the item slots it costs, and what it gives in hand: grants, abilities, stat modifiers. The
+    panel names what a unit carries from here; what an item put on a fielded unit is still the log's (unit.equipped). */
+export function itemTable(): Record<string, unknown> {
+  const out: Record<string, unknown> = {}
+  for (const [id, item] of Object.entries(ITEMS) as [string, any][])
+    out[id] = { name: item.name, itemClass: item.itemClass, hands: LOADOUT.handsOf(item), slots: item.slots, grants: [...item.grants], abilities: [...item.abilities], mods: { ...item.statModifiers } }
+  return out
+}
+/** the hands a unit has for weapons and shields — the engine's own count (core/items.ts HANDS), copied */
+export function handCount(): number { return LOADOUT.HANDS }
 
 /** The ground layers by number — 1 burning · 2 frost · 3 poisoned · 4 darkness —
     read from the engine, never typed (Law 4). */
