@@ -13,7 +13,7 @@ import {bootSlice} from './atlas-dom.mjs'
 
 export const TAKERS=['class.warrior','class.paladin']
 const esbuild=createRequire(import.meta.url)('../../engine/node_modules/esbuild')
-const built=esbuild.buildSync({stdin:{contents:`export {createSandbox,saveSandbox,sandboxResult,advanceSandbox,sandboxActivationChoices,commandSandbox,playerPolicy} from './src/core/sandbox.ts';export {runBattle,createBattle,BADGES,draftScoreOf} from './src/engine.ts';export * as HEROES from './src/content/heroes.ts';export * as OPENING from './src/core/opening.ts';export * as SEAM from './src/core/seam.ts';export * as PREP from './src/core/prep.ts';export * as REWARDS from './src/core/rewards.ts';export * as PROGRESS from './src/content/progress.ts';export {WOUND_UNAVAILABLE} from './src/content/wounds.ts'`,resolveDir:process.cwd(),loader:'ts'},bundle:true,platform:'node',format:'esm',write:false,logLevel:'silent'})
+const built=esbuild.buildSync({stdin:{contents:`export {createSandbox,saveSandbox,sandboxResult,advanceSandbox,sandboxActivationChoices,commandSandbox,playerPolicy} from './src/core/sandbox.ts';export {runBattle,createBattle,BADGES,draftScoreOf} from './src/engine.ts';export * as HEROES from './src/content/heroes.ts';export * as OPENING from './src/core/opening.ts';export * as SEAM from './src/core/seam.ts';export * as PREP from './src/core/prep.ts';export * as REWARDS from './src/core/rewards.ts';export * as ITEMS from './src/content/items.ts';export * as PROGRESS from './src/content/progress.ts';export {WOUND_UNAVAILABLE} from './src/content/wounds.ts'`,resolveDir:process.cwd(),loader:'ts'},bundle:true,platform:'node',format:'esm',write:false,logLevel:'silent'})
 const E=await import('data:text/javascript;base64,'+Buffer.from(built.outputFiles[0].text).toString('base64'))
 /* kingdom.opening-draft-pool: the sources' draft pool, and the base heroes left out of it for want of a kit — what the
    page's draft is held against */
@@ -47,6 +47,10 @@ export const ART_SEEN={draft:0,whoGoes:0,equip:0,victory:0,rewards:0,carrier:0,l
    Longsword's reward card was on the screen (it is offered only with a Warrior or a Paladin in the party) */
 export const ITEMS_ART={...(ART_INDEX.items??{})},ITEMS_MISSING={...(ART_INDEX.itemsMissing??{})}
 const itemUri=id=>portraitCache['item:'+id]??=(f=>f?'data:image/jpeg;base64,'+readFileSync(new URL('../generated/art/'+f,import.meta.url)).toString('base64'):null)(ITEMS_ART[id])
+/* kingdom.opening-free-equip (engine DECISIONS.md 2026-10-03 'the opening run, audited', question 4: "Should idols and
+   bloodrunes be free to equip during the opening …?" — "4 free"): the sources' row for an item — its class, its name and
+   what its row costs to equip (outside the opening) */
+export const itemRow=id=>{const r=E.ITEMS.itemOf(id);return {id:r.id,name:r.name,itemClass:r.itemClass,equipCost:{...r.equipCost}}}
 /* kingdom.opening-recap-civilians: every victory screen of a run, as it showed the civilians who fought — the battle, and
    each civilian's unit, name, mark and whether it joined (fightOut) */
 export const CIVILIANS_SEEN=[]

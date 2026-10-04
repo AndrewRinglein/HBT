@@ -23,7 +23,7 @@
 //
 //   node tools/opening-run-six.verify.mjs [BATTLE-SANDBOX.html]
 import assert from 'node:assert/strict'
-import {openingPage,TAKERS,POOL,LEFT_OUT,HERO_CLASSES,FIRST_HERO,POSITIVE_BADGES,ART_SEEN,HEROES_MISSING,SPECIALTY_CHOICES,ITEM_ART_SEEN,ITEMS_ART,ITEMS_MISSING,CIVILIANS_SEEN} from './opening-page.mjs'
+import {openingPage,TAKERS,POOL,LEFT_OUT,HERO_CLASSES,FIRST_HERO,POSITIVE_BADGES,ART_SEEN,HEROES_MISSING,SPECIALTY_CHOICES,ITEM_ART_SEEN,ITEMS_ART,ITEMS_MISSING,CIVILIANS_SEEN,itemRow} from './opening-page.mjs'
 const page=process.argv[2]??'BATTLE-SANDBOX.html'
 const ORDER=['orphanage','lumberjack','bridge','cavern-trail','gates','cathedral'].map(x=>'encounter.opening.'+x)
 const [ORPHANAGE,LUMBERJACK,BRIDGE,CAVERN,GATES,CATHEDRAL]=ORDER
@@ -116,15 +116,38 @@ function whoGoes(label,pick=choose){
  return asked
 }
 
-/* Equip: the stash's first item that fits a hero sent is put on that hero (the slot the page marks it can go in) */
+/* kingdom.opening-free-equip (engine DECISIONS.md 2026-10-03 'the opening run, audited', question 4 — "4 free"): an item
+   whose row costs Faith or Mana to equip — an idol, a bloodrune */
+const costsToEquip=id=>Object.keys(itemRow(id).equipCost).length>0
+/* the purse, as it stands. (The item's audit read the opening's purse as empty for the whole run; it is empty at the
+   first Equip — the empty-purse case is test/opening-free-equip.test.ts's — but each won battle pays its kind's grants,
+   so by the Bridge it holds Faith, Mana and Supplies: kingdom SWITCHES.md freeEquipPurseNotEmpty. What the page holds is
+   that equipping takes NOTHING from it.) */
+const purseNow=()=>JSON.stringify(camp().purse)
+const FREE_WORN=[]
+/* Equip: the stash's first item that fits a hero sent is put on that hero (the slot the page marks it can go in) — an
+   idol or a bloodrune first, when the stash holds one (kingdom.opening-free-equip): with an empty purse its tile says
+   'free to equip', never its Faith or Mana, it goes on, nothing is spent and nothing is recorded as paid */
 function equipFromStash(label){
- const stash=[...camp().stash];if(!stash.length)return null
+ const stash=[...camp().stash].sort((a,b)=>Number(costsToEquip(b))-Number(costsToEquip(a)));if(!stash.length)return null
  for(const item of stash){
+  const costly=costsToEquip(item),tile=P.byId('campaign').querySelectorAll('.item').find(el=>el.dataset.id===item)
+  assert.ok(tile,`${label}: ${item} is on Equip, in the stash`)
+  const purseBefore=purseNow()
+  if(costly){
+   assert.match(tile.textContent,/free to equip/,`${label}: ${item} is shown as free to equip`);assert.doesNotMatch(tile.textContent,/\d+ (faith|mana) to equip/,`${label}: ${item} shows no Faith or Mana cost`)
+  }else assert.doesNotMatch(tile.textContent,/free to equip/,`${label}: ${item} never cost anything to equip, and is not called free`)
   P.v.click('pick',item)
   const slot=P.byId('campaign').querySelectorAll('[data-act=drop]').find(el=>el.classList.contains('can'))
   if(!slot){P.v.click('pick',item);continue}
   const hero=slot.dataset.id;slot.handlers.click()
   assert.ok(camp().roster[hero].equipped.includes(item),`${label}: ${item} is on ${hero}`)
+  if(costly){
+   assert.equal(purseNow(),purseBefore,`${label}: ${item} went on and nothing was taken from the purse`)
+   assert.deepEqual(camp().cursor.equipSession?.paid??[],[],`${label}: nothing was paid for ${item}`)
+   assert.doesNotMatch(P.byId('campaign').textContent,/Paid this session/,label+': Equip lists nothing paid')
+   FREE_WORN.push({label,item,hero,row:itemRow(item),purse:purseBefore})
+  }
   assert.ok(!camp().stash.includes(item)||camp().stash.filter(x=>x===item).length<stash.filter(x=>x===item).length,`${label}: ${item} left the stash`)
   return {item,hero}
  }
@@ -173,6 +196,12 @@ function field(id,n,label,reopenAtDraft=false,pick=choose){
  const xpBefore=Object.fromEntries(deployed.map(id=>[id,camp().roster[id].xp]))
  const s=P.equipThenFight(deployed,label)
  if(equipped&&s.config.heroes.includes(equipped.hero))assert.ok(s.config.heroRows.find(h=>h.id===equipped.hero).equipped.includes(equipped.item),label+': the item equipped is fielded on its hero')
+ /* kingdom.opening-free-equip: … and an idol or bloodrune put on free is carried into the battle by its hero's unit */
+ if(equipped&&costsToEquip(equipped.item)){
+  const i=s.config.heroes.indexOf(equipped.hero);assert.ok(i>=0,label+': the hero wearing it is sent')
+  assert.ok([...(s.setup.heroItems?.[i]??[]),...(s.setup.heroStowed?.[i]??[])].includes(equipped.item),`${label}: ${equipped.item} is fielded in the battle on ${equipped.hero}`)
+  FREE_WORN.at(-1).fielded=true
+ }
  return {drafted,deployed,equipped,s,who,home,xpBefore}
 }
 /* kingdom.opening-deploy-choice: after the battle is written and its rewards and level-ups are taken, a hero who stayed
@@ -200,7 +229,10 @@ function settle(won,label,reopenOnSpecialty=false,how={}){
  let kept=null
  if(won&&camp().cursor.step==='rewards'){
   const offer=[...camp().cursor.rewardOffer]
-  kept=P.takeReward(0,label)
+  /* kingdom.opening-free-equip: an idol or a bloodrune is kept when one is offered (it costs Faith or Mana to equip, and
+     the purse is empty) — else the first card, as before */
+  const wanted=offer.findIndex(costsToEquip)
+  kept=P.takeReward(wanted<0?0:wanted,label)
   /* kingdom.opening-hero-card-art: who may carry it — each hero offered is shown with its own card art (P.carriers) */
   const givers=P.carriers(label)
   if(givers.length){P.v.click('give',givers[0]);P.wait(100)}
@@ -479,6 +511,16 @@ for(const x of [...atOrphanage,...atLumberjack].filter(x=>x.fate!=='dead'))asser
 for(const x of fallen)assert.ok(!P.civilianIds().some(id=>camp().roster[id].name===x.name),x.name+' died and is not on the roster')
 const saidOf=list=>list.map(x=>`${x.name} ${x.fate}${x.joins?', joins':''}`).join(', ')
 
+/* 5h · kingdom.opening-free-equip (engine DECISIONS.md 2026-10-03 'the opening run, audited', question 4: "Should idols and
+   bloodrunes be free to equip during the opening, or be left out of the opening's rewards?" — "4 free"): an idol or a
+   bloodrune offered as a battle reward was kept, was shown on Equip as free to equip — never its Faith or Mana — went
+   onto a hero with nothing taken from the purse and nothing recorded as paid, and was fielded on that hero in the next
+   battle (each asserted where it happened: settle, equipFromStash, field).
+   The reward draw is the run's own, so a run may be offered none before its last battle: this run (seed 11, the one the
+   suite plays) is offered one, and on any other run seed the same assertions hold whenever one is. */
+if(RUN_SEED===11)assert.ok(FREE_WORN.length>=1,'run seed 11 keeps an idol or a bloodrune as a battle reward and wears it')
+for(const x of FREE_WORN){assert.equal(x.fielded,true,`${x.label}: ${x.item} was fielded`);assert.ok(['idol','bloodrune'].includes(x.row.itemClass),x.item+' is an idol or a bloodrune')}
+
 /* 6 · the end: every section taken, the run complete — and never the kingdom map */
 assert.equal(P.readMap(ORDER,'the end'),null,'every section is taken')
 assert.match(P.byId('runNote').textContent,/the opening run is complete/,'the map says the run is complete')
@@ -489,4 +531,4 @@ const party=P.heroIds()
 console.error('settled by: '+JSON.stringify(chosen))
 console.error('offers: '+OFFERS.map(o=>`${o.label}: ${o.ids.map(id=>POOL.find(h=>h.id===id).name).join(' / ')} -> ${POOL.find(h=>h.id===o.took).name}`).join('; '))
 console.error('drafted with: '+OFFERS.map(o=>`${POOL.find(h=>h.id===o.took).name}: ${[...o.drafted.badges.map(b=>b.replace('badge.','')),...o.drafted.mods.map(m=>(m.add>0?'+':'')+m.add+' '+m.stat),...o.drafted.unfielded.map(r=>(r.amount>0?'+':'')+r.amount+' '+r.stat+(r.stat==='itemSlots'?' (on the hero, its item slots)':' (not fielded)'))].join(', ')}`).join('; '))
-console.log(`opening run six: six battles from the map, never the kingdom map (Week ${camp().week}); one draft before every battle (${CADENCE.map(x=>x.drafts).join(', ')}): a party of ${CADENCE.map(x=>x.party).join(', ')} at battles 1 to 6; six drafts of three, no class twice, Rogues and Mages offered; three specialties of its own class offered at every specialty choice (${SPECIALTY_CHOICES.length} choices), one taken each time; the page closed on the choice and opened again showed the same three; the first hero chosen by description only and given Leadership, a positive badge and +2 Health; every later draft shown with its rolled modifiers, kept in every battle and to the end of the run, the same after the page is closed and reopened; the party six, one of each class (${party.map(id=>camp().roster[id].classes.find(c=>HERO_CLASSES.includes(c)).replace('class.','')).join(', ')}); four deploy — with five or more free to fight the run asked who goes (${WENT.map(w=>`${w.label}: home ${w.home.map(h=>camp().roster[h].name).join(', ')}`).join('; ')}), the four chosen on Equip and on the board, whoever stayed home unharmed and unpaid, the choice kept when the page is closed on it, and asked again for a lost battle; base heroes left out for no kit: ${LEFT_OUT.map(h=>h.name).join(', ')||'none'}; card art on every hero card (${Object.entries(ART_SEEN).map(([k,n])=>`${k} ${n}`).join(', ')}; heroes with no art on disk, shown blank: ${artless.map(id=>camp().roster[id].name).join(', ')||'none'}); the victory screens showed the civilians who fought, set apart from the heroes and marked unhurt, wounded or dead (the Orphanage: ${saidOf(atOrphanage)}; the Lumberjack House: ${saidOf(atLumberjack)}); a civilian who died (${fallen.map(x=>x.name).join(', ')}) was marked dead and did not join; item card art: ${ITEM_ART_SEEN.rewardArt+ITEM_ART_SEEN.rewardPlain} reward cards — ${ITEM_ART_SEEN.rewardArt} showed their item's card art, ${ITEM_ART_SEEN.rewardPlain} plain and named in itemsMissing; ${ITEM_ART_SEEN.equipArt+ITEM_ART_SEEN.equipPlain} items on Equip — ${ITEM_ART_SEEN.equipArt} with art, ${ITEM_ART_SEEN.equipPlain} plain and named in itemsMissing${ITEM_ART_SEEN.sword?'; the Flaming Longsword\'s reward card showed its card art':''}; party ${party.map(id=>`${camp().roster[id].name} L${camp().roster[id].level}${camp().roster[id].lifeState==='alive'?'':' ('+camp().roster[id].lifeState+')'}`).join(', ')}; closed after battle 3 and reopened at battle 4 with the same party, items, XP and levels; battle 2 lost and offered again with the same party; a run left mid-battle (battle 4) reopens on that battle; the Bridge's ${b3.kept} kept passed`)
+console.log(`opening run six: six battles from the map, never the kingdom map (Week ${camp().week}); one draft before every battle (${CADENCE.map(x=>x.drafts).join(', ')}): a party of ${CADENCE.map(x=>x.party).join(', ')} at battles 1 to 6; six drafts of three, no class twice, Rogues and Mages offered; three specialties of its own class offered at every specialty choice (${SPECIALTY_CHOICES.length} choices), one taken each time; the page closed on the choice and opened again showed the same three; the first hero chosen by description only and given Leadership, a positive badge and +2 Health; every later draft shown with its rolled modifiers, kept in every battle and to the end of the run, the same after the page is closed and reopened; the party six, one of each class (${party.map(id=>camp().roster[id].classes.find(c=>HERO_CLASSES.includes(c)).replace('class.','')).join(', ')}); four deploy — with five or more free to fight the run asked who goes (${WENT.map(w=>`${w.label}: home ${w.home.map(h=>camp().roster[h].name).join(', ')}`).join('; ')}), the four chosen on Equip and on the board, whoever stayed home unharmed and unpaid, the choice kept when the page is closed on it, and asked again for a lost battle; base heroes left out for no kit: ${LEFT_OUT.map(h=>h.name).join(', ')||'none'}; card art on every hero card (${Object.entries(ART_SEEN).map(([k,n])=>`${k} ${n}`).join(', ')}; heroes with no art on disk, shown blank: ${artless.map(id=>camp().roster[id].name).join(', ')||'none'}); the victory screens showed the civilians who fought, set apart from the heroes and marked unhurt, wounded or dead (the Orphanage: ${saidOf(atOrphanage)}; the Lumberjack House: ${saidOf(atLumberjack)}); a civilian who died (${fallen.map(x=>x.name).join(', ')}) was marked dead and did not join;${FREE_WORN.map(x=>` ${/^[aeiou]/.test(x.row.itemClass)?'an':'a'} ${x.row.itemClass} kept as a battle reward (${x.row.name}, ${Object.entries(x.row.equipCost).map(([c,n])=>n+' '+c.replace('currency.','')).join(', ')} outside the opening) went onto ${camp().roster[x.hero].name} at Equip free — shown as free to equip, nothing taken from the purse — and was fielded in the next battle;`).join('')||' no idol or bloodrune was offered before the last battle;'} item card art: ${ITEM_ART_SEEN.rewardArt+ITEM_ART_SEEN.rewardPlain} reward cards — ${ITEM_ART_SEEN.rewardArt} showed their item's card art, ${ITEM_ART_SEEN.rewardPlain} plain and named in itemsMissing; ${ITEM_ART_SEEN.equipArt+ITEM_ART_SEEN.equipPlain} items on Equip — ${ITEM_ART_SEEN.equipArt} with art, ${ITEM_ART_SEEN.equipPlain} plain and named in itemsMissing${ITEM_ART_SEEN.sword?'; the Flaming Longsword\'s reward card showed its card art':''}; party ${party.map(id=>`${camp().roster[id].name} L${camp().roster[id].level}${camp().roster[id].lifeState==='alive'?'':' ('+camp().roster[id].lifeState+')'}`).join(', ')}; closed after battle 3 and reopened at battle 4 with the same party, items, XP and levels; battle 2 lost and offered again with the same party; a run left mid-battle (battle 4) reopens on that battle; the Bridge's ${b3.kept} kept passed`)

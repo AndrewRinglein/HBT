@@ -195,11 +195,12 @@ function stashSections(c: CampaignState, heroIds: readonly string[], picked: str
     if (!ids.length) return `<div class="section"><h3>${esc(title)}</h3><p class="meta">none in the stash</p></div>`
     return `<div class="section"><h3>${esc(title)}</h3><div class="items">${ids.map((id) => {
       const row = itemOf(id)
-      const cost = fmtCost(equipCostOf(id))
+      // kingdom.opening-free-equip: what it costs HERE — in the opening nothing, and an item whose row has a cost says so
+      const cost = fmtCost(equipCostOf(c, id)), free = !cost && Object.keys(row.equipCost).length > 0
       const fits = heroIds.filter((h) => canEquip(c, h, id) || c.roster[h]!.equipped.some((d) => canEquip(c, h, id, d)))
       return `<div class="item${picked === id ? ' picked' : ''}${fits.length ? '' : ' nofit'}" draggable="true" data-act="pick" data-id="${esc(id)}" title="${esc(fits.length ? `fits ${fits.map((h) => c.roster[h]!.name).join(', ')}` : heroIds.map((h) => whyNotEquip(c, h, id) ?? '').filter(Boolean)[0] ?? 'nobody can wear it')}">
         ${itemArt(id)}<b>${esc(row.name)}</b>
-        <small>${esc([`tier ${row.tier}`, row.itemClass === 'weapon' ? (isShield(row) ? 'shield' : `${Math.max(1, row.hands)}-hand`) : null, row.classRestriction ? row.classRestriction.replace('class.', '') + ' only' : null, row.uses ? `${row.uses} use` : null, cost ? `${cost} to equip` : null, Object.entries(row.statModifiers).map(([k, n]) => `${sign(n)} ${k}`).join(' ') || null, row.setBonus ? `${row.setBonus.tag} set` : null, row.sets.length && !row.setBonus ? row.sets.join('/') + ' set' : null].filter(Boolean).join(' · '))}</small>
+        <small>${esc([`tier ${row.tier}`, row.itemClass === 'weapon' ? (isShield(row) ? 'shield' : `${Math.max(1, row.hands)}-hand`) : null, row.classRestriction ? row.classRestriction.replace('class.', '') + ' only' : null, row.uses ? `${row.uses} use` : null, cost ? `${cost} to equip` : free ? 'free to equip' : null, Object.entries(row.statModifiers).map(([k, n]) => `${sign(n)} ${k}`).join(' ') || null, row.setBonus ? `${row.setBonus.tag} set` : null, row.sets.length && !row.setBonus ? row.sets.join('/') + ' set' : null].filter(Boolean).join(' · '))}</small>
       </div>`
     }).join('')}</div></div>`
   })
