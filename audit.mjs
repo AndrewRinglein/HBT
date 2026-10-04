@@ -394,12 +394,7 @@ if(D.encounters){
       if(mean < (b.width-1)/2 - 1) add('encounter-units-skew-west',r.name||r.id,`mean col ${mean.toFixed(1)} on a ${b.width}-wide board — enemies deploy EAST; check this row was re-authored`);
     }
     const hz=r.heroZone&&r.heroZone.at&&(r.heroZone.at.near||r.heroZone.at);
-    // A zone a dated ruling places east of the middle is not a row that missed the rotation: the row says so by citing the
-    // ruling in `heroZoneRuling`, and the question this check asks is answered. engine fix.opening-orphanage-closer-start,
-    // 2026-10-04 (engine DECISIONS.md 'the opening's tutorial … a closer start': "bring the hero forward to the end of the
-    // bridge" — the Orphanage's zone at (10,5) on a 20-wide board); GBH SWITCHES audit.heroZoneRuledEast. A row without
-    // the citation is reported as before.
-    if(sided&&hz&&typeof hz.col==='number'&&hz.col>(b.width-1)/2&&!(typeof r.heroZoneRuling==='string'&&r.heroZoneRuling.trim())) add('hero-zone-is-not-west',r.name||r.id,`hero zone at col ${hz.col} on a ${b.width}-wide board`);
+    if(sided&&hz&&typeof hz.col==='number'&&hz.col>(b.width-1)/2) add('hero-zone-is-not-west',r.name||r.id,`hero zone at col ${hz.col} on a ${b.width}-wide board`);
     if(r.band&&r.band.axis!=='col') add('band-still-walks-rows',r.name||r.id,'the board turned ninety degrees; the band did not');
   }
 }

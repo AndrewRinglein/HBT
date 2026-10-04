@@ -1639,44 +1639,17 @@
     "height": 14
    },
    "retreat": false,
-   "note": "The opening, battle 1 (engine DECISIONS.md 2026-09-28 'Battle 1 (Orphanage) redefined'): \"We'll change the two zombies and a child to two zombies, an orphan child, and a school teacher. The orphan child and school teacher should be in two of the hexes to the left of the house, right next to the house. Zombies are going to start on the right edge. No retreat because you're surrounded. Turn 4, we're going to have a zombie arrive from the bottom edge to the immediate left of the water. Turn 5, we're going to have a zombie arrive from the left edge, center.\" Victory: clear the map (ruled the same day). No turn limit. Civilians are not objectives: their deaths do not end the battle. Hexes are the Abbotown Ground Check's markers (assets/battle-atlas/opening-ground-proposal-2026-09-28.json); the heroes' zone is Claude's reading (engine SWITCHES.md openingHeroZones). AMENDED 2026-09-28 (engine DECISIONS.md 'the Orphanage loses a Zombie at the start and a later one'): \"Let's remove an early zombie and a later zombie.\" One Zombie at the start, (19,3), and one arrival, Turn 4's at (9,13); the (19,5) Zombie and Turn 5's from the left edge (0,6) are gone. Which of each is Claude's reading (engine SWITCHES.md openingOrphanageLighter). AMENDED 2026-09-29 (engine DECISIONS.md 'the Orphanage gains a Zombie on Turn 2 and one on Turn 3'): \"Battle 1: Let's add a zombie on turn 2 and a zombie on turn 3.\" Turn 2's Zombie at (19,5) on the right edge and Turn 3's at (0,6), the left edge, centre; where each arrives is Claude's reading (engine SWITCHES.md openingOrphanageArrivals). AMENDED 2026-10-04 (engine DECISIONS.md 'the opening's tutorial: the first hero's class line, no map before battle 1, the Orphanage's lessons, the camera shows what arrives, new enemies are named, a closer start'): \"We need to shrink this map. First we can bring the hero forward to the end of the bridge and bring the zombie left, maybe 3 squares. So that conflict is much faster.\" The heroes' zone moves from the west bank (5,4) to the bridge's east end: the lone hero on (10,5), the deck's last hex on the house's side, and the zone names its other hexes in order - dry ground east of it, (11,5), (11,4), (11,6), (12,5), (12,4) - so that no hero is deployed in the water beside the deck. The starting Zombie moves three hexes left, from (19,3) to (16,3). The board stays 20 by 14 and its ground is untouched (\"shrink\" is read as the distance); the civilians and the three arrivals stand. Which end of the bridge and which hexes are Claude's reading (engine SWITCHES.md openingHeroZones, closerStart*).",
+   "note": "The opening, battle 1 (engine DECISIONS.md 2026-09-28 'Battle 1 (Orphanage) redefined'): \"We'll change the two zombies and a child to two zombies, an orphan child, and a school teacher. The orphan child and school teacher should be in two of the hexes to the left of the house, right next to the house. Zombies are going to start on the right edge. No retreat because you're surrounded. Turn 4, we're going to have a zombie arrive from the bottom edge to the immediate left of the water. Turn 5, we're going to have a zombie arrive from the left edge, center.\" Victory: clear the map (ruled the same day). No turn limit. Civilians are not objectives: their deaths do not end the battle. Hexes are the Abbotown Ground Check's markers (assets/battle-atlas/opening-ground-proposal-2026-09-28.json); the heroes' zone is Claude's reading (engine SWITCHES.md openingHeroZones). AMENDED 2026-09-28 (engine DECISIONS.md 'the Orphanage loses a Zombie at the start and a later one'): \"Let's remove an early zombie and a later zombie.\" One Zombie at the start, (19,3), and one arrival, Turn 4's at (9,13); the (19,5) Zombie and Turn 5's from the left edge (0,6) are gone. Which of each is Claude's reading (engine SWITCHES.md openingOrphanageLighter). AMENDED 2026-09-29 (engine DECISIONS.md 'the Orphanage gains a Zombie on Turn 2 and one on Turn 3'): \"Battle 1: Let's add a zombie on turn 2 and a zombie on turn 3.\" Turn 2's Zombie at (19,5) on the right edge and Turn 3's at (0,6), the left edge, centre; where each arrives is Claude's reading (engine SWITCHES.md openingOrphanageArrivals).",
    "heroZone": {
     "count": 4,
     "at": {
      "near": {
-      "col": 10,
-      "row": 5
+      "col": 5,
+      "row": 4
      },
-     "range": 2,
-     "hexes": [
-      {
-       "col": 10,
-       "row": 5
-      },
-      {
-       "col": 11,
-       "row": 5
-      },
-      {
-       "col": 11,
-       "row": 4
-      },
-      {
-       "col": 11,
-       "row": 6
-      },
-      {
-       "col": 12,
-       "row": 5
-      },
-      {
-       "col": 12,
-       "row": 4
-      }
-     ]
+     "range": 2
     }
    },
-   "heroZoneRuling": "engine DECISIONS.md 2026-10-04 'the opening's tutorial: the first hero's class line, no map before battle 1, the Orphanage's lessons, the camera shows what arrives, new enemies are named, a closer start': \"bring the hero forward to the end of the bridge\" - the zone is at the bridge's east end, east of the board's middle, by that ruling",
    "setup": [
     {
      "unit": "hero.fixed.orphans",
@@ -1699,7 +1672,7 @@
      "count": 1,
      "hexes": [
       {
-       "col": 16,
+       "col": 19,
        "row": 3
       }
      ]
