@@ -28907,3 +28907,207 @@ index 0000000..260c7c7
   PASS  naming — new content ids use declared kinds
   PASS  naming — no banned words invented
   PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+## content.longsword-loses-stab — LANDED `447e3c6` **NEEDS REVIEW**
+2026-10-04 23:25
+
+  PASS  dependencies landed
+  WARN  not already decided — 4 candidate ruling(s) — READ BEFORE ASKING: SWITCHES.md:2207 · SWITCHES.md:2205
+  PASS  typecheck
+  PASS  the item's own tests — test/alpha-team.test.ts, test/attack-choice.test.ts, test/battle-cursor.test.ts, test/flaming-longsword.test.ts, test/integration.test.ts, test/items-per-unit.test.ts, test/pack-items.test.ts, test/longsword-loses-stab.test.ts
+  PASS  gate 1 — the id appears in a real battle — item.longsword: 1 log lines, 1 fired, 1 changed state
+  PASS  brought its own tests — test/alpha-team.test.ts, test/attack-choice.test.ts, test/battle-cursor.test.ts, test/flaming-longsword.test.ts, test/integration.test.ts, test/items-per-unit.test.ts, test/pack-items.test.ts, test/fixtures/battle-cursor-longsword-loses-stab.json, test/longsword-loses-stab.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/alpha-team.test.ts (-2), test/attack-choice.test.ts (-2), test/battle-cursor.test.ts (-2), test/flaming-longsword.test.ts (-1), test/integration.test.ts (-1), test/items-per-unit.test.ts (-3), test/pack-items.test.ts (-1) — will land FLAGGED for review
+  PASS  control battles unchanged — will re-bless at commit — this item DECLARED it changes the control battles: map.open 2c365882->ce7b39c9, map.ridge 6db868b4->27475623, map.flanks 3505d381->367d0ba4, map.highlands 3e602bdc->ba22be97, map.field 3383b07f->1b7b3a18, map.thicket 8a256aeb->fa00d2c6, map.proving.open 0fe81077->e1ac337a, map.proving.ridge 422bae9c->9463c4f1, map.proving.ford 956911d8->983026a7, map.proving.copse d7864b5a->f89f9383, map.proving.ruin 2da4cf05->defd435e, map.courtyard 692e65f0->5298c14f, map.floodplain 9b0093af->e87b95d0, test.map.embers 4a6ac6e7->1f0ffb36, test.map.showcase 84e05fc3->d73820d8, test.map.duel-8 f6904708->b6479dff, test.map.dungeon-16x8 629d2cb5->f12cbbac, test.map.horde-24 9057eaa4->2180b85d, test.map.journey-20x10 841a8ad2->80487857, test.map.authored-40x40 1f2e904b->191b34b2, test.map.high-prop-single ea8bb51d->6409355c, test.map.high-prop-multi f20e9871->7444d3e8, test.map.well-shove b7187b52->a9e7d393
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — shape 'data' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without item.longsword — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/alpha-team.test.ts b/test/alpha-team.test.ts
+index 6d68d2a..685ba5d 100644
+--- a/test/alpha-team.test.ts
++++ b/test/alpha-team.test.ts
+@@ -154,6 +154,13 @@ describe('the pack carries the six alpha heroes with their real stat bodies', ()
+     const sItems = JSON.parse(readFileSync(
+       join(__dirname, '..', '..', 'content', 'gen', 'settled-items.json'), 'utf8'))
+-    for (const id of ['attack.dagger.stab', 'attack.javelin.stab',
+-      'attack.shortbow.quick-shot', 'attack.longsword.stab']) {
++    // Law 10, 2026-10-04 — content.longsword-loses-stab (2026-10-04; DECISIONS.md 2026-10-04 'after the backlog run: ... the Longsword loses Stab ...', "3 yes"): the Longsword's Stab was the fourth
++    // id typed here and is no longer a row. The claim is unchanged - PIPELINE AGREEMENT on an authored crit - and is now
++    // read from the kits instead of typed: every attack the Alpha Team's kits grant whose settled row authors a crit
++    // (was: `for (const id of ['attack.dagger.stab', 'attack.javelin.stab', 'attack.shortbow.quick-shot', 'attack.longsword.stab'])`).
++    const granted = [...new Set(Object.keys(UNITS).filter((id) => id.startsWith('alpha-')).flatMap((id) => (UNITS[id]!.defaultItems ?? []).flatMap((i) => ITEMS[i]!.grants)))]
++    const withCrit = granted.filter((id) => ((sItems.attacks as { id: string; crit?: number }[]).find((a) => a.id === id)?.crit ?? 0) > 0)
++    for (const id of ['attack.dagger.stab', 'attack.javelin.stab', 'attack.shortbow.quick-shot']) expect(withCrit, `${id} is one of them`).toContain(id)
++    expect(withCrit.some((id) => id.startsWith('attack.longsword.')), 'the Longsword grants no attack with an authored crit').toBe(false)
++    for (const id of withCrit) {
+       const row = (sItems.attacks as { id: string; crit?: number }[]).find((a) => a.id === id)!
+       expect(row.crit, `${id} carries an authored crit`).toBeGreaterThan(0)
+diff --git a/test/attack-choice.test.ts b/test/attack-choice.test.ts
+index e03532c..04f7e9f 100644
+--- a/test/attack-choice.test.ts
++++ b/test/attack-choice.test.ts
+@@ -9,5 +9,6 @@
+ import { attackIdsOf, powerIdsOf } from '../src/core/action.js'
+ import { describe, expect, it } from 'vitest'
+-import { createBattle, createCustomBattle } from '../src/core/setup.js'
++import { createBattle, createCustomBattle, fieldedDef } from '../src/core/setup.js'
++import { ATTACKS, FIRST_BATTLE } from '../src/content/index.js'
+ import { runBattle } from '../src/core/battle.js'
+ import { runActivation } from '../src/ai/modes.js'
+@@ -45,5 +46,14 @@ describe('the two policies', () => {
+       for (const e of ctx.events) if (e.type === 'attack.declared') used.add(String(e.causeId))
+     }
+-    expect(used.has('attack.longsword.stab')).toBe(true)
++    // Law 10, 2026-10-04 — content.longsword-loses-stab (2026-10-04; DECISIONS.md 2026-10-04 'after the backlog run: ... the Longsword loses Stab ...', "3 yes"): the Longsword's Stab was the
++    // dead attack named here and is no longer a row. The rule is unchanged and read from the rows, as integration.test
++    // reads it: an attack shadowed under `declared` (an earlier attack of the same kind costing no more) that hits
++    // harder than what shadows it comes alive under `bestDamage` (was: `expect(used.has('attack.longsword.stab')).toBe(true)`).
++    const alive: string[] = []
++    for (const t of FIRST_BATTLE.heroes) {
++      const kit = fieldedDef(t).attacks.map((id) => ATTACKS[id]).filter((a): a is NonNullable<typeof a> => !!a)
++      kit.forEach((a, i) => { if (kit.slice(0, i).some((b) => b.attack.kind === a.attack.kind && b.staminaCost <= a.staminaCost) && used.has(a.id)) alive.push(`${t}:${a.id}`) })
++    }
++    expect(alive.length, 'a structurally dead attack of the standard battle is swung under bestDamage').toBeGreaterThan(0)
+   })
+ 
+diff --git a/test/battle-cursor.test.ts b/test/battle-cursor.test.ts
+index 59fee9a..b4f4088 100644
+--- a/test/battle-cursor.test.ts
++++ b/test/battle-cursor.test.ts
+@@ -380,4 +380,12 @@ const afflictionWordsGolden = JSON.parse(readFileSync(new URL('./fixtures/battle
+ // checked here and skips the older layers; the rest run down this copy's four layers, then master's five, then the layers below.
+ const combineFreeAttackGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-combine-free-attack.json', import.meta.url), 'utf8'))
++// content.longsword-loses-stab (2026-10-04; DECISIONS.md 2026-10-04 'after the backlog run: ... the Longsword loses Stab ...': "3 yes"),
++// Law 10: item.longsword grants Slash and Counterattack and no Stab, and every row made from it follows. A unit's attack list is part of
++// the state, so every case that fields a Longsword moves, and its holder's fights are other fights (no Stab to choose or to afford).
++// Every case frozen here (tools/capture-longsword-loses-stab-cursor.mts). Moved - for real (state, RNG and result) - exactly the cases
++// that field a Longsword: the showcases with a paladin or the Raven (alpha-team, assembled-party, eve-24-a, eve-24-b, gash-variant,
++// horrors, item-powers, kiln, rime), test.back-flip, test.counterattack, test.flaming-longsword, test.swap, the three opening battles
++// whose party holds one (cathedral, cavern-trail, gates) and progression-surge-0/1/2. A `changed` case is checked here and skips the older layers.
++const longswordLosesStabGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-longsword-loses-stab.json', import.meta.url), 'utf8'))
+ const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
+ // Explicit rule migration, not regenerated historical hashes. These nine old
+@@ -513,5 +521,8 @@ describe('resumable battle cursor', () => {
+       const afflictionWordsExpected = afflictionWordsGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+       const combineFreeAttackExpected = combineFreeAttackGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+-      const combineFreeAttackMoved = combineFreeAttackExpected?.changed === true
++      const longswordLosesStabExpected = longswordLosesStabGolden.cases.find((row:{id:string})=>row.id===fixture.id)
++      const longswordLosesStabMoved = longswordLosesStabExpected?.changed === true
++      // was: const combineFreeAttackMoved = combineFreeAttackExpected?.changed === true — a case content.longsword-loses-stab moved skips this layer too (content.longsword-loses-stab 2026-10-04)
++      const combineFreeAttackMoved = combineFreeAttackExpected?.changed === true || longswordLosesStabMoved
+       // was: const afflictionWordsMoved = afflictionWordsExpected?.changed === true — a case the combined tree moved skips this layer too (combine 2026-10-04)
+       const afflictionWordsMoved = afflictionWordsExpected?.changed === true || combineFreeAttackMoved
+@@ -641,5 +652,12 @@ describe('resumable battle cursor', () => {
+           }
+         } else result = battle.runBattle(ctx)
+-        if (combineFreeAttackExpected) {
++        if (longswordLosesStabExpected) {
++        expect(hash(ctx.events), 'full longsword-loses-stab events').toBe(longswordLosesStabExpected.events)
++        expect(hash(ctx.state), 'full longsword-loses-stab state').toBe(longswordLosesStabExpected.state)
++        expect(hash(ctx.rng.log), 'full longsword-loses-stab RNG').toBe(longswordLosesStabExpected.rng)
++        expect(result).toEqual(longswordLosesStabExpected.result)
++        }
++        // was: if (combineFreeAttackExpected) { — content.longsword-loses-stab (2026-10-04): a case it moved is checked above instead
++        if (combineFreeAttackExpected && !longswordLosesStabMoved) {
+         expect(hash(ctx.events), 'full combine-free-attack events').toBe(combineFreeAttackExpected.events)
+         expect(hash(ctx.state), 'full combine-free-attack state').toBe(combineFreeAttackExpected.state)
+diff --git a/test/flaming-longsword.test.ts b/test/flaming-longsword.test.ts
+index 5e14543..5f7ce93 100644
+--- a/test/flaming-longsword.test.ts
++++ b/test/flaming-longsword.test.ts
+@@ -40,5 +40,9 @@ const burnAndFire = (ev: Event[], item: string) => {
+ 
+ describe.each([
+-  ['item.longsword.flaming', 'Flaming Longsword', 'item.longsword', 'attack.longsword.slash', 'attack.longsword.stab'],
++  // Law 10, 2026-10-04 — content.longsword-loses-stab (2026-10-04; DECISIONS.md 2026-10-04 'after the backlog run: ... the Longsword loses Stab ...', "3 yes"): the Longsword's "other attack" was
++  // its Stab, which is no longer a row. The rule is unchanged - only the basic attack burns - and its other attack is now
++  // the holder's Punch, which the enchant's scope must leave alone as it left the Stab
++  // (was: `['item.longsword.flaming', 'Flaming Longsword', 'item.longsword', 'attack.longsword.slash', 'attack.longsword.stab']`).
++  ['item.longsword.flaming', 'Flaming Longsword', 'item.longsword', 'attack.longsword.slash', 'attack.punch'],
+   ['item.war-axe.flaming', 'Flaming War Axe', 'item.war-axe', 'attack.war-axe.chop', 'attack.war-axe.hack'],
+ ])('%s', (item, name, base, basic, other) => {
+diff --git a/test/integration.test.ts b/test/integration.test.ts
+index 8b44f21..34c2d5d 100644
+--- a/test/integration.test.ts
++++ b/test/integration.test.ts
+@@ -172,5 +172,7 @@ describe('gate 1 — everything appears in the log', () => {
+     expect(structurallyDead.sort()).toEqual([
+       // Law 10, 2026-09-23 (v2.shields): Osric's Knight Shield (and its Shield Slam) retired with V2 R1.
+-      'alpha-osric:attack.longsword.stab',
++      // Law 10, 2026-10-04 — content.longsword-loses-stab (2026-10-04; DECISIONS.md 2026-10-04 'after the backlog run: ... the Longsword loses Stab ...', "3 yes"): Osric's Longsword grants Slash
++      // alone, so he has no second sword attack to be shadowed (his Punch costs less than his Slash and is not). The list
++      // is still computed from the rows above and holds what they give (was: 'alpha-osric:attack.longsword.stab', first here).
+       'alpha-sky-pirate:attack.dagger.stab',
+       'alpha-sky-pirate:attack.javelin.throw',
+diff --git a/test/items-per-unit.test.ts b/test/items-per-unit.test.ts
+index 951db8b..88a6af9 100644
+--- a/test/items-per-unit.test.ts
++++ b/test/items-per-unit.test.ts
+@@ -75,4 +75,9 @@ describe('the invariant — no heroItems means the hero the converter used to fo
+       'hero.base.paladin-dark': ['crit'],
+       'hero.base.priest-armored': ['attacks'],
++      // Law 10, 2026-10-04 — content.longsword-loses-stab (2026-10-04; DECISIONS.md 2026-10-04 'after the backlog run: ... the Longsword loses Stab ...', "3 yes"): the Longsword grants Slash alone,
++      // so a row that holds one fields without the Stab the frozen oracle folded - content moved, not the fold. The oracle
++      // stays frozen (it still names the retired Shield Slam too). The three Paladins' and Osric's `attacks` already differed
++      // by that Shield Slam (their rows below); the Raven's did not, and is named here
++      // (was: no 'attacks' on 'hero.base.rogue-raven').
+       // Law 10, fix.starting-kit-powers (2026-10-04; DECISIONS.md 2026-10-03 "reported: the priest's Holy Texts has no heal
+       // in battle — three starting weapons lose their power on the way into the engine"): the Holy Texts' Mercy, the Fire
+@@ -118,7 +123,10 @@ describe('the invariant — no heroItems means the hero the converter used to fo
+       // it differ from the frozen oracle in maxHp alone, by exactly the 2 the vest used to take (below).
+       'hero.base.priest-robes': ['maxHp'],
+-      'hero.base.rogue-raven': ['maxHp'],
++      'hero.base.rogue-raven': ['maxHp', 'attacks'],   // 'attacks': Law 10, 2026-10-04, the note above (was: ['maxHp'])
+     })
+     for (const id of ['hero.base.priest-robes', 'hero.base.rogue-raven']) expect(fieldedDef(id).maxHp, id).toBe((o[id]!['maxHp'] as number) + 2)
++    // content.longsword-loses-stab (2026-10-04): the Raven's `attacks` differ by exactly the attacks the pack no longer holds - the Longsword's Stab
++    expect(fieldedDef('hero.base.rogue-raven').attacks).toEqual((o['hero.base.rogue-raven']!['attacks'] as string[]).filter((a) => ATTACKS[a]))
++    expect((o['hero.base.rogue-raven']!['attacks'] as string[]).filter((a) => !ATTACKS[a])).toEqual(['attack.longsword.stab'])
+     expect(fieldedDef('hero.base.paladin-dark').crit).toBe((o['hero.base.paladin-dark']!['crit'] as number) - CRIT_BASE + ITEMS['item.rusted-plate']!.statModifiers.crit!)   // Law 10, fix.codex-numbers: the oracle's total, less the base (above)
+     expect(fieldedDef('hero.base.priest-pauper').luck).toBe(ITEMS['item.nice-robes']!.statModifiers.luck)
+@@ -155,5 +163,9 @@ describe('heroItems — the fielding decides the kit', () => {
+     const ctx = createBattle({ ...base, heroes: ['hero.base.ranger-aggressive'], heroHexes: [247], heroItems: [['item.longsword']] })
+     const h = ctx.state.units[0]!
+-    expect(attackIdsOf(ctx, h)).toEqual(['attack.longsword.slash', 'attack.longsword.stab', 'attack.punch'])
++    // Law 10, 2026-10-04 — content.longsword-loses-stab (2026-10-04; DECISIONS.md 2026-10-04 'after the backlog run: ... the Longsword loses Stab ...', "3 yes"): the Longsword's attacks are what its
++    // row grants (Slash; the Stab is gone), and the claim is said as that rule: the handed kit's attacks, then the Punch
++    // (was: `toEqual(['attack.longsword.slash', 'attack.longsword.stab', 'attack.punch'])`).
++    expect(ITEMS['item.longsword']!.grants[0]).toBe('attack.longsword.slash')
++    expect(attackIdsOf(ctx, h)).toEqual([...ITEMS['item.longsword']!.grants, 'attack.punch'])
+     expect(attackIdsOf(ctx, h)).not.toContain('attack.longbow.shot')
+     expect(h.role).toBe('melee')
+@@ -162,5 +174,6 @@ describe('heroItems — the fielding decides the kit', () => {
+     const eq = ctx.events.filter((e) => e.type === 'unit.equipped' && e.actor === h.id)
+     expect(eq.map((e) => e.causeId)).toEqual(['item.longsword'])
+-    expect(eq[0]!['grants']).toEqual(['attack.longsword.slash', 'attack.longsword.stab'])
++    // Law 10, 2026-10-04 (same edit): the log says the row's own grants (was: `toEqual(['attack.longsword.slash', 'attack.longsword.stab'])`)
++    expect(eq[0]!['grants']).toEqual(ITEMS['item.longsword']!.grants)
+     // and the halberd he used to be handed is refused: a class.warrior item on a class.ranger row
+     expect(() => createBattle({ ...base, heroes: ['hero.base.ranger-aggressive'], heroHexes: [247], heroItems: [['item.halberd']] })).toThrow(/cannot wield 'item\.halberd', a class\.warrior item/)
+diff --git a/test/pack-items.test.ts b/test/pack-items.test.ts
+index b83876c..40b871e 100644
+--- a/test/pack-items.test.ts
++++ b/test/pack-items.test.ts
+@@ -124,5 +124,10 @@ describe('every Codex item is an ItemDef, and says exactly what it can and canno
+     const ctx = createBattle({ replicate: 0 })
+     expect(ctx.items).toBe(ITEMS)
+-    expect(ctx.items['item.longsword']!.grants).toEqual(['attack.longsword.slash', 'attack.longsword.stab'])
++    // Law 10, 2026-10-04 — content.longsword-loses-stab (2026-10-04; DECISIONS.md 2026-10-04 'after the backlog run: ... the Longsword loses Stab ...', "3 yes"): the Longsword's attacks are what its
++    // Codex row grants, and the claim is said as that rule - the registry on Ctx carries the settled row's attack grants,
++    // in the row's order (was: `toEqual(['attack.longsword.slash', 'attack.longsword.stab'])`).
++    const settledSword = (JSON.parse(readFileSync(join(__dirname, '..', '..', 'content', 'gen', 'settled-items.json'), 'utf8')).items as { id: string; grants: string[] }[]).find((i) => i.id === 'item.longsword')!
++    expect(settledSword.grants.filter((g) => g.startsWith('attack.')).length).toBeGreaterThan(0)
++    expect(ctx.items['item.longsword']!.grants).toEqual(settledSword.grants.filter((g) => g.startsWith('attack.')))
+     // seam.items-per-unit landed right behind this: the log now says what
+     // every hero wears (unit.equipped, cause = the item)
+```
+</details>

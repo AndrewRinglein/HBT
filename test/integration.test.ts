@@ -171,7 +171,9 @@ describe('gate 1 — everything appears in the log', () => {
     }
     expect(structurallyDead.sort()).toEqual([
       // Law 10, 2026-09-23 (v2.shields): Osric's Knight Shield (and its Shield Slam) retired with V2 R1.
-      'alpha-osric:attack.longsword.stab',
+      // Law 10, 2026-10-04 — content.longsword-loses-stab (2026-10-04; DECISIONS.md 2026-10-04 'after the backlog run: ... the Longsword loses Stab ...', "3 yes"): Osric's Longsword grants Slash
+      // alone, so he has no second sword attack to be shadowed (his Punch costs less than his Slash and is not). The list
+      // is still computed from the rows above and holds what they give (was: 'alpha-osric:attack.longsword.stab', first here).
       'alpha-sky-pirate:attack.dagger.stab',
       'alpha-sky-pirate:attack.javelin.throw',
       'alpha-sky-pirate:attack.punch',   // javelin.stab is cost 0 and first — the Pirate never needs his fists

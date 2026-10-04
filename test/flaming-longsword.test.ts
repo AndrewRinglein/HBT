@@ -39,7 +39,11 @@ const burnAndFire = (ev: Event[], item: string) => {
 }
 
 describe.each([
-  ['item.longsword.flaming', 'Flaming Longsword', 'item.longsword', 'attack.longsword.slash', 'attack.longsword.stab'],
+  // Law 10, 2026-10-04 — content.longsword-loses-stab (2026-10-04; DECISIONS.md 2026-10-04 'after the backlog run: ... the Longsword loses Stab ...', "3 yes"): the Longsword's "other attack" was
+  // its Stab, which is no longer a row. The rule is unchanged - only the basic attack burns - and its other attack is now
+  // the holder's Punch, which the enchant's scope must leave alone as it left the Stab
+  // (was: `['item.longsword.flaming', 'Flaming Longsword', 'item.longsword', 'attack.longsword.slash', 'attack.longsword.stab']`).
+  ['item.longsword.flaming', 'Flaming Longsword', 'item.longsword', 'attack.longsword.slash', 'attack.punch'],
   ['item.war-axe.flaming', 'Flaming War Axe', 'item.war-axe', 'attack.war-axe.chop', 'attack.war-axe.hack'],
 ])('%s', (item, name, base, basic, other) => {
   it('is the base weapon at tier 3, its attacks unchanged, the Flaming enchant on its basic attack', () => {

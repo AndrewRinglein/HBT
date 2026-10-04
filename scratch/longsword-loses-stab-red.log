@@ -1,0 +1,245 @@
+
+ RUN  v4.1.11 C:/Users/aring/Desktop/HBT-worker-engine/engine
+
+ ❯ test/longsword-loses-stab.test.ts (19 tests | 18 failed) 20ms
+     × its row grants the one attack and the one power 6ms
+     × a hero holding it has Slash and Counterattack on its sheet and no Stab; Slash is the basic attack 4ms
+     × item.longsword.bloodletting grants one attack - the Slash, or its own copy of it - and the Counterattack 1ms
+     × item.longsword.the-master grants one attack - the Slash, or its own copy of it - and the Counterattack 0ms
+     × item.longsword.demon-slayer grants one attack - the Slash, or its own copy of it - and the Counterattack 0ms
+     × item.longsword.undead-slayer grants one attack - the Slash, or its own copy of it - and the Counterattack 0ms
+     × item.longsword.werewolf-bane grants one attack - the Slash, or its own copy of it - and the Counterattack 0ms
+     × item.longsword.taunting grants one attack - the Slash, or its own copy of it - and the Counterattack 0ms
+     × item.longsword.destroying grants one attack - the Slash, or its own copy of it - and the Counterattack 0ms
+     × item.longsword.flaming grants one attack - the Slash, or its own copy of it - and the Counterattack 0ms
+     × item.longsword.masterwork grants one attack - the Slash, or its own copy of it - and the Counterattack 0ms
+     × item.longsword.heavy grants one attack - the Slash, or its own copy of it - and the Counterattack 0ms
+     × item.longsword.keen grants one attack - the Slash, or its own copy of it - and the Counterattack 0ms
+     × item.longsword.cruel grants one attack - the Slash, or its own copy of it - and the Counterattack 0ms
+     × the Flaming Longsword's holder has what its row's words give: the basic attack burning, and the Counterattack 1ms
+     × no attack row of the pack is the Longsword's Stab or a copy of it 0ms
+     × no item grants it and no unit fields with it 0ms
+     × the Codex row, the published content and the pack agree 2ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 18 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/longsword-loses-stab.test.ts > the Longsword has Slash and Counterattack > its row grants the one attack and the one power
+AssertionError: expected [ 'attack.longsword.slash', …(1) ] to deeply equal [ 'attack.longsword.slash' ]
+
+- Expected
++ Received
+
+  [
+    "attack.longsword.slash",
++   "attack.longsword.stab",
+  ]
+
+ ❯ test/longsword-loses-stab.test.ts:30:34
+     28| describe('the Longsword has Slash and Counterattack', () => {
+     29|   it('its row grants the one attack and the one power', () => {
+     30|     expect(ITEMS[SWORD]!.grants).toEqual([SLASH])
+       |                                  ^
+     31|     expect(ITEMS[SWORD]!.abilities).toEqual([COUNTER])
+     32|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/18]⎯
+
+ FAIL  test/longsword-loses-stab.test.ts > the Longsword has Slash and Counterattack > a hero holding it has Slash and Counterattack on its sheet and no Stab; Slash is the basic attack
+AssertionError: expected [ 'attack.longsword.slash', …(4) ] to deeply equal [ 'attack.longsword.slash', …(1) ]
+
+- Expected
++ Received
+
+  [
+    "attack.longsword.slash",
++   "attack.longsword.stab",
++   "attack.test-warrior.massive",
++   "attack.test-warrior.axe",
+    "attack.punch",
+  ]
+
+ ❯ test/longsword-loses-stab.test.ts:36:33
+     34|   it('a hero holding it has Slash and Counterattack on its sheet and n…
+     35|     const { ctx, u } = holder(SWORD)
+     36|     expect(attackIdsOf(ctx, u)).toEqual([SLASH, 'attack.punch'])
+       |                                 ^
+     37|     expect(powerIdsOf(ctx, u)).toContain(COUNTER)
+     38|     expect(basicAttackOf(ctx, u)?.id).toBe(SLASH)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/18]⎯
+
+ FAIL  test/longsword-loses-stab.test.ts > every row made from the Longsword follows its base > item.longsword.bloodletting grants one attack - the Slash, or its own copy of it - and the Counterattack
+ FAIL  test/longsword-loses-stab.test.ts > every row made from the Longsword follows its base > item.longsword.the-master grants one attack - the Slash, or its own copy of it - and the Counterattack
+ FAIL  test/longsword-loses-stab.test.ts > every row made from the Longsword follows its base > item.longsword.demon-slayer grants one attack - the Slash, or its own copy of it - and the Counterattack
+ FAIL  test/longsword-loses-stab.test.ts > every row made from the Longsword follows its base > item.longsword.undead-slayer grants one attack - the Slash, or its own copy of it - and the Counterattack
+ FAIL  test/longsword-loses-stab.test.ts > every row made from the Longsword follows its base > item.longsword.werewolf-bane grants one attack - the Slash, or its own copy of it - and the Counterattack
+ FAIL  test/longsword-loses-stab.test.ts > every row made from the Longsword follows its base > item.longsword.taunting grants one attack - the Slash, or its own copy of it - and the Counterattack
+ FAIL  test/longsword-loses-stab.test.ts > every row made from the Longsword follows its base > item.longsword.destroying grants one attack - the Slash, or its own copy of it - and the Counterattack
+ FAIL  test/longsword-loses-stab.test.ts > every row made from the Longsword follows its base > item.longsword.flaming grants one attack - the Slash, or its own copy of it - and the Counterattack
+ FAIL  test/longsword-loses-stab.test.ts > every row made from the Longsword follows its base > item.longsword.masterwork grants one attack - the Slash, or its own copy of it - and the Counterattack
+AssertionError: expected [ 'attack.longsword.slash', …(1) ] to have a length of 1 but got 2
+
+- Expected
++ Received
+
+- 1
++ 2
+
+ ❯ test/longsword-loses-stab.test.ts:52:22
+     50|
+     51|   it.each(made().map((i) => [i.id, i] as const))('%s grants one attack…
+     52|     expect(i.grants).toHaveLength(1)
+       |                      ^
+     53|     // a Forge enchant rides a COPY of the base's attack (`<attack id>…
+     54|     expect(i.grants[0] === SLASH || i.grants[0]!.startsWith(SLASH + '.…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/18]⎯
+
+ FAIL  test/longsword-loses-stab.test.ts > every row made from the Longsword follows its base > item.longsword.heavy grants one attack - the Slash, or its own copy of it - and the Counterattack
+ FAIL  test/longsword-loses-stab.test.ts > every row made from the Longsword follows its base > item.longsword.cruel grants one attack - the Slash, or its own copy of it - and the Counterattack
+AssertionError: expected [ Array(2) ] to have a length of 1 but got 2
+
+- Expected
++ Received
+
+- 1
++ 2
+
+ ❯ test/longsword-loses-stab.test.ts:52:22
+     50|
+     51|   it.each(made().map((i) => [i.id, i] as const))('%s grants one attack…
+     52|     expect(i.grants).toHaveLength(1)
+       |                      ^
+     53|     // a Forge enchant rides a COPY of the base's attack (`<attack id>…
+     54|     expect(i.grants[0] === SLASH || i.grants[0]!.startsWith(SLASH + '.…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/18]⎯
+
+ FAIL  test/longsword-loses-stab.test.ts > every row made from the Longsword follows its base > item.longsword.keen grants one attack - the Slash, or its own copy of it - and the Counterattack
+AssertionError: expected [ 'attack.longsword.slash.keen', …(1) ] to have a length of 1 but got 2
+
+- Expected
++ Received
+
+- 1
++ 2
+
+ ❯ test/longsword-loses-stab.test.ts:52:22
+     50|
+     51|   it.each(made().map((i) => [i.id, i] as const))('%s grants one attack…
+     52|     expect(i.grants).toHaveLength(1)
+       |                      ^
+     53|     // a Forge enchant rides a COPY of the base's attack (`<attack id>…
+     54|     expect(i.grants[0] === SLASH || i.grants[0]!.startsWith(SLASH + '.…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/18]⎯
+
+ FAIL  test/longsword-loses-stab.test.ts > every row made from the Longsword follows its base > the Flaming Longsword's holder has what its row's words give: the basic attack burning, and the Counterattack
+AssertionError: expected [ 'attack.longsword.slash', …(4) ] to deeply equal [ 'attack.longsword.slash', …(1) ]
+
+- Expected
++ Received
+
+  [
+    "attack.longsword.slash",
++   "attack.longsword.stab",
++   "attack.test-warrior.massive",
++   "attack.test-warrior.axe",
+    "attack.punch",
+  ]
+
+ ❯ test/longsword-loses-stab.test.ts:61:33
+     59|   it('the Flaming Longsword\'s holder has what its row\'s words give: …
+     60|     const { ctx, u } = holder('item.longsword.flaming')
+     61|     expect(attackIdsOf(ctx, u)).toEqual([SLASH, 'attack.punch'])
+       |                                 ^
+     62|     expect(powerIdsOf(ctx, u)).toContain(COUNTER)
+     63|     const added = ITEMS['item.longsword.flaming']!.triggers.filter((t)…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/18]⎯
+
+ FAIL  test/longsword-loses-stab.test.ts > nothing grants the Stab > no attack row of the pack is the Longsword's Stab or a copy of it
+AssertionError: expected [ 'attack.longsword.stab', …(3) ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   "attack.longsword.stab",
++   "attack.longsword.stab.heavy",
++   "attack.longsword.stab.keen",
++   "attack.longsword.stab.cruel",
++ ]
+
+ ❯ test/longsword-loses-stab.test.ts:70:64
+     68| describe('nothing grants the Stab', () => {
+     69|   it('no attack row of the pack is the Longsword\'s Stab or a copy of …
+     70|     expect(Object.keys(ATTACKS).filter((id) => STAB.test(id))).toEqual…
+       |                                                                ^
+     71|   })
+     72|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/18]⎯
+
+ FAIL  test/longsword-loses-stab.test.ts > nothing grants the Stab > no item grants it and no unit fields with it
+AssertionError: expected [ 'item.longsword', …(12) ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   "item.longsword",
++   "item.longsword.bloodletting",
++   "item.longsword.the-master",
++   "item.longsword.demon-slayer",
++   "item.longsword.undead-slayer",
++   "item.longsword.werewolf-bane",
++   "item.longsword.taunting",
++   "item.longsword.destroying",
++   "item.longsword.flaming",
++   "item.longsword.masterwork",
++   "item.longsword.heavy",
++   "item.longsword.keen",
++   "item.longsword.cruel",
++ ]
+
+ ❯ test/longsword-loses-stab.test.ts:74:101
+     72|
+     73|   it('no item grants it and no unit fields with it', () => {
+     74|     expect(Object.values(ITEMS).filter((i) => i.grants.some((g) => STA…
+       |                                                                                                     ^
+     75|     const with_ = Object.keys(UNITS).filter((id) => fieldedDef(id).att…
+     76|     expect(with_).toEqual([])
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/18]⎯
+
+ FAIL  test/longsword-loses-stab.test.ts > nothing grants the Stab > the Codex row, the published content and the pack agree
+AssertionError: gen/settled-items.json: expected [ 'attack.longsword.slash', …(2) ] to deeply equal [ 'attack.longsword.slash', …(1) ]
+
+- Expected
++ Received
+
+  [
+    "attack.longsword.slash",
++   "attack.longsword.stab",
+    "power.longsword.counterattack",
+  ]
+
+ ❯ test/longsword-loses-stab.test.ts:83:62
+     81|     for (const f of ['gen/settled-items.json', 'hbt-content.json']) {
+     82|       const j = read(f) as { items: { id: string; grants: string[] }[]…
+     83|       expect(j.items.find((i) => i.id === SWORD)!.grants, f).toEqual([…
+       |                                                              ^
+     84|       expect(j.attacks.filter((a) => STAB.test(a.id)).map((a) => a.id)…
+     85|     }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/18]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  18 failed | 1 passed (19)
+   Start at  15:55:42
+   Duration  1.74s (transform 848ms, setup 0ms, import 1.06s, tests 20ms, environment 0ms)
+

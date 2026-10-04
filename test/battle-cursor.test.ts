@@ -379,6 +379,14 @@ const afflictionWordsGolden = JSON.parse(readFileSync(new URL('./fixtures/battle
 // from the fix.affliction-pop-up-words capture (this copy's top layer) — every case master's five items move (re-captured at the second merge). A `changed` case is
 // checked here and skips the older layers; the rest run down this copy's four layers, then master's five, then the layers below.
 const combineFreeAttackGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-combine-free-attack.json', import.meta.url), 'utf8'))
+// content.longsword-loses-stab (2026-10-04; DECISIONS.md 2026-10-04 'after the backlog run: ... the Longsword loses Stab ...': "3 yes"),
+// Law 10: item.longsword grants Slash and Counterattack and no Stab, and every row made from it follows. A unit's attack list is part of
+// the state, so every case that fields a Longsword moves, and its holder's fights are other fights (no Stab to choose or to afford).
+// Every case frozen here (tools/capture-longsword-loses-stab-cursor.mts). Moved - for real (state, RNG and result) - exactly the cases
+// that field a Longsword: the showcases with a paladin or the Raven (alpha-team, assembled-party, eve-24-a, eve-24-b, gash-variant,
+// horrors, item-powers, kiln, rime), test.back-flip, test.counterattack, test.flaming-longsword, test.swap, the three opening battles
+// whose party holds one (cathedral, cavern-trail, gates) and progression-surge-0/1/2. A `changed` case is checked here and skips the older layers.
+const longswordLosesStabGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-longsword-loses-stab.json', import.meta.url), 'utf8'))
 const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
 // Explicit rule migration, not regenerated historical hashes. These nine old
 // cases contain Surge ledger/refresh changes or terminal markers corrected
@@ -512,7 +520,10 @@ describe('resumable battle cursor', () => {
       const probeCadenceExpected = probeCadenceGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const afflictionWordsExpected = afflictionWordsGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const combineFreeAttackExpected = combineFreeAttackGolden.cases.find((row:{id:string})=>row.id===fixture.id)
-      const combineFreeAttackMoved = combineFreeAttackExpected?.changed === true
+      const longswordLosesStabExpected = longswordLosesStabGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+      const longswordLosesStabMoved = longswordLosesStabExpected?.changed === true
+      // was: const combineFreeAttackMoved = combineFreeAttackExpected?.changed === true — a case content.longsword-loses-stab moved skips this layer too (content.longsword-loses-stab 2026-10-04)
+      const combineFreeAttackMoved = combineFreeAttackExpected?.changed === true || longswordLosesStabMoved
       // was: const afflictionWordsMoved = afflictionWordsExpected?.changed === true — a case the combined tree moved skips this layer too (combine 2026-10-04)
       const afflictionWordsMoved = afflictionWordsExpected?.changed === true || combineFreeAttackMoved
       // was: const probeCadenceMoved = probeCadenceExpected?.changed === true — a case fix.affliction-pop-up-words moved skips this layer too (fix.affliction-pop-up-words 2026-10-04)
@@ -640,7 +651,14 @@ describe('resumable battle cursor', () => {
             battle.completeActionCycle(ctx)
           }
         } else result = battle.runBattle(ctx)
-        if (combineFreeAttackExpected) {
+        if (longswordLosesStabExpected) {
+        expect(hash(ctx.events), 'full longsword-loses-stab events').toBe(longswordLosesStabExpected.events)
+        expect(hash(ctx.state), 'full longsword-loses-stab state').toBe(longswordLosesStabExpected.state)
+        expect(hash(ctx.rng.log), 'full longsword-loses-stab RNG').toBe(longswordLosesStabExpected.rng)
+        expect(result).toEqual(longswordLosesStabExpected.result)
+        }
+        // was: if (combineFreeAttackExpected) { — content.longsword-loses-stab (2026-10-04): a case it moved is checked above instead
+        if (combineFreeAttackExpected && !longswordLosesStabMoved) {
         expect(hash(ctx.events), 'full combine-free-attack events').toBe(combineFreeAttackExpected.events)
         expect(hash(ctx.state), 'full combine-free-attack state').toBe(combineFreeAttackExpected.state)
         expect(hash(ctx.rng.log), 'full combine-free-attack RNG').toBe(combineFreeAttackExpected.rng)

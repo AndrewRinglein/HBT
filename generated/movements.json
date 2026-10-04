@@ -4049,46 +4049,6 @@
    "content": [
     "item.longsword"
    ],
-   "action": "attack.longsword.stab",
-   "name": "Stab",
-   "kind": "melee",
-   "engine": "yes",
-   "bar": "attack",
-   "motion": "attack",
-   "bodies": {
-    "Ancient Elf": "Purchased atk_slashdown",
-    "Archive Scholar": "Purchased atk_slashdown",
-    "Barefoot Mendicant": "Purchased atk_slashdown",
-    "Battle Chaplain": "Purchased atk_slashdown",
-    "Black Oath": "Purchased atk_slashdown",
-    "Cathedral Bishop": "Purchased atk_slashdown",
-    "Court Champion": "Purchased atk_slashdown",
-    "Crimson Sorceress": "Purchased atk_slashdown",
-    "Dawnblade": "Purchased atk_slashdown",
-    "Emberwright": "Purchased atk_slashdown",
-    "Forest Elf": "Purchased atk_slashdown",
-    "Forest Fey": "Purchased atk_slashdown",
-    "Hunter": "Purchased atk_slashdown",
-    "Lion of the Host": "atk_slashdown",
-    "Oathblade": "Purchased atk_slashdown",
-    "Pyre Witch": "Purchased atk_slashdown",
-    "Rune-Marked Ascetic": "Purchased atk_slashdown",
-    "The Raven": "Purchased atk_slashdown",
-    "The Rose": "Purchased atk_slashdown",
-    "The Serpent": "Purchased atk_slashdown",
-    "The Skull": "Purchased atk_slashdown"
-   },
-   "motionStatus": "played",
-   "selected": null,
-   "ruling": null,
-   "note": null,
-   "variants": 3
-  },
-  {
-   "group": "weapon",
-   "content": [
-    "item.longsword"
-   ],
    "action": "power.longsword.counterattack",
    "name": "Counterattack",
    "kind": "power",
@@ -22307,7 +22267,7 @@
   }
  ],
  "counts": {
-  "rows": 512,
+  "rows": 511,
   "missing": 352,
   "noEngine": 37,
   "inert": 239,

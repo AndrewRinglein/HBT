@@ -8,7 +8,8 @@
 // paths are real and that the default is byte-for-byte the old rule.
 import { attackIdsOf, powerIdsOf } from '../src/core/action.js'
 import { describe, expect, it } from 'vitest'
-import { createBattle, createCustomBattle } from '../src/core/setup.js'
+import { createBattle, createCustomBattle, fieldedDef } from '../src/core/setup.js'
+import { ATTACKS, FIRST_BATTLE } from '../src/content/index.js'
 import { runBattle } from '../src/core/battle.js'
 import { runActivation } from '../src/ai/modes.js'
 import { beginActivation } from '../src/core/mutate.js'
@@ -44,7 +45,16 @@ describe('the two policies', () => {
       runBattle(ctx)
       for (const e of ctx.events) if (e.type === 'attack.declared') used.add(String(e.causeId))
     }
-    expect(used.has('attack.longsword.stab')).toBe(true)
+    // Law 10, 2026-10-04 — content.longsword-loses-stab (2026-10-04; DECISIONS.md 2026-10-04 'after the backlog run: ... the Longsword loses Stab ...', "3 yes"): the Longsword's Stab was the
+    // dead attack named here and is no longer a row. The rule is unchanged and read from the rows, as integration.test
+    // reads it: an attack shadowed under `declared` (an earlier attack of the same kind costing no more) that hits
+    // harder than what shadows it comes alive under `bestDamage` (was: `expect(used.has('attack.longsword.stab')).toBe(true)`).
+    const alive: string[] = []
+    for (const t of FIRST_BATTLE.heroes) {
+      const kit = fieldedDef(t).attacks.map((id) => ATTACKS[id]).filter((a): a is NonNullable<typeof a> => !!a)
+      kit.forEach((a, i) => { if (kit.slice(0, i).some((b) => b.attack.kind === a.attack.kind && b.staminaCost <= a.staminaCost) && used.has(a.id)) alive.push(`${t}:${a.id}`) })
+    }
+    expect(alive.length, 'a structurally dead attack of the standard battle is swung under bestDamage').toBeGreaterThan(0)
   })
 
   it('the default is declared, so the control battles are what they were', () => {

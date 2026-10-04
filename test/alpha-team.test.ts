@@ -153,8 +153,15 @@ describe('the pack carries the six alpha heroes with their real stat bodies', ()
     expect(alpha.filter((g) => /crit/.test(g.needs)).length).toBe(0)
     const sItems = JSON.parse(readFileSync(
       join(__dirname, '..', '..', 'content', 'gen', 'settled-items.json'), 'utf8'))
-    for (const id of ['attack.dagger.stab', 'attack.javelin.stab',
-      'attack.shortbow.quick-shot', 'attack.longsword.stab']) {
+    // Law 10, 2026-10-04 — content.longsword-loses-stab (2026-10-04; DECISIONS.md 2026-10-04 'after the backlog run: ... the Longsword loses Stab ...', "3 yes"): the Longsword's Stab was the fourth
+    // id typed here and is no longer a row. The claim is unchanged - PIPELINE AGREEMENT on an authored crit - and is now
+    // read from the kits instead of typed: every attack the Alpha Team's kits grant whose settled row authors a crit
+    // (was: `for (const id of ['attack.dagger.stab', 'attack.javelin.stab', 'attack.shortbow.quick-shot', 'attack.longsword.stab'])`).
+    const granted = [...new Set(Object.keys(UNITS).filter((id) => id.startsWith('alpha-')).flatMap((id) => (UNITS[id]!.defaultItems ?? []).flatMap((i) => ITEMS[i]!.grants)))]
+    const withCrit = granted.filter((id) => ((sItems.attacks as { id: string; crit?: number }[]).find((a) => a.id === id)?.crit ?? 0) > 0)
+    for (const id of ['attack.dagger.stab', 'attack.javelin.stab', 'attack.shortbow.quick-shot']) expect(withCrit, `${id} is one of them`).toContain(id)
+    expect(withCrit.some((id) => id.startsWith('attack.longsword.')), 'the Longsword grants no attack with an authored crit').toBe(false)
+    for (const id of withCrit) {
       const row = (sItems.attacks as { id: string; crit?: number }[]).find((a) => a.id === id)!
       expect(row.crit, `${id} carries an authored crit`).toBeGreaterThan(0)
       expect(ATTACKS[id]!.attack.crit, `${id} — pack agrees with the settled row`).toBe(row.crit)

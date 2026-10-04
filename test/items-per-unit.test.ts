@@ -74,6 +74,11 @@ describe('the invariant — no heroItems means the hero the converter used to fo
     expect(differ).toEqual({
       'hero.base.paladin-dark': ['crit'],
       'hero.base.priest-armored': ['attacks'],
+      // Law 10, 2026-10-04 — content.longsword-loses-stab (2026-10-04; DECISIONS.md 2026-10-04 'after the backlog run: ... the Longsword loses Stab ...', "3 yes"): the Longsword grants Slash alone,
+      // so a row that holds one fields without the Stab the frozen oracle folded - content moved, not the fold. The oracle
+      // stays frozen (it still names the retired Shield Slam too). The three Paladins' and Osric's `attacks` already differed
+      // by that Shield Slam (their rows below); the Raven's did not, and is named here
+      // (was: no 'attacks' on 'hero.base.rogue-raven').
       // Law 10, fix.starting-kit-powers (2026-10-04; DECISIONS.md 2026-10-03 "reported: the priest's Holy Texts has no heal
       // in battle — three starting weapons lose their power on the way into the engine"): the Holy Texts' Mercy, the Fire
       // Staff's Flame Burst and the Frost Staff's Frost Nova compile now, so the five rows that hold one of those weapons
@@ -117,9 +122,12 @@ describe('the invariant — no heroItems means the hero the converter used to fo
       // DECISIONS.md 2026-09-28: "No health change."). Content moved, not the fold — the two rows that wear
       // it differ from the frozen oracle in maxHp alone, by exactly the 2 the vest used to take (below).
       'hero.base.priest-robes': ['maxHp'],
-      'hero.base.rogue-raven': ['maxHp'],
+      'hero.base.rogue-raven': ['maxHp', 'attacks'],   // 'attacks': Law 10, 2026-10-04, the note above (was: ['maxHp'])
     })
     for (const id of ['hero.base.priest-robes', 'hero.base.rogue-raven']) expect(fieldedDef(id).maxHp, id).toBe((o[id]!['maxHp'] as number) + 2)
+    // content.longsword-loses-stab (2026-10-04): the Raven's `attacks` differ by exactly the attacks the pack no longer holds - the Longsword's Stab
+    expect(fieldedDef('hero.base.rogue-raven').attacks).toEqual((o['hero.base.rogue-raven']!['attacks'] as string[]).filter((a) => ATTACKS[a]))
+    expect((o['hero.base.rogue-raven']!['attacks'] as string[]).filter((a) => !ATTACKS[a])).toEqual(['attack.longsword.stab'])
     expect(fieldedDef('hero.base.paladin-dark').crit).toBe((o['hero.base.paladin-dark']!['crit'] as number) - CRIT_BASE + ITEMS['item.rusted-plate']!.statModifiers.crit!)   // Law 10, fix.codex-numbers: the oracle's total, less the base (above)
     expect(fieldedDef('hero.base.priest-pauper').luck).toBe(ITEMS['item.nice-robes']!.statModifiers.luck)
     // fix.starting-kit-powers (2026-10-04): the `abilities` that differ are exactly the three powers, and nothing else
@@ -154,14 +162,19 @@ describe('heroItems — the fielding decides the kit', () => {
   it('a Hunter handed a longsword has Slash and no shot, kites no more, and the log says what he wears', () => {
     const ctx = createBattle({ ...base, heroes: ['hero.base.ranger-aggressive'], heroHexes: [247], heroItems: [['item.longsword']] })
     const h = ctx.state.units[0]!
-    expect(attackIdsOf(ctx, h)).toEqual(['attack.longsword.slash', 'attack.longsword.stab', 'attack.punch'])
+    // Law 10, 2026-10-04 — content.longsword-loses-stab (2026-10-04; DECISIONS.md 2026-10-04 'after the backlog run: ... the Longsword loses Stab ...', "3 yes"): the Longsword's attacks are what its
+    // row grants (Slash; the Stab is gone), and the claim is said as that rule: the handed kit's attacks, then the Punch
+    // (was: `toEqual(['attack.longsword.slash', 'attack.longsword.stab', 'attack.punch'])`).
+    expect(ITEMS['item.longsword']!.grants[0]).toBe('attack.longsword.slash')
+    expect(attackIdsOf(ctx, h)).toEqual([...ITEMS['item.longsword']!.grants, 'attack.punch'])
     expect(attackIdsOf(ctx, h)).not.toContain('attack.longbow.shot')
     expect(h.role).toBe('melee')
     expect(h.ai).toBe('melee-aggressive')
     expect(h.maxHp, 'no Thick Hide, so the bare 6').toBe(6)
     const eq = ctx.events.filter((e) => e.type === 'unit.equipped' && e.actor === h.id)
     expect(eq.map((e) => e.causeId)).toEqual(['item.longsword'])
-    expect(eq[0]!['grants']).toEqual(['attack.longsword.slash', 'attack.longsword.stab'])
+    // Law 10, 2026-10-04 (same edit): the log says the row's own grants (was: `toEqual(['attack.longsword.slash', 'attack.longsword.stab'])`)
+    expect(eq[0]!['grants']).toEqual(ITEMS['item.longsword']!.grants)
     // and the halberd he used to be handed is refused: a class.warrior item on a class.ranger row
     expect(() => createBattle({ ...base, heroes: ['hero.base.ranger-aggressive'], heroHexes: [247], heroItems: [['item.halberd']] })).toThrow(/cannot wield 'item\.halberd', a class\.warrior item/)
   })

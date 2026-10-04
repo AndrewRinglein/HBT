@@ -1,24 +1,24 @@
 {
- "id": "fix.affliction-pop-up-words",
- "tree": "c02044e8ce3734a9d45805546bae033dfda05b4b",
- "ctx": "15ffb4b8929547d70bbcdf6cbc800aaad5855a40",
+ "id": "content.longsword-loses-stab",
+ "tree": "b991d9c4ee834df31b81c9bbf9df11aee28bb46f",
+ "ctx": "68c2e6a6297832d1727d2545d54d4ba5906bd353",
  "results": {},
  "durations": {
   "dependencies landed": 0,
-  "not already decided": 751,
-  "typecheck": 4147,
-  "the item's own tests": 19506,
-  "gate 1 — the id appears in a real battle": 0,
-  "brought its own tests": 114,
+  "not already decided": 505,
+  "typecheck": 3089,
+  "the item's own tests": 26208,
+  "gate 1 — the id appears in a real battle": 2178,
+  "brought its own tests": 42,
   "existing tests untouched": 1,
-  "control battles unchanged": 40848,
-  "content has a published source": 371,
-  "hardcode scan — core knows mechanisms, never names": 35,
+  "control battles unchanged": 50527,
+  "content has a published source": 181,
+  "hardcode scan — core knows mechanisms, never names": 39,
   "prior art — nothing new copies what exists": 0,
   "wrong home — nothing another package owns": 0,
   "generalizes — the second instance costs zero engine code": 0,
-  "naming — new content ids use declared kinds": 32,
-  "naming — no banned words invented": 110,
-  "kill switch — the tests fail without the content": 0
+  "naming — new content ids use declared kinds": 41,
+  "naming — no banned words invented": 166,
+  "kill switch — the tests fail without the content": 2719
  }
 }

@@ -123,7 +123,12 @@ describe('every Codex item is an ItemDef, and says exactly what it can and canno
   it('the registry rides on Ctx, under the kill-switch seam, and nothing reads it yet', () => {
     const ctx = createBattle({ replicate: 0 })
     expect(ctx.items).toBe(ITEMS)
-    expect(ctx.items['item.longsword']!.grants).toEqual(['attack.longsword.slash', 'attack.longsword.stab'])
+    // Law 10, 2026-10-04 — content.longsword-loses-stab (2026-10-04; DECISIONS.md 2026-10-04 'after the backlog run: ... the Longsword loses Stab ...', "3 yes"): the Longsword's attacks are what its
+    // Codex row grants, and the claim is said as that rule - the registry on Ctx carries the settled row's attack grants,
+    // in the row's order (was: `toEqual(['attack.longsword.slash', 'attack.longsword.stab'])`).
+    const settledSword = (JSON.parse(readFileSync(join(__dirname, '..', '..', 'content', 'gen', 'settled-items.json'), 'utf8')).items as { id: string; grants: string[] }[]).find((i) => i.id === 'item.longsword')!
+    expect(settledSword.grants.filter((g) => g.startsWith('attack.')).length).toBeGreaterThan(0)
+    expect(ctx.items['item.longsword']!.grants).toEqual(settledSword.grants.filter((g) => g.startsWith('attack.')))
     // seam.items-per-unit landed right behind this: the log now says what
     // every hero wears (unit.equipped, cause = the item)
     expect(ctx.events.filter((e) => e.type === 'unit.equipped').length).toBeGreaterThan(0)
