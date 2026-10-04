@@ -33,7 +33,7 @@ When a rule fires. Twelve, plus `aura` and `passive` which are standing properti
 | Function | Uses |
 |---|---:|
 | `self` | 156 |
-| `one enemy in melee reach` | 97 |
+| `one enemy in melee reach` | 96 |
 | `one enemy within N hexes` | 82 |
 | `one ally within N hexes` | 52 |
 | `allies within N hexes` | 32 |

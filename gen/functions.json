@@ -364,7 +364,7 @@
   },
   {
    "name": "one enemy in melee reach",
-   "uses": 97,
+   "uses": 96,
    "ids": [
     "attack.greatsword.hew",
     "attack.war-axe.chop",
