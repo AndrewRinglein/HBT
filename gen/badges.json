@@ -688,12 +688,21 @@
    "payload": "+2 Str, +2 Move, +2 Stamina, −5 Crit, −1 Spirit · `startOfBattle`: regeneration 5 · `onAttack`: +1 Strength · deploying the hero costs 2 Supplies",
    "category": "SIGNATURE",
    "group": "",
-   "source": " | 2026-08-25 workbook review: rarity->affliction | 2026-09-29: \"a lycanthrope hero also has a cost of 2 supplies to deploy.\" Ruled 2026-09-29 (engine/DECISIONS.md 'the four afflictions: Vampirism rewritten, Cold Heart with it, deploy costs, Deathbed Fighting, Possession's Surge'). Filed as content.afflictions-revised. | 2026-10-01: at 0 Health, No Deathbed Fighting roll. The hero transforms into a Werewolf (the bestiary's stats and powers, no hero gear) at full Health and rolls Luck — the chance is the Luck stat as a percentage (Luck 0 always turns). Success: a player unit, and at 0 Health again the hero dies, no bleed-out. Failure: an enemy unit; beaten to 0 it falls in the hero's original form and bleeds out, rescuable as any downed hero. Retreat while transformed is abandonment. At battle end the hero is back to normal. Ruled 2026-10-01 (engine/DECISIONS.md 'the afflictions at 0 Health: Vampirism and Lycanthropy transform on a Luck roll, Possession raises a Ghost, Rotting Flesh gains Fragile; the first-affliction pop-up'). Every 2026-09-29 drawback and deploy cost stays (\"let's leave in\"). Filed as content.afflictions-at-zero.",
+   "source": " | 2026-08-25 workbook review: rarity->affliction | 2026-09-29: \"a lycanthrope hero also has a cost of 2 supplies to deploy.\" Ruled 2026-09-29 (engine/DECISIONS.md 'the four afflictions: Vampirism rewritten, Cold Heart with it, deploy costs, Deathbed Fighting, Possession's Surge'). Filed as content.afflictions-revised. | 2026-10-01: at 0 Health, No Deathbed Fighting roll. The hero transforms into a Werewolf (the bestiary's stats and powers, no hero gear) at full Health and rolls Luck — the chance is the Luck stat as a percentage (Luck 0 always turns). Success: a player unit, and at 0 Health again the hero dies, no bleed-out. Failure: an enemy unit; beaten to 0 it falls in the hero's original form and bleeds out, rescuable as any downed hero. Retreat while transformed is abandonment. At battle end the hero is back to normal. Ruled 2026-10-01 (engine/DECISIONS.md 'the afflictions at 0 Health: Vampirism and Lycanthropy transform on a Luck roll, Possession raises a Ghost, Rotting Flesh gains Fragile; the first-affliction pop-up'). Every 2026-09-29 drawback and deploy cost stays (\"let's leave in\"). Filed as content.afflictions-at-zero. | 2026-10-04 (engine fix.affliction-pop-up-words; ruled 2026-10-03, engine DECISIONS.md 'the affliction pop-up's 0-Health words and its drawbacks come from the engine'): `drawbacks` marks which of this row's written terms are drawbacks - the stats it lowers and the terms that cost - so the first-affliction pop-up shows the row's own marks and its ruled 0-Health text (atZero.text) and writes none of its own.",
    "atZero": {
     "deathbedFighting": false,
     "transformsInto": "unit.werewolf",
     "luckRoll": true,
     "text": "No Deathbed Fighting roll. The hero transforms into a Werewolf (the bestiary's stats and powers, no hero gear) at full Health and rolls Luck — the chance is the Luck stat as a percentage (Luck 0 always turns). Success: a player unit, and at 0 Health again the hero dies, no bleed-out. Failure: an enemy unit; beaten to 0 it falls in the hero's original form and bleeds out, rescuable as any downed hero. Retreat while transformed is abandonment. At battle end the hero is back to normal."
+   },
+   "drawbacks": {
+    "stats": [
+     "crit",
+     "spirit"
+    ],
+    "terms": [
+     "deploying the hero costs 2 Supplies"
+    ]
    },
    "afflictionArt": "lycanthropy",
    "popUp": "The first time a hero gains this affliction, a mid-battle pop-up shows the hero's card art before (the hero's art) and after (its afflictionArt under this key), and explains the stat changes, the drawbacks and what happens at 0 Health."
@@ -841,12 +850,21 @@
    "payload": "+2 Magic, +1 Resist, +3 Vision, −10 Surge · `startOfBattle`: −2 card draw · −10 Deathbed Fighting · deploying the hero costs 3 Mana",
    "category": "SIGNATURE",
    "group": "",
-   "source": " | 2026-09-29: \"Possessed hero costs 3 magic crystals to deploy.\" (Mana) · \"Possession gives -10.\" (Deathbed Fighting) · \"Possession gives -10 to action surge per turn.\" Ruled 2026-09-29 (engine/DECISIONS.md 'the four afflictions: Vampirism rewritten, Cold Heart with it, deploy costs, Deathbed Fighting, Possession's Surge'). Filed as content.afflictions-revised. | 2026-10-01: at 0 Health, No Deathbed Fighting roll. The hero goes down and bleeds out, and a Ghost with the hero's image (Ghost stats) is summoned on the hero's hex as an enemy unit. Ruled 2026-10-01 (engine/DECISIONS.md 'the afflictions at 0 Health: Vampirism and Lycanthropy transform on a Luck roll, Possession raises a Ghost, Rotting Flesh gains Fragile; the first-affliction pop-up'). Every 2026-09-29 drawback and deploy cost stays (\"let's leave in\"). Filed as content.afflictions-at-zero.",
+   "source": " | 2026-09-29: \"Possessed hero costs 3 magic crystals to deploy.\" (Mana) · \"Possession gives -10.\" (Deathbed Fighting) · \"Possession gives -10 to action surge per turn.\" Ruled 2026-09-29 (engine/DECISIONS.md 'the four afflictions: Vampirism rewritten, Cold Heart with it, deploy costs, Deathbed Fighting, Possession's Surge'). Filed as content.afflictions-revised. | 2026-10-01: at 0 Health, No Deathbed Fighting roll. The hero goes down and bleeds out, and a Ghost with the hero's image (Ghost stats) is summoned on the hero's hex as an enemy unit. Ruled 2026-10-01 (engine/DECISIONS.md 'the afflictions at 0 Health: Vampirism and Lycanthropy transform on a Luck roll, Possession raises a Ghost, Rotting Flesh gains Fragile; the first-affliction pop-up'). Every 2026-09-29 drawback and deploy cost stays (\"let's leave in\"). Filed as content.afflictions-at-zero. | 2026-10-04 (engine fix.affliction-pop-up-words; ruled 2026-10-03, engine DECISIONS.md 'the affliction pop-up's 0-Health words and its drawbacks come from the engine'): `drawbacks` marks which of this row's written terms are drawbacks - the stats it lowers and the terms that cost - so the first-affliction pop-up shows the row's own marks and its ruled 0-Health text (atZero.text) and writes none of its own.",
    "atZero": {
     "deathbedFighting": false,
     "raises": "unit.ghost",
     "raisedSide": "enemy",
     "text": "No Deathbed Fighting roll. The hero goes down and bleeds out, and a Ghost with the hero's image (Ghost stats) is summoned on the hero's hex as an enemy unit."
+   },
+   "drawbacks": {
+    "stats": [
+     "surge"
+    ],
+    "terms": [
+     "`startOfBattle`: −2 card draw",
+     "deploying the hero costs 3 Mana"
+    ]
    },
    "afflictionArt": "possession",
    "popUp": "The first time a hero gains this affliction, a mid-battle pop-up shows the hero's card art before (the hero's art) and after (its afflictionArt under this key), and explains the stat changes, the drawbacks and what happens at 0 Health."
@@ -957,11 +975,20 @@
    "category": "SIGNATURE",
    "group": "",
    "statModifiers": [],
-   "source": " | 2026-08-25 workbook review: payload edited | 2026-09-29: \"Writing flesh gives +20%.\" (to Deathbed Fighting) Ruled 2026-09-29 (engine/DECISIONS.md 'the four afflictions: Vampirism rewritten, Cold Heart with it, deploy costs, Deathbed Fighting, Possession's Surge'). Filed as content.afflictions-revised. | 2026-10-01: at 0 Health, Deathbed Fighting as normal (its +20 kept), and the hero gains Fragile (−1 maximum Health) each time it is taken to 0 — permanent, stacking with no limit. Ruled 2026-10-01 (engine/DECISIONS.md 'the afflictions at 0 Health: Vampirism and Lycanthropy transform on a Luck roll, Possession raises a Ghost, Rotting Flesh gains Fragile; the first-affliction pop-up'). Every 2026-09-29 drawback and deploy cost stays (\"let's leave in\"). Filed as content.afflictions-at-zero. | 2026-10-01: \"another stat, which is +5 to the bleed out timer\" · \"the standard bleed out right now is 5 ... it should take it from 5 to 10.\" Ruled 2026-10-01 (engine/DECISIONS.md 'bleed-out is a stat on every player unit, 5; Rotting Flesh +5').",
+   "source": " | 2026-08-25 workbook review: payload edited | 2026-09-29: \"Writing flesh gives +20%.\" (to Deathbed Fighting) Ruled 2026-09-29 (engine/DECISIONS.md 'the four afflictions: Vampirism rewritten, Cold Heart with it, deploy costs, Deathbed Fighting, Possession's Surge'). Filed as content.afflictions-revised. | 2026-10-01: at 0 Health, Deathbed Fighting as normal (its +20 kept), and the hero gains Fragile (−1 maximum Health) each time it is taken to 0 — permanent, stacking with no limit. Ruled 2026-10-01 (engine/DECISIONS.md 'the afflictions at 0 Health: Vampirism and Lycanthropy transform on a Luck roll, Possession raises a Ghost, Rotting Flesh gains Fragile; the first-affliction pop-up'). Every 2026-09-29 drawback and deploy cost stays (\"let's leave in\"). Filed as content.afflictions-at-zero. | 2026-10-01: \"another stat, which is +5 to the bleed out timer\" · \"the standard bleed out right now is 5 ... it should take it from 5 to 10.\" Ruled 2026-10-01 (engine/DECISIONS.md 'bleed-out is a stat on every player unit, 5; Rotting Flesh +5'). | 2026-10-04 (engine fix.affliction-pop-up-words; ruled 2026-10-03, engine DECISIONS.md 'the affliction pop-up's 0-Health words and its drawbacks come from the engine'): `drawbacks` marks which of this row's written terms are drawbacks - the stats it lowers and the terms that cost - so the first-affliction pop-up shows the row's own marks and its ruled 0-Health text (atZero.text) and writes none of its own.",
    "atZero": {
     "deathbedFighting": true,
     "gains": "badge.fragile",
     "text": "Deathbed Fighting as normal (its +20 kept), and the hero gains Fragile (−1 maximum Health) each time it is taken to 0 — permanent, stacking with no limit."
+   },
+   "drawbacks": {
+    "stats": [
+     "movement",
+     "accuracy"
+    ],
+    "terms": [
+     "start of battle take 5 true damage"
+    ]
    },
    "afflictionArt": "rotting-flesh",
    "popUp": "The first time a hero gains this affliction, a mid-battle pop-up shows the hero's card art before (the hero's art) and after (its afflictionArt under this key), and explains the stat changes, the drawbacks and what happens at 0 Health."
@@ -1270,7 +1297,7 @@
    "payload": "+2 Strength, +1 Precision, +3 Health, +1 Resist, +1 Magic, −1 Spirit · grants `power.flight-vampiric` · on a melee hit: heal 2 · +15 Deathbed Fighting · deploying the hero costs 3 Faith · the hero gains half experience",
    "category": "SIGNATURE",
    "group": "",
-   "source": " | 2026-08-25 workbook review: rarity->affliction | 2026-09-29: rewritten whole — \"They get +2 strength, +1 precision, +3 health, +1 resist. -1 spirit. They gain on melee hit. They heal 2. +1 magic. They gain the power of flight. Which uses movement +1 as a flight power\" · \"Deploying a vampire costs 3 faith. Vampires only gain half experience points.\" · \"Vampirism gives +15% to deathbed fighting.\" · \"when the affliction of Vampirism happens, it grants both Cold Heart and Vampirism\" (inflictedWith). The undefined power.vampirism.blood-drain is gone. Ruled 2026-09-29 (engine/DECISIONS.md 'the four afflictions: Vampirism rewritten, Cold Heart with it, deploy costs, Deathbed Fighting, Possession's Surge'). Filed as content.afflictions-revised. | 2026-10-01: at 0 Health, No Deathbed Fighting roll. The hero transforms into a Vampire (the bestiary's stats and powers, no hero gear) at full Health and rolls Luck — the chance is the Luck stat as a percentage (Luck 0 always turns). Success: a player unit, and at 0 Health again the hero dies, no bleed-out. Failure: an enemy unit; beaten to 0 it falls in the hero's original form and bleeds out, rescuable as any downed hero. Retreat while transformed is abandonment. At battle end the hero is back to normal. Ruled 2026-10-01 (engine/DECISIONS.md 'the afflictions at 0 Health: Vampirism and Lycanthropy transform on a Luck roll, Possession raises a Ghost, Rotting Flesh gains Fragile; the first-affliction pop-up'). Every 2026-09-29 drawback and deploy cost stays (\"let's leave in\"). Filed as content.afflictions-at-zero.",
+   "source": " | 2026-08-25 workbook review: rarity->affliction | 2026-09-29: rewritten whole — \"They get +2 strength, +1 precision, +3 health, +1 resist. -1 spirit. They gain on melee hit. They heal 2. +1 magic. They gain the power of flight. Which uses movement +1 as a flight power\" · \"Deploying a vampire costs 3 faith. Vampires only gain half experience points.\" · \"Vampirism gives +15% to deathbed fighting.\" · \"when the affliction of Vampirism happens, it grants both Cold Heart and Vampirism\" (inflictedWith). The undefined power.vampirism.blood-drain is gone. Ruled 2026-09-29 (engine/DECISIONS.md 'the four afflictions: Vampirism rewritten, Cold Heart with it, deploy costs, Deathbed Fighting, Possession's Surge'). Filed as content.afflictions-revised. | 2026-10-01: at 0 Health, No Deathbed Fighting roll. The hero transforms into a Vampire (the bestiary's stats and powers, no hero gear) at full Health and rolls Luck — the chance is the Luck stat as a percentage (Luck 0 always turns). Success: a player unit, and at 0 Health again the hero dies, no bleed-out. Failure: an enemy unit; beaten to 0 it falls in the hero's original form and bleeds out, rescuable as any downed hero. Retreat while transformed is abandonment. At battle end the hero is back to normal. Ruled 2026-10-01 (engine/DECISIONS.md 'the afflictions at 0 Health: Vampirism and Lycanthropy transform on a Luck roll, Possession raises a Ghost, Rotting Flesh gains Fragile; the first-affliction pop-up'). Every 2026-09-29 drawback and deploy cost stays (\"let's leave in\"). Filed as content.afflictions-at-zero. | 2026-10-04 (engine fix.affliction-pop-up-words; ruled 2026-10-03, engine DECISIONS.md 'the affliction pop-up's 0-Health words and its drawbacks come from the engine'): `drawbacks` marks which of this row's written terms are drawbacks - the stats it lowers and the terms that cost - so the first-affliction pop-up shows the row's own marks and its ruled 0-Health text (atZero.text) and writes none of its own.",
    "inflictedWith": [
     "badge.cold-heart"
    ],
@@ -1279,6 +1306,15 @@
     "transformsInto": "unit.vampire",
     "luckRoll": true,
     "text": "No Deathbed Fighting roll. The hero transforms into a Vampire (the bestiary's stats and powers, no hero gear) at full Health and rolls Luck — the chance is the Luck stat as a percentage (Luck 0 always turns). Success: a player unit, and at 0 Health again the hero dies, no bleed-out. Failure: an enemy unit; beaten to 0 it falls in the hero's original form and bleeds out, rescuable as any downed hero. Retreat while transformed is abandonment. At battle end the hero is back to normal."
+   },
+   "drawbacks": {
+    "stats": [
+     "spirit"
+    ],
+    "terms": [
+     "deploying the hero costs 3 Faith",
+     "the hero gains half experience"
+    ]
    },
    "afflictionArt": "vampirism",
    "popUp": "The first time a hero gains this affliction, a mid-battle pop-up shows the hero's card art before (the hero's art) and after (its afflictionArt under this key), and explains the stat changes, the drawbacks and what happens at 0 Health."
