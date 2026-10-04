@@ -10,6 +10,8 @@ export function lessonStage(seen = new Set<string>(), party: number[] = [0]) {
   const pointers: { target: unknown; word: string | undefined; up: boolean }[] = []
   /** the battle as the host would answer it: units 0 the hero (and 4, when the party is two), 1 and 2 the civilians, 3 the enemy, on a 20-wide board */
   const battle = { turn: 1, acting: null as number | null, fresh: true, moved: false, attacked: false, reach: [] as number[], attackInReach: null as string | null, provoker: null as number | null,
+    /** kingdom.tutorial-turns-in-battle-one: the player's other units that have yet to act this Hero Phase — not the one acting (the test says who) */
+    yetToAct: [] as number[],
     acted: { done: 0, left: 0 }, hex: { 0: 110, 1: 32, 2: 53, 3: 76, 4: 111 } as Record<number, number> }
   let wakes = 0
   const viewer = {
@@ -25,7 +27,7 @@ export function lessonStage(seen = new Set<string>(), party: number[] = [0]) {
     hexOf: (unit) => battle.hex[unit]!,
     distance: (a, b) => Math.abs(a % 20 - b % 20) + Math.abs(Math.floor(a / 20) - Math.floor(b / 20)),
     turn: () => battle.turn, acting: () => battle.acting, fresh: () => battle.fresh, moved: () => battle.moved, attacked: () => battle.attacked,
-    basicMove: () => battle.acting === null ? null : 'move.walk', reach: () => battle.reach, attackInReach: () => battle.attackInReach, acted: () => battle.acted, provoker: () => battle.provoker, isPlayers: (unit) => unit !== 3,
+    basicMove: () => battle.acting === null ? null : 'move.walk', reach: () => battle.reach, attackInReach: () => battle.attackInReach, acted: () => battle.acted, yetToAct: () => battle.yetToAct, provoker: () => battle.provoker, isPlayers: (unit) => unit !== 3,
     seen: (id) => seen.has(id), mark: (id) => { seen.add(id) },
     wake: () => { wakes++; lessons.still() },
   })

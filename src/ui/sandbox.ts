@@ -89,6 +89,7 @@ const lessons=createLessons(LESSONS,{
  attacked:()=>{const a=session?play.facts().actor:null;return a!==null&&session!.ctx.state.units[a]!.primaryUsed},
  attackInReach:()=>play.attackInReach(),
  acted:()=>play.acted(),
+ yetToAct:()=>play.yetToAct(),
  provoker:()=>play.provoker(),
  isPlayers:id=>session?.ctx.state.units[id]?.side==='hero',
  reach:()=>session&&!session.ctx.state.outcome?play.facts().reach:[],

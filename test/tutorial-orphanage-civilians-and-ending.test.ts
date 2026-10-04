@@ -9,6 +9,14 @@
 // Activation; in Turn 2 an arrow sits on End Turn with its line. A page test asserts each notice's words, target and trigger,
 // that (c2) does not show in Turn 1, and that a replayed battle shows none of them."
 //
+// Law 10, 2026-10-04 (kingdom.tutorial-turns-in-battle-one; engine/DECISIONS.md 2026-10-04 'after the backlog run: …; battle 2's
+// lessons' — Andrew: "Five taking turns was present in battle 1, but camera controls should stay."): the taking-turns lesson that
+// battle 2 showed is battle 1's now, and the civilians' row (a) is the row that carries it — one lesson, not two (kingdom
+// SWITCHES.md lessonTurnsRow). So (a) reads, as the rule: the first civilian to be activated WHILE ANOTHER UNIT HAS YET TO ACT
+// shows three lines — 'The civilians are yours to move. Move them away from danger.' and the two taking-turns lines — with an
+// arrow on that civilian and an arrow on the card of each unit that waits. The two tests below that held (a)'s two lines and its
+// one arrow are rewritten to that, each with its note; (c1) and (c2) are untouched.
+//
 // Here: the three rows in the lesson table, and the runner showing each at its moment over a stand-in battle screen
 // (test/lesson-stage.ts). The page half is tools/tutorial-orphanage-civilians-and-ending.verify.mjs, on the built page.
 import { describe, it, expect } from 'vitest'
@@ -18,28 +26,36 @@ import { lessonStage } from './lesson-stage.js'
 
 const ORPHANAGE = 'encounter.opening.orphanage'
 const row = (id: string) => LESSONS.find((r) => r.id === id) as unknown as Record<string, unknown> | undefined
+const YOURS_WORDS = ['The civilians are yours to move. Move them away from danger.', 'Your units act one at a time: finish one Activation before the next begins.', 'Double-click another unit to switch to it, while the one acting has done nothing.']
 const YOURS = 'lesson.orphanage.civilians-yours', PRIMARY = 'lesson.orphanage.primary-ends', END_TURN = 'lesson.orphanage.end-turn'
 
 describe('kingdom.tutorial-orphanage-civilians-and-ending — the civilians are yours; a primary action ends the Activation; End Turn', () => {
+  // Law 10, 2026-10-04 (kingdom.tutorial-turns-in-battle-one): (a)'s row read `point: { at: 'acting' }, words: ['The civilians are
+  // yours to move.', 'Move them away from danger.']`. Its own words are kept, on one line; the two taking-turns lines moved from
+  // battle 2 follow them; it waits for more than one unit to be left to activate; the second arrow is on the cards that wait.
   it('the three rows are in the lesson table: their words, their targets, what starts and ends each', () => {
     expect(row(YOURS), YOURS).toBeDefined(); expect(row(PRIMARY), PRIMARY).toBeDefined(); expect(row(END_TURN), END_TURN).toBeDefined()
-    expect(row(YOURS)).toMatchObject({ encounterId: ORPHANAGE, starts: 'activation-begins', of: 'civilians', ends: 'time', point: { at: 'acting' },
-      words: ['The civilians are yours to move.', 'Move them away from danger.'] })
+    expect(row(YOURS)).toMatchObject({ encounterId: ORPHANAGE, starts: 'activation-begins', of: 'civilians', moreLeft: true, ends: 'time', point: [{ at: 'acting' }, { at: 'yet-to-act-cards' }],
+      words: YOURS_WORDS })
     expect(row(PRIMARY)).toMatchObject({ encounterId: ORPHANAGE, starts: 'primary-ended', ends: 'time', words: ['A primary action ends that unit\'s Activation.'] })
     expect(row(PRIMARY)!['point']).toBeUndefined()
     expect(row(END_TURN)).toMatchObject({ encounterId: ORPHANAGE, starts: 'some-acted', ends: 'time', fromTurn: 2, point: { at: 'end-turn' },
       words: ['When all of your units have acted, the Enemy Phase begins.', 'End Turn begins it now: units that have not acted lose their Activation.'] })
   })
 
-  it('(a) the first civilian to be activated: the two lines and an arrow on that civilian — right away, in Turn 1; a hero\'s Activation does not start it', () => {
+  // Law 10, 2026-10-04 (kingdom.tutorial-turns-in-battle-one): this read "the two lines and an arrow on that civilian" —
+  // `toEqual(['The civilians are yours to move.', 'Move them away from danger.'])` and one arrow, `[{ unit: 2 }]`, with nobody
+  // said to be waiting. As the rule: the other civilian has yet to act, the notice is the row's three lines, and a second arrow
+  // is on the waiting civilian's card. Right away, in Turn 1, and not at a hero's Activation — as before.
+  it('(a) the first civilian to be activated, another unit still to act: the three lines, an arrow on that civilian and one on the waiting unit\'s card — right away, in Turn 1; a hero\'s Activation does not start it', () => {
     const s = lessonStage().upTo(YOURS), L = s.lessons
-    L.open(ORPHANAGE); s.battle.acting = 0; L.still(); expect(L.up, 'the hero is acting: not yet').toBe(null)
-    s.battle.acting = 2; L.still()
-    expect(L.up).toBe(YOURS); expect(s.told.at(-1)!.words).toEqual(['The civilians are yours to move.', 'Move them away from danger.']); expect(s.told.at(-1)!.hold).toBe(false)
-    expect(s.up().map((p) => p.target), 'the arrow is on the civilian acting').toEqual([{ unit: 2 }])
+    L.open(ORPHANAGE); s.battle.acting = 0; s.battle.yetToAct = [1, 2]; L.still(); expect(L.up, 'the hero is acting: not yet').toBe(null)
+    s.battle.acting = 2; s.battle.yetToAct = [1]; L.still()
+    expect(L.up).toBe(YOURS); expect(s.told.at(-1)!.words).toEqual(YOURS_WORDS); expect(s.told.at(-1)!.hold).toBe(false)
+    expect(s.up().map((p) => p.target), 'an arrow on the civilian acting, and one on the card of the civilian that waits').toEqual([{ unit: 2 }, { card: 1 }])
     expect(L.waiting(), 'the player may act under it').toBe(false)
     s.told.at(-1)!.onDone!('time'); expect(L.up).toBe(null); expect(s.up()).toEqual([])
-    s.battle.acting = 1; L.still(); expect(L.up, 'the next civilian: not again').toBe(null)
+    s.battle.acting = 1; s.battle.yetToAct = []; L.still(); expect(L.up, 'the next civilian: not again').toBe(null)
   })
 
   it('(c1) a unit\'s Activation ended by its primary action: the line, once the board is still; (c2) End Turn\'s line with its arrow — in Turn 2, once one unit has acted and another has not, never in Turn 1', () => {

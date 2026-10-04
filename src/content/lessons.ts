@@ -43,8 +43,9 @@ export type LessonTarget =
   | 'struck' | 'struck-health' | 'struck-protection' | 'struck-card'
   /** the enemy that would strike the acting unit on the path it has planned */
   | 'provoker'
-  /** the party's heroes' cards in the top bar — every one of them */
-  | 'hero-cards'
+  /** the cards in the top bar of the player's other units that have yet to act this Hero Phase — every one of them, never the
+      one acting: whom a double-click would switch to */
+  | 'yet-to-act-cards'
 
 /** What starts a row: the battle put on the screen (before anyone acts) · a unit's Activation begun · its move chosen on the bar ·
     an enemy in reach of one of the acting unit's attacks · a line of the battle's log just played (`event`) · the player
@@ -79,6 +80,8 @@ export interface LessonRow {
   readonly nthHero?: number
   /** not before this Turn */
   readonly fromTurn?: number
+  /** not unless more than one of the player's units is left to activate: another has yet to act this Hero Phase besides the one acting */
+  readonly moreLeft?: true
   /** the gold notice across the board's centre, one to three lines; it lasts for a time and goes by itself */
   readonly words?: readonly string[]
   /** where the view goes while the row is up */
@@ -138,9 +141,17 @@ export const LESSONS: readonly LessonRow[] = [
   // ── kingdom.tutorial-orphanage-civilians-and-ending (2026-10-04; the same entry, the extra steps (a) and (c)): "Civilians are yours
   //    to move: \"Move the civilians away from danger.\"" — "we should do A right away."; "A hero's turn ends after its primary
   //    action, and what End Turn does." — "Okay, we need to do C." ──
-  // (a) the first time a civilian's Activation begins
-  { id: 'lesson.orphanage.civilians-yours', encounterId: ORPHANAGE, starts: 'activation-begins', ends: 'time', of: 'civilians',
-    words: ['The civilians are yours to move.', 'Move them away from danger.'], point: { at: 'acting' } },
+  // (a) the first time a civilian's Activation begins while another of the player's units has yet to act
+  //    kingdom.tutorial-turns-in-battle-one (2026-10-04; engine DECISIONS.md 2026-10-04 'after the backlog run: …; battle 2's
+  //    lessons' — Andrew: "Five taking turns was present in battle 1, but camera controls should stay."): THIS row carries the
+  //    taking-turns lesson that battle 2 showed (`lesson.lumberjack.turns`, gone from below) — one lesson, not two saying the
+  //    same thing: its own words on one line, then the two taking-turns lines as they were; shown the first time more than one
+  //    of the player's units is left to activate once the hero's first move is done (`moreLeft`); a second arrow on the card of
+  //    each unit that waits — whom a double-click would switch to (kingdom SWITCHES.md lessonTurnsRow, lessonTurnsWhenLeft,
+  //    lessonTurnsArrows).
+  { id: 'lesson.orphanage.civilians-yours', encounterId: ORPHANAGE, starts: 'activation-begins', ends: 'time', of: 'civilians', moreLeft: true,
+    words: ['The civilians are yours to move. Move them away from danger.', 'Your units act one at a time: finish one Activation before the next begins.', 'Double-click another unit to switch to it, while the one acting has done nothing.'],
+    point: [{ at: 'acting' }, { at: 'yet-to-act-cards' }] },
   // (c1) the first time a unit's Activation ends because its primary action resolved
   { id: 'lesson.orphanage.primary-ends', encounterId: ORPHANAGE, starts: 'primary-ended', ends: 'time',
     words: ["A primary action ends that unit's Activation."] },
@@ -176,11 +187,11 @@ export const LESSONS: readonly LessonRow[] = [
 
   // ── kingdom.tutorial-second-battle (2026-10-04; the same entry, the extra step (h): "Battle 2: several heroes take turns one at a
   //    time, plus the camera controls." — not answered by its letter; read as a yes with every other step) ──
-  // (h1) as battle 2's first Hero Phase begins: how the units take turns
-  { id: 'lesson.lumberjack.turns', encounterId: LUMBERJACK, starts: 'activation-begins', ends: 'time', of: 'hero',
-    words: ['Your units act one at a time: finish one Activation before the next begins.', 'Double-click another unit to switch to it, while the one acting has done nothing.'],
-    point: { at: 'hero-cards' } },
-  // (h2) as the second hero's Activation begins: the camera's controls, as the screen has them
+  // (h1) how the units take turns: NOT battle 2's. Answered 2026-10-04 (engine DECISIONS.md 'after the backlog run: …; battle 2's
+  //      lessons'): "Five taking turns was present in battle 1, but camera controls should stay." The row that stood here
+  //      (`lesson.lumberjack.turns`, arrows on the heroes' cards) is gone; battle 1's civilians' row carries the lesson
+  //      (kingdom.tutorial-turns-in-battle-one, above).
+  // (h2) as the second hero's Activation begins: the camera's controls, as the screen has them — stays, as it was
   { id: 'lesson.lumberjack.camera', encounterId: LUMBERJACK, starts: 'activation-begins', ends: 'time', of: 'hero', nthHero: 2,
     words: ['Q and E, or the left and right arrows, turn the view.', 'The wheel looks closer or further, and the view springs back.', 'Point at an edge of the screen to scroll the map.'] },
 
