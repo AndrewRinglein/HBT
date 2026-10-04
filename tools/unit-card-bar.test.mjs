@@ -42,8 +42,14 @@ test('the strip of every unit\'s card sits in the component\'s top bar, in the b
   const later = battle1.events.findIndex((e, i) => i > first + 5 && e.type === 'activation.end'); v.seek(later + 1)
   const done = Object.keys(V.S.acted).map(Number).filter(id => V.S.acted[id])
   assert.ok(done.length > 0); for (const id of done) assert.ok(chips(V).find(c => +c.dataset.i === id).className.includes(' done'), 'who has acted is marked')
-  const death = battle1.events.findIndex(e => e.type === 'unit.died'); if (death > 0) { v.seek(death + 1); const dead = battle1.events[death].actor ?? battle1.events[death].unit
-    const c = chips(V).find(c => +c.dataset.i === dead); if (c) assert.ok(c.className.includes(' gone'), 'the fallen are marked') }
+  /* 2026-10-04, viewer.fallen-cards-and-first-aid (engine DECISIONS.md 2026-10-03 'the cards above the battle: the fallen leave
+     …', which overturns the greyed card with a cross): rewritten as the rule — the fallen have no card. The line this
+     replaces looked for a 'unit.died' event, which the engine has never emitted (a death is life.dead), so it had never
+     run: "the fallen are marked" (the `gone` chip) was asserted nowhere. */
+  const death = battle1.events.findIndex(e => e.type === 'life.dead'); assert.ok(death > 0, 'a unit dies in this recording')
+  v.seek(death + 1); const dead = battle1.events[death].target
+  assert.equal(V.S.U[dead].life, 'dead'); assert.ok(!chips(V).some(c => +c.dataset.i === dead), 'the fallen have no card')
+  assert.ok(!chips(V).some(c => c.className.split(' ').includes('gone')), 'and no card is greyed as gone')
   v.dispose()
 })
 

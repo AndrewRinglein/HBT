@@ -1,0 +1,28 @@
+# viewer.fallen-cards-and-first-aid — the page test on the page before the change (VIEWER_PAGE=.build/ga.html at viewer e2242f6): 4 of 4 fail.
+# The full TAP output prints the compared DOM nodes (2 MB); kept here: each test's verdict and its error's first lines.
+3:not ok 1 - an enemy that goes down has no card any more, and a hero that dies has none either
+29902:not ok 2 - a downed hero keeps its card, with a first-aid mark in its upper right-hand corner and the turns left the board shows over the body
+29924:not ok 3 - the mark sits in the card's upper right-hand corner; a hero that stands at the Deathbed has none; an enemy never has one
+29946:not ok 4 - the divider stays while both sides still have a card, and goes with the last card of a side; stepping there shows the same cards as seeking
+59883:# tests 4
+59885:# pass 0
+59886:# fail 4
+9:  error: |-
+10-    enemy 3 has no card once it is dead
+11-    + actual - expected
+12-    
+--
+29908:  error: 'with a first-aid mark'
+29909-  code: 'ERR_ASSERTION'
+29910-  name: 'AssertionError'
+29911-  expected: true
+--
+29930:  error: 'the stylesheet draws .railaid'
+29931-  code: 'ERR_ASSERTION'
+29932-  name: 'AssertionError'
+29933-  expected: true
+--
+29952:  error: |-
+29953-    Expected values to be strictly equal:
+29954-    + actual - expected
+29955-    

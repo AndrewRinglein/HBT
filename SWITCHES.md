@@ -888,3 +888,21 @@ that require extra movement points should have that movement cost, I think, mayb
 |---|---|---|---|---|
 | `moveCostHostWord` | Where does the number on a tile come from? | **The host's play facts gain `reachCost` — `[{hex, cost}]` for hexes of the reach, each once, validated whole (`play.js`); the board writes the number where `cost > 1` and nowhere else. No cost sent, no number drawn, whatever the ground.** | The cost is the engine's for that unit on that hex (an edge to climb or a structure's stairs add to the ground's own cost); the viewer adds nothing up (Law 0) and keeps no cost table. | Default — 2026-10-04 |
 | `moveCostLook` | "I think, maybe on them in gray" — how? | **A bold 19 px numeral in grey (`#b4b1a8`, dark edge) at the middle of the tile, lying on the ground with the grid and turned to read upright at any quarter-turn (`--unspin`); it takes no pointer.** | "A number on tiles already drawn" — the reach tint is the tile, the movement numeral under a unit is the grey. A look for Andrew to judge. | Default — 2026-10-04 |
+
+## viewer.fallen-cards-and-first-aid — 2026-10-04
+
+Engine DECISIONS.md 2026-10-03 'the cards above the battle: the fallen leave, a downed hero's card wears a first-aid mark'
+(Andrew: "When an enemy goes down, they should no longer have their card above the battle. When a hero is dead, it's the same.
+When a hero is downed, their card on the battlefield should have a little first aid symbol in the upper right-hand corner.")
+and 'size and shadows are the default; the bleeding-out card; …' ("The hero card above the battle should show a first aid icon
+in the upper right-hand corner and the number of turns they have left."). `src/rail.js`, `src/styles.css` (`.railaid`; the
+`gone` chip removed); probes `tools/fallen-cards-and-first-aid.test.mjs`, `test/viewer.fallen-cards-and-first-aid.test.ts`,
+kingdom `tools/fallen-cards-and-first-aid.verify.mjs`. **Needs review:** `tools/unit-card-bar.test.mjs`'s line about the
+fallen was rewritten as this rule (it looked for a `unit.died` event the engine never emits, so "the fallen are marked" had
+never run).
+
+| Switch | Question | Default | Reason | Status |
+|---|---|---|---|---|
+| `fallenCardsWho` | "An enemy that goes down", "a hero that is dead" — and a civilian, an ally? | **A unit of the heroes' side (the heroes and the civilians with them) has its card until it is dead; every other unit only while it stands.** In the engine an enemy is never downed — it dies at 0 Health — so today the two read the same. | The bar's own two halves: the heroes' side left of the divider, everyone else right of it. | Default — 2026-10-04 |
+| `firstAidMark` | "A little first aid symbol" — which, and where is the number? | **A red cross on a white, rounded square (drawn in the card, 15 px) in the upper right-hand corner; while the fold holds a bleed-out count above 0 the count stands just left of it, red with a white edge as the board's numeral over the body is; the downed card's portrait is dimmed.** The count is `u.bleed` (bleedout.set / tick / accelerated), never counted here. | The icon pack has no first-aid glyph (`health` is a heart); a red cross reads at 15 px. "Turns left" is the engine's bleed-out count, which a blow on the downed can also move. A look for Andrew to judge. | Default — 2026-10-04 |
+| `firstAidStoodUp` | "A hero stood back up has neither." | **The mark is the card of a unit whose life is `downed`, and nothing else: a hero that stands at the Deathbed (`deathbed.stood`) was never downed and has none.** **FOUND, for the engine's queue:** the engine has no way to stand a downed hero up again — nothing emits `life.standing` (no first aid), and the fold does not know that event; the day the engine emits it, `verify` names it as unknown and the fold must take it (the card then loses its mark by itself). | The viewer invents no event. | Default — 2026-10-04 |
