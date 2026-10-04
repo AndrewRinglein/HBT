@@ -99,8 +99,17 @@ try{
  assert.deepEqual(p.heads,['Stat changes','Drawbacks','At 0 Health'],'the three explanations')
  const mods=Object.entries(fact.e.mods).filter(([,n])=>n)
  assert.deepEqual(p.stats.map(r=>[r.stat,r.n]),mods,'the stat changes are the event\'s modifiers');for(const r of p.stats)assert.ok(r.text.includes(String(Math.abs(r.n))),r.text)
- assert.deepEqual(p.lows,mods.filter(([,n])=>n<0).map(([k])=>k),'the drawbacks name every lowered stat');assert.deepEqual(p.terms,fact.e.gaps.map(g=>g.replaceAll('`','')),'and the row\'s written terms')
- assert.deepEqual(fact.e.atZero,{deathbedFighting:true,gains:'badge.fragile'},'Rotting Flesh\'s 0-Health rule');assert.match(p.zero,/Deathbed Fighting/);assert.ok(p.zero.includes(fact.badges['badge.fragile'].name),p.zero)
+ /* Law 10, 2026-10-04 (engine fix.affliction-pop-up-words; engine DECISIONS.md 2026-10-03 "the affliction pop-up's 0-Health words and its
+    drawbacks come from the engine": "Okay, do it that way."): these two lines read
+      assert.deepEqual(p.lows,mods.filter(([,n])=>n<0).map(([k])=>k),'the drawbacks name every lowered stat');assert.deepEqual(p.terms,fact.e.gaps.map(…),'and the row\'s written terms')
+      assert.deepEqual(fact.e.atZero,{deathbedFighting:true,gains:'badge.fragile'},'Rotting Flesh\'s 0-Health rule')
+    — the page judging the drawbacks (every stat with a minus, every written term) and the rule's bare shape. The engine's line marks
+    its drawbacks and carries the 0-Health text; the page shows exactly the marked terms and that text, whole, and nothing of its own. */
+ assert.ok(fact.e.drawbacks&&fact.e.drawbacks.mods.length&&fact.e.drawbacks.gaps.length,'the engine\'s line marks its drawbacks')
+ assert.deepEqual(p.lows,fact.e.drawbacks.mods,'the drawbacks name exactly the stats the line marks');assert.deepEqual(p.terms,fact.e.drawbacks.gaps.map(g=>g.replaceAll('`','')),'and exactly the written terms it marks, in its words')
+ {const {text,...shape}=fact.e.atZero;assert.deepEqual(shape,{deathbedFighting:true,gains:'badge.fragile'},'Rotting Flesh\'s 0-Health rule');assert.equal(typeof text,'string')
+  assert.equal(p.zero.replace('At 0 Health','').trim(),text,'the 0-Health paragraph is the line\'s own text, word for word')}
+ assert.match(p.zero,/Deathbed Fighting/);assert.ok(p.zero.includes(fact.badges['badge.fragile'].name),p.zero)
  assert.equal(p.over,0,'nothing in the pop-up overflows');assert.equal(p.top,'afflClose','Continue is on top, clickable')
  say(`stat changes: ${p.stats.map(r=>r.text).join(', ')}`);say(`drawbacks: ${p.lows.length} lowered stats, ${p.terms.length} written terms`);say(`at 0 Health: ${p.zero.replace('At 0 Health','').trim()}`)
  // the battle pauses on it
