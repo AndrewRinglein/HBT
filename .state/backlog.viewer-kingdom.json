@@ -1,5 +1,21 @@
 [
  {
+  "id": "viewer.no-target-ring",
+  "kind": "viewer",
+  "shape": "plumbing",
+  "spec": "Ruled 2026-10-04 (Andrew, engine/DECISIONS.md 'after the backlog run: the yellow target ring goes; ...'): asked 'Is the yellow you want gone the ring on hexes the chosen action can hit (including the hero's own hex for a self power)?' - 'yes'. With 2026-10-03: 'There's a highlighting of a hex that happens where there's a big yellow border around the hex at some point during unit activation. I don't quite know what that's for visually.' / 'That yellow focus border doesn't look good, so just remove it.' viewer.no-hex-focus-border removed a keyboard-focus rule that was not what he saw (viewer SWITCHES hexFocusNotWhatWasSeen); what he saw is the game's own target ring: viewer src/board.js `for (const h of P.targets) ring(h, 'playTarget', PLAY_HUE.target)` - a yellow outline (rgba(255,215,100,.9)) on every hex the chosen action or the planned path's end can strike, the hero's own hex included for a self power. Remove that yellow hex ring. Which units can be hit must still be told: propose the quieter mark - on the target unit itself (its token or body, its card above the battle), not a hex border, and nothing at all on the hero's own hex for a self power - from marks the viewer already draws (the hit-chance numbers over targets, the card's mark), not a new kind of mark; if the existing marks already tell it, add nothing and say so. The provoke ring (attack of opportunity) and the threat marks are other rings: say what colour and weight each is and leave them unless they are the same yellow border, in which case list them for Andrew with a screenshot. Screenshots before and after, in a real browser, for his eye. Kingdom's pages are rebuilt; each package commits in its own repository.",
+  "expect": "In BATTLE-SANDBOX.html?play=encounter.opening.orphanage, with an attack chosen, no hex shows a yellow border - neither the enemies' hexes nor the hero's own for a self power - and the units that can be hit are still marked; a page test finds no `playTarget` ring on any hex with an attack and with a self power chosen, and finds the target mark on each unit that can be hit; before and after screenshots are saved.",
+  "note": "Filed by the kingdom chat from Andrew's ruling, 2026-10-04."
+ },
+ {
+  "id": "kingdom.tutorial-turns-in-battle-one",
+  "kind": "kingdom",
+  "shape": "plumbing",
+  "spec": "Ruled 2026-10-04 (Andrew, engine/DECISIONS.md 'after the backlog run: ...; battle 2's lessons'): asked whether battle 2's lesson (taking turns, camera controls) stays - 'Five taking turns was present in battle 1, but camera controls should stay.' kingdom.tutorial-second-battle (built on the reading that the second battle's lessons were a yes; kingdom SWITCHES lessonTurnsWhen, lessonCameraWords) teaches taking turns in battle 2, with arrows on the heroes' cards, and the camera's controls at the second hero. Taking turns is already there in battle 1: the hero and the two civilians take turns from the first Hero Phase (kingdom.tutorial-orphanage-civilians-and-ending: 'The civilians are yours to move.'). Move the taking-turns lesson to battle 1 - shown the first time the player has more than one unit left to activate, beside or folded into the civilians' line, one lesson not two saying the same thing (read src/content/lessons.ts and decide which row carries it; record it) - and take it out of battle 2. The camera controls lesson stays in battle 2 as it is. A run that has already seen battle 1's lessons is not shown the moved one again in battle 2. The lesson table, the runner's tests and the page verifiers (tools/tutorial-second-battle.verify.mjs, tools/tutorial-orphanage-*.verify.mjs) are rewritten as the rule with a dated note. Rebuild the pages.",
+  "expect": "At http://127.0.0.1:4230/play the taking-turns lesson shows in the Orphanage the first time more than one of the player's units can be activated, and not in the Lumberjack House; the camera controls lesson still shows in the Lumberjack House at the second hero; Skip tutorial still ends them all; the page test asserts where each shows.",
+  "note": "Filed by the kingdom chat from Andrew's ruling, 2026-10-04. Small."
+ },
+ {
   "id": "kingdom.opening-recap-decisive",
   "kind": "kingdom",
   "shape": "plumbing",

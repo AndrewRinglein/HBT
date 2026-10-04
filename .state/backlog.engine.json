@@ -5566,5 +5566,54 @@
   "note": "Filed by the kingdom chat, 2026-10-04, from the workers' reports. Andrew is not balancing now: decide the scoping from each row's own words, record the switch.",
   "status": "done-needs-review",
   "sha": "870ff13"
+ },
+ {
+  "id": "content.longsword-loses-stab",
+  "kind": "engine",
+  "shape": "data",
+  "probeIds": [
+   "item.longsword"
+  ],
+  "spec": "Ruled 2026-10-04 (Andrew, engine DECISIONS.md 'after the backlog run: ...; the Longsword loses Stab; ...'): asked 'Should the Longsword lose its Stab now that it has Counterattack, as your dictation said? The worker kept it.' - '3 yes'. With 2026-09-28 'counterattack, special free attacks, the opening six, shields, custom weapons': 'The longsword's second power: counterattack with +10 Accuracy, until the end of your next turn, 2 Stamina. There is no \"free attacks with its other attack\" power.' capability.counterattack-and-fend gave the Longsword Counterattack as a third thing and kept attack.longsword.stab because seven engine tests, the Flaming Longsword and the viewer's bar audit name it (engine SWITCHES longswordKeepsStab - overturned by this ruling). Remove Stab from the Longsword through the Codex and the content pipeline (re-read every content/ file immediately before editing it; commit content after every write; rebuild by the tools): item.longsword grants Slash and Counterattack. Every row derived from the Longsword follows its base - the Flaming Longsword and the other custom, enchanted and masterwork longswords - unless its own Codex words give it a second attack: read each row's words and say which keep what. The tests, fixtures and the viewer's bar-audit roster that name attack.longsword.stab are rewritten as the rule with a dated Law 10 note at each edit (the Longsword's attacks are what its row grants), never deleted to pass. The basic attack is unchanged (Slash is first). Rebuild the Codex's outputs, the engine pack, the viewer's dumps, the opening recordings (all six together if any moves) and the kingdom pages; say whether the control battles move before claiming changesBaseline (the Alpha Team's paladin holds a Longsword: they will).",
+  "expect": "A hero holding the Longsword has Slash and Counterattack on its sheet and its bar and no Stab; the Flaming Longsword's holder has what its row's words give; no test, fixture or roster names attack.longsword.stab as a granted attack; the Codex row, the published content and the engine pack agree.",
+  "note": "Filed by the kingdom chat from Andrew's ruling, 2026-10-04. Shape is the filer's guess: check tools/gate.mjs's demands before building."
+ },
+ {
+  "id": "fix.enchant-triggers-own-weapon",
+  "kind": "engine",
+  "shape": "data",
+  "probeIds": [
+   "item.longsword"
+  ],
+  "spec": "Ruled 2026-10-04 (Andrew, engine DECISIONS.md 'after the backlog run: ...; an enchant is its own weapon's; ...'): asked 'Should enchants (Frost, Fire, Venomous and the rest) apply only to the enchanted weapon's own attacks, not to a Punch?' - '4, yes. If you have a fiery longsword and a dagger with a stab ability on it that stab ability does not use the fiery that's on the longsword.' fix.trigger-ids-and-scopes gave a weapon row's trigger `attack: 'own'` (one trigger per attack the weapon grants) and scoped nine weapons, but left 85 triggers that twelve enchants add to tier-3 weapons unscoped because the enchant rows carry no words about which attacks (engine SWITCHES.md itemTriggersLeftUnscoped lists them: Addling, Bewildering, Bloodletting, Eternal Ice, Fire, Frost, Goading, Hobbling, Maddening, Rooting, Taunting, Venomous) - so a Frost War Hammer's holder who punches, or stabs with a dagger in the other hand, still applies Frost. Scope every enchant's attack-hook triggers to the attacks of the weapon the enchant is on, by the rule and not row by row: the pipeline that builds an enchanted weapon (content mkenginepack and the enchant rows) gives the enchant's triggers `attack: 'own'` of that weapon. Left as they are, by name and with the reason: a trigger whose own Codex words say every strike or the wearer (Pharaoh's Gauntlets - 'Both hands are the weapon'; the Bloodrunes Burning Touch and Bleeding Strike - worn) - those are the unit's, and capability.unit-trigger-with-tag is where they get a tag requirement. Re-read every content/ file immediately before editing it; commit content after every write. Rebuild the Codex's outputs, the engine pack, the viewer's dumps and recordings and the kingdom pages the change makes stale; re-capture the battle-cursor layer; say whether the control battles move before claiming changesBaseline.",
+  "expect": "A unit holding a Frost War Hammer applies Frost with the hammer's attacks and not with a Punch; a unit holding a Fire Longsword in one hand and a Dagger in the other burns with the Longsword's attacks and not with the Dagger's Stab; a test asserts both for an enchant of each hook, and over the whole pack no enchant-added attack-hook trigger is unscoped except the named exceptions.",
+  "note": "Filed by the kingdom chat from Andrew's ruling, 2026-10-04."
+ },
+ {
+  "id": "rule.walked-unit-has-moved",
+  "kind": "engine",
+  "shape": "rule",
+  "probeIds": [
+   "power.leap"
+  ],
+  "variants": [
+   "power.leap",
+   "power.side-roll"
+  ],
+  "changesBaseline": true,
+  "spec": "Ruled 2026-10-04 (Andrew, engine DECISIONS.md 'after the backlog run: ...; moves are refused once a unit has walked; ...'): asked 'Once a unit has walked, should Leap and Side Roll grey out and be refused? Today the engine still accepts them.' - '2 yes'. With 2026-10-03 'the action bar: the moves grey slightly once the move is done, nothing else greys': 'Just gray the moves out after a move is done.' viewer.bar-moves-grey-when-done found what the engine does today (viewer SWITCHES moveDoneHostWord; engine src/core/commands.ts): after a full walk the basic move is gone but other movement powers (Leap, Side Roll, Sidestep, Charging Run, Back Flip) are still accepted as the unit's primary action; after a walk cut short the rest of the basic move is still accepted. Make the rule: once a unit has walked in its Activation - any hex of its basic move - no OTHER movement power is accepted from it for the rest of that Activation, refused with a reason in the engine's own words (the refusal vocabulary the commands already have; the host shows it and the bar greys it). The rest of a basic move cut short may still be walked, as today (the read of his words; record it as an engine switch). A movement power used BEFORE any walk is unchanged, and what it then allows or closes is what the engine does today - say what that is in the report, do not change it. Read ENGINE-CONSTITUTION.md and COMBAT-SEQUENCE.md first; the rule lives where the command's legality is decided (canAct / the movement slot), the AI offers itself only legal commands so it follows; the forecast and the bar read the same legality. The control battles may move (a unit that walked and then leapt): changesBaseline is claimed - confirm it. Rebuild the viewer's dumps, the recordings (all six together if any moves) and the kingdom pages the change makes stale.",
+  "expect": "A hero that has walked one hex or more is refused Leap, Side Roll, Sidestep, Charging Run and Back Flip for the rest of that Activation, with the engine's reason, and the bar shows those moves greyed; the same hero before walking may still use them; the rest of a basic move cut short can still be walked; a test asserts each for two movement powers; the AI never issues the refused command.",
+  "note": "Filed by the kingdom chat from Andrew's ruling, 2026-10-04. Shape, variants and changesBaseline are the filer's guesses: check tools/gate.mjs's demands before building."
+ },
+ {
+  "id": "capability.unit-trigger-with-tag",
+  "kind": "engine",
+  "shape": "rule",
+  "needs": [
+   "fix.enchant-triggers-own-weapon"
+  ],
+  "spec": "Ruled 2026-10-04 (Andrew, engine DECISIONS.md 'after the backlog run: ...; a trigger on the hero with a tag requirement; ...'): 'There's also the ability to have a trigger on a hero itself. That trigger could have a tag requirement like melee, so you can add to burn to melee attacks on a hero, and then it only triggers when you're using something that has the tag melee.' Today a trigger is scoped to one attack id or not at all (engine src/core/trigger.ts `onlyWithAttack`; content's `attack: 'own'` compiles to that per attack), no tag requirement exists, and no badge carries a trigger (content badges: none). Build the capability: a trigger that belongs to the unit - brought by a badge, a specialty, a worn item (a bloodrune, a trinket) or the unit's own row - may name a tag requirement, and then fires only for an attack that carries that tag (the attack's own tags and kind, as the engine already has them: melee, ranged, and the weapon tags on the attack's item - grep the tag vocabulary first; one meaning of 'has the tag', recorded). With no requirement it fires for every attack of the unit, as a unit trigger does today. The requirement is one field on the trigger, validated at pack build (an unknown tag fails the build), read in the same place `onlyWithAttack` is; never a second trigger path. Prove it with content, a second instance costing no code: the Bloodrunes Burning Touch and Bleeding Strike and Pharaoh's Gauntlets, left as the unit's by fix.enchant-triggers-own-weapon - give each the requirement its Codex words mean (Burning Touch: 'every strike' - read its row; melee if its words say a strike in melee) and say what you chose; and a test badge that adds Burn to melee attacks, fielded on a hero holding a bow and a dagger. Read ENGINE-CONSTITUTION.md and COMBAT-SEQUENCE.md first (where triggers are gathered and filtered in the order of operations). The viewer's bar and panel print a trigger's requirement in words through the sheet (a viewer gap is reported, not built here). Check whether the control battles move before claiming changesBaseline.",
+  "expect": "A hero carrying a trigger with the requirement melee applies its effect when it hits with a melee attack and not when it shoots a bow or casts; the same trigger with no requirement fires on both; an unknown tag fails the pack build; the Bloodrunes' and the Gauntlets' triggers fire for the attacks their words name; a test asserts each.",
+  "note": "Filed by the kingdom chat from Andrew's ruling, 2026-10-04. Shape is the filer's guess: check tools/gate.mjs's demands (variants: the second instance)."
  }
 ]
