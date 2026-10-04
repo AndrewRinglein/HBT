@@ -7,6 +7,12 @@
 // engine fields the Eve 24 (engine backlog content.field-eve-24). The cadence
 // is unchanged; it stops where the pool does. The test asserts the cadence up
 // to the pool and that nothing is offered past it — the rule, not the number six.
+//
+// Law 10 note, 2026-10-03 (kingdom.opening-draft-pool; engine DECISIONS.md 2026-10-03
+// 'the opening draft pool is all 24 heroes, Rogues and Mages included'): the pool is
+// the Eve 24, so the cadence runs its full length — six. `expect(cap)
+// .toBeGreaterThanOrEqual(5)` is now `expect(cap).toBe(6)`: the number the cadence
+// names, no longer clipped by a short pool.
 import { describe, it, expect } from 'vitest'
 import { makeNewCampaign, draftedCountOf } from '../src/core/opening.js'
 import { HERO_POOL } from '../src/content/heroes.js'
@@ -19,7 +25,8 @@ describe('ISC-044 — the draft cadence', () => {
   it('1 · +2 · +1 · +1 · +1 up to six or the pool, then the Beacon; the opening ends with the Kingdom Territory and the Ridge held at Week 1', () => {
     const pool = HERO_POOL.filter((h) => groupOf(h.classes) === 'hero').length
     const cap = Math.min(DRAFT_CADENCE.until, pool)
-    expect(cap).toBeGreaterThanOrEqual(5)
+    expect(pool).toBe(24)
+    expect(cap).toBe(6)
     const ctx = playOpening(makeCtx(makeNewCampaign(21)))
     const c = ctx.campaign
     const drafts = ctx.events.filter((e) => e.type === 'hero.drafted')

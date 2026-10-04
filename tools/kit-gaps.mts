@@ -4,7 +4,7 @@
 // A hero's kit is its engine row's defaultItems (src/content/heroes.ts heroKitOf — kingdom.reads-engine, review K15).
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs'
 import { join } from 'node:path'
-import { HERO_POOL, CIVILIANS, heroKitOf } from '../src/content/heroes.js'
+import { HERO_POOL, CIVILIANS, heroKitOf, UNKITTED_HEROES } from '../src/content/heroes.js'
 import { KIT_SPECS } from '../src/content/generated/kits.js'
 
 // --candidate reads the pending specs on stdin and returns JSON, writing nothing.
@@ -15,7 +15,8 @@ const { kitSpecs } = candidate
   : { kitSpecs: KIT_SPECS }
 const heroes = [...HERO_POOL, ...CIVILIANS]
 const ids = heroes.map((h) => h.id)
-const pool = heroes.filter((h) => !heroKitOf(h.unitType)).map((h) => h.id)
+// kingdom.opening-draft-pool: a base hero the pool leaves out for want of a kit is the gap this file names
+const pool = [...UNKITTED_HEROES.map((h) => h.id), ...heroes.filter((h) => !heroKitOf(h.unitType)).map((h) => h.id)]
 const pinnedSpecs = kitSpecs.filter((k) => ids.includes(k.id)).map((k) => k.id)
 const report = JSON.stringify({ writtenBy: 'tools/kit-gaps.mts', pool, pinnedSpecs }, null, 1) + '\n'
 if (candidate) process.stdout.write(report)
@@ -26,5 +27,5 @@ else {
   mkdirSync(out, { recursive: true })
   const path = join(out, 'kits-gaps.json')
   writeFileSync(path, report)
-  console.log(`${path} — ${pool.length} pool hero(es) without a kit${pool.length ? ': ' + pool.join(', ') : ''}`)
+  console.log(`${path} — ${pool.length} pool hero(es) without a kit${pool.length ? ': ' + pool.map((id) => { const h = UNKITTED_HEROES.find((u) => u.id === id); return h ? `${h.name} (${id})` : id }).join(', ') : ''}`)
 }

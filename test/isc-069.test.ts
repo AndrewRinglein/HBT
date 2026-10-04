@@ -136,7 +136,7 @@ describe('ISC-069 — a human battle uses the simulation engine',()=>{
  })
 })
 
-// v2.sandbox-base-roster: authored content, not additions to the campaign draft pool.
+// v2.sandbox-base-roster: authored content. kingdom.opening-draft-pool (2026-10-03): the campaign draft pool is these 24 too.
 import {SANDBOX_HEROES,sandboxHeroesOf} from '../src/content/sandbox.js'
 import {UNITS} from '../src/engine.js'
 import {HERO_ITEM_SLOTS} from '../src/content/generated/kits.js'
@@ -156,7 +156,10 @@ describe('ISC-069 — all24 authored standalone base heroes',()=>{
   expect(burstKits).toEqual({'hero.base.paladin-dark':['attack.greatsword.great-cleave'],'hero.base.warrior-barbarian':['attack.greatsword.great-cleave'],'hero.base.warrior-fearsome':['attack.halberd.cleave']})
   /* Law 10, 2026-10-02 (kingdom.reads-engine, review finding K9; kingdom SWITCHES.md poolHeroesAreRows): the campaign pool's two
      alpha-clone aliases are resolved — each pool hero fields as its own row, built by the sandbox's one builder. */
-  expect(HERO_POOL).toHaveLength(5);for(const h of HERO_POOL)expect(h).toEqual(SANDBOX_HEROES.find(s=>s.id===h.id))
+  /* Law 10, 2026-10-03 (kingdom.opening-draft-pool; engine DECISIONS.md 2026-10-03 'the opening draft pool is all 24 heroes,
+     Rogues and Mages included'): was `expect(HERO_POOL).toHaveLength(5)` — true only of the five-hero pool. The rule: the
+     campaign pool IS the sandbox's base roster, hero for hero, the same rows. */
+  expect(HERO_POOL.map(h=>h.id)).toEqual(SANDBOX_HEROES.map(h=>h.id));expect(HERO_POOL).toHaveLength(24);for(const h of HERO_POOL)expect(h).toEqual(SANDBOX_HEROES.find(s=>s.id===h.id))
  })
  it('refuses named missing kit, slot, name or class rather than omitting an authored hero',()=>{
   const id='hero.base.mage-fireaura',units={[id]:UNITS[id]!}

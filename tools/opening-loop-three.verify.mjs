@@ -21,6 +21,8 @@ import {openingPage,TAKERS} from './opening-page.mjs'
 const page=process.argv[2]??'BATTLE-SANDBOX.html'
 const ORPHANAGE='encounter.opening.orphanage',LUMBERJACK='encounter.opening.lumberjack',BRIDGE='encounter.opening.bridge',CAVERN='encounter.opening.cavern-trail'
 const SWORD='item.longsword.flaming'
+/* the seeds that settled each battle when this was last run (printed at the end), tried before the search */
+const KNOWN={'battle 1':[['ai',1]],'battle 2 lost':[['idle',5]],'battle 2 won':[['ai',12]],'battle 3':[['hold',188]]}
 
 /* Law 10, 2026-10-02 (kingdom.reads-engine, review finding K7): the run's seed 11 → 15. XP per kill became the victim's
    tier's (2 / 5 / 15 — engine DECISIONS.md 2026-09-28) instead of 3, and seed 11's party reaches the Bridge with the
@@ -28,7 +30,20 @@ const SWORD='item.longsword.flaming'
    Seed 12 wins it, but only after ~20 minutes of seeds; seed 15 wins it on Bridge seed 2. What this page test holds —
    the loop's flow through three battles — is unchanged; the Bridge's balance under the ruled XP is reported to Andrew.
    (Carried into the opening-page.mjs form when kingdom.opening-run-six moved the steps there, merge 2026-10-02.) */
-const {handle,camp,byId,heroIds,civilianIds,wait,readMap,draft,equipThenFight,fightOut,levelUps,takeReward,v}=openingPage(page,'?map&seed=15')
+/* Law 10, 2026-10-03 (kingdom.opening-draft-pool; engine DECISIONS.md 2026-10-03 'the opening draft pool is all 24 heroes,
+   Rogues and Mages included'): the run's seed 15 -> 11. The pool is the 24 base heroes now, so seed 15 drafts another
+   party, and of run seeds 1 to 14 only 11 was found to pass this test's own searches (2, 3, 6, 7, 8: no 'idle' seed from 1
+   to 1500 loses the Lumberjack House with the party alive; 5: no 'ai' seed wins it with the party alive; the rest were
+   stopped unfinished). Seed 11's party — the Dwarven Brawler, The Serpent, the Battle Chaplain, the Forest Fey — is the
+   one tools/opening-run-six.verify.mjs plays; the Bridge is won on hold 188 (the first 'hold' seed that wins it). The
+   seeds that settle each battle are kept (KNOWN) and tried before the search, so the test does not search 188 battles
+   every run. What this page test holds — the loop's flow through three battles — is unchanged.
+   LOOP_THREE_SEED: another run seed (another party) — its battles are searched; the known seeds are this file's run's only */
+const RUN_SEED=Number(process.env.LOOP_THREE_SEED??11),FOUND=process.env.LOOP_THREE_SEED===undefined?KNOWN:{}
+const {handle,camp,byId,heroIds,civilianIds,wait,readMap,draft,equipThenFight,fightOut:settleOn,levelUps,takeReward,v}=openingPage(page,'?map&seed='+RUN_SEED)
+/* a battle settled, the seed that settled it said (stderr) — a known seed is tried before the search (opening-page.mjs `first`) */
+const chosen={}
+function fightOut(won,label,hows,how={}){const r=settleOn(won,label,hows,{...how,first:FOUND[label]??[]});chosen[label]=[r.played,r.seed];console.error(`settled ${label}: ${r.played} seed ${r.seed}`);return r}
 
 /* 1 · the sitting opens on the map: nothing fielded, nobody drafted, the Orphanage next */
 assert.equal(readMap([],'fresh'),ORPHANAGE)
@@ -100,4 +115,5 @@ levelUps('battle 3')
 assert.equal(readMap([ORPHANAGE,LUMBERJACK,BRIDGE],'after battle 3'),CAVERN,'three sections taken')
 assert.deepEqual(camp().unavailable,[],'nobody fatigued');assert.deepEqual(camp().foughtThisWeek,[],'nobody marked fought')
 assert.equal(camp().ended,null)
+console.error('settled by: '+JSON.stringify(chosen))
 console.log(`opening loop three: map -> draft (1, +2, +1; no class twice) -> equip -> battle -> reckoning, rewards, level-ups -> map, three times; the Orphanage's 20 XP and level 2 with a specialty; battle 2 lost and offered again with the same party, wounds kept; the Flaming Longsword to ${givers[0]}; the Bridge's three, ${kept} kept; civilians rescued ${civilianIds().join(', ')||'none'}; three sections taken passed`)

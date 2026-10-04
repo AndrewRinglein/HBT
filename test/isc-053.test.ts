@@ -6,12 +6,14 @@
 // CONTENT-GAPS.md is content/mkgaps.mjs's and is never hand-edited).
 import { describe, it, expect } from 'vitest'
 import { readFileSync, existsSync } from 'node:fs'
-import { HERO_POOL, CIVILIANS, heroKitOf, assertKitted, KIT_GAPS } from '../src/content/heroes.js'
+import { HERO_POOL, CIVILIANS, heroKitOf, assertKitted, KIT_GAPS, UNKITTED_HEROES } from '../src/content/heroes.js'
 
 describe('ISC-053 — no kit, no hero', () => {
   it('the pool and the civilians all have kits; the generated gaps file exists and is empty for them', () => {
     for (const h of [...HERO_POOL, ...CIVILIANS]) expect(heroKitOf(h.id), h.id).not.toBeNull()
     expect(KIT_GAPS).toEqual([])
+    // kingdom.opening-draft-pool (2026-10-03): the pool is the 24 base heroes; one with no kit would be left out and named
+    expect(UNKITTED_HEROES).toEqual([])
     expect(existsSync('src/content/generated/kits-gaps.json')).toBe(true)
     const gaps = JSON.parse(readFileSync('src/content/generated/kits-gaps.json', 'utf8')) as { pool: string[] }
     expect(gaps.pool).toEqual([])

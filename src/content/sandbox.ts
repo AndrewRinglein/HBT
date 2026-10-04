@@ -1,17 +1,18 @@
 import type {Hero} from '../core/campaign.js'
 import {HERO_ITEM_SLOTS} from './generated/kits.js'
-import {heroOfRow} from './heroes.js'
+import {heroOfRow,baseHeroIdsOf} from './heroes.js'
 import {atlasFieldings} from './atlas.js'
 import {UNITS,ENCOUNTERS,type UnitDef} from '../engine.js'
 
 export const SANDBOX_MAPS=atlasFieldings().map(r=>({id:r.id,name:r.name}))
 /**
- * Authored standalone presets; campaign drafting keeps its own explicit pool. kingdom.reads-engine (review finding K9):
+ * Authored standalone presets — the engine pack's base heroes, the same rows the campaign's draft pool holds since
+ * kingdom.opening-draft-pool (2026-10-03; heroes.ts heroPoolOf). kingdom.reads-engine (review finding K9):
  * built by the one builder the campaign pool uses (heroes.ts heroOfRow) — engine row, its defaultItems kit, the codex's
  * item slots — so the sandbox and the campaign cannot field one hero two ways.
  */
 export function sandboxHeroesOf(units:Readonly<Record<string,UnitDef>>=UNITS,slots:Readonly<Record<string,number>>=HERO_ITEM_SLOTS):Hero[]{
- return Object.keys(units).filter(id=>id.startsWith('hero.base.')).sort().map(id=>heroOfRow(id,units,slots))
+ return baseHeroIdsOf(units).map(id=>heroOfRow(id,units,slots))
 }
 export const SANDBOX_HEROES=sandboxHeroesOf()
 // Standard published enemy bodies; this roster is content, not a rule.

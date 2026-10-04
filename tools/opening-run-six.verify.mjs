@@ -18,7 +18,7 @@
 //
 //   node tools/opening-run-six.verify.mjs [BATTLE-SANDBOX.html]
 import assert from 'node:assert/strict'
-import {openingPage,TAKERS} from './opening-page.mjs'
+import {openingPage,TAKERS,POOL,LEFT_OUT,HERO_CLASSES} from './opening-page.mjs'
 const page=process.argv[2]??'BATTLE-SANDBOX.html'
 const ORDER=['orphanage','lumberjack','bridge','cavern-trail','gates','cathedral'].map(x=>'encounter.opening.'+x)
 const [ORPHANAGE,LUMBERJACK,BRIDGE,CAVERN,GATES,CATHEDRAL]=ORDER
@@ -26,8 +26,22 @@ const SWORD='item.longsword.flaming',RUN_KEY='hbt-opening-run'
 /* a loss is sought with nobody dead first (the party is then fielded again whole); a loss that costs lives keeps the living */
 const SEARCH={hows:(process.env.RUN_SIX_HOWS??'ai,hold,press').split(','),how:{partyAlive:false,fewestDead:true,seeds:Number(process.env.RUN_SIX_SEEDS??200)}}
 /* the seeds that settled each battle when this was last run (printed at the end), tried before the search */
-const FOUND={'encounter.opening.orphanage':[['ai',1]],'encounter.opening.lumberjack:lost':[['idle',6]],'encounter.opening.lumberjack':[['ai',12]],'encounter.opening.bridge':[['hold',2]],
- 'encounter.opening.cavern-trail':[['hold',848]],'encounter.opening.gates':[['hold',223]],'encounter.opening.cathedral':[['press',1]]}
+const KNOWN={'encounter.opening.orphanage':[['ai',1]],'encounter.opening.lumberjack:lost':[['idle',5]],'encounter.opening.lumberjack':[['ai',12]],'encounter.opening.bridge':[['hold',188]],
+ 'encounter.opening.cavern-trail':[['ai',289]],'encounter.opening.gates':[['hold',4]],'encounter.opening.cathedral':[['hold',15]]}
+/* Law 10, 2026-10-03 (kingdom.opening-draft-pool; engine DECISIONS.md 2026-10-03 'the opening draft pool is all 24 heroes,
+   Rogues and Mages included'): the run's seed 15 -> 11, and every known battle seed with it (they were orphanage ai 1,
+   lumberjack lost idle 6, lumberjack ai 12, bridge hold 2, cavern-trail hold 848, gates hold 223, cathedral press 1). The
+   pool is the 24 base heroes now, so seed 15 drafts another party (Lion of the Host, The Raven, Iron Dwarf, …), which loses
+   The Raven and the Iron Dwarf at the Lumberjack House and wins the Bridge on no seed from 1 to 200 of ai, hold or press.
+   Of run seeds 1 to 12, seed 11 is the one found whose party — the Dwarven Brawler, The Serpent, the Battle Chaplain, the
+   Forest Fey, the Dawnblade, the Archive Scholar — wins all six (searching 300 seeds of ai, hold and press a battle, the
+   fewest of the party dead): the Bridge on hold 188 costs the Battle Chaplain; nobody else dies. What this page test holds
+   — one run through the six battles, saved and reopened, a loss offered again — is unchanged, and it now also holds the
+   draft: three at every draft, no class twice, six heroes of six classes, four deployed. That most parties of the 24 cannot
+   win the Bridge under the engine's AI or these drivers is the opening's balance, reported to Andrew (kingdom SWITCHES.md
+   openingPoolPageRun).
+   RUN_SIX_SEED: another run seed (another party) — its battles are searched, the known seeds are this file's run's only */
+const RUN_SEED=Number(process.env.RUN_SIX_SEED??11),FOUND=process.env.RUN_SIX_SEED===undefined?KNOWN:{}
 const chosen={}
 const browser=new Map()
 const rowsOf=c=>Object.fromEntries(Object.values(c.roster).map(h=>[h.id,{level:h.level,xp:h.xp,wound:h.wound,lifeState:h.lifeState,equipped:[...h.equipped],specialty:h.specialty??null}]))
@@ -40,12 +54,15 @@ const rowsOf=c=>Object.fromEntries(Object.values(c.roster).map(h=>[h.id,{level:h
    seed found (searching 1 to 1600 of ai, hold, press) after which the Gates' known seed still wins. The Bridge's hold 2 costs
    the Dawnblade and the Gates the Rune-Marked Ascetic: what this page test holds — one run through the six battles, saved and
    reopened — is unchanged; the opening's balance under the ruled XP is fix.opening-levels' question (reported to Andrew). */
-let P=openingPage(page,'?map&new&seed=15',browser)
+let P=openingPage(page,'?map&new&seed='+RUN_SEED,browser)
 const camp=()=>P.camp()
 const alive=()=>P.heroIds().filter(id=>camp().roster[id].lifeState==='alive')
 
-/* the drafts owed before this battle (the cadence: 1 · +2 · +1 each, until the pool runs short) */
-function drafts(label){const got=[];while(camp().cursor.step==='draft')got.push(P.draft(label+', draft '+(got.length+1)));return got}
+/* the drafts owed before this battle (the cadence: 1 · +2 · +1 each, to six); every offer of the run is kept in OFFERS.
+   kingdom.opening-draft-pool (2026-10-03): was "until the pool runs short" — the pool is the 24 base heroes now */
+const OFFERS=[]
+function drafts(label){const got=[];while(camp().cursor.step==='draft'){got.push(P.draft(label+', draft '+(got.length+1)));OFFERS.push(P.lastOffer)}return got}
+const DEPLOY_LIMIT=4
 
 /* Equip: the stash's first item that fits a hero sent is put on that hero (the slot the page marks it can go in) */
 function equipFromStash(label){
@@ -71,6 +88,8 @@ function field(id,n,label){
  const deployed=[...camp().cursor.engagement.deployed].sort()
  console.error(`${label}: sent ${deployed.map(h=>{const r=camp().roster[h];return `${r.name} L${r.level}${r.wound?' wound '+r.wound:''}`}).join(', ')}; at home ${P.heroIds().filter(h=>!deployed.includes(h)).map(h=>camp().roster[h].name+' '+camp().roster[h].lifeState).join(', ')||'nobody'}`)
  assert.ok(deployed.length>0&&deployed.every(id=>alive().includes(id)),label+': living heroes are sent')
+ /* kingdom.opening-draft-pool: four deploy — the deploy limit is unchanged, whoever of the party is alive */
+ assert.equal(deployed.length,Math.min(DEPLOY_LIMIT,alive().length),label+': four deploy (or everyone alive, when fewer are)')
  const equipped=equipFromStash(label)
  const s=P.equipThenFight(deployed,label)
  if(equipped&&s.config.heroes.includes(equipped.hero))assert.ok(s.config.heroRows.find(h=>h.id===equipped.hero).equipped.includes(equipped.item),label+': the item equipped is fielded on its hero')
@@ -139,15 +158,34 @@ assert.match(P.byId('runNote').textContent,/saved after every step/,'the map say
 
 /* 4 · battle 4: fielded, then the page closed on the battle and opened again — a run left mid-battle reopens on that
    battle, from its start; then won */
-field(CAVERN,4,'battle 4')
+const b4=field(CAVERN,4,'battle 4')
+assert.equal(b4.drafted.length,1,'one more before battle 4')
 P=openingPage(page,'?map',browser)
 assert.equal(camp().cursor.step,'battle','a run left mid-battle reopens on that battle')
 P.onTheBattle('battle 4, reopened mid-battle')
 settle(true,'battle 4')
 
 /* 5 · the Gates and the Cathedral */
-battle(GATES,5)
-battle(CATHEDRAL,6)
+const b5=battle(GATES,5)
+assert.equal(b5.drafted.length,1,'one more before battle 5: the sixth hero')
+const b6=battle(CATHEDRAL,6)
+assert.equal(b6.drafted.length,0,'six are drafted: no draft before battle 6')
+
+/* 5b · kingdom.opening-draft-pool (engine DECISIONS.md 2026-10-03 'the opening draft pool is all 24 heroes, Rogues and Mages
+   included'; 2026-09-28 'the draft never repeats a class until all six are drafted'): the pool is the 24 base heroes, four
+   of each class; every one of the six drafts offered three, none of a class already drafted (each asserted at its draft,
+   tools/opening-page.mjs), Rogues and Mages among them; the party is six heroes, one of each class; a base hero with no
+   kit is named and never offered */
+assert.equal(POOL.length+LEFT_OUT.length,24,'the pool is the 24 base heroes, less any with no kit')
+for(const c of HERO_CLASSES)assert.equal(POOL.filter(h=>h.classes.includes(c)).length+LEFT_OUT.filter(h=>h.id.startsWith('hero.base.'+c.replace('class.','')+'-')).length,4,'four of '+c)
+assert.equal(OFFERS.length,6,'six drafts in the run')
+for(const o of OFFERS){assert.equal(o.ids.length,3,o.label+': three offered');assert.ok(!o.ids.some(id=>LEFT_OUT.some(h=>h.id===id)),o.label+': nobody without a kit is offered')}
+const offeredClasses=new Set(OFFERS.flatMap(o=>o.classes))
+assert.ok(offeredClasses.has('class.rogue')&&offeredClasses.has('class.mage'),'Rogues and Mages are offered')
+assert.deepEqual([...offeredClasses].sort(),HERO_CLASSES,'every one of the six classes is offered over the run')
+assert.equal(P.heroIds().length,6,'the party is six heroes')
+assert.deepEqual(P.heroIds().map(id=>camp().roster[id].classes.find(c=>HERO_CLASSES.includes(c))).sort(),HERO_CLASSES,'one of each class')
+assert.deepEqual(OFFERS.map(o=>o.took).sort(),P.heroIds(),'the six drafted are the party')
 
 /* 6 · the end: every section taken, the run complete — and never the kingdom map */
 assert.equal(P.readMap(ORDER,'the end'),null,'every section is taken')
@@ -157,4 +195,5 @@ P=openingPage(page,'?map',browser)
 assert.equal(P.readMap(ORDER,'the end, reopened'),null,'reopened, the run is still complete')
 const party=P.heroIds()
 console.error('settled by: '+JSON.stringify(chosen))
-console.log(`opening run six: six battles from the map, never the kingdom map (Week ${camp().week}); party ${party.map(id=>`${camp().roster[id].name} L${camp().roster[id].level}${camp().roster[id].lifeState==='alive'?'':' ('+camp().roster[id].lifeState+')'}`).join(', ')}; closed after battle 3 and reopened at battle 4 with the same party, items, XP and levels; battle 2 lost and offered again with the same party; a run left mid-battle (battle 4) reopens on that battle; the Bridge's ${b3.kept} kept passed`)
+console.error('offers: '+OFFERS.map(o=>`${o.label}: ${o.ids.map(id=>POOL.find(h=>h.id===id).name).join(' / ')} -> ${POOL.find(h=>h.id===o.took).name}`).join('; '))
+console.log(`opening run six: six battles from the map, never the kingdom map (Week ${camp().week}); six drafts of three, no class twice, Rogues and Mages offered; the party six, one of each class (${party.map(id=>camp().roster[id].classes.find(c=>HERO_CLASSES.includes(c)).replace('class.','')).join(', ')}); four deploy; base heroes left out for no kit: ${LEFT_OUT.map(h=>h.name).join(', ')||'none'}; party ${party.map(id=>`${camp().roster[id].name} L${camp().roster[id].level}${camp().roster[id].lifeState==='alive'?'':' ('+camp().roster[id].lifeState+')'}`).join(', ')}; closed after battle 3 and reopened at battle 4 with the same party, items, XP and levels; battle 2 lost and offered again with the same party; a run left mid-battle (battle 4) reopens on that battle; the Bridge's ${b3.kept} kept passed`)

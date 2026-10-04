@@ -12,8 +12,13 @@ import {bootSlice} from './atlas-dom.mjs'
 
 export const TAKERS=['class.warrior','class.paladin']
 const esbuild=createRequire(import.meta.url)('../../engine/node_modules/esbuild')
-const built=esbuild.buildSync({stdin:{contents:`export {createSandbox,saveSandbox,sandboxResult,advanceSandbox,sandboxActivationChoices,sandboxChoices,commandSandbox} from './src/core/sandbox.ts';export {runBattle} from './src/engine.ts'`,resolveDir:process.cwd(),loader:'ts'},bundle:true,platform:'node',format:'esm',write:false,logLevel:'silent'})
+const built=esbuild.buildSync({stdin:{contents:`export {createSandbox,saveSandbox,sandboxResult,advanceSandbox,sandboxActivationChoices,sandboxChoices,commandSandbox} from './src/core/sandbox.ts';export {runBattle} from './src/engine.ts';export * as HEROES from './src/content/heroes.ts'`,resolveDir:process.cwd(),loader:'ts'},bundle:true,platform:'node',format:'esm',write:false,logLevel:'silent'})
 const E=await import('data:text/javascript;base64,'+Buffer.from(built.outputFiles[0].text).toString('base64'))
+/* kingdom.opening-draft-pool: the sources' draft pool, and the base heroes left out of it for want of a kit — what the
+   page's draft is held against */
+export const POOL=E.HEROES.HERO_POOL.map(h=>({id:h.id,name:h.name,classes:[...h.classes]}))
+export const LEFT_OUT=(E.HEROES.UNKITTED_HEROES??[]).map(h=>({id:h.id,name:h.name}))
+export const HERO_CLASSES=['class.mage','class.paladin','class.priest','class.ranger','class.rogue','class.warrior']
 
 /* the player's side, played out: 'ai', the engine's AI; 'idle', every activation begun and ended (a loss the AI's own
    heroes rarely make); 'hold', no hero moves and each strikes the best blow the engine offers it from where it stands, or
@@ -82,15 +87,29 @@ export function openingPage(page,search,store){
   return next?.id??null
  }
 
- /* the draft: three offered (fewer when the pool runs short), stat-less, none of a class already drafted; a Warrior or a
-    Paladin is taken first when offered, so the party can carry the Flaming Longsword */
+ /* the draft: three offered, stat-less, none of a class already drafted until all six are; a Warrior or a Paladin is
+    taken first when offered, so the party can carry the Flaming Longsword. A base hero left out of the pool for want of
+    a kit is named on the screen (data-unkitted), and nobody else is.
+    Law 10, 2026-10-03 (kingdom.opening-draft-pool; engine DECISIONS.md 2026-10-03 'the opening draft pool is all 24 heroes,
+    Rogues and Mages included'): the two lines below were
+      assert.ok(opts.length>=1&&opts.length<=3,label+': one to three offered')
+      … ||drafted.size>=4 …   (the class rule excused once four classes were drafted)
+    — true only of the five-hero pool of four classes, where the offers shrank to two then one. The rule, as ruled: three
+    at every draft, and no class twice until all SIX are drafted (2026-09-28). */
+ let lastOffer=null
  function draft(label){
   assert.ok(shown('campaign'),label+': the draft is shown');assert.equal(camp().cursor.step,'draft',label+': the cursor is at the draft')
   const opts=byId('campaign').querySelectorAll('[data-act=draft]')
-  assert.ok(opts.length>=1&&opts.length<=3,label+': one to three offered')
+  assert.equal(opts.length,3,label+': three offered')
+  assert.equal(new Set(opts.map(o=>o.dataset.id)).size,3,label+': three different heroes')
+  for(const o of opts)assert.ok(POOL.some(h=>h.id===o.dataset.id),`${label}: ${o.dataset.id} is a base hero of the pool`)
+  const leftOut=byId('campaign').querySelectorAll('[data-unkitted]').map(el=>el.dataset.unkitted)
+  assert.deepEqual(leftOut,LEFT_OUT.map(h=>h.id),label+': the base heroes with no kit are named on the draft, and nobody else')
+  for(const h of LEFT_OUT)assert.ok(byId('campaign').textContent.includes(h.name),`${label}: ${h.name} is named as left out`)
   const drafted=new Set(Object.values(camp().roster).flatMap(h=>h.classes).filter(c=>c!=='class.civilian'))
-  for(const o of opts){assert.ok(!(o.dataset.classes??'').split(',').some(c=>drafted.has(c))||drafted.size>=4,`${label}: ${o.dataset.id} is of a class not yet drafted`);assert.doesNotMatch(o.textContent,/\d+\s*(health|accuracy|strength)/i,label+': stat-less')}
+  for(const o of opts){assert.ok(!(o.dataset.classes??'').split(',').some(c=>drafted.has(c))||HERO_CLASSES.every(c=>drafted.has(c)),`${label}: ${o.dataset.id} is of a class not yet drafted`);assert.doesNotMatch(o.textContent,/\d+\s*(health|accuracy|strength)/i,label+': stat-less')}
   const pick=opts.find(o=>(o.dataset.classes??'').split(',').some(c=>TAKERS.includes(c)))??opts[0]
+  lastOffer={label,ids:opts.map(o=>o.dataset.id),classes:opts.flatMap(o=>(o.dataset.classes??'').split(',')),took:pick.dataset.id,leftOut}
   v.click('draft',pick.dataset.id)
   return pick.dataset.id
  }
@@ -157,5 +176,5 @@ export function openingPage(page,search,store){
   return card.dataset.id
  }
 
- return {v,w,root,handle,store:v.store,camp,byId,shown,heroIds,civilianIds,settle,wait,readMap,draft,equipThenFight,onTheBattle,fightOut,levelUps,takeReward}
+ return {get lastOffer(){return lastOffer},v,w,root,handle,store:v.store,camp,byId,shown,heroIds,civilianIds,settle,wait,readMap,draft,equipThenFight,onTheBattle,fightOut,levelUps,takeReward}
 }

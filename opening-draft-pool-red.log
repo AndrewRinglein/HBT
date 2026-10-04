@@ -1,0 +1,157 @@
+kingdom.opening-draft-pool - the probe and the page test, RED on the old code (the five-hero pool), 2026-10-03
+--- test/opening-draft-pool.test.ts ---
+
+ RUN  v4.1.11 C:/Users/aring/Desktop/HBT-worker-kingdom/kingdom
+
+ ❯ test/opening-draft-pool.test.ts (6 tests | 5 failed) 679ms
+     × the pool is the engine pack's 24 hero.base rows — four of each of Warrior, Ranger, Rogue, Mage, Priest, Paladin — each wearing its kit 10ms
+     × every draft of a run offers three, none of a class already drafted, Rogues and Mages among them; the party ends six, one of each class 663ms
+     × the last draft still offers three: with five classes drafted, three of the last class's four 1ms
+     × the cadence and the deploy limit are unchanged: 1 · +2 · +1 a battle to six, and four of the six deploy 1ms
+     × a base hero whose row has no kit is not in the pool and is listed by name — never fielded bare 0ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 5 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/opening-draft-pool.test.ts > kingdom.opening-draft-pool — the opening draft pool is all 24 base heroes > the pool is the engine pack's 24 hero.base rows — four of each of Warrior, Ranger, Rogue, Mage, Priest, Paladin — each wearing its kit
+AssertionError: expected [ 'hero.base.ranger-aggressive', …(4) ] to deeply equal [ 'hero.base.mage-fire', …(23) ]
+
+- Expected
++ Received
+
+  [
+-   "hero.base.mage-fire",
+-   "hero.base.mage-fireaura",
+-   "hero.base.mage-sexy",
+-   "hero.base.mage-thinking",
+-   "hero.base.paladin-dark",
+-   "hero.base.paladin-hunk",
+-   "hero.base.paladin-shiney",
+-   "hero.base.paladin-smug",
+-   "hero.base.priest-armored",
+-   "hero.base.priest-pauper",
+-   "hero.base.priest-robes",
+-   "hero.base.priest-scantily",
+    "hero.base.ranger-aggressive",
+-   "hero.base.ranger-nature",
+-   "hero.base.ranger-ranger",
+-   "hero.base.ranger-scantily",
+-   "hero.base.rogue-raven",
+-   "hero.base.rogue-rose",
+-   "hero.base.rogue-skull",
+-   "hero.base.rogue-snake",
+-   "hero.base.warrior-barbarian",
+-   "hero.base.warrior-brawler",
+-   "hero.base.warrior-fearsome",
+    "hero.base.warrior-iron",
++   "hero.base.priest-armored",
++   "hero.base.priest-scantily",
++   "hero.base.paladin-shiney",
+  ]
+
+ ❯ test/opening-draft-pool.test.ts:34:40
+     32|     const base = Object.keys(UNITS).filter((id) => id.startsWith('hero…
+     33|     expect(base).toHaveLength(24)
+     34|     expect(HERO_POOL.map((h) => h.id)).toEqual(base)
+       |                                        ^
+     35|     for (const cls of SIX) expect(HERO_POOL.filter((h) => h.classes.in…
+     36|     for (const h of HERO_POOL) {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/5]⎯
+
+ FAIL  test/opening-draft-pool.test.ts > kingdom.opening-draft-pool — the opening draft pool is all 24 base heroes > every draft of a run offers three, none of a class already drafted, Rogues and Mages among them; the party ends six, one of each class
+AssertionError: seed 1, taking offer 1: draft 3 offers three: expected 2 to be 3 // Object.is equality
+
+- Expected
++ Received
+
+- 3
++ 2
+
+ ❯ test/opening-draft-pool.test.ts:59:74
+     57|           const offer = e['offer'] as string[]
+     58|           offers++
+     59|           expect(offer.length, `${label}: draft ${offers} offers three…
+       |                                                                          ^
+     60|           expect(new Set(offer).size, `${label}: draft ${offers} offer…
+     61|           for (const id of offer) {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/5]⎯
+
+ FAIL  test/opening-draft-pool.test.ts > kingdom.opening-draft-pool — the opening draft pool is all 24 base heroes > the last draft still offers three: with five classes drafted, three of the last class's four
+TypeError: Cannot read properties of undefined (reading 'id')
+ ❯ test/opening-draft-pool.test.ts:85:127
+     83|       performAdvance(ctx, 'test')
+     84|       // five drafted, one of each class but the last, through the dra…
+     85|       for (const cls of SIX.filter((c) => c !== lastClass)) ctx.campai…
+       |                                                                                                                               ^
+     86|       const pool = draftPoolOf(ctx.campaign)
+     87|       expect(pool.map((h) => h.id)).toEqual(HERO_POOL.filter((h) => h.…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/5]⎯
+
+ FAIL  test/opening-draft-pool.test.ts > kingdom.opening-draft-pool — the opening draft pool is all 24 base heroes > the cadence and the deploy limit are unchanged: 1 · +2 · +1 a battle to six, and four of the six deploy
+AssertionError: expected 5 to be 6 // Object.is equality
+
+- Expected
++ Received
+
+- 6
++ 5
+
+ ❯ test/opening-draft-pool.test.ts:103:42
+    101|       if (ctx.campaign.cursor.step === 'open' && draftedCountOf(ctx.ca…
+    102|     }
+    103|     expect(draftedCountOf(ctx.campaign)).toBe(6)
+       |                                          ^
+    104|     expect(Object.values(ctx.campaign.roster).map((h) => classOf(h.id)…
+    105|     const id = ABBOTOWN_MAP.sections[4]!.encounterId
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/5]⎯
+
+ FAIL  test/opening-draft-pool.test.ts > kingdom.opening-draft-pool — the opening draft pool is all 24 base heroes > a base hero whose row has no kit is not in the pool and is listed by name — never fielded bare
+TypeError: heroPoolOf is not a function
+ ❯ test/opening-draft-pool.test.ts:117:32
+    115|   it('a base hero whose row has no kit is not in the pool and is liste…
+    116|     const bare = 'hero.base.rogue-rose', units = { ...UNITS, [bare]: {…
+    117|     const { pool, unkitted } = heroPoolOf(units, HERO_ITEM_SLOTS)
+       |                                ^
+    118|     expect(pool).toHaveLength(23)
+    119|     expect(pool.some((h) => h.id === bare)).toBe(false)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/5]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  5 failed | 1 passed (6)
+   Start at  16:54:45
+   Duration  5.24s (transform 3.20s, setup 0ms, import 4.44s, tests 679ms, environment 0ms)
+
+--- tools/opening-run-six.verify.mjs on the committed BATTLE-SANDBOX.html (kingdom 670b7ba, the old pool) ---
+battle 1: sent Iron Dwarf L1; at home nobody
+settled battle 1: ai seed 1
+battle 2: sent Dawnblade L1, Rune-Marked Ascetic L1, Iron Dwarf L2; at home nobody
+settled battle 2 lost: idle seed 6
+settled battle 2 won: ai seed 12
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: battle 3, draft 1: three offered
+
+1 !== 3
+
+    at Object.draft (file:///C:/Users/aring/Desktop/HBT-worker-kingdom/kingdom/tools/opening-page.mjs:103:10)
+    at drafts (file:///C:/Users/aring/Desktop/HBT-worker-kingdom/kingdom/tools/opening-run-six.verify.mjs:50:84)
+    at field (file:///C:/Users/aring/Desktop/HBT-worker-kingdom/kingdom/tools/opening-run-six.verify.mjs:73:16)
+    at battle (file:///C:/Users/aring/Desktop/HBT-worker-kingdom/kingdom/tools/opening-run-six.verify.mjs:104:51)
+    at file:///C:/Users/aring/Desktop/HBT-worker-kingdom/kingdom/tools/opening-run-six.verify.mjs:131:10 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: 1,
+  expected: 3,
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.12.0
+exit 1

@@ -2,7 +2,8 @@
 // not a mode": a normal Campaign, Week 0, that begins with the player's first
 // act — a stat-less draft of one hero from three — and runs the five authored
 // battles (content/prologue.ts) straight into Combat Prep, drafting between
-// them at the ruled cadence (1 · +2 · +1 per battle until six drafted heroes),
+// them at the ruled cadence (1 · +2 · +1 per battle until six drafted heroes,
+// one of each class — the pool is the 24 base heroes, kingdom.opening-draft-pool),
 // until the Kingdom Territory and the square outside it are taken. Then the
 // Week machine takes over at Week 1.
 //
@@ -58,7 +59,7 @@ export function draftsOwedOf(campaign: CampaignState): number {
   if (n === null) return 0
   const have = draftedCountOf(campaign)
   // before battle 1: one; before battle 2: three; then one more per battle, capped at six
-  // …and never more than the pool holds: with the alpha four removed (2026-09-02) the pool is short of six until the engine fields the Eve 24
+  // …and never more than the pool holds — the Eve 24 since kingdom.opening-draft-pool (2026-10-03), so the cap is the cadence's six
   const cap = Math.min(DRAFT_CADENCE.until, HERO_POOL.filter((h) => groupOf(h.classes) === 'hero').length)
   const target = n === 1 ? DRAFT_CADENCE.first : Math.min(cap, DRAFT_CADENCE.first + DRAFT_CADENCE.afterFirst + (n - 2) * DRAFT_CADENCE.afterEach)
   return Math.max(0, target - have)
@@ -95,9 +96,9 @@ export function canDraft(campaign: CampaignState, heroId: HeroId): boolean {
  * warrior." The same rule as the engine's opening probe (engine/src/content/opening-party.ts, fix.opening-draft).
  */
 export function draftPoolOf(campaign: CampaignState): HeroRow[] {
-  // "all six" is every hero class the pool can offer: this pool is still short of the Rogue and the Mage
-  // (heroes.ts, "pending its own draft migration"), so a class it cannot offer never holds the rule shut
-  // (engine SWITCHES.md openingKingdomClasses)
+  // "all six" is every hero class the pool can offer — all six since kingdom.opening-draft-pool (2026-10-03: the pool is
+  // the 24 base heroes, four of each class), so every draft has three to offer and the sixth draft is of the last class.
+  // A class the pool could not offer would never hold the rule shut (engine SWITCHES.md openingKingdomClasses)
   const heroClasses = CLASSES.filter((r) => r.group === 'hero' && HERO_POOL.some((h) => h.classes.includes(r.id))).map((r) => r.id)
   const drafted = new Set(Object.values(campaign.roster).filter((h) => groupOf(h.classes) === 'hero').flatMap((h) => h.classes).filter((c) => heroClasses.includes(c)))
   const allDrafted = heroClasses.every((c) => drafted.has(c))

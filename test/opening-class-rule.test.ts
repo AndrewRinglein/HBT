@@ -9,11 +9,19 @@ import { makeCtx, applyDraft } from '../src/core/mutate.js'
 import { CLASSES, groupOf } from '../src/content/classes.js'
 import { HERO_POOL, heroRowOf } from '../src/content/heroes.js'
 
-// the hero classes the pool can offer (SWITCHES.md openingKingdomClasses — the pool is short of two today)
+// the hero classes the pool can offer (SWITCHES.md openingKingdomClasses)
+// Law 10, 2026-10-03 (kingdom.opening-draft-pool; engine DECISIONS.md 2026-10-03 'the opening draft pool is all 24 heroes,
+// Rogues and Mages included'): the comment here said "the pool is short of two today" — it offers all six now, and that is
+// asserted below, so "all six" in this file's title is six.
 const HERO_CLASSES = CLASSES.filter((r) => r.group === 'hero' && HERO_POOL.some((h) => h.classes.includes(r.id))).map((r) => r.id)
 const classOf = (classes: readonly string[]) => classes.find((c) => HERO_CLASSES.includes(c))
 
 describe('the opening draft never offers a class already drafted until all six are', () => {
+  it('the pool offers all six hero classes', () => {
+    expect(HERO_CLASSES).toHaveLength(6)
+    expect(HERO_CLASSES).toEqual(CLASSES.filter((r) => r.group === 'hero').map((r) => r.id))
+  })
+
   it('after the first draft, no offer and no pool row is of the drafted class', () => {
     for (const seed of [1, 2, 3, 11, 42]) {
       const ctx = makeCtx(makeNewCampaign(seed))
