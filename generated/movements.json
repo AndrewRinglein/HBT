@@ -21978,6 +21978,46 @@
   {
    "group": "movement",
    "content": [
+    "power.back-flip"
+   ],
+   "action": "power.back-flip",
+   "name": "Back Flip",
+   "kind": "move",
+   "engine": "yes",
+   "bar": "move",
+   "motion": "move",
+   "bodies": {
+    "Ancient Elf": "Purchased walkforward01",
+    "Archive Scholar": "Purchased walkforward01",
+    "Barefoot Mendicant": "Purchased walkforward01",
+    "Battle Chaplain": "Purchased walkforward01",
+    "Black Oath": "Purchased walkforward01",
+    "Cathedral Bishop": "Purchased walkforward01",
+    "Court Champion": "Purchased walkforward01",
+    "Crimson Sorceress": "Purchased walkforward01",
+    "Dawnblade": "Purchased walkforward01",
+    "Emberwright": "Purchased walkforward01",
+    "Forest Elf": "Purchased walkforward01",
+    "Forest Fey": "Purchased walkforward01",
+    "Hunter": "Purchased walkforward01",
+    "Lion of the Host": "walkforward01",
+    "Oathblade": "Purchased walkforward01",
+    "Pyre Witch": "Purchased walkforward01",
+    "Rune-Marked Ascetic": "Purchased walkforward01",
+    "The Raven": "Purchased walkforward01",
+    "The Rose": "Purchased walkforward01",
+    "The Serpent": "Purchased walkforward01",
+    "The Skull": "Purchased walkforward01"
+   },
+   "motionStatus": "played",
+   "selected": null,
+   "ruling": null,
+   "note": "no player unit, item or badge grants it today",
+   "variants": 0
+  },
+  {
+   "group": "movement",
+   "content": [
     "power.charging-run"
    ],
    "action": "power.charging-run",
@@ -22222,7 +22262,7 @@
   }
  ],
  "counts": {
-  "rows": 510,
+  "rows": 511,
   "missing": 351,
   "noEngine": 37,
   "inert": 239,
