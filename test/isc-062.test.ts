@@ -22,7 +22,8 @@ const row = (id: string, tags: string[], setBonus: ItemRow['setBonus'], itemClas
 
 describe('ISC-062 — sets resolve over what is equipped', () => {
   it('per-other: the Chains of the Wrathful pay +1 Precision per OTHER chain item worn; the stash counts for nothing', () => {
-    const ctx = toEquip(loadFixture((c) => { c.stash = [CHAINS, CHAIN_ARMOR, PRIEST_CHAIN, 'item.cart-chain'] }), [CHAPLAIN, DWARF])
+    /* Law 10, 2026-10-03 (content.unfielded-tier0-weapons-cut): the Cart Chain was cut (engine DECISIONS.md 'eleven tier 0 weapons nobody fields are cut'); the chain item left in the stash is the Boarding Hook now. The claim is unchanged. */
+    const ctx = toEquip(loadFixture((c) => { c.stash = [CHAINS, CHAIN_ARMOR, PRIEST_CHAIN, 'item.boarding-hook'] }), [CHAPLAIN, DWARF])
     expect(itemOf(CHAINS).setBonus).toEqual({ tag: 'chain', each: { precision: 1 } })
     // the Chaplain's hands and armor make way
     /* Law 10, 2026-09-23 (v2.shields): the Knight Shield retired with V2 R1; this hero's kit carries the Round Shield now. The claim is unchanged. */ performUnequip(ctx, CHAPLAIN, 'item.round-shield', 'test')
@@ -33,7 +34,8 @@ describe('ISC-062 — sets resolve over what is equipped', () => {
     expect(resolveSets(ctx.campaign, CHAPLAIN)).toEqual([{ itemId: CHAINS, tag: 'chain', shape: 'per-other', count: 1, stats: { precision: 1 }, attackDamage: 0 }])
     performEquip(ctx, CHAPLAIN, PRIEST_CHAIN, 'test')                          // a spare chain weapon in the item slot: two others
     expect(resolveSets(ctx.campaign, CHAPLAIN)).toEqual([{ itemId: CHAINS, tag: 'chain', shape: 'per-other', count: 2, stats: { precision: 2 }, attackDamage: 0 }])
-    expect(ctx.campaign.stash).toContain('item.cart-chain')                    // a chain item in the stash — not counted
+    expect(itemOf('item.boarding-hook').sets).toEqual(['chain'])
+    expect(ctx.campaign.stash).toContain('item.boarding-hook')                 // a chain item in the stash — not counted
     expect(resolveSets(ctx.campaign, DWARF)).toEqual([])                       // another hero's gear never counts
   })
   it('this-weapon damage: two Destroyer staffs each pay the other +1 damage on ITS attacks, not on the unit', () => {

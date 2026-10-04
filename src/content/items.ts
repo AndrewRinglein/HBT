@@ -129,6 +129,6 @@ export function engineItemOf(id: string): ItemDef {
 }
 
 // V2 R1 (2026-09-23): itemClass 'shield' is the shield class; the older tag-only shields
-// (pot-lid, holy-shield — itemClass weapon, left as authored) still read as shields here.
+// (holy-shield — itemClass weapon, left as authored; pot-lid was the other until it was cut, 2026-10-03) still read as shields here.
 export const isShield = (r: ItemRow): boolean => r.itemClass === 'shield' || r.tags.includes('shield')
 export const isWeapon = (r: ItemRow): boolean => r.itemClass === 'weapon' && !isShield(r)
