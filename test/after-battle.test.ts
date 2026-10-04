@@ -86,28 +86,42 @@ describe('after the battle', () => {
     expect(v.row.grants['maxHp']).toBe(2)                             // the row's +1 plus the Warrior freebie
     expect(v.row.grants['itemSlots']).toBe(1)
     expect(v.needsSpecialty).toBe(true)
-    expect(v.specialtyOffers.map((s) => s.id)).toEqual(specialtiesOf('class.warrior').map((s) => s.id))
-    expect(v.specialtyOffers.length).toBe(9)
+    // Law 10, 2026-10-04 (kingdom.opening-specialty-three; engine DECISIONS.md 2026-10-03 'card art on the level-up and reward
+    // screens; the specialty choice offers three, not nine': "you're supposed to only get a choice of three different
+    // specialty classes, not nine." · '… the specialty three are random; …': "It's random: 3 of the 9."). This read
+    //   expect(v.specialtyOffers.map((s) => s.id)).toEqual(specialtiesOf('class.warrior').map((s) => s.id))
+    //   expect(v.specialtyOffers.length).toBe(9)
+    //   expect(html.match(/data-act="choose-specialty"/g)?.length).toBe(9)
+    //   performLevelUp(ctx, DWARF, 'test', { specialtyId: 'specialty.berserker' })   (and 'specialty.berserker' held after)
+    // — all nine offered, a named one taken. The rule now: three different specialties of the class's nine are offered,
+    // the screen shows those three, and the one taken is one of them (the first offered — `took`).
+    const nine = specialtiesOf('class.warrior').map((s) => s.id), took = v.specialtyOffers[0]!.id
+    expect(nine.length).toBe(9)
+    expect(v.specialtyOffers.length).toBe(3)
+    expect(new Set(v.specialtyOffers.map((s) => s.id)).size).toBe(3)
+    for (const s of v.specialtyOffers) expect(nine).toContain(s.id)
     const html = levelUpScreen(ctx.campaign, DWARF, 'rewards')
     expect(html).toContain('class="hx levelup')
     expect(html).toContain('id="lu-badge">LEVEL 1<')                                  // flips to LEVEL 2 at the flash
     expect(html).toContain('data-to="2"')
     expect(html).toContain('+2 Health'); expect(html).toContain('+1 Item Slot')
     expect(html).toContain('Choose Your Specialty')
-    expect(html.match(/data-act="choose-specialty"/g)?.length).toBe(9)
+    expect([...html.matchAll(/data-act="choose-specialty" data-id="([^"]+)"/g)].map((m) => m[1])).toEqual(v.specialtyOffers.map((s) => s.id))
     expect(html).toContain('No power is chosen here')
     expect(html).not.toContain('power-overlay')
     expect(whyNotLevelUp(ctx.campaign, DWARF, { specialtyId: 'specialty.assassin' })).toMatch(/not a class\.warrior specialty/)
     const slots = ctx.campaign.roster[DWARF]!.itemSlots
-    performLevelUp(ctx, DWARF, 'test', { specialtyId: 'specialty.berserker' })
+    // a specialty of the class that is not among the three is refused too
+    expect(whyNotLevelUp(ctx.campaign, DWARF, { specialtyId: nine.find((s) => !v.specialtyOffers.some((o) => o.id === s))! })).toMatch(/not one of the 3 offered/)
+    performLevelUp(ctx, DWARF, 'test', { specialtyId: took })
     const h = ctx.campaign.roster[DWARF]!
-    expect(h.level).toBe(2); expect(h.specialty).toBe('specialty.berserker'); expect(h.itemSlots).toBe(slots + 1)
+    expect(h.level).toBe(2); expect(h.specialty).toBe(took); expect(h.itemSlots).toBe(slots + 1)
     expect(ctx.events.map((e) => e.type).slice(-2)).toEqual(['hero.specialized', 'hero.leveled'])
     expect(ctx.events.at(-1)!['grants']).toEqual(v.row.grants)
     // offered once: at level 3 there is no offer and naming one is refused
     h.xp = 100
     expect(viewLevelUp(ctx.campaign, DWARF).needsSpecialty).toBe(false)
-    expect(whyNotLevelUp(ctx.campaign, DWARF, { specialtyId: 'specialty.berserker' })).toMatch(/chosen once/)
+    expect(whyNotLevelUp(ctx.campaign, DWARF, { specialtyId: took })).toMatch(/chosen once/)
     expect(levelUpScreen(ctx.campaign, DWARF, 'roster')).not.toContain('Choose Your Specialty')
   })
   it('the level-5 pick is one of the row\'s options by index, required when the row has one', () => {

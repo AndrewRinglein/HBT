@@ -44,6 +44,15 @@ export function levelRowOf(tableId: string, level: number): LevelRow {
   return { level: r.level, grants: { ...r.grants }, specialty: r.level === SPECIALTY_LEVEL, ...(r.choice ? { choice: r.choice } : {}) }
 }
 
+/**
+ * How many specialties the specialty choice offers. Ruled 2026-10-03 (Andrew, engine/DECISIONS.md 'card art on the level-up
+ * and reward screens; the specialty choice offers three, not nine': "you're supposed to only get a choice of three
+ * different specialty classes, not nine."; 'the civilians show on the victory screen; the specialty three are random; …':
+ * "It's random: 3 of the 9."). The number is this row's; the draw is core's (core/rewards.ts specialtyOfferOf).
+ * kingdom.opening-specialty-three.
+ */
+export const SPECIALTY_OFFER = 3
+
 /** The specialties a hero of `classId` may hold — the engine's rule: the specialty's class is the hero's class. */
 export const specialtiesOf = (classId: string): SpecialtyRow[] => SPECIALTIES.filter((s) => s.classId === classId)
 

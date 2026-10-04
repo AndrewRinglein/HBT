@@ -15,14 +15,16 @@ import {readRun,writeRun} from './opening-run.js'
 import {makeCtx,setBattleOutcome,type Ctx} from '../core/mutate.js'
 import {performAdvancePrep,performDeploy,performUndeploy} from '../core/prep.js'
 import {resolveReckoning,applyBattleResult,performExitBattle} from '../core/reckoning.js'
-import {performTakeReward,listRewardTakers,performLevelUp,performLeaveLevelUp} from '../core/rewards.js'
+import {performTakeReward,listRewardTakers,performLevelUp,performLeaveLevelUp,listWaitingOffers,listWaitingItems,performTakeWaiting} from '../core/rewards.js'
 import {performEquip,performUnequip} from '../core/shop.js'
 import {sandboxResult} from '../core/sandbox.js'
 import {encounterDef} from '../engine.js'
 import {equipPage} from './equip.js'
 import {draftScreen} from './draft.js'
 import {deployPage} from './deploy.js'
-import {recapScreen,mountRecap,rewardsScreen,mountRewards,carrierChoice,levelUpScreen,mountLevelUp,toggleMute,type LastBattle,type Cleanup} from './after.js'
+import {recapScreen,mountRecap,rewardsScreen,mountRewards,carrierChoice,whoseOf,levelUpScreen,mountLevelUp,toggleMute,type LastBattle,type Cleanup} from './after.js'
+import {itemOf as itemRowOf} from '../content/items.js'
+const itemName=(id:string)=>itemRowOf(id).name
 import {fontFaces} from './art.js'
 
 declare const __BATTLE_VIEW_DATA__:Record<string,unknown>
@@ -114,7 +116,9 @@ function drawMap(){
 /** kingdom.opening-run-six: under the map, what the run is — saved, how to come back, the end once Abbotown is retaken */
 function runFooter(){
  const done=nextSection(mapOrder,taken)===null
- return `<p class="runNote" id="runNote">${runNote?`<b>${escape(runNote)}</b> `:''}${done?'<b>Abbotown is retaken — the opening run is complete.</b> ':''}The run is saved after every step: close the page at any time, and Retaking Abbotown opens where you left it. <a href="PLAY.html" data-run="launcher">Launcher</a> · <a href="BATTLE-SANDBOX.html?map&amp;new" data-run="new">Start a new run</a></p>`
+ /* kingdom.opening-sword-waits: an item kept in the stash for its classes is said to wait, for as long as it does */
+ const waits=sitting?listWaitingItems(sitting.ctx.campaign).map(id=>`<span data-waits="${escape(id)}">The ${escape(itemName(id))} waits in the stash — for ${escape(whoseOf(id))}, when one joins you with a hand free.</span> `).join(''):''
+ return `<p class="runNote" id="runNote">${runNote?`<b>${escape(runNote)}</b> `:''}${waits}${done?'<b>Abbotown is retaken — the opening run is complete.</b> ':''}The run is saved after every step: close the page at any time, and Retaking Abbotown opens where you left it. <a href="PLAY.html" data-run="launcher">Launcher</a> · <a href="BATTLE-SANDBOX.html?map&amp;new" data-run="new">Start a new run</a></p>`
 }
 /** kingdom.opening-loop-three (PLAYABLE-OPENING-PLAN.md item 12; engine DECISIONS.md 2026-09-29 "the playable opening": "one
     page, one sitting, local server: map -> first hero / draft -> equip -> battle -> rewards -> map"): the ?map sitting is a
@@ -143,8 +147,18 @@ function isCampaignBattle(s:Sandbox){
 /** the next section: the drafts owed first, then its battle */
 function beginSection(id:string){
  const ctx=sitting!.ctx
- if(draftsOwedOf(ctx.campaign)>0)performAdvanceOpening(ctx,sitCause);else fieldBattle(id)
+ if(draftsOwedOf(ctx.campaign)>0)performAdvanceOpening(ctx,sitCause);else toBattle(id)
  mapOpen=false;campaignOpen=true;drawCampaign()
+}
+/** kingdom.opening-sword-waits (engine DECISIONS.md 2026-10-03 'the opening run: the Flaming Longsword waits for its taker; …'
+    — "One, yes."): before the next battle is fielded, an item waiting in the stash for its classes is offered as soon
+    as a living hero of them has room for it — after the draft that brings one — and the player names the carrier
+    (ui/after.ts carrierChoice, as at the battle that gave it); then the battle is fielded. Nothing is stored for the
+    offer: a run closed on it and reopened is asked again when the section is clicked. */
+function toBattle(id:string){
+ const waiting=listWaitingOffers(sitting!.ctx.campaign)[0]
+ if(waiting){sitting!.giving=waiting.itemId;return}
+ fieldBattle(id)
 }
 /** the opening battle as its encounter, Combat Prep walked to who goes: Reveal and the War Council passed (no tactics), and
     at Deploy — kingdom.opening-deploy-choice (engine DECISIONS.md 2026-10-03 'the opening run, audited': "Should the player
@@ -183,7 +197,7 @@ function onward(){
 function clearCampaign(){if(sitting?.mounted){sitting.mounted();sitting.mounted=null}q('campaign').innerHTML=''}
 function campaignAct(act:string,el:HTMLElement){
  const s=sitting!,ctx=s.ctx,c=ctx.campaign,id=el.dataset.id
- if(act==='draft'){performDraft(ctx,id!,sitCause);if(draftsOwedOf(ctx.campaign)>0)performAdvanceOpening(ctx,sitCause);else fieldBattle(nextSection(mapOrder,taken)!);drawCampaign()}
+ if(act==='draft'){performDraft(ctx,id!,sitCause);if(draftsOwedOf(ctx.campaign)>0)performAdvanceOpening(ctx,sitCause);else toBattle(nextSection(mapOrder,taken)!);drawCampaign()}
  else if(act==='deploy'){performDeploy(ctx,id!,sitCause);drawCampaign()}
  else if(act==='undeploy'){performUndeploy(ctx,id!,sitCause);drawCampaign()}
  else if(act==='pick'){s.picked=s.picked===id?null:id!;drawCampaign()}
@@ -192,7 +206,10 @@ function campaignAct(act:string,el:HTMLElement){
  else if(act==='advance'){performAdvancePrep(ctx,sitCause);if(ctx.campaign.cursor.step==='battle')startCampaignBattle();else drawCampaign()}
  else if(act==='exit'){if(c.cursor.step==='reckoning')performExitBattle(ctx,sitCause);else if(c.cursor.step==='levelUp')performLeaveLevelUp(ctx,sitCause);else return;onward()}
  else if(act==='level-hero'){s.levelHero=id!;drawCampaign()}
- else if(act==='give'){const item=s.giving;if(!item)throw Error('No reward is waiting for its carrier');performTakeReward(ctx,item,sitCause,id!);s.giving=null;onward()}
+ else if(act==='give'){const item=s.giving;if(!item)throw Error('No reward is waiting for its carrier')
+  // a waiting item given between battles (kingdom.opening-sword-waits): onto the hero named, then on to the battle
+  if(c.cursor.step==='open'){performTakeWaiting(ctx,item,id!,sitCause);s.giving=null;toBattle(nextSection(mapOrder,taken)!);drawCampaign()}
+  else{performTakeReward(ctx,item,sitCause,id!);s.giving=null;onward()}}
  else if(act==='mute')toggleMute()
 }
 /** a reward chosen on the rewards page: into the stash — or, an item that names its takers, to the hero chosen for it */
@@ -216,6 +233,7 @@ function drawCampaign(){
  else if(c.cursor.step==='prep'&&c.cursor.prepStep==='equip'){const e=c.cursor.engagement!;html=`<div class="sliceView">${equipPage(c,e.deployed,{where:'prep',picked:s.picked,engagementId:sectionOf(e.id)?.name??e.id,canAdvance:true})}</div>`}
  else if(c.cursor.step==='reckoning'){html=recapScreen(c,s.ctx.events,s.lastBattle);mount=hx=>mountRecap(hx,()=>act(()=>campaignAct('exit',hx)))}
  else if(c.cursor.step==='rewards'||c.cursor.step==='levelUp'){html=rewardsScreen(c,s.ctx.events,s.lastBattle)+(s.giving?giveChoice(s.giving):'');mount=hx=>mountRewards(hx,id=>act(()=>takeReward(id)))}
+ else if(c.cursor.step==='open'&&s.giving)html=`<div class="sliceView waitingOffer" data-waiting="${escape(s.giving)}"><h2>The ${escape(itemName(s.giving))} has waited in the stash</h2><p class="meta">It is for ${escape(whoseOf(s.giving))}. One is with you now, with a hand free for it.</p></div>`+giveChoice(s.giving)
  else html=`<div class="sliceView"><p>The Campaign is at ${escape(c.cursor.step)}.</p></div>`
  host.innerHTML=say+html
  host.querySelectorAll<HTMLElement>('[data-act]').forEach(el=>el.addEventListener('click',(ev:Event)=>{

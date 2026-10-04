@@ -18,7 +18,7 @@ import { itemOf, isShield, type ItemRow } from '../content/items.js'
 import { fieldedItemsOf } from '../core/loadout.js'
 import { fieldedPreviewOf } from '../core/seam.js'
 import type { UnitDef } from '../engine.js'
-import { portraitIdOf, portraitOf } from './art.js'
+import { portraitIdOf, portraitOf, itemArtOf } from './art.js'
 import { statLabelOf } from '../content/stat-labels.js'
 
 const esc = (s: string) => s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]!))
@@ -152,6 +152,13 @@ export function equipScreen(c: CampaignState, heroIds: readonly string[], o: Equ
   </div>`
 }
 
+/**
+ * kingdom.opening-reward-card-art (engine DECISIONS.md 2026-10-03 'card art on the level-up and reward screens; …'): an
+ * item's card art as Equip shows it — a small 2:3 picture; nothing for an item with none (it is named in index.json
+ * itemsMissing and stays a plain line).
+ */
+const itemArt = (itemId: string): string => { const art = itemArtOf(itemId); return art ? `<img class="itemart" src="${art}" alt="">` : '' }
+
 function heroCard(c: CampaignState, heroId: string, picked: string | null): string {
   const h = c.roster[heroId]!
   const l = loadoutOf(c, heroId)
@@ -162,9 +169,10 @@ function heroCard(c: CampaignState, heroId: string, picked: string | null): stri
     const ok = picked ? canEquip(c, heroId, picked, drop) : false
     const why = picked && !ok ? whyNotEquip(c, heroId, picked, drop) ?? '' : ''
     const attrs = `data-slot="${esc(key)}" data-hero="${esc(heroId)}"${drop ? ` data-displace="${esc(drop)}"` : ''}${picked ? ` data-act="drop" data-item="${esc(picked)}" data-id="${esc(heroId)}"` : ''}`
-    return `<div class="slot${id ? ' full' : ''}${picked ? (ok ? ' can' : ' cant') : ''}" ${attrs} title="${esc(why || (drop ? `swap out ${itemOf(drop).name}` : label))}">
+    // kingdom.opening-reward-card-art: the item a slot holds shows its card art beside its name (data-holds says which)
+    return `<div class="slot${id ? ' full' : ''}${picked ? (ok ? ' can' : ' cant') : ''}" ${attrs}${id ? ` data-holds="${esc(id)}"` : ''} title="${esc(why || (drop ? `swap out ${itemOf(drop).name}` : label))}">
       <span class="k">${esc(label)}${note ? ` <i>${esc(note)}</i>` : ''}</span>
-      ${id ? `<span class="v">${esc(itemOf(id).name)}${off(id)}</span>` : '<span class="v meta">—</span>'}
+      ${id ? `<span class="v">${itemArt(id)}${esc(itemOf(id).name)}${off(id)}</span>` : '<span class="v meta">—</span>'}
     </div>`
   }
   const twoHander = l.hands.length === 1 && Math.max(1, itemOf(l.hands[0]!).hands) === 2
@@ -187,11 +195,12 @@ function stashSections(c: CampaignState, heroIds: readonly string[], picked: str
     if (!ids.length) return `<div class="section"><h3>${esc(title)}</h3><p class="meta">none in the stash</p></div>`
     return `<div class="section"><h3>${esc(title)}</h3><div class="items">${ids.map((id) => {
       const row = itemOf(id)
-      const cost = fmtCost(equipCostOf(id))
+      // kingdom.opening-free-equip: what it costs HERE — in the opening nothing, and an item whose row has a cost says so
+      const cost = fmtCost(equipCostOf(c, id)), free = !cost && Object.keys(row.equipCost).length > 0
       const fits = heroIds.filter((h) => canEquip(c, h, id) || c.roster[h]!.equipped.some((d) => canEquip(c, h, id, d)))
       return `<div class="item${picked === id ? ' picked' : ''}${fits.length ? '' : ' nofit'}" draggable="true" data-act="pick" data-id="${esc(id)}" title="${esc(fits.length ? `fits ${fits.map((h) => c.roster[h]!.name).join(', ')}` : heroIds.map((h) => whyNotEquip(c, h, id) ?? '').filter(Boolean)[0] ?? 'nobody can wear it')}">
-        <b>${esc(row.name)}</b>
-        <small>${esc([`tier ${row.tier}`, row.itemClass === 'weapon' ? (isShield(row) ? 'shield' : `${Math.max(1, row.hands)}-hand`) : null, row.classRestriction ? row.classRestriction.replace('class.', '') + ' only' : null, row.uses ? `${row.uses} use` : null, cost ? `${cost} to equip` : null, Object.entries(row.statModifiers).map(([k, n]) => `${sign(n)} ${k}`).join(' ') || null, row.setBonus ? `${row.setBonus.tag} set` : null, row.sets.length && !row.setBonus ? row.sets.join('/') + ' set' : null].filter(Boolean).join(' · '))}</small>
+        ${itemArt(id)}<b>${esc(row.name)}</b>
+        <small>${esc([`tier ${row.tier}`, row.itemClass === 'weapon' ? (isShield(row) ? 'shield' : `${Math.max(1, row.hands)}-hand`) : null, row.classRestriction ? row.classRestriction.replace('class.', '') + ' only' : null, row.uses ? `${row.uses} use` : null, cost ? `${cost} to equip` : free ? 'free to equip' : null, Object.entries(row.statModifiers).map(([k, n]) => `${sign(n)} ${k}`).join(' ') || null, row.setBonus ? `${row.setBonus.tag} set` : null, row.sets.length && !row.setBonus ? row.sets.join('/') + ' set' : null].filter(Boolean).join(' · '))}</small>
       </div>`
     }).join('')}</div></div>`
   })

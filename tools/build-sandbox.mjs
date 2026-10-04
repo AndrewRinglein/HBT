@@ -17,8 +17,9 @@ const data={...battleViewAssets(),paintedScenes:packPaintedScenes(),characterMod
    them; the map and town pictures are SLICE's alone. Absent art is not an error: the screens draw without it */
 const art=(()=>{
  if(!existsSync('generated/art/index.json'))return null
- const index=JSON.parse(readFileSync('generated/art/index.json','utf8')),keep={heroes:index.heroes,audio:index.audio,cardBack:index.cardBack,fonts:index.fonts}
- const files=new Set([...Object.values(keep.heroes??{}),...Object.values(keep.audio??{}).map(a=>a.file),...(keep.cardBack?[keep.cardBack]:[]),...Object.keys(keep.fonts??{})]),inlined={}
+ const index=JSON.parse(readFileSync('generated/art/index.json','utf8')),keep={heroes:index.heroes,items:index.items,audio:index.audio,cardBack:index.cardBack,fonts:index.fonts}
+ /* kingdom.opening-reward-card-art: … and the items' card art (tools/prep-items.py), for the reward cards and Equip's items */
+ const files=new Set([...Object.values(keep.heroes??{}),...Object.values(keep.items??{}),...Object.values(keep.audio??{}).map(a=>a.file),...(keep.cardBack?[keep.cardBack]:[]),...Object.keys(keep.fonts??{})]),inlined={}
  for(const name of [...files].sort()){const mime=name.endsWith('.png')?'image/png':name.endsWith('.woff2')?'font/woff2':name.endsWith('.mp3')?'audio/mpeg':'image/jpeg';inlined[name]=`data:${mime};base64,${readFileSync('generated/art/'+name).toString('base64')}`}
  return {...keep,data:inlined}
 })()

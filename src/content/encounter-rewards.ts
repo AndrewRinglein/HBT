@@ -64,6 +64,16 @@ const RAW: readonly EncounterRewardRow[] = [
 
 export const ENCOUNTER_REWARDS: readonly EncounterRewardRow[] = omitDisabled(RAW)
 
+/**
+ * kingdom.opening-sword-waits: whose an item is — the classes its row names as its takers (the Flaming Longsword: a
+ * Warrior's or a Paladin's, 2026-09-28 "it only is going to help the paladin or the warrior") — or null for an item no
+ * row gives to named classes. One answer for the offer, for the wait and for who may wear it.
+ */
+export function rewardTakersOf(itemId: string): readonly string[] | null {
+  const rows = ENCOUNTER_REWARDS.flatMap((r) => r.offer.kind === 'item' && r.offer.itemId === itemId ? [r.offer.takers] : [])
+  return rows.length ? [...new Set(rows.flat())] : null
+}
+
 /** The row for an Engagement, or null — an Engagement without one is paid as any battle is. */
 export function encounterRewardOf(engagementId: string): EncounterRewardRow | null {
   return ENCOUNTER_REWARDS.find((r) => r.encounterId === engagementId) ?? null

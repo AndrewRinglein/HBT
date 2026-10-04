@@ -15,7 +15,7 @@ import type { CampaignState, HeroId } from './campaign.js'
 import { type Ctx, setEquipSession, applyGrant } from './mutate.js'
 import { canAfford, performSpend, type Cost } from './purse.js'
 import { itemOf } from '../content/items.js'
-import { PREP_ONLY_CLASSES } from '../content/equip.js'
+import { PREP_ONLY_CLASSES, OPENING_EQUIPS_FREE } from '../content/equip.js'
 
 export type EquipWhere = 'prep' | 'roster'
 
@@ -33,15 +33,22 @@ export function closeEquipSession(ctx: Ctx, causeId: string): void {
   setEquipSession(ctx, null, causeId, { type: 'equip.closed' })
 }
 
-/** What putting this item on costs — the row's equipCost, or nothing. */
-export const equipCostOf = (itemId: string): Cost => ({ ...itemOf(itemId).equipCost })
+/**
+ * What putting this item on costs in THIS Campaign, now: the row's equipCost — or nothing while the Campaign is still in
+ * the opening (its cursor's `prologue` set: before any Week), when the content's row says the opening equips free
+ * (kingdom.opening-free-equip; engine DECISIONS.md 2026-10-03 'the opening run, audited': "4 free"). The one reading
+ * every caller takes — the refusal, the payment, the screen — so there is one equip path, and in the opening it pays
+ * nothing, records nothing paid, and has nothing to refund.
+ */
+export const equipCostOf = (campaign: CampaignState, itemId: string): Cost =>
+  OPENING_EQUIPS_FREE && campaign.cursor.prologue !== null ? {} : { ...itemOf(itemId).equipCost }
 
 /** Why the session refuses to pay for this item here — or null. */
 export function whyNotPay(campaign: CampaignState, itemId: string): string | null {
   const s = campaign.cursor.equipSession
   if (!s) return 'no equip session is open'
   const row = itemOf(itemId)
-  const cost = equipCostOf(itemId)
+  const cost = equipCostOf(campaign, itemId)
   if (Object.keys(cost).length === 0) return null
   if (PREP_ONLY_CLASSES.includes(row.itemClass) && s.where !== 'prep') return `a ${row.itemClass} is paid for only at prep, when the battle is about to happen`
   if (!canAfford(campaign, cost)) return `short of ${Object.entries(cost).filter(([c, n]) => (campaign.purse[c] ?? 0) < n).map(([c]) => c.replace('currency.', '')).map((c) => c[0]!.toUpperCase() + c.slice(1)).join(', ')} to equip '${row.name}'`
@@ -50,7 +57,7 @@ export function whyNotPay(campaign: CampaignState, itemId: string): string | nul
 
 /** Pay for an item as it goes on, and remember it, so taking it off in this session refunds. */
 export function paySession(ctx: Ctx, heroId: HeroId, itemId: string, causeId: string): void {
-  const cost = equipCostOf(itemId)
+  const cost = equipCostOf(ctx.campaign, itemId)
   if (Object.keys(cost).length === 0) return
   const why = whyNotPay(ctx.campaign, itemId)
   if (why) throw new Error(`paySession refused (${heroId} ← ${itemId}): ${why}`)

@@ -1,0 +1,154 @@
+
+ RUN  v4.1.11 C:/Users/aring/Desktop/HBT-worker-kingdom/kingdom
+
+battle 1: sent Dwarven Brawler L1; at home nobody
+settled battle 1 lost: the party held idle, cut at Turn 1 — capped on Turn 1, the Engagement's own seed 1
+settled battle 1 won: the strong party, the engine's AI — heroClear on Turn 8, the Engagement's own seed 182577185
+battle 1 won: the strong party stood idle until a civilian had fallen, and the engine's AI played from there (kingdom.opening-recap-civilians)
+battle 2: sent The Serpent L1, Dwarven Brawler L2; at home nobody
+settled battle 2 lost: the party held idle, cut at Turn 1 — capped on Turn 1, the Engagement's own seed 2
+settled battle 2 won: the strong party, the engine's AI — heroClear on Turn 2, the Engagement's own seed 1985308296
+battle 3: sent Rune-Marked Ascetic L1, The Serpent L2, Dwarven Brawler L2; at home nobody
+settled battle 3: the strong party, the engine's AI — heroClear on Turn 6, the Engagement's own seed 3
+battle 4: sent Rune-Marked Ascetic L1, Forest Elf L1, The Serpent L2, Dwarven Brawler L3; at home nobody
+settled battle 4: the strong party, the engine's AI — heroClear on Turn 5, the Engagement's own seed 4
+battle 5: asked who goes — sent Rune-Marked Ascetic, Forest Elf, The Serpent, Dwarven Brawler; home Dawnblade
+battle 5: sent Rune-Marked Ascetic L2, Forest Elf L2, The Serpent L3, Dwarven Brawler L3; at home Dawnblade alive
+settled battle 5: the strong party, the engine's AI — heroClear on Turn 3, the Engagement's own seed 5
+battle 6: asked who goes — sent Crimson Sorceress; home Dawnblade, Rune-Marked Ascetic, Forest Elf, The Serpent, Dwarven Brawler
+battle 6: sent Crimson Sorceress L1; at home Dawnblade alive, Rune-Marked Ascetic alive, Forest Elf alive, The Serpent alive, Dwarven Brawler alive
+settled battle 6 lost: the party held idle, cut at Turn 1 — capped on Turn 1, the Engagement's own seed 6
+battle 6 again: asked who goes — sent Rune-Marked Ascetic, Forest Elf, The Serpent, Dwarven Brawler; home Crimson Sorceress, Dawnblade
+settled battle 6 won: the strong party, the engine's AI — heroClear on Turn 7, the Engagement's own seed 1873843626
+settled by: {"encounter.opening.orphanage:lost":["idle",1,1],"encounter.opening.orphanage":["civilian-falls",182577185,8],"encounter.opening.lumberjack:lost":["idle",2,1],"encounter.opening.lumberjack":["ai",1985308296,2],"encounter.opening.bridge":["ai",3,6],"encounter.opening.cavern-trail":["ai",4,5],"encounter.opening.gates":["ai",5,3],"encounter.opening.cathedral:lost":["idle",6,1],"encounter.opening.cathedral":["ai",1873843626,7]}
+offers: battle 1, draft 1: Crimson Sorceress / Dwarven Brawler / Skullplate Veteran -> Dwarven Brawler; battle 2, draft 1: The Serpent / Hunter / The Raven -> The Serpent; battle 3, draft 1: Battle Chaplain / Rune-Marked Ascetic / Barefoot Mendicant -> Rune-Marked Ascetic; battle 4, draft 1: Forest Fey / Emberwright / Forest Elf -> Forest Elf; battle 5, draft 1: Dawnblade / Black Oath / Crimson Sorceress -> Dawnblade; battle 6, draft 1: Archive Scholar / Emberwright / Crimson Sorceress -> Crimson Sorceress
+drafted with: Dwarven Brawler: leadership, huge, +2 maxHp, +1 toughness (not fielded), +1 itemSlots (on the hero, its item slots); The Serpent: mystic, +5 accuracy, +2 crit; Rune-Marked Ascetic: spiritual, hardy; Forest Elf: dim-sighted, +1 precision, +1 resist; Dawnblade: warded, thick-skinned; Crimson Sorceress: winded, reckless, +2 luck, +1 strength, -2 maxHp
+ ❯ test/opening-hero-death-replays.test.ts (6 tests | 5 failed) 10276ms
+     × a WON battle that ends with a hero dead is not kept: nothing of it is written, who fell is named, and the same battle is owed again on new dice 331ms
+     × a battle that kills every hero does the same: nobody is written dead, the battle is offered again, and the whole party may go 51ms
+     × a lost battle with one hero dead is the same replay — and is not the lost-battle replay that keeps its wounds 46ms
+     × the screen says plainly why the battle is offered again and who fell — and a saved run reopened on it says the same 91ms
+     × the page: a won battle a hero died in and a battle that took down everyone sent were each followed by the screen naming who fell, and replayed with the party whole 8720ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 5 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/opening-hero-death-replays.test.ts > kingdom.opening-hero-death-replays — a battle in which a hero dies is replayed > a WON battle that ends with a hero dead is not kept: nothing of it is written, who fell is named, and the same battle is owed again on new dice
+AssertionError: the Reckoning names who fell: expected undefined to deeply equal [ 'hero.base.ranger-aggressive' ]
+
+- Expected:
+[
+  "hero.base.ranger-aggressive",
+]
+
++ Received:
+undefined
+
+ ❯ test/opening-hero-death-replays.test.ts:81:57
+     79|     expect(r.outcome).toBe('heroClear')
+     80|     const { k } = write(ctx, r)
+     81|     expect(fallenOf(k), 'the Reckoning names who fell').toEqual([party…
+       |                                                         ^
+     82|     expect(k.won, 'the attempt is not kept: it is not a battle won').t…
+     83|     expect(k.heroes.map((h) => [h.xp, h.dead, h.mvp]), 'no XP, no deat…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/5]⎯
+
+ FAIL  test/opening-hero-death-replays.test.ts > kingdom.opening-hero-death-replays — a battle in which a hero dies is replayed > a battle that kills every hero does the same: nobody is written dead, the battle is offered again, and the whole party may go
+AssertionError: expected undefined to deeply equal [ 'hero.base.mage-sexy', …(2) ]
+
+- Expected:
+[
+  "hero.base.mage-sexy",
+  "hero.base.ranger-aggressive",
+  "hero.base.warrior-iron",
+]
+
++ Received:
+undefined
+
+ ❯ test/opening-hero-death-replays.test.ts:114:25
+    112|     const before = held(ctx), party = [...c.cursor.engagement!.deploye…
+    113|     const { k } = write(ctx, withDead(played(config, false), [0, 1, 2]…
+    114|     expect(fallenOf(k)).toEqual(party)
+       |                         ^
+    115|     expect(held(ctx)).toBe(before)
+    116|     expect(party.every((id) => c.roster[id]!.lifeState === 'alive'), '…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/5]⎯
+
+ FAIL  test/opening-hero-death-replays.test.ts > kingdom.opening-hero-death-replays — a battle in which a hero dies is replayed > a lost battle with one hero dead is the same replay — and is not the lost-battle replay that keeps its wounds
+AssertionError: expected undefined to deeply equal [ 'hero.base.warrior-iron' ]
+
+- Expected:
+[
+  "hero.base.warrior-iron",
+]
+
++ Received:
+undefined
+
+ ❯ test/opening-hero-death-replays.test.ts:134:25
+    132|     const r = { ...base, units: base.units.map((u) => u.side === 'hero…
+    133|     const { k } = write(ctx, r)
+    134|     expect(fallenOf(k)).toEqual([c.cursor.engagement!.deployed[2]])
+       |                         ^
+    135|     expect(held(ctx), 'nothing of the attempt is kept — not the wound …
+    136|     expect(replaysOf(ctx)).toBe(1)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/5]⎯
+
+ FAIL  test/opening-hero-death-replays.test.ts > kingdom.opening-hero-death-replays — a battle in which a hero dies is replayed > the screen says plainly why the battle is offered again and who fell — and a saved run reopened on it says the same
+AssertionError: expected '<div class="hx recap " data-outcome="…' to contain 'data-voided="1"'
+
+- Expected
++ Received
+
+- data-voided="1"
++ <div class="hx recap " data-outcome="devastating" data-won="true"><button class="mute" data-act="mute">sound on</button>
++     <div class="interstitial-overlay victory-bg"><div class="interstitial-card ">
++       <div class="result-title victory-devastating" id="rc-title">VICTORY</div>
++       <div class="party-row" id="rc-party"><div class="party-member"><div class="party-portrait healthy"></div><div class="party-name">Crimson Sorceress</div></div><div class="party-member"><div class="party-portrait dead"><span class="wound-badge">💀</span></div><div class="party-name">Hunter</div></div><div class="party-member"><div class="party-portrait healthy"></div><div class="party-name">Iron Dwarf</div></div></div>
++       
++       <div class="spotlight-container" id="rc-spot"><div class="spotlight-frame victory"></div></div>
++       <div class="hero-quote" id="rc-quote"><div class="quote-text">"Arcane superiority, demonstrated."</div><div class="quote-attribution">— Crimson Sorceress, mage</div></div>
++       <div class="stats-block" id="rc-stats">
++         <div class="stats-line"><span class="stat-label">Slain:</span> <span class="stat-value">7</span></div>
++         <div class="stats-line"><span class="stat-label">Turns:</span> <span class="stat-value">3</span><span class="stat-sep" style="margin:0 16px">|</span><span class="stat-label">XP Earned:</span> <span class="xp-value">46</span></div>
++       </div>
++       <div class="report-section" id="rc-report"><div class="report-line dead-report"><span class="report-icon">💀</span><span>Hunter — fell in battle</span></div></div>
++       <div class="action-btn-container" id="rc-btn"><button class="action-btn victory-btn" data-act="exit">Claim Rewards →</button></div>
++     </div></div>
++     <div class="skip-hint">Enter — skip · Enter again — continue</div>
++   </div>
+
+ ❯ test/opening-hero-death-replays.test.ts:157:18
+    155|     const { last } = write(ctx, withDead(played(config, true), [1]))
+    156|     const html = recapScreen(c, ctx.events, last)
+    157|     expect(html).toContain('data-voided="1"')
+       |                  ^
+    158|     expect(html).toContain(`data-fallen="${party[1]}"`)
+    159|     expect(html, 'who fell').toContain(`${fell} fell`)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/5]⎯
+
+ FAIL  test/opening-hero-death-replays.test.ts > kingdom.opening-hero-death-replays — a battle in which a hero dies is replayed > the page: a won battle a hero died in and a battle that took down everyone sent were each followed by the screen naming who fell, and replayed with the party whole
+AssertionError: expected 'opening run six: six battles from the…' to match /a battle a hero died in was not kept …/
+
+- Expected:
+/a battle a hero died in was not kept and was offered again with the party as it stood: the Bridge, won with [^;(]+ dead \(the screen named who fell; nothing written; replayed on new dice with [^;)]+ alive\); the Cavern Trail, every hero sent dead or down \([^)]+\)/
+
++ Received:
+"opening run six: six battles from the map, never the kingdom map (Week 0); one draft before every battle (1, 1, 1, 1, 1, 1): a party of 1, 2, 3, 4, 5, 6 at battles 1 to 6; six drafts of three, no class twice, Rogues and Mages offered; three specialties of its own class offered at every specialty choice (4 choices), one taken each time; the page closed on the choice and opened again showed the same three; the first hero chosen by description only and given Leadership, a positive badge and +2 Health; every later draft shown with its rolled modifiers, kept in every battle and to the end of the run, the same after the page is closed and reopened; the party six, one of each class (mage, paladin, priest, ranger, rogue, warrior); four deploy — with five or more free to fight the run asked who goes (battle 5: home Dawnblade; battle 6: home Dawnblade, Rune-Marked Ascetic, Forest Elf, The Serpent, Dwarven Brawler; battle 6 again: home Crimson Sorceress, Dawnblade), the four chosen on Equip and on the board, whoever stayed home unharmed and unpaid, the choice kept when the page is closed on it, and asked again for a lost battle; base heroes left out for no kit: none; card art on every hero card (draft 18, whoGoes 22, equip 22, victory 18, rewards 18, carrier 1, levelUp 9; heroes with no art on disk, shown blank: none); a lost battle paid no XP (the Orphanage, the Lumberjack House and the Cathedral, each lost first: every hero's XP where it was) and was offered again on new dice (seed 1, then 182577185; seed 2, then 1985308296; seed 6, then 1873843626); a replay left mid-battle reopened as the same battle to the byte; the Orphanage won paid its 20; the victory screens showed the civilians who fought, set apart from the heroes and marked unhurt, wounded or dead (the Orphanage: Orphan Child unhurt, joins, School Teacher dead; the Lumberjack House: Lumberjack unhurt, joins, Lumberjack's Wife unhurt, joins); a civilian who died (School Teacher) was marked dead and did not join; an idol kept as a battle reward (Finger of Saint Aldwyn, 1 faith outside the opening) went onto Rune-Marked Ascetic at Equip free — shown as free to equip, nothing taken from the purse — and was fielded in the next battle; an idol kept as a battle reward (Finger of Saint Aldwyn, 1 faith outside the opening) went onto Crimson Sorceress at Equip free — shown as free to equip, nothing taken from the purse — and was fielded in the next battle; item card art: 13 reward cards — 1 showed their item's card art, 12 plain and named in itemsMissing; 51 items on Equip — 8 with art, 43 plain and named in itemsMissing; the Flaming Longsword's reward card showed its card art; party Crimson Sorceress L1, Dawnblade L1, Rune-Marked Ascetic L3, Forest Elf L3, The Serpent L3, Dwarven Brawler L4; closed after battle 3 and reopened at battle 4 with the same party, items, XP and levels; battle 2 lost and offered again with the same party; a run left mid-battle (battle 4) reopens on that battle; the Bridge's item.soaked-plate.runed kept passed
+"
+
+ ❯ test/opening-hero-death-replays.test.ts:173:17
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/5]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  5 failed | 1 passed (6)
+   Start at  03:31:23
+   Duration  14.40s (transform 3.11s, setup 0ms, import 4.01s, tests 10.28s, environment 0ms)
+

@@ -17,6 +17,8 @@ import { canAfford, performSpend, type Cost } from './purse.js'
 import { listBuildings } from './build.js'
 import { slotOf, type RewardRow } from '../content/rewards.js'
 import { itemOf } from '../content/items.js'
+import { rewardTakersOf } from '../content/encounter-rewards.js'
+import { CLASSES } from '../content/classes.js'
 import { resolveShelf, forgeLevelOf, costOfItem } from './forge.js'
 import { CURRENCY_IDS } from '../content/currencies.js'
 import { SWITCHES } from '../content/switches.js'
@@ -84,6 +86,11 @@ export function whyNotEquip(campaign: CampaignState, heroId: HeroId, itemId: str
   if (!campaign.stash.includes(itemId)) return `'${itemId}' is not in the stash`
   if (displace !== undefined && !h.equipped.includes(displace)) return `'${displace}' is not worn by ${h.name}`
   const after = displace === undefined ? [...h.equipped, itemId] : [...h.equipped.filter((id) => id !== displace), itemId]
+  // kingdom.opening-sword-waits: an item its row gives to named classes is those classes' only — it may lie in the stash
+  // (waiting for its taker, or taken off), and nobody else puts it on (2026-09-28 "it only is going to help the paladin
+  // or the warrior")
+  const whose = rewardTakersOf(itemId)
+  if (whose && !h.classes.some((c) => whose.includes(c))) return `'${itemOf(itemId).name}' is for ${whose.map((c) => 'a ' + (CLASSES.find((r) => r.id === c)?.name ?? c)).join(' or ')} only`
   return whyNotFit(campaign, heroId, after) ?? whyNotPay(campaign, itemId)
 }
 
