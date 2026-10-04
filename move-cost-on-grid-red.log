@@ -1,0 +1,93 @@
+TAP version 13
+# Subtest: with the movement grid up, each hex the host says costs more than one carries that cost on its tile; a hex that costs one carries none
+not ok 1 - with the movement grid up, each hex the host says costs more than one carries that cost on its tile; a hex that costs one carries none
+  ---
+  duration_ms: 591.4723
+  type: 'test'
+  location: 'C:\\Users\\aring\\Desktop\\HBT-worker-content\\viewer\\tools\\move-cost-on-grid.test.mjs:41:1'
+  failureType: 'testCodeFailure'
+  error: 'invalid play facts: the facts must carry exactly actor, slot, reach, zoc, path, provokes, ghost, threat, targets, aim, note (and may carry endTurn, endActivation, swap, ask, moveDone)'
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    fail (eval at boot (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/move-cost-on-grid.test.mjs:20:3), <anonymous>:955:13)
+    object (eval at boot (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/move-cost-on-grid.test.mjs:20:3), <anonymous>:961:117)
+    playFacts (eval at boot (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/move-cost-on-grid.test.mjs:20:3), <anonymous>:978:5)
+    Object.setPlay (eval at boot (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/move-cost-on-grid.test.mjs:20:3), <anonymous>:49604:20)
+    TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/move-cost-on-grid.test.mjs:46:5)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1106:25)
+    Test.start (node:internal/test_runner/test:1003:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:358:17)
+  ...
+# Subtest: the number is on its tile, small and grey, and takes no pointer
+not ok 2 - the number is on its tile, small and grey, and takes no pointer
+  ---
+  duration_ms: 576.636
+  type: 'test'
+  location: 'C:\\Users\\aring\\Desktop\\HBT-worker-content\\viewer\\tools\\move-cost-on-grid.test.mjs:56:1'
+  failureType: 'testCodeFailure'
+  error: 'invalid play facts: the facts must carry exactly actor, slot, reach, zoc, path, provokes, ghost, threat, targets, aim, note (and may carry endTurn, endActivation, swap, ask, moveDone)'
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    fail (eval at boot (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/move-cost-on-grid.test.mjs:20:3), <anonymous>:955:13)
+    object (eval at boot (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/move-cost-on-grid.test.mjs:20:3), <anonymous>:961:117)
+    playFacts (eval at boot (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/move-cost-on-grid.test.mjs:20:3), <anonymous>:978:5)
+    Object.setPlay (eval at boot (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/move-cost-on-grid.test.mjs:20:3), <anonymous>:49604:20)
+    TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/move-cost-on-grid.test.mjs:58:5)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1106:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+    Test.postRun (node:internal/test_runner/test:1235:19)
+    Test.run (node:internal/test_runner/test:1163:12)
+  ...
+# Subtest: the cost is the host's word, never worked out here: none sent, none drawn; a different number sent, that number drawn
+not ok 3 - the cost is the host's word, never worked out here: none sent, none drawn; a different number sent, that number drawn
+  ---
+  duration_ms: 169.9694
+  type: 'test'
+  location: 'C:\\Users\\aring\\Desktop\\HBT-worker-content\\viewer\\tools\\move-cost-on-grid.test.mjs:73:1'
+  failureType: 'testCodeFailure'
+  error: 'invalid play facts: the facts must carry exactly actor, slot, reach, zoc, path, provokes, ghost, threat, targets, aim, note (and may carry endTurn, endActivation, swap, ask, moveDone)'
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    fail (eval at boot (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/move-cost-on-grid.test.mjs:20:3), <anonymous>:955:13)
+    object (eval at boot (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/move-cost-on-grid.test.mjs:20:3), <anonymous>:961:117)
+    playFacts (eval at boot (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/move-cost-on-grid.test.mjs:20:3), <anonymous>:978:5)
+    Object.setPlay (eval at boot (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/move-cost-on-grid.test.mjs:20:3), <anonymous>:49604:20)
+    TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/move-cost-on-grid.test.mjs:78:5)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1106:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+    Test.postRun (node:internal/test_runner/test:1235:19)
+    Test.run (node:internal/test_runner/test:1163:12)
+  ...
+# Subtest: a malformed cost is the host's error and nothing is drawn from it
+not ok 4 - a malformed cost is the host's error and nothing is drawn from it
+  ---
+  duration_ms: 158.9418
+  type: 'test'
+  location: 'C:\\Users\\aring\\Desktop\\HBT-worker-content\\viewer\\tools\\move-cost-on-grid.test.mjs:89:1'
+  failureType: 'testCodeFailure'
+  error: 'invalid play facts: the facts must carry exactly actor, slot, reach, zoc, path, provokes, ghost, threat, targets, aim, note (and may carry endTurn, endActivation, swap, ask, moveDone)'
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    fail (eval at boot (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/move-cost-on-grid.test.mjs:20:3), <anonymous>:955:13)
+    object (eval at boot (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/move-cost-on-grid.test.mjs:20:3), <anonymous>:961:117)
+    playFacts (eval at boot (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/move-cost-on-grid.test.mjs:20:3), <anonymous>:978:5)
+    Object.setPlay (eval at boot (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/move-cost-on-grid.test.mjs:20:3), <anonymous>:49604:20)
+    TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/move-cost-on-grid.test.mjs:95:5)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1106:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+    Test.postRun (node:internal/test_runner/test:1235:19)
+    Test.run (node:internal/test_runner/test:1163:12)
+  ...
+1..4
+# tests 4
+# suites 0
+# pass 0
+# fail 4
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1665.1039
