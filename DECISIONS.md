@@ -4922,3 +4922,11 @@ Ruled:
 - **The named weapons stay single unique rewards**, no series.
 - **A series item's name does not show its tier.**
 - **One page for every item type, to mark up** — yes, "but I don't want to slow down engine work": built beside the engine work, not in front of it.
+
+## 2026-10-04 — reported on the Item Ledger: items that do things the game has no mechanic for, authored by a chat and not by him
+
+Andrew, in the kingdom chat, reading the Item Ledger (https://claude.ai/artifact/MD6dZGa5TDCv9YxTWfdc5q):
+
+“Okay, I see a ton of artifacts in here, maybe items in here that were obviously authored by Claude and were not authored by me, that are doing things that are not mechanics we have in the game.   You need to review all of the items and come back. The Death Bow cannot be healed. That's not a mechanic we have.  Crossbow has a crank mechanism, not a mechanic we have.  And I just went through a couple of items.”
+
+Kept as said: **"cannot be healed" (the Death Bow) and a crossbow's crank are not mechanics the game has.** Every item is being reviewed for two things - whether each thing it does is a mechanic the engine has, and who authored the row (his dictation, or a chat) - and the findings go onto the Item Ledger for him to mark. Nothing is cut or changed until he marks it.
