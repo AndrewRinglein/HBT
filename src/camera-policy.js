@@ -41,7 +41,16 @@ export const POLICY = Object.freeze({
      nearer than the zoom at which the battle area just fills with board, so there is board beyond it on both axes to scroll
      to; the wheel pulls back no farther than that fill (viewer SWITCHES noVoidStandard) */
   FILL_ROOM: 1.25,
+  /* viewer.tutorial-overlays (engine DECISIONS.md 2026-10-04 'the opening's tutorial …'): the host's lessons. A notice with no
+     time of the host's own lasts long enough to read twice — NOTICE_BASE_MS to find it, NOTICE_WORD_MS a word (a reader's
+     quarter second, twice), never less than NOTICE_MIN_MS (viewer SWITCHES noticeTime). A look comes LOOK_ZOOM nearer than the
+     play zoom and holds LOOK_HOLD_MS unless the host says; a pointer keeps POINTER_INSET px inside the screen. */
+  NOTICE_BASE_MS: 900, NOTICE_WORD_MS: 500, NOTICE_MIN_MS: 2400,
+  LOOK_ZOOM: 1.5, LOOK_HOLD_MS: 1400,
+  POINTER_INSET: 28,
 })
+/** how long a notice stands when the host names no time: it grows with the words (viewer.tutorial-overlays) */
+export const noticeMs = words => Math.max(POLICY.NOTICE_MIN_MS, POLICY.NOTICE_BASE_MS + POLICY.NOTICE_WORD_MS * String(words).trim().split(/\s+/).filter(Boolean).length)
 export const tiltOfElevation = e => 90 - e
 export const elevationOfTilt = t => 90 - t
 /** tactical tilt limits (degrees from straight down) */

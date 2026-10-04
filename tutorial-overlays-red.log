@@ -1,0 +1,82 @@
+✖ the NOTICE: gold words across the centre of the board, one to three lines; it goes by itself after its time, sooner on a click or the host's word; one at a time (567.1053ms)
+✖ the pump waits while a notice asked to hold it is up, and goes on when it goes; a notice that does not ask holds nothing (549.6937ms)
+✖ a POINTER with the word "Zombie" sits over a named unit, follows it when it moves, and stays until cleared (166.5412ms)
+✖ pointers at the parts of the screen: an enemy's two numbers, its bars, the basic move's slot, the stamina strip, the right-hand panel, a card of the top bar, End Turn — several at once (159.0679ms)
+✖ a LOOK takes the view to a unit, nearer than the play zoom, holds, and brings it back to the earlier pose; a chain of looks comes back to where it began (155.7731ms)
+✖ a look glides as the camera's other moves do, and tells the host only when it is back (157.7166ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 0
+ℹ fail 6
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1883.6227
+
+✖ failing tests:
+
+test at tools\tutorial-overlays.test.mjs:44:1
+✖ the NOTICE: gold words across the centre of the board, one to three lines; it goes by itself after its time, sooner on a click or the host's word; one at a time (567.1053ms)
+  TypeError: v.tell is not a function
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/tutorial-overlays.test.mjs:47:15)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.start (node:internal/test_runner/test:1003:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:358:17)
+
+test at tools\tutorial-overlays.test.mjs:74:1
+✖ the pump waits while a notice asked to hold it is up, and goes on when it goes; a notice that does not ask holds nothing (549.6937ms)
+  TypeError: v.tell is not a function
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/tutorial-overlays.test.mjs:78:5)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+      at Test.postRun (node:internal/test_runner/test:1235:19)
+      at Test.run (node:internal/test_runner/test:1163:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:358:3)
+
+test at tools\tutorial-overlays.test.mjs:92:1
+✖ a POINTER with the word "Zombie" sits over a named unit, follows it when it moves, and stays until cleared (166.5412ms)
+  TypeError: v.point is not a function
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/tutorial-overlays.test.mjs:95:15)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+      at Test.postRun (node:internal/test_runner/test:1235:19)
+      at Test.run (node:internal/test_runner/test:1163:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7)
+
+test at tools\tutorial-overlays.test.mjs:120:1
+✖ pointers at the parts of the screen: an enemy's two numbers, its bars, the basic move's slot, the stamina strip, the right-hand panel, a card of the top bar, End Turn — several at once (159.0679ms)
+  TypeError: v.point is not a function
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/tutorial-overlays.test.mjs:125:8)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+      at Test.postRun (node:internal/test_runner/test:1235:19)
+      at Test.run (node:internal/test_runner/test:1163:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7)
+
+test at tools\tutorial-overlays.test.mjs:158:1
+✖ a LOOK takes the view to a unit, nearer than the play zoom, holds, and brings it back to the earlier pose; a chain of looks comes back to where it began (155.7731ms)
+  TypeError: v.look is not a function
+      at file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/tutorial-overlays.test.mjs:167:48
+      at Array.filter (<anonymous>)
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/tutorial-overlays.test.mjs:167:22)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+      at Test.postRun (node:internal/test_runner/test:1235:19)
+      at Test.run (node:internal/test_runner/test:1163:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7)
+
+test at tools\tutorial-overlays.test.mjs:199:1
+✖ a look glides as the camera's other moves do, and tells the host only when it is back (157.7166ms)
+  TypeError: v.look is not a function
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/tutorial-overlays.test.mjs:203:5)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+      at Test.postRun (node:internal/test_runner/test:1235:19)
+      at Test.run (node:internal/test_runner/test:1163:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7)

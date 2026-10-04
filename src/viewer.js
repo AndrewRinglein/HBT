@@ -48,6 +48,7 @@
    ══════════════════════════════════════════════════════════════════════════ */
 import { targetingFacts } from './targeting.js'
 import { playFacts } from './play.js'
+import { mountOverlays } from './overlays.js'
 import { mountPlayChrome } from './chrome.js'
 import { opportunityPose, animateOpportunityStep, OPPORTUNITY_STEP_MS, feetOf, heightOf } from './board.js'
 import { terrainLayer } from './terrain3d.js'
@@ -231,6 +232,8 @@ export function mountBattleViewer(root, data, opts = {}) {
      different units until the next full render (the player's move). */
   function drawActivated() { drawPortrait(V); drawBar(V); drawStam(V) }
   V.render = render
+  /* viewer.tutorial-overlays: the host's notice, pointers and look (overlays.js) */
+  const overlays = mountOverlays(V); V.overlays = overlays
   /* viewer.bubble-click-reveals: the camera's reveal, for the bubbles' click and the page tests */
   V.revealPan = (pose, hex) => revealPan(V, pose, hex); V.revealHex = hex => revealHex(V, hex); V.clickBubble = ids => clickBubble(V, ids)
   V.playCues = cues => playCues(V, cues)      // the verifier injects synthetic cues here
@@ -443,9 +446,12 @@ export function mountBattleViewer(root, data, opts = {}) {
      scheduled and nothing drains, so a host that plays stays busy — and Continue releases it. Held is not paused: the pump
      is still playing and goes on by itself. A hand step, a seek, a fault and dispose drop the hold and the pop-up with it
      (viewer SWITCHES afflictionHold, afflictionSeek). */
-  V.holdPump = () => { V.hold = true; if (V.timer != null) { clearTimeout(V.timer); V.timer = null } }
-  V.releasePump = () => { if (!V.hold) return; V.hold = false; if (!disposed && !V.invalid && V.playing && V.timer == null) step() }
-  function dropHold() { V.hold = false; closeAffliction(V) }
+  /* viewer.tutorial-overlays: a hold has a holder — the affliction pop-up, the host's notice — and the pump goes on only when
+     every holder has let go (was one flag: the pop-up's Continue would have let the pump run on under a notice still up) */
+  V.holds = new Set()
+  V.holdPump = (who = 'affliction') => { V.holds.add(who); V.hold = true; if (V.timer != null) { clearTimeout(V.timer); V.timer = null } }
+  V.releasePump = (who = 'affliction') => { if (!V.holds.delete(who) || V.holds.size) return; V.hold = false; if (!disposed && !V.invalid && V.playing && V.timer == null) step() }
+  function dropHold() { V.holds.clear(); V.hold = false; closeAffliction(V); overlays.dropped() }
   function step() {
     V.timer = null
     if (V.invalid || V.hold) return
@@ -523,6 +529,14 @@ export function mountBattleViewer(root, data, opts = {}) {
     inspect(id) { V.view.inspectId = id; render() },
     /* viewer.xcom-camera: the map centred on a unit at the standard zoom (the host's proposed hero) */
     centre(id) { centreOn(V, id) },
+    /* viewer.tutorial-overlays (engine DECISIONS.md 2026-10-04 'the opening's tutorial …'): what the host's lessons are made of —
+       drawn here, decided by the host (overlays.js). tell: a gold notice across the board's centre that goes by itself;
+       point: an arrow with a word at a unit, a hex, a bar slot, a number, a bar, the panel, a card, a button; look: the view
+       taken to a unit or a hex, nearer, and back. Each tells the host when it is done (onDone). */
+    tell(words, o) { if (disposed) throw new Error('viewer disposed'); return overlays.tell(words, o) }, clearTell() { return overlays.clearTell() },
+    point(target, o) { if (disposed) throw new Error('viewer disposed'); return overlays.point(target, o) }, unpoint(id) { return overlays.unpoint(id) },
+    look(target, o) { if (disposed) throw new Error('viewer disposed'); return overlays.look(target, o) }, lookBack(o) { return overlays.lookBack(o) },
+    get overlays() { return overlays.state },
     /* viewer.bubble-click-reveals (engine DECISIONS.md 2026-10-03 'clicking an off-screen bubble selects the unit and slides the
        screen just far enough to show its hex'): the view slid the least distance that shows a unit's hex, or a hex — the zoom,
        the turn and the tilt kept, never centred, never past the board's edge; true when the view moved */
@@ -558,7 +572,7 @@ export function mountBattleViewer(root, data, opts = {}) {
     },
     /* viewer.affliction-pop-up: whether the first-affliction pop-up is holding the pump */
     get held() { return V.hold },
-    dispose() { disposed = true; dropHold(); stopGlide(V); chrome.dispose(); clearTargeting(); V.play = null; V.heldPlay = null; cancelBurst(); cancelOpportunityLabel(); terrain.dispose(); pause(); cancelBeats(V); unbindCamera(); for (const E of V.layers.UEL.values()) if (E.walk) E.walk.cancel(); root.innerHTML = '' },
+    dispose() { disposed = true; dropHold(); overlays.dispose(); stopGlide(V); chrome.dispose(); clearTargeting(); V.play = null; V.heldPlay = null; cancelBurst(); cancelOpportunityLabel(); terrain.dispose(); pause(); cancelBeats(V); unbindCamera(); for (const E of V.layers.UEL.values()) if (E.walk) E.walk.cancel(); root.innerHTML = '' },
     _V: V,
   }
   /* first frame is already tilted; enable the half-speed camera glide after it */

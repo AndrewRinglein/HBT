@@ -1334,13 +1334,14 @@ export function applyCam(V, opts = {}) {
      one acting — the board's own acting unit, in a replay as in a game */
   const acting = S.activeId != null ? S.U[S.activeId] : null
   /* viewer.turn-taking: every new Activation, the same unit's again included (the fold's count of them) */
-  if (!fit && !opts.focus && !opts.pan && acting && acting.life === 'standing' && (view.centredOn !== S.activeId || view.centredAt !== S.activations) && POS[acting.hex]) {
+  /* viewer.tutorial-overlays: while the host's look has the view (view.looking) the Activation's centring waits for it to come back */
+  if (!fit && !opts.focus && !opts.pan && !view.looking && acting && acting.life === 'standing' && (view.centredOn !== S.activeId || view.centredAt !== S.activations) && POS[acting.hex]) {
     view.centredOn = S.activeId; view.centredAt = S.activations; opts = { ...opts, focus: POS[acting.hex] }
     /* the first activation's centring is where the battle opens: the starting view a reset returns to */
     if (!view.homeCentred) { view.homeCentred = true; view.home = null } }
   /* viewer.bubble-click-reveals: the slid view's hold — over once anything has played, an aim is drawn or the view is focused */
   if (view.revealed && (view.revealed.cursor !== V.cursor || S.AIM || opts.focus || fit)) view.revealed = null
-  const held = !!view.revealed && !opts.pan
+  const held = (!!view.revealed || !!view.looking) && !opts.pan
   if (fit) { /* the whole board, centred; the remembered camera is not touched */ }
   else if (opts.pan) { if (f.x == null) { f.x = bw / 2; f.y = bh / 2 } f.x += opts.pan.x; f.y += opts.pan.y * k; bound() }
   else if (opts.focus) { f.x = opts.focus.px; f.y = opts.focus.py * k; bound() }      // Focus selected unit: centred, on purpose

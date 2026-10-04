@@ -792,3 +792,42 @@ slide over until they're visible."). `src/board.js` (`drawEdges`: the bubble is 
 | `bubbleHolds` | The camera keeps the acting unit in view on every redraw; a slide to a far unit would be pulled straight back at the next click. | **The slid view holds until the board next plays an event, an aim is drawn, or the camera is sent somewhere (centred on a unit, a new Activation).** A pan by the pointer at the screen's edge moves it freely meanwhile. | "Slide over until they're visible" — and stay, or there was nothing to see. | Default — 2026-10-04 |
 | `bubbleEdgeHex` | FOUND: a hex on the board's first or last column, in the upper rows, cannot be brought wholly inside — the camera's bound (viewer.camera-no-void) keeps the view's widest line at the board's edge, and nearer rows show less width. The Orphanage's first Zombie (column 19, row 3) ends with its hex's middle at the screen's very edge: its nearer half and half its figure show. | **The slide goes as far as the camera may and stops; the bound is not broken for a reveal.** | 2026-10-03 'the camera never shows white space'. For the home chat: whether the bound should let a last-column hex come in whole is the camera's question (its bound is a rectangle round a view that is not one), not this item's. | Default — 2026-10-04 |
 | `bubbleNothingSent` | Does the click reach the host, as a click on the unit's body does (which may begin a hero or aim at an enemy)? | **No: the unit becomes the unit looked at and nothing is offered to the host — no play event, no command.** | The item: "no Activation changed and no command sent". | Default — 2026-10-04 |
+
+## viewer.tutorial-overlays — 2026-10-04
+
+Engine DECISIONS.md 2026-10-04 'the opening's tutorial: the first hero's class line, no map before battle 1, the Orphanage's
+lessons, the camera shows what arrives, new enemies are named, a closer start' (Andrew: "there should be a notification message
+across the center that is gold and easy to see" / "the gold message doesn't stay up. It only lasts for a time." / "The camera
+zooms onto the civilians, and an arrow points at them and says \"Civilians.\"" / "we're going to point an arrow over at the
+move button" / "There are two arrows pointing at the two base enemy numbers." / "It points to the right and says you can see all
+the details about this enemy on the right."). `src/overlays.js` (the notice, the pointers, the look), `src/viewer.js` (the
+calls, the pump's holders), `src/board.js` (`applyCam`: a look's hold), `src/camera-policy.js` (the numbers),
+`src/styles.css`; probes `tools/tutorial-overlays.test.mjs`, `test/viewer.tutorial-overlays.test.ts`, kingdom
+`tools/tutorial-overlays.verify.mjs`; the red is `tutorial-overlays-red.log`. Laid out and seen in real Chrome on the
+candidate sandbox (kingdom `tools/tutorial-overlays.shot.mjs`: every pointer's tip on its target's edge and inside the screen,
+the notice centred on the board in gold; two screenshots).
+
+WHAT A HOST CALLS (on the mounted viewer, beside `centre`, `pan`, `peek`, `resetView`; in the kingdom: `window.__sandbox.viewer`
+and the battle screen's own handle):
+
+    tell(words, {ms, hold, onDone})      words: a string or one to three of them. Returns {ms, clear()}. onDone(why): 'time' ·
+                                         'click' · 'cleared' · 'replaced' · 'dropped'. hold: true — the pump waits under it.
+    clearTell()
+    point(target, {word, side})          target: {unit} · {unit, part: 'move'|'attack'|'health'|'protection'} · {hex} ·
+                                         {action: id} · {card: unit} · {ui: 'panel'|'stamina'|'action-bar'|'end-turn'|
+                                         'end-activation'} · {selector: css}. Returns {id, target, clear()}.
+    unpoint(id?)                         one pointer, or all of them
+    look(target, {ms, back, onDone})     target: {unit} · {hex}. back: false leaves the view there (onDone 'held') for the
+                                         next look; lookBack({onDone}) returns it. Returns {hex, cancel()}.
+    overlays                             read-only: what stands now (the notice's lines, each pointer's target)
+
+| Switch | Question | Default | Reason | Status |
+|---|---|---|---|---|
+| `noticeTime` | "A default that grows with the length of the words (the read: long enough to read twice)." | **900 ms to find it, 500 ms a word (a quarter second a word, twice), never under 2.4 s — `camera-policy.js` `noticeMs`. A five-word line stands 3.4 s, a twenty-word notice 10.9 s.** The host's own `ms` outranks it. | A plain reader takes about a quarter second a word. A look for Andrew to judge. | Default — 2026-10-04 |
+| `noticeName` | The viewer already has `notice(text)` — the host's small line over the board (viewer.auto-end-no-actions). What is the gold one called? | **`tell(words, opts)`.** `notice(text)` is unchanged. | Two different things; renaming the landed call would break its host. | Default — 2026-10-04 |
+| `noticeHold` | "While it is up the pump can be made to wait, as it waits on its other cues." | **`hold: true` holds the pump as the affliction pop-up does (held, not paused: a host that plays stays busy); the notice's end — its time, a click, the host — lets it go. The pump's hold now has holders: it goes on only when every holder has let go.** A hand step, a seek or a fault drops the hold and the notice with it. | One flag would let the pop-up's Continue run the battle on under a notice still up. | Default — 2026-10-04 |
+| `pointerTargets` | "The End Turn and Reset buttons" — the battle screen has no Reset button of its own. | **`{ui: 'end-turn'}` and `{ui: 'end-activation'}` name the screen's two; `{selector}` points at anything else on the page by CSS selector (a host's own Reset).** | The viewer cannot name a button it does not draw. | Default — 2026-10-04 |
+| `pointerSides` | Which way does an arrow come from? | **From above, pointing down — except the right-hand panel (from the left, pointing right: "It points to the right") and a card of the top bar (from below). The host may say `side`.** The word is the arrow's label: on gold, wrapping past 300 px. | The things pointed at sit low on the screen or on the board; the panel is at its right edge. | Default — 2026-10-04 |
+| `pointerOnScreen` | "Never leaves the screen." | **The whole pointer — word and arrow — stays `POINTER_INSET` (28 px) inside: inside the battle area for a unit or a hex, inside the screen for a part of it. A target outside keeps its pointer at the edge on the way to it, a little faded.** A target that is not drawn at all (a number the unit does not show) hides its pointer until it is. | A pointer at a unit off the board would otherwise sit over the bars. | Default — 2026-10-04 |
+| `lookZoom` | "Closer than the play zoom, holds for a time." | **1.5 times the play zoom (`LOOK_ZOOM`), held 1.4 s unless the host says (`LOOK_HOLD_MS`); the camera's own glide there and back; the Activation's own centring waits until the look is over.** A chain of looks returns to the view before the FIRST. | The wheel's nearest is 1.8; 1.5 shows a unit and its neighbours. | Default — 2026-10-04 |
+| `lookBound` | A look at a unit in the board's upper rows cannot centre it: the camera never shows past the board's edge. | **The view goes as near to centring it as the bound allows; the unit is in view, above the middle.** | 2026-10-03 'the camera never shows white space'. The Orphanage's civilians stand in rows 1 and 2: seen in Chrome, they show well. | Default — 2026-10-04 |

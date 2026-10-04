@@ -713,3 +713,29 @@ html,body{margin:0;background:#08090b;color:var(--ink);
 .afflSub{margin:6px 0 3px;color:#b9b09a;font-size:15px}
 .afflNone{color:var(--dim)}
 #afflFoot{display:flex;justify-content:flex-end;margin-top:6px}
+
+/* ── THE HOST'S LESSONS (viewer.tutorial-overlays, 2026-10-04; engine DECISIONS.md 2026-10-04 'the opening's tutorial …') ──
+   the notice: "a notification message across the center that is gold and easy to see"; it takes a click (to clear it sooner),
+   the layer of pointers takes none. Screen space, outside the 3D scene. */
+#tutNotice{position:absolute;left:50%;top:46%;transform:translate(-50%,-50%);z-index:58;max-width:78%;padding:16px 34px;
+  text-align:center;cursor:pointer;pointer-events:auto;border-radius:4px;
+  background:linear-gradient(180deg,rgba(26,20,8,.93),rgba(14,11,5,.93));border:1px solid rgba(224,185,94,.75);
+  box-shadow:0 0 0 1px rgba(0,0,0,.6),0 10px 44px rgba(0,0,0,.75),0 0 46px rgba(224,185,94,.22)}
+#tutNotice b{display:block;font-family:Spectral,serif;font-size:34px;line-height:1.22;font-weight:600;color:var(--gold);
+  letter-spacing:.3px;text-shadow:0 0 22px rgba(224,185,94,.5),0 2px 3px rgba(0,0,0,.9)}
+#tutNotice b+b{margin-top:4px;font-size:27px}
+#tutLayer{position:absolute;inset:0;z-index:90;pointer-events:none;overflow:hidden}
+.tutPtr{position:absolute;display:flex;align-items:center;gap:5px;pointer-events:none;filter:drop-shadow(0 2px 5px rgba(0,0,0,.85))}
+.tutPtr.tut-top{flex-direction:column;transform:translate(-50%,-100%)}
+.tutPtr.tut-bottom{flex-direction:column-reverse;transform:translate(-50%,0)}
+.tutPtr.tut-left{flex-direction:row;transform:translate(-100%,-50%)}
+.tutPtr.tut-right{flex-direction:row-reverse;transform:translate(0,-50%)}
+.tutWord{font:700 17px/1.15 'Barlow Semi Condensed',sans-serif;letter-spacing:.04em;color:#1a1408;background:var(--gold);
+  padding:4px 11px;border-radius:3px;max-width:300px;text-align:center}
+.tutArrow{display:block;width:0;height:0;border:13px solid transparent;animation:tutBob .9s ease-in-out infinite}
+.tut-top .tutArrow{border-top-color:var(--gold);border-bottom-width:0;--bx:0;--by:-7px}
+.tut-bottom .tutArrow{border-bottom-color:var(--gold);border-top-width:0;--bx:0;--by:7px}
+.tut-left .tutArrow{border-left-color:var(--gold);border-right-width:0;--bx:-7px;--by:0}
+.tut-right .tutArrow{border-right-color:var(--gold);border-left-width:0;--bx:7px;--by:0}
+.tutPtr.tutEdge{opacity:.8}
+@keyframes tutBob{0%,100%{transform:translate(0,0)}50%{transform:translate(var(--bx),var(--by))}}
