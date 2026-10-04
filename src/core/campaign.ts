@@ -92,7 +92,7 @@ export type Cursor = {
   prologue: number | null
   /**
    * The opening: how many times the battle on `prologue` has been offered again — a lost one that is replayed
-   * (kingdom.opening-replay-rules, 2026-10-03: "New dice."). Its seed takes this count with the battle's number
+   * (kingdom.opening-replay-rules, 2026-10-03: "New dice."), or one a hero died in (kingdom.opening-hero-death-replays). Its seed takes this count with the battle's number
    * (core/opening.ts openingBattleSeedOf), so each replay is new dice and a saved replay reopens as itself. Absent is
    * none (a run saved before the count existed reads as none); back to none when the opening moves on.
    */

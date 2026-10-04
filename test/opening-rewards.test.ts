@@ -14,7 +14,7 @@ import { performAdvancePrep } from '../src/core/prep.js'
 import { createSandbox, sandboxResult } from '../src/core/sandbox.js'
 import { makeBattleState } from '../src/core/seam.js'
 import { withUnitFate } from '../src/core/result.js'
-import { applyBattleResult, performExitBattle } from '../src/core/reckoning.js'
+import { applyBattleResult, performExitBattle, battleXpOf } from '../src/core/reckoning.js'
 import { listLevelUps, viewLevelUp, performLevelUp, performLeaveLevelUp, listRewardOffers, canTakeReward, performTakeReward } from '../src/core/rewards.js'
 import { setCursor, type Ctx } from '../src/core/mutate.js'
 import type { CampaignState, Engagement } from '../src/core/campaign.js'
@@ -119,8 +119,17 @@ describe('kingdom.opening-rewards — the opening pays as ruled', () => {
     const { result } = playIt(ctx2, 1)
     expect(result.outcome, 'the battle the dead hero is set in is a won one').toBe('heroClear')
     const oneDead = withUnitFate(result, 'hero', 1, { lifeState: 'dead' })
+    // Law 10, 2026-10-04 (kingdom.opening-hero-death-replays; engine DECISIONS.md 2026-10-03 'the opening run: a battle in which a
+    // hero dies is replayed': "If a hero dies, it should be replayed."). This read
+    //   const { reckoning: k2 } = decide(ctx2, oneDead)
+    //   expect(k2.heroes.map((h) => h.xp)).toEqual([20, 0, 20])
+    // — the Reckoning of a won Orphanage a hero died in: the living paid, the dead written dead. That battle is now not
+    // kept (it is fought again), so its Reckoning pays nobody and names who fell. The rule the old line held — the row's
+    // fixed 20 to each who lives, nothing to the dead — is the XP formula's still, and is held of it directly.
+    expect(battleXpOf(ORPHANAGE, oneDead).map((h) => h.xp), 'the formula: 20 to each who lives, nothing to the dead').toEqual([20, 0, 20])
     const { reckoning: k2 } = decide(ctx2, oneDead)
-    expect(k2.heroes.map((h) => h.xp)).toEqual([20, 0, 20])
+    expect(k2.fallen, 'a hero died in the opening battle: the attempt is not kept').toEqual([DEPLOY[1]])
+    expect(k2.heroes.map((h) => [h.xp, h.dead])).toEqual(DEPLOY.map(() => [0, false]))
   })
 
   it('a hero wounded in battle 1 enters battle 2 wounded — the level is fielded as the engine\'s Wounded', () => {

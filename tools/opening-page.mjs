@@ -111,9 +111,12 @@ const numbersOf=text=>Object.fromEntries(text.split(',').map(p=>{const [k,n]=p.s
 export const STRONG_PARTY={source:'test.strong-party',stats:{maxHp:500,armor:50,resist:50,strength:30,precision:30,magic:30,spirit:30,accuracy:100,movement:20,reach:40}}
 export const HELD_PARTY={source:'test.strong-party',stats:{maxHp:500,armor:50,resist:50},turnCap:1}
 /* the sandbox the page fields for `config`, its party's heroes given `as`'s stat mods (and its turn cap) */
-function fieldedAs(config,as){
+/* `weak` (kingdom.opening-hero-death-replays): the party's heroes at these places are given, instead, ONE mod — Health down
+   to 1 (the same seam, the same source) — so the battle kills them; never a content row */
+function fieldedAs(config,as,weak=[]){
  const base=E.createSandbox(structuredClone(config)),add=Object.entries(as.stats).map(([stat,n])=>({stat,add:n,source:as.source}))
- const heroMods=base.setup.heroes.map((_,i)=>{const own=base.setup.heroMods?.[i];return {...(own??{}),stats:[...(own?.stats??[]),...add]}})
+ const frail=i=>{const u=base.ctx.state.units.find(x=>x.uid===base.setup.heroUids[i]);return [{stat:'maxHp',add:1-u.maxHp,source:as.source}]}
+ const heroMods=base.setup.heroes.map((_,i)=>{const own=base.setup.heroMods?.[i];return {...(own??{}),stats:[...(own?.stats??[]),...(weak.includes(i)?frail(i):add)]}})
  const setup={...base.setup,heroMods,...(as.turnCap?{cfg:{...(base.setup.cfg??{}),turnCap:as.turnCap}}:{})},ctx=E.createBattle(setup)
  return {...base,setup,ctx,policy:E.playerPolicy(ctx)}
 }
@@ -126,11 +129,22 @@ function fieldedAs(config,as){
    seed; if no civilian has died by Turn 12 the driver stops (playedOut) */
 const CIVILIAN_FALLS_BY_TURN=12
 const civilianDead=s=>s.ctx.state.units.some(u=>u.side==='hero'&&!s.setup.heroUids.includes(u.uid)&&u.lifeState==='dead')
-function playOut(s,how){
+/* 'hero-falls' (kingdom.opening-hero-death-replays, 2026-10-04) — a battle the test means to end WITH HEROES DEAD: the
+   heroes at `fall` are fielded frail (Health 1, fieldedAs) and the rest strong; the player's side stands idle until every
+   frail hero has died, and then the engine's AI plays everyone — the strong heroes win it (a WON battle a hero died
+   in), or, every hero sent being frail, nobody is left and the battle is lost. One battle, the Engagement's own seed;
+   if the frail heroes are not dead by Turn 25 the driver stops (settledAs) */
+const HERO_FALLS_BY_TURN=25
+const heroesDead=(s,fall)=>fall.every(i=>s.ctx.state.units.find(u=>u.uid===s.setup.heroUids[i])?.lifeState==='dead')
+/* (when EVERY hero sent is to fall the battle ends itself the moment the last of them is down — the engine's wipe — with
+   those already bled out dead and the last ones down: that is what "a battle that kills the party" is, and the driver
+   holds it to at least one dead and nobody standing) */
+function playOut(s,how,fall=[]){
  if(how==='ai'){E.runBattle(s.ctx);return}
  E.advanceSandbox(s)
  for(let i=0;i<50000&&!s.ctx.state.outcome;i++){const ctx=s.ctx,at=ctx.battleCursor?.at,seq=ctx.state.seq
   if(how==='civilian-falls'&&at==='selecting'&&(civilianDead(s)||ctx.state.turn>CIVILIAN_FALLS_BY_TURN)){s.policy={humanUnitUids:[]};E.advanceSandbox(s);if(!s.ctx.state.outcome)E.runBattle(s.ctx);return}
+  if(how==='hero-falls'&&at==='selecting'&&(heroesDead(s,fall)||ctx.state.turn>HERO_FALLS_BY_TURN)){s.policy={humanUnitUids:[]};E.advanceSandbox(s);if(!s.ctx.state.outcome)E.runBattle(s.ctx);return}
   let r=null
   if(at==='selecting')r=E.commandSandbox(s,{kind:'select-activation',unitUid:E.sandboxActivationChoices(s)[0].uid,expectedSeq:seq})
   else if(at==='acting')r=E.commandSandbox(s,{kind:'end-cycle',actor:ctx.battleCursor.actor,expectedSeq:seq})
@@ -145,9 +159,20 @@ export function playedOut(config,won){return settledAs(config,won,{})}
    until one of the encounter's own hero-side units has died, then the engine's AI plays everyone. The same one battle,
    on the Engagement's own seed; if no civilian dies the driver stops */
 export function playedOutCivilianFalls(config){return settledAs(config,true,{civilianFalls:true})}
+/* kingdom.opening-hero-death-replays: … or ended WITH THE HEROES AT `fall` DEAD (playOut 'hero-falls'; their places in the
+   party sent): won by the rest of the party when anybody is left, lost when every hero sent was to fall. The same one
+   battle, on the Engagement's own seed; if they do not die, or the battle does not end as meant, the driver stops */
+export function playedOutHeroFalls(config,fall){
+ if(!fall.length||fall.some(i=>!(i in config.heroes)))throw Error('playedOutHeroFalls: name the places, in the party sent, of the heroes who are to fall')
+ return settledAs(config,fall.length<config.heroes.length,{heroFalls:[...fall]})
+}
 function settledAs(config,won,o){
- const how=won?(o.civilianFalls?'civilian-falls':'ai'):'idle',s=fieldedAs(config,won?STRONG_PARTY:HELD_PARTY);playOut(s,how)
- const r=E.sandboxResult(s),party=r.units.filter(u=>u.side==='hero'&&u.role===undefined)
+ const fall=o.heroFalls??[]
+ const how=fall.length?'hero-falls':won?(o.civilianFalls?'civilian-falls':'ai'):'idle',s=fieldedAs(config,won||fall.length?STRONG_PARTY:HELD_PARTY,fall);playOut(s,how,fall)
+ const r=E.sandboxResult(s),party=r.units.filter(u=>u.side==='hero'&&u.role===undefined&&!fall.includes(u.index))
+ const everyone=fall.length===config.heroes.length,fell=r.units.filter(u=>u.side==='hero'&&u.role===undefined&&fall.includes(u.index))
+ const alive=everyone?(fell.some(u=>u.lifeState==='dead')?fell.filter(u=>u.lifeState==='standing'):fell):fell.filter(u=>u.lifeState!=='dead')
+ if(alive.length)throw Error(`${config.encounterId} on seed ${config.seed}: meant to end with ${fall.map(i=>config.heroes[i]).join(', ')} dead — ${alive.map(u=>config.heroes[u.index]+' is '+u.lifeState).join(', ')} at the end (Turn ${r.turns}); the driver settles one battle and searches for none`)
  if((r.outcome==='heroClear')!==won)throw Error(`${config.encounterId} on seed ${config.seed}: meant to be ${won?'won by the strong party':'lost by the party held idle'}, it ended '${r.outcome}' on Turn ${r.turns} — the driver settles one battle and searches for none (kingdom.page-test-strong-party)`)
  if(o.civilianFalls&&!r.units.some(u=>u.side==='hero'&&u.role!==undefined&&u.lifeState==='dead'))throw Error(`${config.encounterId} on seed ${config.seed}: meant to be won with a civilian dead — none had died by Turn ${CIVILIAN_FALLS_BY_TURN} with the player's side standing idle; the driver settles one battle and searches for none`)
  const hurt=party.filter(u=>u.lifeState!=='standing'||u.downed||u.stood)
@@ -530,6 +555,45 @@ export function openingPage(page,search,store){
   const over=byId('lu-specialty');assert.ok(over,`${label}: ${id}'s level-up sheet asks for its specialty`)
   return {id,offered:threeOffered(over,id,label)}
  }
+ /* kingdom.opening-hero-death-replays (engine DECISIONS.md 2026-10-03 'the opening run: a battle in which a hero dies is
+    replayed': "If a hero dies, it should be replayed." · "6 offer replay"): the battle on the board settled WITH THE
+    HEROES AT `fall` DEAD (playedOutHeroFalls — won by the others, or lost when everyone sent falls), then its reckoning:
+    the screen that follows names who fell and says the battle is not kept and is fought again; NOTHING of the attempt
+    is written — the roster (every hero alive, with the XP, wounds, levels and items it had), the stash, the purse, the
+    losses counted, the battle owed — only the replay is counted; no reward, no rescue; and its one way on goes back to
+    the map. Returns who fell */
+ function fallOut(fall,label){
+  const e=camp().cursor.engagement,replays=camp().cursor.replays??0,battle=camp().cursor.prologue
+  const held=()=>JSON.stringify({roster:camp().roster,stash:camp().stash,purse:camp().purse,renown:camp().renown,losses:camp().losses})
+  const before=held(),all=fall.length===e.deployed.length
+  const {save,result,seed}=playedOutHeroFalls(handle.session.config,fall)
+  /* who fell: the heroes the battle left dead — every one named when some of the party is to fall; when everyone sent is
+     to fall, those dead when the last of them went down (the rest are down, and the battle is lost) */
+  const sent=result.units.filter(u=>u.side==='hero'&&u.role===undefined),fallen=sent.filter(u=>u.lifeState==='dead').map(u=>e.deployed[u.index])
+  assert.ok(fallen.length>=1,label+': a hero died');if(!all)assert.deepEqual(fallen,fall.map(i=>e.deployed[i]),label+': the heroes meant to fall are the dead')
+  else assert.ok(sent.every(u=>u.lifeState!=='standing'),label+': nobody sent is left standing')
+  w.document.getElementById('transferText').value=save;v.click('import');settle()
+  assert.equal(handle.session.ctx.state.outcome==='heroClear',!all,`${label}: the battle ends ${all?'lost, everyone sent dead or down':'WON, with a hero dead'}`)
+  v.click('reckon');wait(2500)
+  assert.ok(shown('campaign'),label+': the screen after the battle is shown');const recap=byId('campaign').querySelector('.recap')
+  assert.ok(recap,label+': the screen');assert.equal(recap.dataset.voided,'1',label+': it is the screen of a battle not kept');assert.equal(recap.dataset.won,'false')
+  assert.equal(recap.dataset.fallen,fallen.join(','),label+': it names who fell')
+  for(const id of fallen)assert.ok(recap.textContent.includes(camp().roster[id].name),`${label}: ${camp().roster[id].name} is named`)
+  assert.match(recap.textContent,/ fell/,label+': it says they fell');assert.match(recap.textContent,/not kept/,label+': it says the battle is not kept');assert.match(recap.textContent,/fought again/,label+': and that it is fought again')
+  const cards=recap.querySelectorAll('.fell-member')
+  assert.deepEqual(cards.map(c=>c.dataset.hero),[...e.deployed],label+': the party who went is shown');assert.deepEqual(cards.filter(c=>c.dataset.fell==='1').map(c=>c.dataset.hero),fallen,label+': the fallen are marked')
+  for(const c of cards)showsArt(c.querySelectorAll('.party-portrait')[0],c.dataset.hero,label+': who fell',null)
+  assert.equal(recap.querySelectorAll('.civilian-member').length,0);assert.doesNotMatch(recap.textContent,/Claim Rewards|XP Earned/,label+': nothing is claimed, nothing earned')
+  const on=recap.querySelectorAll('[data-act=exit]');assert.equal(on.length,1,label+': one way on');assert.match(on[0].textContent,/again/i,label+': it offers the battle again')
+  /* nothing of that attempt is kept */
+  assert.equal(held(),before,label+': the roster, the stash, the purse and the losses are what they were before the battle')
+  for(const id of e.deployed)assert.equal(camp().roster[id].lifeState,'alive',`${label}: ${id} is alive on the roster`)
+  assert.equal(camp().cursor.rewardOffer,null,label+': no reward is offered');assert.equal(camp().ended,null,label+': the run goes on')
+  assert.deepEqual([camp().cursor.prologue,camp().cursor.replays],[battle,replays+1],label+': the same battle is owed, and the replay is counted')
+  v.click('exit');wait(100)
+  assert.equal(camp().cursor.step,'open',label+': back to the map — never left with nothing to click');assert.ok(shown('conquest'),label+': the map is shown')
+  return {e,result,seed,fallen,all}
+ }
  /* every LEVEL UP the rewards page offers, through the level-up sheet; the specialty chosen where one is owed */
  function levelUps(label){
   for(let guard=0;guard<12;guard++){
@@ -576,5 +640,5 @@ export function openingPage(page,search,store){
   return buttons.map(b=>b.dataset.id)
  }
 
- return {get lastOffer(){return lastOffer},v,w,root,handle,store:v.store,camp,byId,shown,heroIds,civilianIds,settle,wait,readMap,draft,freeToFight,whoGoes,deployStands,send,bringHome,toEquip,equipThenFight,onTheBattle,fightOut,levelUps,specialtyOffer,takeReward,carriers}
+ return {get lastOffer(){return lastOffer},v,w,root,handle,store:v.store,camp,byId,shown,heroIds,civilianIds,settle,wait,readMap,draft,freeToFight,whoGoes,deployStands,send,bringHome,toEquip,equipThenFight,onTheBattle,fightOut,fallOut,levelUps,specialtyOffer,takeReward,carriers}
 }

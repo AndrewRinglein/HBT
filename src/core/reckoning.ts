@@ -85,6 +85,14 @@ export type Reckoning = {
   lose: TerritoryId | null
   /** What the purse receives — from the payout rows, so "only Conquer pays Salvage" is data. */
   grants: Grant[]
+  /**
+   * kingdom.opening-hero-death-replays: the drafted heroes who DIED in this attempt, when the battle is one that is fought
+   * again (its rewards row: `replayed`). Present, the attempt is NOT KEPT: `won` is false whatever the battle's outcome,
+   * every hero's row proposes no change (no XP, no wound, no death), nothing is paid, claimed or offered — the writer
+   * writes nothing of it, counts the replay, and the same battle is owed again on new dice. Absent: nobody died, or the
+   * battle is not one that is replayed.
+   */
+  fallen?: HeroId[]
 }
 
 /** The XP a row's kills pay — each victim's tier priced by the engine's XP_BY_TIER; an unnamed kill or an untiered victim at the lowest tier. */
@@ -156,6 +164,25 @@ export function resolveReckoning(campaign: CampaignState, engagement: Engagement
   const kind = engagementKindOf(engagement.kind)
   resolveBattleQuest(campaign, engagement)
   const won = result.outcome === 'heroClear'
+  // kingdom.opening-hero-death-replays — ruled 2026-10-03 (Andrew, engine/DECISIONS.md 'the opening run: a battle in which a
+  // hero dies is replayed': "If a hero dies, it should be replayed." · "Battle: they died as a replayed" · 'the opening
+  // run, audited' question 6: "6 offer replay"): in a battle that is fought again when lost (its rewards row), a drafted
+  // hero's death — won or lost, one hero or all — is not written. The attempt is not kept: nobody's XP, wound or life
+  // moves, nothing is paid or offered, and the same battle is owed again. One path with the lost-battle replay: the
+  // Reckoning is a battle not won (performResolvePrologue counts the replay; new dice — kingdom.opening-replay-rules).
+  // A civilian's death is not this (2026-09-28: its own punishment); a hero still turned when a battle is lost is lost,
+  // as ruled 2026-10-02 — that is not a death in the battle (kingdom SWITCHES.md deathReplayTurned).
+  const fallen = heroesFallenOf(engagement, result)
+  if (fallen.length) {
+    return {
+      engagementId: engagement.id, won: false, renown: 0, losses: 0, claim: null, lose: null, grants: [], fallen,
+      heroes: engagement.deployed.map((heroId) => {
+        const hero = campaign.roster[heroId]
+        if (!hero) throw new Error(`${engagement.id}: deployed hero '${heroId}' is not on the roster`)
+        return { heroId, xp: 0, wound: hero.wound, dead: false, mvp: false }
+      }),
+    }
+  }
   // fix.opening-levels (engine, 2026-10-02): the XP is battleXpOf's and the MVP mvpOf's — the one formula, read here too
   const xps = battleXpOf(engagement.id, result)
 
@@ -206,6 +233,20 @@ export function resolveReckoning(campaign: CampaignState, engagement: Engagement
 }
 
 /**
+ * kingdom.opening-hero-death-replays: the deployed heroes who died in this battle — the result's roster rows left dead —
+ * when the battle is one that is fought again (content/encounter-rewards.ts `replayed`: the opening's six); none
+ * otherwise. In deployment order. Pure.
+ */
+export function heroesFallenOf(engagement: Pick<Engagement, 'id' | 'deployed'>, result: EngagementResult): HeroId[] {
+  if (!(encounterRewardOf(engagement.id)?.replayed ?? false)) return []
+  return result.units.filter((u) => u.side === 'hero' && u.role === undefined && u.lifeState === 'dead').map((u) => {
+    const heroId = engagement.deployed[u.index]
+    if (!heroId) throw new Error(`${engagement.id}: result names hero row ${u.index} but only ${engagement.deployed.length} were deployed`)
+    return heroId
+  })
+}
+
+/**
  * THE ONE WRITER. Refuses before it writes anything (Law 9): the cursor must
  * be at the battle with a result set, the result must validate against the
  * Engagement, and the Reckoning must be for this Engagement. Then it writes
@@ -233,6 +274,13 @@ export function applyBattleResult(ctx: Ctx, engagement: Engagement, result: Enga
     if (h.badges !== undefined && (h.dead || !Array.isArray(h.badges) || h.badges.some((b) => typeof b !== 'string' || !b))) throw new Error(`applyBattleResult refused: '${h.heroId}' carries badges [${String(h.badges)}] out of the battle`)
   }
   for (const g of reckoning.grants) if (!(g.currency in c.purse) || !Number.isInteger(g.amount) || g.amount < 0) throw new Error(`applyBattleResult refused: grant ${g.amount} of '${g.currency}'`)
+  // kingdom.opening-hero-death-replays: an attempt that is not kept is exactly the one the result says it is, and proposes
+  // nothing — checked before anything is written
+  const voided = reckoning.fallen !== undefined
+  if (voided) {
+    if (JSON.stringify(reckoning.fallen) !== JSON.stringify(heroesFallenOf(engagement, result)) || reckoning.fallen!.length === 0) throw new Error(`applyBattleResult refused: the Reckoning says [${String(reckoning.fallen)}] fell, the battle's result says [${String(heroesFallenOf(engagement, result))}]`)
+    if (reckoning.won || reckoning.renown || reckoning.grants.length || reckoning.claim || reckoning.lose || reckoning.heroes.some((h) => h.dead || h.xp !== 0 || h.wound !== c.roster[h.heroId]!.wound || h.badges?.length)) throw new Error('applyBattleResult refused: an attempt that is not kept proposes no change — no win, no XP, no wound, no death, no payout')
+  } else if (heroesFallenOf(engagement, result).length) throw new Error(`applyBattleResult refused: ${heroesFallenOf(engagement, result).join(', ')} died in a battle that is fought again — the attempt is not kept, and the Reckoning must say who fell`)
   // v2.item-uses: each instance's spend, mapped to its hero and equipped slot — checked before anything is written
   const instanceUses = (result.itemUses ?? []).map((x) => {
     const heroId = engagement.deployed[x.index]
@@ -259,10 +307,11 @@ export function applyBattleResult(ctx: Ctx, engagement: Engagement, result: Enga
     // engine rule.afflictions-at-zero-refiled-2: Fragile stacks — each one gained is another on the roster
     if (h.badges?.length) setHeroBadges(ctx, h.heroId, [...c.roster[h.heroId]!.badges, ...h.badges], cause)
   }
-  for (const x of instanceUses) applyInstanceUse(ctx, x.heroId, x.slot, x.itemId, x.used, cause)
+  // (an attempt that is not kept spends nothing: the party is as it stood before it)
+  if (!voided) for (const x of instanceUses) applyInstanceUse(ctx, x.heroId, x.slot, x.itemId, x.used, cause)
   if (fatigues) performRollAbsences(ctx, engagement.deployed, cause)
   if (reckoning.renown > 0) applyRenown(ctx, reckoning.renown, cause)
-  setEngagementResolved(ctx, engagement.id, reckoning.won, cause)
+  setEngagementResolved(ctx, engagement.id, reckoning.won, cause, voided)
   if (reckoning.claim) applyClaim(ctx, reckoning.claim, cause)
   if (reckoning.lose) performLose(ctx, reckoning.lose, cause)
   for (const g of reckoning.grants) if (g.amount > 0) applyGrant(ctx, g.currency, g.amount, cause)
@@ -275,7 +324,8 @@ export function applyBattleResult(ctx: Ctx, engagement: Engagement, result: Enga
   // the opening: the civilians a won battle saved join (kingdom.opening-loop-three); the next battle is owed — or, lost
   // before the Kingdom Territory, the run is over, unless the battle's row says a lost one is replayed
   if (engagement.prologue !== undefined) {
-    rescueSurvivors(ctx, result, cause)
+    // (… nobody is rescued by an attempt that is not kept: the battle is fought again, civilians and all)
+    if (!voided) rescueSurvivors(ctx, result, cause)
     performResolvePrologue(ctx, reckoning.won, cause, encounterRewardOf(engagement.id)?.replayed ?? false)
   }
 }

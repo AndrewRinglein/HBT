@@ -358,10 +358,11 @@ export function applyRenown(ctx: Ctx, amount: number, causeId: string): void {
 }
 
 /** The Engagement is over, won or lost; a loss counts (SKELETON-NOTES.md: −5 per loss). */
-export function setEngagementResolved(ctx: Ctx, engagementId: string, won: boolean, causeId: string): void {
-  if (!won) ctx.campaign.losses += 1
+/** `voided` (kingdom.opening-hero-death-replays): the attempt is not kept — it is not won, and it is not counted a loss. */
+export function setEngagementResolved(ctx: Ctx, engagementId: string, won: boolean, causeId: string, voided = false): void {
+  if (!won && !voided) ctx.campaign.losses += 1
   const kind = ctx.campaign.cursor.engagement?.id === engagementId ? ctx.campaign.cursor.engagement.kind : null
-  emit(ctx, 'engagement.resolved', causeId, { engagementId, kind, won, losses: ctx.campaign.losses })
+  emit(ctx, 'engagement.resolved', causeId, { engagementId, kind, won, losses: ctx.campaign.losses, ...(voided ? { voided: true } : {}) })
 }
 
 export function applyClaim(ctx: Ctx, territoryId: string, causeId: string): void {

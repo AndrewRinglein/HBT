@@ -45,6 +45,10 @@
 .hx .party-portrait.badly-wounded{border-color:#d84343;box-shadow:0 0 10px rgba(216,67,67,.4)}
 .hx .party-portrait.dead{border-color:#555;filter:grayscale(.8);opacity:.6}
 .hx .party-name{font-family:'Cinzel',serif;font-size:10px;color:#8a7a6a;margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* kingdom.opening-hero-death-replays: the screen after a battle a hero died in — the party who went, the fallen marked */
+.hx .fell-row{opacity:1;margin-top:8px}
+.hx .fell-row .party-member{opacity:1}
+.hx .fell-text{font-style:normal}
 /* kingdom.opening-recap-civilians: the civilians who fought — a row of their own under the heroes', smaller, behind a rule */
 .hx .civilians-row{margin:-4px auto 16px;padding-top:10px;border-top:1px solid rgba(138,122,74,.35);max-width:420px;opacity:0}
 .hx .civilians-label{font-family:'Cinzel',serif;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:#8a7a6a;margin-bottom:8px}

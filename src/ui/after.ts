@@ -93,6 +93,11 @@ export function recapScreen(c: CampaignState, events: readonly KingdomEvent[], l
   const won = mine ? mine.reckoning.won : written.some((ev) => ev.type === 'engagement.resolved' && ev['won'] === true)
   const heroes = (e?.deployed ?? []).map((id) => c.roster[id]!)
   const fates = heroes.map((h) => ({ wound: h.wound, dead: h.lifeState === 'dead' }))
+  // kingdom.opening-hero-death-replays (engine DECISIONS.md 2026-10-03 'the opening run: a battle in which a hero dies is
+  // replayed': "If a hero dies, it should be replayed."): an attempt a hero died in is not kept — its own screen,
+  // below, says who fell and offers the battle again
+  const fallen = mine?.reckoning.fallen ?? []
+  if (mine && fallen.length) return fallenScreen(c, mine, heroes, fallen)
   const outcome = outcomeOf(won, fates, mine?.result.turns ?? 25)
   const mvpId = mine?.reckoning.heroes.find((h) => h.mvp)?.heroId ?? (won ? heroes[0]?.id : heroes.find((h) => h.lifeState !== 'dead')?.id ?? heroes[0]?.id)
   const spot = mvpId ? c.roster[mvpId]! : null
@@ -129,6 +134,30 @@ export function recapScreen(c: CampaignState, events: readonly KingdomEvent[], l
       </div>
       <div class="report-section" id="rc-report">${report.join('')}</div>` : `<div class="defeat-xp-line" id="rc-stats">XP earned: <b>${xp}</b> — the fight continues</div>`}
       <div class="action-btn-container" id="rc-btn"><button class="action-btn ${won ? 'victory-btn' : 'defeat-btn'}" data-act="exit">${won && c.cursor.rewardOffer ? 'Claim Rewards →' : 'Continue →'}</button></div>
+    </div></div>
+    <div class="skip-hint">Enter — skip · Enter again — continue</div>
+  </div>`
+}
+
+/**
+ * kingdom.opening-hero-death-replays — the screen after an opening battle a drafted hero died in (won or lost, one hero or
+ * all of them): it says plainly who fell and why the battle is offered again — the attempt is not kept, nobody is lost,
+ * nothing was earned — shows the party who went with the fallen marked, and its one way on goes back to the map, where
+ * the same battle is offered again (the recap's own frame and ceremony, as a battle lost: mountRecap).
+ */
+function fallenScreen(c: CampaignState, mine: LastBattle, heroes: readonly CampaignState['roster'][string][], fallen: readonly string[]): string {
+  const names = fallen.map((id) => c.roster[id]?.name ?? id)
+  const said = names.length === 1 ? names[0]! : names.slice(0, -1).join(', ') + ' and ' + names[names.length - 1]
+  const all = fallen.length === heroes.length && heroes.length > 1
+  const wonIt = mine.result.outcome === 'heroClear'
+  const party = heroes.map((h) => { const k = fallen.includes(h.id) ? 'dead' : 'healthy'; return `<div class="party-member fell-member" data-hero="${esc(h.id)}" data-fell="${k === 'dead' ? 1 : 0}"><div class="party-portrait ${k}">${face(portraitIdOf(h))}${k === 'dead' ? `<span class="wound-badge">${woundGlyph('dead')}</span>` : ''}</div><div class="party-name">${esc(h.name)}</div></div>` }).join('')
+  return `<div class="hx recap defeat" data-outcome="casualties" data-won="false" data-voided="1" data-fallen="${esc(fallen.join(','))}">${muteButton()}
+    <div class="interstitial-overlay defeat-bg"><div class="interstitial-card defeat">
+      <div class="result-title defeat" id="rc-title">${all ? 'ALL FELL' : names.length === 1 ? 'A HERO FELL' : 'HEROES FELL'}</div>
+      <div class="party-row fell-row" id="rc-spot">${party}</div>
+      <div class="hero-quote" id="rc-quote"><div class="quote-text fell-text">${esc(said)} fell${wonIt ? ' — though the battle was won' : ''}.</div><div class="quote-attribution">The battle is not kept: no hero is lost to it, and nothing was earned.</div></div>
+      <div class="defeat-xp-line" id="rc-stats">It is fought again — the party as it stood before the battle, ${esc(said)} alive, on new dice.</div>
+      <div class="action-btn-container" id="rc-btn"><button class="action-btn defeat-btn" data-act="exit">Fight it again →</button></div>
     </div></div>
     <div class="skip-hint">Enter — skip · Enter again — continue</div>
   </div>`
