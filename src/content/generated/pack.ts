@@ -43005,7 +43005,7 @@ export const UNIT_PACK = {
           "count": 1,
           "hexes": [
             {
-              "col": 19,
+              "col": 16,
               "row": 3
             }
           ]
@@ -43053,10 +43053,36 @@ export const UNIT_PACK = {
         "count": 4,
         "at": {
           "near": {
-            "col": 5,
-            "row": 4
+            "col": 10,
+            "row": 5
           },
-          "range": 2
+          "range": 2,
+          "hexes": [
+            {
+              "col": 10,
+              "row": 5
+            },
+            {
+              "col": 11,
+              "row": 5
+            },
+            {
+              "col": 11,
+              "row": 4
+            },
+            {
+              "col": 11,
+              "row": 6
+            },
+            {
+              "col": 12,
+              "row": 5
+            },
+            {
+              "col": 12,
+              "row": 4
+            }
+          ]
         }
       }
     },
