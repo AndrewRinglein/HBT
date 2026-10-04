@@ -71,7 +71,8 @@ try{
    }else if(a.type==='damage.applied'&&b.type==='damage.applied'){
     assert.equal(a.causeId,b.causeId);assert.equal(a.target,b.target);assert.ok(actual.packets.length>1)
     assert.equal(actual.amount,actual.packets.reduce((n:number,p:any)=>n+p.applied,0))
-    assert.ok(['attack.hand-axe.chop','attack.bane-blade.banishing-blow'].includes(b.causeId))
+    // the Hand Axe's Chop was the other authored critical rider until its row was cut (content.unfielded-tier0-weapons-cut, 2026-10-03)
+    assert.ok(['attack.bane-blade.banishing-blow'].includes(b.causeId))
     cause='authored critical packet'
    }else throw Error(fixture.id+' unexplained first semantic difference '+JSON.stringify({semanticIndex,a,b}))
    changes.push({id:fixture.id,firstEvent:index,firstSemanticEvent:semanticIndex,cause,before:a,after:b,resultChanged:JSON.stringify(oldResult)!==JSON.stringify(result)})

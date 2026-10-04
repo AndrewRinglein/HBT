@@ -219,7 +219,12 @@ describe('packet boundary, snapshots and shared command resolver',()=>{
       expect(event['amount']).toBeGreaterThan(0)
     }
   })
-  for(const [id,amount,want] of [['attack.hand-axe.chop',4,4],['attack.bane-blade.banishing-blow',6,6]] as const)
+  /* Law 10, 2026-10-03 (content.unfielded-tier0-weapons-cut): the Hand Axe was cut (DECISIONS.md 'eleven tier 0 weapons nobody fields
+     are cut'), and its case ['attack.hand-axe.chop',4,4] went with its row. It has no row to move to: the Bane Blade's is the one
+     authored critical rider left, and none is authored onto another weapon to keep a second case (SWITCHES.md
+     `handAxeRiderCaseDropped`). The claim is unchanged and still proven on an authored row; that a rider's amount and type are data
+     is proven by the two TEST packet attacks above. */
+  for(const [id,amount,want] of [['attack.bane-blade.banishing-blow',6,6]] as const)
     it(id+' provisional rider is physical and separately mitigated on chart-only crit',()=>{
       const r=rig(),a=ATTACKS[id]!
       expect(a.attack.secondaryDamage).toEqual([{id:'critical-rider',when:'crit',damageType:'physical',amount}])

@@ -20,9 +20,13 @@ import type { Ctx } from '../src/core/types.js'
 import { restoreBattle, saveBattle } from '../src/core/snapshot.js'
 import { performSwap } from '../src/core/swap.js'
 
-const AXE = 'item.hand-axe', LID = 'item.pot-lid'
-const CHOP = 'attack.hand-axe.chop', BASH = 'attack.pot-lid.bash'
-const base: BattleOptions = { replicate: 3, mapId: 'map.open', heroes: ['test-warrior'], heroItems: [[AXE, LID]], enemies: ['test-zombie'] }
+/* Law 10, 2026-10-03 (content.unfielded-tier0-weapons-cut): the Hand Axe, the Pot Lid and the Cart Chain were cut (DECISIONS.md
+   'eleven tier 0 weapons nobody fields are cut'). The two worn one-handers are the War Axe and the Dagger now — item.hand-axe ->
+   item.war-axe and its attack.hand-axe.chop -> attack.war-axe.chop; item.pot-lid -> item.dagger and attack.pot-lid.bash ->
+   attack.dagger.stab — and the item the hero does not carry is the Club (item.cart-chain -> item.club). Every claim is unchanged. */
+const AXE = 'item.war-axe', DAGGER = 'item.dagger'
+const CHOP = 'attack.war-axe.chop', STAB = 'attack.dagger.stab'
+const base: BattleOptions = { replicate: 3, mapId: 'map.open', heroes: ['test-warrior'], heroItems: [[AXE, DAGGER]], enemies: ['test-zombie'] }
 const field = (extra: Partial<BattleOptions> = {}): Ctx => createBattle({ ...base, ...extra } as BattleOptions)
 const hero = (ctx: Ctx) => ctx.state.units.find((u) => u.side === 'hero')!
 const foe = (ctx: Ctx) => ctx.state.units.find((u) => u.side === 'enemy')!
@@ -70,7 +74,7 @@ describe('stat mods on one fielded hero', () => {
 })
 
 describe('+damage on one fielded weapon\'s attacks', () => {
-  it('+2 from set.slaying shows on the hand axe\'s attack only — one ledger row naming the set, before the crit', () => {
+  it('+2 from set.slaying shows on the war axe\'s attack only — one ledger row naming the set, before the crit', () => {
     const plain = field()
     const ctx = field({ heroMods: [{ attacks: [{ itemId: AXE, damage: 2, source: 'set.slaying' }] }] })
     expect(hitValue(ctx, CHOP)).toBe(hitValue(plain, CHOP) + 2)
@@ -79,8 +83,8 @@ describe('+damage on one fielded weapon\'s attacks', () => {
     expect(rows[0]!.delta).toBe(2)
     expect(rows[0]!.station).toBeLessThan(450) // before CRIT: a crit multiplies the weapon's own damage
     // the other weapon's attack, and the body's own, are untouched
-    expect(hitValue(ctx, BASH)).toBe(hitValue(plain, BASH))
-    expect(rowsFrom(hitLedger(ctx, BASH), 'set.slaying')).toEqual([])
+    expect(hitValue(ctx, STAB)).toBe(hitValue(plain, STAB))
+    expect(rowsFrom(hitLedger(ctx, STAB), 'set.slaying')).toEqual([])
     expect(hitValue(ctx, 'attack.punch')).toBe(hitValue(plain, 'attack.punch'))
     const line = ctx.events.find((e) => e.type === 'unit.modified')!
     expect(line.causeId).toBe('set.slaying')
@@ -106,12 +110,12 @@ describe('+damage on one fielded weapon\'s attacks', () => {
   })
 
   it('a bonus on a STOWED weapon reaches nothing until that weapon is in hand', () => {
-    const ctx = field({ heroItems: [[LID]], heroStowed: [[AXE]], heroMods: [{ attacks: [{ itemId: AXE, damage: 2, source: 'set.slaying' }] }] })
-    const plain = field({ heroItems: [[LID]], heroStowed: [[AXE]] })
-    expect(hitValue(ctx, BASH)).toBe(hitValue(plain, BASH))
-    expect(rowsFrom(hitLedger(ctx, BASH), 'set.slaying')).toEqual([])
+    const ctx = field({ heroItems: [[DAGGER]], heroStowed: [[AXE]], heroMods: [{ attacks: [{ itemId: AXE, damage: 2, source: 'set.slaying' }] }] })
+    const plain = field({ heroItems: [[DAGGER]], heroStowed: [[AXE]] })
+    expect(hitValue(ctx, STAB)).toBe(hitValue(plain, STAB))
+    expect(rowsFrom(hitLedger(ctx, STAB), 'set.slaying')).toEqual([])
     expect(hero(ctx).weaponBonuses).toEqual([{ itemId: AXE, damage: 2, source: 'set.slaying' }])
-    // swapped into hand, the axe's attack carries it; swapped out, the lid's still does not
+    // swapped into hand, the axe's attack carries it; swapped out, the dagger's still does not
     const axe = hero(ctx).loadout!.stowed.find((x) => x.itemId === AXE)!.instanceId
     performSwap(ctx, hero(ctx).id, [axe]); performSwap(plain, hero(plain).id, [axe])
     expect(hitValue(ctx, CHOP)).toBe(hitValue(plain, CHOP) + 2)
@@ -141,7 +145,7 @@ describe('refused loudly (Law 9)', () => {
     expect(bad([{ stats: [{ stat: 'magic', add: 1, source: '' }] }])).toThrow(/source/)
   })
   it('a weapon bonus on an item the hero does not carry, or on one that grants no attack', () => {
-    expect(bad([{ attacks: [{ itemId: 'item.cart-chain', damage: 1, source: 'set.slaying' }] }])).toThrow(/does not carry 'item.cart-chain'/)
+    expect(bad([{ attacks: [{ itemId: 'item.club', damage: 1, source: 'set.slaying' }] }])).toThrow(/does not carry 'item.club'/)
     expect(bad([{ attacks: [{ itemId: AXE, damage: 0.5, source: 'set.slaying' }] }])).toThrow(/integer/)
   })
 })
