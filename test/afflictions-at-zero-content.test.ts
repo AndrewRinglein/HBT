@@ -50,10 +50,16 @@ describe('the four afflictions keep every 2026-09-29 stat and deploy cost, and n
   it('each row says what happens at 0 Health, as data the engine reads', () => {
     const atZeroGap = (id: string) => gaps(id).find((g) => g.startsWith('at 0 Health:'))
     for (const id of ['badge.vampirism', 'badge.lycanthropy', 'badge.possession', 'badge.rotting-flesh']) expect(atZeroGap(id)).toBeUndefined()
-    expect(BADGES['badge.vampirism']!.atZero).toEqual({ deathbedFighting: false, transformsInto: 'unit.vampire', luckRoll: true })
-    expect(BADGES['badge.lycanthropy']!.atZero).toEqual({ deathbedFighting: false, transformsInto: 'unit.werewolf', luckRoll: true })
-    expect(BADGES['badge.possession']!.atZero).toEqual({ deathbedFighting: false, raises: 'unit.ghost', raisedSide: 'enemy' })
-    expect(BADGES['badge.rotting-flesh']!.atZero).toEqual({ deathbedFighting: true, gains: 'badge.fragile' })
+    // Law 10, fix.affliction-pop-up-words (2026-10-04; DECISIONS.md 2026-10-03 "the affliction pop-up's 0-Health words and its
+    // drawbacks come from the engine"): these four read `expect(BADGES[…]!.atZero).toEqual({ deathbedFighting: …, … })` — the
+    // structured facts and nothing else, while the ruled wording stayed on the Codex row. The row's `text` rides the
+    // compiled rule now, so each is held as: exactly those structured facts, and beside them the ruled text, a sentence
+    // (test/affliction-pop-up-words.test.ts holds it word for word to the Codex).
+    const facts = (id: string) => { const { text, ...rest } = BADGES[id]!.atZero as unknown as Record<string, unknown>; expect(typeof text, id + ': the ruled text').toBe('string'); return rest }
+    expect(facts('badge.vampirism')).toEqual({ deathbedFighting: false, transformsInto: 'unit.vampire', luckRoll: true })
+    expect(facts('badge.lycanthropy')).toEqual({ deathbedFighting: false, transformsInto: 'unit.werewolf', luckRoll: true })
+    expect(facts('badge.possession')).toEqual({ deathbedFighting: false, raises: 'unit.ghost', raisedSide: 'enemy' })
+    expect(facts('badge.rotting-flesh')).toEqual({ deathbedFighting: true, gains: 'badge.fragile' })
   })
 })
 

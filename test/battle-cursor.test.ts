@@ -331,6 +331,11 @@ const closerStartGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cur
 // opening party is one hero smaller at battles 2 to 5 (2, 3, 4, 5 heroes; it was 3, 4, 5, 6), so each of those battles is another battle.
 // Every case frozen here (tools/capture-opening-probe-cadence-cursor.mts). Moved — for real, the parties changed by ruling (state, RNG and result), exactly the opening battles 2 to 5: test.opening-bridge, test.opening-cavern-trail, test.opening-gates, test.opening-lumberjack. A `changed` case is checked here and skips the older layers.
 const probeCadenceGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-opening-probe-cadence.json', import.meta.url), 'utf8'))
+// fix.affliction-pop-up-words (2026-10-04; DECISIONS.md 2026-10-03 "the affliction pop-up's 0-Health words and its drawbacks come from the
+// engine"), Law 10: a hero's badge.gained line for an affliction carries the row's 0-Health text and its drawback marks - more words
+// on a line the log already had, no fight moved (movedOnlyText in the fixture: state, RNG and result unchanged).
+// Every case frozen here (tools/capture-affliction-pop-up-words-cursor.mts). Moved — in the log's words only (the events' hash; state, RNG and result unchanged), the cases in which a hero gains an affliction: showcase.prologue-party, showcase.waystation, test.afflictions-at-zero-rule, test.vampire-bite. A `changed` case is checked here and skips the older layers.
+const afflictionWordsGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-affliction-pop-up-words.json', import.meta.url), 'utf8'))
 const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
 // Explicit rule migration, not regenerated historical hashes. These nine old
 // cases contain Surge ledger/refresh changes or terminal markers corrected
@@ -457,7 +462,10 @@ describe('resumable battle cursor', () => {
       const ownAreaExpected = ownAreaGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const closerStartExpected = closerStartGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const probeCadenceExpected = probeCadenceGolden.cases.find((row:{id:string})=>row.id===fixture.id)
-      const probeCadenceMoved = probeCadenceExpected?.changed === true
+      const afflictionWordsExpected = afflictionWordsGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+      const afflictionWordsMoved = afflictionWordsExpected?.changed === true
+      // was: const probeCadenceMoved = probeCadenceExpected?.changed === true — a case fix.affliction-pop-up-words moved skips this layer too (fix.affliction-pop-up-words 2026-10-04)
+      const probeCadenceMoved = probeCadenceExpected?.changed === true || afflictionWordsMoved
       // was: const closerStartMoved = closerStartExpected?.changed === true — a case fix.opening-probe-cadence moved skips this layer too (fix.opening-probe-cadence 2026-10-04)
       const closerStartMoved = closerStartExpected?.changed === true || probeCadenceMoved
       // was: const ownAreaMoved = ownAreaExpected?.changed === true — a case fix.opening-orphanage-closer-start moved skips this layer too (fix.opening-orphanage-closer-start 2026-10-04)
@@ -568,7 +576,14 @@ describe('resumable battle cursor', () => {
             battle.completeActionCycle(ctx)
           }
         } else result = battle.runBattle(ctx)
-        if (probeCadenceExpected) {
+        if (afflictionWordsExpected) {
+        expect(hash(ctx.events), 'full affliction-pop-up-words events').toBe(afflictionWordsExpected.events)
+        expect(hash(ctx.state), 'full affliction-pop-up-words state').toBe(afflictionWordsExpected.state)
+        expect(hash(ctx.rng.log), 'full affliction-pop-up-words RNG').toBe(afflictionWordsExpected.rng)
+        expect(result).toEqual(afflictionWordsExpected.result)
+        }
+        // was: if (probeCadenceExpected) { — fix.affliction-pop-up-words (2026-10-04): a case it moved is checked above instead
+        if (probeCadenceExpected && !afflictionWordsMoved) {
         expect(hash(ctx.events), 'full opening-probe-cadence events').toBe(probeCadenceExpected.events)
         expect(hash(ctx.state), 'full opening-probe-cadence state').toBe(probeCadenceExpected.state)
         expect(hash(ctx.rng.log), 'full opening-probe-cadence RNG').toBe(probeCadenceExpected.rng)

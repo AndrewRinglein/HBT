@@ -27352,3 +27352,90 @@ index 2785ced..d540e57 100644
   PASS  naming — new content ids use declared kinds
   PASS  naming — no banned words invented
   PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+## fix.affliction-pop-up-words — LANDED `0368ab9` **NEEDS REVIEW**
+2026-10-04 17:03
+
+  PASS  dependencies landed
+  PASS  not already decided — no existing ruling matches
+  PASS  typecheck
+  PASS  the item's own tests — test/afflictions-at-zero-content.test.ts, test/battle-cursor.test.ts, test/affliction-pop-up-words.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — test/afflictions-at-zero-content.test.ts, test/battle-cursor.test.ts, test/affliction-pop-up-words.test.ts, test/fixtures/battle-cursor-affliction-pop-up-words.json
+  WARN  existing tests untouched — DELETED LINES in test/afflictions-at-zero-content.test.ts (-4), test/battle-cursor.test.ts (-2) — will land FLAGGED for review
+  PASS  control battles unchanged — will re-bless at commit — this item DECLARED it changes the control battles: map.highlands 04ddee2d->0e38ab2b, map.thicket c6031170->b7eb5fb4, map.proving.open 396281e6->96e62550, map.proving.ridge b86b8a24->b6fa797e, map.proving.ford 05323666->0887d8aa, map.proving.copse d225b1e1->bc740cc7, map.proving.ruin 6da536d2->07003362, map.courtyard 0c7cf00d->9a8ba081, map.floodplain 5c378345->8f23f023, test.map.embers 8c453a30->656a8d46, test.map.duel-8 f88139ad->b37e7885, test.map.dungeon-16x8 f9d6a241->1d3c153f, test.map.horde-24 f8312af8->45e68cd4, test.map.journey-20x10 c7c65409->38b440e9, test.map.authored-40x40 d8540413->f1fb5b25, test.map.high-prop-single 0f8a4865->667e2d4b, test.map.high-prop-multi c2e90dfb->1318700f, test.map.well-shove e08516ce->44d74fa4
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/afflictions-at-zero-content.test.ts b/test/afflictions-at-zero-content.test.ts
+index 24dc8d8..f437fdb 100644
+--- a/test/afflictions-at-zero-content.test.ts
++++ b/test/afflictions-at-zero-content.test.ts
+@@ -51,8 +51,14 @@ describe('the four afflictions keep every 2026-09-29 stat and deploy cost, and n
+     const atZeroGap = (id: string) => gaps(id).find((g) => g.startsWith('at 0 Health:'))
+     for (const id of ['badge.vampirism', 'badge.lycanthropy', 'badge.possession', 'badge.rotting-flesh']) expect(atZeroGap(id)).toBeUndefined()
+-    expect(BADGES['badge.vampirism']!.atZero).toEqual({ deathbedFighting: false, transformsInto: 'unit.vampire', luckRoll: true })
+-    expect(BADGES['badge.lycanthropy']!.atZero).toEqual({ deathbedFighting: false, transformsInto: 'unit.werewolf', luckRoll: true })
+-    expect(BADGES['badge.possession']!.atZero).toEqual({ deathbedFighting: false, raises: 'unit.ghost', raisedSide: 'enemy' })
+-    expect(BADGES['badge.rotting-flesh']!.atZero).toEqual({ deathbedFighting: true, gains: 'badge.fragile' })
++    // Law 10, fix.affliction-pop-up-words (2026-10-04; DECISIONS.md 2026-10-03 "the affliction pop-up's 0-Health words and its
++    // drawbacks come from the engine"): these four read `expect(BADGES[…]!.atZero).toEqual({ deathbedFighting: …, … })` — the
++    // structured facts and nothing else, while the ruled wording stayed on the Codex row. The row's `text` rides the
++    // compiled rule now, so each is held as: exactly those structured facts, and beside them the ruled text, a sentence
++    // (test/affliction-pop-up-words.test.ts holds it word for word to the Codex).
++    const facts = (id: string) => { const { text, ...rest } = BADGES[id]!.atZero as unknown as Record<string, unknown>; expect(typeof text, id + ': the ruled text').toBe('string'); return rest }
++    expect(facts('badge.vampirism')).toEqual({ deathbedFighting: false, transformsInto: 'unit.vampire', luckRoll: true })
++    expect(facts('badge.lycanthropy')).toEqual({ deathbedFighting: false, transformsInto: 'unit.werewolf', luckRoll: true })
++    expect(facts('badge.possession')).toEqual({ deathbedFighting: false, raises: 'unit.ghost', raisedSide: 'enemy' })
++    expect(facts('badge.rotting-flesh')).toEqual({ deathbedFighting: true, gains: 'badge.fragile' })
+   })
+ })
+diff --git a/test/battle-cursor.test.ts b/test/battle-cursor.test.ts
+index 853d9bb..b9f1cf9 100644
+--- a/test/battle-cursor.test.ts
++++ b/test/battle-cursor.test.ts
+@@ -332,4 +332,9 @@ const closerStartGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cur
+ // Every case frozen here (tools/capture-opening-probe-cadence-cursor.mts). Moved — for real, the parties changed by ruling (state, RNG and result), exactly the opening battles 2 to 5: test.opening-bridge, test.opening-cavern-trail, test.opening-gates, test.opening-lumberjack. A `changed` case is checked here and skips the older layers.
+ const probeCadenceGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-opening-probe-cadence.json', import.meta.url), 'utf8'))
++// fix.affliction-pop-up-words (2026-10-04; DECISIONS.md 2026-10-03 "the affliction pop-up's 0-Health words and its drawbacks come from the
++// engine"), Law 10: a hero's badge.gained line for an affliction carries the row's 0-Health text and its drawback marks - more words
++// on a line the log already had, no fight moved (movedOnlyText in the fixture: state, RNG and result unchanged).
++// Every case frozen here (tools/capture-affliction-pop-up-words-cursor.mts). Moved — in the log's words only (the events' hash; state, RNG and result unchanged), the cases in which a hero gains an affliction: showcase.prologue-party, showcase.waystation, test.afflictions-at-zero-rule, test.vampire-bite. A `changed` case is checked here and skips the older layers.
++const afflictionWordsGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-affliction-pop-up-words.json', import.meta.url), 'utf8'))
+ const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
+ // Explicit rule migration, not regenerated historical hashes. These nine old
+@@ -458,5 +463,8 @@ describe('resumable battle cursor', () => {
+       const closerStartExpected = closerStartGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+       const probeCadenceExpected = probeCadenceGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+-      const probeCadenceMoved = probeCadenceExpected?.changed === true
++      const afflictionWordsExpected = afflictionWordsGolden.cases.find((row:{id:string})=>row.id===fixture.id)
++      const afflictionWordsMoved = afflictionWordsExpected?.changed === true
++      // was: const probeCadenceMoved = probeCadenceExpected?.changed === true — a case fix.affliction-pop-up-words moved skips this layer too (fix.affliction-pop-up-words 2026-10-04)
++      const probeCadenceMoved = probeCadenceExpected?.changed === true || afflictionWordsMoved
+       // was: const closerStartMoved = closerStartExpected?.changed === true — a case fix.opening-probe-cadence moved skips this layer too (fix.opening-probe-cadence 2026-10-04)
+       const closerStartMoved = closerStartExpected?.changed === true || probeCadenceMoved
+@@ -569,5 +577,12 @@ describe('resumable battle cursor', () => {
+           }
+         } else result = battle.runBattle(ctx)
+-        if (probeCadenceExpected) {
++        if (afflictionWordsExpected) {
++        expect(hash(ctx.events), 'full affliction-pop-up-words events').toBe(afflictionWordsExpected.events)
++        expect(hash(ctx.state), 'full affliction-pop-up-words state').toBe(afflictionWordsExpected.state)
++        expect(hash(ctx.rng.log), 'full affliction-pop-up-words RNG').toBe(afflictionWordsExpected.rng)
++        expect(result).toEqual(afflictionWordsExpected.result)
++        }
++        // was: if (probeCadenceExpected) { — fix.affliction-pop-up-words (2026-10-04): a case it moved is checked above instead
++        if (probeCadenceExpected && !afflictionWordsMoved) {
+         expect(hash(ctx.events), 'full opening-probe-cadence events').toBe(probeCadenceExpected.events)
+         expect(hash(ctx.state), 'full opening-probe-cadence state').toBe(probeCadenceExpected.state)
+```
+</details>

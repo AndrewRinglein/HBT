@@ -5418,7 +5418,10 @@
   "kind": "engine",
   "shape": "plumbing",
   "spec": "Ruled 2026-10-03 (Andrew, DECISIONS.md 'the affliction pop-up's 0-Health words and its drawbacks come from the engine'): \"Okay, do it that way.\" viewer.affliction-pop-up landed with the pop-up's 'At 0 Health' paragraph written by the viewer from the shape of badge.gained's atZero (viewer SWITCHES afflictionZeroWords) and its Drawbacks read as 'the stats the mods lower' plus every gaps line (afflictionDrawbacks) - both against Viewer Constitution Law 0. (1) The affliction badge's content row carries its ruled 0-Health text (the Codex's wording; engine DECISIONS.md 2026-10-01 'the afflictions at 0 Health...') and which of its written terms are drawbacks; the content pack brings them. (2) src/core/mutate.ts badge.gained emits them (the text and the drawback marks) beside mods/gaps/atZero. (3) viewer src/affliction.js prints the event's text and the marked drawbacks and writes no sentence of its own; the two viewer switches are marked settled by this item; pages rebuilt. Prior art: badge.gained's mods, gaps and atZero fields - this extends that one event, it adds no event.",
-  "expect": "In the Orphanage, when a hero first gains Rotting Flesh the pop-up's 'At 0 Health' paragraph is word for word the text on the badge.gained event, and its Drawbacks are exactly the terms the event marks; viewer src/affliction.js holds no 0-Health sentence; the same holds for Vampirism, Lycanthropy and Possession."
+  "expect": "In the Orphanage, when a hero first gains Rotting Flesh the pop-up's 'At 0 Health' paragraph is word for word the text on the badge.gained event, and its Drawbacks are exactly the terms the event marks; viewer src/affliction.js holds no 0-Health sentence; the same holds for Vampirism, Lycanthropy and Possession.",
+  "changesBaseline": true,
+  "status": "done-needs-review",
+  "sha": "0368ab9"
  },
  {
   "id": "movement.back-flip",
