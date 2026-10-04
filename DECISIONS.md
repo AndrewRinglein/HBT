@@ -4573,3 +4573,14 @@ Ruled:
 - **The civilians who fought show on the victory screen with the heroes — wounded or dead, they are there too** ("The battle", dictated, is the civilians). Filed: `kingdom.opening-recap-civilians`.
 - **The specialty choice's three are random: three of the nine.** Confirms `kingdom.opening-specialty-three`'s default.
 - **In battle, the panel on the right lists the unit's items under the character** — what it holds in each hand, its armor and what is in its item slots — so the player can see what a unit is equipped with. Filed: `viewer.panel-lists-items`.
+
+## 2026-10-03 — the swap button says "Swap" and opens a rearranging of the unit's gear
+
+Andrew, in the kingdom chat, playing the opening run:
+
+“The button for swapping should say "Swap".  And when you press it, it should give you the option to rearrange your gear.”
+
+Ruled:
+
+- **The button for swapping reads "Swap".**
+- **Pressing it gives the option to rearrange the unit's gear** — which of the things it carries goes in which hand — rather than making one fixed exchange. Read as: the choices offered and what a swap costs are the engine's own swap rules (movement.swap-and-shields); the screen offers every arrangement the engine allows and sends the one chosen. Filed: `viewer.swap-button-rearranges`.
