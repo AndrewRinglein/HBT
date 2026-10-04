@@ -1450,6 +1450,8 @@ export function showPose(V, pose) {
     st.setProperty('--anti', (-pose.tilt) + 'deg'); st.setProperty('--unspin', (pose.yaw ? -pose.yaw : 0) + 'deg')
     st.setProperty('--aniso', String(anisoOf(A))) }
   V.camShown = pose; V.camVersion = (V.camVersion || 0) + 1
+  /* viewer.hex-tooltip: what is pinned to a board point on the screen follows the pose, frame by frame through a glide */
+  if (V.afterPose) V.afterPose()
 }
 /* ── the turned camera (viewer.painted-board; engine DECISIONS.md 2026-09-29 "the playable battle
    screen": "You should be able to rotate around, but there should be a button to reset. You should be
@@ -1780,7 +1782,9 @@ export function clickHex(V, hex) {
     springs back; the pointer at an edge scrolls; a right-click (no drag) steps the plan back (viewer SWITCHES xcom*). */
 export function bindCamera(V) {
   const wrap = V.dom.stage.parentNode; if (!wrap || !wrap.addEventListener) return () => {}
-  let drag = null, dragged = false, pointed
+  let drag = null, dragged = false, pointed, tipped = null
+  /* viewer.hex-tooltip: the hex under the pointer, said once per change — in a replay and under a host that plays alike */
+  const tipAt = hex => { if (hex === tipped) return; tipped = hex; if (V.onPoint) V.onPoint(hex) }
   V.clickSuppressed = e => e.detail !== 0 && dragged
   const down = e => { if (e.button !== 0 && e.button !== 1 && e.button !== 2) return; dragged = false
     drag = { x: e.clientX, y: e.clientY, originX: e.clientX, originY: e.clientY } }
@@ -1789,6 +1793,7 @@ export function bindCamera(V) {
     const at = pointerAt(V, e), hit = at ? pickAt(V, at.x, at.y) : null
     const T = V.targeting
     wrap.style.cursor = !hit ? '' : hit.unit == null && T && T.legalHexes.includes(hit.hex) ? 'crosshair' : (hit.unit != null || V.play) ? 'pointer' : ''
+    tipAt(hit ? hit.hex : null)
     if (!V.play) { pointed = undefined; return }
     const hex = hit ? hit.hex : null
     if (hex !== pointed) { pointed = hex; V.offerPlay({ kind: 'point', hex }) }
@@ -1850,7 +1855,7 @@ export function bindCamera(V) {
      focus — two viewers on one page must not both pan, and a host page keeps
      its arrow keys (review 2026-09-03) */
   let over = false
-  const enter = () => { over = true }, leave = () => { over = false; up(); pointed = undefined; if (V.play) V.offerPlay({ kind: 'point', hex: null }) }
+  const enter = () => { over = true }, leave = () => { over = false; up(); pointed = undefined; tipAt(null); if (V.play) V.offerPlay({ kind: 'point', hex: null }) }
   const key = e => {
     if (e.target && /INPUT|TEXTAREA|SELECT/.test(e.target.tagName)) return
     if (!over && !(V.dom.root.contains && document.activeElement && V.dom.root.contains(document.activeElement))) return

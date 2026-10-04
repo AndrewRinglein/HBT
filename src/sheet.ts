@@ -108,6 +108,19 @@ export function groundApplies(): { layerStatus: Record<string, string>; terrainA
   return { layerStatus, terrainApplies, terrainIds: [...new Set(VOCABULARY.terrain.filter((t) => !t.layer).map((t) => t.id))] }
 }
 
+/**
+ * viewer.hex-tooltip (engine DECISIONS.md 2026-10-03 'a tooltip on every hex'): each ground's NAME for the tooltip — the
+ * engine's own id for it, said as words ('terrain.rocky-hills' -> 'Rocky hills'). The engine keeps no display name for a
+ * ground (its vocabulary names a ground by id only — an engine gap, viewer SWITCHES hexTipGroundName), so the id is the one
+ * word the engine has; nothing is typed here, as statusNames() falls back to a status's id. The day the engine's ground rows
+ * carry a name, this copies it.
+ */
+export function groundNames(): Record<string, string> {
+  const out: Record<string, string> = {}
+  for (const t of VOCABULARY.terrain) if (!t.layer) { const words = t.id.replace(/^terrain./, '').replace(/-/g, ' '); out[t.id] = words.charAt(0).toUpperCase() + words.slice(1) }
+  return out
+}
+
 export function allSheets(): Record<string, UnitSheet> {
   const out: Record<string, UnitSheet> = {}
   for (const typeId of Object.keys(UNITS)) { const s = sheetOf(typeId); if (s) out[typeId] = s }

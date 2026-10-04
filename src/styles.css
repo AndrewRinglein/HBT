@@ -617,6 +617,11 @@ html,body{margin:0;background:#08090b;color:var(--ink);
 
 /* viewer.play-input (2026-09-30): the chosen action on the bar, the planning note over the board */
 .acRow.playChosen{border-color:#bff2ff;box-shadow:0 0 12px rgba(150,205,245,.55)}
+/* viewer.hex-tooltip: the tooltip just below the hex pointed at — the ground's name and a line for each special thing */
+#hexTip{position:absolute;z-index:48;transform:translateX(-50%);pointer-events:none;display:flex;flex-direction:column;align-items:center;gap:1px;
+  padding:4px 10px 5px;border:1px solid #4a4335;border-radius:3px;background:rgba(12,13,16,.9);box-shadow:0 2px 10px rgba(0,0,0,.55);white-space:nowrap;text-align:center}
+#hexTip .hexTipName{font-size:13px;font-weight:700;letter-spacing:.02em;color:#f0e6cf}
+#hexTip .hexTipLine{font-size:12px;color:#c9c2b2}
 #playNote{position:absolute;left:50%;top:12px;transform:translateX(-50%);z-index:50;padding:4px 12px;border:1px solid #2a251d;border-radius:2px;
   background:rgba(8,9,11,.82);color:#e8dfc8;font:600 13px "Barlow Semi Condensed",ui-sans-serif,system-ui,sans-serif;pointer-events:none}
 /* viewer.auto-end-no-actions: the host's notice ("No remaining actions possible.") — over the board, under the phase banner's

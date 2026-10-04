@@ -22,6 +22,7 @@
      itemClasses — itemId -> the engine's item class (weapon, shield, …; static.json): a power a held shield grants raises the
                    shield (viewer.shield-guard-motion); a host that hands none gets no raised shield
      layerStatus · terrainApplies — what each painted layer and ground applies (static.json)
+     terrainNames — terrain id -> the ground's name, for the hex tooltip (static.json; viewer.hex-tooltip)
      artmap   — typeId -> {token, card, aspect, height, after?}; assets — file -> data URI / URL
                 (after: affliction badgeId -> the hero's after card, viewer.affliction-pop-up; a hero with none has no entry)
      glyphs   — the icon outlines (generated/ra-glyphs.json); the sprite is added once per document
@@ -64,6 +65,7 @@ import { el, ensureKeyframes, buildGround, syncProps, syncUnits, syncLayers, syn
 import { drawPanel, drawPortrait } from './panel.js'
 import { closeAffliction } from './affliction.js'
 import { drawRail } from './rail.js'
+import { pointHexTip, drawHexTip, hexTipOf, groundAt } from './hextip.js'
 import { drawBar, drawStam } from './actionbar.js'
 import { spriteHTML } from './icons.js'
 import { prepareBattleField } from './engine.ts'
@@ -160,7 +162,9 @@ export function mountBattleViewer(root, data, opts = {}) {
   const V = {
     dom, now, look,
     data: { F, POS: F.hexes, LAYOUT, UD: data.units, SN: data.statuses, ABSORBING_STATUSES: data.absorbingStatuses || [],
-      LAYERS: data.layers || {}, LAYER_STATUS: data.layerStatus || {}, TERRAIN_APPLIES: data.terrainApplies || {}, distance: prepared.distance, BOARD: { width: F.width, height: F.height },
+      LAYERS: data.layers || {}, LAYER_STATUS: data.layerStatus || {}, TERRAIN_APPLIES: data.terrainApplies || {},
+      /* viewer.hex-tooltip: each ground's name (static.json terrainNames); a host that hands none gets the engine's id */
+      TERRAIN_NAMES: data.terrainNames || {}, distance: prepared.distance, BOARD: { width: F.width, height: F.height },
       ACT: data.actions || {}, BADGES: data.badges || {},
       /* viewer.reads-engine: what each action IS (the engine's predicates) and what each status DOES (its row's flags) */
       KINDS: data.actionKinds || {}, STATUS_ROWS: data.statusRows || {}, ITEM_CLASSES: data.itemClasses || {},
@@ -223,6 +227,7 @@ export function mountBattleViewer(root, data, opts = {}) {
     drawAim(V); drawTargeting(V)
     syncUnits(V); syncPlayInput(V); drawPlay(V)
     drawPanel(V); drawRail(V); drawActivated(); applyCam(V); drawEdges(V); drawChips(); terrain.update(); chrome.sync()
+    drawHexTip(V)
   }
   /* viewer.bar-follows-activation (engine DECISIONS.md 2026-10-03 'the action bar changes with the Activation: the new unit's
      moves, attacks and powers'; Andrew: "when the activation changes, for whatever reason, the card art changes in the lower
@@ -234,6 +239,12 @@ export function mountBattleViewer(root, data, opts = {}) {
      different units until the next full render (the player's move). */
   function drawActivated() { drawPortrait(V); drawBar(V); drawStam(V) }
   V.render = render
+  /* viewer.hex-tooltip: the hex under the pointer (board.js bindCamera says it once per change) has a tooltip just below it,
+     kept under its hex through every redraw and every frame of a camera move; what it says of a hex, for the page tests */
+  V.view.pointHex = null
+  V.onPoint = hex => { if (!disposed) pointHexTip(V, hex) }
+  V.afterPose = () => { if (V.view.pointHex != null) drawHexTip(V) }
+  V.hexTip = hex => hexTipOf(V.data, groundAt(V, hex)); V.hexTipOf = ground => hexTipOf(V.data, ground)
   /* viewer.tutorial-overlays: the host's notice, pointers and look (overlays.js) */
   const overlays = mountOverlays(V); V.overlays = overlays
   /* viewer.bubble-click-reveals: the camera's reveal, for the bubbles' click and the page tests */

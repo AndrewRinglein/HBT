@@ -6,7 +6,7 @@
 // at runtime. Never hand-edit the output.
 import { writeFileSync } from 'node:fs'
 import { codeStamp } from '../../engine/tools/code-stamp.mjs'
-import { allSheets, absorbingStatusIds, statusNames, attackTable, abilityTable, actionTable, badgeTable, layerNames, groundApplies, actionKinds, statusRows, itemClasses, itemTable, handCount } from '../src/sheet.js'
+import { allSheets, absorbingStatusIds, statusNames, attackTable, abilityTable, actionTable, badgeTable, layerNames, groundApplies, groundNames, actionKinds, statusRows, itemClasses, itemTable, handCount } from '../src/sheet.js'
 import { readCatalog } from '../src/engine.js'
 const { MAPS } = await readCatalog()
 
@@ -18,6 +18,8 @@ const { stamp: engineCommit, dirty } = codeStamp()
 const out = { engineCommit, engineDirty: dirty, maps: MAPS.map((m) => m.id), units: allSheets(), statuses: statusNames(), absorbingStatuses: absorbingStatusIds(),
   attacks: attackTable(), abilities: abilityTable(), actions: actionTable(), badges: badgeTable(),
   layers: layerNames(), ...groundApplies(),
+  /* viewer.hex-tooltip: each ground's name for the hex tooltip — the engine's own id as words (sheet.ts groundNames) */
+  terrainNames: groundNames(),
   /* viewer.reads-engine (review V1, V5): the engine's classification of every action and each status's behaviour */
   actionKinds: actionKinds(), statusRows: statusRows(),
   /* viewer.shield-guard-motion: each item's own class — a power a held shield grants raises the shield */

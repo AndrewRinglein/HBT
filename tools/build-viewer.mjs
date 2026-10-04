@@ -108,7 +108,7 @@ const { outputFiles, warnings, metafile } = esbuild.buildSync({
       layers: statics.layers,
       /* viewer.reads-engine (review V1, V5): the engine's classification of every action and each status's behaviour; and
          what each painted layer and ground applies (fix.ground-one-funnel's tables, which the page never carried) */
-      actionKinds: statics.actionKinds, statusRows: statics.statusRows, layerStatus: statics.layerStatus, terrainApplies: statics.terrainApplies,
+      actionKinds: statics.actionKinds, statusRows: statics.statusRows, layerStatus: statics.layerStatus, terrainApplies: statics.terrainApplies, terrainNames: statics.terrainNames, terrainIds: statics.terrainIds,
       /* viewer.shield-guard-motion: each item's own class — a power a held shield grants raises the shield */
       itemClasses: statics.itemClasses,
       /* viewer.panel-lists-items: each item's own row and the engine's count of hands — the panel's items section */
