@@ -28044,3 +28044,23 @@ index 374bb71..098a61e 100644
 2026-10-04 19:59
 
 superseded: kingdom.opening-run-six (landed 2026-10-02) is the continuous run through the six battles; this item needs encounter.opening.bridge, abandoned 2026-09-30, so it can never start (the opening run's audit, 2026-10-03)
+
+## viewer.free-attack-kind-words — LANDED `0040dfd`
+2026-10-04 20:55
+
+  PASS  dependencies landed
+  WARN  not already decided — 2 candidate ruling(s) — READ BEFORE ASKING: SWITCHES.md:1944 · ..\ATLAS-COMBAT-INTEGRATION.md:222
+  PASS  typecheck
+  PASS  the item's own tests — test/viewer.free-attack-kind-words.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — viewer/test/viewer.free-attack-kind-words.test.ts
+  PASS  existing tests untouched
+  SKIPPED  control battles unchanged — engine code 01aa156b6c and the content pack are the ones the control battles last passed on (2026-10-04 19:20, gate fix.trigger-ids-and-scopes --land, in HBT-worker-engine) — not run
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable

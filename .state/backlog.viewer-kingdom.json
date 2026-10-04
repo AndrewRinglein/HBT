@@ -1089,6 +1089,8 @@
   "shape": "plumbing",
   "spec": "Found landing capability.counterattack-and-fend (2026-10-04, engine SWITCHES.md freeAttackKindOnTheLine): a counterattack and a fend reuse the attack-of-opportunity log line (aoo.provoked, with an `as` field naming the kind), so the battle screen plays them but words every one as an attack of opportunity, and shows no icon for the condition a unit has while its Counterattack or Fend is up. Word each by its kind from the line's own field - 'Counterattack', 'Fend', 'Attack of opportunity' - in the log, the floating text and the bar's tooltip for the power, and show the up-state on the unit (its status row and its card) with the viewer's existing status drawing; the icon is an existing glyph proposed for Andrew's eye, listed if none fits. No engine change. Kingdom's pages are rebuilt.",
   "expect": "In a sandbox battle a hero who has used the Longsword's Counterattack shows the condition on its card and panel; when an adjacent enemy attacks it, the log and the floating text say Counterattack, not attack of opportunity; a fend reads Fend; an ordinary attack of opportunity reads as before; a page test reads each wording.",
-  "note": "Filed by the kingdom chat, 2026-10-04, from the engine worker's report. Small."
+  "note": "Filed by the kingdom chat, 2026-10-04, from the engine worker's report. Small.",
+  "status": "done",
+  "sha": "0040dfd"
  }
 ]
