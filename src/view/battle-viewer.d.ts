@@ -12,6 +12,8 @@ declare module '*viewer/src/viewer.js' {
     seek(cursor: number): void
     /** viewer.turn-taking: the log cut back to its first `events` (an Activation that did nothing, taken back) and folded again */
     rewind(events: number): void
+    /** viewer.auto-end-no-actions: the host's words on the battle screen for a time; it blocks nothing */
+    notice(text: string): void
     play(): void
     pause(): void
     readonly cursor:number

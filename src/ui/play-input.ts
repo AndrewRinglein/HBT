@@ -29,6 +29,12 @@
 // un-acted player unit while the one acting has done something is no longer refused — the input holds the question (its
 // facts' `ask`), the viewer draws the pop-up "End activation of X and start activation of Y?", and the answer comes back:
 // yes is the engine's own end-cycle for X, then select-activation for Y; no changes nothing (kingdom SWITCHES switchAsk*).
+// viewer.auto-end-no-actions (engine DECISIONS.md 2026-10-03 'a player unit with nothing left it can do ends its Activation by
+// itself: "No remaining actions possible."'): rest(), which the host calls whenever the board is still — after a player unit
+// has done something, when the engine would accept nothing more from it but ending its Activation (no validated action at
+// all: sandboxChoices is every move, attack, power and bonus move validateBattleCommand takes; and nothing stowed it may
+// draw), the input sends the engine's own end-cycle, the command End activation sends, and the host puts the notice on the
+// screen. A unit that has not acted, or that can still do anything, is left alone (kingdom SWITCHES autoEnd*).
 import {sandboxChoices,sandboxActivationChoices,sandboxSwapChoices,type Sandbox,type SandboxChoice,type SandboxSwapOffer} from '../core/sandbox.js'
 import {controllerOf,validateBattleCommand,forecastFrom,previewFrom,preview,threatOf,zocHoldersAt,heroesYetToAct,isAttack,isMove,isBurst,actionReach} from '../engine.js'
 import {refusalLine,switchLine,type SwitchRefusal} from './refusals.js'
@@ -46,6 +52,8 @@ export type PlayAsk={kind:'switch';from:number;to:number}
     label, in the sandbox's order; a click names one by its index), the engine's swapCostOf, and with none to make the
     engine's own reason (viewer src/play.js's optional swap fact; kingdom SWITCHES playInputSwap) */
 export type PlaySwap={cost:number;choices:{label:string}[];why:string|null}
+/** viewer.auto-end-no-actions: the ruled words of the notice (engine DECISIONS.md 2026-10-03, Andrew) */
+export const NO_ACTIONS_LEFT='No remaining actions possible.'
 export type CommandResult={ok:true}|{ok:false;reason:string}
 /** viewer.play-chrome: what the viewer's End Turn and End activation may do (viewer src/play.js's optional ending facts) */
 export type PlayEnding={endTurn:{yetToAct:number[]}|null;endActivation:boolean}
@@ -105,6 +113,28 @@ export function createPlayInput(session:()=>Sandbox|null,run:(command:BattleComm
   const r=run({kind:'select-activation',unitUid:uid,expectedSeq:s.ctx.state.seq})
   if(!r.ok){note=refusalLine(r.reason,{target:nameOf(s,id)});return false}
   const now=session()!;cacheSeq=-1;begun={actor:id,seq:now.ctx.state.seq,saved,queue};note=null;return true}
+ /** viewer.auto-end-no-actions: has the unit acting nothing left the engine would accept but ending its Activation? Only once
+     it has done something since it began (the engine's sequence moved on; for an Activation this input did not begin, the
+     unit's own moveUsed / primaryUsed). Nothing left: the engine validates no action from it (choicesOf — every move, attack
+     with a target, power, item use and bonus move), would take its end-cycle, and holds nothing stowed it would let it draw
+     — a swap that only puts away what is held is not a thing left to do (kingdom SWITCHES autoEndSwap). No range, cost or
+     reach is worked out here. */
+ const nothingLeft=(s:Sandbox,actor:number)=>{
+  const u=s.ctx.state.units[actor]!
+  const acted=begun?.actor===actor?s.ctx.state.seq!==begun.seq:(u.moveUsed||u.primaryUsed)
+  if(!acted||choicesOf(s).length)return false
+  if(!validateBattleCommand(s.ctx,s.policy,{kind:'end-cycle',actor,expectedSeq:s.ctx.state.seq}).ok)return false
+  const stowed=new Set((u.loadout?.stowed??[]).map(i=>i.instanceId))
+  return !swapOf(s).choices.some(c=>c.hands.some(id=>stowed.has(id)))
+ }
+ /** viewer.auto-end-no-actions: the host calls it whenever the board is still. True when the unit acting had nothing left and
+     its Activation was ended (the engine's end-cycle); the host then shows NO_ACTIONS_LEFT. Never while a question stands. */
+ function rest():boolean{
+  const s=session();if(!s||s.ctx.state.outcome)return false
+  const actor=sync(s);if(actor===null||asking||!nothingLeft(s,actor))return false
+  const r=run({kind:'end-cycle',actor,expectedSeq:s.ctx.state.seq});if(!r.ok)return false
+  done();note=null;return true
+ }
  /** viewer.turn-taking: while the engine waits for a choice, the next hero yet to act is begun — its basic move armed (moveOf
      with nothing chosen). The host calls it whenever it is idle; true when a hero was begun. */
  function next():boolean{
@@ -414,6 +444,6 @@ export function createPlayInput(session:()=>Sandbox|null,run:(command:BattleComm
   if(aim?.locked&&aim.hex===hex)return confirmUse(s,actor,u)
   aim={hex,locked:true};note=null;return true
  }
- return {facts,ending,input,next,upcoming,get shown(){return shown as readonly Shown[]},get point(){return point}}
+ return {facts,ending,input,next,rest,upcoming,get shown(){return shown as readonly Shown[]},get point(){return point}}
 }
 export type PlayInput=ReturnType<typeof createPlayInput>
