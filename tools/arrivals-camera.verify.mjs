@@ -35,14 +35,24 @@ const at=V().data.POS[z.hex]
 assert.ok(seen.pose.x>start.x+100,`the view slid right (${Math.round(start.x)} -> ${Math.round(seen.pose.x)})`)
 assert.deepEqual([seen.pose.zoom,seen.pose.yaw,seen.pose.tilt],[start.zoom,start.yaw,start.tilt],'the zoom and the angle are unchanged')
 assert.ok(Math.hypot(seen.pose.x-at.px,seen.pose.y-at.py)>300,'never centred on the arrival')
-assert.ok(Math.abs(seen.pose.x-V().view.panBox.x[1])<.01,'as far right as the camera may go: the board\'s edge')
+/* Law 10, 2026-10-04 (viewer.camera-shows-edge-units; engine DECISIONS.md 2026-10-04 'the view may slide past the board's edge to
+   show a unit on an edge column', Andrew: "1 yes"): was
+     assert.ok(Math.abs(seen.pose.x-V().view.panBox.x[1])<.01,'as far right as the camera may go: the board\'s edge')
+   with the FINDING below it that the arrival's hex on the last column stayed part off the screen. Tightened to the item's
+   expect: the arriving Zombie is shown WHOLE when its drop-in plays — no bubble stands for it, the page's own slide has
+   nothing more to do for its hex — and the view is inside the camera's one bound, past the board's own box only on that side */
+assert.equal(seen.inView,true,'no bubble stood for the arrival when its drop-in played')
+assert.equal(V().revealPan(seen.pose,z.hex),null,'the arrival\'s whole hex was inside the view')
+{const B=V().cameraBound();assert.ok(seen.pose.x<=B.bound.x[1]+.01&&seen.pose.x>B.own.x[1],'the view passed the board\'s right edge, inside its bound')}
 assert.ok(held>20,`the board waited on the slide and the hold (${held} ticks held)`)
-say(`2 the view slid right ${Math.round(seen.pose.x-start.x)} board px to the board's edge, the zoom and the angle kept, ${Math.round(Math.hypot(seen.pose.x-at.px,seen.pose.y-at.py))} px from centring on it; ${z.name} dropped in with the view there; the board waited ${held} ticks`)
-say(`  FOUND: its hex ended ${seen.inView?'in view':'still off the screen'} — on the screen at ${Math.round(seen.screen.x)}, ${Math.round(seen.screen.y)}: the camera's bound (never past the board's edge) keeps the last column from coming wholly inside`)
+say(`2 the view slid right ${Math.round(seen.pose.x-start.x)} board px, past the board's edge by the least that shows the arrival whole, the zoom and the angle kept, ${Math.round(Math.hypot(seen.pose.x-at.px,seen.pose.y-at.py))} px from centring on it; ${z.name} dropped in with the view there; the board waited ${held} ticks`)
+say(`  its hex on the last column is whole on the screen — its middle at ${Math.round(seen.screen.x)}, ${Math.round(seen.screen.y)} of the battle area (was a FINDING until 2026-10-04: the old bound kept it part off the screen)`)
 // 3. then the first hero of Turn 2: the view centred on it (across; the board's edge holds what it must)
 const actor=ctx().battleCursor.actor,me=unit(actor);assert.equal(me.side,'hero');assert.equal(ctx().battleCursor.at,'acting')
-const c=V().camTarget,box=V().view.panBox,want=Math.min(box.x[1],Math.max(box.x[0],V().data.POS[me.hex].px))
+/* 2026-10-04 (viewer.camera-shows-edge-units): a centring is held to the board's OWN box (view.boardBox — was view.panBox, which
+   was that box until the bound grew past it), then slid the least that shows the unit whole; this hero stands inside the board */
+const c=V().camTarget,box=V().view.boardBox,want=Math.min(box.x[1],Math.max(box.x[0],V().data.POS[me.hex].px))
 assert.ok(Math.abs(c.x-want)<.5,`the view is centred on ${me.name} (${c.x.toFixed(1)} against ${want.toFixed(1)})`)
 assert.ok(xs.some(x=>x>c.x+50),'it came back from the right')
 say(`3 then the view centred on ${me.name}, whose Activation begins Turn 2`)
-console.log(`arrivals-camera: the Orphanage on the built sandbox — the slide to the arrival's side, its drop-in with the view there, the wait and the hero's centring passed; the arrival's own hex is ${seen.inView?'in view':'NOT inside the view (the camera\'s bound: see FOUND)'}`)
+console.log(`arrivals-camera: the Orphanage on the built sandbox — the slide to the arrival's side, its drop-in with the view there, the wait and the hero's centring passed; the arrival's own hex is ${seen.inView?'whole in the view':'NOT inside the view'}`)
