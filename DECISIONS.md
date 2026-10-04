@@ -4738,3 +4738,9 @@ Ruled (today's words, completing 2026-09-28):
 - −20 Accuracy on a special free attack stands from 2026-09-28; he did not speak to it.
 
 Filed: `rule.free-attack-is-basic-attack` (the attack of opportunity and the basic attack), and `capability.counterattack-and-fend` (ruled 2026-09-28, in no queue until now).
+
+Andrew, asked "If the main-hand weapon is a bow or other ranged weapon, what should the unit's free attack on a passing enemy be: a Punch, or no free attack at all?":
+
+“Question 1: It is a punch. If you have something that does not have a basic melee attack as its number 1 action, then you do not have a basic attack, and you use punch.”
+
+- **A weapon whose first action is not a melee attack gives no basic attack; the unit's free attack is then Punch.** A bow, a staff whose first action is a shot or a cast: the holder punches. `rule.free-attack-is-basic-attack` says so.
