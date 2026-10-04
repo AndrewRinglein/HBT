@@ -21,6 +21,8 @@ import { sgn } from './actions.js'
    duration is the pump's business, but the fold knows WHICH beats linger */
 const FIRE_MS = 1600, TRIG_MS = 1400, MISS_MS = 900
 
+/** viewer.hit-slash: what a damage line dealt — the engine's own figures, its packets' `applied` or its `amount` */
+export const damageDealt = e => e.packets ? e.packets.reduce((s, p) => s + (p.applied || 0), 0) : (e.amount || 0)
 export function createState() {
   return {
     U: {},                 // id -> unit {id,name,typeId,side,hex,hp,maxHp,stam,maxStam,st,life,bleed,…}
@@ -383,6 +385,10 @@ export function fold(S, e, ctx, now = 0) {
         // damage between attack.hit and the attack's HP event.
         const critical = !!e.attackId && e.crit === true
         cue('flash', { id: e.target })
+        /* viewer.hit-slash (engine DECISIONS.md 2026-10-03 'the slash on every damaging hit', Andrew: "Red slash on every damage"):
+           an ATTACK's damage (it carries the attack's id — melee or ranged; a burst's and a status's tick do not) that dealt
+           damage draws the slash across its target; a hit that dealt none (all of it absorbed or resisted) draws none */
+        { const n = damageDealt(e); if (e.attackId && e.burst !== true && n > 0) cue('slash', { id: e.target, dt: e.damageType ?? e.packets?.find(p => p.applied > 0)?.damageType, n, of: e.packets ? 'applied' : 'amount', crit: critical }) }
         const tick = String(e.causeId || '').includes('status.')
         if (tick) cue('fx.tick', { id: e.target, cause: e.causeId })
         /* HITSTOP (ruled 2026-09-01, VISUAL-BATTLE-UPDATES §1.2): a strike freezes

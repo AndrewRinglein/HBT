@@ -147,10 +147,14 @@ const fire = (fn, ...args) => { if (typeof fn === 'function') fn(...args); };
 // MELEE — lunge along the ground, slash at chest height
 // ============================================================
 
-const SLASH_STYLES = {
-    phys: { core: '255,235,225', glow: '255,110,70', spark: '255,180,120' },
-    mag:  { core: '215,232,255', glow: '70,125,255', spark: '150,185,255' },
-    true: { core: '255,250,230', glow: '255,205,80', spark: '255,230,150' }
+/* viewer.hit-slash (engine DECISIONS.md 2026-10-03, Andrew: "there's no red slash across the target that is part of a hit"): each
+   style's `body` — the slash's own colour, laid down OPAQUE under the glow and the bright core. The glow and the core are
+   additive ('lighter'): over the flat board's dark ground they read as the style's colour, but over a painted scene's bright
+   grass they wash out to white, which is why the slash was drawn there and not seen as one. */
+export const SLASH_STYLES = {
+    phys: { core: '255,235,225', glow: '255,110,70', spark: '255,180,120', body: '214,28,28' },
+    mag:  { core: '215,232,255', glow: '70,125,255', spark: '150,185,255', body: '48,92,228' },
+    true: { core: '255,250,230', glow: '255,205,80', spark: '255,230,150', body: '232,172,40' }
 };
 
 export function playMeleeAttack(fx, attacker, target, type = 'phys', tier = 'med', opts = {}) {
@@ -218,6 +222,13 @@ export function playMeleeImpact(fx, unit, type = 'phys', tier = 'med') {
             ctx.beginPath(); ctx.moveTo(sx, sy); ctx.quadraticCurveTo(mx, my, tipX, tipY); ctx.stroke();
             ctx.strokeStyle = `rgba(${S.core},${alpha})`; ctx.lineWidth = 4 * scale; ctx.stroke();
             ctx.shadowBlur = 0;
+            /* viewer.hit-slash: the body — OPAQUE, in the style's own colour, over the halo above (which is additive and washes to
+               white on a bright scene), with a thin glint along it */
+            ctx.globalCompositeOperation = 'source-over';
+            ctx.strokeStyle = `rgba(${S.body},${alpha * 0.96})`; ctx.lineWidth = 9 * scale;
+            ctx.beginPath(); ctx.moveTo(sx, sy); ctx.quadraticCurveTo(mx, my, tipX, tipY); ctx.stroke();
+            ctx.strokeStyle = `rgba(${S.core},${alpha * 0.85})`; ctx.lineWidth = 1.5 * scale; ctx.stroke();
+            ctx.globalCompositeOperation = 'lighter';
             if (prog < 1) for (let i = 0; i < 2; i++) { const an = rand(0, TAU), sp = rand(60, 220) * scale;
                 P.push({ x: tipX, y: tipY, vx: Math.cos(an) * sp, vy: Math.sin(an) * sp, life: 1, dec: rand(2, 3.4) }); }
         };

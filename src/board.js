@@ -10,7 +10,7 @@ import { afflictionPopup } from './affliction.js'
 import { dangerHTML, raIcon } from './icons.js'
 import { flatAffine, anisoOf, orbitCamera, stageMatrix, matrix3d, screenOf, boardRay, pickBoard, groundFootprint, LENS } from './camera3d.js'
 import { POLICY, TILT, fitZoom, zoomLimits, tiltLimits, panRange, turned as turnedBy, elevationOfTilt } from './camera-policy.js'
-import { createHexVFX, playMeleeAttack, playMagicBolt, playHolyBolt, playArrow, playStatusApply, playStatusTick, STATUS_STYLES, FLIGHTS } from './hexvfx.js'
+import { createHexVFX, playMeleeImpact, playMagicBolt, playHolyBolt, playArrow, playStatusApply, playStatusTick, STATUS_STYLES, FLIGHTS } from './hexvfx.js'
 
 export const el = (cls, style, html) => { const d = document.createElement('div')
   if (cls) d.className = cls; if (style) d.style.cssText = style; if (html != null) d.innerHTML = html; return d }
@@ -413,12 +413,28 @@ export function fxAttack(V, kind, dt, aId, tId, dmg, crit = false) {
   const FX = V.fx.FX; if (!FX) return
   const A = anchorOf(V, aId), T = anchorOf(V, tId); if (!A || !T) return
   const tier = crit ? 'super' : TIER(dmg)          // rung 2: a crit renders at the super tier regardless of damage
+  /* viewer.hit-slash: a blow launches nothing of its own — its mark is the slash across the target, drawn when the attack's
+     damage lands (fxSlash). It was playMeleeAttack here: a 320 ms run-in for a sprite lunge nobody plays, then the slash —
+     a third of a second after the hit, and on a MISS as well. */
+  if (kind === 'melee') return
   try {
-    if (kind === 'melee')    playMeleeAttack(FX, A, T, DTYPE[dt] || 'phys', tier, {})
-    else if (dt === 'magic') playMagicBolt(FX, A, T, tier, {})
+    if (dt === 'magic') playMagicBolt(FX, A, T, tier, {})
     else if (dt === 'true')  playHolyBolt(FX, A, T, tier, {})
     else                     playArrow(FX, A, T, {})
   } catch (e) {}
+}
+/* viewer.hit-slash (engine DECISIONS.md 2026-10-03 'a hit shows a red slash' / 'the slash on every damaging hit'): the slash
+   across a unit — the existing melee impact (hexvfx.js playMeleeImpact, SLASH_STYLES by damage type: red for a physical hit),
+   on the same canvas above the bodies, on the painted 3D board and the flat board alike. Sized by what the hit dealt (the
+   engine's figure), a crit at the super tier. What was drawn is V.fx.slashes. */
+export function fxSlash(V, tId, dt, n, crit = false) {
+  const FX = V.fx.FX; if (!FX) return false
+  const T = anchorOf(V, tId); if (!T) return false
+  const at = T
+  const tier = crit ? 'super' : TIER(n), type = DTYPE[dt] || 'phys'
+  try { playMeleeImpact(FX, at, type, tier) } catch (e) { return false }
+  ;(V.fx.slashes ||= []).push({ id: tId, type, tier, n, clock: V.clock ? V.clock() : null, x: at.x, y: at.y, h: at.h })
+  return true
 }
 /* viewer.attack-impact-timing: the projectile an attack flies — fxAttack's own choice above — and its time in the air; a blow
    flies none */
@@ -740,6 +756,7 @@ export function playCues(V, cues) {
       case 'hitstop': hitstop(V, c.ms); break
       case 'float': pushFloat(V, c.hex, c.text, floatHue(c, V.data), c); break
       case 'fx.attack': fxAttack(V, c.kind, c.dt, c.a, c.t, c.dmg, c.crit); break
+      case 'slash': fxSlash(V, c.id, c.dt, c.n, c.crit); break      // viewer.hit-slash: the damage of an attack that the pump has not already drawn at its blow
       case 'kick': cameraKick(V, c.a, c.t); break
       case 'injury': queueInjury(V, c.id, c.name); break
       case 'fx.status': fxStatus(V, c.id, c.style); break

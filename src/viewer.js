@@ -63,14 +63,14 @@ import { mountOverlays } from './overlays.js'
 import { POLICY as CAM_POLICY, ARRIVAL_SIDES } from './camera-policy.js'
 import { screenOf as cameraScreenOf } from './camera3d.js'
 import { mountPlayChrome } from './chrome.js'
-import { opportunityPose, animateOpportunityStep, OPPORTUNITY_STEP_MS, feetOf, heightOf, fxAttack, flightOf } from './board.js'
+import { opportunityPose, animateOpportunityStep, OPPORTUNITY_STEP_MS, feetOf, heightOf, fxAttack, flightOf, fxSlash } from './board.js'
 import { terrainLayer } from './terrain3d.js'
 import { bundledModels } from './models.js'
 import {prepareAtlasBinding} from './atlas.js'
 import {paintedBinding, bundledPainted, paintedToCSS} from './painted.js'
 import {worldToCSS} from './terrain-scene.js'
 import {flatAffine} from './camera3d.js'
-import { createState, fold, foldTo } from './fold.js'
+import { createState, fold, foldTo, damageDealt } from './fold.js'
 import { el, ensureKeyframes, buildGround, syncProps, syncUnits, syncLayers, syncFalls, syncCorpses, syncAuras, drawAim, drawTargeting, syncPlayInput, drawPlay, applyCam, playCues, clearFloats, initFX, traverse, ROOT_TRANSITION, bindCamera, drawEdges, cancelBeats, turnCam, resetCam, homeCam, stopGlide, cameraView, cameraState, centreOn, revealPan, revealHex, clickBubble, isoK, boardAffine, GLIDE_MS } from './board.js'
 import { drawPanel, drawPortrait } from './panel.js'
 import { closeAffliction } from './affliction.js'
@@ -774,7 +774,7 @@ export function mountBattleViewer(root, data, opts = {}) {
     const F = flightOf(e.kind, e.damageType)
     const rec = { declared: logIndex(V.cursor - 1), outcome: logIndex(out.at), actor: e.actor, target: e.target, kind: e.kind, damageType: e.damageType, result: out.result, falls: null,
       motion: mo.motion, clip: mo.clip, moment: mo.at, source: mo.source, flight: F ? { ...F } : null,
-      motionAt: null, projectileAt: null, releaseAt: null, blowAt: null, reactionAt: null, reaction: null }
+      motionAt: null, projectileAt: null, releaseAt: null, blowAt: null, reactionAt: null, reaction: null, slash: false }
     V.impact.log.push(rec)
     strike = { at: out.at, result: out.result, crit: out.crit, e, lunge, mo, F, t: null, struck: false, launched: false, rec }
     V.cast?.face?.(e.actor, e.target)
@@ -814,8 +814,12 @@ export function mountBattleViewer(root, data, opts = {}) {
         let did = null
         if (V.cast) { if (A.falls && V.cast.fall?.(target)) did = 'death'; else if (V.cast.flinch(target)) did = 'hit' }
         if (did) { s.rec.reaction = did; s.rec.reactionAt = now }
+        /* viewer.hit-slash: the slash across the target AT THE BLOW, when the attack's own damage line says it dealt damage */
+        const dmg = evAt(A.damage), dealt = damageDealt(dmg)
+        const slashed = dealt > 0 && dmg.burst !== true && fxSlash(V, target, dmg.damageType ?? s.e.damageType, dealt, dmg.crit === true)
+        s.rec.slash = !!slashed
         /* the damage's own line: its flash does not start the body again, and the hit's old beat is kept after it */
-        reacted = { target, damage: A.damage, did, rec: s.rec, carry: DUR['attack.hit'] ?? 0 }
+        reacted = { target, damage: A.damage, did, slashed, rec: s.rec, carry: DUR['attack.hit'] ?? 0 }
         return { cues, d: 0 }
       }
     } else if (s.result === 'block' && V.cast?.guard?.(e.defender ?? target)) { s.rec.reaction = 'guard'; s.rec.reactionAt = now }
@@ -840,6 +844,7 @@ export function mountBattleViewer(root, data, opts = {}) {
         const R = reacted; reacted = null
         if (R.did) cues = cues.map(c => c.k === 'flash' && c.id === R.target ? { ...c, reacted: true } : c)
         else { R.rec.reaction = 'flash'; R.rec.reactionAt = V.clock() }
+        if (R.slashed) cues = cues.filter(c => c.k !== 'slash')                              // viewer.hit-slash: drawn at the blow
         impact = (DUR[e.type] ?? 0) + R.carry
       }
       burstBeat(e)
