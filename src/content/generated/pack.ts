@@ -9626,8 +9626,7 @@ export const UNIT_PACK = {
       "triggers": [],
       "defaultItems": [
         "item.dagger"
-      ],
-      "placedWithKit": true
+      ]
     },
     {
       "typeId": "hero.fixed.lumberjack-and-wife",
@@ -9741,8 +9740,7 @@ export const UNIT_PACK = {
       "triggers": [],
       "defaultItems": [
         "item.dagger"
-      ],
-      "placedWithKit": true
+      ]
     },
     {
       "typeId": "hero.fixed.school-children",
