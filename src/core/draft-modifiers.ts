@@ -18,9 +18,6 @@
 // is not the engine's — the battle's unit mods as a plain list, each a copy the Campaign owns (Law 5b).
 
 import { firstHeroDraftOf, draftHandOf, type DraftRoller, type DraftBase, type DraftRolls } from '../engine.js'
-// (combine 2026-10-04: joinsWithOf, below, reads the first hero's rule for ONE name — the source its +Health mod carries — to tell
-// that mod from a rolled point. A reading of the record the engine's function wrote; nothing is rolled with it.)
-import { FIRST_HERO } from '../content/crucible.js'
 
 /** The dice a draft rolls on, keyed by what the roll is (Law 4): 0..n-1, and 1..100 — the engine's own type. */
 export type Roller = DraftRoller
@@ -70,10 +67,12 @@ export function handDraftedOf(roller: Roller, bases: readonly BaseOf[], ordinal:
  * kingdom.opening-first-hero-class-line (2026-10-04): what a hero joins with, thing by thing, for the first draft's plain
  * lines — each badge the draft gave it; the Health the first hero's rule gives (the mod its row names the source of);
  * each stat point it rolled, in the Crucible's word. In that order; a pure reading of the record, nothing rolled.
+ * `healthSource` is the source the first hero's rule names for its +Health mod, handed in by the caller (combine 2026-10-04:
+ * this file reads no table since fix.opening-draft-one-rule — the name was read here from the Crucible's rows until then).
  */
 export type JoinedWith = { readonly key: string; readonly badge?: string; readonly stat?: string; readonly amount?: number }
-export function joinsWithOf(drafted: Drafted): JoinedWith[] {
-  const health = drafted.mods.filter((m) => m.source === FIRST_HERO.healthSource).reduce((n, m) => n + m.add, 0)
+export function joinsWithOf(drafted: Drafted, healthSource: string): JoinedWith[] {
+  const health = drafted.mods.filter((m) => m.source === healthSource).reduce((n, m) => n + m.add, 0)
   return [
     ...drafted.badges.map((b) => ({ key: `badge:${b}`, badge: b })),
     ...(health ? [{ key: 'health', stat: 'health', amount: health }] : []),

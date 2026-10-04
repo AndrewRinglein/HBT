@@ -41,7 +41,7 @@ import type { CampaignState, Hero } from '../core/campaign.js'
 import { listDraftOffers, draftsOwedOf, draftedCountOf, draftedHeroOf, draftMessageOf } from '../core/opening.js'
 import { fieldedPreviewOf } from '../core/seam.js'
 import { UNKITTED_HEROES, heroDescriptionOf, type HeroRow, type UnkittedHero } from '../content/heroes.js'
-import { CRUCIBLE, crucibleBadgeOf, crucibleStatOf, badgeLineOf, statLineOf } from '../content/crucible.js'
+import { CRUCIBLE, FIRST_HERO, crucibleBadgeOf, crucibleStatOf, badgeLineOf, statLineOf } from '../content/crucible.js'
 import { classLineOf } from '../content/classes.js'
 import { joinsWithOf } from '../core/draft-modifiers.js'
 import { statLabelOf } from '../content/stat-labels.js'
@@ -76,7 +76,7 @@ function classLine(h: HeroRow): string {
 /** What this hero joins with, in plain words: one line for each thing, in the record's order; things with the same words share a line. */
 function joinsList(joined: Hero): string {
   const lines: { words: string; of: string[] }[] = []
-  for (const j of joinsWithOf(joined.drafted!)) {
+  for (const j of joinsWithOf(joined.drafted!, FIRST_HERO.healthSource)) {
     const words = j.badge ? badgeLineOf(j.badge) : statLineOf(j.stat!)
     const same = lines.find((l) => l.words === words)
     if (same) same.of.push(j.key); else lines.push({ words, of: [j.key] })
