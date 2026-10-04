@@ -4695,3 +4695,16 @@ Ruled:
 - **Which weapon sits in which kit is not his to be asked now: "We're not in a balancing phase."** A chat picks a default, records the switch and goes on.
 - **The decision is the chat's** ("make a decision"), engine SWITCHES `woodAxeWaits`: the Wood Axe is not built now and no kit carries it. It stays a dictated weapon with no row, like the Sickle, the Short Sword and the Grain Flail, until the sixth pass's weapon families become rows. Its card stays in the set; its model is not made in this batch — Codex excluded the card from model production at his direct word, and that is left as it is. This replaces "the Wood Axe card and its model stay" in the two entries above as far as the model goes. Nothing is filed.
 - **Cleaned up:** the content audit's accepted-findings entry for the Pot Lid went with its row (content cc67ac2); `2-ACTIONS-SETTLED.md` logs the Slingshot's removal (root 7dbbc77). Left, as records of their date: the notes files and older switches that name a cut row, the Stagger power's `source` note, and `crucible/data/kits.json` (the Crucible is unbuilt and its kits were superseded 2026-08-27).
+
+## 2026-10-04 — no testing that the battles can be won until these items are done; the page tests play an overpowered party; faster landing
+
+Andrew, in the kingdom chat, asked whether anything else would speed the queue up "without losing too much quality". The questions as asked: (1) "Should the page test play the run with an overpowered test party so it stops searching for winning seeds?"; (2) "Should the merge tool skip re-running suites that already passed on the exact same code when main hasn't moved?"; also offered: (3) more items per worker run before each merge; (4) a quiet machine and a still main folder.
+
+“1. I'm okay forgoing all testing battle until we're done with all these items. Right now, I'm doing more views or experience testing.  So we can just skip all testing battles that aren't just done from a quality standpoint.   Okay, yes, yes, and yes. Okay, for 4, I'll shut down everything else.   If we need to, then one yes for remaining questions. Go ahead, overpowered power party. Party. 2 yes.”
+
+Ruled:
+
+- **Until the items now queued are done, nothing tests that the battles can be won.** He is testing the look and the experience, not the balance. The opening's page tests stop searching for seeds on which the computer wins: they play the run with an overpowered test party ("Go ahead, overpowered … party"), so any seed wins and every step between the battles is still proved. A test that exists only to show a battle is winnable by the computer's play is skipped until then, by name, with this entry cited; a test of a rule, a screen or the flow is not. Filed: `kingdom.page-test-strong-party`, first in the viewer and kingdom queue.
+- **Yes to more items per worker run before each merge**, each still its own landing.
+- **Yes to the merge tool skipping suites already passed on the exact same code when main has not moved** — taken up by the kingdom chat as a tooling change (GBH SWITCHES), only where it can be shown no test is skipped that the change could break.
+- He shuts the other programs and chats down while the workers run.
