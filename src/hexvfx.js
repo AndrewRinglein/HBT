@@ -256,9 +256,14 @@ function flight(fx, from, to, dur, windup, arcMul, drawCore, sortY) {
     }, sortY ?? to.y);
 }
 
+/* viewer.attack-impact-timing: each projectile's time in the air (ms of the page's own clock) and the part of it spent gathering
+   at the caster before it leaves (`windup`) — one place, so the pump can launch the effect that much before the attack
+   motion's release and fold the hit when it lands. The three flights below read these. */
+export const FLIGHTS = { arrow: { ms: 320, windup: 0 }, magic: { ms: 720, windup: 0.3 }, holy: { ms: 780, windup: 0.34 } };
+
 // ---- ranged phys: arrow ----
 export function playArrowFlight(fx, from, to) {
-    return flight(fx, from, to, 320, 0, 0.06, (ctx, x, y, ang, ft, charging) => {
+    return flight(fx, from, to, FLIGHTS.arrow.ms, FLIGHTS.arrow.windup, 0.06, (ctx, x, y, ang, ft, charging) => {
         if (charging) return;
         ctx.globalCompositeOperation = 'lighter';
         for (let i = 1; i <= 5; i++) {
@@ -344,7 +349,7 @@ export { boltPath, drawBolt };
 
 export function playMagicBoltFlight(fx, from, to, tier = 'med') {
     const scale = TIER_SCALE[tier] || 1;
-    return flight(fx, from, to, 720, 0.3, 0.14, (ctx, x, y, ang, ft, charging, P, dt, ms) => {
+    return flight(fx, from, to, FLIGHTS.magic.ms, FLIGHTS.magic.windup, 0.14, (ctx, x, y, ang, ft, charging, P, dt, ms) => {
         if (charging) {
             const r = lerp(3, 13 * scale, easeOutQuad(ft));
             if (Math.random() < 0.5) {
@@ -433,7 +438,7 @@ export async function playMagicBolt(fx, from, to, tier = 'med', opts = {}) {
 // ---- ranged true: priestly holy bolt ----
 export function playHolyBoltFlight(fx, from, to, tier = 'med') {
     const scale = TIER_SCALE[tier] || 1;
-    return flight(fx, from, to, 780, 0.34, 0.1, (ctx, x, y, ang, ft, charging, P, dt) => {
+    return flight(fx, from, to, FLIGHTS.holy.ms, FLIGHTS.holy.windup, 0.1, (ctx, x, y, ang, ft, charging, P, dt) => {
         if (charging) {
             // halo contracts over the caster's head, on the ground-plane tilt
             const hr = lerp(46, 16, easeOutQuad(ft)) * scale;

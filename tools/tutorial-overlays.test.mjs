@@ -187,9 +187,13 @@ test('a LOOK takes the view to a unit, nearer than the play zoom, holds, and bri
   assert.ok(at(p, mid), 'on to a hex'); w._flush(350); assert.deepEqual(said, ['held', 'held'])
   assert.equal(v.lookBack({ onDone: why => said.push(why) }), true); w._flush(20); assert.deepEqual(pose(V), before); assert.deepEqual(said, ['held', 'held', 'back'])
   assert.equal(v.lookBack(), false, 'nothing to come back from')
-  /* a look at the board's corner stops at the board's edge — the camera never shows past it */
+  /* a look at the board's corner stops at the camera's bound.
+     Law 10, 2026-10-04 (viewer.camera-shows-edge-units): the comment here read 'stops at the board's edge — the camera never
+     shows past it' (viewer SWITCHES lookBound); the bound is now the board's edge or as far past it as the outermost hexes
+     need, so the look shows the corner hex WHOLE — tightened: the page's own slide has nothing more to do for it */
   v.look({ hex: 0 }, { ms: 100 }); p = pose(V); const box = V.view.panBox
-  assert.ok(p.x >= box.x[0] - 1e-6 && p.x <= box.x[1] + 1e-6, 'inside the camera\'s own bound'); assert.equal(V.view.noVoid, true); w._flush(200); assert.deepEqual(pose(V), before)
+  assert.ok(p.x >= box.x[0] - 1e-6 && p.x <= box.x[1] + 1e-6, 'inside the camera\'s own bound'); assert.equal(V.view.noVoid, true)
+  assert.equal(V.revealPan(V.camTarget, 0), null, 'the corner hex is whole in the look\'s view'); w._flush(200); assert.deepEqual(pose(V), before)
   /* cancelled by the host: back at once; what a look may go to */
   const c = v.look({ unit: u.id }, { ms: 5000, onDone: why => said.push(why) }); c.cancel(); assert.deepEqual(pose(V), before); assert.equal(said.at(-1), 'cancelled')
   for (const bad of [null, {}, { unit: 9999 }, { hex: -1 }]) assert.throws(() => v.look(bad), /viewer overlays/)

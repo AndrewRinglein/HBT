@@ -310,8 +310,16 @@ test('Whole map fits the original board — every hex and a standing figure on i
          space."): was near(V.camTarget.zoom, fitZoom, …, 'the wheel stops at the fit') — the tactical camera now stops
          nearer, where the view just fills with board; kept: nothing zooms out past the whole-map fit */
       v.zoom(.001); assert.ok(V.camTarget.zoom >= fitZoom * (1 - 1e-9), `the wheel never goes past the fit (${w}x${h}, ${yaw}°, ${elev}°)`)
-      const q = seen(V, w, h); assert.ok(q.l >= -.5 && q.t >= -.5 && q.r <= F.w + .5 && q.b <= F.h + .5, `and stops where the view shows only board (${w}x${h}, ${yaw}°): ${JSON.stringify(q)}`)
-      assert.ok(Math.min(q.l, q.t, F.w - q.r, F.h - q.b) < 1, `— just: one side of the view on the board's edge (${w}x${h}, ${yaw}°)`)
+      /* Law 10, 2026-10-04 (viewer.camera-shows-edge-units; engine DECISIONS.md 2026-10-04 'the view may slide past the board's
+         edge to show a unit on an edge column'): was 'and stops where the view shows only board' of every view. At the
+         farthest zoom the view fills with board and has no room to move, so where the unit in sight stands on the rim the
+         view now passes the edge by the least that shows its hex whole (the page says so: past 'subject'); every other
+         view shows only board, as before — and is still filled just to the board's edge */
+      const q = seen(V, w, h), B = V.cameraBound()
+      if (B.past) { assert.equal(B.past, 'subject', `past the board's edge only for the unit in sight (${w}x${h}, ${yaw}°)`)
+        const c = V.camTarget; assert.ok(c.x >= B.bound.x[0] - 1e-6 && c.x <= B.bound.x[1] + 1e-6 && c.y >= B.bound.y[0] - 1e-6 && c.y <= B.bound.y[1] + 1e-6, 'inside the camera\'s one bound') }
+      else { assert.ok(q.l >= -.5 && q.t >= -.5 && q.r <= F.w + .5 && q.b <= F.h + .5, `and stops where the view shows only board (${w}x${h}, ${yaw}°): ${JSON.stringify(q)}`)
+        assert.ok(Math.min(q.l, q.t, F.w - q.r, F.h - q.b) < 1, `— just: one side of the view on the board's edge (${w}x${h}, ${yaw}°)`) }
     }
   }
   assert.ok(checked > 6000, `enough corners to bite: ${checked}`)   // a third of the angles: was 20000
@@ -326,14 +334,29 @@ test('Whole map fits the original board — every hex and a standing figure on i
    scrolls', Andrew: "There's no reason to ever scroll into white space."): was 'the view may centre any point of the board'
    (the centre reaching x 0 and F.w, the rows up to 200 px past) — overturned (SWITCHES xcomRoam). Now the clamp: panned as far
    as it goes, each side of the view stops ON the board's edge — never past it, and never short of it (no pin to the middle). */
-test('the pan stops where the board\'s edge meets the view\'s — at the standard zoom, nearer, turned — never past it, never short', () => {
+/* Law 10, 2026-10-04 (viewer.camera-shows-edge-units; engine DECISIONS.md 2026-10-04 'the view may slide past the board's edge to
+   show a unit on an edge column', Andrew: "1 yes"): was 'the pan stops where the board's edge meets the view's … never past
+   it, never short' — each side of the view ON the board's edge at the pan's end. The pan now stops at the bound: the board's
+   own box (where the view's sides are on the board's edges — still reported by the page, and still exactly that), grown as
+   far as the outermost hexes need to be whole on the screen, and not a px more: panned as far as it goes the view's centre is
+   on the bound's corner, the view's side is at or past the board's edge, and every hex of the rim on that side can then be
+   shown whole. */
+test('the pan stops at the bound — the board\'s edge, or as far past it as the outermost hexes need — at the standard zoom, nearer, turned; never past the bound, never short', () => {
   const { v, V } = boot(), F = V.data.F
   for (const [yaw, zoom] of [[0, 1], [0, 1.6], [90, 1], [180, .8]]) {
     v.resetView(); if (yaw) v.turn(yaw); if (zoom !== 1) v.zoom(zoom)
-    v.pan(-1e5, -1e5); let q = seen(V, 1920, 1080)
-    near(q.l, 0, .5, `${yaw}°, ${zoom}x: the view's west side on the board's west edge`); near(q.t, 0, .5, 'its north on the north edge')
-    v.pan(1e5, 1e5); q = seen(V, 1920, 1080)
-    near(q.r, F.w, .5, `${yaw}°, ${zoom}x: and its east on the east edge, never past it`); near(q.b, F.h, .5, 'its south on the south edge')
+    v.pan(-1e5, -1e5); let q = seen(V, 1920, 1080), B = V.cameraBound(), c = V.camTarget
+    near(c.x, B.bound.x[0], 1e-6, `${yaw}°, ${zoom}x: the view's centre on the bound's west side`); near(c.y, B.bound.y[0], 1e-6, 'and its north')
+    assert.ok(q.l <= .5 && q.t <= .5, `${yaw}°, ${zoom}x: the view reaches the board's west and north edges (never short)`)
+    assert.ok(B.bound.x[0] <= B.own.x[0] + 1e-6 && B.bound.y[0] <= B.own.y[0] + 1e-6, 'the bound holds the board\'s own box')
+    /* the board's own box is still where the view's sides are ON the board's edges */
+    v.pan(B.own.x[0] - c.x, B.own.y[0] - c.y); q = seen(V, 1920, 1080)
+    near(q.l, 0, .5, `${yaw}°, ${zoom}x: at the board's own box the view's west side is on the board's west edge`); near(q.t, 0, .5, 'its north on the north edge')
+    v.pan(1e5, 1e5); q = seen(V, 1920, 1080); B = V.cameraBound(); c = V.camTarget
+    near(c.x, B.bound.x[1], 1e-6, `${yaw}°, ${zoom}x: and the bound's east side`); near(c.y, B.bound.y[1], 1e-6, 'and its south')
+    assert.ok(q.r >= F.w - .5 && q.b >= F.h - .5, 'the view reaches the board\'s east and south edges')
+    v.pan(B.own.x[1] - c.x, B.own.y[1] - c.y); q = seen(V, 1920, 1080)
+    near(q.r, F.w, .5, `${yaw}°, ${zoom}x: at the board's own box its east side is on the east edge`); near(q.b, F.h, .5, 'its south on the south edge')
   }
   v.dispose()
 })

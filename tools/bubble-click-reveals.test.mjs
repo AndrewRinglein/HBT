@@ -86,10 +86,14 @@ test('a click selects the unit and slides the view just far enough to show its h
   assert.ok(Math.hypot(after.x - before.x, after.y - before.y) > 1, 'the view slid')
   assert.equal(after.zoom, before.zoom); assert.equal(after.yaw, before.yaw); assert.equal(after.tilt, before.tilt)
   /* 4 · its hex is on the screen now, as the stage is drawn, and its bubble is gone. This Zombie stands on the board's LAST
-     column: the camera never shows past the board's edge (viewer.camera-no-void), and at that edge the view's own edge can
-     come no nearer than the hex's middle — so "on the screen" is the hex's nearer half (FOUND, viewer SWITCHES bubbleEdgeHex) */
+     column.
+     Law 10, 2026-10-04 (viewer.camera-shows-edge-units; engine DECISIONS.md 2026-10-04 'the view may slide past the board's
+     edge to show a unit on an edge column', Andrew: "1 yes"): this held the FINDING bubbleEdgeHex —
+       assert.ok(insideBy(s) > -halfHex, …)        ("on the screen" was the hex's nearer half: the camera stopped at the board's edge)
+     — tightened to the rule: the WHOLE hex is on the screen, its middle the slide's own room inside the edge (the bubbles'
+     inset and half a hex) */
   const s = screenOf(V, u.hex), halfHex = V.data.LAYOUT.W * after.zoom / 2
-  assert.ok(insideBy(s) > -halfHex, `on the screen: ${s.x.toFixed(0)}, ${s.y.toFixed(0)} of ${s.W} × ${s.H}`)
+  assert.ok(insideBy(s) >= 34 + halfHex - 1.5, `the whole hex is on the screen: its middle ${insideBy(s).toFixed(1)} px inside (${s.x.toFixed(0)}, ${s.y.toFixed(0)} of ${s.W} × ${s.H})`)
   assert.ok(!bubbles(V).some(x => unitsOf(x).includes(id)), 'its bubble is gone')
   /* 5 · just inside, no further: near the edge it came in by, not in the middle; the view's centre is not the unit's hex */
   assert.ok(insideBy(s) < s.W / 6, `near the edge: ${insideBy(s).toFixed(0)} px in`)
@@ -167,14 +171,13 @@ test('a bubble for several units takes the nearest of them to the view; a slide 
   /* every unit, from the battle's opening view: after a click on its bubble its hex is on the screen as drawn, the zoom and
      the angle as they were, and the view shows only board (the camera's own bound holds the slide at the board's edge) */
   const start = { cam: { ...V.view.cam }, camF: { ...V.view.camF } }
-  const edgeHeld = [], inside0 = {}
   for (const u of live) {
     V.view.cam = { ...start.cam }; V.view.camF = { ...start.camF }; V.view.revealed = null; v.render()
     const p0 = pose(V)
-    inside0[u.id] = insideBy(screenOf(V, u.hex))
     V.clickBubble([u.id])
     const p = V.camTarget, F = V.data.F
     assert.ok(p.x >= 0 && p.x <= F.w && p.y >= 0 && p.y <= F.h, `${u.name}: the view's centre is on the board`)
+    { const B = V.cameraBound(); assert.ok(p.x >= B.bound.x[0] - 1e-6 && p.x <= B.bound.x[1] + 1e-6 && p.y >= B.bound.y[0] - 1e-6 && p.y <= B.bound.y[1] + 1e-6, `${u.name}: inside the camera's one bound`) }
     assert.equal(p.zoom, p0.zoom); assert.equal(p.yaw, p0.yaw); assert.equal(p.tilt, p0.tilt)
     /* Law 10, 2026-10-04 (engine fix.opening-orphanage-closer-start, the note at boot): the two lines here read, of EVERY unit,
          assert.ok(insideBy(screenOf(V, u.hex)) > -V.data.LAYOUT.W * p.zoom / 2, `${u.name}: its hex is on the screen after the slide (a hex of the board's last column: its nearer half)`)
@@ -189,21 +192,18 @@ test('a bubble for several units takes the nearest of them to the view; a slide 
        in, and otherwise to this — the view went to its bound on that side (as far as it may go), the hex came nearer than
        it was, and it is that one bound alone that keeps it out. When viewer.camera-shows-edge-units lands, the second
        branch goes and every unit is held to the two lines again. */
-    const after = insideBy(screenOf(V, u.hex)), half = V.data.LAYOUT.W * p.zoom / 2, col = V.data.POS[u.hex].c, box = V.view.panBox
-    const edgeColumn = col === 0 || col === V.data.POS.reduce((m, q) => Math.max(m, q.c), 0)
-    const atBound = Math.abs(p.x - (col === 0 ? box.x[0] : box.x[1])) < .01
-    if (after > -half || !edgeColumn) {
-      assert.ok(after > -half, `${u.name}: its hex is on the screen after the slide (a hex of an edge column: its nearer half)`)
-      assert.ok(!bubbles(V).some(x => unitsOf(x).includes(u.id)), `${u.name}: no bubble stands for it now`)
-    } else {
-      edgeHeld.push(u.name)
-      assert.ok(atBound, `${u.name}, on the board's ${col === 0 ? 'first' : 'last'} column: the view went as far as the camera may go`)
-      assert.ok(after > inside0[u.id], `${u.name}: its hex came nearer the screen (${Math.round(inside0[u.id])} px -> ${Math.round(after)} px)`)
-      assert.ok(after > -1.5 * half, `${u.name}: and is within a hex of showing — the bound, nothing else, keeps it out`)
-    }
+    /* combine, 2026-10-04 (viewer master cf11722 into the kingdom worker's copy): viewer.camera-shows-edge-units HAS landed, on
+       master, so the branch that stood here for the unit on an edge column —
+         if (after > -half || !edgeColumn) { … } else { edgeHeld.push(u.name); assert.ok(atBound, …); assert.ok(after > inside0[u.id], …); assert.ok(after > -1.5 * half, …) }
+       — is gone, as the note above says, and every unit of this scene (the edge unit on (0,6) with them) is held to master's
+       tighter line: its WHOLE hex on the screen. */
+    /* Law 10, 2026-10-04 (viewer.camera-shows-edge-units): was `> -half a hex` (a hex of the board's last column: its nearer half) —
+       tightened: every unit's whole hex is on the screen after the slide */
+    assert.ok(insideBy(screenOf(V, u.hex)) >= V.data.LAYOUT.W * p.zoom / 2 - 1.5, `${u.name}: its whole hex is on the screen after the slide (${insideBy(screenOf(V, u.hex)).toFixed(1)} px inside)`)
+    assert.ok(!bubbles(V).some(x => unitsOf(x).includes(u.id)), `${u.name}: no bubble stands for it now`)
     assert.equal(V.view.noVoid, true, 'the tactical view keeps to the board')
   }
-  assert.ok(edgeHeld.length <= 1, `at most the one unit on an edge column is held by the camera's bound: ${edgeHeld.join(', ') || 'none'}`)
+  /* (combine 2026-10-04: was `assert.ok(edgeHeld.length <= 1, …)` — at most one unit held out by the camera's bound; none is now) */
   v.dispose()
 })
 

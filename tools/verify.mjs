@@ -562,8 +562,17 @@ if (SINGLES) {
        scrolls', Andrew: "There's no reason to ever scroll into white space." — newer than this check's 2026-09-03 "room above
        row 0"): the head is in view unless the view already stands at the board's top edge, which it never passes (viewer
        SWITCHES noVoidInclusion). Was: check(head >= camTop - 1) alone. */
-    const y0 = V.view.camF.y; v.pan(0, -1e4); const atTop = V.view.camF.y === y0
-    check(head >= camTop - 1 || atTop, `camera-top: the acting unit's head (board-y ${head.toFixed(0)}) is above the viewport's top edge (${camTop.toFixed(0)}) — cut off, though the view could go up`)
+    /* Law 10, 2026-10-04 (viewer.camera-shows-edge-units; engine DECISIONS.md 2026-10-04 'the view may slide past the board's edge
+       to show a unit on an edge column', Andrew: "1 yes"): was
+         const y0 = V.view.camF.y; v.pan(0, -1e4); const atTop = V.view.camF.y === y0
+         check(head >= camTop - 1 || atTop, …)
+       — "at the top" was "a pan up moves nothing", true while the pan stopped at the board's edge. The pan now goes on to the
+       bound, so the rule is said as it is: the head is in view unless the view already stands at the board's own top edge or
+       past it (the page's own V.cameraBound().own) — which it passes only by the least that shows the acting unit's HEX
+       whole; and that hex is whole in the view (the page's own slide has nothing more to do for it). */
+    const B = V.cameraBound(), atTop = !!B.own && V.camTarget.y <= B.own.y[0] + 1e-6
+    check(head >= camTop - 1 || atTop, `camera-top: the acting unit's head (board-y ${head.toFixed(0)}) is above the viewport's top edge (${camTop.toFixed(0)}) — cut off, though the view stands short of the board's top edge`)
+    check(V.revealPan(V.camTarget, actor.hex) === null, `camera-top: the acting unit's hex (${actor.hex}, row ${POS[actor.hex].r}) is not whole in the view`)
   }
 }
 

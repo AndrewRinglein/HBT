@@ -23,6 +23,10 @@ const LOOPS = new Set(['idle', 'move', 'flight'])
 const FADE = .25              // s — the crossfade between two motions
 const RECOIL = .28            // s — the recoil of a body that has no hit reaction (viewer SWITCHES modelRecoil)
 const LUNGE = .36             // s — the lean of a body that has no strike or shot motion (viewer SWITCHES modelLunge)
+/* viewer.attack-impact-timing: a body that fell at the blow has often finished falling when the log says it is dead; it lies
+   where it fell this long (of the pump's time) for its corpse to be put on the board (the corpse's line comes a beat after
+   the death's) — a death that leaves no corpse leaves nothing after it (viewer SWITCHES impactLiesForItsCorpse) */
+const CORPSE_WAIT = .9
 const TURN = 12               // 1/s — how fast a body turns to face (the battle demo's motion.mjs turnToward)
 
 /** the model binding for a unit type, or null when it has none (it keeps its token) */
@@ -516,12 +520,12 @@ export function createCast(V, scene, toWorld, platform = {}) {
       const el = anchorOf(u)
       /* a unit that has just died plays its death where it stood until its corpse is on the board;
          a death that leaves no corpse leaves nothing once the fall ends */
-      if (!el && !(body && u.life === 'dead' && !body.lying())) continue
+      if (!el && !(body && u.life === 'dead' && (body.life !== 'dead' || !body.lying() || body.deadFor < CORPSE_WAIT))) continue
       if (!body) {
         /* a look that cannot be stood up is its token, said once — never the whole scene's failure (Law 9: said, not swallowed) */
         try { body = createBody(entry.loaded, {scale:LOOK.bodyScale,shadows:LOOK.shadows,rim:rimOf(u),registry:platform.registry,loadHead:platform.loadHead||loadHead,onError:error=>platform.onError?.(look,error,{appearance:true})}) } catch (err) { entry.state = 'failed'; entry.error = err; platform.onError?.(look, err); continue }
         group.add(body.stage); bodies.set(u.id, body); changed = true
-        body.life = u.life; const r = rest(body, u.life); if (r) body.play(r, { snap: true })
+        body.life = u.life; body.deadFor = Infinity; const r = rest(body, u.life); if (r) body.play(r, { snap: true })
         body.face = body.yaw = restFace(u); body.hex = u.hex; body.side = u.side
         if (el) place(el, body.stage.position)
         body.last = body.stage.position.clone()
@@ -534,8 +538,10 @@ export function createCast(V, scene, toWorld, platform = {}) {
       if (body.life !== u.life) {
         const was = body.life; body.life = u.life
         if (u.life === 'standing') { if (body.has('idle')) body.play('idle') }
-        else if (was === 'standing') body.play('death')
-      }
+        /* viewer.attack-impact-timing: a body already falling (it fell at the blow that killed it) goes on falling */
+        else if (was === 'standing' && !body.falling) body.play('death')
+        body.falling = false; body.deadFor = u.life === 'dead' ? 0 : Infinity
+      } else if (u.life === 'dead') body.deadFor += step
       body.base = rest(body, u.life) || body.motion
       const E = V.layers.UEL.get(u.id)
       const walking = u.life === 'standing' && !!(E && E.walk && E.walk.playState !== 'finished' && E.walk.playState !== 'idle')
@@ -588,20 +594,45 @@ export function createCast(V, scene, toWorld, platform = {}) {
       /* viewer.side-facing: "You also turn to face anybody who attacks you" */
       const T = bodies.get(t); if (T && V.S.U[t]?.life === 'standing') faceToward(T, A.stage.position)
     },
-    /** the fold's flash (damage landed): the hit reaction, or a recoil where the look has none */
+    /** viewer.attack-impact-timing: which motion a unit's attack of a kind plays and where that clip's moment is — its blow, or
+        the release of its shot — in the clip's seconds (the pack's own: tools/character-models.mjs MOMENTS, per clip); a body
+        with neither motion leans, and its moment is the lean's furthest; null for a unit with no body (its token lunges) */
+    moment(id, kind) {
+      const B = bodies.get(id); if (!B) return null
+      const motion = kind === 'ranged' && B.has('ranged') ? 'ranged' : B.has('attack') ? 'attack' : null
+      if (!motion) return { motion: 'lean', at: LUNGE / 2, of: LUNGE, clip: null, source: 'lean' }
+      const mo = B.look.moments?.[motion]
+      if (!mo) throw new Error(`character models: ${B.look.id} has no moment for its ${motion} motion (re-pack: tools/character-models.mjs)`)
+      return { motion, ...mo }
+    },
+    /** the attacker and its target turn to each other (the strike's own turn, before the strike) */
+    face(a, t) {
+      const A = bodies.get(a), T = bodies.get(t)
+      const p = whereIs(t, new THREE.Vector3()); if (A && p && V.S.U[a]?.life === 'standing') faceToward(A, p)
+      if (A && T && V.S.U[t]?.life === 'standing') faceToward(T, A.stage.position)
+    },
+    /** the fold's flash (damage landed): the hit reaction, or a recoil where the look has none; true when the body reacted */
     flinch(id) {
-      const B = bodies.get(id); if (!B || V.S.U[id]?.life !== 'standing') return
+      const B = bodies.get(id); if (!B || V.S.U[id]?.life !== 'standing' || B.falling) return false
       if (B.has('hit')) B.play('hit'); else B.recoilStart()
+      return true
+    },
+    /** viewer.attack-impact-timing (engine DECISIONS.md 2026-10-03 'a death is tied to the strike'): the body starts its death NOW,
+        at the blow that the log goes on to say killed it or brought it down; when the fold's life changes it goes on falling */
+    fall(id) {
+      const B = bodies.get(id); if (!B || V.S.U[id]?.life !== 'standing' || B.falling) return false
+      if (!B.play('death')) return false
+      B.falling = true; return true
     },
     /** viewer.shield-guard-motion: the fold's guard (a shield power used) — the body raises its shield, once, and returns to its rest;
         a body with no raise-the-shield clip plays nothing (it is listed: tools/character-models.mjs --list) */
     guard(id) {
-      const B = bodies.get(id); if (!B || V.S.U[id]?.life !== 'standing') return
-      B.play('guard')
+      const B = bodies.get(id); if (!B || V.S.U[id]?.life !== 'standing' || B.falling) return false
+      return B.play('guard')
     },
     /** a seek: every body at its resting pose now — the dead and the downed at the death's end */
     snap() {
-      for (const [id, B] of bodies) { const u = V.S.U[id]; if (!u) continue; B.setAfflictions(u); B.life = u.life; const r = rest(B, u.life); if (r) B.play(r, { snap: true }); B.yaw = B.face; B.hex = u.hex }
+      for (const [id, B] of bodies) { const u = V.S.U[id]; if (!u) continue; B.setAfflictions(u); B.life = u.life; B.falling = false; B.deadFor = Infinity; const r = rest(B, u.life); if (r) B.play(r, { snap: true }); B.yaw = B.face; B.hex = u.hex }
     },
     dispose() {
       if (disposed) return; disposed = true
