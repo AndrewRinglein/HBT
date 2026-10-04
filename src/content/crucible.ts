@@ -12,7 +12,9 @@
 // fix.opening-draft). The kingdom reads the same file, so the first hero's rule and the Crucible's pool, steps, floors,
 // shapes and badges have one owner. The engine does not export these numbers (they are private to opening-party.ts), so
 // they are read where the engine reads them — not through src/engine.ts (kingdom SWITCHES.md
-// openingDraftRuleKingdomSide). The procedure that rolls them is src/core/draft-modifiers.ts.
+// openingDraftRuleKingdomSide). The procedure that rolls them is the ENGINE's (firstHeroDraftOf, draftHandOf — called
+// through src/engine.ts by src/core/draft-modifiers.ts; fix.opening-draft-one-rule, 2026-10-04): what is read here is
+// what the draft SCREEN lists (src/ui/draft.ts) and a badge's own row, never the rolling.
 
 import OPENING from '../../../progression/OPENING-PARTY.json'
 import { BADGE_LINES, STAT_LINES } from './generated/progress.js'

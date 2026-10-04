@@ -110,12 +110,15 @@ export type { OpeningCarry } from '../../engine/src/content/opening-party.js'
 // Widened 2026-10-03 for kingdom.opening-draft-modifiers (engine DECISIONS.md 2026-09-28 'no Health minimum … the first hero
 // gets Leadership and a random positive badge; the draft pick is weighted'): the engine's own opening draft, read-only —
 // openingHeroesOf (the party a replicate drafts, each hero with its rolled badges and points) and draftScoreOf (the weighted
-// score of a rolled offer). The run cannot CALL them for its own draft — openingHeroesOf draws which rows are offered and
-// takes the best itself, and the two functions that roll a given row are private to that file (kingdom SWITCHES.md
-// openingDraftRuleKingdomSide) — so they are here for the check that holds the kingdom's procedure
-// (src/core/draft-modifiers.ts) to the engine's: test/opening-draft-modifiers.test.ts. isStatName is the engine's own test
-// of which stats a unit mod may name: a rolled point it refuses is kept on the hero and never handed to a battle.
-export { openingHeroesOf, draftScoreOf } from '../../engine/src/content/opening-party.js'
+// score of a rolled offer) — openingHeroesOf draws which rows are offered and takes the best itself, so the run does not
+// call it for its own draft. isStatName is the engine's own test of which stats a unit mod may name.
+// Widened 2026-10-04 for fix.opening-draft-one-rule (engine queue): the two functions that roll a GIVEN hero, which were
+// private to that file — firstHeroDraftOf (the first hero's bonuses for the hero the player chose) and draftHandOf (each
+// of the three offered heroes as the Crucible rolls it), on whatever dice the caller hands in (DraftRoller). The run's
+// draft is these (src/core/draft-modifiers.ts calls them and rolls nothing itself); the kingdom's own copy of the
+// procedure is gone (kingdom SWITCHES.md openingDraftRuleKingdomSide, answered).
+export { openingHeroesOf, draftScoreOf, firstHeroDraftOf, draftHandOf } from '../../engine/src/content/opening-party.js'
+export type { DraftRoller, DraftBase, DraftRolls } from '../../engine/src/content/opening-party.js'
 export { isStatName } from '../../engine/src/core/stats.js'
 
 /**

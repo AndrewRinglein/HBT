@@ -10,10 +10,11 @@
 // stats differ from their rows by their rolled modifiers, and the one picked keeps them in battle; closing and reopening
 // the page shows the same heroes and modifiers".
 //
-// ONE RULE: the engine rolls its own test party by this rule (engine/src/content/opening-party.ts, fix.opening-draft). Its
-// two rolling functions are private to that file, so the kingdom runs the same procedure over the same published numbers
-// (progression/OPENING-PARTY.json) on the run's own stream (kingdom SWITCHES.md openingDraftRuleKingdomSide) — and the
-// first test here holds the two to one rule: fed the engine's stream, the kingdom's procedure gives the engine's heroes.
+// ONE RULE, ONE HOME (fix.opening-draft-one-rule, engine queue, 2026-10-04): the engine rolls its own test party by this
+// rule (engine/src/content/opening-party.ts) and exports the two functions that roll a given hero; the run's draft CALLS
+// them through src/engine.ts on the run's own stream, and src/core/draft-modifiers.ts rolls nothing itself (kingdom
+// SWITCHES.md openingDraftRuleKingdomSide, answered). The first test here holds that: the kingdom's draft is the engine's
+// function — and a run shows what it showed before the procedure moved (test/fixtures/opening-draft-one-rule.json).
 // The page half is tools/opening-run-six.verify.mjs (test/opening-run-six.test.ts), on the built BATTLE-SANDBOX.html.
 import { describe, it, expect } from 'vitest'
 import { readFileSync } from 'node:fs'
@@ -30,7 +31,7 @@ import { heroRowOf } from '../src/content/heroes.js'
 import { ABBOTOWN_MAP } from '../src/content/conquest.js'
 import { draftScreen } from '../src/ui/draft.js'
 import { runOf, runSaveOf } from '../src/ui/opening-run.js'
-import { BADGES, UNITS, encounterDef, openingHeroesOf, draftScoreOf } from '../src/engine.js'
+import { BADGES, UNITS, encounterDef, openingHeroesOf, draftScoreOf, firstHeroDraftOf, draftHandOf } from '../src/engine.js'
 import { makeRng, rootSeedOf, rollBelow, roll100 } from '../../engine/src/core/rng.js'
 
 const FIRST = OPENING.firstHero, CRUCIBLE = OPENING.crucible, ROLL_SOURCE = OPENING.draftScore.rollSource
@@ -78,13 +79,27 @@ function offersOn(html: string): { id: string; attrs: Record<string, string>; te
 }
 
 describe('kingdom.opening-draft-modifiers — the first hero by description, later drafts with the Crucible\'s modifiers', () => {
-  it('ONE RULE: on the engine\'s own stream the kingdom\'s procedure rolls the engine\'s opening party — every badge, point and score', () => {
+  // LAW 10 — rewritten 2026-10-04 by fix.opening-draft-one-rule, as the item says: "The parity test becomes a test that the
+  // kingdom's draft is the engine's function." This read 'ONE RULE: on the engine's own stream the kingdom's procedure rolls
+  // the engine's opening party — every badge, point and score' and held a SECOND copy of the procedure to the engine's,
+  // replicate by replicate. The copy is gone; the claim it guarded — one rule — is now held three ways, each stronger than
+  // parity: the kingdom's two functions return exactly what the engine's two return on the same dice; fed the engine's own
+  // stream they still give the engine's opening party, every badge, point and score (the old assertion, kept whole); and
+  // the file that used to hold the procedure throws no dice and reads no table.
+  it('ONE RULE, ONE HOME: the kingdom\'s draft is the engine\'s function — the same rolls on the same dice, and on the engine\'s own stream the engine\'s opening party, every badge, point and score', () => {
     const baseOf = (id: string) => (stat: string) => ((UNITS[id] as unknown as Record<string, number | undefined>)[engineStat(stat)]) ?? 0
-    for (let replicate = 1; replicate <= 60; replicate++) {
+    const rollerOf = (replicate: number) => {
       const rng = makeRng(rootSeedOf(0, 0, replicate))
-      const roller = { below: (n: number, ...keys: number[]) => rollBelow(rng, n, 'draft', ...keys), d100: (...keys: number[]) => roll100(rng, 'draft', ...keys) }
+      return { below: (n: number, ...keys: number[]) => rollBelow(rng, n, 'draft', ...keys), d100: (...keys: number[]) => roll100(rng, 'draft', ...keys) }
+    }
+    /** the engine's rolls in the shape the run keeps them: the unit mods as a plain list */
+    const kept = (d: { badges: readonly string[]; rolls: readonly unknown[]; mods: { stats?: readonly unknown[] }; unfielded: readonly unknown[] }) => ({ badges: d.badges, rolls: d.rolls, mods: d.mods.stats ?? [], unfielded: d.unfielded })
+    for (let replicate = 1; replicate <= 60; replicate++) {
+      const roller = rollerOf(replicate)
       const engine = openingHeroesOf(replicate, 6)
       const first = firstHeroDraftedOf(roller, baseOf(engine[0]!.id))
+      // the kingdom's function is the engine's: the same dice, the same rolls
+      expect(first, `replicate ${replicate}: the first hero is the engine's firstHeroDraftOf`).toEqual(kept(firstHeroDraftOf(rollerOf(replicate), baseOf(engine[0]!.id))))
       expect({ badges: first.badges, rolls: first.rolls, mods: first.mods, unfielded: first.unfielded }, `replicate ${replicate}: the first hero`)
         .toEqual({ badges: engine[0]!.badges, rolls: engine[0]!.rolls, mods: engine[0]!.mods.stats ?? [], unfielded: engine[0]!.unfielded })
       for (let ordinal = 1; ordinal < engine.length; ordinal++) {
@@ -97,6 +112,26 @@ describe('kingdom.opening-draft-modifiers — the first hero by description, lat
         expect({ badges: mine.badges, rolls: mine.rolls, mods: mine.mods, unfielded: mine.unfielded }, `replicate ${replicate}, draft ${ordinal + 1}: the one the engine took`)
           .toEqual({ badges: taken.badges, rolls: taken.rolls, mods: taken.mods.stats ?? [], unfielded: taken.unfielded })
       }
+      // a hand on fresh dice: the kingdom's function returns exactly the engine's
+      const offered = engine[1]!.offered, carried = engine[0]!.badges
+      expect(handDraftedOf(rollerOf(replicate), offered.map(baseOf), 1, carried), `replicate ${replicate}: a hand is the engine's draftHandOf`)
+        .toEqual(draftHandOf(rollerOf(replicate), offered.map(baseOf), 1, carried).map(kept))
+    }
+    // and the file that held the second copy holds none: no dice thrown, no table read
+    const src = readFileSync('src/core/draft-modifiers.ts', 'utf8').split('\n').filter((l) => !/^\s*(\/\/|\*|\/\*)/.test(l)).join('\n')
+    expect(src).not.toMatch(/\.below\(|\.d100\(|statPool|modTypes|badgeCount|rarityWeight|content\/crucible/)
+    expect(src).toMatch(/firstHeroDraftOf\(/); expect(src).toMatch(/draftHandOf\(/)
+  })
+
+  it('a run shows what it showed before the procedure moved: the same first-hero bonuses and the same later-draft offers for the same run seed (seed 11 is the page test\'s)', () => {
+    const frozen = JSON.parse(readFileSync('test/fixtures/opening-draft-one-rule.json', 'utf8')) as { runs: { seed: number; first: unknown[]; second: unknown[] }[] }
+    expect(frozen.runs.map((r) => r.seed)).toEqual(SEEDS)
+    const handOf = (ctx: Ctx) => listDraftOffers(ctx.campaign).map((row) => { const h = draftedHeroOf(ctx.campaign, row.id); return { id: row.id, badges: h.badges, itemSlots: h.itemSlots, drafted: h.drafted } })
+    for (const run of frozen.runs) {
+      const first = atFirstDraft(run.seed)
+      expect(JSON.parse(JSON.stringify(handOf(first))), `seed ${run.seed}: the three first heroes as each would join`).toEqual(run.first)
+      const second = atSecondDraft(run.seed)
+      expect(JSON.parse(JSON.stringify(handOf(second))), `seed ${run.seed}: the draft after it`).toEqual(run.second)
     }
   })
 
