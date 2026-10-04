@@ -46,7 +46,10 @@ ALLOW_EXEMPTION_GROWTH=1 …       only for the one commit that records a review
 `engine/DECISIONS.md` "combat is tested only when the engine changed; a visual change does not
 re-run the fights" and "the same for content and kingdom changes: each kind of change runs its own
 tests"). The viewer's code is `src/`, `tools/`, `test/`, `battles/`, `art-src/`, `package.json`,
-`package-lock.json` and `tsconfig.json` — the one definition is `../engine/tools/code-stamp.mjs`.
+`package-lock.json`, `tsconfig.json` and `vitest.config.ts` (how many workers the page tests in
+`test/` run on: the engine's cap, `../engine/tools/gate-progress.mjs` `vitestWorkersFor` — four, never
+more than the CPUs; `VITEST_MAX_WORKERS` still overrides; nobody sets it by hand —
+tool.viewer-vitest-workers, 2026-10-04) — the one definition is `../engine/tools/code-stamp.mjs`.
 `generated/` (the dumps, the prepared art), `BATTLE-VIEWER.html`, documents and logs are not.
 
 - A viewer **code** change lands as before: every part on this tree, then `--land`.
