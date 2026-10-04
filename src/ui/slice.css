@@ -41,6 +41,10 @@ td.n{text-align:right;font-variant-numeric:tabular-nums}
 .pick .opt.on{border-color:var(--gold)}
 .pick .opt b{display:block}
 .pick .opt small{color:var(--faint)}
+/* kingdom.opening-hero-card-art: every draft card shows its hero's card art (the 2:3 portrait), above its words */
+.pick .opt .art{width:100%;max-width:240px;aspect-ratio:2/3;margin:0 auto 10px;border:1px solid #6b5a3e;border-radius:4px;overflow:hidden;background:#1c1917}
+.pick .opt .art img{display:block;width:100%;height:100%;object-fit:cover}
+.pick .opt .art .noart{width:100%;height:100%}
 /* the draft (kingdom.opening-draft-modifiers): the first hero by description only; a later draft's heroes with their stats, rolled points and badges */
 .pick .opt .who{margin:8px 0 0;font-size:13px;line-height:1.45;color:var(--ink)}
 .pick .opt .quote{margin:6px 0 0;font-size:12.5px;font-style:italic;color:var(--faint)}
