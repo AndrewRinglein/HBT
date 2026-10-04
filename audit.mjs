@@ -365,8 +365,33 @@ if(D.bestiaryTest){ const B=D.bestiaryTest;
   // movement ACTIONS are the mirror: they must read the stat, and must not be tagged bonus
   for(const p of D.powers.filter(x=>x.movementAction&&!x.bonusMove))
     if(!/up to your Movement/.test(p.description||'')) add('movement-action-does-not-read-the-stat',p.name,p.id);
+  // R61b GENERAL-POOL BONUS MOVES. Ruled 2026-10-03 (engine/DECISIONS.md, the three Back Flip entries):
+  //     Back Flip is "a general rogue and ranger class power" — a bonus move a hero UNLOCKS at a power
+  //     grant, never a class's starting bonus move. The row says so with `generalPoolOf`, and is held to
+  //     the family's clauses like the five above. It may not also be granted to a class from the start.
+  { const POOLED={'power.back-flip':{stamina:1,cooldown:4,hexes:1,pool:['class.rogue','class.ranger']}};
+    for(const [id,want] of Object.entries(POOLED)){
+      const p=D.powers.find(x=>x.id===id);
+      if(!p){ add('bonus-move-missing',id,'the power does not exist'); continue; }
+      if(p.bonusMove!==true) add('bonus-move-missing-flag',p.name,'bonusMove:true');
+      if(p.stamina!==want.stamina) add('bonus-move-wrong-stamina',p.name,'stamina '+p.stamina+', want '+want.stamina);
+      if(p.cooldown!==want.cooldown) add('bonus-move-wrong-cooldown',p.name,'cooldown '+p.cooldown+', want '+want.cooldown);
+      if(p.universalToAllUnits) add('bonus-move-still-on-enemies',p.name,'an enemy carries ONE movement power in its data row, by ruling');
+      const d=p.description||'';
+      if(!/does NOT add your Movement stat/.test(d)) add('bonus-move-may-read-the-Movement-stat',p.name,'must say it does not');
+      if(/up to your Movement/.test(d)) add('bonus-move-scales-with-Movement',p.name,'that is a movement action, not a bonus move');
+      if(!d.includes('exactly '+want.hexes+' hex')) add('bonus-move-wrong-distance',p.name,'want exactly '+want.hexes+' hex(es)');
+      for(const must of ['provokes nothing','terrain cost is irrelevant'])
+        if(!d.includes(must)) add('bonus-moves-have-drifted-apart',p.name,'lost: "'+must+'"');
+      const pool=p.generalPoolOf||[];
+      if(JSON.stringify(pool)!==JSON.stringify(want.pool)) add('general-pool-move-wrong-classes',p.name,'generalPoolOf '+JSON.stringify(pool)+', want '+JSON.stringify(want.pool));
+      if((p.grantedToClasses||[]).length) add('general-pool-move-granted-from-the-start',p.name,(p.grantedToClasses||[]).join(' ')+' — it is unlocked at a power grant, never a starting move');
+    }
+    for(const p of D.powers.filter(x=>x.generalPoolOf&&!POOLED[x.id]))
+      add('general-pool-power-with-no-ruling',p.name,p.id+' — add it to POOLED with the ruling that put it in a general pool');
+  }
   // GEAR MUST NOT UNDO THE CLASS RULE.
-  for(const it of D.items){ const g=(it.grants||[]).filter(x=>/^power\.(flight|sidestep|side-roll|leap|focus|devotion)/.test(x));
+  for(const it of D.items){ const g=(it.grants||[]).filter(x=>/^power\.(flight|sidestep|side-roll|back-flip|leap|focus|devotion)/.test(x));
     if(g.length && !it.classRestriction)
       add('gear-grants-a-movement-power-to-anyone',it.name,g.join(' ')+' — unrestricted, so a Mage or Priest can buy an escape the class ruling denies it'); }
 }

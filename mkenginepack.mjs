@@ -309,6 +309,9 @@ const MOVE_RIDERS = [
   [/Lose (\d) Stamina Max for the rest of the Battle, and gain (\d) Stamina\./, (m) => [{ kind: 'loseMaxStamina', value: parseInt(m[1], 10) }, { kind: 'stamina.gain', value: parseInt(m[2], 10), who: 'self' }]],
   // C20 (engine fix.one-effect-vocabulary, 2026-10-01): the one duration set says end of Activation — this was a MOVE_GAP
   [/gain \+(\d) Strength until the end of your Activation/, (m) => ({ kind: 'statMod', stat: 'strength', value: parseInt(m[1], 10), until: 'endOfActivation' })],
+  // movement.back-flip (engine, 2026-10-04): "You gain +20 Dodge until the end of your next Activation." — the
+  // lifetime Raise Guard's sentence already compiles to (endOfNextActivation), on a move's rider; the mover's own.
+  [/You gain \+(\d+) Dodge until the end of your next Activation\./, (m) => ({ kind: 'statMod', stat: 'dodge', value: parseInt(m[1], 10), until: 'endOfNextActivation' })],
 ];
 const MOVE_GAPS = [
   [/gain (\d) Faith/, 'no Faith quantity in the engine'],
@@ -339,11 +342,33 @@ function compileMoves(powers) {
     const costM = d.match(/[Cc]osts (\d) Stamina/); if (costM && parseInt(costM[1], 10) !== p.stamina) { gap(p.id, `says 'Costs ${costM[1]} Stamina' but stamina is ${p.stamina}`, 'content disagrees with itself'); continue; }
     if (/there is no cooldown/.test(d) && p.cooldown !== 0) { gap(p.id, `says 'no cooldown' but cooldown is ${p.cooldown}`, 'content disagrees with itself'); continue; }
     if (/usable every other Turn/.test(d) && p.cooldown !== 1) { gap(p.id, `says 'every other Turn' but cooldown is ${p.cooldown}`, 'content disagrees with itself'); continue; }
+    const cdM = d.match(/a cooldown of (\d+)/); if (cdM && parseInt(cdM[1], 10) !== p.cooldown) { gap(p.id, `says 'a cooldown of ${cdM[1]}' but cooldown is ${p.cooldown}`, 'content disagrees with itself'); continue; }
     out[p.id] = { id: p.id, name: p.name, ...actionSlot(p), ...base, ...(effects.length ? { effects } : {}), staminaCost: p.stamina, cooldown: p.cooldown };
   }
   return out;
 }
 const moves = compileMoves(SETTLED.powers || []);
+// THE GENERAL POOL (movement.back-flip, engine, 2026-10-04; levels.rules.draft: "Each power grant offers
+// three: two from the specialty, one from the general pool"). A power row's `generalPoolOf` names the
+// classes whose general pool it is in; the pack carries the pool by class — pack.generalPool — in the
+// order the rows are authored. A general-pool power is never also that class's from the start, and a
+// row the pack does not carry (a movement power that did not compile) is in no pool: it is a named gap.
+function compileGeneralPool(powers, compiled) {
+  const out = {};
+  for (const p of powers) {
+    if (p.generalPoolOf === undefined) continue;
+    if (!Array.isArray(p.generalPoolOf) || !p.generalPoolOf.length || p.generalPoolOf.some((c) => typeof c !== 'string' || !/^class\.[a-z-]+$/.test(c)) || new Set(p.generalPoolOf).size !== p.generalPoolOf.length)
+      throw new Error(`settled.json: ${p.id} generalPoolOf must list class.* ids, each once`);
+    for (const c of p.generalPoolOf) {
+      if (!(D.classes || []).some((k) => k.id === c)) throw new Error(`settled.json: ${p.id} is in the general pool of '${c}', which is not a class`);
+      if ((p.grantedToClasses || []).includes(c)) throw new Error(`settled.json: ${p.id} is in ${c}'s general pool AND granted to it from the start — one or the other`);
+    }
+    if (!compiled[p.id]) { gap(p.id, `in the general pool of ${p.generalPoolOf.join(', ')} but the pack carries no row for it`, 'general pool: the power did not compile'); continue; }
+    for (const c of p.generalPoolOf) (out[c] = out[c] || []).push(p.id);
+  }
+  return out;
+}
+const generalPool = compileGeneralPool(SETTLED.powers || [], moves);
 // The hooks the engine fires are the engine's list (ENGINE_HOOKS, read from its vocabulary).
 const TRIG_HOOKS = ENGINE_HOOKS;
 
@@ -981,8 +1006,9 @@ function settledAttackExtras(a, unitId) {
 //          your Spirit, rounded down" — engine SWITCHES.md mercyHalfRoundsDown).
 //   Blast: "Deal magic damage equal to your Magic[ + B] to every unit in the blast[, and those seven hexes
 //          become burning|frost]." on a row that authors a `burst` -> that burst (the Storm shape), checked
-//          against the sentence (radius 1, every unit, one Magic packet of B); the ground clause is a NAMED
-//          gap on the row — a burst paints no ground (engine capability.burst-paints-ground) — never dropped.
+//          against the sentence (radius 1, every unit, one Magic packet of B); the ground clause is the
+//          burst's own `paints` (the layer it leaves on its hexes — engine capability.burst-paints-ground,
+//          2026-10-04), held to the sentence both ways. It was a named gap on the row until then.
 // A compiled power may carry `gaps` ("<clause> — <what it needs>"); POWER_GAPS is the same list split, for the
 // callers that report into gen/enemy-pack-gaps.json.
 const POWER_GAPS = new Map();
@@ -1001,7 +1027,9 @@ function compiledPowerOf(p, unitId) {
       if (tgt !== `a hex within ${range[1]} hexes and every hex adjacent to it` || burst.shape.kind !== 'radius' || burst.shape.radius !== 1 || burst.side !== 'any' || burst.heal !== undefined
         || pk.length !== 1 || pk[0].stat !== 'magic' || pk[0].damageType !== 'magic' || pk[0].amount !== +(m[1] ?? 0) || pk[0].powerScale !== undefined)
         throw Error(`Item burst '${p.id}' disagrees with its authored sentence`);
-      if (m[2]) found.push({ clause: `those seven hexes become ${m[2]}`, needs: 'a burst paints no ground (capability.burst-paints-ground)' });
+      // engine capability.burst-paints-ground (2026-10-04): the ground clause is the profile's `paints` — the layer the
+      // burst leaves on its hexes. The sentence and the field must say the same thing, both ways; it was a named gap.
+      if ((burst.paints ?? null) !== (m[2] ? `layer.${m[2]}` : null)) throw Error(`Item burst '${p.id}' disagrees with its authored sentence: the ground it leaves`);
     }
     POWER_GAPS.set(p.id, found);
     return { ...base, range: +range[1], burst, ...(found.length ? { gaps: found.map((x) => `${x.clause} — ${x.needs}`) } : {}) };
@@ -1032,6 +1060,16 @@ function compiledPowerOf(p, unitId) {
       if (!pm || !STAT[pm[2]]) return null;
       effects.push({ kind: 'statMod', stat: STAT[pm[2]], value: +pm[1], until: 'endOfNextActivation', who: 'self' });
     }
+    return { ...base, range: 0, target: { select: 'self', side: 'any' }, effects };
+  }
+  // engine capability.counterattack-and-fend (2026-10-04; engine DECISIONS.md 2026-09-28 'counterattack, special free
+  // attacks …'): "Gain Counterattack[ with +N Accuracy] until the end of your next Turn." / "Gain Fend[ …]" — the stat
+  // the engine reads as that special free attack being up, and its own Accuracy stat, as two self statMods with the
+  // existing end-of-next-Turn lifetime. No new effect and no new duration.
+  if ((m = desc.match(/^Gain (Counterattack|Fend)(?: with \+(\d+) Accuracy)? until the end of your next Turn\.$/)) && tgt === 'self') {
+    const stat = m[1] === 'Counterattack' ? 'counterattack' : 'fend';
+    const effects = [{ kind: 'statMod', stat, value: 1, until: 'endOfNextTurn', who: 'self' }];
+    if (m[2]) effects.push({ kind: 'statMod', stat: stat + 'Accuracy', value: +m[2], until: 'endOfNextTurn', who: 'self' });
     return { ...base, range: 0, target: { select: 'self', side: 'any' }, effects };
   }
   return null;
@@ -2214,18 +2252,23 @@ function moveBursts(rows, destination) {
     delete rows[id];
   }
 }
+// engine capability.burst-paints-ground (2026-10-04): the layer a burst paints is one of the engine's ground layers
+// (../engine/generated/vocabulary.json `layers`, read, never copied).
+const GROUND_LAYERS = new Set((VOCAB.layers || []).map((l) => l.id));
+const checkBurstGround = (rows) => { for (const row of Object.values(rows)) if (row.burst?.paints !== undefined && !GROUND_LAYERS.has(row.burst.paints)) throw Error(`Burst '${row.id}' paints '${row.burst.paints}', which is not a ground layer of the engine`); };
 const classPowerRows = Object.values(classPowers);
 moveBursts(classPowers, authoredBursts);
 moveBursts(authoredAttacks, authoredBursts); moveBursts(authoredAbilities, authoredBursts);
 moveBursts(test.attacks, testBursts); moveBursts(test.abilities, testBursts);
 test.bursts = testBursts;
+checkBurstGround(authoredBursts); checkBurstGround(testBursts);
 
 // fix.codex-numbers (finding K7; DECISIONS.md 2026-09-28: "XP per kill is 2 / 5 / 15 by tier"): the price list rides the pack beside the tiers
 const xpByTier = AUTH.xpByTier;
 if (!xpByTier || Object.keys(xpByTier).some((k) => !/^[1-9]$/.test(k)) || Object.values(xpByTier).some((v) => !Number.isSafeInteger(v) || v < 0)) throw new Error('gen/enemies-authored.json: xpByTier must map tiers to whole XP');
 for (const u of authoredEnemies) if (u.tier !== undefined && xpByTier[u.tier] === undefined) throw new Error(`${u.typeId}: tier ${u.tier} has no price in xpByTier`);
 const pack = { note: D.testCohort.note, xpByTier, heroes, enemies, authoredEnemies, authoredAttacks, authoredAbilities, authoredBursts, prologueParty, alphaTeam, critChart: compileCritChart(SETTLED.critChart), statuses, moves, items, test,
-  classPowers, specialties, levels, enchanted, derivedItems, encounters, badges, maps };
+  classPowers, specialties, levels, generalPool, enchanted, derivedItems, encounters, badges, maps };
 
 for (const rows of [authoredAttacks, authoredAbilities, classPowers, moves, test.attacks, test.abilities, test.moves]) {
   for (const row of Object.values(rows)) {

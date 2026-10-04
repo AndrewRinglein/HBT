@@ -96,4 +96,26 @@
   "note": "rule.bursts: healing-only burst is blocked by high props but not attenuated by low props; no onBurst damage reaction."
 },
   {"id":"power.test-lantern","name":"Lantern (TEST)","range":0,"staminaCost":0,"cooldown":0,"target":{"select":"area","side":"enemy","radius":3,"origin":"self"},"effects":[{"kind":"reveal"}],"note":"capability.stealth (engine, 2026-09-28): the reveal effect kind on a TEST power - every enemy within 3 hexes of the caster has any status that breaks on a reveal broken, and nobody further. The radius is the power's own area targeting (the one targeting vocabulary). The Codex reveal powers (Flush Them Out, Spectral Sight, Second Sight, Raise the Torch, Flare, Brilliant Torch, Scouting) compile to this kind later. No campaign claim."}
+  ,{
+    "id": "power.test-fend",
+    "name": "Fend (TEST)",
+    "range": 0,
+    "staminaCost": 1,
+    "cooldown": 7,
+    "free": true,
+    "target": {
+      "select": "self",
+      "side": "any"
+    },
+    "effects": [
+      {
+        "kind": "statMod",
+        "stat": "fend",
+        "value": 1,
+        "until": "endOfNextTurn",
+        "who": "self"
+      }
+    ],
+    "note": "engine capability.counterattack-and-fend (2026-10-04): Fend, the second special free attack a power puts up \u2014 the same statMod shape as the Longsword's Counterattack with the other stat, pure data. The numbers are the ruled trinket's (engine DECISIONS.md 2026-09-28 'two new trinkets': free use, 1 Stamina, cooldown 7, Fend until the end of your next turn); the trinket itself has no Codex row yet. Test data only."
+  }
 ]

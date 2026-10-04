@@ -318,7 +318,7 @@
  "shapes": [
   {
    "name": "self",
-   "uses": 154,
+   "uses": 156,
    "ids": [
     "item.loaded-dice-of-mirran",
     "item.mug-of-endless-dregs",
@@ -1079,7 +1079,7 @@
   },
   {
    "name": "grant a stat until end of next Turn",
-   "uses": 47,
+   "uses": 48,
    "ids": [
     "item.rapier",
     "item.mirage-dagger",
@@ -1383,6 +1383,28 @@
    ]
   },
   {
+   "name": "move WITHOUT provoking",
+   "uses": 16,
+   "ids": [
+    "power.crusader.holy-charge",
+    "power.assassin.dodge-behind",
+    "power.shadowdancer.blink",
+    "power.shadowbound.shadow-step",
+    "power.grand-master.grand-charge",
+    "power.hound.run-them-down",
+    "power.drake.stoop",
+    "power.direbeast.trample",
+    "power.warbeast.charge-together",
+    "power.wyrmling.take-wing",
+    "power.move-ignoring-zoc",
+    "power.sidestep",
+    "power.side-roll",
+    "power.back-flip",
+    "power.leap",
+    "power.stand-up"
+   ]
+  },
+  {
    "name": "regain stamina",
    "uses": 15,
    "ids": [
@@ -1401,27 +1423,6 @@
     "enchant.abundant",
     "enchant.bloodthirsty",
     "enchant.death"
-   ]
-  },
-  {
-   "name": "move WITHOUT provoking",
-   "uses": 15,
-   "ids": [
-    "power.crusader.holy-charge",
-    "power.assassin.dodge-behind",
-    "power.shadowdancer.blink",
-    "power.shadowbound.shadow-step",
-    "power.grand-master.grand-charge",
-    "power.hound.run-them-down",
-    "power.drake.stoop",
-    "power.direbeast.trample",
-    "power.warbeast.charge-together",
-    "power.wyrmling.take-wing",
-    "power.move-ignoring-zoc",
-    "power.sidestep",
-    "power.side-roll",
-    "power.leap",
-    "power.stand-up"
    ]
   },
   {
@@ -2638,7 +2639,7 @@
   },
   {
    "name": "until the end of your next Turn",
-   "uses": 40,
+   "uses": 41,
    "ids": [
     "item.rapier",
     "item.ghost-thread-cloak",
@@ -2679,7 +2680,7 @@
     "power.serpent.shed",
     "power.stalker.patience",
     "power.wyrmling.kindle",
-    "enchant.recklessness"
+    "power.longsword.counterattack"
    ]
   },
   {

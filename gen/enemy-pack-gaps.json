@@ -102,26 +102,6 @@
    "needs": "trigger shape unparsed"
   },
   {
-   "unit": "hero.base.mage-thinking",
-   "what": "item.frost-staff grants power.frost-staff.frost-nova: those seven hexes become frost",
-   "needs": "a burst paints no ground (capability.burst-paints-ground)"
-  },
-  {
-   "unit": "hero.base.mage-sexy",
-   "what": "item.fire-staff grants power.fire-staff.fireball: those seven hexes become burning",
-   "needs": "a burst paints no ground (capability.burst-paints-ground)"
-  },
-  {
-   "unit": "hero.base.mage-fire",
-   "what": "item.fire-staff grants power.fire-staff.fireball: those seven hexes become burning",
-   "needs": "a burst paints no ground (capability.burst-paints-ground)"
-  },
-  {
-   "unit": "hero.base.mage-fireaura",
-   "what": "item.fire-staff grants power.fire-staff.fireball: those seven hexes become burning",
-   "needs": "a burst paints no ground (capability.burst-paints-ground)"
-  },
-  {
    "unit": "hero.base.priest-robes",
    "what": "item.peddlers-vest statModifier 'itemSlots' 1",
    "needs": "stat: itemSlots (no UnitDef field)"
@@ -545,16 +525,6 @@
    "unit": "item.elfbow",
    "what": "attack.elfbow.elf-shot onHit: \"gain 1 Precision\"",
    "needs": "trigger shape unparsed"
-  },
-  {
-   "unit": "item.fire-staff",
-   "what": "power.fire-staff.fireball: those seven hexes become burning",
-   "needs": "a burst paints no ground (capability.burst-paints-ground)"
-  },
-  {
-   "unit": "item.frost-staff",
-   "what": "power.frost-staff.frost-nova: those seven hexes become frost",
-   "needs": "a burst paints no ground (capability.burst-paints-ground)"
   },
   {
    "unit": "item.earth-staff",

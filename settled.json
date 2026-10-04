@@ -651,6 +651,29 @@
    "bonusMove": true
   },
   {
+   "id": "power.back-flip",
+   "name": "Back Flip",
+   "specialty": null,
+   "class": null,
+   "stamina": 1,
+   "cooldown": 4,
+   "warmup": 0,
+   "free": false,
+   "movementAction": true,
+   "universal": false,
+   "universalToAllUnits": false,
+   "generalPoolOf": [
+    "class.rogue",
+    "class.ranger"
+   ],
+   "targets": "self",
+   "tags": [],
+   "description": "Move exactly 1 hex in any direction. It provokes nothing, and the destination’s terrain cost is irrelevant — step into a hex costing 1, 2 or 3 alike. You gain +20 Dodge until the end of your next Activation. It costs 1 Stamina, and it has a cooldown of 4. It is a bonus move, so it does NOT add your Movement stat. A general class power of the Rogue and the Ranger, unlocked at a power grant — never a starting move.",
+   "intent": "Side Roll with a reward and a wait. The same half-step out of trouble, and whatever answers it has to find a target that is 20 harder to hit until your next Activation is over — but only once every five Turns, so it is the escape you save, and Side Roll is the one you spend.",
+   "source": "2026-10-03 (engine/DECISIONS.md, ‘Back Flip’s rules; enemies only move together; the motion work comes first’): \"Let's create a backflip. Moves 1 hex back, provokes nothing, ignores terrain costs, and gives +20 dodge until the end of next activation.\" \"Should cost 1 stamina.\" \"I guess backflip is just a visual element. We don't have to have it be related to an enemy. It's just moving into another square that's adjacent to you.\" So the destination is any adjacent hex, and ‘the end of next activation’ is read as the end of the user’s own next Activation — the Dodge holds through the Enemy Phase between. | 2026-10-03 (‘Back Flip: cooldown 4, introduced in class powers’): \"Let's give it a cooldown of 4. Backflip will be introduced in class powers.\" | 2026-10-03 (‘Back Flip is a general Rogue and Ranger class power’): \"Make it a general rogue and ranger class power.\" It is in each of those two classes’ general pool — the pool a power grant draws its third offer from (levels.rules.draft) — recorded here as generalPoolOf, and it is NOT granted to a class from the start (class.rogue and class.ranger keep power.side-roll as their bonusMove). A second instance of the bonus move Side Roll already is, carrying the stat modifier Raise Guard already carries (‘until the end of your next Activation’). Row added 2026-10-04 by engine item movement.back-flip.",
+   "bonusMove": true
+  },
+  {
    "id": "power.leap",
    "name": "Leap",
    "specialty": null,
