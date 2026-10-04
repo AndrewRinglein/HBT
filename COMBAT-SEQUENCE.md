@@ -187,7 +187,7 @@ thing anyone means. **The End of Activation ladder still runs**, which is what m
 | # | Rung | Built? |
 |---|---|---|
 | 1 | Check movement points — enough to enter? | **yes** |
-| 2 | Attacks of opportunity fire → **settle** | *not yet* |
+| 2 | Attacks of opportunity fire → **settle** | **yes** — leaving a zone of control draws each holder's **special free attack** (rule.free-attack-is-basic-attack, 2026-10-04): its basic attack — the first action of the weapon in hand, when that is a melee attack — else its own unarmed attack (Punch), through THE attack function as a reaction: no Stamina asked for or spent, −20 Accuracy (`FREE_ATTACK`, a named row of the accuracy ladder), the declared line marked `free`. A hit ends the mover's movement. `src/core/free-attack.ts` |
 | 3 | Enter the hex, spend the points | **yes** |
 | 4 | Traps → **settle** | *not yet* |
 | 5 | Gain terrain status from the hex | *not yet* |

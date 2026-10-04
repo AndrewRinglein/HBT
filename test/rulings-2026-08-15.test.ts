@@ -116,16 +116,33 @@ describe('bleed-out (Angela 2026-08-15)', () => {
   // The CLAIM is per drop — "set to five, every time" — so the fielding is
   // sixteen (the ruled pressure ceiling) and the test demands at least one
   // drop across the sample, not one per seed. Same rule, honest fielding.
-  it('a hero who drops is set to five, every time', () => {
-    let drops = 0
+  // LAW 10 — rewritten 2026-10-04 as a RULE, not the number alone (found by rule.free-attack-is-basic-attack, whose re-timed
+  // fights drop the Sky Pirate on replicate 0 AFTER a zombie has given him Rotting Flesh). This read `for (const e of set)
+  // expect(e['bleedOut']).toBe(5)` — true while no hero in the sample carried a badge that moves the count. The rule was
+  // always "five, plus the unit's own Turns to Bleed out" (settle.ts bleedOutCounterOf; Rotting Flesh is +5, ruled
+  // 2026-09-04): a hero carrying nothing that moves it is set to five, every time, and one that does is set to five plus it.
+  it('a hero who drops is set to five, every time — plus its own Turns to Bleed out, when a badge it carries moves them', () => {
+    let drops = 0, plain = 0
     for (let r = 0; r < 8; r++) {
       const ctx = createBattle({ replicate: r, enemyCount: 16, mapId: 'map.open' })
+      // what each unit's Turns to Bleed out are as the battle goes: what it was fielded with, then each badge it gains
+      const turns = new Map(ctx.state.units.map((u) => [u.id, u.bleedOutTurns ?? 0]))
+      const from = ctx.events.length
       runBattle(ctx)
-      const set = ctx.events.filter((e) => e.type === 'bleedout.set')
-      drops += set.length
-      for (const e of set) expect(e['bleedOut']).toBe(5)
+      for (const e of ctx.events.slice(from)) {
+        if (e.type === 'badge.gained') {
+          const id = (e.target ?? e.actor) as number
+          turns.set(id, (turns.get(id) ?? 0) + ((ctx.badges[e['badgeId'] as string]?.statModifiers as Readonly<Record<string, number | undefined>> | undefined)?.['bleedOutTurns'] ?? 0))
+        }
+        if (e.type !== 'bleedout.set') continue
+        drops++
+        const own = turns.get(e.target as number) ?? 0
+        if (own === 0) plain++
+        expect(e['bleedOut'], `replicate ${r}: unit ${e.target}, own Turns to Bleed out ${own}`).toBe(Math.max(1, 5 + own))
+      }
     }
     expect(drops, 'eight seeds at sixteen zombies put nobody down — the sample proved nothing').toBeGreaterThan(0)
+    expect(plain, 'no hero dropped carrying nothing that moves the count — the plain five was never seen').toBeGreaterThan(0)
   })
 
   it('it advances ONLY inside the End of Hero Phase ladder', () => {

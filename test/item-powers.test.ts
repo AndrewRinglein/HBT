@@ -170,7 +170,10 @@ describe('they run — no power is dead content in a real battle', () => {
     // Law 10, 2026-09-23 (v2.shields): Osric's guard is the Kite Shield's now — either of its two powers.
     const guarded = () => used.has('power.kite-shield.shield-wall') || used.has('power.kite-shield.raise-guard')
     const both = () => used.has('power.holy-symbol.heal') && guarded()
-    for (let r = 0; r < 20 && !both(); r++) {
+    // Law 10, 2026-10-04 (rule.free-attack-is-basic-attack): every attack of opportunity is the basic attack at −20 now, so the
+    // fights re-time again and Osric's first raised shield moved from a seed under 20 to seed 24. The claim (both powers are
+    // live) is unchanged; the search is wider — 20 to 40 — as on 2026-09-04. Neither assertion changed.
+    for (let r = 0; r < 40 && !both(); r++) {
       const ctx = createBattle({ ...scenarioOptions(scenarioDef(SC)), replicate: r })
       runBattle(ctx)
       for (const e of ctx.events) {

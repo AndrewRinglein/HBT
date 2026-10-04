@@ -1,0 +1,264 @@
+
+ RUN  v4.1.11 C:/Users/aring/Desktop/HBT-worker-engine/engine
+
+ ❯ test/free-attack-is-basic-attack.test.ts (21 tests | 18 failed) 211ms
+     × the rule is the engine's: basicAttackOf and freeAttackOf, and the ruled −20 5ms
+     × hero.fixed.lumberjack-and-wife holds item.lumberjack-axe: its basic attack is attack.lumberjack-axe.chop — the row's first attack, a second weapon costing no code 3ms
+     × hero.base.paladin-hunk holds item.longsword: its basic attack is attack.longsword.slash — the row's first attack, a second weapon costing no code 1ms
+     × hero.base.warrior-iron holds item.war-axe: its basic attack is attack.war-axe.chop — the row's first attack, a second weapon costing no code 1ms
+     × hero.base.ranger-ranger holds item.elfbow, whose first action is not a melee attack: no basic attack — its free attack is Punch 0ms
+     × hero.base.mage-fire holds item.fire-staff, whose first action is not a melee attack: no basic attack — its free attack is Punch 0ms
+     × hero.base.priest-armored holds item.holy-texts, whose first action is not a melee attack: no basic attack — its free attack is Punch 0ms
+     × a hero holding no weapon — nothing, or a shield alone — punches 0ms
+     × a unit whose attacks are its row's own: its first attack when that is melee; a row that leads with a shot uses its own first melee attack; a row with none has no free attack 0ms
+     × hero.fixed.lumberjack-and-wife swings attack.lumberjack-axe.chop at a passer-by and spends no Stamina — no stamina.spent line for that swing 6ms
+     × hero.base.paladin-hunk swings attack.longsword.slash at a passer-by and spends no Stamina — no stamina.spent line for that swing 1ms
+     × a unit at 0 Stamina still makes its free attack 1ms
+     × −20 Accuracy, as a named row of the accuracy ladder — and only on the free attack 1ms
+     × when the basic attack is not legal the unit punches; skipped, with a line, only when even that is not legal 1ms
+     × the cheaper attack is not chosen: the Lumberjack's Punch costs nothing and he still chops 1ms
+     × a walk out of the Lumberjack's zone is forecast his Chop at the free attack's own chance 6ms
+     × every attack of opportunity in the opening is the holder's free attack by the rule, and no swing spends Stamina 96ms
+     × the Lumberjack chops a passer-by at the Lumberjack House; he never punches one while his axe is in hand 82ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 18 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/free-attack-is-basic-attack.test.ts > the basic attack: the first action of the weapon a unit holds, when that is a melee attack > the rule is the engine's: basicAttackOf and freeAttackOf, and the ruled −20
+AssertionError: expected 'undefined' to be 'function' // Object.is equality
+
+Expected: "function"
+Received: "undefined"
+
+ ❯ test/free-attack-is-basic-attack.test.ts:53:39
+     51| describe('the basic attack: the first action of the weapon a unit hold…
+     52|   it('the rule is the engine\'s: basicAttackOf and freeAttackOf, and t…
+     53|     expect(typeof rule.basicAttackOf).toBe('function')
+       |                                       ^
+     54|     expect(typeof rule.freeAttackOf).toBe('function')
+     55|     expect(rule.FREE_ATTACK_ACCURACY).toBe(-20)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/18]⎯
+
+ FAIL  test/free-attack-is-basic-attack.test.ts > the basic attack: the first action of the weapon a unit holds, when that is a melee attack > hero.fixed.lumberjack-and-wife holds item.lumberjack-axe: its basic attack is attack.lumberjack-axe.chop — the row's first attack, a second weapon costing no code
+ FAIL  test/free-attack-is-basic-attack.test.ts > the basic attack: the first action of the weapon a unit holds, when that is a melee attack > hero.base.paladin-hunk holds item.longsword: its basic attack is attack.longsword.slash — the row's first attack, a second weapon costing no code
+ FAIL  test/free-attack-is-basic-attack.test.ts > the basic attack: the first action of the weapon a unit holds, when that is a melee attack > hero.base.warrior-iron holds item.war-axe: its basic attack is attack.war-axe.chop — the row's first attack, a second weapon costing no code
+TypeError: rule.basicAttackOf is not a function
+ ❯ test/free-attack-is-basic-attack.test.ts:67:22
+     65|     expect(ITEMS[item]!.grants[0]).toBe(attack)
+     66|     expect(ACTIONS[attack]!.attack!.kind).toBe('melee')
+     67|     expect(idOf(rule.basicAttackOf!(ctx, h))).toBe(attack)
+       |                      ^
+     68|     expect(idOf(rule.freeAttackOf!(ctx, h))).toBe(attack)
+     69|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/18]⎯
+
+ FAIL  test/free-attack-is-basic-attack.test.ts > the basic attack: the first action of the weapon a unit holds, when that is a melee attack > hero.base.ranger-ranger holds item.elfbow, whose first action is not a melee attack: no basic attack — its free attack is Punch
+ FAIL  test/free-attack-is-basic-attack.test.ts > the basic attack: the first action of the weapon a unit holds, when that is a melee attack > hero.base.mage-fire holds item.fire-staff, whose first action is not a melee attack: no basic attack — its free attack is Punch
+ FAIL  test/free-attack-is-basic-attack.test.ts > the basic attack: the first action of the weapon a unit holds, when that is a melee attack > hero.base.priest-armored holds item.holy-texts, whose first action is not a melee attack: no basic attack — its free attack is Punch
+TypeError: rule.basicAttackOf is not a function
+ ❯ test/free-attack-is-basic-attack.test.ts:76:17
+     74|     const { ctx, h } = rig(hero)
+     75|     expect(ACTIONS[ITEMS[item]!.grants[0]!]!.attack!.kind).toBe('range…
+     76|     expect(rule.basicAttackOf!(ctx, h)).toBeNull()
+       |                 ^
+     77|     expect(idOf(rule.freeAttackOf!(ctx, h))).toBe(PUNCH)
+     78|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/18]⎯
+
+ FAIL  test/free-attack-is-basic-attack.test.ts > the basic attack: the first action of the weapon a unit holds, when that is a melee attack > a hero holding no weapon — nothing, or a shield alone — punches
+TypeError: rule.basicAttackOf is not a function
+ ❯ test/free-attack-is-basic-attack.test.ts:83:19
+     81|     for (const items of [[], ['item.round-shield']]) {
+     82|       const { ctx, h } = rig(PALADIN, 'unit.zombie', items)
+     83|       expect(rule.basicAttackOf!(ctx, h), items.join()).toBeNull()
+       |                   ^
+     84|       expect(idOf(rule.freeAttackOf!(ctx, h)), items.join()).toBe(PUNC…
+     85|     }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/18]⎯
+
+ FAIL  test/free-attack-is-basic-attack.test.ts > the basic attack: the first action of the weapon a unit holds, when that is a melee attack > a unit whose attacks are its row's own: its first attack when that is melee; a row that leads with a shot uses its own first melee attack; a row with none has no free attack
+TypeError: rule.freeAttackOf is not a function
+ ❯ test/free-attack-is-basic-attack.test.ts:90:22
+     88|   it('a unit whose attacks are its row\'s own: its first attack when t…
+     89|     const { ctx, e: zombie } = rig(PALADIN, 'unit.zombie')
+     90|     expect(idOf(rule.freeAttackOf!(ctx, zombie))).toBe(UNITS['unit.zom…
+       |                      ^
+     91|     const imp = rig(PALADIN, 'unit.imp')
+     92|     expect(ACTIONS[UNITS['unit.imp']!.attacks[0]!]!.attack!.kind).toBe…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/18]⎯
+
+ FAIL  test/free-attack-is-basic-attack.test.ts > the attack of opportunity is the basic attack, free: no Stamina, −20 Accuracy > hero.fixed.lumberjack-and-wife swings attack.lumberjack-axe.chop at a passer-by and spends no Stamina — no stamina.spent line for that swing
+AssertionError: expected { seq: 5, turn: +0, …(6) } to match object { actor: +0, target: 1, …(1) }
+(5 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+    "actor": 0,
+-   "attackId": "attack.lumberjack-axe.chop",
++   "attackId": "attack.punch",
+    "target": 1,
+  }
+
+ ❯ test/free-attack-is-basic-attack.test.ts:110:58
+    108|     expect(attackOfOpportunity(ctx, h.id, e.id)).toBe(true)
+    109|     const swing = ctx.events.slice(from)
+    110|     expect(swing.find((x) => x.type === 'aoo.provoked')).toMatchObject…
+       |                                                          ^
+    111|     expect(swing.find((x) => x.type === 'attack.declared')).toMatchObj…
+    112|     expect(swing.filter((x) => x.type === 'stamina.spent')).toEqual([])
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/18]⎯
+
+ FAIL  test/free-attack-is-basic-attack.test.ts > the attack of opportunity is the basic attack, free: no Stamina, −20 Accuracy > hero.base.paladin-hunk swings attack.longsword.slash at a passer-by and spends no Stamina — no stamina.spent line for that swing
+AssertionError: expected { seq: 8, turn: +0, …(6) } to match object { actor: +0, target: 1, …(1) }
+(5 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+    "actor": 0,
+-   "attackId": "attack.longsword.slash",
++   "attackId": "attack.punch",
+    "target": 1,
+  }
+
+ ❯ test/free-attack-is-basic-attack.test.ts:110:58
+    108|     expect(attackOfOpportunity(ctx, h.id, e.id)).toBe(true)
+    109|     const swing = ctx.events.slice(from)
+    110|     expect(swing.find((x) => x.type === 'aoo.provoked')).toMatchObject…
+       |                                                          ^
+    111|     expect(swing.find((x) => x.type === 'attack.declared')).toMatchObj…
+    112|     expect(swing.filter((x) => x.type === 'stamina.spent')).toEqual([])
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/18]⎯
+
+ FAIL  test/free-attack-is-basic-attack.test.ts > the attack of opportunity is the basic attack, free: no Stamina, −20 Accuracy > a unit at 0 Stamina still makes its free attack
+AssertionError: expected 'attack.punch' to be 'attack.lumberjack-axe.chop' // Object.is equality
+
+Expected: "attack.lumberjack-axe.chop"
+Received: "attack.punch"
+
+ ❯ test/free-attack-is-basic-attack.test.ts:123:76
+    121|     beginActivation(ctx, e.id, 'test')
+    122|     expect(attackOfOpportunity(ctx, h.id, e.id)).toBe(true)
+    123|     expect(ctx.events.find((x) => x.type === 'aoo.provoked')!['attackI…
+       |                                                                            ^
+    124|     expect(h.stamina).toBe(0)
+    125|     expect(ctx.events.some((x) => x.type === 'aoo.skipped')).toBe(fals…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/18]⎯
+
+ FAIL  test/free-attack-is-basic-attack.test.ts > the attack of opportunity is the basic attack, free: no Stamina, −20 Accuracy > −20 Accuracy, as a named row of the accuracy ladder — and only on the free attack
+AssertionError: expected 70 to be 50 // Object.is equality
+
+- Expected
++ Received
+
+- 50
++ 70
+
+ ❯ test/free-attack-is-basic-attack.test.ts:132:27
+    130|     const own = preview(ctx, h.id, e.id, CHOP)
+    131|     const free = (preview as unknown as (c: Ctx, a: number, t: number,…
+    132|     expect(free.accuracy).toBe(own.accuracy - 20)
+       |                           ^
+    133|     expect(free.accLedger.filter((r) => r.name === 'FREE_ATTACK')).toE…
+    134|     expect(own.accLedger.some((r) => r.name === 'FREE_ATTACK')).toBe(f…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/18]⎯
+
+ FAIL  test/free-attack-is-basic-attack.test.ts > the attack of opportunity is the basic attack, free: no Stamina, −20 Accuracy > when the basic attack is not legal the unit punches; skipped, with a line, only when even that is not legal
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ test/free-attack-is-basic-attack.test.ts:187:65
+    185|     none.h.actions = none.h.actions.filter((a) => a !== PUNCH)
+    186|     beginActivation(none.ctx, none.e.id, 'test')
+    187|     expect(attackOfOpportunity(none.ctx, none.h.id, none.e.id)).toBe(f…
+       |                                                                 ^
+    188|     expect(none.ctx.events.find((x) => x.type === 'aoo.skipped')).toMa…
+    189|     // a row with no melee attack at all
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/18]⎯
+
+ FAIL  test/free-attack-is-basic-attack.test.ts > the attack of opportunity is the basic attack, free: no Stamina, −20 Accuracy > the cheaper attack is not chosen: the Lumberjack's Punch costs nothing and he still chops
+AssertionError: expected 'attack.punch' to be 'attack.lumberjack-axe.chop' // Object.is equality
+
+Expected: "attack.lumberjack-axe.chop"
+Received: "attack.punch"
+
+ ❯ test/free-attack-is-basic-attack.test.ts:201:42
+    199|     expect(h.actions).toContain(PUNCH)
+    200|     const c = aooChoice(ctx, h.id, e.id)
+    201|     expect('attack' in c && c.attack.id).toBe(CHOP)
+       |                                          ^
+    202|   })
+    203| })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/18]⎯
+
+ FAIL  test/free-attack-is-basic-attack.test.ts > the forecast shows the same attack > a walk out of the Lumberjack's zone is forecast his Chop at the free attack's own chance
+AssertionError: expected 'attack.punch' to be 'attack.lumberjack-axe.chop' // Object.is equality
+
+Expected: "attack.lumberjack-axe.chop"
+Received: "attack.punch"
+
+ ❯ test/free-attack-is-basic-attack.test.ts:217:30
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/18]⎯
+
+ FAIL  test/free-attack-is-basic-attack.test.ts > in real battles > every attack of opportunity in the opening is the holder's free attack by the rule, and no swing spends Stamina
+AssertionError: the −20 is on the swing: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ test/free-attack-is-basic-attack.test.ts:246:147
+    244|         const declared = ctx.events.findIndex((y, j) => j > i && y.typ…
+    245|         expect(ctx.events.slice(i, declared + 1).filter((y) => y.type …
+    246|         expect((ctx.events[declared]!['accLedger'] as { station: strin…
+       |                                                                                                                                                   ^
+    247|       })
+    248|     }
+ ❯ test/free-attack-is-basic-attack.test.ts:236:18
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/18]⎯
+
+ FAIL  test/free-attack-is-basic-attack.test.ts > in real battles > the Lumberjack chops a passer-by at the Lumberjack House; he never punches one while his axe is in hand
+AssertionError: replicate 0: expected 'attack.punch' to be 'attack.lumberjack-axe.chop' // Object.is equality
+
+Expected: "attack.lumberjack-axe.chop"
+Received: "attack.punch"
+
+ ❯ test/free-attack-is-basic-attack.test.ts:263:57
+    261|         const u = ctx.state.units[x.actor as number]!
+    262|         if (u.typeId !== LUMBERJACK) continue
+    263|         expect(x['attackId'], `replicate ${replicate}`).toBe(CHOP)
+       |                                                         ^
+    264|         chops++
+    265|       }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/18]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  18 failed | 3 passed (21)
+   Start at  06:41:56
+   Duration  1.23s (transform 729ms, setup 0ms, import 897ms, tests 211ms, environment 0ms)
+

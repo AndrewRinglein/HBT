@@ -325,6 +325,14 @@ const combineCiviliansKitGolden = JSON.parse(readFileSync(new URL('./fixtures/ba
 // sentence — showcase.assembled-party, showcase.eve-24-b, showcase.horrors, showcase.surrounded, showcase.waystation,
 // test.opening-gates and progression-surge-0/1/2. A `changed` case is checked here and skips the older layers.
 const burstPaintsGroundGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-burst-paints-ground.json', import.meta.url), 'utf8'))
+// rule.free-attack-is-basic-attack (2026-10-04; DECISIONS.md 2026-09-28 'counterattack, special free attacks …' and 2026-10-04 'the
+// basic attack is a weapon's first attack, and every free attack uses it without paying stamina'), Law 10: the attack of opportunity
+// is the holder's basic attack, spends no Stamina (no stamina.spent line) and rolls at −20 Accuracy, and its declared line says
+// `free`. Every case frozen here (tools/capture-free-attack-cursor.mts; the fixture counts each case's attacks of opportunity).
+// The 32 cases in which a unit leaves a zone of control moved — for real (state, RNG or result) where the swing changed or its roll
+// now falls the other side of the chance, in text only where the same swing lands the same way. A `changed` case is checked here
+// and skips the older layers.
+const freeAttackGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-free-attack.json', import.meta.url), 'utf8'))
 const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
 // Explicit rule migration, not regenerated historical hashes. These nine old
 // cases contain Surge ledger/refresh changes or terminal markers corrected
@@ -449,7 +457,10 @@ describe('resumable battle cursor', () => {
       const impBlastTunedExpected = impBlastTunedGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const combineCiviliansKitExpected = combineCiviliansKitGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const burstPaintsGroundExpected = burstPaintsGroundGolden.cases.find((row:{id:string})=>row.id===fixture.id)
-      const burstPaintsGroundMoved = burstPaintsGroundExpected?.changed === true
+      const freeAttackExpected = freeAttackGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+      const freeAttackMoved = freeAttackExpected?.changed === true
+      // was: const burstPaintsGroundMoved = burstPaintsGroundExpected?.changed === true — a free-attack-moved case skips the burst-paints-ground layer too (rule.free-attack-is-basic-attack 2026-10-04)
+      const burstPaintsGroundMoved = burstPaintsGroundExpected?.changed === true || freeAttackMoved
       // was: const combineCiviliansKitMoved = combineCiviliansKitExpected?.changed === true — a burst-paints-ground-moved case skips the combine layer too (capability.burst-paints-ground 2026-10-04)
       const combineCiviliansKitMoved = combineCiviliansKitExpected?.changed === true || burstPaintsGroundMoved
       // was: const impBlastTunedMoved = impBlastTunedExpected?.changed === true — a case the combined tree moved skips the imp-blast-tuned layer too (combine 2026-10-04)
@@ -556,7 +567,14 @@ describe('resumable battle cursor', () => {
             battle.completeActionCycle(ctx)
           }
         } else result = battle.runBattle(ctx)
-        if (burstPaintsGroundExpected) {
+        if (freeAttackExpected) {
+        expect(hash(ctx.events), 'full free-attack events').toBe(freeAttackExpected.events)
+        expect(hash(ctx.state), 'full free-attack state').toBe(freeAttackExpected.state)
+        expect(hash(ctx.rng.log), 'full free-attack RNG').toBe(freeAttackExpected.rng)
+        expect(result).toEqual(freeAttackExpected.result)
+        }
+        // was: if (burstPaintsGroundExpected) { — rule.free-attack-is-basic-attack (2026-10-04): a free-attack-moved case is checked above instead
+        if (burstPaintsGroundExpected && !freeAttackMoved) {
         expect(hash(ctx.events), 'full burst-paints-ground events').toBe(burstPaintsGroundExpected.events)
         expect(hash(ctx.state), 'full burst-paints-ground state').toBe(burstPaintsGroundExpected.state)
         expect(hash(ctx.rng.log), 'full burst-paints-ground RNG').toBe(burstPaintsGroundExpected.rng)

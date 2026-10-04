@@ -48,14 +48,15 @@ function fielded(encounterId: string): Ctx {
 }
 
 describe('fix.civilians-field-kit', () => {
-  // "never Punch" is held on the unit's own Activation — the attack it CHOOSES. An attack of opportunity is not chosen
-  // here: by its own ruling (DECISIONS.md 2026-08-20 'The attack of opportunity, final form'; movement.ts aooChoice) it is
-  // the holder's cheapest legal melee attack, and Chop costs 1 Stamina where Punch costs none — so the Lumberjack's
-  // reaction is still a Punch, and his wife's (the Dagger's stab is free) is a stab. Reported; SWITCHES.md placedKitAoo.
+  // LAW 10 — rewritten 2026-10-04 by rule.free-attack-is-basic-attack (2026-10-04; DECISIONS.md 2026-09-28 'counterattack, special free attacks …': "the basic attack, no stamina, −20 Accuracy"; 2026-10-04 'the basic attack is a weapon's first attack …': "that stamina cost is not triggered by special free attacks").
+  // This held "never Punch" on the unit's own Activation only, and asserted that the Lumberjack's attack of opportunity WAS a
+  // Punch — the cheapest legal melee attack, by the 2026-08-20 ruling SWITCHES.md placedKitAoo cited. That ruling was replaced
+  // on 2026-09-28 and the replacement is built now: a free attack is the basic attack, the weapon's first — "Chop should be the
+  // basic attack". So "never Punch" holds on every blow he strikes, his reactions included: they are Chops.
   it('in encounter.opening.lumberjack the Lumberjack attacks with his axe (Chop or Cleave) and his wife with her dagger — never Punch', () => {
     expect(UNITS[LUMBERJACK]!.defaultItems).toEqual(['item.lumberjack-axe'])
     expect(UNITS[WIFE]!.defaultItems).toEqual(['item.dagger', 'item.basic-armor'])
-    let axe = 0, stabs = 0, aooPunches = 0
+    let axe = 0, stabs = 0, aooChops = 0
     for (const replicate of [0, 1, 2, 3, 4, 5, 6, 7]) {
       const ctx = openingBattle('test.opening-lumberjack', replicate)
       const jack = placed(ctx, LUMBERJACK), wife = placed(ctx, WIFE)
@@ -75,18 +76,19 @@ describe('fix.civilians-field-kit', () => {
       expect(chosen.filter((a) => a !== CHOP && a !== CLEAVE), `replicate ${replicate}: on his Activation the Lumberjack swings only his axe`).toEqual([])
       expect(wifeBlows.map((b) => b.attack).filter((a) => a !== STAB), `replicate ${replicate}: his wife strikes only with her dagger`).toEqual([])
       expect([...chosen, ...wifeBlows.map((b) => b.attack)], `replicate ${replicate}: never Punch`).not.toContain(PUNCH)
-      // his attack of opportunity is the cheapest legal melee — Punch, while the axe's blows cost Stamina
+      // his attack of opportunity is his basic attack — his axe's first, Chop — never Punch, never the second blow (was: the cheapest legal melee, Punch)
       const reactions = jackBlows.filter((b) => b.slot === 'reaction').map((b) => b.attack)
-      expect(reactions.filter((a) => a !== PUNCH && a !== CHOP && a !== CLEAVE), `replicate ${replicate}: his reactions are his own attacks`).toEqual([])
-      axe += chosen.length; stabs += wifeBlows.length; aooPunches += reactions.filter((a) => a === PUNCH).length
+      expect(reactions.filter((a) => a !== CHOP), `replicate ${replicate}: his reactions are Chops`).toEqual([])
+      axe += chosen.length; stabs += wifeBlows.length; aooChops += reactions.filter((a) => a === CHOP).length
     }
     expect(axe, 'the axe is used').toBeGreaterThan(0)
     expect(stabs, 'the dagger is used').toBeGreaterThan(0)
-    // the reason a reaction is a Punch: the attack of opportunity takes the cheapest, and the axe is not free
+    // the cheaper blow is not the one taken: Punch is free and Chop is not, and the reaction is still the Chop
     expect(ACTIONS[PUNCH]!.staminaCost).toBe(0)
     expect(ACTIONS[CHOP]!.staminaCost).toBeGreaterThan(0)
     expect(ACTIONS[STAB]!.staminaCost).toBe(0)
-    expect(aooPunches, "the Lumberjack's attacks of opportunity over these battles are Punches").toBeGreaterThan(0)
+    expect(ITEMS['item.lumberjack-axe']!.grants[0]).toBe(CHOP)
+    expect(aooChops, "the Lumberjack's attacks of opportunity over these battles are Chops (was: Punches)").toBeGreaterThan(0)
   })
 
   it('every civilian placed by prologue-1..3, the Supper, the Orphanage and the Lumberjack House fields its Codex kit, as a preview of the row reads it', () => {

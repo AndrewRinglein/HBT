@@ -82,11 +82,18 @@
   "shape": "rule",
   "changesBaseline": true,
   "probeIds": [
-   "aoo.provoked"
+   "attack.lumberjack-axe.chop",
+   "attack.longsword.slash"
   ],
   "spec": "Ruled 2026-09-28 (Andrew, engine DECISIONS.md 'counterattack, special free attacks, the opening six, shields, custom weapons': 'we're changing attack of opportunity, so it's using the same rules as everything else. No stamina, uses the basic attack.' - 'Special free attacks - counterattack, fend, the attack of opportunity - are one rule: the basic attack, no stamina, -20 Accuracy. The attack of opportunity changes to this rule') and never built; completed 2026-10-04 ('the basic attack is a weapon's first attack, and every free attack uses it without paying stamina'): 'There's supposed to be a basic attack for each character, and that basic attack is used on all [free] attacks. Most weapons have a basic attack. Chop should be the basic attack ... It is the first attack. It has a stamina cost, but that stamina cost is not triggered by special free attacks.' Today src/core/movement.ts aooChoice takes the holder's cheapest LEGAL melee attack and attackOfOpportunity pays its stamina (the replaced 2026-08-20 rule; fix.aoo-pays-stamina 2026-09-04), so an armed unit punches a passer-by, and the engine holds no basic attack. Build: (1) the basic attack as a mechanism - a unit's basic attack is the first attack granted by the weapon it holds (its main-hand weapon, or its two-handed weapon; the attack the weapon's row lists first), and Punch for a unit holding no weapon; for a unit whose attacks are its row's own (the bestiary), its first attack. The core names no content instance: 'first attack of the held weapon' is read from the loadout and the rows' declared order. (2) the attack of opportunity resolves the holder's basic attack through THE attack function as a reaction with no stamina spent and nothing written back by hand (Law 3: the log and the state agree - the reaction's cost is zero, not refunded), at -20 Accuracy; and where the held weapon's first action is not a melee attack the unit has no basic attack and its free attack is Punch (ruled the same day: 'If you have something that does not have a basic melee attack as its number 1 action, then you do not have a basic attack, and you use punch.'); skipped with a line only when even Punch is not legal. The forecast (aooChoice's caller, preview.from-planned-hex) chooses by the same one rule. (3) The AI and the bar are unchanged otherwise. Read ENGINE-CONSTITUTION.md and COMBAT-SEQUENCE.md first; rewrite the 2026-08-20/09-04 tests that assert cheapest-and-pays as this rule with a dated Law 10 note; settle engine SWITCHES placedKitAoo by this entry (it cited the replaced ruling). The control battles move (every attack of opportunity changes): changesBaseline is claimed - confirm it. Rebuild the engine pack if it changes, the viewer's dumps and recordings, and the kingdom pages.",
   "expect": "A unit holding a weapon that provokes an attack of opportunity swings its weapon's first attack - the Lumberjack his Chop, a hero with a longsword its first sword attack - at -20 Accuracy and spends no Stamina, with stamina.spent absent from the log for that swing; an unarmed unit punches; a unit at 0 Stamina still makes its free attack; the forecast shows the same attack; on its own Activation the same attack still costs its Stamina. A unit whose main-hand weapon is a bow makes its free attack with Punch.",
-  "note": "Filed by the kingdom chat, 2026-10-04, from Andrew's ruling and his question why the Lumberjack punches. Shape and changesBaseline are the filer's guesses: check tools/gate.mjs's demands (variants: a second weapon's basic attack costs zero code)."
+  "note": "Filed by the kingdom chat, 2026-10-04, from Andrew's ruling and his question why the Lumberjack punches. Shape and changesBaseline are the filer's guesses: check tools/gate.mjs's demands (variants: a second weapon's basic attack costs zero code).",
+  "variants": [
+   "attack.lumberjack-axe.chop",
+   "attack.longsword.slash"
+  ],
+  "status": "done-needs-review",
+  "sha": "650e7d5"
  },
  {
   "id": "fix.own-area-skips-owner",

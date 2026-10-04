@@ -70,12 +70,17 @@ describe('universal action expenditure', () => {
     event(ctx, id, 'primary', true, true, false)
     expect(ctx.state.units[0]!.stamina).toBe(91)
   })
-  it.each([false, true])('reaction free=%s preserves both closed flags but pays resources', free => {
+  // LAW 10 — rewritten 2026-10-04 by rule.free-attack-is-basic-attack (2026-10-04; DECISIONS.md 2026-09-28 'counterattack, special free attacks …': "the basic attack, no stamina, −20 Accuracy"; 2026-10-04 'the basic attack is a weapon's first attack …': "that stamina cost is not triggered by special free attacks").
+  // This read 'reaction free=%s preserves both closed flags but pays resources' and held the reaction's Stamina to 97 (100 less
+  // the attack's 3), by the 2026-08-20 ruling that an attack of opportunity pays. A reaction is a special free attack now: it
+  // spends no Stamina. Its use and its cooldown are still spent, and both closed flags still stand — every other line is as it was.
+  it.each([false, true])('reaction free=%s preserves both closed flags, spends its use and its cooldown, and no Stamina', free => {
     const ctx = fixture(), id = grant(ctx, 'attack.test-slot-movement', { staminaCost: 3, cooldown: 1, uses: 2, free })
     ctx.state.units[0]!.moveUsed = ctx.state.units[0]!.primaryUsed = true
     performAttack(ctx, 0, 1, id, 'reaction')
     event(ctx, id, 'reaction', free, true, true)
-    expect(ctx.state.units[0]!.stamina).toBe(97)
+    expect(ctx.state.units[0]!.stamina).toBe(100)   // was 97: a special free attack spends no Stamina
+    expect(ctx.events.filter(e => e.type === 'stamina.spent')).toEqual([])
     expect(ctx.state.units[0]!.usesLeft[id]).toBe(1)
     const after = saveBattle(ctx)
     expect(() => performAttack(ctx, 0, 1, id, 'reaction')).toThrow(/illegal/)
