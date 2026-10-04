@@ -28744,3 +28744,146 @@ index 0c0088d..8fa88c1 100644
   PASS  naming — new content ids use declared kinds
   PASS  naming — no banned words invented
   PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+## kingdom.tutorial-second-battle — LANDED `190e056` **NEEDS REVIEW**
+2026-10-04 21:44
+
+  PASS  dependencies landed
+  WARN  not already decided — 1 candidate ruling(s) — READ BEFORE ASKING: DECISIONS.md:4811
+  PASS  typecheck
+  PASS  the item's own tests — test/tutorial-bars-and-stamina.test.ts, test/tutorial-second-battle.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — kingdom/test/tutorial-bars-and-stamina.test.ts, kingdom/test/lesson-stage.ts, kingdom/test/tutorial-second-battle.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/tutorial-bars-and-stamina.test.ts (-1), test/lesson-stage.ts (-4) — will land FLAGGED for review
+  SKIPPED  control battles unchanged — engine code 96341738c6 and the content pack are the ones the control battles last passed on (2026-10-04 20:25, combine: engine master eec6321 into the kingdom worker copy (golden re-run by tools/baseline.mts on the merged tree), in HBT-worker-kingdom) — not run
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+62d69ce
+
+diff --git a/test/tutorial-bars-and-stamina.test.ts b/test/tutorial-bars-and-stamina.test.ts
+index 2342219..9682d49 100644
+--- a/test/tutorial-bars-and-stamina.test.ts
++++ b/test/tutorial-bars-and-stamina.test.ts
+@@ -55,5 +55,10 @@ describe('kingdom.tutorial-bars-and-stamina — the two bars at the first damage
+     s.told.at(-1)!.onDone!('time'); expect(L.up).toBe(null)
+     // … and battle 2 does not tell it again
+-    L.open(LUMBERJACK); s.battle.turn = 1; s.battle.acting = 0; s.battle.fresh = true; L.still(); expect(L.up).toBe(null)
++    // Law 10, 2026-10-04 (kingdom.tutorial-second-battle; engine DECISIONS.md 2026-10-04 'the opening's tutorial: …'): this read
++    //   L.open(LUMBERJACK); …; L.still(); expect(L.up).toBe(null)
++    // — nothing at all went up in battle 2, true while Stamina's was battle 2's only row. Battle 2 has its own lessons now, so
++    // what this test holds is said of Stamina: its words are told once, and battle 2 does not tell them again.
++    L.open(LUMBERJACK); s.battle.turn = 1; s.battle.acting = 0; s.battle.fresh = true; L.still()
++    expect(L.all).not.toContain(STAMINA2); expect(s.told.filter((t) => t.words[0] === WORDS[0]).length, 'Stamina is told once').toBe(1)
+   })
+ 
+695d25f
+
+diff --git a/test/lesson-stage.ts b/test/lesson-stage.ts
+index 90f4861..d41651d 100644
+--- a/test/lesson-stage.ts
++++ b/test/lesson-stage.ts
+@@ -6,10 +6,10 @@ import { createLessons } from '../src/ui/lessons.js'
+ 
+ export type Told = { words: string[]; hold: boolean; onDone: ((why: string) => void) | undefined }
+-export function lessonStage(seen = new Set<string>()) {
++export function lessonStage(seen = new Set<string>(), party: number[] = [0]) {
+   const calls: string[] = [], told: Told[] = [], looks: { unit: number; onDone: ((why: string) => void) | undefined }[] = []
+   const pointers: { target: unknown; word: string | undefined; up: boolean }[] = []
+-  /** the battle as the host would answer it: units 0 the hero, 1 and 2 the civilians, 3 the enemy, on a 20-wide board */
++  /** the battle as the host would answer it: units 0 the hero (and 4, when the party is two), 1 and 2 the civilians, 3 the enemy, on a 20-wide board */
+   const battle = { turn: 1, acting: null as number | null, fresh: true, moved: false, attacked: false, reach: [] as number[], attackInReach: null as string | null, provoker: null as number | null,
+-    acted: { done: 0, left: 0 }, hex: { 0: 110, 1: 32, 2: 53, 3: 76 } as Record<number, number> }
++    acted: { done: 0, left: 0 }, hex: { 0: 110, 1: 32, 2: 53, 3: 76, 4: 111 } as Record<number, number> }
+   let wakes = 0
+   const viewer = {
+@@ -22,5 +22,5 @@ export function lessonStage(seen = new Set<string>()) {
+   const lessons = createLessons(LESSONS, {
+     viewer: () => viewer,
+-    units: (which) => which === 'civilians' ? [1, 2] : which === 'enemy' ? [3] : [0],
++    units: (which) => which === 'civilians' ? [1, 2] : which === 'enemy' ? [3] : party,
+     hexOf: (unit) => battle.hex[unit]!,
+     distance: (a, b) => Math.abs(a % 20 - b % 20) + Math.abs(Math.floor(a / 20) - Math.floor(b / 20)),
+diff --git a/test/tutorial-second-battle.test.ts b/test/tutorial-second-battle.test.ts
+new file mode 100644
+index 0000000..260c7c7
+--- /dev/null
++++ b/test/tutorial-second-battle.test.ts
+@@ -0,0 +1,66 @@
++// kingdom.tutorial-second-battle — ruled 2026-10-04 (Andrew, engine/DECISIONS.md 'the opening's tutorial: the first hero's class line,
++// no map before battle 1, the Orphanage's lessons, …'). One of the extra steps the chat offered: (h) "Battle 2: several heroes
++// take turns one at a time, plus the camera controls." He did not answer (h) by its letter — "Five, I think I've answered them
++// all", and every other letter was a yes — so it is read as a yes (abandon this item if he says no).
++//
++// Expect: "In the opening run, battle 2's first Hero Phase shows arrows on the heroes' cards with the taking-turns line, and the
++// second hero's Activation shows the camera's controls with an arrow on Reset; battle 1 shows neither, and a replayed battle 2
++// shows neither again. A page test asserts both notices' words, targets and triggers."
++//
++// Here: the two rows in the lesson table and the runner showing each at its moment over a stand-in battle screen
++// (test/lesson-stage.ts). The page half is tools/tutorial-second-battle.verify.mjs, on the built BATTLE-SANDBOX.html.
++import { describe, it, expect } from 'vitest'
++import { execFileSync } from 'node:child_process'
++import { LESSONS } from '../src/content/lessons.js'
++import { lessonStage } from './lesson-stage.js'
++
++const LUMBERJACK = 'encounter.opening.lumberjack', ORPHANAGE = 'encounter.opening.orphanage'
++const row = (id: string) => LESSONS.find((r) => r.id === id) as unknown as Record<string, unknown> | undefined
++const TURNS = 'lesson.lumberjack.turns', CAMERA = 'lesson.lumberjack.camera'
++
++describe('kingdom.tutorial-second-battle — taking turns; the camera\'s controls', () => {
++  it('the two rows are in the lesson table, battle 2\'s: the taking-turns lines with arrows on the heroes\' cards, the camera\'s controls at the second hero', () => {
++    expect(row(TURNS), TURNS).toBeDefined(); expect(row(CAMERA), CAMERA).toBeDefined()
++    expect(row(TURNS)).toMatchObject({ encounterId: LUMBERJACK, starts: 'activation-begins', of: 'hero', ends: 'time', point: { at: 'hero-cards' },
++      words: ['Your units act one at a time: finish one Activation before the next begins.', 'Double-click another unit to switch to it, while the one acting has done nothing.'] })
++    expect(row(CAMERA)).toMatchObject({ encounterId: LUMBERJACK, starts: 'activation-begins', of: 'hero', nthHero: 2, ends: 'time',
++      words: ['Q and E, or the left and right arrows, turn the view.', 'The wheel looks closer or further, and the view springs back.', 'Point at an edge of the screen to scroll the map.'] })
++  })
++
++  it('(h1) battle 2\'s first hero activated: the lines and an arrow on each hero\'s card; (h2) the camera\'s controls only as the SECOND hero\'s Activation begins', () => {
++    const s = lessonStage().upTo(TURNS), L = s.lessons
++    L.open(LUMBERJACK); s.battle.acting = 0; L.still()
++    expect(L.up).toBe(TURNS); expect(s.told.at(-1)!.words[0]).toBe('Your units act one at a time: finish one Activation before the next begins.')
++    expect(s.up().map((p) => p.target), 'an arrow on each hero\'s card in the top bar').toEqual([{ card: 0 }])
++    expect(L.waiting()).toBe(false)
++    s.told.at(-1)!.onDone!('time'); L.still()
++    expect(L.up, 'the first hero is still the only one activated: the camera waits').toBe(null); expect(s.up()).toEqual([])
++    s.battle.acting = 1; L.still(); expect(L.up, 'a civilian\'s Activation is not a hero\'s').toBe(null)
++    s.battle.acting = 0; L.still(); expect(L.up, 'the same hero again: still the first').toBe(null)
++  })
++
++  it('(h2) with a second hero in the party, his Activation shows the camera\'s controls — three lines, no arrow', () => {
++    // a party of two heroes (units 0 and 4), as battle 2 fields
++    const s = lessonStage(new Set(), [0, 4]).upTo(TURNS), L = s.lessons
++    L.open(LUMBERJACK); s.battle.acting = 0; L.still()
++    expect(L.up).toBe(TURNS); expect(s.up().map((p) => p.target)).toEqual([{ card: 0 }, { card: 4 }])
++    s.told.at(-1)!.onDone!('time')
++    s.battle.acting = 4; L.still()
++    expect(L.up).toBe(CAMERA); expect(s.told.at(-1)!.words).toEqual(['Q and E, or the left and right arrows, turn the view.', 'The wheel looks closer or further, and the view springs back.', 'Point at an edge of the screen to scroll the map.'])
++    expect(s.up(), 'the battle screen has no Reset button to point at').toEqual([])
++    s.told.at(-1)!.onDone!('time'); expect(L.up).toBe(null)
++  })
++
++  it('battle 1 shows neither, and neither shows twice', () => {
++    const one = lessonStage(new Set(LESSONS.filter((r) => r.encounterId === ORPHANAGE || r.encounterId === undefined).flatMap((r) => [r.id, r.once ?? r.id])))
++    one.lessons.open(ORPHANAGE); one.battle.acting = 0; one.lessons.still(); expect(one.told.map((t) => t.words[0])).not.toContain('Your units act one at a time: finish one Activation before the next begins.')
++    expect([...one.seen]).not.toContain(TURNS); expect([...one.seen]).not.toContain(CAMERA)
++    const again = lessonStage(new Set(LESSONS.flatMap((r) => [r.id, r.once ?? r.id]))); again.lessons.open(LUMBERJACK); again.battle.acting = 0; again.lessons.still(); expect(again.calls).toEqual([])
++  })
++
++  it('the page: on the built BATTLE-SANDBOX.html battle 2 shows the taking-turns line at its first hero and the camera\'s controls at its second; battle 1 neither; a replay neither again', () => {
++    const out = execFileSync(process.execPath, ['tools/tutorial-second-battle.verify.mjs', 'BATTLE-SANDBOX.html'], { cwd: '../kingdom', encoding: 'utf8', maxBuffer: 1 << 24 })
++    expect(out).toMatch(/tutorial-second-battle: .*passed/)
++  }, 420000)
++})
++
+```
+</details>
