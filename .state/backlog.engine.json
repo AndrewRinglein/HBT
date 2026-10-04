@@ -25,6 +25,17 @@
   "note": "Filed by the kingdom chat from Andrew's report, 2026-10-03, while he played the opening run. Shape is the filer's guess: check tools/gate.mjs's demands before building. Related: viewer.bar-shows-every-effect's audit (sheet actions vs bar) will not see a power the pack never carried - this item is the pack's half."
  },
  {
+  "id": "fix.fire-imp-burn-spares-self",
+  "kind": "engine",
+  "shape": "data",
+  "probeIds": [
+   "unit.fire-imp"
+  ],
+  "spec": "Ruled 2026-10-03 (Andrew, engine DECISIONS.md 'the Fire Imp's burn does not hit the imp itself ...'): 'it seems like it's dealing fire damage to itself every turn, or trying to do burn that's then being resisted. It means at the end of every turn, it has a damage reaction to itself.' / 'It should not hit him.' The Fire Imp's row (content bestiary unit.fire-imp) carries the trigger onActivationEnd - targets 'every unit within N hexes', range 2 - apply Burn 1; 'every unit within 2 hexes' counts the imp itself, so at the end of each of its Activations it burns itself, its Fire Resist 2 takes it, and the log and the screen show it. Spare the imp: its trigger targets every OTHER unit within 2 hexes - everyone else, its own side included, still burns. Do it in the Codex's words and through the content pipeline, with the targeting shape the engine already has for 'others in reach' if it has one (grep the pack's target phrases and src/core's target resolution first); if 'every unit within N hexes' is the only shape, add the excluding-self form as a second instance of that shape in content's parser and the engine's resolver, never a Fire-Imp-only hook. Then list, by name, every other row whose own area trigger or aura counts its owner (the same phrase on any unit, item or power) - report them for Andrew, change only the Fire Imp. Rebuild the Codex's outputs, the engine pack, the viewer's generated dumps and the kingdom pages, and the opening replays the change makes stale; check whether the control battles move before claiming changesBaseline (the Bridge's battles will).",
+  "expect": "In encounter.opening.bridge a Fire Imp ending its Activation applies Burn 1 to every other unit within 2 hexes and nothing to itself: the log holds no burn applied to or resisted by the Fire Imp from its own trigger; a hero and an Imp standing within 2 hexes are still burned; the test names the trigger and asserts both.",
+  "note": "Filed by the kingdom chat from Andrew's ruling, 2026-10-03, while he played the opening run."
+ },
+ {
   "id": "fix.transformed-snapshot-order",
   "kind": "engine",
   "shape": "plumbing",

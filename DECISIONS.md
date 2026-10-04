@@ -4615,3 +4615,14 @@ Found, not ruled — he is right, and it is a gap, not the content:
 - **The same gap takes two more starting powers:** the Fire Staff's **Fireball** (the Emberwright, the Pyre Witch, the Crimson Sorceress) and the Frost Staff's **Frost Nova** (the Archive Scholar). The Holy Symbol's Heal does reach the engine. Of the 24 base heroes, six field a starting weapon with half of what it does.
 
 Filed: `fix.starting-kit-powers`, first in the engine queue.
+
+## 2026-10-03 — the Fire Imp's burn does not hit the imp itself; an end-of-Activation area burn shows an explosion of fire
+
+Andrew, in the kingdom chat, asked "Should the Fire Imp's end-of-activation burn hit only your units, everyone except the imp itself, or stay as it is (everyone, itself included)?":
+
+“It should not hit him. If it's an end-of-activation burn in a certain area, we need to create a VFX that goes along with that. So that should be an explosion of fire. We have the VFX for that.”
+
+Ruled:
+
+- **The Fire Imp's end-of-Activation burn does not hit the Fire Imp itself.** Read as: everyone else within 2 hexes still burns — other units of its own side included; only the imp is spared. Filed: `fix.fire-imp-burn-spares-self`.
+- **An end-of-Activation burn over an area is shown: an explosion of fire over that area**, from the effects the project already has ("We have the VFX for that"). Filed: `viewer.area-trigger-burst`.
