@@ -41,7 +41,23 @@ export const POLICY = Object.freeze({
      nearer than the zoom at which the battle area just fills with board, so there is board beyond it on both axes to scroll
      to; the wheel pulls back no farther than that fill (viewer SWITCHES noVoidStandard) */
   FILL_ROOM: 1.25,
+  /* viewer.tutorial-overlays (engine DECISIONS.md 2026-10-04 'the opening's tutorial …'): the host's lessons. A notice with no
+     time of the host's own lasts long enough to read twice — NOTICE_BASE_MS to find it, NOTICE_WORD_MS a word (a reader's
+     quarter second, twice), never less than NOTICE_MIN_MS (viewer SWITCHES noticeTime). A look comes LOOK_ZOOM nearer than the
+     play zoom and holds LOOK_HOLD_MS unless the host says; a pointer keeps POINTER_INSET px inside the screen. */
+  NOTICE_BASE_MS: 900, NOTICE_WORD_MS: 500, NOTICE_MIN_MS: 2400,
+  LOOK_ZOOM: 1.5, LOOK_HOLD_MS: 1400,
+  POINTER_INSET: 28,
+  /* viewer.arrivals-camera (engine DECISIONS.md 2026-10-04 '… the camera shows what arrives …'): once the view has slid to a
+     side's arrivals and their drop-in has played, it stays this long before it goes on to the next side or to the first
+     hero (at 1×; 2× shortens it as it shortens every beat) — long enough to see who came (viewer SWITCHES arrivalsHold) */
+  ARRIVAL_HOLD_MS: 1200,
 })
+/** viewer.arrivals-camera: the sides of the board, in the order the view visits them (Andrew: "For each side the enemies are on,
+    we're going to go to that side") */
+export const ARRIVAL_SIDES = Object.freeze(['left', 'right', 'top', 'bottom'])
+/** how long a notice stands when the host names no time: it grows with the words (viewer.tutorial-overlays) */
+export const noticeMs = words => Math.max(POLICY.NOTICE_MIN_MS, POLICY.NOTICE_BASE_MS + POLICY.NOTICE_WORD_MS * String(words).trim().split(/\s+/).filter(Boolean).length)
 export const tiltOfElevation = e => 90 - e
 export const elevationOfTilt = t => 90 - t
 /** tactical tilt limits (degrees from straight down) */

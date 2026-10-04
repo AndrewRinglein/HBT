@@ -31,7 +31,12 @@ const ENDING_KEYS = ['endTurn', 'endActivation']
    ids) while the host wants the player asked whether to end the Activation of the unit acting and begin another's; the
    chrome draws the pop-up with their names and offers {kind:'answer', yes} back. Whether the question arises at all is the
    host's, from the engine. Null or absent: nothing is asked. */
-const OPTIONAL_KEYS = [...ENDING_KEYS, 'swap', 'ask']
+/* viewer.bar-moves-grey-when-done (engine DECISIONS.md 2026-10-03 'the action bar: the moves grey slightly once the move is
+   done, nothing else greys', Andrew: "Just gray the moves out after a move is done."): which of the acting unit's move
+   actions are DONE for this Activation, optional too — moveDone [action ids], the host's word from the engine (its unit has
+   moved and the engine lists no further use of that action). The bar greys those rows slightly and nothing else; absent or
+   empty: nothing is greyed. Whether a move is done is never read off the log here. */
+const OPTIONAL_KEYS = [...ENDING_KEYS, 'swap', 'ask', 'moveDone']
 const AIM_KEYS = ['from', 'to', 'target', 'hit', 'dmg', 'hpAfter', 'lethal', 'locked']
 export function playFacts(value, positions) {
   const fail = why => { throw new Error('invalid play facts: ' + why) }
@@ -91,6 +96,11 @@ export function playFacts(value, positions) {
   if (v.ask != null) { object(v.ask, ['kind', 'from', 'to'], 'ask')
     if (v.ask.kind !== 'switch') fail('ask.kind is not a question the screen knows')
     ask = { kind: 'switch', from: int(v.ask.from, 'ask.from'), to: int(v.ask.to, 'ask.to') } }
-  return { endTurn, endActivation: v.endActivation === true, swap, ask, actor: intOrNull(v.actor, 'actor'), slot: v.slot, reach: hexes(v.reach, 'reach'), zoc: hexes(v.zoc, 'zoc'),
+  let moveDone = []
+  if (v.moveDone != null) {
+    if (!Array.isArray(v.moveDone) || v.moveDone.some(x => typeof x !== 'string' || !x)) fail('moveDone is not a list of action ids')
+    if (new Set(v.moveDone).size !== v.moveDone.length) fail('moveDone repeats an action')
+    moveDone = [...v.moveDone] }
+  return { endTurn, endActivation: v.endActivation === true, swap, ask, moveDone, actor: intOrNull(v.actor, 'actor'), slot: v.slot, reach: hexes(v.reach, 'reach'), zoc: hexes(v.zoc, 'zoc'),
     path: hexes(v.path, 'path', false), provokes: hexes(v.provokes, 'provokes'), ghost, threat, targets: hexes(v.targets, 'targets'), aim, note: v.note }
 }

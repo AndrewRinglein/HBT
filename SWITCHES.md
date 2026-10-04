@@ -719,3 +719,137 @@ take" (2026-10-01). Seen in real Chrome on the candidate sandbox (the button, th
 | `gearPanelLookup` | How does the viewer know whether an arrangement may be confirmed, and what to say? | **It looks the arrangement up in the host's swap fact: among `choices` (the hand lists the engine takes — Confirm is live, the line reads "Cost: N stamina.") or `refused` (every other arrangement, with the engine's reason — said as a sentence, Confirm dead).** No hands are counted and no cost is worked out in the viewer. | Law 0. The item: "the panel offers only arrangements the engine accepts, shows the cost, and says why one is refused in one line". | Default — 2026-10-04 |
 | `gearPanelSpent` | With no arrangement the engine would take (the swap spent, no stamina), is there still a Swap button? | **Yes: the button stays, greyed in tone, with the engine's reason beside it as before; the panel opens and says that reason for every arrangement; nothing can be confirmed.** | The button is also how the player looks at what the unit carries; removing it would move the bar about. | Default — 2026-10-04 |
 | `gearPanelOpensOnHeld` | What does the panel show when it opens, and after a Cancel? | **Always what the unit holds now; an arrangement tried and cancelled is forgotten. The panel closes by itself when the host stops offering that unit's swap (its Activation ended, the board is playing).** | Cancelling changes nothing — including what the panel remembers. | Default — 2026-10-04 |
+
+## viewer.panel-area-trigger-text — 2026-10-04
+
+Engine DECISIONS.md 2026-10-04 'the Poison Imp, the Balrog and the four caster-centred class powers skip their owner too' (its
+last line: the unit panel prints an area trigger's target as "[object Object]"). `src/actions.js` (`targetWords`, `valueWords`),
+`src/panel.js` (the trigger row); probes `tools/panel-area-trigger-text.test.mjs`, `test/viewer.panel-area-trigger-text.test.ts`,
+kingdom `tools/panel-area-trigger-text.verify.mjs`; the red is `panel-area-trigger-text-red.log`. Every other place the page
+prints a trigger or a power target was read: the action bar's chips and tooltips name no target at all (an omission, filed
+under viewer.bar-shows-every-effect), and the log's `trigger.fired` line names the unit it landed on from the event. The same
+fault was found one field over and fixed with it: an effect's AMOUNT may be the engine's scaling rule, and the Bruiser Demon's
+end-of-Activation Protection (a share of the enemy side's Power) read "Protection [object Object]".
+
+| Switch | Question | Default | Reason | Status |
+|---|---|---|---|---|
+| `areaTargetWords` | The item says the words come "through the viewer's existing text for targets (src/sheet.ts; engine src/view/text.ts)"; neither holds any — the engine has no namer for a Targeting row, only the phrase in `core/target.ts`'s comments ("every OTHER unit within N hexes", "every other ally"). Where do the words come from? | **`src/actions.js` `targetWords(select)`: made of the row's own fields, in the engine's phrase — `every [other] [tags] unit|ally|enemy within N hex(es)[ of the target]`; an area with no radius is `every [other] ally`; a single unit is `one [tags] enemy`; `self` and `target` stay as they were (" on self", nothing).** A select the viewer has not been taught throws. | Nothing typed per unit; the row is the source. The engine owes a namer (reported for the engine's queue: `targetText(t)` beside `validateTargeting`, read by both the viewer and the kingdom). | Default — 2026-10-04 |
+| `scaledAmountWords` | An amount that is the engine's scaling rule (`core/trigger.ts` ValueSpec: base + mult × what ÷ div, rounded) — what does the panel print? | **The rule, said: `0.334 × Power`, `4 + ARMOR`, `party Magic ÷ 5 (rounded up)` (`valueWords`). The figure it comes to is not worked out.** | Law 0: the viewer computes nothing, and the Power pool moves during the battle; the engine states the figure only when the trigger fires (`trigger.fired`). | Default — 2026-10-04 |
+
+## viewer.bar-shows-every-effect — 2026-10-04
+
+Engine DECISIONS.md 2026-10-03 'the action bar: the moves grey slightly once the move is done, nothing else greys; every action
+shows all it does; the Soldier holds no sword' (Andrew: "some of the information and some of the actions are missing. For
+example, a dagger giving you one protection is not shown in the dagger attack."). `src/actions.js` (`unitTriggers`,
+`effectSentence`, `ridersOf`, `actionLines`, the chips), `src/actionbar.js` (the row's tooltip, the chips' tooltips),
+`src/panel.js` (the fielded unit's triggers), `src/sheet.ts` + `generated/static.json` (each item's triggers); the audit
+`tools/bar-audit.mjs` over `tools/fixtures/bar-audit-roster.json` (generated from the engine by
+`test/viewer.bar-shows-every-effect.test.ts`, `BAR_AUDIT_WRITE=1`); probes `tools/bar-shows-every-effect.test.mjs`, kingdom
+`tools/bar-shows-every-effect.verify.mjs`; the red and the audit's list before the change are `bar-shows-every-effect-red.log`.
+The audit found, over 83 units and 360 actions: no action without a button, and 735 things an action does that the bar did
+not say (19 kinds — the list is in the red log).
+
+| Switch | Question | Default | Reason | Status |
+|---|---|---|---|---|
+| `barAuditRoster` | "Every unit the opening run can field (the 24 base heroes with their kits, the placed civilians, the opening's reward items)" — which battles is that? | **The engine fields them and the audit reads its lists: the 24 base heroes of `progression/OPENING-PARTY.json`'s pool in their rows' own kits (six to a battle), the named reward (the Flaming Longsword, `OPENING_TAKERS`) on the first hero of each class that may take it, and the six opening scenarios as set up at seed 1 — the party drafted by then, the placed civilians and the enemies on the board.** The rewards the later battles DRAW are not a list the engine holds; they are covered row by row — the page test says every action row the engine has, and every trigger any item brings, whole. | A list the engine can make and the test can hold to the engine; nothing typed. | Default — 2026-10-04 |
+| `barWholeInTooltip` | "On the button where it fits and whole in its tooltip." | **The row's tooltip (`title`) is the whole action, a line per fact: what it is, its limits (stamina, cooldown, warm-up, uses, free, the slot it uses), its attack line (accuracy and the attack's own modifier, range, damage with its stat and bonus), its riders (crit, hits, penetration, Impact, Destroy, secondary damage), its movement, its burst, its target, each effect as a sentence, each trigger that rides it with its hook and odds. The button keeps its name, tag, four numbers and chips; a chip's own tooltip is its sentence.** | The button is 12 to a bar; the sentence "On attack: gain 1 Protection" does not fit beside ACC, RNG, DMG and STA, the chip "Protection 1" does. A look for Andrew to judge. | Default — 2026-10-04 |
+| `barSentences` | In whose words? | **The Codex's: "gain N Status" on the owner, "apply N Status" on the target, "regain N Stamina", "heal N", "push N hexes directly away", "STR +2 for the rest of the Battle". Made from the effect's own fields (`effectSentence`), one function for every effect kind the engine has.** | CODEX.md's item rows read this way ("`onAttack` gain 1 Protection"); the engine has no sentence of its own for an effect. | Default — 2026-10-04 |
+| `barItemTriggers` | The Dagger's Protection is a trigger the ITEM brings; `unit.equipped` names an item's grants and modifiers, not its triggers. Where does the viewer read them? | **From the item's own row through the door: `static.json` `items[id].triggers`. A fielded unit's triggers are its row's, then its held items' (the fold's `kit.held`), then its badges' — the engine's own order (`applyItems`, `applyBadges`).** A stowed item brings none, as in the engine. | The row is content, read-only, already dumped for the panel's items. Reported for the engine's queue: `unit.equipped` (and `unit.badged`) could name the triggers brought, so the log alone says what a fielded unit carries. | Default — 2026-10-04 |
+| `barRidersOnAttacksOnly` | The bar listed the unit's attacker-hook triggers (`onHit`, `onAttack` …) on every row that was not a move or a burst — powers included. | **Only on a row with an attack profile (an attack or a charge), and never a defender's `onBlock`.** | The engine fires those hooks from its attack pipeline only (`core/pipeline.ts`); a power fires none, so a Heal that listed "Bleed 2 20%" said something it does not do. | Default — 2026-10-04 |
+| `barGapsUnsaid` | An action row may carry `gaps` — what its Codex text says that the engine does not yet do. | **Not shown.** | "Everything it does" is what the engine does; a gap is what it does not. They are listed in content's gap reports. | Default — 2026-10-04 |
+
+## viewer.bar-moves-grey-when-done — 2026-10-04
+
+Engine DECISIONS.md 2026-10-03 'the action bar: the moves grey slightly once the move is done, nothing else greys; every action
+shows all it does; the Soldier holds no sword' (Andrew: "There should be a slight graying out of the move actions after move
+actions are completed." / "Just gray the moves out after a move is done."). `src/play.js` (the optional `moveDone` fact),
+`src/actionbar.js` (the row's class and tooltip line), `src/styles.css` (`.acRow.moveDone`); probes
+`tools/bar-moves-grey-when-done.test.mjs`, `test/viewer.bar-moves-grey-when-done.test.ts` (what the engine does to the move),
+kingdom `tools/bar-moves-grey-when-done.verify.mjs`; the red is `bar-moves-grey-when-done-red.log`. Seen in real Chrome on the
+candidate sandbox (kingdom `tools/bar-moves-grey-when-done.shot.mjs`: the bar before and after a whole walk).
+
+| Switch | Question | Default | Reason | Status |
+|---|---|---|---|---|
+| `moveDoneHostWord` | Who says a move is done? | **The host, per action: its play facts carry `moveDone`, a list of the acting unit's move action ids. The bar greys a row only when it is a move row, of the unit acting, named there — and never reads the log to guess.** A host that says nothing greys nothing (the standalone replay page greys nothing). | "Read from the engine's own state through the host, never guessed." What the engine does is not one flag: see kingdom SWITCHES `moveDoneFact`. | Default — 2026-10-04 |
+| `moveDoneLook` | What is "slightly greyed", and how is it told from disabled? | **`opacity .72` with the colour drained (`grayscale(.85)`): the row is plainly still there. The disabled look is unchanged — `.cool`, `opacity .42` — and wins when a move is both (a move on cooldown looks disabled, not greyed). The greyed row can still be clicked; the host answers with the engine's reason. Its tooltip ends "This move is done for this Activation."** | "The slight grey must be told apart at a glance from an action the engine refuses outright." A look for Andrew to judge: the screenshots. | Default — 2026-10-04 |
+
+## viewer.bubble-click-reveals — 2026-10-04
+
+Engine DECISIONS.md 2026-10-03 'clicking an off-screen bubble selects the unit and slides the screen just far enough to show
+its hex' (Andrew: "I should be able to click on one of the bubbles for a unit that's off-screen to both focus it and also
+scroll the screen over so they are visible, but only just to their hex. Don't focus on it or center the screen on it. Just
+slide over until they're visible."). `src/board.js` (`drawEdges`: the bubble is a button; `revealPan`, `revealHex`,
+`clickBubble`; `applyCam`: the pan's limits kept as `view.panBox`, the slid view's hold), `src/viewer.js` (the calls
+`reveal(unit)` and `revealHex(hex)` beside `centre`), `src/styles.css`; probes `tools/bubble-click-reveals.test.mjs`,
+`test/viewer.bubble-click-reveals.test.ts`, kingdom `tools/bubble-click-reveals.verify.mjs`; the red is
+`bubble-click-reveals-red.log`.
+
+| Switch | Question | Default | Reason | Status |
+|---|---|---|---|---|
+| `bubbleInside` | "Inside the view — by the camera's own notion of inside, the margin the bubbles already use." What is a hex being inside? | **Its centre inside the battle area drawn back from every edge by the bubbles' inset (`EDGE_INSET`, 34 px) and half a hex's width on the screen — so the whole hex top shows clear of the edge — met with the ground at the hex's height through the camera's own rays.** | The bubbles' test asks whether any of the FIGURE shows (that decides whether a bubble is drawn); the ruling asks for the HEX: "only just to their hex". | Default — 2026-10-04 |
+| `bubbleLeast` | "The least distance." Measured how? | **On the ground, in the board's true proportions: the pans that show the hex are a four-sided patch, the pans the camera may make are a box (the board's edge — 'the camera never shows white space'), and the slide is the point of both nearest to not moving at all.** One pan, glided as every camera move is; the zoom, the turn and the tilt are untouched. | Not "toward the unit": a unit off the right edge and a little up slides the view right, not diagonally toward it. | Default — 2026-10-04 |
+| `bubbleNearest` | A bubble that stands for several units (ruled: "selects the nearest of them and slides until that one's hex shows") — nearest to what? | **To the view: the one the least slide shows; a tie goes to the lower unit id.** | The read the item names; "nearest" to the screen's middle would pick a unit the slide then has to go further for. | Default — 2026-10-04 |
+| `bubbleHolds` | The camera keeps the acting unit in view on every redraw; a slide to a far unit would be pulled straight back at the next click. | **The slid view holds until the board next plays an event, an aim is drawn, or the camera is sent somewhere (centred on a unit, a new Activation).** A pan by the pointer at the screen's edge moves it freely meanwhile. | "Slide over until they're visible" — and stay, or there was nothing to see. | Default — 2026-10-04 |
+| `bubbleEdgeHex` | FOUND: a hex on the board's first or last column, in the upper rows, cannot be brought wholly inside — the camera's bound (viewer.camera-no-void) keeps the view's widest line at the board's edge, and nearer rows show less width. The Orphanage's first Zombie (column 19, row 3) ends with its hex's middle at the screen's very edge: its nearer half and half its figure show. | **The slide goes as far as the camera may and stops; the bound is not broken for a reveal.** | 2026-10-03 'the camera never shows white space'. For the home chat: whether the bound should let a last-column hex come in whole is the camera's question (its bound is a rectangle round a view that is not one), not this item's. | Default — 2026-10-04 |
+| `bubbleNothingSent` | Does the click reach the host, as a click on the unit's body does (which may begin a hero or aim at an enemy)? | **No: the unit becomes the unit looked at and nothing is offered to the host — no play event, no command.** | The item: "no Activation changed and no command sent". | Default — 2026-10-04 |
+
+## viewer.tutorial-overlays — 2026-10-04
+
+Engine DECISIONS.md 2026-10-04 'the opening's tutorial: the first hero's class line, no map before battle 1, the Orphanage's
+lessons, the camera shows what arrives, new enemies are named, a closer start' (Andrew: "there should be a notification message
+across the center that is gold and easy to see" / "the gold message doesn't stay up. It only lasts for a time." / "The camera
+zooms onto the civilians, and an arrow points at them and says \"Civilians.\"" / "we're going to point an arrow over at the
+move button" / "There are two arrows pointing at the two base enemy numbers." / "It points to the right and says you can see all
+the details about this enemy on the right."). `src/overlays.js` (the notice, the pointers, the look), `src/viewer.js` (the
+calls, the pump's holders), `src/board.js` (`applyCam`: a look's hold), `src/camera-policy.js` (the numbers),
+`src/styles.css`; probes `tools/tutorial-overlays.test.mjs`, `test/viewer.tutorial-overlays.test.ts`, kingdom
+`tools/tutorial-overlays.verify.mjs`; the red is `tutorial-overlays-red.log`. Laid out and seen in real Chrome on the
+candidate sandbox (kingdom `tools/tutorial-overlays.shot.mjs`: every pointer's tip on its target's edge and inside the screen,
+the notice centred on the board in gold; two screenshots).
+
+WHAT A HOST CALLS (on the mounted viewer, beside `centre`, `pan`, `peek`, `resetView`; in the kingdom: `window.__sandbox.viewer`
+and the battle screen's own handle):
+
+    tell(words, {ms, hold, onDone})      words: a string or one to three of them. Returns {ms, clear()}. onDone(why): 'time' ·
+                                         'click' · 'cleared' · 'replaced' · 'dropped'. hold: true — the pump waits under it.
+    clearTell()
+    point(target, {word, side})          target: {unit} · {unit, part: 'move'|'attack'|'health'|'protection'} · {hex} ·
+                                         {action: id} · {card: unit} · {ui: 'panel'|'stamina'|'action-bar'|'end-turn'|
+                                         'end-activation'} · {selector: css}. Returns {id, target, clear()}.
+    unpoint(id?)                         one pointer, or all of them
+    look(target, {ms, back, onDone})     target: {unit} · {hex}. back: false leaves the view there (onDone 'held') for the
+                                         next look; lookBack({onDone}) returns it. Returns {hex, cancel()}.
+    overlays                             read-only: what stands now (the notice's lines, each pointer's target)
+
+| Switch | Question | Default | Reason | Status |
+|---|---|---|---|---|
+| `noticeTime` | "A default that grows with the length of the words (the read: long enough to read twice)." | **900 ms to find it, 500 ms a word (a quarter second a word, twice), never under 2.4 s — `camera-policy.js` `noticeMs`. A five-word line stands 3.4 s, a twenty-word notice 10.9 s.** The host's own `ms` outranks it. | A plain reader takes about a quarter second a word. A look for Andrew to judge. | Default — 2026-10-04 |
+| `noticeName` | The viewer already has `notice(text)` — the host's small line over the board (viewer.auto-end-no-actions). What is the gold one called? | **`tell(words, opts)`.** `notice(text)` is unchanged. | Two different things; renaming the landed call would break its host. | Default — 2026-10-04 |
+| `noticeHold` | "While it is up the pump can be made to wait, as it waits on its other cues." | **`hold: true` holds the pump as the affliction pop-up does (held, not paused: a host that plays stays busy); the notice's end — its time, a click, the host — lets it go. The pump's hold now has holders: it goes on only when every holder has let go.** A hand step, a seek or a fault drops the hold and the notice with it. | One flag would let the pop-up's Continue run the battle on under a notice still up. | Default — 2026-10-04 |
+| `pointerTargets` | "The End Turn and Reset buttons" — the battle screen has no Reset button of its own. | **`{ui: 'end-turn'}` and `{ui: 'end-activation'}` name the screen's two; `{selector}` points at anything else on the page by CSS selector (a host's own Reset).** | The viewer cannot name a button it does not draw. | Default — 2026-10-04 |
+| `pointerSides` | Which way does an arrow come from? | **From above, pointing down — except the right-hand panel (from the left, pointing right: "It points to the right") and a card of the top bar (from below). The host may say `side`.** The word is the arrow's label: on gold, wrapping past 300 px. | The things pointed at sit low on the screen or on the board; the panel is at its right edge. | Default — 2026-10-04 |
+| `pointerOnScreen` | "Never leaves the screen." | **The whole pointer — word and arrow — stays `POINTER_INSET` (28 px) inside: inside the battle area for a unit or a hex, inside the screen for a part of it. A target outside keeps its pointer at the edge on the way to it, a little faded.** A target that is not drawn at all (a number the unit does not show) hides its pointer until it is. | A pointer at a unit off the board would otherwise sit over the bars. | Default — 2026-10-04 |
+| `lookZoom` | "Closer than the play zoom, holds for a time." | **1.5 times the play zoom (`LOOK_ZOOM`), held 1.4 s unless the host says (`LOOK_HOLD_MS`); the camera's own glide there and back; the Activation's own centring waits until the look is over.** A chain of looks returns to the view before the FIRST. | The wheel's nearest is 1.8; 1.5 shows a unit and its neighbours. | Default — 2026-10-04 |
+| `lookBound` | A look at a unit in the board's upper rows cannot centre it: the camera never shows past the board's edge. | **The view goes as near to centring it as the bound allows; the unit is in view, above the middle.** | 2026-10-03 'the camera never shows white space'. The Orphanage's civilians stand in rows 1 and 2: seen in Chrome, they show well. | Default — 2026-10-04 |
+
+## viewer.arrivals-camera — 2026-10-04
+
+Engine DECISIONS.md 2026-10-04 'the opening's tutorial: the first hero's class line, no map before battle 1, the Orphanage's
+lessons, the camera shows what arrives, new enemies are named, a closer start' (Andrew: "Now we need a permanent feature: when a
+phase happens and enemies are introduced, the map is going to pan over to the enemies enough so they are on the screen. Don't
+center on them because they're usually on the edge and we don't want to go off the edge. For each side the enemies are on,
+we're going to go to that side. If it's on the right-hand side, we'll go over and look at the right-hand enemies. When we're
+done looking at the things that have been added, we're going to focus and center on the first hero that's activated.").
+`src/viewer.js` (the pump's wave beat: `waveBeat`, `showArrival`), `src/camera-policy.js` (`ARRIVAL_HOLD_MS`, `ARRIVAL_SIDES`);
+probes `tools/arrivals-camera.test.mjs` over the Orphanage's recording and `tools/fixtures/arrivals-two-sides.json` (made from
+the engine by `test/viewer.arrivals-camera.test.ts`, `ARRIVALS_WRITE=1`), kingdom `tools/arrivals-camera.verify.mjs`; the red is
+`arrivals-camera-red.log`. Seen in real Chrome on the candidate sandbox (End Turn at the Orphanage).
+
+| Switch | Question | Default | Reason | Status |
+|---|---|---|---|---|
+| `arrivalsWaveOnly` | Which units that enter are "enemies introduced when a phase happens"? | **The engine's scheduled arrivals: after an `encounter.wave` line, every `unit.enter` that names the encounter (`arrived`).** A unit that enters by another unit's power (a raised corpse, a summon) names no encounter and gets its old drop-in and no slide. | The read the item names; a raise happens where the player is already looking. | Default — 2026-10-04 |
+| `arrivalsOneBeat` | The log gives a wave's units one line each, in the encounter's order, not by side. | **While the pump plays, the wave is one beat: its lines are folded together (the units are on the board, off the screen), then the view visits each side that has arrivals it does not already show, and each unit's drop-in is played when the view is at its side.** A hand step, a seek and the whole-board fit fold the wave as before. | "For each side the enemies are on, we're going to go to that side" — the sides one after the other, whatever the log's order. | Default — 2026-10-04 |
+| `arrivalsSides` | Which side is an arrival on, and in what order are the sides visited? | **The side of the board its hex stands nearest (in the board's true proportions); left, right, top, bottom (`ARRIVAL_SIDES`); a tie goes to the earlier.** | The order the item lists them; fixed, so the same wave always plays the same way. | Default — 2026-10-04 |
+| `arrivalsHold` | "Hold long enough to see it." | **1.2 s at 1× after the drop-in (`ARRIVAL_HOLD_MS`), shortened by the speed as every beat is (0.8 s at 2×); the slide itself is the camera's own 1.1 s glide.** The pump is held meanwhile, as under the affliction pop-up — a host that plays stays busy. | The drop-in is 0.38 s; a second more to see who it is. A look for Andrew to judge. | Default — 2026-10-04 |
+| `arrivalsThenHero` | "Then the view goes to, and centres on, the first hero activated." | **Nothing new: when the pump is let go the next lines play, and the first Activation's own centring (`applyCam`, viewer.xcom-camera) takes the view there. A slid view holds only until the board next plays.** | "Only the order is new, arrivals first and the hero after." | Default — 2026-10-04 |
+| `arrivalsEdgeColumn` | **FOUND, for Andrew and the home chat.** The camera never shows past the board's edge (viewer.camera-no-void, `noVoidPan`: the view's four corners stay on the board), and its view is wider at its far side than its near. So the board's first and last COLUMNS cannot be brought wholly inside the view except in the top rows — at 1920×1080 a hex of column 19 in row 5 stays 70 px off the screen, one of column 0 in row 6 108 px, and the bottom corners (columns 0–1 and 17–19 of row 13) can never be seen at all; in the kingdom's battle screen (a 1448×716 battle area) the Orphanage's Turn 2 Zombie (19,5) ends with its hex's middle on the screen's very edge — half of it shows. Both rulings say not to go past the edge ("There's no reason to ever scroll into white space"; "we don't want to go off the edge"), and the item says "never past the board's edge". | **The slide goes as far as the camera may and no further; the drop-in plays there.** The page test holds "inside the view when its drop-in played" on arrivals two columns in from the edges (the engine's own two-sided wave), and "as far as the camera may go" on the Orphanage's own edge arrivals. | Not this item's to change: it is the camera's bound. Three ways out, each Andrew's: let the view pass the board's edge by the least that shows a unit (a wedge of the scene's background at a far corner); paint ground beyond the board; or arrive units a column or two in. Until then an arrival on an edge column may be only half on the screen. | **needs Andrew** — 2026-10-04 |

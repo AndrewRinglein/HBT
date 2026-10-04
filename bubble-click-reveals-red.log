@@ -1,0 +1,97 @@
+✖ a unit off the screen has a bubble, and the bubble is a button that names its units (573.5185ms)
+✖ a click selects the unit and slides the view just far enough to show its hex: a pan only, not centred, the bubble gone, nothing sent (550.5128ms)
+✖ the slide is the least that shows the hex: a hex in the board's middle comes just inside the edge — a bubble's inset and half a hex — and no further (164.4271ms)
+✖ the slid view stays: the next redraw does not pull it back to the acting unit; the next thing played lets the camera go again (155.3022ms)
+✖ a bubble for several units takes the nearest of them to the view; a slide never leaves the board (153.6401ms)
+✖ the slide is the camera's own move: it glides as the others do, and the host may ask for it by unit or by hex (153.4393ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 0
+ℹ fail 6
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1892.0093
+
+✖ failing tests:
+
+test at tools\bubble-click-reveals.test.mjs:50:1
+✖ a unit off the screen has a bubble, and the bubble is a button that names its units (573.5185ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  null !== 'button'
+  
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/bubble-click-reveals.test.mjs:53:32)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.start (node:internal/test_runner/test:1003:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:358:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: null,
+    expected: 'button',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tools\bubble-click-reveals.test.mjs:59:1
+✖ a click selects the unit and slides the view just far enough to show its hex: a pan only, not centred, the bubble gone, nothing sent (550.5128ms)
+  TypeError: Cannot read properties of undefined (reading 'hex')
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/bubble-click-reveals.test.mjs:62:65)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+      at Test.postRun (node:internal/test_runner/test:1235:19)
+      at Test.run (node:internal/test_runner/test:1163:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:358:3)
+
+test at tools\bubble-click-reveals.test.mjs:92:1
+✖ the slide is the least that shows the hex: a hex in the board's middle comes just inside the edge — a bubble's inset and half a hex — and no further (164.4271ms)
+  TypeError: V.revealPan is not a function
+      at file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/bubble-click-reveals.test.mjs:98:156
+      at Array.filter (<anonymous>)
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/bubble-click-reveals.test.mjs:98:46)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+      at Test.postRun (node:internal/test_runner/test:1235:19)
+      at Test.run (node:internal/test_runner/test:1163:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7)
+
+test at tools\bubble-click-reveals.test.mjs:123:1
+✖ the slid view stays: the next redraw does not pull it back to the acting unit; the next thing played lets the camera go again (155.3022ms)
+  TypeError: b.listeners.click is not iterable
+      at click (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/bubble-click-reveals.test.mjs:37:50)
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/bubble-click-reveals.test.mjs:126:3)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+      at Test.postRun (node:internal/test_runner/test:1235:19)
+      at Test.run (node:internal/test_runner/test:1163:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7)
+
+test at tools\bubble-click-reveals.test.mjs:139:1
+✖ a bubble for several units takes the nearest of them to the view; a slide never leaves the board (153.6401ms)
+  TypeError: V.revealPan is not a function
+      at need (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/bubble-click-reveals.test.mjs:142:35)
+      at file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/bubble-click-reveals.test.mjs:147:28
+      at Array.filter (<anonymous>)
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/bubble-click-reveals.test.mjs:147:16)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+      at Test.postRun (node:internal/test_runner/test:1235:19)
+      at Test.run (node:internal/test_runner/test:1163:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7)
+
+test at tools\bubble-click-reveals.test.mjs:172:1
+✖ the slide is the camera's own move: it glides as the others do, and the host may ask for it by unit or by hex (153.4393ms)
+  TypeError: b.listeners.click is not iterable
+      at click (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/bubble-click-reveals.test.mjs:37:50)
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/bubble-click-reveals.test.mjs:177:3)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+      at Test.postRun (node:internal/test_runner/test:1235:19)
+      at Test.run (node:internal/test_runner/test:1163:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7)

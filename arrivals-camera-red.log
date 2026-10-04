@@ -1,0 +1,78 @@
+✖ arrivals on two sides in one Turn: each side shown in turn — left, then right — each arrival inside the view when its drop-in plays, never centred on, the view never off the board; then the first hero (577.1912ms)
+✖ the Orphanage as recorded, Turn 2: the view slides right to the Zombie arriving on the right edge — as far as the camera may go — the Zombie drops in, and the view then centres on the hero whose Activation begins (552.7622ms)
+✖ Turn 3: it slides left for the Zombie arriving on the left edge (164.9922ms)
+✖ an arrival already on the screen moves nothing; double speed shortens the hold (167.9845ms)
+✖ a hand step, a seek and the whole-board fit are not held up: the wave folds as before, and a raised or summoned unit is no wave (170.2351ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 0
+ℹ fail 5
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1757.3149
+
+✖ failing tests:
+
+test at tools\arrivals-camera.test.mjs:55:1
+✖ arrivals on two sides in one Turn: each side shown in turn — left, then right — each arrival inside the view when its drop-in plays, never centred on, the view never off the board; then the first hero (577.1912ms)
+  TypeError: Cannot read properties of undefined (reading 'map')
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/arrivals-camera.test.mjs:71:26)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.start (node:internal/test_runner/test:1003:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:358:17)
+
+test at tools\arrivals-camera.test.mjs:96:1
+✖ the Orphanage as recorded, Turn 2: the view slides right to the Zombie arriving on the right edge — as far as the camera may go — the Zombie drops in, and the view then centres on the hero whose Activation begins (552.7622ms)
+  TypeError: Cannot read properties of undefined (reading 'length')
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/arrivals-camera.test.mjs:104:53)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+      at Test.postRun (node:internal/test_runner/test:1235:19)
+      at Test.run (node:internal/test_runner/test:1163:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:358:3)
+
+test at tools\arrivals-camera.test.mjs:121:1
+✖ Turn 3: it slides left for the Zombie arriving on the left edge (164.9922ms)
+  TypeError: Cannot read properties of undefined (reading 'length')
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/arrivals-camera.test.mjs:129:53)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+      at Test.postRun (node:internal/test_runner/test:1235:19)
+      at Test.run (node:internal/test_runner/test:1163:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7)
+
+test at tools\arrivals-camera.test.mjs:135:1
+✖ an arrival already on the screen moves nothing; double speed shortens the hold (167.9845ms)
+  TypeError: Cannot read properties of undefined (reading '0')
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/arrivals-camera.test.mjs:145:32)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+      at Test.postRun (node:internal/test_runner/test:1235:19)
+      at Test.run (node:internal/test_runner/test:1163:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7)
+
+test at tools\arrivals-camera.test.mjs:157:1
+✖ a hand step, a seek and the whole-board fit are not held up: the wave folds as before, and a raised or summoned unit is no wave (170.2351ms)
+  AssertionError [ERR_ASSERTION]: held on the slide
+  
+  false !== true
+  
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-content/viewer/tools/arrivals-camera.test.mjs:168:10)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+      at Test.postRun (node:internal/test_runner/test:1235:19)
+      at Test.run (node:internal/test_runner/test:1163:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
