@@ -4,7 +4,10 @@
 // Nothing here is computed; every field is copied from a definition. The
 // standalone page bakes this file in; the game (stage 3) reads the same door
 // at runtime. Never hand-edit the output.
-import { writeFileSync, readFileSync } from 'node:fs'
+import { writeFileSync } from 'node:fs'
+// viewer.new-enemy-ability-line: the content's authored enemy rows, as a module — so the dump stays one self-contained program
+// wherever it is run from (tools/runtime-metadata.test.mjs bundles it and runs it in an empty folder)
+import AUTHORED_ENEMIES from '../../content/gen/enemies-authored.json' with { type: 'json' }
 import { codeStamp } from '../../engine/tools/code-stamp.mjs'
 import { allSheets, absorbingStatusIds, statusNames, attackTable, abilityTable, actionTable, badgeTable, layerNames, groundApplies, groundNames, actionKinds, statusRows, itemClasses, itemTable, handCount } from '../src/sheet.js'
 import { readCatalog } from '../src/engine.js'
@@ -12,15 +15,16 @@ const { MAPS } = await readCatalog()
 
 /* viewer.new-enemy-ability-line (engine DECISIONS.md 2026-10-04 '… new enemies are named …', Andrew: "In that notification
    there should be something like, \"This enemy can do X.\""): each enemy kind's player-facing sentence, dumped with the
-   unit sheets. The sentence is CONTENT — the enemy's own row (content/gen/enemies-authored.json `playerLine`), read here from
-   the published content (content/hbt-content.json bestiary), never typed in the viewer. The engine's pack does not carry the
-   field (its unit row has no player-facing line — a gap for the engine's queue, viewer SWITCHES abilityLineDoor), so it does
-   not come through the door; a kind with no sentence, or no fielded unit, has no entry. */
+   unit sheets. The sentence is CONTENT — the enemy's own authored row (content/gen/enemies-authored.json `playerLine`, the
+   row the content's ship publishes word for word in content/hbt-content.json; the page test holds the two equal), never
+   typed in the viewer. The engine's pack does not carry the field (its unit row has no player-facing line — a gap for the
+   engine's queue, viewer SWITCHES abilityLineDoor), so it does not come through the door; a kind with no sentence, or no
+   fielded unit, has no entry. */
 function unitLines(units: Record<string, unknown>): Record<string, string> {
-  const published = JSON.parse(readFileSync('../content/hbt-content.json', 'utf8')) as { bestiary?: { id: string; playerLine?: string | null }[] }
-  if (!Array.isArray(published.bestiary)) throw new Error('dump-static: content/hbt-content.json carries no bestiary — ship the content first')
+  const rows = (AUTHORED_ENEMIES as { units?: { id: string; playerLine?: string | null }[] }).units
+  if (!Array.isArray(rows)) throw new Error('dump-static: content/gen/enemies-authored.json carries no units')
   const out: Record<string, string> = {}
-  for (const row of published.bestiary) if (typeof row.playerLine === 'string' && row.playerLine && row.id in units) out[row.id] = row.playerLine
+  for (const row of rows) if (typeof row.playerLine === 'string' && row.playerLine && row.id in units) out[row.id] = row.playerLine
   return out
 }
 const UNIT_SHEETS = allSheets()
