@@ -375,9 +375,11 @@ const ELEMENT_RESIST = { fire: 'fireResist', burn: 'fireResist', cold: 'coldResi
 const BADGE_FLAGS_STRUCTURED = new Set(['bleedsOut', 'wounded', 'blocksDeployment', 'cannotBeKnockedBack', 'cannotBeKnockedDown']);
 // rule.afflictions-at-zero (2026-10-02; engine DECISIONS.md 2026-10-01 'the afflictions at 0 Health'): what an affliction
 // does at 0 Health (`atZero`) and a badge that stacks (`stacks`, Fragile) compile onto the badge as data the engine's settle
-// reads — named gaps (content.afflictions-at-zero) until the engine built them. The ruled `text` stays on the Codex row;
-// the compiled row carries the structured facts only: whether the Deathbed roll is made, the unit the hero transforms into
-// on a Luck roll, the unit raised and its side, the badge gained. A field the engine does not read is refused, never passed.
+// reads — named gaps (content.afflictions-at-zero) until the engine built them. The compiled row carries the structured
+// facts — whether the Deathbed roll is made, the unit the hero transforms into on a Luck roll, the unit raised and its
+// side, the badge gained — and, since engine fix.affliction-pop-up-words (2026-10-04; engine DECISIONS.md 2026-10-03 'the
+// affliction pop-up's 0-Health words and its drawbacks come from the engine'), the ruled `text` itself, word for word:
+// the engine says it on badge.gained and the pop-up prints it. A field the engine does not read is refused, never passed.
 const AT_ZERO_FIELDS = new Set(['deathbedFighting', 'transformsInto', 'luckRoll', 'raises', 'raisedSide', 'gains', 'text']);
 function compileAtZero(row) {
   const out = {};
@@ -392,8 +394,24 @@ function compileAtZero(row) {
   out.atZero = { deathbedFighting: z.deathbedFighting,
     ...(z.transformsInto !== undefined ? { transformsInto: z.transformsInto, luckRoll: true } : {}),
     ...(z.raises !== undefined ? { raises: z.raises, raisedSide: z.raisedSide } : {}),
-    ...(z.gains !== undefined ? { gains: z.gains } : {}) };
+    ...(z.gains !== undefined ? { gains: z.gains } : {}),
+    ...(z.text !== undefined ? { text: (() => { if (typeof z.text !== 'string' || !z.text.trim()) throw new Error(`badge ${row.id}: atZero.text is the ruled 0-Health wording, a sentence`); return z.text; })() } : {}) };
   return out;
+}
+// engine fix.affliction-pop-up-words (2026-10-04): which of a badge's written terms are DRAWBACKS — the Codex row's own marks
+// (`drawbacks: { stats, terms }`), compiled beside the modifiers and the gaps they point into: `mods` names stats the
+// compiled row lowers, `gaps` names terms the compiled row writes. A mark that points at nothing — a stat the row does not
+// lower, a term it does not write — stops the build: the pop-up would show a drawback the unit does not have.
+function compileDrawbacks(row, mods, gaps) {
+  const d = row.drawbacks;
+  if (d === undefined) return {};
+  if (!row.atZero) throw new Error(`badge ${row.id}: drawbacks are an affliction's (a row with a 0-Health rule)`);
+  for (const k of Object.keys(d)) if (!['stats', 'terms'].includes(k)) throw new Error(`badge ${row.id}: drawbacks carries '${k}'; it names stats and terms`);
+  const stats = d.stats ?? [], terms = d.terms ?? [];
+  for (const s of stats) if (!(typeof mods[s] === 'number' && mods[s] < 0)) throw new Error(`badge ${row.id}: drawbacks names the stat '${s}', which the row does not lower`);
+  for (const t of terms) if (!gaps.includes(t)) throw new Error(`badge ${row.id}: drawbacks names the term '${t}', which the row does not write`);
+  for (const [s, n] of Object.entries(mods)) if (n < 0 && !stats.includes(s)) throw new Error(`badge ${row.id}: lowers '${s}' and does not mark it a drawback`);
+  return { drawbacks: { mods: [...stats], gaps: [...terms] } };
 }
 function compileBadge(row) {
   const mods = {}; const grants = []; const flags = {}; const gaps = [];
@@ -418,7 +436,7 @@ function compileBadge(row) {
       if (v) flags[k] = true;
     }
     for (const g of (row.grants || [])) grants.push(g);
-    return { id: row.id, name: row.name, statModifiers: mods, grants, flags, ...atZero, ...(gaps.length ? { gaps } : {}) };
+    return { id: row.id, name: row.name, statModifiers: mods, grants, flags, ...atZero, ...(gaps.length ? { gaps } : {}), ...compileDrawbacks(row, mods, gaps) };
   }
   const payload = String(row.payload || '').replace(/\*\*/g, '');
   // rule.badge-deathbed-fighting (2026-09-29, Andrew, engine DECISIONS.md 'Possession's Surge loads at fielding;
@@ -462,7 +480,7 @@ function compileBadge(row) {
   }
   // the engine's deathbed stat rides the modifiers map under its own name
   const out = { id: row.id, name: row.name, statModifiers: mods, grants, flags, ...(deathbed ? { deathbedFighting: deathbed } : {}),
-    ...atZero, ...(gaps.length ? { gaps } : {}) };
+    ...atZero, ...(gaps.length ? { gaps } : {}), ...compileDrawbacks(row, mods, gaps) };
   return out;
 }
 const badges = {};
