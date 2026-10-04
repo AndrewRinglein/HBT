@@ -183,14 +183,8 @@ export type EncounterDef = {
   readonly civilianAi?: { readonly mode: string; readonly untilTurn: number }
   /** capability.power-pool: the pool at battle start (kind 'external'). */
   readonly powerSources?: readonly { readonly kind: 'external'; readonly value: number }[]
-  /**
-   * Where the heroes deploy (prologue-1's `heroes: 1, at: {near, range}`); absent = the player edge.
-   * `hexes` (fix.opening-orphanage-closer-start, 2026-10-04): the zone may NAME its hexes, in the order heroes take them —
-   * the shape a setup row already uses for its units. Nearest-free-to-the-centre cannot say "the bridge's last hex, then
-   * dry ground east of it": the next hex by id is the water beside the deck. A listed hex nobody can stand on is refused
-   * loudly; past the list (or with none) the nearest free hexes to the centre follow, lowest id first, as before.
-   */
-  readonly heroZone?: { readonly count: number; readonly at: { readonly near: { readonly col: number; readonly row: number }; readonly range: number; readonly hexes?: readonly { readonly col: number; readonly row: number }[] } }
+  /** Where the heroes deploy (prologue-1's `heroes: 1, at: {near, range}`); absent = the player edge. */
+  readonly heroZone?: { readonly count: number; readonly at: { readonly near: { readonly col: number; readonly row: number }; readonly range: number } }
   /**
    * ai.encounter-rules (AI-DESIGN.md §4; DECISIONS.md 2026-09-26): "an encounter
    * may impose overarching rules — group coordination, anchoring units to a

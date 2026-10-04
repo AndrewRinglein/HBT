@@ -208,29 +208,16 @@ export function startOfTurn(ctx: Ctx): void {
   settle(ctx, 'turn.begin')
 }
 
-/**
- * The hero deployment hexes an encounter asks for: the hexes its zone NAMES, in the order written (fix.opening-orphanage-
- * closer-start, 2026-10-04 — a named hex that is taken is passed over; one nobody can stand on is refused, Law 9), then
- * the nearest free to the zone's centre, lowest id first. A zone that names none is the second half alone, as it always was.
- */
+/** The hero deployment hexes an encounter asks for: nearest free to the zone's centre, lowest id first. */
 export function heroDeployHexes(ctx: Ctx, enc: EncounterDef, n: number, reserved: ReadonlySet<number> = new Set()): HexId[] | null {
   const passable = passableHexes(ctx)
   if (!enc.heroZone) return null
   const c = ctx.geo.hexId(enc.heroZone.at.near.col, enc.heroZone.at.near.row)
-  const named: HexId[] = []
-  for (const p of enc.heroZone.at.hexes ?? []) {
-    const h = ctx.geo.hexId(p.col, p.row)
-    if (!passable(h)) throw new Error(`encounter '${enc.id}': the hero zone lists (${p.col},${p.row}), where nobody can stand`)
-    if (named.includes(h)) throw new Error(`encounter '${enc.id}': the hero zone lists (${p.col},${p.row}) twice`)
-    named.push(h)
-  }
-  const free = named.filter((h) => !reserved.has(h))
   const ring: HexId[] = []
-  for (let h = 0; h < ctx.geo.hexCount; h++) if (ctx.geo.distance(c, h) <= enc.heroZone.at.range && passable(h) && !reserved.has(h) && !named.includes(h)) ring.push(h)
+  for (let h = 0; h < ctx.geo.hexCount; h++) if (ctx.geo.distance(c, h) <= enc.heroZone.at.range && passable(h) && !reserved.has(h)) ring.push(h)
   ring.sort((a, b) => ctx.geo.distance(c, a) - ctx.geo.distance(c, b) || a - b)
-  const zone = [...free, ...ring]
-  if (zone.length < n) throw new Error(`encounter '${enc.id}': the hero zone holds ${zone.length} hexes, ${n} heroes asked`)
-  return zone.slice(0, n)
+  if (ring.length < n) throw new Error(`encounter '${enc.id}': the hero zone holds ${ring.length} hexes, ${n} heroes asked`)
+  return ring.slice(0, n)
 }
 
 /** A dead objective loses the battle. Called from settle's victory check too — no import cycle, it reads state only. */
