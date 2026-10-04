@@ -5203,7 +5203,10 @@
    "encounter.opening.cathedral",
    "content.flaming-longsword"
   ],
-  "note": "Cut 2026-09-28. Switch: a civilian who died in their battle does not join ('The units dying is their own punishment' read that way). Kingdom commits in its own repository."
+  "note": "Cut 2026-09-28. Switch: a civilian who died in their battle does not join ('The units dying is their own punishment' read that way). Kingdom commits in its own repository.",
+  "status": "failed",
+  "failedAt": "2026-10-04 19:59",
+  "reason": "superseded: kingdom.opening-run-six (landed 2026-10-02) is the continuous run through the six battles; this item needs encounter.opening.bridge, abandoned 2026-09-30, so it can never start (the opening run's audit, 2026-10-03)"
  },
  {
   "id": "plumbing.vocabulary-export",

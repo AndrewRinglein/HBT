@@ -27984,3 +27984,8 @@ index 374bb71..098a61e 100644
        }
 ```
 </details>
+
+## kingdom.opening-loop — ABANDONED
+2026-10-04 19:59
+
+superseded: kingdom.opening-run-six (landed 2026-10-02) is the continuous run through the six battles; this item needs encounter.opening.bridge, abandoned 2026-09-30, so it can never start (the opening run's audit, 2026-10-03)
