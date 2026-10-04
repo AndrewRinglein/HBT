@@ -4936,3 +4936,9 @@ Andrew, minutes later, on the same review:
 “I guess we could just ignore all the items not authored by me to start with.”
 
 - **The items he did not author are set aside to start with.** The review still labels every row, but the Item Ledger opens on the rows he dictated - his dictations and rulings, the Armory Ledger's drafted rows, the armor draft - with the rest behind one control. Read as: set aside for the review and the mark-up; whether a set-aside item also leaves the game's rewards is asked, not assumed. A row a chat wrote that a later ruling of his only corrected (a number changed across a family) is still a chat's row.
+
+Andrew, asked "Should the set-aside items also stop appearing as battle rewards for now, or only be left out of the review?":
+
+“One yes. Stop appearing as battle rewards.”
+
+- **The items he did not author stop appearing as battle rewards.** Only items he authored are offered as rewards until he says otherwise. Read as: the reward pool only - the kits the heroes start with and what enemies carry are not touched by this. The list of which items are his comes from the item review now running; the item that applies it (`kingdom.rewards-only-authored`) is filed when that list exists.
