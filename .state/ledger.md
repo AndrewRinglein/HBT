@@ -29433,3 +29433,123 @@ index 0000000..56e88fb
 +})
 ```
 </details>
+
+## fix.enchant-triggers-own-weapon — LANDED `fb8f72c` **NEEDS REVIEW**
+2026-10-04 23:48
+
+  PASS  dependencies landed
+  PASS  not already decided — no existing ruling matches
+  PASS  typecheck
+  PASS  the item's own tests — test/battle-cursor.test.ts, test/trigger-ids-and-scopes.test.ts, test/enchant-triggers-own-weapon.test.ts
+  PASS  gate 1 — the id appears in a real battle — item.longsword.flaming: 9 log lines, 9 fired, 1 changed state
+  PASS  brought its own tests — test/battle-cursor.test.ts, test/trigger-ids-and-scopes.test.ts, test/enchant-triggers-own-weapon.test.ts, test/fixtures/battle-cursor-enchant-triggers-own-weapon.json
+  WARN  existing tests untouched — DELETED LINES in test/battle-cursor.test.ts (-2), test/trigger-ids-and-scopes.test.ts (-11) — will land FLAGGED for review
+  PASS  control battles unchanged
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — shape 'data' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without item.longsword.flaming — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/battle-cursor.test.ts b/test/battle-cursor.test.ts
+index b4f4088..3ee84a0 100644
+--- a/test/battle-cursor.test.ts
++++ b/test/battle-cursor.test.ts
+@@ -388,4 +388,11 @@ const combineFreeAttackGolden = JSON.parse(readFileSync(new URL('./fixtures/batt
+ // whose party holds one (cathedral, cavern-trail, gates) and progression-surge-0/1/2. A `changed` case is checked here and skips the older layers.
+ const longswordLosesStabGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-longsword-loses-stab.json', import.meta.url), 'utf8'))
++// fix.enchant-triggers-own-weapon (2026-10-04; DECISIONS.md 2026-10-04 'after the backlog run: ... an enchant is its own weapon's ...': "4, yes.
++// If you have a fiery longsword and a dagger with a stab ability on it that stab ability does not use the fiery that's on the longsword."),
++// Law 10: on a tier-3 row every trigger its attribute adds on an attacker's hook is one per attack the weapon grants, each onlyWithAttack.
++// A unit's trigger list is part of the state, so a case that fields such a weapon moves. Every case frozen here
++// (tools/capture-enchant-triggers-own-weapon-cursor.mts). Moved - exactly the cases that field a tier-3 weapon whose attribute brings a
++// trigger: progression-surge-0/1/2. A `changed` case is checked here and skips the older layers.
++const enchantTriggersOwnWeaponGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-enchant-triggers-own-weapon.json', import.meta.url), 'utf8'))
+ const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
+ // Explicit rule migration, not regenerated historical hashes. These nine old
+@@ -522,5 +529,8 @@ describe('resumable battle cursor', () => {
+       const combineFreeAttackExpected = combineFreeAttackGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+       const longswordLosesStabExpected = longswordLosesStabGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+-      const longswordLosesStabMoved = longswordLosesStabExpected?.changed === true
++      const enchantTriggersOwnWeaponExpected = enchantTriggersOwnWeaponGolden.cases.find((row:{id:string})=>row.id===fixture.id)
++      const enchantTriggersOwnWeaponMoved = enchantTriggersOwnWeaponExpected?.changed === true
++      // was: const longswordLosesStabMoved = longswordLosesStabExpected?.changed === true — a case fix.enchant-triggers-own-weapon moved skips this layer too (fix.enchant-triggers-own-weapon 2026-10-04)
++      const longswordLosesStabMoved = longswordLosesStabExpected?.changed === true || enchantTriggersOwnWeaponMoved
+       // was: const combineFreeAttackMoved = combineFreeAttackExpected?.changed === true — a case content.longsword-loses-stab moved skips this layer too (content.longsword-loses-stab 2026-10-04)
+       const combineFreeAttackMoved = combineFreeAttackExpected?.changed === true || longswordLosesStabMoved
+@@ -652,5 +662,12 @@ describe('resumable battle cursor', () => {
+           }
+         } else result = battle.runBattle(ctx)
+-        if (longswordLosesStabExpected) {
++        if (enchantTriggersOwnWeaponExpected) {
++        expect(hash(ctx.events), 'full enchant-triggers-own-weapon events').toBe(enchantTriggersOwnWeaponExpected.events)
++        expect(hash(ctx.state), 'full enchant-triggers-own-weapon state').toBe(enchantTriggersOwnWeaponExpected.state)
++        expect(hash(ctx.rng.log), 'full enchant-triggers-own-weapon RNG').toBe(enchantTriggersOwnWeaponExpected.rng)
++        expect(result).toEqual(enchantTriggersOwnWeaponExpected.result)
++        }
++        // was: if (longswordLosesStabExpected) { — fix.enchant-triggers-own-weapon (2026-10-04): a case it moved is checked above instead
++        if (longswordLosesStabExpected && !enchantTriggersOwnWeaponMoved) {
+         expect(hash(ctx.events), 'full longsword-loses-stab events').toBe(longswordLosesStabExpected.events)
+         expect(hash(ctx.state), 'full longsword-loses-stab state').toBe(longswordLosesStabExpected.state)
+diff --git a/test/trigger-ids-and-scopes.test.ts b/test/trigger-ids-and-scopes.test.ts
+index cfdde37..9d5f57b 100644
+--- a/test/trigger-ids-and-scopes.test.ts
++++ b/test/trigger-ids-and-scopes.test.ts
+@@ -192,19 +192,38 @@ describe('every item whose attack-hook trigger is its own strikes is scoped; wha
+   })
+ 
+-  it('on an enchanted or derived row the only unscoped attack-hook triggers are the enchantment\'s own (its row has a scope word of its own, `attack: \'basic\'`)', () => {
++  // Law 10, 2026-10-04 — fix.enchant-triggers-own-weapon (DECISIONS.md 2026-10-04 'after the backlog run: ... an enchant is its own
++  // weapon's ...': "4, yes. If you have a fiery longsword and a dagger with a stab ability on it that stab ability does not use the fiery
++  // that's on the longsword."): this test held the FINDING this item's ruling answers - the twelve attributes whose triggers were left
++  // unscoped (SWITCHES.md itemTriggersLeftUnscoped). They are scoped now, by the compiler's rule, so the claim is the stronger one: on a
++  // made row (a tier-3 row, a Forge row) NO attacker-hook trigger is unscoped - neither the base weapon's own nor the attribute's.
++  // was:
++  //   it('on an enchanted or derived row the only unscoped attack-hook triggers are the enchantment\'s own (its row has a scope word of its own, `attack: \'basic\'`)', () => {
++  //   const copies = rows.filter((r) => r.enchant || r.base)
++  //   expect(copies.length).toBeGreaterThan(100)
++  //   const leftByEnchant = new Map<string, number>()
++  //   for (const r of copies) for (const t of r.triggers) {
++  //   if (!attackerHook(t) || t.onlyWithAttack) continue
++  //   // never the base weapon's own trigger carried over unscoped — only one the enchantment added (its source is the combination)
++  //   expect(t.source, `${r.id} ${t.id}`).toBe(r.id)
++  //   expect(r.enchant, `${r.id} ${t.id}`).toBeDefined()
++  //   leftByEnchant.set(r.enchant!, (leftByEnchant.get(r.enchant!) ?? 0) + 1)
++  //   }
++  //   expect([...leftByEnchant.keys()].sort()).toEqual([
++  //   'enchant.addling', 'enchant.bewildering', 'enchant.bloodletting', 'enchant.eternal-ice', 'enchant.fire', 'enchant.frost',
++  //   'enchant.goading', 'enchant.hobbling', 'enchant.maddening', 'enchant.rooting', 'enchant.taunting', 'enchant.venomous',
++  //   ])
++  //   })
++  it('on a tier-3 or derived row no attacker-hook trigger is unscoped: the triggers of an attribute ride the attacks of its own weapon', () => {
+     const copies = rows.filter((r) => r.enchant || r.base)
+     expect(copies.length).toBeGreaterThan(100)
+-    const leftByEnchant = new Map<string, number>()
++    const left: string[] = []
++    let scopedByAttribute = 0
+     for (const r of copies) for (const t of r.triggers) {
+-      if (!attackerHook(t) || t.onlyWithAttack) continue
+-      // never the base weapon's own trigger carried over unscoped — only one the enchantment added (its source is the combination)
+-      expect(t.source, `${r.id} ${t.id}`).toBe(r.id)
+-      expect(r.enchant, `${r.id} ${t.id}`).toBeDefined()
+-      leftByEnchant.set(r.enchant!, (leftByEnchant.get(r.enchant!) ?? 0) + 1)
++      if (!attackerHook(t)) continue
++      if (!t.onlyWithAttack) left.push(`${r.id} ${t.id}`)
++      else if (t.source === r.id && r.enchant) { scopedByAttribute++; expect(r.grants, `${r.id} ${t.id}`).toContain(t.onlyWithAttack) }
+     }
+-    expect([...leftByEnchant.keys()].sort()).toEqual([
+-      'enchant.addling', 'enchant.bewildering', 'enchant.bloodletting', 'enchant.eternal-ice', 'enchant.fire', 'enchant.frost',
+-      'enchant.goading', 'enchant.hobbling', 'enchant.maddening', 'enchant.rooting', 'enchant.taunting', 'enchant.venomous',
+-    ])
++    expect(left).toEqual([])
++    expect(scopedByAttribute).toBeGreaterThan(85)   // the 85 that were unscoped are one per attack now, and Flaming's four
+   })
+ 
+```
+</details>

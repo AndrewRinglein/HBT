@@ -5586,11 +5586,14 @@
   "kind": "engine",
   "shape": "data",
   "probeIds": [
-   "item.longsword"
+   "item.longsword.flaming"
   ],
   "spec": "Ruled 2026-10-04 (Andrew, engine DECISIONS.md 'after the backlog run: ...; an enchant is its own weapon's; ...'): asked 'Should enchants (Frost, Fire, Venomous and the rest) apply only to the enchanted weapon's own attacks, not to a Punch?' - '4, yes. If you have a fiery longsword and a dagger with a stab ability on it that stab ability does not use the fiery that's on the longsword.' fix.trigger-ids-and-scopes gave a weapon row's trigger `attack: 'own'` (one trigger per attack the weapon grants) and scoped nine weapons, but left 85 triggers that twelve enchants add to tier-3 weapons unscoped because the enchant rows carry no words about which attacks (engine SWITCHES.md itemTriggersLeftUnscoped lists them: Addling, Bewildering, Bloodletting, Eternal Ice, Fire, Frost, Goading, Hobbling, Maddening, Rooting, Taunting, Venomous) - so a Frost War Hammer's holder who punches, or stabs with a dagger in the other hand, still applies Frost. Scope every enchant's attack-hook triggers to the attacks of the weapon the enchant is on, by the rule and not row by row: the pipeline that builds an enchanted weapon (content mkenginepack and the enchant rows) gives the enchant's triggers `attack: 'own'` of that weapon. Left as they are, by name and with the reason: a trigger whose own Codex words say every strike or the wearer (Pharaoh's Gauntlets - 'Both hands are the weapon'; the Bloodrunes Burning Touch and Bleeding Strike - worn) - those are the unit's, and capability.unit-trigger-with-tag is where they get a tag requirement. Re-read every content/ file immediately before editing it; commit content after every write. Rebuild the Codex's outputs, the engine pack, the viewer's dumps and recordings and the kingdom pages the change makes stale; re-capture the battle-cursor layer; say whether the control battles move before claiming changesBaseline.",
   "expect": "A unit holding a Frost War Hammer applies Frost with the hammer's attacks and not with a Punch; a unit holding a Fire Longsword in one hand and a Dagger in the other burns with the Longsword's attacks and not with the Dagger's Stab; a test asserts both for an enchant of each hook, and over the whole pack no enchant-added attack-hook trigger is unscoped except the named exceptions.",
-  "note": "Filed by the kingdom chat from Andrew's ruling, 2026-10-04."
+  "note": "Filed by the kingdom chat from Andrew's ruling, 2026-10-04.",
+  "attempts": 1,
+  "status": "done-needs-review",
+  "sha": "fb8f72c"
  },
  {
   "id": "rule.walked-unit-has-moved",

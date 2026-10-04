@@ -1,0 +1,375 @@
+
+ RUN  v4.1.11 C:/Users/aring/Desktop/HBT-worker-engine/engine
+
+ ❯ test/enchant-triggers-own-weapon.test.ts (8 tests | 6 failed) 33ms
+     × on hit - the Frost War Hammer: Frost with the Smash and the Skullsplitter, none with a Punch or another attack of the unit 16ms
+     × on crit - the Bloodletting Longsword with a Dagger in the other hand: Bleed on the Slash's crit, none on the Dagger's Stab or a Punch 2ms
+     × on damage - the Hobbling Daggers: Slow with the daggers' own attacks, none with a Punch 2ms
+     × no enchant-added attacker-hook trigger is unscoped, and each is scoped to an attack its own row grants 1ms
+     × each of them rides every attack its weapon grants - or the first alone, where the enchant says the basic attack 1ms
+     × the exceptions, by name: the only unscoped attacker-hook triggers an item brings are the three whose words are every strike of their bearer 1ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 6 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/enchant-triggers-own-weapon.test.ts > an enchant's triggers ride its own weapon's attacks > on hit - the Frost War Hammer: Frost with the Smash and the Skullsplitter, none with a Punch or another attack of the unit
+AssertionError: attack.punch: expected [ 'onCrit', 'onHit' ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   "onCrit",
++   "onHit",
++ ]
+
+ ❯ test/enchant-triggers-own-weapon.test.ts:56:40
+     54|     for (const other of ['attack.punch', 'attack.test-warrior.axe']) {
+     55|       const ev = landed([HAMMER], other)
+     56|       expect(rolls(ev, HAMMER), other).toEqual([])
+       |                                        ^
+     57|       expect(ev.some((e) => e.type === 'status.applied' && e['statusId…
+     58|     }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/6]⎯
+
+ FAIL  test/enchant-triggers-own-weapon.test.ts > an enchant's triggers ride its own weapon's attacks > on crit - the Bloodletting Longsword with a Dagger in the other hand: Bleed on the Slash's crit, none on the Dagger's Stab or a Punch
+AssertionError: attack.dagger.stab: expected [ 'onCrit' ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   "onCrit",
++ ]
+
+ ❯ test/enchant-triggers-own-weapon.test.ts:69:39
+     67|     for (const other of ['attack.dagger.stab', 'attack.punch']) {
+     68|       const ev = landed(kit, other)
+     69|       expect(rolls(ev, SWORD), other).toEqual([])
+       |                                       ^
+     70|       expect(ev.some((e) => e.type === 'status.applied' && e['statusId…
+     71|     }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/6]⎯
+
+ FAIL  test/enchant-triggers-own-weapon.test.ts > an enchant's triggers ride its own weapon's attacks > on damage - the Hobbling Daggers: Slow with the daggers' own attacks, none with a Punch
+AssertionError: expected [ 'onDamage' ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   "onDamage",
++ ]
+
+ ❯ test/enchant-triggers-own-weapon.test.ts:81:35
+     79|     expect(stab.some((e) => e.type === 'status.applied' && e['statusId…
+     80|     const punch = landed([DAGGERS], 'attack.punch')
+     81|     expect(rolls(punch, DAGGERS)).toEqual([])
+       |                                   ^
+     82|     expect(punch.some((e) => e.type === 'status.applied' && e['statusI…
+     83|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/6]⎯
+
+ FAIL  test/enchant-triggers-own-weapon.test.ts > over the whole pack > no enchant-added attacker-hook trigger is unscoped, and each is scoped to an attack its own row grants
+AssertionError: expected [ …(85) ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   "item.greatsword.bloodletting: trigger.greatsword.bloodletting.bleed-crit",
++   "item.war-axe.bloodletting: trigger.war-axe.bloodletting.bleed-crit",
++   "item.war-axe.taunting: trigger.war-axe.taunting.taunt",
++   "item.war-hammer.frost: trigger.war-hammer.frost.frost",
++   "item.war-hammer.frost: trigger.war-hammer.frost.frost-crit",
++   "item.war-hammer.taunting: trigger.war-hammer.taunting.taunt",
++   "item.hunting-spear.venomous: trigger.hunting-spear.venomous.poison",
++   "item.hunting-spear.venomous: trigger.hunting-spear.venomous.poison-crit",
++   "item.glaive.bloodletting: trigger.glaive.bloodletting.bleed-crit",
++   "item.glaive.taunting: trigger.glaive.taunting.taunt",
++   "item.crossbow.venomous: trigger.crossbow.venomous.poison",
++   "item.crossbow.venomous: trigger.crossbow.venomous.poison-crit",
++   "item.crossbow.goading: trigger.crossbow.goading.taunt",
++   "item.hand-crossbow.venomous: trigger.hand-crossbow.venomous.poison",
++   "item.hand-crossbow.venomous: trigger.hand-crossbow.venomous.poison-crit",
++   "item.rapier.frost: trigger.rapier.frost.frost",
++   "item.rapier.frost: trigger.rapier.frost.frost-crit",
++   "item.raiders-cutlass.bloodletting: trigger.raiders-cutlass.bloodletting.bleed-crit",
++   "item.throwing-knives.venomous: trigger.throwing-knives.venomous.poison",
++   "item.throwing-knives.venomous: trigger.throwing-knives.venomous.poison-crit",
++   "item.poison-stars.venomous: trigger.poison-stars.venomous.poison",
++   "item.poison-stars.venomous: trigger.poison-stars.venomous.poison-crit",
++   "item.poison-stars.frost: trigger.poison-stars.frost.frost",
++   "item.poison-stars.frost: trigger.poison-stars.frost.frost-crit",
++   "item.obsidian-fang-dagger.venomous: trigger.obsidian-fang-dagger.venomous.poison",
++   "item.obsidian-fang-dagger.venomous: trigger.obsidian-fang-dagger.venomous.poison-crit",
++   "item.obsidian-fang-dagger.bloodletting: trigger.obsidian-fang-dagger.bloodletting.bleed-crit",
++   "item.obsidian-fang-dagger.addling: trigger.obsidian-fang-dagger.addling.confusion",
++   "item.obsidian-fang-dagger.hobbling: trigger.obsidian-fang-dagger.hobbling.slow",
++   "item.duel-runeblades.bloodletting: trigger.duel-runeblades.bloodletting.bleed-crit",
++   "item.duel-runeblades.frost: trigger.duel-runeblades.frost.frost",
++   "item.duel-runeblades.frost: trigger.duel-runeblades.frost.frost-crit",
++   "item.shepherds-sling.venomous: trigger.shepherds-sling.venomous.poison",
++   "item.shepherds-sling.venomous: trigger.shepherds-sling.venomous.poison-crit",
++   "item.crippling-whip.frost: trigger.crippling-whip.frost.frost",
++   "item.crippling-whip.frost: trigger.crippling-whip.frost.frost-crit",
++   "item.iron-claws.venomous: trigger.iron-claws.venomous.poison",
++   "item.iron-claws.venomous: trigger.iron-claws.venomous.poison-crit",
++   "item.iron-claws.bloodletting: trigger.iron-claws.bloodletting.bleed-crit",
++   "item.grappling-harpoon.frost: trigger.grappling-harpoon.frost.frost",
++   "item.grappling-harpoon.frost: trigger.grappling-harpoon.frost.frost-crit",
++   "item.apprentice-wand.eternal-ice: trigger.apprentice-wand.eternal-ice.frost",
++   "item.ancient-tome.eternal-ice: trigger.ancient-tome.eternal-ice.frost",
++   "item.daggers.venomous: trigger.daggers.venomous.poison",
++   "item.daggers.venomous: trigger.daggers.venomous.poison-crit",
++   "item.daggers.addling: trigger.daggers.addling.confusion",
++   "item.daggers.hobbling: trigger.daggers.hobbling.slow",
++   "item.daggers.bloodletting: trigger.daggers.bloodletting.bleed-crit",
++   "item.longbow.rooting: trigger.longbow.rooting.root",
++   "item.longbow.venomous: trigger.longbow.venomous.poison",
++   "item.longbow.venomous: trigger.longbow.venomous.poison-crit",
++   "item.longbow.goading: trigger.longbow.goading.taunt",
++   "item.longbow.frost: trigger.longbow.frost.frost",
++   "item.longbow.frost: trigger.longbow.frost.frost-crit",
++   "item.shortbow.rooting: trigger.shortbow.rooting.root",
++   "item.shortbow.venomous: trigger.shortbow.venomous.poison",
++   "item.shortbow.venomous: trigger.shortbow.venomous.poison-crit",
++   "item.shortbow.goading: trigger.shortbow.goading.taunt",
++   "item.shortbow.fire: trigger.shortbow.fire.burn",
++   "item.shortbow.fire: trigger.shortbow.fire.burn-crit",
++   "item.elfbow.rooting: trigger.elfbow.rooting.root",
++   "item.elfbow.fire: trigger.elfbow.fire.burn",
++   "item.elfbow.fire: trigger.elfbow.fire.burn-crit",
++   "item.barbarian-bow.fire: trigger.barbarian-bow.fire.burn",
++   "item.barbarian-bow.fire: trigger.barbarian-bow.fire.burn-crit",
++   "item.barbarian-bow.rooting: trigger.barbarian-bow.rooting.root",
++   "item.javelin.venomous: trigger.javelin.venomous.poison",
++   "item.javelin.venomous: trigger.javelin.venomous.poison-crit",
++   "item.javelin.frost: trigger.javelin.frost.frost",
++   "item.javelin.frost: trigger.javelin.frost.frost-crit",
++   "item.longsword.bloodletting: trigger.longsword.bloodletting.bleed-crit",
++   "item.longsword.taunting: trigger.longsword.taunting.taunt",
++   "item.halberd.bloodletting: trigger.halberd.bloodletting.bleed-crit",
++   "item.halberd.taunting: trigger.halberd.taunting.taunt",
++   "item.fire-staff.maddening: trigger.fire-staff.maddening.confusion",
++   "item.fire-staff.bewildering: trigger.fire-staff.bewildering.confusion",
++   "item.frost-staff.eternal-ice: trigger.frost-staff.eternal-ice.frost",
++   "item.frost-staff.bewildering: trigger.frost-staff.bewildering.confusion",
++   "item.earth-staff.maddening: trigger.earth-staff.maddening.confusion",
++   "item.earth-staff.eternal-ice: trigger.earth-staff.eternal-ice.frost",
++   "item.lightning-staff.bewildering: trigger.lightning-staff.bewildering.confusion",
++   "item.lightning-staff.maddening: trigger.lightning-staff.maddening.confusion",
++   "item.force-staff.eternal-ice: trigger.force-staff.eternal-ice.frost",
++   "item.force-staff.bewildering: trigger.force-staff.bewildering.confusion",
++   "item.holy-symbol.bewildering: trigger.holy-symbol.bewildering.confusion",
++ ]
+
+ ❯ test/enchant-triggers-own-weapon.test.ts:109:94
+    107|   it('no enchant-added attacker-hook trigger is unscoped, and each is …
+    108|     expect(added.length).toBeGreaterThan(80)
+    109|     expect(added.filter(({ t }) => !t.onlyWithAttack).map(({ i, t }) =…
+       |                                                                                              ^
+    110|     expect(added.filter(({ i, t }) => !i.grants.includes(t.onlyWithAtt…
+    111|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/6]⎯
+
+ FAIL  test/enchant-triggers-own-weapon.test.ts > over the whole pack > each of them rides every attack its weapon grants - or the first alone, where the enchant says the basic attack
+AssertionError: expected [ …(85) ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   "item.greatsword.bloodletting [\"onCrit\",100,\"target\",{\"kind\":\"status.apply\",\"statusId\":\"status.bleed\",\"value\":2}]: ",
++   "item.war-axe.bloodletting [\"onCrit\",100,\"target\",{\"kind\":\"status.apply\",\"statusId\":\"status.bleed\",\"value\":2}]: ",
++   "item.war-axe.taunting [\"onHit\",50,\"target\",{\"kind\":\"status.apply\",\"statusId\":\"status.taunt\",\"value\":2}]: ",
++   "item.war-hammer.frost [\"onHit\",100,\"target\",{\"kind\":\"status.apply\",\"statusId\":\"status.frost\",\"value\":1}]: ",
++   "item.war-hammer.frost [\"onCrit\",100,\"target\",{\"kind\":\"status.apply\",\"statusId\":\"status.frost\",\"value\":2}]: ",
++   "item.war-hammer.taunting [\"onHit\",50,\"target\",{\"kind\":\"status.apply\",\"statusId\":\"status.taunt\",\"value\":2}]: ",
++   "item.hunting-spear.venomous [\"onDamage\",100,\"target\",{\"kind\":\"status.apply\",\"statusId\":\"status.poison\",\"value\":1}]: ",
++   "item.hunting-spear.venomous [\"onCrit\",100,\"target\",{\"kind\":\"status.apply\",\"statusId\":\"status.poison\",\"value\":2}]: ",
++   "item.glaive.bloodletting [\"onCrit\",100,\"target\",{\"kind\":\"status.apply\",\"statusId\":\"status.bleed\",\"value\":2}]: ",
++   "item.glaive.taunting [\"onHit\",50,\"target\",{\"kind\":\"status.apply\",\"statusId\":\"status.taunt\",\"value\":2}]: ",
++   "item.crossbow.venomous [\"onDamage\",100,\"target\",{\"kind\":\"status.apply\",\"statusId\":\"status.poison\",\"value\":1}]: ",
++   "item.crossbow.venomous [\"onCrit\",100,\"target\",{\"kind\":\"status.apply\",\"statusId\":\"status.poison\",\"value\":2}]: ",
++   "item.crossbow.goading [\"onDamage\",40,\"target\",{\"kind\":\"status.apply\",\"statusId\":\"status.taunt\",\"value\":1}]: ",
++   "item.hand-crossbow.venomous [\"onDamage\",100,\"target\",{\"kind\":\"status.apply\",\"statusId\":\"status.poison\",\"value\":1}]: ",
++   "item.hand-crossbow.venomous [\"onCrit\",100,\"target\",{\"kind\":\"status.apply\",\"statusId\":\"status.poison\",\"value\":2}]: ",
++   "item.rapier.frost [\"onHit\",100,\"target\",{\"kind\":\"status.apply\",\"statusId\":\"status.frost\",\"value\":1}]: ",
++   "item.rapier.frost [\"onCrit\",100,\"target\",{\"kind\":\"status.apply\",\"statusId\":\"status.frost\",\"value\":2}]: ",
++   "item.raiders-cutlass.bloodletting [\"onCrit\",100,\"target\",{\"kind\":\"status.apply\",\"statusId\":\"status.bleed\",\"value\":2}]: ",
++   "item.throwing-knives.venomous [\"onDamage\",100,\"target\",{\"kind\":\"status.apply\",\"statusId\":\"status.poison\",\"value\":1}]: ",
++   "item.throwing-knives.venomous [\"onCrit\",100,\"target\",{\"kind\":\"status.apply\",\"statusId\":\"status.poison\",\"value\":2}]: ",
++   "item.poison-stars.venomous [\"onDamage\",100,\"target\",{\"kind\":\"status.apply\",\"statusId\":\"status.poison\",\"value\":1}]: ",
++   "item.poison-stars.venomous [\"onCrit\",100,\"target\",{\"kind\":\"status.apply\",\"statusId\":\"status.poison\",\"value\":2}]: ",
++   "item.poison-stars.frost [\"onHit\",100,\"target\",{\"kind\":\"status.apply\",\"statusId\":\"status.frost\",\"value\":1}]: ",
++   "item.poison-stars.frost [\"onCrit\",100,\"target\",{\"kind\":\"status.apply\",\"statusId\":\"status.frost\",\"value\":2}]: ",
++   "item.obsidian-fang-dagger.venomous [\"onDamage\",100,\"target\",{\"kind\":\"status.apply\",\"statusId\":\"status.poison\",\"value\":1}]: ",
++   "item.obsidian-fang-dagger.venomous [\"onCrit\",100,\"target\",{\"kind\":\"status.apply\",\"statusId\":\"status.poison\",\"value\":2}]: ",
++   "item.obsidian-fang-dagger.bloodletting [\"onCrit\",100,\"target\",{\"kind\":\"status.apply\",\"statusId\":\"status.bleed\",\"value\":2}]: ",
++   "item.obsidian-fang-dagger.addling [\"onHit\",40,\"target\",{\"kind\":\"status.apply\",\"statusId\":\"status.confusion\",\"value\":1}]: ",
++   "item.obsidian-fang-dagger.hobbling [\"onDamage\",100,\"target\",{\"kind\":\"status.apply\",\"statusId\":\"status.slow\",\"value\":2}]: ",
++   "item.duel-runeblades.bloodletting [\"onCrit\",100,\"target\",{\"kind\":\"status.apply\",\"statusId\":\"status.bleed\",\"value\":2}]: ",
++   "item.duel-runeblades.frost [\"onHit\",100,\"target\",{\"kind\":\"status.apply\",\"statusId\":\"status.frost\",\"value\":1}]: ",
++   "item.duel-runeblades.frost [\"onCrit\",100,\"target\",{\"kind\":\"status.apply\",\"statusId\":\"status.frost\",\"value\":2}]: ",
++   "item.shepherds-sling.venomous [\"onDamage\",100,\"target\",{\"kind\":\"status.apply\",\"statusId\":\"status.poison\",\"value\":1}]: ",
++   "item.shepherds-sling.venomous [\"onCrit\",100,\"target\",{\"kind\":\"status.apply\",\"statusId\":\"status.poison\",\"value\":2}]: ",
++   "item.crippling-whip.frost [\"onHit\",100,\"target\",{\"kind\":\"status.apply\",\"statusId\":\"status.frost\",\"value\":1}]: ",
++   "item.crippling-whip.frost [\"onCrit\",100,\"target\",{\"kind\":\"status.apply\",\"statusId\":\"status.frost\",\"value\":2}]: ",
++   "item.iron-claws.venomous [\"onDamage\",100,\"target\",{\"kind\":\"status.apply\",\"statusId\":\"status.poison\",\"value\":1}]: ",
++   "item.iron-claws.venomous [\"onCrit\",100,\"target\",{\"kind\":\"status.apply\",\"statusId\":\"status.poison\",\"value\":2}]: ",
++   "item.iron-claws.bloodletting [\"onCrit\",100,\"target\",{\"kind\":\"status.apply\",\"statusId\":\"status.bleed\",\"value\":2}]: ",
++   "item.grappling-harpoon.frost [\"onHit\",100,\"target\",{\"kind\":\"status.apply\",\"statusId\":\"status.frost\",\"value\":1}]: ",
++   "item.grappling-harpoon.frost [\"onCrit\",100,\"target\",{\"kind\":\"status.apply\",\"statusId\":\"status.frost\",\"value\":2}]: ",
++   "item.apprentice-wand.eternal-ice [\"onHit\",100,\"target\",{\"kind\":\"status.apply\",\"statusId\":\"status.frost\",\"value\":2}]: ",
++   "item.ancient-tome.eternal-ice [\"onHit\",100,\"target\",{\"kind\":\"status.apply\",\"statusId\":\"status.frost\",\"value\":2}]: ",
++   "item.daggers.venomous [\"onDamage\",100,\"target\",{\"kind\":\"status.apply\",\"statusId\":\"status.poison\",\"value\":1}]: ",
++   "item.daggers.venomous [\"onCrit\",100,\"target\",{\"kind\":\"status.apply\",\"statusId\":\"status.poison\",\"value\":2}]: ",
++   "item.daggers.addling [\"onHit\",40,\"target\",{\"kind\":\"status.apply\",\"statusId\":\"status.confusion\",\"value\":1}]: ",
++   "item.daggers.hobbling [\"onDamage\",100,\"target\",{\"kind\":\"status.apply\",\"statusId\":\"status.slow\",\"value\":2}]: ",
++   "item.daggers.bloodletting [\"onCrit\",100,\"target\",{\"kind\":\"status.apply\",\"statusId\":\"status.bleed\",\"value\":2}]: ",
++   "item.longbow.rooting [\"onDamage\",25,\"target\",{\"kind\":\"status.apply\",\"statusId\":\"status.root\",\"value\":1}]: ",
++   "item.longbow.venomous [\"onDamage\",100,\"target\",{\"kind\":\"status.apply\",\"statusId\":\"status.poison\",\"value\":1}]: ",
++   "item.longbow.venomous [\"onCrit\",100,\"target\",{\"kind\":\"status.apply\",\"statusId\":\"status.poison\",\"value\":2}]: ",
++   "item.longbow.goading [\"onDamage\",40,\"target\",{\"kind\":\"status.apply\",\"statusId\":\"status.taunt\",\"value\":1}]: ",
++   "item.longbow.frost [\"onHit\",100,\"target\",{\"kind\":\"status.apply\",\"statusId\":\"status.frost\",\"value\":1}]: ",
++   "item.longbow.frost [\"onCrit\",100,\"target\",{\"kind\":\"status.apply\",\"statusId\":\"status.frost\",\"value\":2}]: ",
++   "item.shortbow.rooting [\"onDamage\",25,\"target\",{\"kind\":\"status.apply\",\"statusId\":\"status.root\",\"value\":1}]: ",
++   "item.shortbow.venomous [\"onDamage\",100,\"target\",{\"kind\":\"status.apply\",\"statusId\":\"status.poison\",\"value\":1}]: ",
++   "item.shortbow.venomous [\"onCrit\",100,\"target\",{\"kind\":\"status.apply\",\"statusId\":\"status.poison\",\"value\":2}]: ",
++   "item.shortbow.goading [\"onDamage\",40,\"target\",{\"kind\":\"status.apply\",\"statusId\":\"status.taunt\",\"value\":1}]: ",
++   "item.shortbow.fire [\"onHit\",100,\"target\",{\"kind\":\"status.apply\",\"statusId\":\"status.burn\",\"value\":1}]: ",
++   "item.shortbow.fire [\"onCrit\",100,\"target\",{\"kind\":\"status.apply\",\"statusId\":\"status.burn\",\"value\":2}]: ",
++   "item.elfbow.rooting [\"onDamage\",25,\"target\",{\"kind\":\"status.apply\",\"statusId\":\"status.root\",\"value\":1}]: ",
++   "item.elfbow.fire [\"onHit\",100,\"target\",{\"kind\":\"status.apply\",\"statusId\":\"status.burn\",\"value\":1}]: ",
++   "item.elfbow.fire [\"onCrit\",100,\"target\",{\"kind\":\"status.apply\",\"statusId\":\"status.burn\",\"value\":2}]: ",
++   "item.barbarian-bow.fire [\"onHit\",100,\"target\",{\"kind\":\"status.apply\",\"statusId\":\"status.burn\",\"value\":1}]: ",
++   "item.barbarian-bow.fire [\"onCrit\",100,\"target\",{\"kind\":\"status.apply\",\"statusId\":\"status.burn\",\"value\":2}]: ",
++   "item.barbarian-bow.rooting [\"onDamage\",25,\"target\",{\"kind\":\"status.apply\",\"statusId\":\"status.root\",\"value\":1}]: ",
++   "item.javelin.venomous [\"onDamage\",100,\"target\",{\"kind\":\"status.apply\",\"statusId\":\"status.poison\",\"value\":1}]: ",
++   "item.javelin.venomous [\"onCrit\",100,\"target\",{\"kind\":\"status.apply\",\"statusId\":\"status.poison\",\"value\":2}]: ",
++   "item.javelin.frost [\"onHit\",100,\"target\",{\"kind\":\"status.apply\",\"statusId\":\"status.frost\",\"value\":1}]: ",
++   "item.javelin.frost [\"onCrit\",100,\"target\",{\"kind\":\"status.apply\",\"statusId\":\"status.frost\",\"value\":2}]: ",
++   "item.longsword.bloodletting [\"onCrit\",100,\"target\",{\"kind\":\"status.apply\",\"statusId\":\"status.bleed\",\"value\":2}]: ",
++   "item.longsword.taunting [\"onHit\",50,\"target\",{\"kind\":\"status.apply\",\"statusId\":\"status.taunt\",\"value\":2}]: ",
++   "item.halberd.bloodletting [\"onCrit\",100,\"target\",{\"kind\":\"status.apply\",\"statusId\":\"status.bleed\",\"value\":2}]: ",
++   "item.halberd.taunting [\"onHit\",50,\"target\",{\"kind\":\"status.apply\",\"statusId\":\"status.taunt\",\"value\":2}]: ",
++   "item.fire-staff.maddening [\"onDamage\",20,\"target\",{\"kind\":\"status.apply\",\"statusId\":\"status.confusion\",\"value\":4}]: ",
++   "item.fire-staff.bewildering [\"onDamage\",40,\"target\",{\"kind\":\"status.apply\",\"statusId\":\"status.confusion\",\"value\":1}]: ",
++   "item.frost-staff.eternal-ice [\"onHit\",100,\"target\",{\"kind\":\"status.apply\",\"statusId\":\"status.frost\",\"value\":2}]: ",
++   "item.frost-staff.bewildering [\"onDamage\",40,\"target\",{\"kind\":\"status.apply\",\"statusId\":\"status.confusion\",\"value\":1}]: ",
++   "item.earth-staff.maddening [\"onDamage\",20,\"target\",{\"kind\":\"status.apply\",\"statusId\":\"status.confusion\",\"value\":4}]: ",
++   "item.earth-staff.eternal-ice [\"onHit\",100,\"target\",{\"kind\":\"status.apply\",\"statusId\":\"status.frost\",\"value\":2}]: ",
++   "item.lightning-staff.bewildering [\"onDamage\",40,\"target\",{\"kind\":\"status.apply\",\"statusId\":\"status.confusion\",\"value\":1}]: ",
++   "item.lightning-staff.maddening [\"onDamage\",20,\"target\",{\"kind\":\"status.apply\",\"statusId\":\"status.confusion\",\"value\":4}]: ",
++   "item.force-staff.eternal-ice [\"onHit\",100,\"target\",{\"kind\":\"status.apply\",\"statusId\":\"status.frost\",\"value\":2}]: ",
++   "item.force-staff.bewildering [\"onDamage\",40,\"target\",{\"kind\":\"status.apply\",\"statusId\":\"status.confusion\",\"value\":1}]: ",
++   "item.holy-symbol.bewildering [\"onDamage\",40,\"target\",{\"kind\":\"status.apply\",\"statusId\":\"status.confusion\",\"value\":1}]: ",
++ ]
+
+ ❯ test/enchant-triggers-own-weapon.test.ts:125:19
+    123|       }
+    124|     }
+    125|     expect(wrong).toEqual([])
+       |                   ^
+    126|     // the twelve enchants the finding named are among them, and a row…
+    127|     const enchants = new Set(added.map(({ i }) => i.enchant))
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/6]⎯
+
+ FAIL  test/enchant-triggers-own-weapon.test.ts > over the whole pack > the exceptions, by name: the only unscoped attacker-hook triggers an item brings are the three whose words are every strike of their bearer
+AssertionError: expected [ …(62) ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   "item.ancient-tome.eternal-ice",
++   "item.apprentice-wand.eternal-ice",
++   "item.barbarian-bow.fire",
++   "item.barbarian-bow.rooting",
++   "item.crippling-whip.frost",
++   "item.crossbow.goading",
++   "item.crossbow.venomous",
++   "item.daggers.addling",
++   "item.daggers.bloodletting",
++   "item.daggers.hobbling",
++   "item.daggers.venomous",
++   "item.duel-runeblades.bloodletting",
++   "item.duel-runeblades.frost",
++   "item.earth-staff.eternal-ice",
++   "item.earth-staff.maddening",
++   "item.elfbow.fire",
++   "item.elfbow.rooting",
++   "item.fire-staff.bewildering",
++   "item.fire-staff.maddening",
++   "item.force-staff.bewildering",
++   "item.force-staff.eternal-ice",
++   "item.frost-staff.bewildering",
++   "item.frost-staff.eternal-ice",
++   "item.glaive.bloodletting",
++   "item.glaive.taunting",
++   "item.grappling-harpoon.frost",
++   "item.greatsword.bloodletting",
++   "item.halberd.bloodletting",
++   "item.halberd.taunting",
++   "item.hand-crossbow.venomous",
++   "item.holy-symbol.bewildering",
++   "item.hunting-spear.venomous",
++   "item.iron-claws.bloodletting",
++   "item.iron-claws.venomous",
++   "item.javelin.frost",
++   "item.javelin.venomous",
++   "item.lightning-staff.bewildering",
++   "item.lightning-staff.maddening",
++   "item.longbow.frost",
++   "item.longbow.goading",
++   "item.longbow.rooting",
++   "item.longbow.venomous",
++   "item.longsword.bloodletting",
++   "item.longsword.taunting",
++   "item.obsidian-fang-dagger.addling",
++   "item.obsidian-fang-dagger.bloodletting",
++   "item.obsidian-fang-dagger.hobbling",
++   "item.obsidian-fang-dagger.venomous",
++   "item.poison-stars.frost",
++   "item.poison-stars.venomous",
++   "item.raiders-cutlass.bloodletting",
++   "item.rapier.frost",
++   "item.shepherds-sling.venomous",
++   "item.shortbow.fire",
++   "item.shortbow.goading",
++   "item.shortbow.rooting",
++   "item.shortbow.venomous",
++   "item.throwing-knives.venomous",
++   "item.war-axe.bloodletting",
++   "item.war-axe.taunting",
++   "item.war-hammer.frost",
++   "item.war-hammer.taunting",
++ ]
+
+ ❯ test/enchant-triggers-own-weapon.test.ts:145:47
+    143|     // and on every made row (a Forge row, a tier-3 row) nothing unsco…
+    144|     const madeUnscoped = ROWS.filter((i) => i.base).flatMap((i) => i.t…
+    145|     expect([...new Set(madeUnscoped)].sort()).toEqual([])
+       |                                               ^
+    146|   })
+    147| })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/6]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  6 failed | 2 passed (8)
+   Start at  16:28:34
+   Duration  969ms (transform 651ms, setup 0ms, import 800ms, tests 33ms, environment 0ms)
+

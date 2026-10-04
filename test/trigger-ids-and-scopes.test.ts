@@ -191,21 +191,40 @@ describe('every item whose attack-hook trigger is its own strikes is scoped; wha
     expect(unscoped).toEqual(['item.pharaohs-gauntlets', 'item.rune-bleeding-strike', 'item.rune-burning-touch'])
   })
 
-  it('on an enchanted or derived row the only unscoped attack-hook triggers are the enchantment\'s own (its row has a scope word of its own, `attack: \'basic\'`)', () => {
+  // Law 10, 2026-10-04 — fix.enchant-triggers-own-weapon (DECISIONS.md 2026-10-04 'after the backlog run: ... an enchant is its own
+  // weapon's ...': "4, yes. If you have a fiery longsword and a dagger with a stab ability on it that stab ability does not use the fiery
+  // that's on the longsword."): this test held the FINDING this item's ruling answers - the twelve attributes whose triggers were left
+  // unscoped (SWITCHES.md itemTriggersLeftUnscoped). They are scoped now, by the compiler's rule, so the claim is the stronger one: on a
+  // made row (a tier-3 row, a Forge row) NO attacker-hook trigger is unscoped - neither the base weapon's own nor the attribute's.
+  // was:
+  //   it('on an enchanted or derived row the only unscoped attack-hook triggers are the enchantment\'s own (its row has a scope word of its own, `attack: \'basic\'`)', () => {
+  //   const copies = rows.filter((r) => r.enchant || r.base)
+  //   expect(copies.length).toBeGreaterThan(100)
+  //   const leftByEnchant = new Map<string, number>()
+  //   for (const r of copies) for (const t of r.triggers) {
+  //   if (!attackerHook(t) || t.onlyWithAttack) continue
+  //   // never the base weapon's own trigger carried over unscoped — only one the enchantment added (its source is the combination)
+  //   expect(t.source, `${r.id} ${t.id}`).toBe(r.id)
+  //   expect(r.enchant, `${r.id} ${t.id}`).toBeDefined()
+  //   leftByEnchant.set(r.enchant!, (leftByEnchant.get(r.enchant!) ?? 0) + 1)
+  //   }
+  //   expect([...leftByEnchant.keys()].sort()).toEqual([
+  //   'enchant.addling', 'enchant.bewildering', 'enchant.bloodletting', 'enchant.eternal-ice', 'enchant.fire', 'enchant.frost',
+  //   'enchant.goading', 'enchant.hobbling', 'enchant.maddening', 'enchant.rooting', 'enchant.taunting', 'enchant.venomous',
+  //   ])
+  //   })
+  it('on a tier-3 or derived row no attacker-hook trigger is unscoped: the triggers of an attribute ride the attacks of its own weapon', () => {
     const copies = rows.filter((r) => r.enchant || r.base)
     expect(copies.length).toBeGreaterThan(100)
-    const leftByEnchant = new Map<string, number>()
+    const left: string[] = []
+    let scopedByAttribute = 0
     for (const r of copies) for (const t of r.triggers) {
-      if (!attackerHook(t) || t.onlyWithAttack) continue
-      // never the base weapon's own trigger carried over unscoped — only one the enchantment added (its source is the combination)
-      expect(t.source, `${r.id} ${t.id}`).toBe(r.id)
-      expect(r.enchant, `${r.id} ${t.id}`).toBeDefined()
-      leftByEnchant.set(r.enchant!, (leftByEnchant.get(r.enchant!) ?? 0) + 1)
+      if (!attackerHook(t)) continue
+      if (!t.onlyWithAttack) left.push(`${r.id} ${t.id}`)
+      else if (t.source === r.id && r.enchant) { scopedByAttribute++; expect(r.grants, `${r.id} ${t.id}`).toContain(t.onlyWithAttack) }
     }
-    expect([...leftByEnchant.keys()].sort()).toEqual([
-      'enchant.addling', 'enchant.bewildering', 'enchant.bloodletting', 'enchant.eternal-ice', 'enchant.fire', 'enchant.frost',
-      'enchant.goading', 'enchant.hobbling', 'enchant.maddening', 'enchant.rooting', 'enchant.taunting', 'enchant.venomous',
-    ])
+    expect(left).toEqual([])
+    expect(scopedByAttribute).toBeGreaterThan(85)   // the 85 that were unscoped are one per attack now, and Flaming's four
   })
 
   it('the pattern they follow is the dagger\'s: Stab\'s "gain 1 Protection" rides Stab', () => {

@@ -1,0 +1,1297 @@
+{
+  "sourceCommit": "fix.enchant-triggers-own-weapon",
+  "note": "fix.enchant-triggers-own-weapon (2026-10-04): an attribute's attacker-hook triggers ride its own weapon's attacks. Cases marked changed differ from the content.longsword-loses-stab capture; movedOnlyText means state, RNG and result are unchanged.",
+  "cases": [
+    {
+      "id": "showcase.alpha-team",
+      "events": "4195a7ba49391aed68a3e67c2d56bffa686d503460e8f5200521483606cb9428",
+      "state": "949f156616abd15418e4944a0ea57670d57142aaa369192b3355b03312cbbc54",
+      "rng": "3c161472d65fe32bad1834fe54374c170baa49f477f2d9aa3f078fcf1a13fa2d",
+      "result": {
+        "outcome": "heroClear",
+        "turns": 8,
+        "usesSpent": []
+      },
+      "changed": false
+    },
+    {
+      "id": "showcase.arc-variant",
+      "events": "52100c7f9a4ed21c528c2ec87f5d9fb7563a2af3e74ca4936a44bbb3af67961e",
+      "state": "4838c879ae76a3833c936ac3cd482600b180fbcfe6baab9b625e7f0506da6974",
+      "rng": "561f4a26f2dd3eaa920ddf344e08a65c98a0d0d5e9ecf4a673ed24bc106a848f",
+      "result": {
+        "outcome": "heroClear",
+        "turns": 3,
+        "usesSpent": [
+          {
+            "unit": 0,
+            "power": "attack.test-ram.once",
+            "spent": 1
+          }
+        ]
+      },
+      "changed": false
+    },
+    {
+      "id": "showcase.assembled-party",
+      "events": "3ec20aa44e061c83fd7b06f75d224d1027a41d4b9fdd13809196a1a4e8676b88",
+      "state": "f75f73de1899ad7a2a7b25fd2ac19ed561bf000b8784cbc4f37017fbf53f4528",
+      "rng": "2d7d6e39157414bdebff230109c31172eb9e2d264c670cc3073f90c353068bbf",
+      "result": {
+        "outcome": "heroClear",
+        "turns": 3,
+        "usesSpent": []
+      },
+      "changed": false
+    },
+    {
+      "id": "showcase.badged",
+      "events": "9ed970f56a25941e7057813867fb9b3a6f58ee361f6d1c27672a6e6899398800",
+      "state": "e1c275c8967851dfdae6bf84dafe7f3d8e63a0b1596274ec2a7b405afbd376b7",
+      "rng": "c67bd0ca5939fcb6b4250b3041935da83a7188fcad3f85aa0db6f0b710b56ea0",
+      "result": {
+        "outcome": "heroClear",
+        "turns": 4,
+        "usesSpent": []
+      },
+      "changed": false
+    },
+    {
+      "id": "showcase.beasts",
+      "events": "3996987cae4087f95265cc3a2690d0fb9cb7887e5239bdd2c2b48cc79b9156ab",
+      "state": "41d409a6fb34d311e2d456b2fa2e831615809523eca063884012d933429820a6",
+      "rng": "572abb8ea75bc27fdd04702f70ba5a0a076fac3479f22ad3d18c53cf701f0143",
+      "result": {
+        "outcome": "heroClear",
+        "turns": 3,
+        "usesSpent": []
+      },
+      "changed": false
+    },
+    {
+      "id": "showcase.civilians",
+      "events": "90e386acabf5fc79afefaea42d13cb979a8b63f3104b100a72802f28c5eb31df",
+      "state": "eb8935fce691cf5f95d683a193473abb76c256c98c0a3982d218b68688597191",
+      "rng": "85cd6014922d5414af19b0fa58ad293ca1c225d1207fe06365d7445e3aad2424",
+      "result": {
+        "outcome": "heroClear",
+        "turns": 4,
+        "usesSpent": []
+      },
+      "changed": false
+    },
+    {
+      "id": "showcase.eve-24-a",
+      "events": "f5046a7ef67c8db1d505f57f94ce488d4aa0ff46d705b37240d24464b57dcbaf",
+      "state": "1293c17e0ca119a483efaadb5516865122cf2e75839c34648ce3d8a4203ba1a1",
+      "rng": "381ac875685e193b8554785c7ab34c5877f69d7d0f4c2ba6045ec9a4b789ebcf",
+      "result": {
+        "outcome": "heroClear",
+        "turns": 2,
+        "usesSpent": []
+      },
+      "changed": false
+    },
+    {
+      "id": "showcase.eve-24-b",
+      "events": "e4dd7888b721456e7ce1a2d0a0a9dd8bc093e763295136009e858a5bfd40c1c8",
+      "state": "a8f1e550247b4e269b7ed02e16dc1291905976143939f44a753e90169f30be70",
+      "rng": "f79b075934488486537f0352c6d0a752e5b8689d6e70f7fbee6abe32f78164c0",
+      "result": {
+        "outcome": "heroClear",
+        "turns": 3,
+        "usesSpent": []
+      },
+      "changed": false
+    },
+    {
+      "id": "showcase.farmers-grown",
+      "events": "86f8aa3eed1210913d6e4e6ba3cd48a9a5bdf1f057deafd0f488505c54667c6b",
+      "state": "bfed27ba094814b17023676b24379371885fb41b8b888603fabd44492f061ee5",
+      "rng": "7f00e10204e18965f7fe77bad27793f5a1ae4f95d08f3964a87f4fa7f263c31a",
+      "result": {
+        "outcome": "heroClear",
+        "turns": 3,
+        "usesSpent": []
+      },
+      "changed": false
+    },
+    {
+      "id": "showcase.flight-bonuses",
+      "events": "bb23b494c5da1c04c9811cf4ca2a096c3d1dfcc1c29384b8feaf40c87ec9ffd4",
+      "state": "0430dc8861315dab54cce985065ea81863c3a5ba1db31b40d649fe2c5985ba76",
+      "rng": "7339fadc92b6a9a35679c9c9f558a00cd7b4415ee12ec096d8132eca833968ac",
+      "result": {
+        "outcome": "heroClear",
+        "turns": 10,
+        "usesSpent": []
+      },
+      "changed": false
+    },
+    {
+      "id": "showcase.gash-variant",
+      "events": "26fee1ea3660e985b475f5128025c2cff22d0285f37ef15af02d1883c1a3a94a",
+      "state": "9b7c4156ce32a5d252edc159a4495703e5e11c557b77215f105133823866d774",
+      "rng": "4d50107ec6cdd178de2c11a0e29b64ff5f45ca74d696cfb3c35624556f649b33",
+      "result": {
+        "outcome": "heroClear",
+        "turns": 7,
+        "usesSpent": []
+      },
+      "changed": false
+    },
+    {
+      "id": "showcase.horrors",
+      "events": "7a4ea58f25133a1fe6aa8a20d957f93800bacf4a78fbd82e7e48054b475f284e",
+      "state": "dcab97ac2af38d64080d00a8cae21db47e25bc96024ce33423275a35db6b1438",
+      "rng": "207713aaa9c4dedbf1c6d83e60d66c1844eb8f271fdbe7aeea9af11d320aa3c8",
+      "result": {
+        "outcome": "wipe",
+        "turns": 8,
+        "usesSpent": []
+      },
+      "changed": false
+    },
+    {
+      "id": "showcase.item-powers",
+      "events": "2326fa655dfd308124d1ef1bed5e75fed3994b3a486e4602c896cb9d45e7fc1f",
+      "state": "e742a90cfd3a1657ca4fd7ce3761f53f2d4daa6a1cd6176df116f73e2c4a2bcd",
+      "rng": "b20645233c9e015c419d0e4129c7aade750b95d5b2894a77592eacf9efaa984b",
+      "result": {
+        "outcome": "heroClear",
+        "turns": 1,
+        "usesSpent": []
+      },
+      "changed": false
+    },
+    {
+      "id": "showcase.kiln",
+      "events": "7a1ac442b58a45d98388b66c75451e8a818f9bf63852988d3dd38c9544ede3cd",
+      "state": "701b016633cc80b2acf43121a48ebc7daa1aed44cacd3c7c147f98ccf8d29692",
+      "rng": "af53978775a4cce09b6a4026f2dc0c558a4543683af78ce5efeb2e6b34ef1e7f",
+      "result": {
+        "outcome": "wipe",
+        "turns": 5,
+        "usesSpent": []
+      },
+      "changed": false
+    },
+    {
+      "id": "showcase.knockback-two",
+      "events": "acb899bcbe2037abe9ad5c6ca07b2499a3a4fd6a6a959d20b458d9f2afb04ddd",
+      "state": "bdab92a7050c3b94513540cd8b5fb2bf40311f9a620ae583ade99f08e580d11e",
+      "rng": "e3876b1b7a98cc7084324b11293850f9846a928779d7a554938b04de06e1a86f",
+      "result": {
+        "outcome": "heroClear",
+        "turns": 4,
+        "usesSpent": [
+          {
+            "unit": 0,
+            "power": "attack.test-ram.once",
+            "spent": 1
+          }
+        ]
+      },
+      "changed": false
+    },
+    {
+      "id": "showcase.mirror-zombies",
+      "events": "2b5ebbf91e748845a69408d98367e0c8bdfcd3583b73a614ce12947d86a35456",
+      "state": "e5bba6ed69adcb149d04ea684a2147b7ab89f29b0875ae3171f758a4e106f2c7",
+      "rng": "d6ecd0962175abf914dfa47a7653c1c8a6bd35216be990c9ed008bfa3297725b",
+      "result": {
+        "outcome": "wipe",
+        "turns": 6,
+        "usesSpent": []
+      },
+      "changed": false
+    },
+    {
+      "id": "showcase.movement-bonuses",
+      "events": "60cab41e76910a63c250a5fd480f95efc737856f9c910148232f4fcc02019003",
+      "state": "8016cee1616bea13b8bc8c07adfab14d1a6e00d6ae0675bb5551be3e37755f0e",
+      "rng": "287fa0842c7aa64174a31ea1735bfa1fe01fab6b3d17765f500cfc19ebdb53eb",
+      "result": {
+        "outcome": "heroClear",
+        "turns": 3,
+        "usesSpent": []
+      },
+      "changed": false
+    },
+    {
+      "id": "showcase.ordered-power-preview",
+      "events": "cd9c01cf2a99aa9f49a7452a35a38f55bbb5bdedb8de0afe287cbd7c8b44ba08",
+      "state": "6873cbb877e0f658959aeb3b5df35c804aa0a84c6f2aef8cf316efbf049d6aec",
+      "rng": "dc509ebaac9ff0d5d55b151b477622dbadb9b16c71b6a6a9d1b3b90d052c1a98",
+      "result": {
+        "outcome": "heroClear",
+        "turns": 2,
+        "usesSpent": []
+      },
+      "changed": false
+    },
+    {
+      "id": "showcase.prologue-enemies",
+      "events": "3580ce52e4874657c11004d74cdf8b526bce050a2f4ce59696d996393eadc7e1",
+      "state": "fd869bf3c16c63a79296ff754da63615f6dc441498b9f5208a8bc47a0bf150ee",
+      "rng": "aaa807f4dc919293ec381f0d77fad87b3611818e1cbc71d987ffb3514a4563a9",
+      "result": {
+        "outcome": "wipe",
+        "turns": 5,
+        "usesSpent": []
+      },
+      "changed": false
+    },
+    {
+      "id": "showcase.prologue-party",
+      "events": "d69b7f231ad328805eac75631a27bb2583f4cf206a520b58fe02823d20849c1f",
+      "state": "99feb47ed81b2f171486ca9658e311baeb4802ac7484aef8a42d65942067e43b",
+      "rng": "d9af44c8ed153940f4a9d7f218abd6c7b7fa96bf0d1da3caf1d1066a2896f7bc",
+      "result": {
+        "outcome": "heroClear",
+        "turns": 4,
+        "usesSpent": []
+      },
+      "changed": false
+    },
+    {
+      "id": "showcase.rime",
+      "events": "518b73ca6dcb9776c50a69ff3d318dc3ecb5fda783709e81eaa3678e90ed29ef",
+      "state": "f774e1ce4c93414b72be4b390cdb7b4d09463b25f60bf3277bb24bc390101462",
+      "rng": "91c81038e708d8464e5a32c487838641636234757409f313552358346522753f",
+      "result": {
+        "outcome": "wipe",
+        "turns": 13,
+        "usesSpent": []
+      },
+      "changed": false
+    },
+    {
+      "id": "showcase.supper",
+      "events": "ca3705c37eef24c274c273b1d1c85b233bf907e55b3af81eb64a69c2585b62c7",
+      "state": "b55c055fa9fce12c79b3c82afe7de171a6ce7e6ac9e09633d803156e04a1b215",
+      "rng": "d89f2b0987ffcfc7cd12cae64099789d10a2fdd8d7bbba4dfec22337690ca392",
+      "result": {
+        "outcome": "wipe",
+        "turns": 5,
+        "usesSpent": []
+      },
+      "changed": false
+    },
+    {
+      "id": "showcase.surge-flight-ladder",
+      "events": "72a961e51855a78fa6457946379a48f927b1289db3396c774f5f9f1894216767",
+      "state": "d3f1c4109e772fab473e953c18863c8902f94cd46878025e4897238dcff34aac",
+      "rng": "5d47234e1a708d08fa79d568dab2496736477c03023ef523c5110b8a5b07d6d1",
+      "result": {
+        "outcome": "heroClear",
+        "turns": 10,
+        "usesSpent": []
+      },
+      "changed": false
+    },
+    {
+      "id": "showcase.surrounded",
+      "events": "01963a8042e370ae37caf2979c4cd59c83d61e7869d4957a316bc6c14dac9f54",
+      "state": "bfcc57c5c766f9a263a309d791632add0ab53559a392c93e6ffd2a64497fefec",
+      "rng": "549df83aa4d01d5be4cdc223dc33a55f03a87f2301bfe8f1aa9e627c7e31a9de",
+      "result": {
+        "outcome": "objectiveFailed",
+        "turns": 2,
+        "usesSpent": []
+      },
+      "changed": false
+    },
+    {
+      "id": "showcase.two-zombies-and-a-child",
+      "events": "96bb61c2e5d3db155630a511912e118f056798c3756e430a27d89f10c42178aa",
+      "state": "efdc1e4e36830da79bd8a2681bfe7a041e137fff6e34f6f43a0d7e133b5e4629",
+      "rng": "6e529d339e4dc1947dc6ef3dd9d441e4753884b0892382f67d01589ea4e19117",
+      "result": {
+        "outcome": "objectiveFailed",
+        "turns": 3,
+        "usesSpent": []
+      },
+      "changed": false
+    },
+    {
+      "id": "showcase.waystation",
+      "events": "543be1f4520c6dd1d9516b44df570a1dd98e94c91389807dfb4ee9969e0d2f8e",
+      "state": "1d0a52f79d342d1e4d579a080a1f4820903763e6cfef14f9c074648798dc18ea",
+      "rng": "16aecfde1b509224f881268fad637b0b0b39345365107cc4cb73be700642555a",
+      "result": {
+        "outcome": "heroClear",
+        "turns": 16,
+        "usesSpent": [
+          {
+            "unit": 0,
+            "power": "power.strength-potion.use",
+            "spent": 1
+          },
+          {
+            "unit": 0,
+            "power": "power.healing-potion.use",
+            "spent": 1
+          },
+          {
+            "unit": 1,
+            "power": "power.healing-potion.use",
+            "spent": 1
+          },
+          {
+            "unit": 2,
+            "power": "power.rations.use",
+            "spent": 1
+          },
+          {
+            "unit": 2,
+            "power": "power.healing-potion.use",
+            "spent": 1
+          },
+          {
+            "unit": 3,
+            "power": "power.healing-potion.use",
+            "spent": 1
+          }
+        ],
+        "itemUses": [
+          {
+            "unit": 0,
+            "instanceId": "100/3",
+            "itemId": "item.healing-potion",
+            "power": "power.healing-potion.use",
+            "used": 1,
+            "left": 0
+          },
+          {
+            "unit": 0,
+            "instanceId": "100/4",
+            "itemId": "item.rations",
+            "power": "power.rations.use",
+            "used": 0,
+            "left": 1
+          },
+          {
+            "unit": 0,
+            "instanceId": "100/5",
+            "itemId": "item.strength-potion",
+            "power": "power.strength-potion.use",
+            "used": 1,
+            "left": 0
+          },
+          {
+            "unit": 1,
+            "instanceId": "101/2",
+            "itemId": "item.healing-potion",
+            "power": "power.healing-potion.use",
+            "used": 1,
+            "left": 0
+          },
+          {
+            "unit": 1,
+            "instanceId": "101/3",
+            "itemId": "item.rations",
+            "power": "power.rations.use",
+            "used": 0,
+            "left": 1
+          },
+          {
+            "unit": 1,
+            "instanceId": "101/4",
+            "itemId": "item.poison-flask",
+            "power": "power.poison-flask.use",
+            "used": 0,
+            "left": 1
+          },
+          {
+            "unit": 2,
+            "instanceId": "102/2",
+            "itemId": "item.healing-potion",
+            "power": "power.healing-potion.use",
+            "used": 1,
+            "left": 0
+          },
+          {
+            "unit": 2,
+            "instanceId": "102/3",
+            "itemId": "item.rations",
+            "power": "power.rations.use",
+            "used": 1,
+            "left": 0
+          },
+          {
+            "unit": 3,
+            "instanceId": "103/3",
+            "itemId": "item.healing-potion",
+            "power": "power.healing-potion.use",
+            "used": 1,
+            "left": 0
+          },
+          {
+            "unit": 3,
+            "instanceId": "103/4",
+            "itemId": "item.rations",
+            "power": "power.rations.use",
+            "used": 0,
+            "left": 1
+          }
+        ]
+      },
+      "changed": false
+    },
+    {
+      "id": "showcase.wounded-entry",
+      "events": "55a7ec8d8842feefa5aab49ae1114480bc61fe4131e092dee4e1f02449a65dd3",
+      "state": "22f2a16f58c9603a1ed819e11d65a42e296cf392c1aabf61703e6bc23b83b770",
+      "rng": "eeee1b244ae3f332d66665d344751a05f61d4fd3db8c542ea754f419db5ba97f",
+      "result": {
+        "outcome": "wipe",
+        "turns": 1,
+        "usesSpent": []
+      },
+      "changed": false
+    },
+    {
+      "id": "test.afflictions-at-zero",
+      "events": "212b728a8635ff34a719038bd5b71be76993edf551093df9c75d6310afb5c858",
+      "state": "5f3eaa24355bf6eed932944b5e586c31fc7340584e21e09716f8ff753864048d",
+      "rng": "cf6cd6d84150eaf0545c545184b1a4f19513df4c704699499544e307bcc497ad",
+      "result": {
+        "outcome": "heroClear",
+        "turns": 4,
+        "usesSpent": []
+      },
+      "changed": false
+    },
+    {
+      "id": "test.afflictions-at-zero-rule",
+      "events": "429933927c677fe1a7a0207ba616b1929b6de0394638e506fdcf584d5a2d18c7",
+      "state": "2f2dc3f70fa09e554d5aee26e196f7b0ef7137f38aec4653b33f88d8bdc4d731",
+      "rng": "e49e49f04c1bfe10087e0a566494178916e405554fe11da74a88384b6f6b83e7",
+      "result": {
+        "outcome": "wipe",
+        "turns": 6,
+        "usesSpent": []
+      },
+      "changed": false
+    },
+    {
+      "id": "test.area-fall-curse",
+      "events": "f481f43095bac3b65f84127cc1a4325e7fa6f240ab8abc531c0ccbb096cf2b50",
+      "state": "a0194c3b8ae042a30419bc8d840fdb0f70b7d0a5dcd90ad28370d24bad218690",
+      "rng": "356d55d0a8ef5b58e22a40f57035e721c924021d9e10ef6147b3f71883a895bd",
+      "result": {
+        "outcome": "heroClear",
+        "turns": 7,
+        "usesSpent": []
+      },
+      "changed": false
+    },
+    {
+      "id": "test.area-fall-meteor",
+      "events": "176c5e68b1d730ec5c7718984e03bae0cedfda206124d077e9b0a87d03927f6f",
+      "state": "2a9041e8acece045c03522e83a87b525d3f755709a297ab7fb8e95602ddf5d64",
+      "rng": "f71fd275aaf99d6bd4facd011e81eb5a50453ae4bf332ba91f2a3a1956cbc436",
+      "result": {
+        "outcome": "heroClear",
+        "turns": 5,
+        "usesSpent": []
+      },
+      "changed": false
+    },
+    {
+      "id": "test.authored-slots",
+      "events": "134785b7a6169dfed8d2dd22eeab8d45ddadd1f39afd4043687ed6567e111f0c",
+      "state": "0933450d207a016a725ea4356fc7d657b8753bb1217873a63316a0f13faa7c51",
+      "rng": "40fcac9c403bdd4b686fd92e8097b8073efc9a50210f27144a8bf8bc0bc93c02",
+      "result": {
+        "outcome": "heroClear",
+        "turns": 2,
+        "usesSpent": []
+      },
+      "changed": false
+    },
+    {
+      "id": "test.back-flip",
+      "events": "fc4e563732eea73604e8dbcfbbffc31ee7ec418a5f7bafad1bb3c71f5e72fac0",
+      "state": "57ebfe5043ce3388747d107192ddb04d17a6168c100c4618e799cee91c5ae54e",
+      "rng": "e601758511f1a6a201865fc1f6fdc5af3ea5ae165566338c6e7111c76f4e4064",
+      "result": {
+        "outcome": "wipe",
+        "turns": 5,
+        "usesSpent": []
+      },
+      "changed": false
+    },
+    {
+      "id": "test.block-a",
+      "events": "b45c546d66466d34d12d6984918f119e699c6e32c1afaddea8455599da4cd297",
+      "state": "bb351af2312609dd075db73696f5094bf2570bcf33ca1c2c5baf7f29170c6bf9",
+      "rng": "baacb1435c1889bd6f6662c1617299f44460477aad4f1840ad91375842167e3f",
+      "result": {
+        "outcome": "heroClear",
+        "turns": 14,
+        "usesSpent": []
+      },
+      "changed": false
+    },
+    {
+      "id": "test.block-b",
+      "events": "38c711c1bae0cd3b8ddfbe3f620b70ac88c9b879d55e736d065d83d0d66aa169",
+      "state": "c792684c1c2dff6e2b3ae4d7bd76e4721a776195d02f64c77e14a9f97c0d7832",
+      "rng": "50030d88e5d9e7ce39cc158ecf0ced60cd0c40e2be4fba35aa3acc22b24b5268",
+      "result": {
+        "outcome": "wipe",
+        "turns": 1,
+        "usesSpent": []
+      },
+      "changed": false
+    },
+    {
+      "id": "test.board-authored",
+      "events": "985a364ed9f9ae39996eca119e50edbfe6ae5140cf7dcba9a4280fd0243a2581",
+      "state": "c1a85dfcb1af175d8837ffb1b9d496f37ef8b550e06b1f8c5c77771b64e65f2b",
+      "rng": "cefc02abd8ca2bc5041667238741585ed11a0d24f48192d5486c1a59f86b1092",
+      "result": {
+        "outcome": "heroClear",
+        "turns": 6,
+        "usesSpent": []
+      },
+      "changed": false
+    },
+    {
+      "id": "test.board-journey",
+      "events": "f4d831e6faef284960fa2adb77a24747a1e8bb66e878a053ca69dc35687d5e13",
+      "state": "25dfc9ab5bf3752f6784a8019c8504b316b0138273572fccd8931687734951e9",
+      "rng": "cefc02abd8ca2bc5041667238741585ed11a0d24f48192d5486c1a59f86b1092",
+      "result": {
+        "outcome": "heroClear",
+        "turns": 3,
+        "usesSpent": []
+      },
+      "changed": false
+    },
+    {
+      "id": "test.caravan-aftermath",
+      "events": "3fb124c39283d78aa1962cd1eaf94a0edd43ef791dde42ef87e1bdba4073e7f0",
+      "state": "9e09eeec4472245ecd60675bc290faaf8fef1fc4cb7aa226e9f45e0b4e761507",
+      "rng": "3063267e6169550c176dc812c5dcdfbbf7d71a594f0bd6751414ebc4f6f4c77b",
+      "result": {
+        "outcome": "heroClear",
+        "turns": 7,
+        "usesSpent": []
+      },
+      "changed": false
+    },
+    {
+      "id": "test.charge-a",
+      "events": "ac5605b029cb9cd71fbb7215992f01176849b6a328e96beb5907b914d0ea73db",
+      "state": "1f5cfccebe1f56add1543d77545ac6fd0b6e712e836109e332ea56b4c30dadc6",
+      "rng": "7824f0bc1c5ceba51b6d0c39f5a58300b84341531c283a8ec8cdd7de06443cda",
+      "result": {
+        "outcome": "heroClear",
+        "turns": 2,
+        "usesSpent": []
+      },
+      "changed": false
+    },
+    {
+      "id": "test.charge-b",
+      "events": "68d281ff356d65c580e0d6240b9eff71574f04e75aba1375822284cb3273b1cc",
+      "state": "3f36a4ac6d5bfa58a1b4a94861a10cbdc2e3e9c1397b3b8b1ffde453b061097d",
+      "rng": "afd8e0762c61e8a81038ca87886ee4f183d8930575c3e94bc8b0eb47f6963936",
+      "result": {
+        "outcome": "wipe",
+        "turns": 1,
+        "usesSpent": []
+      },
+      "changed": false
+    },
+    {
+      "id": "test.counterattack",
+      "events": "38d5472d5d4cf2e66eada193768f1939cfdcf360c0d8cae43a5379e07a6551a6",
+      "state": "87e2a70553b67e704bb17936e5f5bc7c8f930e6fcfdb9c27e3437681dd546de2",
+      "rng": "f3fa1f0b1d36008fb8242f059b527f27bee1275a9e1b4b6f89d895f41520675d",
+      "result": {
+        "outcome": "heroClear",
+        "turns": 4,
+        "usesSpent": []
+      },
+      "changed": false
+    },
+    {
+      "id": "test.cover-crates",
+      "events": "24cd3f8eb30f2fa780fa51557d42409ca402843bffd74a89f3a99e4813e84f7e",
+      "state": "a34e86800dac7427c6f3b3dba94b12007dc3d83bc6db3c16c850af3974360516",
+      "rng": "73fa04ef2ecb397dace87a9e90bada5e2a13bf31e4bbf3de20747f59ddf24e51",
+      "result": {
+        "outcome": "wipe",
+        "turns": 2,
+        "usesSpent": []
+      },
+      "changed": false
+    },
+    {
+      "id": "test.cover-fence",
+      "events": "b372c08fd7354fd3888266522f4839803135de7c91291d67be018cf3b42ed290",
+      "state": "a2324d09029e31411007a1d0b402988cf0eb9209ede501e259ade605e4ddf1ec",
+      "rng": "332d6a73cc46029a66719f55babe262f75158866a07b2094956bea5c1fd5a654",
+      "result": {
+        "outcome": "wipe",
+        "turns": 2,
+        "usesSpent": []
+      },
+      "changed": false
+    },
+    {
+      "id": "test.damage-packets",
+      "events": "c339fd6a8e6eccb13f154a343072dfd06c9b0587a6b394bce889cfff53ad864e",
+      "state": "3f69647322ff2a1e484d96d40052595900bfc11df252eb881231311ead3a984d",
+      "rng": "f4f460e8704a8f887d5d570d41fbc71abdfbec022c2ce5135563b4b63904c743",
+      "result": {
+        "outcome": "heroClear",
+        "turns": 5,
+        "usesSpent": []
+      },
+      "changed": false
+    },
+    {
+      "id": "test.direct-map-authored",
+      "events": "d470f4185cbcd687824928d76d9eaaa48762e9dca7108ee2ccc3de3ee637115b",
+      "state": "d30c99491908595a029361dc31876dc298d924f6b04b865fd2b1bbbb5231f51d",
+      "rng": "3c67fcb43258381126046c7850471a44b0e51b8c4e947795827eb12f112d239a",
+      "result": {
+        "outcome": "heroClear",
+        "turns": 8,
+        "usesSpent": []
+      },
+      "changed": false
+    },
+    {
+      "id": "test.direct-map-journey",
+      "events": "385a8981976a83c62f667aa2f4b9b7c35eec8d9eccae97947dbb0e111e09f082",
+      "state": "c27eb492951814810859761f58dbb78db19fee848e8733a09da4b3386b529d5a",
+      "rng": "3c67fcb43258381126046c7850471a44b0e51b8c4e947795827eb12f112d239a",
+      "result": {
+        "outcome": "heroClear",
+        "turns": 4,
+        "usesSpent": []
+      },
+      "changed": false
+    },
+    {
+      "id": "test.encounter-rules-a",
+      "events": "d0072b566b6262e92cb453ac6f2c620f0972c3a2caf596a621e42c04d8f3d50d",
+      "state": "c269df5351b68b659ec0b3a204de804b6671d41c4ff137f50494449049d7df0d",
+      "rng": "dcd4f776e2b85f09e0ec0674a31b429d34faee8ecd67aab35a097fb431919dd3",
+      "result": {
+        "outcome": "heroClear",
+        "turns": 5,
+        "usesSpent": []
+      },
+      "changed": false
+    },
+    {
+      "id": "test.encounter-rules-b",
+      "events": "36b7e648848d723afa8cb3b7fe0e9d4fa953bac9248e8b13fba7adf586633b52",
+      "state": "bec6eca93b7c8c7945db338dda808e15cb3ecb760e3a259c361eb683d55e8ccb",
+      "rng": "56a8adb6cfac1bc2af9443a142a6be40e140ac2ad642d8b4258875b25936991c",
+      "result": {
+        "outcome": "heroClear",
+        "turns": 3,
+        "usesSpent": []
+      },
+      "changed": false
+    },
+    {
+      "id": "test.fend",
+      "events": "b3fc219122b02f25338f487c6d37fecf813f690caf2ac7d5db162b1395bceac0",
+      "state": "320460ba2e2b407bb34f395ac4a891120be2500fa94f8c2c0be449111c452322",
+      "rng": "a10d06e1fb3ae85bf818da3cdc4c2bdf6cd5929107074501c3eaa45b7e2a3aed",
+      "result": {
+        "outcome": "heroClear",
+        "turns": 5,
+        "usesSpent": []
+      },
+      "changed": false
+    },
+    {
+      "id": "test.flaming-longsword",
+      "events": "4c988c742923b68f40e074e7f86c6077d2b6a683cf72168d2811278c8362a160",
+      "state": "494e41e0af3a293eece195d37086f3ecfd5a15cfa251002b3f1a4f5e3980f998",
+      "rng": "ec0f2e2f72240e8037b56e3751c34070f32382f74386d6f8ee27f6418d52c11a",
+      "result": {
+        "outcome": "heroClear",
+        "turns": 5,
+        "usesSpent": []
+      },
+      "changed": false
+    },
+    {
+      "id": "test.flaming-war-axe",
+      "events": "d1625b3b48671977ba0edb99ede7bf46616128ee47984aa1e3a84774ade4da2b",
+      "state": "4cdd802c8992a36b5f428b79a2bd03ccaafbd9b2a1138f81a1efbaa91c09e976",
+      "rng": "d7c7ad020e0eadcfcddf895c847181a9d0e5ce0a5d4dcecb8c00ea6b9aba2ec9",
+      "result": {
+        "outcome": "heroClear",
+        "turns": 5,
+        "usesSpent": []
+      },
+      "changed": false
+    },
+    {
+      "id": "test.frost-resistant",
+      "events": "5216efafccfc234622b81a5c8e6963accd767f6c383e68beb24119f588b76972",
+      "state": "1e98420e571c0c7be8ffef7fa78dfc2c1b74439ad12749ea31db188c7a0ffa3a",
+      "rng": "c55cbf1636c39aa490ff22898707579ca555c9af9f792c59351414813bf22a70",
+      "result": {
+        "outcome": "heroClear",
+        "turns": 5,
+        "usesSpent": []
+      },
+      "changed": false
+    },
+    {
+      "id": "test.geometry-corridor",
+      "events": "c84207e3887779a23e00dfb4ee3c6661a175132489b43468fa0d2278fe42e847",
+      "state": "008dbb619b8cf758d0a7efba72179628bf56609f31308af0aa0c36733b4bcf6b",
+      "rng": "c20862ad9e7713df6d148d8024525825e6d54e5560bb7e33af45bf9a11ba424f",
+      "result": {
+        "outcome": "heroClear",
+        "turns": 2,
+        "usesSpent": []
+      },
+      "changed": false
+    },
+    {
+      "id": "test.geometry-diagonal",
+      "events": "9c4cd84e9b361a22d94f429ad46750d20b86408d71c69f5d18aa5439dfd5f896",
+      "state": "3b17238ba15c6a6f465779d8523473391c98195c0929bea1f54095fec855e1d4",
+      "rng": "e562d60158c4afaf5b8b5da390bb7e17984a09dcbfb114006fbbeb3d1a03d508",
+      "result": {
+        "outcome": "wipe",
+        "turns": 3,
+        "usesSpent": []
+      },
+      "changed": false
+    },
+    {
+      "id": "test.ghost",
+      "events": "ef3924dc044c8c68e51ade20049970cf7426a6bde5b407324a5b83737853b8b4",
+      "state": "0cce1e3301ab14b99d33b1db3c1afb9e2ef384351a638aca97a4f92c91f2e4f4",
+      "rng": "1136cf1c1da20e8ef8127b2531ead0f9b504c213bef7976cf19277796e9cf690",
+      "result": {
+        "outcome": "heroClear",
+        "turns": 2,
+        "usesSpent": []
+      },
+      "changed": false
+    },
+    {
+      "id": "test.ground-table",
+      "events": "67af56526ad182b67506836543191bc2eca6f4e580415de25aea5ca3ac4caad5",
+      "state": "7a4f21db2da2086e12c8a588853a69a859d4c1cc654242b4bebe837371ca5178",
+      "rng": "f31448f58c4ccc788e22655e6d81ddcd3836c698fe42dacd5a006b84c4cc3c5c",
+      "result": {
+        "outcome": "heroClear",
+        "turns": 2,
+        "usesSpent": []
+      },
+      "changed": false
+    },
+    {
+      "id": "test.item-uses",
+      "events": "5e1c34e56d8c21a27dafaabc5550785e12c15a25ffffb4083bab41e012af5382",
+      "state": "afad89f38bc6fa1df189610886d206b59e941df6d0a521b3c6b760ac71398ea0",
+      "rng": "242a87b91f4372f2679c9be3522ce0eeb997756b1547c47ed33feffec610d3b5",
+      "result": {
+        "outcome": "wipe",
+        "turns": 8,
+        "usesSpent": [
+          {
+            "unit": 0,
+            "power": "power.healing-potion.use",
+            "spent": 2
+          },
+          {
+            "unit": 1,
+            "power": "power.cure-poison.use",
+            "spent": 1
+          }
+        ],
+        "itemUses": [
+          {
+            "unit": 0,
+            "instanceId": "100/3",
+            "itemId": "item.healing-potion",
+            "power": "power.healing-potion.use",
+            "used": 1,
+            "left": 0
+          },
+          {
+            "unit": 0,
+            "instanceId": "100/4",
+            "itemId": "item.healing-potion",
+            "power": "power.healing-potion.use",
+            "used": 1,
+            "left": 0
+          },
+          {
+            "unit": 0,
+            "instanceId": "100/5",
+            "itemId": "item.cure-poison",
+            "power": "power.cure-poison.use",
+            "used": 0,
+            "left": 0
+          },
+          {
+            "unit": 1,
+            "instanceId": "101/3",
+            "itemId": "item.cure-poison",
+            "power": "power.cure-poison.use",
+            "used": 1,
+            "left": 0
+          },
+          {
+            "unit": 1,
+            "instanceId": "101/4",
+            "itemId": "item.healing-potion",
+            "power": "power.healing-potion.use",
+            "used": 0,
+            "left": 0
+          }
+        ]
+      },
+      "changed": false
+    },
+    {
+      "id": "test.kdb",
+      "events": "c3adc1996737e91d67be2a13c6a714f38d2c845545dd0bb9fafae330b85c79a9",
+      "state": "e5e63b6f8faaa4f1e4849ae301ba0f494e34c9b1354118050488cb16cb7da1a0",
+      "rng": "4d3e344af5e0bcbd837d086917d37de3489e67543a94c501e058bdd6881a53ae",
+      "result": {
+        "outcome": "heroClear",
+        "turns": 4,
+        "usesSpent": []
+      },
+      "changed": false
+    },
+    {
+      "id": "test.knockback-well",
+      "events": "4d76609d53f3e870a77f2849214a44caf41f838831f278fcec9faf0e00edb799",
+      "state": "97cb6bebd56bcce9f2469bd182a869f8c59c0bb96b8d6bc26d4ca5b024cee097",
+      "rng": "22a3d17b763ed7bf5e4bd22fb4358ec42fc0644d025ac24731b5ee7de133e9a7",
+      "result": {
+        "outcome": "heroClear",
+        "turns": 3,
+        "usesSpent": [
+          {
+            "unit": 0,
+            "power": "attack.test-ram.once",
+            "spent": 1
+          }
+        ]
+      },
+      "changed": false
+    },
+    {
+      "id": "test.mage-kindle",
+      "events": "b3fde0cf6a7c1aed849bbd4e39712d3cd0c22942d21eb30fac2b417316889176",
+      "state": "bbeb64250280a0f26e8126ca3f6085504ead77b4ea62f10fef808bc36c16d20f",
+      "rng": "590c3dfb900cd62c7e09deff4ba13d775a464a53bfdaefcf61c90cf1ed6e007b",
+      "result": {
+        "outcome": "heroClear",
+        "turns": 5,
+        "usesSpent": []
+      },
+      "changed": false
+    },
+    {
+      "id": "test.mode-change-a",
+      "events": "9cd338029b7e62f743511a622d52479843828371992ac4e98a5595ac938470a8",
+      "state": "fc8f05c334552c4ea465ec7a1dbf325ba717f64dca54c18526451e65d5477b96",
+      "rng": "65e93ceb36ac0b6be895db49690378eae2d5d8f84d7b4cf66e43a408d2b727d7",
+      "result": {
+        "outcome": "heroClear",
+        "turns": 4,
+        "usesSpent": []
+      },
+      "changed": false
+    },
+    {
+      "id": "test.mode-change-b",
+      "events": "4c89cd840eadd6a0150aabc523580007931926f89a7c1fa04a66c365ea47d0f2",
+      "state": "53f2620673e0cee4b3a004af7e2f8f906e961253097c3f92d06523f55ee41fee",
+      "rng": "235fb08aab79f312b3d957dc69ac882fcf988fc34121f18923ef93db8211ca27",
+      "result": {
+        "outcome": "heroClear",
+        "turns": 6,
+        "usesSpent": []
+      },
+      "changed": false
+    },
+    {
+      "id": "test.opening-bridge",
+      "events": "49c358edd0e2c74fe452826d324277975c2abf34609191bd7c39b33c4b77ecbe",
+      "state": "67ea4e4f87d0cf4d280cca35ef18776c8f8ade2ca1a857322c89e07e1c3ea239",
+      "rng": "cb267f9791516b9dbe8b79caba0fdb99a043f1323ff4e259049a1e83d627935e",
+      "result": {
+        "outcome": "wipe",
+        "turns": 6,
+        "usesSpent": []
+      },
+      "changed": false
+    },
+    {
+      "id": "test.opening-cathedral",
+      "events": "ed76c6a1f5158322a4409d29cbb8ff764e00e97660648e7aecb5f81ae79f60c6",
+      "state": "8afce7467ab14744d902f01932cd3fb77cac15cdb522f9604f00ae687f31358f",
+      "rng": "9b5ee11e2e99524fc16ca86c19f95b354a097786ac5f4c000b2277f2b2df4ca9",
+      "result": {
+        "outcome": "wipe",
+        "turns": 11,
+        "usesSpent": []
+      },
+      "changed": false
+    },
+    {
+      "id": "test.opening-cavern-trail",
+      "events": "ac47f90acc7e89a890720f6d8f862de3f0714d7c174787b53c8aa2cfb33c5cf6",
+      "state": "f69910c111123afbe988869688b2f6e4316f09e0f9cf9d7169a96d009af01376",
+      "rng": "32df73d66bff0ad0e7269078ef2526ed7b672b76a7859424499f04bbf1f24baa",
+      "result": {
+        "outcome": "wipe",
+        "turns": 15,
+        "usesSpent": []
+      },
+      "changed": false
+    },
+    {
+      "id": "test.opening-gates",
+      "events": "29ce820579196aef75a1267fc37e974a2f49b18381498b21be26238be87cefaf",
+      "state": "8d27f92b39a5f104bc9bdf9c51fbb0055c036acb1abf9216205b96fb4d81f22d",
+      "rng": "ec6378889167d6de284d1745ba0b0057fa26c767ba3aee0a931f8e2264ccba8b",
+      "result": {
+        "outcome": "wipe",
+        "turns": 7,
+        "usesSpent": []
+      },
+      "changed": false
+    },
+    {
+      "id": "test.opening-lumberjack",
+      "events": "52911d7b5030dcf699b6da94ab168b8d2d66d3198569e8ec541ef7745ad21423",
+      "state": "210e6cf98c9d843e0f9c84614c528c6304332cd08750866f0474beffb1ee52b7",
+      "rng": "383baae73787fd7019efaf60ff3ddeddb59f8a13d3a8b948be3eb4cf77a0364d",
+      "result": {
+        "outcome": "heroClear",
+        "turns": 9,
+        "usesSpent": []
+      },
+      "changed": false
+    },
+    {
+      "id": "test.opening-orphanage",
+      "events": "ad835e1312fb78cb369317cbb9f09e9281d1f3919c81d7ca4c0def327b5c429b",
+      "state": "9531d02b987f89441204fd0139014ab9bc1d6cdfb599142001895151adac0fbe",
+      "rng": "7f33d1c3895053aff6d21d743c9b2a6d15c0f8c836acce62e875f82c31cfb861",
+      "result": {
+        "outcome": "wipe",
+        "turns": 7,
+        "usesSpent": []
+      },
+      "changed": false
+    },
+    {
+      "id": "test.opening-units",
+      "events": "f1208a17c595aaf06ea1303db69650b0cea4e9e3e54412adb434878c899ad426",
+      "state": "dc32241b9203c8804dcfce378f3ea4536ac680690803cb475bec61c618b81009",
+      "rng": "ed6255f3e42aecaece473a396f993c23e5bf19191d00ed9acc7910749825a277",
+      "result": {
+        "outcome": "wipe",
+        "turns": 3,
+        "usesSpent": []
+      },
+      "changed": false
+    },
+    {
+      "id": "test.placed-remains-a",
+      "events": "fa123475e8f1c1a77c42d9d74bd662cd37bdfab2fd589a64aab0eb384e9b2d2c",
+      "state": "5a02ad6a85138f10eac837efee3429b3833de13ef4b7405761afef5584c85a39",
+      "rng": "467f58a92141000451e9bbf8348afa0e8727f30c834aeada059039bd9d8029ec",
+      "result": {
+        "outcome": "wipe",
+        "turns": 8,
+        "usesSpent": []
+      },
+      "changed": false
+    },
+    {
+      "id": "test.placed-remains-b",
+      "events": "bdfaf977c3ae6f46644346a64a87a9691ed9e76652ddd489e45122f2bf00dde3",
+      "state": "057040a6dc5325ba0b42f8f7ffe39d094b85ee375e419b6fb8ccb6b043678aa1",
+      "rng": "b64f206141ac64c77d11f3dd2e076112428ee9ed56ca55771b9bcdd83a792f9c",
+      "result": {
+        "outcome": "heroClear",
+        "turns": 3,
+        "usesSpent": []
+      },
+      "changed": false
+    },
+    {
+      "id": "test.prone-a",
+      "events": "149ba31bd7d360a6e1b148fc542172c55df26838b86feb6d9b983cc606c91850",
+      "state": "210fbc734b9562bbe72c5f85c448d107ba074dd68ce909e044ed4c925a139b9d",
+      "rng": "71bf08619a903dc602da07b77f19f47f636087475fc60aaa3ae7a933d32e82fc",
+      "result": {
+        "outcome": "heroClear",
+        "turns": 2,
+        "usesSpent": []
+      },
+      "changed": false
+    },
+    {
+      "id": "test.prone-b",
+      "events": "4a2d9a08031b3b87301ba2455a63bbc3fe01b25a5832abc1f5513862a58c4931",
+      "state": "d3472cbce55450c71dd2148c21509b839258a630d1230f11f39196ffbc25359d",
+      "rng": "2261d4f64464db9947737e3d551b0af25ca08c707ff3a1bb1cab95426c8cc9c5",
+      "result": {
+        "outcome": "heroClear",
+        "turns": 2,
+        "usesSpent": []
+      },
+      "changed": false
+    },
+    {
+      "id": "test.prop-destroy",
+      "events": "86951491a3b322d0c1b2908492fa2c066ac89d6a614ed82d77e5e659182b0f3d",
+      "state": "f01328ec079d86354c9c19bfad1209f79a4f7aa327c233971f0850ee8192cd0e",
+      "rng": "6b319fc58e33318e1e97e48fc68c726f42174a5bfcb964cbc97b4068154beb3b",
+      "result": {
+        "outcome": "heroClear",
+        "turns": 5,
+        "usesSpent": []
+      },
+      "changed": false
+    },
+    {
+      "id": "test.props-viewer-ranged-zoc",
+      "events": "522793f71efcb4781c3ba5e9bc8ed80be7fedacb6a0dbff8fe0bd90ef2e3b7f4",
+      "state": "6207864b424c971c52fc7be6377b9551917c4a11cb391e51d2958829c664991b",
+      "rng": "466c3ca0c3b34696e07bb9ae0cb648999f12ef23a0b61bac5bfe46e3c76b84d6",
+      "result": {
+        "outcome": "wipe",
+        "turns": 3,
+        "usesSpent": []
+      },
+      "changed": false
+    },
+    {
+      "id": "test.raise-one",
+      "events": "86d024a35cd59ab0fc2155c5afa2c4b6855fef7222ad278fdffd87adf90a411a",
+      "state": "6fa05a97ece4482d85f28d66aa93b1769ecef20558f2eea5a76041824c199af0",
+      "rng": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "result": {
+        "outcome": "capped",
+        "turns": 25,
+        "usesSpent": []
+      },
+      "changed": false
+    },
+    {
+      "id": "test.sight-a",
+      "events": "0e6aa21e823c3b68620f1d56b7d733caa55e43755bf415cb8059f1c019711fbc",
+      "state": "3f42149b17d404a8b9b738e04cd7dbdf2f15ce82f9718883cb09cb6ec6901f09",
+      "rng": "2a4b278c6acb19c9ca42325f94f3bf624fe654083646b3d1d77c62c149494f30",
+      "result": {
+        "outcome": "heroClear",
+        "turns": 2,
+        "usesSpent": []
+      },
+      "changed": false
+    },
+    {
+      "id": "test.sight-b",
+      "events": "7304b6ca764edaa52d35ddaaa5c19eb81f5b6b579b26f6c8aadea8f9e4add38d",
+      "state": "52aeee0b8b36736654c3bdbb6da729300a9fe34fe3058bba507361a1d35780cb",
+      "rng": "405cf233907abebe889d888917a44e8b4049a1aca0da317b9ae039b116e62467",
+      "result": {
+        "outcome": "wipe",
+        "turns": 2,
+        "usesSpent": []
+      },
+      "changed": false
+    },
+    {
+      "id": "test.stealth-a",
+      "events": "cd3d56549be1199f2cc72d9d4a0ade5fba4c388a21b7dd682f4ae7ff3b0d6131",
+      "state": "e01e6f3bb1a80aa3353a071dead1ce84f01e746cbc597116c8c88a9c7fb10efe",
+      "rng": "1a53dacf4cb31c94c66ff26ddf9a00be5ad194f49b1a13a10d8c2512f84d11e2",
+      "result": {
+        "outcome": "heroClear",
+        "turns": 2,
+        "usesSpent": []
+      },
+      "changed": false
+    },
+    {
+      "id": "test.stealth-b",
+      "events": "8933e316a9204b58a0df2c84c927ae04c46176b1db062f0c28649389125d0649",
+      "state": "8741fca2ea44b22e0406ee0bba9fca27cc7be5ec729fd16b70cbed97fe9acf0b",
+      "rng": "98f11d145211487f91231acaf5d9667721a36e7fc1ba4692386b14df3e6efdd6",
+      "result": {
+        "outcome": "wipe",
+        "turns": 3,
+        "usesSpent": []
+      },
+      "changed": false
+    },
+    {
+      "id": "test.structures",
+      "events": "f6eda7731e6a268c3435d9da360c9845a4479b6440217f450c61e745487ee2db",
+      "state": "8fbf5c93f721ee5a5c5899ae0bdeafc6c8d8e3273a154249e1c170eb57b08a5b",
+      "rng": "422580b977ac6a6a0cf26b900d76a5500c5f0c5f96ade7b8f4e8dc9ddb0d980e",
+      "result": {
+        "outcome": "wipe",
+        "turns": 5,
+        "usesSpent": []
+      },
+      "changed": false
+    },
+    {
+      "id": "test.swap",
+      "events": "eac607d26d9d8b1f5a29311ae478143d35dcf6807a46789f3eca9f0231ad1800",
+      "state": "f12dc21473f167f4d82722340af2da34f7b9a4fd9bc58b36466669e9f73353f2",
+      "rng": "330c000c15c3c586bb7bcbf067347e0397f373401e51d048cfc7dccf92e4ce90",
+      "result": {
+        "outcome": "heroClear",
+        "turns": 3,
+        "usesSpent": []
+      },
+      "changed": false
+    },
+    {
+      "id": "test.thin-sign",
+      "events": "25a1109f57b76cf5dd4c67f1997624b532cc6fdd9e1a06898214bf0fedf120b7",
+      "state": "f11d87c9710e04757eaaa5103f961ee205319e753cff5d8d53328d40267a84d8",
+      "rng": "0273cce8af792e3c3929460beda9596c6384dc329084331fe26f8a1ac517cb60",
+      "result": {
+        "outcome": "wipe",
+        "turns": 4,
+        "usesSpent": []
+      },
+      "changed": false
+    },
+    {
+      "id": "test.thorns",
+      "events": "1d9626c4871efea31823138ef0928a741f378f9b9c13e615cd39d9b44789275a",
+      "state": "cb922380be130b3bdc7053f20003225b37c0fdd901393d51ee264d5ecf4faeba",
+      "rng": "04e644d152d52ccc206dc658247c4244370eb8b21b50ba3e86d895fb24f19496",
+      "result": {
+        "outcome": "wipe",
+        "turns": 3,
+        "usesSpent": []
+      },
+      "changed": false
+    },
+    {
+      "id": "test.vampire-bite",
+      "events": "d538f4fc2bb44cbd5149ab8373a9c8452d448c1ff0b8ac441616aee9b95f8041",
+      "state": "06d7cc12580bf1295e01249acce930ec62578db68fb020e4be3abb0719044ffa",
+      "rng": "22b85a747fc623b6c754d2060f8c6ae5696f1c86aaba3d384ac161d2f4366c29",
+      "result": {
+        "outcome": "heroClear",
+        "turns": 3,
+        "usesSpent": []
+      },
+      "changed": false
+    },
+    {
+      "id": "test.vs-target-a",
+      "events": "3de299d62cb848fbebbbfeffafc3f9746a130b63bf4a3ee5e91d7465882a6211",
+      "state": "a0236136652736400a30b44ff29198c8adc1fba8b19bd7bdac0b64ddc9400dd0",
+      "rng": "33a8c53ee4d77a666e89a252344ad288c61eb76e9ec1d7b1ad429af761c846c6",
+      "result": {
+        "outcome": "heroClear",
+        "turns": 2,
+        "usesSpent": []
+      },
+      "changed": false
+    },
+    {
+      "id": "test.vs-target-b",
+      "events": "34e3ab5426b701096b74801f944bfaebe12cce4ca3c32a9b04aea62a93500040",
+      "state": "11dea65517f90125ec64a3353df2001ba7dab1c355717941bab97be778b5cbea",
+      "rng": "b1e0cfe6ffa6ce8cc7614b01671a980b9add5fa0a23f03cecd38a3abe5e7b729",
+      "result": {
+        "outcome": "heroClear",
+        "turns": 4,
+        "usesSpent": []
+      },
+      "changed": false
+    },
+    {
+      "id": "test.vs-target-c",
+      "events": "96b57026cc3fcf7c5c90d061f8377f61b02614bcff4dbcc46d42455e8b341c7f",
+      "state": "944e2369f96373796010637ea91d21fc5a1383c46676040491763f8a9dacfb01",
+      "rng": "2c10cebb7253426d7030c8102f15325009fbf504b6cc3cd1aaa60a12b6396a7f",
+      "result": {
+        "outcome": "heroClear",
+        "turns": 3,
+        "usesSpent": []
+      },
+      "changed": false
+    },
+    {
+      "id": "progression-surge-0",
+      "events": "bead06be51670bf5115cdf863110d8950549891be7422f69b5ca20ae1bda9f8d",
+      "state": "aafb2a2bd8b545bd5854e35885c19a32b978678bd3b3d20639498b495b475524",
+      "rng": "4a251e343acd3d0c63f4d7bfa690c5e64063f8ad47e2da7828f4f5be22c88763",
+      "result": {
+        "outcome": "heroClear",
+        "turns": 4,
+        "usesSpent": []
+      },
+      "changed": true,
+      "movedOnlyText": false
+    },
+    {
+      "id": "progression-surge-1",
+      "events": "1a752b36546496c51a69f83c9c818b80f9458a141ee21fb9b172e481351e6295",
+      "state": "9b9c0823772b56a660f2f76ca4b9c6aac53bf50ba5c4294268b9434620d10bfd",
+      "rng": "591ca9417ac8708e514ecac874124fa7968430ea77e3ff992e33eb7388db1066",
+      "result": {
+        "outcome": "heroClear",
+        "turns": 3,
+        "usesSpent": []
+      },
+      "changed": true,
+      "movedOnlyText": false
+    },
+    {
+      "id": "progression-surge-2",
+      "events": "e4f959bfb66e3caa0f57c1234e784b328e4bd2eed40da677dcf589cc16bcfa28",
+      "state": "1518e80b49c0bf67924f62bb6140bb3db58e5bd11e7187353ac3e7318f32a815",
+      "rng": "b9ece2abda6b26628623b736d6e139a4ee1983a00f771346397528b9e909783c",
+      "result": {
+        "outcome": "heroClear",
+        "turns": 4,
+        "usesSpent": []
+      },
+      "changed": true,
+      "movedOnlyText": false
+    },
+    {
+      "id": "legacy-surge-cap",
+      "events": "1fc983747238da421772af48c426d4450c43d11723ab7379d34de8357672fee7",
+      "state": "ce4585ba8f0400422a790c199447aaae381e4c160df46aa196ad19ea92f838d8",
+      "rng": "7cbd7c5187f6115b1c8b32e47ac89e451c18e9a8760ca45a74b4a29eb62b08e4",
+      "result": {
+        "outcome": "heroClear",
+        "turns": 1,
+        "usesSpent": []
+      },
+      "changed": false
+    }
+  ]
+}
