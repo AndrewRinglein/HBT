@@ -1396,17 +1396,25 @@ export function applyCam(V, opts = {}) {
   /* viewer.bubble-click-reveals: the slid view's hold — over once anything has played, an aim is drawn or the view is focused */
   if (view.revealed && (view.revealed.cursor !== V.cursor || S.AIM || opts.focus || fit)) view.revealed = null
   const held = (!!view.revealed || !!view.looking) && !opts.pan
+  /* viewer.camera-shows-edge-units: view.pastEdge says why the view stands past the board's own box, if it does — 'scroll'
+     (the player scrolled or a slide took it there: it is left there, at the bound) or 'subject' (the least slide that shows
+     the unit in sight whole: worked out afresh each time, so the view comes back when the unit no longer needs it). A change
+     of zoom or turn frames the view afresh. */
+  const beyond = () => { const o = view.boardBox; return !!o && tactical && !fit && (f.x < o.x[0] - 1e-6 || f.x > o.x[1] + 1e-6 || f.y < o.y[0] - 1e-6 || f.y > o.y[1] + 1e-6) }
+  const shapeKey = yaw + '|' + s + '|' + VW + '|' + VH
+  if (view.shapeKey !== shapeKey) { view.shapeKey = shapeKey; if (view.pastEdge === 'scroll' && !held && !opts.pan) view.pastEdge = null }
   if (fit) { /* the whole board, centred; the remembered camera is not touched */ }
-  else if (opts.pan) { if (f.x == null) { f.x = bw / 2; f.y = bh / 2 } f.x += opts.pan.x; f.y += opts.pan.y * k; bound() }
-  else if (opts.focus) { f.x = opts.focus.px; f.y = opts.focus.py * k; bound(true); whole(hexOfPoint(opts.focus)) }      // Focus selected unit: centred, on purpose — as near as the board's own box lets it, then its hex shown whole
+  else if (opts.pan) { if (f.x == null) { f.x = bw / 2; f.y = bh / 2 } f.x += opts.pan.x; f.y += opts.pan.y * k; bound(); view.pastEdge = beyond() ? 'scroll' : null }
+  else if (opts.focus) { f.x = opts.focus.px; f.y = opts.focus.py * k; bound(true); whole(hexOfPoint(opts.focus)); view.pastEdge = beyond() ? (view.looking ? 'scroll' : 'subject') : null }      // Focus selected unit: centred, on purpose — as near as the board's own box lets it, then its hex shown whole
   else if (opts.hold) bound()                                                        // a restored view (Overhead, Inspect off) is shown as it was
-  else if (f.x == null) { const p = pts[0] || { px: bw / 2, py: bh / 2 }; f.x = p.px; f.y = p.py; bound(true); if (pts.length === 1) { const u = S.U[barUnitOf(V)]; if (u) whole(u.hex) } }
+  else if (f.x == null) { const p = pts[0] || { px: bw / 2, py: bh / 2 }; f.x = p.px; f.y = p.py; bound(true); if (pts.length === 1) { const u = S.U[barUnitOf(V)]; if (u) whole(u.hex) } view.pastEdge = beyond() ? 'subject' : null }
   else if (view.inspect) bound()                                                     // Inspect explores: selection never pulls the camera
   /* viewer.bubble-click-reveals: a view slid to show a unit off the screen stays where it was slid — the inclusion below
      would pull it straight back to the acting unit — until the board next plays or the camera is sent elsewhere */
   else if (held) bound()
   else {
-    bound()
+    const keep = view.pastEdge === 'scroll'
+    bound(!keep)
     const pre = { x: f.x, y: f.y }
     if (yaw) includeTurned(V, f, pts, halfW, halfH, M, top)                          // the turned camera: the same rule in its own frame
     else if (pts.length === 2 && (Math.abs(pts[0].px - pts[1].px) > 2 * (halfW - M) || Math.abs(pts[0].py - pts[1].py) > 2 * (halfH - M))) {
@@ -1428,8 +1436,9 @@ export function applyCam(V, opts = {}) {
          the board's edge, by the least that does it */
       const own = view.boardBox
       if (own && !fit) { f.x = Math.min(Math.max(f.x, Math.min(own.x[0], pre.x)), Math.max(own.x[1], pre.x)); f.y = Math.min(Math.max(f.y, Math.min(own.y[0], pre.y)), Math.max(own.y[1], pre.y)) }
-      bound()
-      if (!S.AIM) { const u = S.U[barUnitOf(V)]; if (u) whole(u.hex) } }
+      bound(!keep)
+      if (!S.AIM) { const u = S.U[barUnitOf(V)]; if (u) whole(u.hex) }
+      view.pastEdge = beyond() ? (keep ? 'scroll' : 'subject') : null }
   }
   /* written back only when moved, so a camera that did not move keeps its exact numbers. A whole-map view (not the peek,
      not the harness's fit) remembers its centre, so what follows it — a drag, a turn, Inspect — starts from the view seen */
@@ -1440,7 +1449,7 @@ export function applyCam(V, opts = {}) {
   const cx = fit ? bw / 2 : f.x, cy = fit ? bh / 2 : f.y                             // a fit shows the whole board, centred
   if (!fit && !view.home && camF.x != null) view.home = { x: camF.x, y: camF.y }     // the starting view Reset returns to
   view.noVoid = tactical && !fit                                                     // the glide's frames keep to the board too
-  setPose(V, { x: cx, y: cy / k, yaw, tilt, zoom: s })
+  setPose(V, { x: cx, y: cy / k, yaw, tilt, zoom: s, past: !!view.pastEdge || (held && beyond()) })
   syncCamBar(V)
   /* the HUD says only what the camera is doing (Law 5: the export's outcome,
      turn count and engine stamp are the harness's to print, and a replay must
@@ -1482,19 +1491,21 @@ function glideFrame(V) {
   const turn = ((b.yaw - a.yaw) % 360 + 540) % 360 - 180                              // the short way round
   let yaw = a.yaw + turn * e; yaw = ((yaw + 180) % 360 + 360) % 360 - 180
   const mid = { x: a.x + (b.x - a.x) * e, y: a.y + (b.y - a.y) * e, yaw, tilt: a.tilt + (b.tilt - a.tilt) * e, zoom: a.zoom * Math.pow(b.zoom / a.zoom, e) }
-  showPose(V, t >= 1 ? b : V.view.noVoid ? onBoard(V, mid) : mid)
+  showPose(V, t >= 1 ? b : V.view.noVoid ? onBoard(V, mid, !a.past && !b.past) : mid)
   if (t < 1) V.camRaf = requestAnimationFrame(() => glideFrame(V)); else V.camAnim = null
 }
 /** viewer.camera-no-void: a glide's frame kept to the board — between two views that show only board, a frame part-way
     through a turn or a zoom may see past a corner; it comes as near as it must and is pinned as applyCam pins its views */
-function onBoard(V, pose) {
+function onBoard(V, pose, toBoard = false) {
   const { W, H } = viewportOf(V), F = V.data.F, fp = groundFootprint(boardAffine(V), { ...pose, zoom: 1 }, { w: W, h: H })
   if (!fp) return pose
   const zoom = Math.max(pose.zoom, (fp.r - fp.l) / F.w, (fp.b - fp.t) / F.h)
   /* viewer.camera-shows-edge-units: the frame is held to the same bound as every view — the board's own box at this frame's
      zoom and angle, grown as far as the outermost hexes need */
   const k = isoK(V), box = (lo, hi) => lo <= hi ? [lo, hi] : [(lo + hi) / 2, (lo + hi) / 2]
-  const B = edgeBound(V, { x: box(-fp.l / zoom, F.w - fp.r / zoom), y: box(-fp.t / zoom * k, (F.h - fp.b / zoom) * k) }, { yaw: pose.yaw, tilt: pose.tilt, zoom }, { w: W, h: H })
+  /* a glide between two views that show only board shows only board in every frame, as it always did */
+  const own = { x: box(-fp.l / zoom, F.w - fp.r / zoom), y: box(-fp.t / zoom * k, (F.h - fp.b / zoom) * k) }
+  const B = toBoard ? own : edgeBound(V, own, { yaw: pose.yaw, tilt: pose.tilt, zoom }, { w: W, h: H })
   const pin = (lo, hi, v) => Math.min(Math.max(v, lo), hi)
   return { ...pose, zoom, x: pin(B.x[0], B.x[1], pose.x), y: pin(B.y[0] / k, B.y[1] / k, pose.y) }
 }

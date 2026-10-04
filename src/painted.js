@@ -121,13 +121,19 @@ async function presentScene(root, group, b, platform, cancelled) {
 }
 /* the approved review page's light (assets/battle-atlas/orphanage-riverside.mjs), in scene metres */
 export const PAINTED_EXPOSURE = 1.08
+/* viewer.camera-shows-edge-units (engine DECISIONS.md 2026-10-04 'the view may slide past the board's edge to show a unit on an
+   edge column': "what lies beyond the board is drawn as the screen's own dark surround unless he says to paint ground
+   there"): where a painted scene's own ground ends — the view may now see past it at the bound's far corners — the screen's
+   dark shows (the battle area's own #0d0e10), not the review page's pale backdrop (was '#d8d4c8'; viewer SWITCHES edgeSurround) */
+export const PAINTED_SURROUND = '#0d0e10'
 export function paintedEnvironment(scene, binding = null) {
   const hemi = new THREE.HemisphereLight('#e1edff', '#77734f', 1.5), sun = new THREE.DirectionalLight('#fff0d5', 2.8)
   sun.position.set(-45, 80, 38); sun.castShadow = true; sun.shadow.mapSize.set(4096, 4096)
   Object.assign(sun.shadow.camera, { left: -70, right: 70, top: 70, bottom: -70, near: 1, far: 200 }); sun.shadow.camera.updateProjectionMatrix()
   sun.shadow.bias = -.00003; sun.shadow.normalBias = .04
   const background = scene.background
-  /* the pale review backdrop, unless the scene's profile names its own (the caravan's dark #302c25 — its surroundings fade into it) */
-  scene.add(hemi, sun, sun.target); scene.background = new THREE.Color(binding?.presentation?.environment?.background || '#d8d4c8')
+  /* the screen's dark surround (was the pale review backdrop until 2026-10-04), unless the scene's profile names its own (the
+     caravan's dark #302c25 — its surroundings fade into it) */
+  scene.add(hemi, sun, sun.target); scene.background = new THREE.Color(binding?.presentation?.environment?.background || PAINTED_SURROUND)
   return () => { scene.remove(hemi, sun, sun.target); scene.background = background; sun.shadow.map?.dispose() }
 }

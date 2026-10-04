@@ -43,7 +43,9 @@ function screenOf(V, hex) {
   return { x: out[0] / out[3] - F.w / 2 + vp.w / 2, y: out[1] / out[3] - F.h / 2 + vp.h / 2, W: vp.w, H: vp.h }
 }
 const insideBy = s => Math.min(s.x, s.y, s.W - s.x, s.H - s.y)
-/** the battle area's view of the board's plane, as the stage is drawn: never past the board (the page's own no-void flag and its bound) */
+/** the battle area's view of the board's plane, as the stage is drawn: never past the camera's bound (the page's own no-void flag and its bound).
+    Law 10, 2026-10-04 (viewer.camera-shows-edge-units): the bound is the board's edge, or as far past it as the outermost hexes
+    need to be whole on the screen — the same check, against the bound as it now is */
 const onBoard = V => { const p = V.camShown, b = V.view.panBox; return V.view.noVoid === true && p.x >= b.x[0] - .01 && p.x <= b.x[1] + .01 }
 const at = (EV, type, from = 0, pred = () => true) => EV.findIndex((e, i) => i >= from && e.type === type && pred(e))
 /** play the pump a frame at a time until the cursor reaches `to`, watching every frame; returns what was seen */
@@ -104,10 +106,17 @@ test('the Orphanage as recorded, Turn 2: the view slides right to the Zombie arr
   const shown = V.arrivalsShown; assert.equal(shown.length, 1); assert.equal(shown[0].id, EV[enter].actor); assert.equal(shown[0].side, 'right'); assert.equal(shown[0].slid, true)
   const p = shown[0].pose, box = V.view.panBox
   assert.ok(p.x > before.x + 300, `the view slid right: ${before.x.toFixed(0)} -> ${p.x.toFixed(0)}`); assert.equal(p.zoom, before.zoom); assert.equal(p.yaw, before.yaw); assert.equal(p.tilt, before.tilt)
-  /* FOUND (viewer SWITCHES arrivalsEdgeColumn): the camera never shows past the board's edge, and its view is wider at its
-     far side than its near — so a hex on the board's first or last column cannot always be brought inside. The view goes
-     as far as it may: here to its bound, the arrival's hex far nearer the screen than it was. */
-  assert.ok(Math.abs(p.x - box.x[1]) < .01, 'as far right as the camera may go');
+  /* Law 10, 2026-10-04 (viewer.camera-shows-edge-units; engine DECISIONS.md 2026-10-04 'the view may slide past the board's
+     edge to show a unit on an edge column', Andrew: "1 yes"): here stood the FINDING (viewer SWITCHES arrivalsEdgeColumn) —
+       assert.ok(Math.abs(p.x - box.x[1]) < .01, 'as far right as the camera may go')
+     — the view went to its bound and the arrival's hex on the last column stayed part off the screen. TIGHTENED to the
+     item's own expect, on the Orphanage's own recording: the arrival is inside the view when its drop-in plays — its hex
+     whole (the page's own slide has nothing more to do), no bubble standing for it — and the view passed the board's edge
+     by no more than the bound allows */
+  assert.equal(shown[0].inView, true, 'no bubble stood for the arrival when its drop-in played'); assert.equal(V.revealPan(p, hexZ), null, 'the arrival\'s whole hex is inside the view')
+  { const s = shown[0].screen, vp = V.camera3d.userData.viewport, by = Math.min(s.x, s.y, vp.w - s.x, vp.h - s.y)
+    assert.ok(by > V.data.LAYOUT.W * p.zoom / 2, `its hex's middle was ${by.toFixed(0)} px inside the screen when it dropped in: more than half a hex`) }
+  assert.ok(p.x <= box.x[1] + .01, 'inside the camera\'s bound');
   assert.ok(shown[0].screen.x < far0 - 500, `the arrival's hex came ${Math.round(far0 - shown[0].screen.x)} px nearer`)
   assert.ok(Math.hypot(p.x - V.data.POS[hexZ].px, p.y - V.data.POS[hexZ].py) > 300, 'the view\'s centre was not the arrival\'s hex')
   /* then the hero */
@@ -128,7 +137,10 @@ test('Turn 3: it slides left for the Zombie arriving on the left edge', () => {
   v.play(); playTo(w, v, V, begin, () => assert.ok(onBoard(V)))
   const shown = V.arrivalsShown; assert.equal(shown.length, 1); assert.equal(shown[0].side, 'left'); assert.equal(shown[0].slid, true)
   assert.ok(shown[0].pose.x < before.x - 300, `the view slid left: ${before.x.toFixed(0)} -> ${shown[0].pose.x.toFixed(0)}`)
-  assert.ok(Math.abs(shown[0].pose.x - V.view.panBox.x[0]) < .01, 'as far left as the camera may go')
+  /* Law 10, 2026-10-04 (viewer.camera-shows-edge-units): was 'as far left as the camera may go' (the pose on the bound, the hex
+     on the first column part off the screen) — tightened: the arrival's whole hex is inside the view, the view inside its bound */
+  assert.equal(shown[0].inView, true); assert.equal(V.revealPan(shown[0].pose, hexZ), null, 'the arrival\'s whole hex is inside the view')
+  assert.ok(shown[0].pose.x >= V.view.panBox.x[0] - .01, 'inside the camera\'s bound')
   v.dispose()
 })
 

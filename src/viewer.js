@@ -264,6 +264,11 @@ export function mountBattleViewer(root, data, opts = {}) {
   const overlays = mountOverlays(V); V.overlays = overlays
   /* viewer.bubble-click-reveals: the camera's reveal, for the bubbles' click and the page tests */
   V.revealPan = (pose, hex) => revealPan(V, pose, hex); V.revealHex = hex => revealHex(V, hex); V.clickBubble = ids => clickBubble(V, ids)
+  /* viewer.camera-shows-edge-units: the camera's bound in board px — the board's own box (the centres whose view shows only
+     board), the bound it is grown to (as far as the outermost hexes need), and why the view stands past the board's own box
+     now, if it does ('scroll', 'subject', or null) */
+  V.cameraBound = () => { const k = isoK(V), px = B => B ? { x: [...B.x], y: [B.y[0] / k, B.y[1] / k] } : null
+    return { own: px(V.view.boardBox), bound: px(V.view.panBox), past: V.view.pastEdge || null } }
   V.playCues = cues => playCues(V, cues)      // the verifier injects synthetic cues here
   function drawChips() {
     const S = V.S

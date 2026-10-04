@@ -74,10 +74,14 @@ test('a click selects the unit and slides the view just far enough to show its h
   assert.ok(Math.hypot(after.x - before.x, after.y - before.y) > 1, 'the view slid')
   assert.equal(after.zoom, before.zoom); assert.equal(after.yaw, before.yaw); assert.equal(after.tilt, before.tilt)
   /* 4 · its hex is on the screen now, as the stage is drawn, and its bubble is gone. This Zombie stands on the board's LAST
-     column: the camera never shows past the board's edge (viewer.camera-no-void), and at that edge the view's own edge can
-     come no nearer than the hex's middle — so "on the screen" is the hex's nearer half (FOUND, viewer SWITCHES bubbleEdgeHex) */
+     column.
+     Law 10, 2026-10-04 (viewer.camera-shows-edge-units; engine DECISIONS.md 2026-10-04 'the view may slide past the board's
+     edge to show a unit on an edge column', Andrew: "1 yes"): this held the FINDING bubbleEdgeHex —
+       assert.ok(insideBy(s) > -halfHex, …)        ("on the screen" was the hex's nearer half: the camera stopped at the board's edge)
+     — tightened to the rule: the WHOLE hex is on the screen, its middle the slide's own room inside the edge (the bubbles'
+     inset and half a hex) */
   const s = screenOf(V, u.hex), halfHex = V.data.LAYOUT.W * after.zoom / 2
-  assert.ok(insideBy(s) > -halfHex, `on the screen: ${s.x.toFixed(0)}, ${s.y.toFixed(0)} of ${s.W} × ${s.H}`)
+  assert.ok(insideBy(s) >= 34 + halfHex - 1.5, `the whole hex is on the screen: its middle ${insideBy(s).toFixed(1)} px inside (${s.x.toFixed(0)}, ${s.y.toFixed(0)} of ${s.W} × ${s.H})`)
   assert.ok(!bubbles(V).some(x => unitsOf(x).includes(id)), 'its bubble is gone')
   /* 5 · just inside, no further: near the edge it came in by, not in the middle; the view's centre is not the unit's hex */
   assert.ok(insideBy(s) < s.W / 6, `near the edge: ${insideBy(s).toFixed(0)} px in`)
@@ -161,8 +165,11 @@ test('a bubble for several units takes the nearest of them to the view; a slide 
     V.clickBubble([u.id])
     const p = V.camTarget, F = V.data.F
     assert.ok(p.x >= 0 && p.x <= F.w && p.y >= 0 && p.y <= F.h, `${u.name}: the view's centre is on the board`)
+    { const B = V.cameraBound(); assert.ok(p.x >= B.bound.x[0] - 1e-6 && p.x <= B.bound.x[1] + 1e-6 && p.y >= B.bound.y[0] - 1e-6 && p.y <= B.bound.y[1] + 1e-6, `${u.name}: inside the camera's one bound`) }
     assert.equal(p.zoom, p0.zoom); assert.equal(p.yaw, p0.yaw); assert.equal(p.tilt, p0.tilt)
-    assert.ok(insideBy(screenOf(V, u.hex)) > -V.data.LAYOUT.W * p.zoom / 2, `${u.name}: its hex is on the screen after the slide (a hex of the board's last column: its nearer half)`)
+    /* Law 10, 2026-10-04 (viewer.camera-shows-edge-units): was `> -half a hex` (a hex of the board's last column: its nearer half) —
+       tightened: every unit's whole hex is on the screen after the slide */
+    assert.ok(insideBy(screenOf(V, u.hex)) >= V.data.LAYOUT.W * p.zoom / 2 - 1.5, `${u.name}: its whole hex is on the screen after the slide (${insideBy(screenOf(V, u.hex)).toFixed(1)} px inside)`)
     assert.ok(!bubbles(V).some(x => unitsOf(x).includes(u.id)), `${u.name}: no bubble stands for it now`)
     assert.equal(V.view.noVoid, true, 'the tactical view keeps to the board')
   }
