@@ -1,0 +1,79 @@
+
+ RUN  v4.1.11 C:/Users/aring/Desktop/HBT-worker-engine/engine
+
+ ❯ test/viewer-vitest-workers.test.ts (7 tests | 4 failed) 940ms
+     × the three configs take their cap from the one function — the viewer has no number of its own 4ms
+     × with no environment variable set, vitest in viewer/ runs on the capped number of workers — the same number as the engine and kingdom 357ms
+     × no test's time limit is changed: the viewer's config names none, and vitest keeps its own 5 s there 1ms
+     × the config is the viewer's code: changing it makes the viewer's gate run again 1ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/viewer-vitest-workers.test.ts > tool.viewer-vitest-workers — the viewer caps its vitest workers as the engine and kingdom do > the three configs take their cap from the one function — the viewer has no number of its own
+AssertionError: viewer/vitest.config.ts: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ test/viewer-vitest-workers.test.ts:46:66
+     44| describe('tool.viewer-vitest-workers — the viewer caps its vitest work…
+     45|   it('the three configs take their cap from the one function — the vie…
+     46|     expect(existsSync(VIEWER_CONFIG), 'viewer/vitest.config.ts').toBe(…
+       |                                                                  ^
+     47|     for (const file of [VIEWER_CONFIG, KINGDOM_CONFIG, ENGINE_CONFIG])…
+     48|       const text = readFileSync(file, 'utf8')
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  test/viewer-vitest-workers.test.ts > tool.viewer-vitest-workers — the viewer caps its vitest workers as the engine and kingdom do > with no environment variable set, vitest in viewer/ runs on the capped number of workers — the same number as the engine and kingdom
+TypeError: .toMatch() expects to receive a string, but got undefined
+ ❯ test/viewer-vitest-workers.test.ts:60:52
+     58|   it('with no environment variable set, vitest in viewer/ runs on the …
+     59|     const viewer = resolved(VIEWER)
+     60|     expect(viewer.configFile?.replace(/\\/g, '/')).toMatch(/viewer\/vi…
+       |                                                    ^
+     61|     expect(viewer.maxWorkers).toBe(vitestWorkersFor())
+     62|     expect(viewer.maxWorkers).toBe(Math.min(4, availableParallelism()))
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+ FAIL  test/viewer-vitest-workers.test.ts > tool.viewer-vitest-workers — the viewer caps its vitest workers as the engine and kingdom do > no test's time limit is changed: the viewer's config names none, and vitest keeps its own 5 s there
+AssertionError: viewer/vitest.config.ts: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ test/viewer-vitest-workers.test.ts:72:66
+     70|
+     71|   it("no test's time limit is changed: the viewer's config names none,…
+     72|     expect(existsSync(VIEWER_CONFIG), 'viewer/vitest.config.ts').toBe(…
+       |                                                                  ^
+     73|     expect(readFileSync(VIEWER_CONFIG, 'utf8')).not.toMatch(/testTimeo…
+     74|     expect(resolved(VIEWER).testTimeout).toBe(5000)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+
+ FAIL  test/viewer-vitest-workers.test.ts > tool.viewer-vitest-workers — the viewer caps its vitest workers as the engine and kingdom do > the config is the viewer's code: changing it makes the viewer's gate run again
+AssertionError: expected [ 'src', 'tools', 'test', …(5) ] to include 'vitest.config.ts'
+ ❯ test/viewer-vitest-workers.test.ts:93:39
+     91|
+     92|   it("the config is the viewer's code: changing it makes the viewer's …
+     93|     expect(PACKAGE_CODE.viewer?.code).toContain('vitest.config.ts')
+       |                                       ^
+     94|     expect(PACKAGE_CODE.kingdom?.code).toContain('vitest.config.ts')
+     95|     expect(PACKAGE_CODE.engine?.code).toContain('vitest.config.ts')
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/4]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  4 failed | 3 passed (7)
+   Start at  09:11:40
+   Duration  1.14s (transform 40ms, setup 0ms, import 60ms, tests 940ms, environment 0ms)
+

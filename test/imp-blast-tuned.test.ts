@@ -107,7 +107,10 @@ describe('in encounter.opening.bridge: the Imps\' Blasts burn about half the tim
       const imps = new Set(ctx.state.units.filter((u) => u.typeId === IMP).map((u) => u.id))
       for (const e of ctx.events) {
         if (e.type === 'trigger.rolled' && e.causeId === BURN) { expect(e['chance']).toBe(50); impRolls++; if (e['fired']) impFired++ }
-        if (e.type === 'trigger.rolled' && e.causeId === 'trigger.fire-imp.burn' && e['hook'] === 'onHit') { expect(e['chance']).toBe(100); fireRolls++; if (e['fired']) fireFired++ }
+        // was: e.causeId === 'trigger.fire-imp.burn' && e['hook'] === 'onHit' — the Blast's burn shared the end-of-Activation burn's id and was told apart by its hook;
+        // it has its own id now (fix.trigger-ids-and-scopes 2026-10-04, SWITCHES.md triggerIdsDistinctInARow). The hook is still asserted.
+        if (e.type === 'trigger.rolled' && e.causeId === 'trigger.fire-imp.burn.blast') { expect(e['hook']).toBe('onHit'); expect(e['chance']).toBe(100); fireRolls++; if (e['fired']) fireFired++ }
+        if (e.type === 'trigger.rolled' && e.causeId === 'trigger.fire-imp.burn') expect(e['hook']).toBe('onActivationEnd')
         if (e.type === 'attack.declared' && e.causeId === BLAST && imps.has(e.actor!)) blastDamage++
       }
       // an Imp's Blast never reads more than Precision 3 at its source

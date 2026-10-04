@@ -1,19 +1,18 @@
 {
-  "sourceCommit": "combine: engine master eec6321 into the kingdom worker copy",
-  "note": "engine master eec6321 (capability.burst-paints-ground, rule.free-attack-is-basic-attack, capability.counterattack-and-fend, fix.burst-ground-class-powers, fix.trigger-ids-and-scopes) combined with the kingdom worker's four engine items (GBH SWITCHES combine.mergeMainFirst, 2026-10-04). Cases marked changed differ from the fix.affliction-pop-up-words capture; movedOnlyText means state, RNG and result are unchanged.",
+  "sourceCommit": "fix.burst-ground-class-powers",
+  "note": "a class power's burst leaves its ground (fix.burst-ground-class-powers, 2026-10-04): Fireball's and Scorch's seven hexes burn. Cases marked changed differ from the counterattack capture; movedOnlyText means state, RNG and result are unchanged; groundStrokes counts the hexes a class power's burst painted in that battle.",
   "cases": [
     {
       "id": "showcase.alpha-team",
-      "events": "aaca2733ac901ae867572f09595f12aed65fc84af0a2a931373a7fec426c74f4",
-      "state": "7dfa341436033d72441d3d24371817cc6ee3e8a11c490870f86cda644c5cd49e",
+      "events": "91393bbc3a67c3e99c8d25a97badc32944e00feda7c62ecb9a91aca4046f3c54",
+      "state": "1890700264bb20e93ac9370b29da732901182faffc7e9488176d400f955c8d5b",
       "rng": "3c161472d65fe32bad1834fe54374c170baa49f477f2d9aa3f078fcf1a13fa2d",
       "result": {
         "outcome": "heroClear",
         "turns": 8,
         "usesSpent": []
       },
-      "changed": true,
-      "movedOnlyText": false
+      "changed": false
     },
     {
       "id": "showcase.arc-variant",
@@ -36,7 +35,7 @@
     {
       "id": "showcase.assembled-party",
       "events": "8ddc495b2cc097a9fa7c09acfe6d54d469f4b850647e3f05ace29389c5c9cd4f",
-      "state": "0c4fab6c9ed941b1bb67641cf22a60de500e46a88556a88536f483a2f847d489",
+      "state": "55ac1ed4cdefebaac41a7d2c20f8c0ab32ddac100dd9181d14e1d2b6ded9b0aa",
       "rng": "2d7d6e39157414bdebff230109c31172eb9e2d264c670cc3073f90c353068bbf",
       "result": {
         "outcome": "heroClear",
@@ -44,7 +43,8 @@
         "usesSpent": []
       },
       "changed": true,
-      "movedOnlyText": false
+      "movedOnlyText": false,
+      "groundStrokes": 7
     },
     {
       "id": "showcase.badged",
@@ -68,34 +68,31 @@
         "turns": 3,
         "usesSpent": []
       },
-      "changed": true,
-      "movedOnlyText": true
+      "changed": false
     },
     {
       "id": "showcase.civilians",
       "events": "90e386acabf5fc79afefaea42d13cb979a8b63f3104b100a72802f28c5eb31df",
-      "state": "eb8935fce691cf5f95d683a193473abb76c256c98c0a3982d218b68688597191",
+      "state": "ba88e6cd2cd48905cb0e5e730e703ade7de89d0d61e3501a23a6031bf9f7796c",
       "rng": "85cd6014922d5414af19b0fa58ad293ca1c225d1207fe06365d7445e3aad2424",
       "result": {
         "outcome": "heroClear",
         "turns": 4,
         "usesSpent": []
       },
-      "changed": true,
-      "movedOnlyText": false
+      "changed": false
     },
     {
       "id": "showcase.eve-24-a",
       "events": "8eb64d6c46d699fe1ec245a4e17b1997ecbf220e87ae14c963d0b3ab4a18471f",
-      "state": "fba179ff37c45659d77a249a90d018976854e404806005e73da403f3cfd1a624",
+      "state": "b2457700d3be9ec5012ddbacfef806d2a235095e75f2bb6f660d314879442c49",
       "rng": "381ac875685e193b8554785c7ab34c5877f69d7d0f4c2ba6045ec9a4b789ebcf",
       "result": {
         "outcome": "heroClear",
         "turns": 2,
         "usesSpent": []
       },
-      "changed": true,
-      "movedOnlyText": false
+      "changed": false
     },
     {
       "id": "showcase.eve-24-b",
@@ -107,8 +104,7 @@
         "turns": 3,
         "usesSpent": []
       },
-      "changed": true,
-      "movedOnlyText": false
+      "changed": false
     },
     {
       "id": "showcase.farmers-grown",
@@ -120,8 +116,7 @@
         "turns": 3,
         "usesSpent": []
       },
-      "changed": true,
-      "movedOnlyText": true
+      "changed": false
     },
     {
       "id": "showcase.flight-bonuses",
@@ -145,21 +140,19 @@
         "turns": 7,
         "usesSpent": []
       },
-      "changed": true,
-      "movedOnlyText": false
+      "changed": false
     },
     {
       "id": "showcase.horrors",
-      "events": "3d56aed0ff4dac9f5b5d052ad08b1fdc9b5ad1e33a5bacdbb5b4723f9c6e12f3",
-      "state": "8bba4bc6ab97aa3f06ce706d81920728eba45efe0bd54a6c54028437f89ae249",
-      "rng": "207713aaa9c4dedbf1c6d83e60d66c1844eb8f271fdbe7aeea9af11d320aa3c8",
+      "events": "a44ad3e452871c4a995dc1fd7cd518ae7e173c196aae9be6da6ead30d0167422",
+      "state": "4458e1cc28425a3c7c3ac867cf306ba303d977d100673b65428ee29c8fc9f894",
+      "rng": "1f2508bfa321505d2dc17485221937be1a7bfb111babfbd3c6607c3176818e31",
       "result": {
         "outcome": "wipe",
         "turns": 8,
         "usesSpent": []
       },
-      "changed": true,
-      "movedOnlyText": false
+      "changed": false
     },
     {
       "id": "showcase.item-powers",
@@ -171,21 +164,19 @@
         "turns": 1,
         "usesSpent": []
       },
-      "changed": true,
-      "movedOnlyText": false
+      "changed": false
     },
     {
       "id": "showcase.kiln",
-      "events": "57b8726a909356b211f5e6c56c4bc0b24286810f5470f6fa338a8769fc3c5c12",
-      "state": "4c82e8874e6b21d379329409cc9db275a9cd3f33c72d555c712a84ead6e71141",
+      "events": "50b362b00aa77f938d6d8a44fbb2c9a6255f124d8edf32c3fbc156da83d1ff3b",
+      "state": "6b9f590c7f346f4e7c6048ed6d33102fc81c3c1a09923addbec75f9d2d1c69aa",
       "rng": "af53978775a4cce09b6a4026f2dc0c558a4543683af78ce5efeb2e6b34ef1e7f",
       "result": {
         "outcome": "wipe",
         "turns": 5,
         "usesSpent": []
       },
-      "changed": true,
-      "movedOnlyText": false
+      "changed": false
     },
     {
       "id": "showcase.knockback-two",
@@ -239,60 +230,55 @@
         "turns": 2,
         "usesSpent": []
       },
-      "changed": true,
-      "movedOnlyText": true
+      "changed": false
     },
     {
       "id": "showcase.prologue-enemies",
-      "events": "3580ce52e4874657c11004d74cdf8b526bce050a2f4ce59696d996393eadc7e1",
-      "state": "fd869bf3c16c63a79296ff754da63615f6dc441498b9f5208a8bc47a0bf150ee",
+      "events": "7ea2b14684a66724f04299f0ff41e7f7626105b5d686fd3632185566bdf66924",
+      "state": "42ce31e094b4a6a57b8e2aa9d1c693b0afc9b1d9b08fb35a6909aca08276a171",
       "rng": "aaa807f4dc919293ec381f0d77fad87b3611818e1cbc71d987ffb3514a4563a9",
       "result": {
         "outcome": "wipe",
         "turns": 5,
         "usesSpent": []
       },
-      "changed": true,
-      "movedOnlyText": false
+      "changed": false
     },
     {
       "id": "showcase.prologue-party",
-      "events": "d69b7f231ad328805eac75631a27bb2583f4cf206a520b58fe02823d20849c1f",
-      "state": "99feb47ed81b2f171486ca9658e311baeb4802ac7484aef8a42d65942067e43b",
+      "events": "f67ada14844da252c457170a5af30653968fb4b80801b5826ec372307c219bf6",
+      "state": "37e5c3335429ba0bf8d21ae6f33200c3644a943b146137a15b06ed8525e308ef",
       "rng": "d9af44c8ed153940f4a9d7f218abd6c7b7fa96bf0d1da3caf1d1066a2896f7bc",
       "result": {
         "outcome": "heroClear",
         "turns": 4,
         "usesSpent": []
       },
-      "changed": true,
-      "movedOnlyText": false
+      "changed": false
     },
     {
       "id": "showcase.rime",
       "events": "a450a7ed085024817bf9d8ba988c3e3604adfd85dacd075263958a20a7f99932",
-      "state": "100d36ec855a2401572b0e19886420dea19daf57cefe1d97d3850738494a699e",
+      "state": "00055de94e2ed8ebb2d6b45c1cd46ab6be361c59e089accd3177e62c02603625",
       "rng": "91c81038e708d8464e5a32c487838641636234757409f313552358346522753f",
       "result": {
         "outcome": "wipe",
         "turns": 13,
         "usesSpent": []
       },
-      "changed": true,
-      "movedOnlyText": false
+      "changed": false
     },
     {
       "id": "showcase.supper",
       "events": "ca3705c37eef24c274c273b1d1c85b233bf907e55b3af81eb64a69c2585b62c7",
-      "state": "b55c055fa9fce12c79b3c82afe7de171a6ce7e6ac9e09633d803156e04a1b215",
+      "state": "a574f652c902d9e1d06a623cccef1cee3f3766c04d1553ff5c0e807f2f5bdd0b",
       "rng": "d89f2b0987ffcfc7cd12cae64099789d10a2fdd8d7bbba4dfec22337690ca392",
       "result": {
         "outcome": "wipe",
         "turns": 5,
         "usesSpent": []
       },
-      "changed": true,
-      "movedOnlyText": false
+      "changed": false
     },
     {
       "id": "showcase.surge-flight-ladder",
@@ -309,15 +295,14 @@
     {
       "id": "showcase.surrounded",
       "events": "01963a8042e370ae37caf2979c4cd59c83d61e7869d4957a316bc6c14dac9f54",
-      "state": "bfcc57c5c766f9a263a309d791632add0ab53559a392c93e6ffd2a64497fefec",
+      "state": "22bb118a40ae5f293fe67bbeac6541639f3adeb42f15858ee9dfc4ede41d9a5b",
       "rng": "549df83aa4d01d5be4cdc223dc33a55f03a87f2301bfe8f1aa9e627c7e31a9de",
       "result": {
         "outcome": "objectiveFailed",
         "turns": 2,
         "usesSpent": []
       },
-      "changed": true,
-      "movedOnlyText": false
+      "changed": false
     },
     {
       "id": "showcase.two-zombies-and-a-child",
@@ -329,13 +314,12 @@
         "turns": 3,
         "usesSpent": []
       },
-      "changed": true,
-      "movedOnlyText": true
+      "changed": false
     },
     {
       "id": "showcase.waystation",
-      "events": "543be1f4520c6dd1d9516b44df570a1dd98e94c91389807dfb4ee9969e0d2f8e",
-      "state": "1d0a52f79d342d1e4d579a080a1f4820903763e6cfef14f9c074648798dc18ea",
+      "events": "1eab882e76144286d90282d38f8c478d651cb5aafd74e12af78f390d6f8b57f4",
+      "state": "1f4cc2068304333f9299cb2ae672ad7083cb1bc5e131397360cb239e22a3a464",
       "rng": "16aecfde1b509224f881268fad637b0b0b39345365107cc4cb73be700642555a",
       "result": {
         "outcome": "heroClear",
@@ -455,8 +439,7 @@
           }
         ]
       },
-      "changed": true,
-      "movedOnlyText": false
+      "changed": false
     },
     {
       "id": "showcase.wounded-entry",
@@ -484,7 +467,7 @@
     },
     {
       "id": "test.afflictions-at-zero-rule",
-      "events": "429933927c677fe1a7a0207ba616b1929b6de0394638e506fdcf584d5a2d18c7",
+      "events": "2b31849ac8a7347466ae80a499a41d01c63f5dcbe27b7db81f1016142d95c689",
       "state": "2f2dc3f70fa09e554d5aee26e196f7b0ef7137f38aec4653b33f88d8bdc4d731",
       "rng": "e49e49f04c1bfe10087e0a566494178916e405554fe11da74a88384b6f6b83e7",
       "result": {
@@ -520,16 +503,15 @@
     },
     {
       "id": "test.authored-slots",
-      "events": "134785b7a6169dfed8d2dd22eeab8d45ddadd1f39afd4043687ed6567e111f0c",
-      "state": "0933450d207a016a725ea4356fc7d657b8753bb1217873a63316a0f13faa7c51",
-      "rng": "40fcac9c403bdd4b686fd92e8097b8073efc9a50210f27144a8bf8bc0bc93c02",
+      "events": "38bbd1d76de818fa3e1bbfae89977452076bfd6fd4d77e5c9c12507949c9a8b9",
+      "state": "46f8fe6750b853449fd46e705eff4ff1be8005233c40ba862e3e7445ba8df4a8",
+      "rng": "f2abea1cf724648a53a2f706b8b7f62ee2f25c58dcaca33510a295a5be98a5f6",
       "result": {
         "outcome": "heroClear",
         "turns": 2,
         "usesSpent": []
       },
-      "changed": true,
-      "movedOnlyText": false
+      "changed": false
     },
     {
       "id": "test.back-flip",
@@ -601,8 +583,7 @@
         "turns": 7,
         "usesSpent": []
       },
-      "changed": true,
-      "movedOnlyText": true
+      "changed": false
     },
     {
       "id": "test.charge-a",
@@ -650,8 +631,7 @@
         "turns": 2,
         "usesSpent": []
       },
-      "changed": true,
-      "movedOnlyText": true
+      "changed": false
     },
     {
       "id": "test.cover-fence",
@@ -663,21 +643,19 @@
         "turns": 2,
         "usesSpent": []
       },
-      "changed": true,
-      "movedOnlyText": true
+      "changed": false
     },
     {
       "id": "test.damage-packets",
-      "events": "c339fd6a8e6eccb13f154a343072dfd06c9b0587a6b394bce889cfff53ad864e",
-      "state": "3f69647322ff2a1e484d96d40052595900bfc11df252eb881231311ead3a984d",
-      "rng": "f4f460e8704a8f887d5d570d41fbc71abdfbec022c2ce5135563b4b63904c743",
+      "events": "173bdef86a208e24098ac15230ce7a5b02175c8a70abf4b9dcd4adb939cd300d",
+      "state": "3363865f52638d2f2164275aa123111c30a1c2bfbe3f2f7d2a1f001b50d5704f",
+      "rng": "217367de8613f4a5d40710a9f10cbe51764986a5a976426bc7b4df9fa93733a9",
       "result": {
         "outcome": "heroClear",
         "turns": 5,
         "usesSpent": []
       },
-      "changed": true,
-      "movedOnlyText": false
+      "changed": false
     },
     {
       "id": "test.direct-map-authored",
@@ -730,7 +708,7 @@
     {
       "id": "test.fend",
       "events": "b3fc219122b02f25338f487c6d37fecf813f690caf2ac7d5db162b1395bceac0",
-      "state": "320460ba2e2b407bb34f395ac4a891120be2500fa94f8c2c0be449111c452322",
+      "state": "b0027e73e28e4ded73163ac43f20e2382b487fdb02728df9dec892f8423fd3f3",
       "rng": "a10d06e1fb3ae85bf818da3cdc4c2bdf6cd5929107074501c3eaa45b7e2a3aed",
       "result": {
         "outcome": "heroClear",
@@ -749,21 +727,19 @@
         "turns": 5,
         "usesSpent": []
       },
-      "changed": true,
-      "movedOnlyText": false
+      "changed": false
     },
     {
       "id": "test.flaming-war-axe",
-      "events": "d1625b3b48671977ba0edb99ede7bf46616128ee47984aa1e3a84774ade4da2b",
-      "state": "4cdd802c8992a36b5f428b79a2bd03ccaafbd9b2a1138f81a1efbaa91c09e976",
-      "rng": "d7c7ad020e0eadcfcddf895c847181a9d0e5ce0a5d4dcecb8c00ea6b9aba2ec9",
+      "events": "12458c05d7dd133eca44be56de08c08c2b6f099932ec442ba17c573a988b1d9c",
+      "state": "9451d227628146425e5b275be8ffa26c59bcba0c16a813293fb491ec16b44cbf",
+      "rng": "b9dc7a9fa034c1fda4b400eb2f5c6fff46ff852b0facbc26f795ac245af65fe6",
       "result": {
         "outcome": "heroClear",
         "turns": 5,
         "usesSpent": []
       },
-      "changed": true,
-      "movedOnlyText": false
+      "changed": false
     },
     {
       "id": "test.frost-resistant",
@@ -787,8 +763,7 @@
         "turns": 2,
         "usesSpent": []
       },
-      "changed": true,
-      "movedOnlyText": true
+      "changed": false
     },
     {
       "id": "test.geometry-diagonal",
@@ -800,8 +775,7 @@
         "turns": 3,
         "usesSpent": []
       },
-      "changed": true,
-      "movedOnlyText": false
+      "changed": false
     },
     {
       "id": "test.ghost",
@@ -813,8 +787,7 @@
         "turns": 2,
         "usesSpent": []
       },
-      "changed": true,
-      "movedOnlyText": true
+      "changed": false
     },
     {
       "id": "test.ground-table",
@@ -831,7 +804,7 @@
     {
       "id": "test.item-uses",
       "events": "5e1c34e56d8c21a27dafaabc5550785e12c15a25ffffb4083bab41e012af5382",
-      "state": "afad89f38bc6fa1df189610886d206b59e941df6d0a521b3c6b760ac71398ea0",
+      "state": "b2c361a3e5362bbb5cc005e6b36463597f2dddbc20b625cecd12eee1ced579f7",
       "rng": "242a87b91f4372f2679c9be3522ce0eeb997756b1547c47ed33feffec610d3b5",
       "result": {
         "outcome": "wipe",
@@ -891,8 +864,7 @@
           }
         ]
       },
-      "changed": true,
-      "movedOnlyText": false
+      "changed": false
     },
     {
       "id": "test.kdb",
@@ -946,8 +918,7 @@
         "turns": 4,
         "usesSpent": []
       },
-      "changed": true,
-      "movedOnlyText": false
+      "changed": false
     },
     {
       "id": "test.mode-change-b",
@@ -959,21 +930,19 @@
         "turns": 6,
         "usesSpent": []
       },
-      "changed": true,
-      "movedOnlyText": true
+      "changed": false
     },
     {
       "id": "test.opening-bridge",
-      "events": "49c358edd0e2c74fe452826d324277975c2abf34609191bd7c39b33c4b77ecbe",
-      "state": "67ea4e4f87d0cf4d280cca35ef18776c8f8ade2ca1a857322c89e07e1c3ea239",
-      "rng": "cb267f9791516b9dbe8b79caba0fdb99a043f1323ff4e259049a1e83d627935e",
+      "events": "8bf9a474650dea78635bccf2e476df4c088eaad1fcce3934a77ffa778bd7c110",
+      "state": "569916ad114db46d18acec222e5e1c7f74ab745cb2c8bbeb12adff712a2ed96e",
+      "rng": "06b057a68566c36651bda7ec4e3b50d19b0bc8603560f66e985c9f85b5bb0df8",
       "result": {
         "outcome": "wipe",
-        "turns": 6,
+        "turns": 7,
         "usesSpent": []
       },
-      "changed": true,
-      "movedOnlyText": false
+      "changed": false
     },
     {
       "id": "test.opening-cathedral",
@@ -985,73 +954,67 @@
         "turns": 11,
         "usesSpent": []
       },
-      "changed": true,
-      "movedOnlyText": false
+      "changed": false
     },
     {
       "id": "test.opening-cavern-trail",
-      "events": "5508f12aaba9b915da37684ae161428e318e56797f43a68690c7e7e65e6d9efa",
-      "state": "9f2e84ef8eb939c68e0cf55a91db09693f7f969d869b2c97747a3c9b857407e2",
-      "rng": "32df73d66bff0ad0e7269078ef2526ed7b672b76a7859424499f04bbf1f24baa",
+      "events": "3bc2adc9119c21b101aa3699be3ea7dfca38ff7b01d0c006ea351406f180edb8",
+      "state": "34ac517b2dc901ae391f3b6af7533884817b40482ebce0820963bc69878c8051",
+      "rng": "b95a5103b2bf59f276de9a692368d43a07ad02c7038970567f1bb55c650377e6",
       "result": {
         "outcome": "wipe",
         "turns": 15,
         "usesSpent": []
       },
-      "changed": true,
-      "movedOnlyText": false
+      "changed": false
     },
     {
       "id": "test.opening-gates",
-      "events": "e6f76abfe6cf83e70bb9299fe993ac701c405d73c163849acc2f75ce3fb1d904",
-      "state": "8ea8390638a3b4ae84369866b55e1f2ad622fbc0bbc30271aedf23aac71179fe",
-      "rng": "ec6378889167d6de284d1745ba0b0057fa26c767ba3aee0a931f8e2264ccba8b",
+      "events": "c7046f17ddbbf2bef7b347eb67e2e4f63bbe35c7a66c05d7fdd004966b7b2c5a",
+      "state": "a8a4ccdaf735d92e9a3c27b003b4ababdd092ed10fed78a681b580012c2a0cc9",
+      "rng": "294526d144104d82700db3059a094903f0d85b78b1f003d706c666fc7d39832b",
       "result": {
         "outcome": "wipe",
-        "turns": 7,
+        "turns": 12,
         "usesSpent": []
       },
-      "changed": true,
-      "movedOnlyText": false
+      "changed": false
     },
     {
       "id": "test.opening-lumberjack",
-      "events": "52911d7b5030dcf699b6da94ab168b8d2d66d3198569e8ec541ef7745ad21423",
-      "state": "210e6cf98c9d843e0f9c84614c528c6304332cd08750866f0474beffb1ee52b7",
-      "rng": "383baae73787fd7019efaf60ff3ddeddb59f8a13d3a8b948be3eb4cf77a0364d",
+      "events": "5243a0c067571d3a44274e58f16b9c3123e40c18be1e864e4e5b986e3165ccdb",
+      "state": "91c6897b173b598ff1beecd3593a5c208d5e5349c6e3930a1221e1d0d09703c6",
+      "rng": "000e7191aa9ce9f2e13e68721240de60a142ed8a0f3e1267d18de4704273386b",
       "result": {
         "outcome": "heroClear",
-        "turns": 9,
+        "turns": 4,
         "usesSpent": []
       },
-      "changed": true,
-      "movedOnlyText": false
+      "changed": false
     },
     {
       "id": "test.opening-orphanage",
-      "events": "ad835e1312fb78cb369317cbb9f09e9281d1f3919c81d7ca4c0def327b5c429b",
-      "state": "9531d02b987f89441204fd0139014ab9bc1d6cdfb599142001895151adac0fbe",
-      "rng": "7f33d1c3895053aff6d21d743c9b2a6d15c0f8c836acce62e875f82c31cfb861",
+      "events": "5817915667c667cbdef0bd1f4a6eb5743bbecc6d1bd19747b957e6708d1123c0",
+      "state": "e8c7d55da9b2327bb96a4e609eef892390a5d3386974aca32f888fc5682c980d",
+      "rng": "973250ab1813e03231f41d8535b7cc401b14296f0790a2cefb1e979de7f09c6c",
       "result": {
         "outcome": "wipe",
         "turns": 7,
         "usesSpent": []
       },
-      "changed": true,
-      "movedOnlyText": true
+      "changed": false
     },
     {
       "id": "test.opening-units",
       "events": "f1208a17c595aaf06ea1303db69650b0cea4e9e3e54412adb434878c899ad426",
-      "state": "dc32241b9203c8804dcfce378f3ea4536ac680690803cb475bec61c618b81009",
+      "state": "a0565be30f672d03c4e63a0583f57185cc2bcc518fc15d092c7420f715ca38d7",
       "rng": "ed6255f3e42aecaece473a396f993c23e5bf19191d00ed9acc7910749825a277",
       "result": {
         "outcome": "wipe",
         "turns": 3,
         "usesSpent": []
       },
-      "changed": true,
-      "movedOnlyText": false
+      "changed": false
     },
     {
       "id": "test.placed-remains-a",
@@ -1115,16 +1078,15 @@
     },
     {
       "id": "test.props-viewer-ranged-zoc",
-      "events": "522793f71efcb4781c3ba5e9bc8ed80be7fedacb6a0dbff8fe0bd90ef2e3b7f4",
-      "state": "6207864b424c971c52fc7be6377b9551917c4a11cb391e51d2958829c664991b",
+      "events": "07a3e9e80f6c3d47a6aea593c79a815c269ea40b619f8f23e4641352c6a0619d",
+      "state": "721bb9ebc0ae0ef513da07b83daa5215cf49ede33726439e833e0cdbd4495c5c",
       "rng": "466c3ca0c3b34696e07bb9ae0cb648999f12ef23a0b61bac5bfe46e3c76b84d6",
       "result": {
         "outcome": "wipe",
         "turns": 3,
         "usesSpent": []
       },
-      "changed": true,
-      "movedOnlyText": false
+      "changed": false
     },
     {
       "id": "test.raise-one",
@@ -1160,8 +1122,7 @@
         "turns": 2,
         "usesSpent": []
       },
-      "changed": true,
-      "movedOnlyText": true
+      "changed": false
     },
     {
       "id": "test.stealth-a",
@@ -1185,8 +1146,7 @@
         "turns": 3,
         "usesSpent": []
       },
-      "changed": true,
-      "movedOnlyText": true
+      "changed": false
     },
     {
       "id": "test.structures",
@@ -1210,8 +1170,7 @@
         "turns": 3,
         "usesSpent": []
       },
-      "changed": true,
-      "movedOnlyText": false
+      "changed": false
     },
     {
       "id": "test.thin-sign",
@@ -1239,7 +1198,7 @@
     },
     {
       "id": "test.vampire-bite",
-      "events": "d538f4fc2bb44cbd5149ab8373a9c8452d448c1ff0b8ac441616aee9b95f8041",
+      "events": "329b16ff60d81156100cb785f170c7986c8687fe8a4e75d4deedc3c4e5fceec9",
       "state": "06d7cc12580bf1295e01249acce930ec62578db68fb020e4be3abb0719044ffa",
       "rng": "22b85a747fc623b6c754d2060f8c6ae5696f1c86aaba3d384ac161d2f4366c29",
       "result": {
@@ -1247,8 +1206,7 @@
         "turns": 3,
         "usesSpent": []
       },
-      "changed": true,
-      "movedOnlyText": true
+      "changed": false
     },
     {
       "id": "test.vs-target-a",
@@ -1289,7 +1247,7 @@
     {
       "id": "progression-surge-0",
       "events": "cc9cf1447f163c206bbf559d0b5d6898a864332273242f09d82135c2bb2fac07",
-      "state": "c761d10226650a7ef835dd6d7f5af2b9df44c4732d1b568108155a8ae7096f77",
+      "state": "78cf39947dca85f6899b08793a4c093a6528e66e16980fa47073992eb49c9714",
       "rng": "0a1b884ed08c2a2c7ab69ba2cc52507169832150a1460b09555f84a2b422d944",
       "result": {
         "outcome": "heroClear",
@@ -1297,12 +1255,13 @@
         "usesSpent": []
       },
       "changed": true,
-      "movedOnlyText": false
+      "movedOnlyText": false,
+      "groundStrokes": 7
     },
     {
       "id": "progression-surge-1",
       "events": "47bcf19b8dbe1ae36909d80cf3ef1dead05a09dc6e8dd8f233cb7eefdc1cfaef",
-      "state": "1b0eb5cd0851a83744567fb7435b257114ac262df1a9422c2fe7e95513a4654f",
+      "state": "e0a799fe3d99dccdbe1cc5fb9c7d38616c73ef5146113e033d6b3136259fbded",
       "rng": "bc0f3616bd9f25ffe17e5eb2a84f4fdde4517f1a08d7164a1c3cd50aaea0df43",
       "result": {
         "outcome": "heroClear",
@@ -1310,12 +1269,13 @@
         "usesSpent": []
       },
       "changed": true,
-      "movedOnlyText": false
+      "movedOnlyText": false,
+      "groundStrokes": 7
     },
     {
       "id": "progression-surge-2",
       "events": "4a26250e54886dc37aacf8ff39bc49db1851f46b1c6168729d9f3238c2364957",
-      "state": "5dca8e9d49d2733af53635458391f41f6533128cd3af1e8c0ff80a5e8eb11b64",
+      "state": "eebbe53c348ce2073370c19ab413b06f28d33962916bceba82e22a01e617503a",
       "rng": "394075b2659e3fee4950435e48ae40204e4e34245133e9360d315417d0241897",
       "result": {
         "outcome": "heroClear",
@@ -1323,7 +1283,8 @@
         "usesSpent": []
       },
       "changed": true,
-      "movedOnlyText": false
+      "movedOnlyText": false,
+      "groundStrokes": 7
     },
     {
       "id": "legacy-surge-cap",

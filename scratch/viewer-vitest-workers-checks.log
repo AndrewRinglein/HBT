@@ -1,0 +1,169 @@
+door probe: only src/engine.ts imports the engine
+laws 5 and 6: no mode below the intent layer, no status hue outside theme.js
+typecheck (the door, the sheet, the .mts tools — the .js is not typed): clean
+✔ real support histories retain live ordinary power and boosted-healing coverage (3.8759ms)
+✔ real burst declaration preserves detached engine footprint/UIDs and clears ordinary attack state (0.2613ms)
+✔ burst action details show authored packets, filter, shape and healing without scalar guesses or attack hooks (7.6573ms)
+✔ real save events: HP/float ownership, durable seek facts and every-event cue parity (1.1782ms)
+✔ real shielding events: HP/float ownership, durable seek facts and every-event cue parity (0.7456ms)
+✔ real healing events: HP/float ownership, durable seek facts and every-event cue parity (0.854ms)
+✔ real friendly events: HP/float ownership, durable seek facts and every-event cue parity (1.7699ms)
+✔ real zero events: HP/float ownership, durable seek facts and every-event cue parity (1.2654ms)
+✔ real fixture explicitly covers empty centre, shielding, saves, friendly fire and zero payload (0.2996ms)
+✔ imported burst names, props and payload fields remain escaped log text (1.5642ms)
+✔ packet floats carry exact nested applied fields and distinct types, never the base aggregate label (2.821ms)
+✔ onHit hook damage cannot steal a confirmed chart-only weapon critical (0.3604ms)
+✔ packet log prints supplied per-type mitigation and actual HP facts without relabeling the total physical (1.2509ms)
+✔ action details expose authored packets and physical penetration verbatim (0.2806ms)
+✔ scalar damage keeps direct event provenance (0.1755ms)
+✔ packet attacks await an engine total instead of displaying a base-only forecast (0.2162ms)
+✔ seek cancellation cannot let old float timers release new packet slots (1.3472ms)
+✔ imported packet field strings remain escaped log text (0.2639ms)
+✔ imported packet damage remains literal text in the actual float DOM (0.4876ms)
+✔ all six damage types keep engine aim numbers and never invent sheet mitigation (1.6928ms)
+✔ published sheets retain named authored defenses and absorption metadata (6.8284ms)
+✔ passive source no longer owns a future status-damage or lethal forecast (24.5951ms)
+✔ innerHTML replacement detaches the old subtree and permits reattachment (1.2751ms)
+✔ textContent replacement detaches the old subtree and permits reattachment (0.2456ms)
+✔ the fixture: two drinks by one warrior, from two instances, each spent (1.2186ms)
+✔ the fold carries the instances spent on arrival, from unit.enter (3.1403ms)
+✔ the fold keeps each instance's uses left as charge.spent states them (0.7895ms)
+✔ the log names the instance that paid, and says when it is spent (1.8793ms)
+✔ the fixture is the engine log of one swap: stamina.spent, loadout.swapped, then unit.equipped for what arrived (0.767ms)
+✔ the fold knows loadout.swapped and the pump gives it a beat (0.5636ms)
+✔ before the swap: hands from unit.equipped (by instance), stowed from unit.enter (2.358ms)
+✔ after the swap: the hands are the event's, the rest is stowed, the kit and its modifiers follow the hands (0.5366ms)
+✔ the bar's icons change: the longsword's attacks leave, the shield's powers arrive (0.6604ms)
+✔ one float names the swap and the stamina spent, verbatim from the event (0.3895ms)
+✔ seeking to any point after the swap equals stepping to it (0.3454ms)
+✔ the log line names the hands before and after and the stamina spent (1.5652ms)
+✔ the fixture: three blows at hex 10 — damaged, destroyed to low cover with a remnant, damaged again (1.2609ms)
+✔ the fold knows the three events and the pump gives each a beat (0.4743ms)
+✔ the fold follows the prop: intact, damaged 1/2, the remnant exactly, then the remnant damaged (2.9418ms)
+✔ scrubbing never edits the map.loaded fact it started from (0.2059ms)
+✔ a prop that leaves nothing is removed; low cover with no remnant is refused loudly (0.4912ms)
+✔ floats: the blow names the props it struck; a step shows n/of; the fall says what is left (0.2526ms)
+✔ the log says each step and what the fall leaves, in the engine's own fields (1.5348ms)
+✔ actual browser entry emits no catalog loader or gameplay modules (130.9371ms)
+✔ guard distinguishes emitted bytes from parsed or tree-shaken inputs (0.4964ms)
+✔ normal static generator still validates and exports identical data (258.0816ms)
+✔ normal static generator rejects malformed catalog before writing (164.0626ms)
+✔ every engine hook has a panel label (0.8505ms)
+✔ the action bar's attack hooks are the engine's attacker hooks (0.1999ms)
+✔ every effect kind has a word (1.647ms)
+✔ every ground the engine decodes has a swatch — nothing falls back to plains in silence (0.181ms)
+✔ the painted layers' statuses are the engine's, as generated/static.json carries them (0.2825ms)
+ℹ tests 52
+ℹ suites 0
+ℹ pass 52
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 695.1168
+passive runtime modules: ../engine/src/core/hex.ts, ../engine/src/core/geometry.ts, ../engine/src/core/types.ts, ../engine/src/core/props.ts, ../engine/src/content/disable.ts, ../engine/src/content/terrain.ts, ../engine/src/view/field.ts
+candidate C:\Users\aring\Desktop\HBT-worker-engine\viewer\.build\gate-candidate.html · 28.7 MB · UNVERIFIED · viewer a442295 · engine c493cab1d2 · sheets c493cab1d2 · fields c493cab1d2 · 43 battles
+
+ RUN  v4.1.11 C:/Users/aring/Desktop/HBT-worker-engine/viewer
+
+········································node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+page.screenshot: Timeout 100000ms exceeded.
+Call log:
+[2m  - taking page screenshot[22m
+[2m    - disabled all CSS animations[22m
+[2m  - waiting for fonts to load...[22m
+[2m  - fonts loaded[22m
+
+    at open (C:\Users\aring\Desktop\HBT-worker-engine\kingdom\tools\characters-stand-out.verify.mjs:85:14)
+    at async file:///C:/Users/aring/Desktop/HBT-worker-engine/kingdom/tools/characters-stand-out.verify.mjs:88:14 {
+  log: [
+    '  - taking page screenshot',
+    '    - disabled all CSS animations',
+    '  - waiting for fonts to load...',
+    '  - fonts loaded'
+  ],
+  name: 'TimeoutError'
+}
+
+Node.js v24.12.0
+x·························node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+page.waitForFunction: Timeout 90000ms exceeded.
+    at C:\Users\aring\Desktop\HBT-worker-engine\kingdom\tools\affliction-pop-up.verify.mjs:72:13 {
+  log: [],
+  name: 'TimeoutError'
+}
+
+Node.js v24.12.0
+x·······························································································
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/viewer.affliction-pop-up.test.ts > the first-affliction pop-up: before and after art, the three explanations, the battle held until it is closed > the sandbox: the expect line, played on the built BATTLE-SANDBOX.html until a zombie afflicts a hero, at 1920 x 1080
+Error: Command failed: C:\Program Files\nodejs\node.exe tools/affliction-pop-up.verify.mjs scratch/affliction-pop-up.html scratch/affliction-pop-up.png
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+page.waitForFunction: Timeout 90000ms exceeded.
+    at C:\Users\aring\Desktop\HBT-worker-engine\kingdom\tools\affliction-pop-up.verify.mjs:72:13 {
+  log: [],
+  name: 'TimeoutError'
+}
+
+Node.js v24.12.0
+
+ ❯ test/viewer.affliction-pop-up.test.ts:42:17
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  test/viewer.characters-stand-out.test.ts > the characters stand out: five looks to judge, each on only when named > the kingdom: the review page links the Orphanage as today, with each look alone and with all together; the built battle page takes them from its link
+Error: Command failed: C:\Program Files\nodejs\node.exe tools/characters-stand-out.verify.mjs scratch/characters-stand-out.html scratch/characters-stand-out-sandbox.html scratch
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+page.screenshot: Timeout 100000ms exceeded.
+Call log:
+[2m  - taking page screenshot[22m
+[2m    - disabled all CSS animations[22m
+[2m  - waiting for fonts to load...[22m
+[2m  - fonts loaded[22m
+
+    at open (C:\Users\aring\Desktop\HBT-worker-engine\kingdom\tools\characters-stand-out.verify.mjs:85:14)
+    at async file:///C:/Users/aring/Desktop/HBT-worker-engine/kingdom/tools/characters-stand-out.verify.mjs:88:14 {
+  log: [
+    '  - taking page screenshot',
+    '    - disabled all CSS animations',
+    '  - waiting for fonts to load...',
+    '  - fonts loaded'
+  ],
+  name: 'TimeoutError'
+}
+
+Node.js v24.12.0
+
+ ❯ open ../kingdom/tools/characters-stand-out.verify.mjs:85:14
+ ❯ test/viewer.characters-stand-out.test.ts:34:17
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  2 failed | 45 passed (47)
+      Tests  2 failed | 160 passed (162)
+   Start at  09:14:07
+   Duration  210.03s (transform 2.56s, setup 0ms, import 18.68s, tests 809.30s, environment 3ms)
+
+
+part checks: FAIL — test/ — the page tests against the engine (217 s) · tree be9500df22
+
+real	3m37.343s
+user	0m0.000s
+sys	0m0.000s

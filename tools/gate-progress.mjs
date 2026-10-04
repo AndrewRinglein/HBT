@@ -122,16 +122,18 @@ export function testTimeoutFor(env = process.env, cwd = process.cwd()) {
 
 /**
  * How many vitest file workers a package's suite runs on: four, and never more than the
- * machine has CPUs. The one cap - engine/vitest.config.ts and kingdom/vitest.config.ts both
- * read it (tool.kingdom-vitest-workers, 2026-10-04), and VITEST_MAX_WORKERS still overrides
- * either (vitest reads the environment after the config).
+ * machine has CPUs. The one cap - engine/vitest.config.ts, kingdom/vitest.config.ts and
+ * viewer/vitest.config.ts all read it (tool.kingdom-vitest-workers, tool.viewer-vitest-workers,
+ * 2026-10-04), and VITEST_MAX_WORKERS still overrides any of them (vitest reads the
+ * environment after the config).
  *
  * Measured during the shared-AI migration: unrestricted file workers caused six 5-second
  * timeouts; four workers reduced that to the two expensive cases that also exceed 5 seconds
  * in isolation. 2026-09-22: never more workers than CPUs - on a 2-vCPU Cowork sandbox four
  * workers fought over two cores and "kiting works" (3.4 s alone) passed 5 s. 2026-10-04:
  * kingdom, with no config, took one worker per CPU (sixteen on Andrew's PC) and beside other
- * workers' suites its child-process tests passed their 5 s or 60 s limit on any tree.
+ * workers' suites its child-process tests passed their 5 s or 60 s limit on any tree; the
+ * viewer, with no config, ran its gate's page tests (vitest run --dir test) the same way.
  */
 export const VITEST_WORKERS = 4
 export function vitestWorkersFor(cpus = availableParallelism()) {

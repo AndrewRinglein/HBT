@@ -339,6 +339,19 @@ const freeAttackGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-curs
 // case's counterattacks and fends). The 19 cases that field a Longsword moved (its `unit.equipped` line names the power; where the
 // power is used the fight re-times). A `changed` case is checked here and skips the older layers.
 const counterattackGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-counterattack.json', import.meta.url), 'utf8'))
+// fix.burst-ground-class-powers (2026-10-04; SWITCHES.md burstGroundClassPowers), Law 10: the Fire Master's Fireball and the
+// Wyrmling's Scorch leave their seven hexes burning (content authors `paints` on the two class-power bursts; no engine code).
+// Every case frozen here (tools/capture-burst-ground-class-powers-cursor.mts; the fixture counts the hexes a class power's burst
+// painted). The four cases whose Fire Master throws Fireball moved (showcase.assembled-party, progression-surge-0..2: seven
+// strokes each, and the fight re-times from there). A `changed` case is checked here and skips the older layers.
+const classGroundGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-burst-ground-class-powers.json', import.meta.url), 'utf8'))
+// fix.trigger-ids-and-scopes (2026-10-04; SWITCHES.md triggerIdsDistinctInARow, itemTriggerOwnAttacks, testDeltaTriggersOnce), Law 10:
+// no row holds two triggers under one id (the Fire Imp's Blast burn is trigger.fire-imp.burn.blast), a weapon's row-level trigger
+// rides only that weapon's own attacks (the axes' on-block: one trigger per attack, so the triggers a holder lists after them roll
+// on other slots), and a test delta holds its base's triggers once. Every case frozen here (tools/capture-trigger-ids-cursor.mts;
+// the fixture counts each case's rolls under a renamed id and of an own-scoped item trigger). 26 cases moved. A `changed` case is
+// checked here and skips the older layers.
+const triggerIdsGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-trigger-ids.json', import.meta.url), 'utf8'))
 // fix.own-area-skips-owner (2026-10-04; DECISIONS.md 2026-10-04 'the Poison Imp, the Balrog and the four caster-centred class powers skip
 // their owner too': "One and two, yes, skip the caster."), Law 10: the Poison Imp's end-of-Activation Poison and the Balrog's
 // end-of-Activation Burn target every OTHER unit within 2 hexes, so neither lands on its owner at the end of its Activations.
@@ -358,13 +371,13 @@ const probeCadenceGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cu
 // on a line the log already had, no fight moved (movedOnlyText in the fixture: state, RNG and result unchanged).
 // Every case frozen here (tools/capture-affliction-pop-up-words-cursor.mts). Moved — in the log's words only (the events' hash; state, RNG and result unchanged), the cases in which a hero gains an affliction: showcase.prologue-party, showcase.waystation, test.afflictions-at-zero-rule, test.vampire-bite. A `changed` case is checked here and skips the older layers.
 const afflictionWordsGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-affliction-pop-up-words.json', import.meta.url), 'utf8'))
-// combine (2026-10-04; GBH SWITCHES combine.mergeMainFirst): engine master ea9dafc (capability.burst-paints-ground,
-// rule.free-attack-is-basic-attack, capability.counterattack-and-fend) merged into the kingdom worker's copy (fix.own-area-skips-owner,
+// combine (2026-10-04; GBH SWITCHES combine.mergeMainFirst): engine master ea9dafc, then eec6321 (capability.burst-paints-ground,
+// rule.free-attack-is-basic-attack, capability.counterattack-and-fend, fix.burst-ground-class-powers, fix.trigger-ids-and-scopes) merged into the kingdom worker's copy (fix.own-area-skips-owner,
 // fix.opening-orphanage-closer-start, fix.opening-probe-cadence, fix.affliction-pop-up-words). Each side froze its own layers on its
 // own tree, from the same layer below (combine-civilians-kit); a case both sides moved is neither side's hash on the combined tree.
 // Every case frozen here on the combined tree (tools/capture-combine-free-attack-cursor.mts): `changed` marks the cases that differ
-// from the fix.affliction-pop-up-words capture (this copy's top layer) — every case master's three items move. A `changed` case is
-// checked here and skips the older layers; the rest run down this copy's four layers, then master's three, then the layers below.
+// from the fix.affliction-pop-up-words capture (this copy's top layer) — every case master's five items move (re-captured at the second merge). A `changed` case is
+// checked here and skips the older layers; the rest run down this copy's four layers, then master's five, then the layers below.
 const combineFreeAttackGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-combine-free-attack.json', import.meta.url), 'utf8'))
 const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
 // Explicit rule migration, not regenerated historical hashes. These nine old
@@ -492,6 +505,8 @@ describe('resumable battle cursor', () => {
       const burstPaintsGroundExpected = burstPaintsGroundGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const freeAttackExpected = freeAttackGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const counterattackExpected = counterattackGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+      const classGroundExpected = classGroundGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+      const triggerIdsExpected = triggerIdsGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const ownAreaExpected = ownAreaGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const closerStartExpected = closerStartGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const probeCadenceExpected = probeCadenceGolden.cases.find((row:{id:string})=>row.id===fixture.id)
@@ -508,8 +523,13 @@ describe('resumable battle cursor', () => {
       const ownAreaMoved = ownAreaExpected?.changed === true || closerStartMoved
       // was: const combineCiviliansKitMoved = combineCiviliansKitExpected?.changed === true — a case fix.own-area-skips-owner moved skips this layer too (fix.own-area-skips-owner 2026-10-04)
       // (combine 2026-10-04: this copy's line here read `const combineCiviliansKitMoved = combineCiviliansKitExpected?.changed === true || ownAreaMoved` — master's three layers sit between; the line is master's, below)
-      // was: const counterattackMoved = counterattackExpected?.changed === true — a case this copy's four layers moved skips master's three too (combine 2026-10-04: master's layers sit under this copy's)
-      const counterattackMoved = counterattackExpected?.changed === true || ownAreaMoved
+      // (combine 2026-10-04, engine master eec6321: this copy's line here read `const counterattackMoved = counterattackExpected?.changed === true || ownAreaMoved` — master's two newer layers, class-ground and trigger-ids, sit between; the chain goes through them, below)
+      // was: const triggerIdsMoved = triggerIdsExpected?.changed === true — a case this copy's four layers moved skips master's five too (combine 2026-10-04: master's layers sit under this copy's)
+      const triggerIdsMoved = triggerIdsExpected?.changed === true || ownAreaMoved
+      // was: const classGroundMoved = classGroundExpected?.changed === true — a trigger-ids-moved case skips the class-ground layer too (fix.trigger-ids-and-scopes 2026-10-04)
+      const classGroundMoved = classGroundExpected?.changed === true || triggerIdsMoved
+      // was: const counterattackMoved = counterattackExpected?.changed === true — a class-ground-moved case skips the counterattack layer too (fix.burst-ground-class-powers 2026-10-04)
+      const counterattackMoved = counterattackExpected?.changed === true || classGroundMoved
       // was: const freeAttackMoved = freeAttackExpected?.changed === true — a counterattack-moved case skips the free-attack layer too (capability.counterattack-and-fend 2026-10-04)
       const freeAttackMoved = freeAttackExpected?.changed === true || counterattackMoved
       // was: const burstPaintsGroundMoved = burstPaintsGroundExpected?.changed === true — a free-attack-moved case skips the burst-paints-ground layer too (rule.free-attack-is-basic-attack 2026-10-04)
@@ -655,8 +675,23 @@ describe('resumable battle cursor', () => {
         expect(result).toEqual(ownAreaExpected.result)
         }
         // (combine 2026-10-04: this copy's check here read `if (combineCiviliansKitExpected && !ownAreaMoved) {` — master's three layers are checked between; the line is master's, below)
-        // was: if (counterattackExpected) { — combine (2026-10-04): a case this copy's four layers moved is checked above instead
-        if (counterattackExpected && !ownAreaMoved) {
+        // (combine 2026-10-04, engine master eec6321: this copy's check here read `if (counterattackExpected && !ownAreaMoved) {` — master's two newer layers are checked between; the chain goes through them, below)
+        // was: if (triggerIdsExpected) { — combine (2026-10-04): a case this copy's four layers moved is checked above instead
+        if (triggerIdsExpected && !ownAreaMoved) {
+        expect(hash(ctx.events), 'full trigger-ids events').toBe(triggerIdsExpected.events)
+        expect(hash(ctx.state), 'full trigger-ids state').toBe(triggerIdsExpected.state)
+        expect(hash(ctx.rng.log), 'full trigger-ids RNG').toBe(triggerIdsExpected.rng)
+        expect(result).toEqual(triggerIdsExpected.result)
+        }
+        // was: if (classGroundExpected) { — fix.trigger-ids-and-scopes (2026-10-04): a trigger-ids-moved case is checked above instead
+        if (classGroundExpected && !triggerIdsMoved) {
+        expect(hash(ctx.events), 'full class-ground events').toBe(classGroundExpected.events)
+        expect(hash(ctx.state), 'full class-ground state').toBe(classGroundExpected.state)
+        expect(hash(ctx.rng.log), 'full class-ground RNG').toBe(classGroundExpected.rng)
+        expect(result).toEqual(classGroundExpected.result)
+        }
+        // was: if (counterattackExpected) { — fix.burst-ground-class-powers (2026-10-04): a class-ground-moved case is checked above instead
+        if (counterattackExpected && !classGroundMoved) {
         expect(hash(ctx.events), 'full counterattack events').toBe(counterattackExpected.events)
         expect(hash(ctx.state), 'full counterattack state').toBe(counterattackExpected.state)
         expect(hash(ctx.rng.log), 'full counterattack RNG').toBe(counterattackExpected.rng)

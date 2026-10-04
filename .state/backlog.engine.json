@@ -5205,7 +5205,10 @@
    "encounter.opening.cathedral",
    "content.flaming-longsword"
   ],
-  "note": "Cut 2026-09-28. Switch: a civilian who died in their battle does not join ('The units dying is their own punishment' read that way). Kingdom commits in its own repository."
+  "note": "Cut 2026-09-28. Switch: a civilian who died in their battle does not join ('The units dying is their own punishment' read that way). Kingdom commits in its own repository.",
+  "status": "failed",
+  "failedAt": "2026-10-04 19:59",
+  "reason": "superseded: kingdom.opening-run-six (landed 2026-10-02) is the continuous run through the six battles; this item needs encounter.opening.bridge, abandoned 2026-09-30, so it can never start (the opening run's audit, 2026-10-03)"
  },
  {
   "id": "plumbing.vocabulary-export",
@@ -5533,7 +5536,9 @@
   "shape": "plumbing",
   "spec": "Found 2026-10-04 by the engine and viewer workers (GBH SWITCHES vitest.kingdomConfig, gate.shardFewerWorkersUnderLoad): the viewer has no vitest config of its own, so its gate's checks part runs on vitest's default worker count and, with other workers' gates running, untouched page tests time out (at 60-170 s, and one headless-Chrome verifier hung); every worker has set VITEST_MAX_WORKERS=4 by hand. tool.kingdom-vitest-workers gave kingdom a vitest.config.ts using the engine's cap function. Do the same for the viewer: one cap from the same function (read engine/vitest.config.ts and kingdom/vitest.config.ts first - one shape), the environment still able to override it; viewer/vitest.config.ts is the viewer's code (engine/tools/code-stamp.mjs PACKAGE_CODE - check it is in the viewer's list). No test's own time limit changes (Law 10). The viewer commits in its own repository; record it in GBH SWITCHES.md.",
   "expect": "With no environment variable set, the viewer gate's checks part runs on the capped number of vitest workers; VITEST_MAX_WORKERS still overrides; `node tools/gate.mjs --part checks` passes in the viewer with another package's gate running on the machine; no test's time limit changed.",
-  "note": "Filed by the kingdom chat, 2026-10-04, from the workers' reports. Small tooling."
+  "note": "Filed by the kingdom chat, 2026-10-04, from the workers' reports. Small tooling.",
+  "status": "done",
+  "sha": "af84889"
  },
  {
   "id": "fix.burst-ground-class-powers",
@@ -5544,7 +5549,10 @@
   ],
   "spec": "Found landing capability.burst-paints-ground (2026-10-04, engine SWITCHES.md burstGroundClassPowers): a burst can now paint its hexes, and the Fire Staff's Flame Burst and the Frost Staff's Frost Nova do; two more burst powers whose Codex words name ground are 'one authored field away (content only)': power.fire-master.fireball and power.wyrmling.scorch. Author the ground on those two rows through the content pipeline as the staffs' rows have it (re-read every content/ file immediately before editing it; commit content after every write; rebuild by the tools), exactly as their Codex text says and no further. Leave wake-of-cinders, quench and broodmother.nest: they deal nothing, so they need ground to count as a payload on its own (engine SWITCHES burstGroundNotAPayload) - list them in CONTENT-GAPS.md, do not build. Rebuild the Codex's outputs, the engine pack, the viewer's dumps and the kingdom pages the change makes stale; say whether the control battles move before claiming changesBaseline.",
   "expect": "A hero using Fireball (the Fire Master's) leaves its blast's hexes burning, and the Wyrmling's Scorch leaves its hexes as its Codex row says; a test names both and asserts the ground after the burst; the three ground-only powers are listed as gaps.",
-  "note": "Filed by the kingdom chat, 2026-10-04, from the engine worker's report."
+  "note": "Filed by the kingdom chat, 2026-10-04, from the engine worker's report.",
+  "attempts": 1,
+  "status": "done-needs-review",
+  "sha": "3674cd9"
  },
  {
   "id": "fix.trigger-ids-and-scopes",
@@ -5555,6 +5563,8 @@
   ],
   "spec": "Found 2026-10-04 by the engine and viewer workers' reports: (1) the Fire Imp's two triggers - its end-of-Activation burn over every other unit within 2 hexes, and its Blast's on-hit Burn 3 - share one id, trigger.fire-imp.burn, so the log, the kill switch and the viewer cannot tell them apart; (2) the War Axe's on-block 'Block -20' triggers are unscoped, so they also ride a Punch made by the axe's holder (viewer bar audit: attacker-hook triggers shown on attacks). Fix both in the content pipeline, not by hand in the pack: give every trigger of a row a distinct id by the pipeline's own naming rule (find how mkenginepack names triggers and why two collided; fix the rule so no row can produce a duplicate, and fail the build on one), and scope an item's attack-hook triggers to that item's own attacks unless its Codex words say otherwise (the dagger's 'onAttack gain 1 Protection' on Stab is the pattern - `onlyWithAttack`) - read the War Axe's Codex row and decide from its words; then list every other item whose attack-hook trigger is unscoped, by name, and scope those whose words plainly mean their own attacks. Re-read every content/ file immediately before editing it; commit content after every write. Rebuild the Codex's outputs, the engine pack, the viewer's dumps and recordings and the kingdom pages the change makes stale; a renamed trigger id moves logs and fixtures - re-capture the battle-cursor layer; say whether the control battles move before claiming changesBaseline.",
   "expect": "No two triggers in the engine pack share an id (a test over the whole pack, and the pack build fails on a duplicate); the Fire Imp's end-of-Activation burn and its Blast's burn have different ids in the log; a War Axe holder's Punch does not carry the axe's on-block trigger and its Chop does; the list of other unscoped item triggers is in the report.",
-  "note": "Filed by the kingdom chat, 2026-10-04, from the workers' reports. Andrew is not balancing now: decide the scoping from each row's own words, record the switch."
+  "note": "Filed by the kingdom chat, 2026-10-04, from the workers' reports. Andrew is not balancing now: decide the scoping from each row's own words, record the switch.",
+  "status": "done-needs-review",
+  "sha": "870ff13"
  }
 ]

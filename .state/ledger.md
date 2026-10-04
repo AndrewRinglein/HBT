@@ -28106,6 +28106,17 @@ index a343f25..7f337a8 100644
 
 ## fix.affliction-pop-up-words — LANDED `0368ab9` **NEEDS REVIEW**
 2026-10-04 17:03
+## tool.viewer-vitest-workers — LANDED `af84889`
+2026-10-04 16:39
+
+  PASS  dependencies landed
+  WARN  not already decided — 3 candidate ruling(s) — READ BEFORE ASKING: SWITCHES.md:1944 · SWITCHES.md:1813
+  PASS  typecheck
+  PASS  the item's own tests — test/viewer-vitest-workers.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — test/viewer-vitest-workers.test.ts
+  PASS  existing tests untouched
+  PASS  control battles unchanged
 ## viewer.enemy-type-moves-together — LANDED `4a5f2e7`
 2026-10-04 15:20
 
@@ -28197,6 +28208,17 @@ index 853d9bb..b9f1cf9 100644
          expect(hash(ctx.state), 'full opening-probe-cadence state').toBe(probeCadenceExpected.state)
 ```
 </details>
+## fix.burst-ground-class-powers — LANDED `3674cd9` **NEEDS REVIEW**
+2026-10-04 16:50
+
+  PASS  dependencies landed
+  PASS  not already decided — no existing ruling matches
+  PASS  typecheck
+  PASS  the item's own tests — test/battle-cursor.test.ts, test/burst-ground-class-powers.test.ts
+  PASS  gate 1 — the id appears in a real battle — power.fire-master.fireball: 27 log lines, 27 fired, 19 changed state
+  PASS  brought its own tests — test/battle-cursor.test.ts, test/burst-ground-class-powers.test.ts, test/fixtures/battle-cursor-burst-ground-class-powers.json
+  WARN  existing tests untouched — DELETED LINES in test/battle-cursor.test.ts (-2) — will land FLAGGED for review
+  PASS  control battles unchanged
 ## viewer.camera-shows-edge-units — LANDED `2a92397`
 2026-10-04 16:12
 
@@ -28212,6 +28234,55 @@ index 853d9bb..b9f1cf9 100644
   PASS  hardcode scan — core knows mechanisms, never names
   PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
   PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — shape 'data' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without power.fire-master.fireball — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/battle-cursor.test.ts b/test/battle-cursor.test.ts
+index 80fb626..e9ce7a9 100644
+--- a/test/battle-cursor.test.ts
++++ b/test/battle-cursor.test.ts
+@@ -340,4 +340,10 @@ const freeAttackGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-curs
+ // power is used the fight re-times). A `changed` case is checked here and skips the older layers.
+ const counterattackGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-counterattack.json', import.meta.url), 'utf8'))
++// fix.burst-ground-class-powers (2026-10-04; SWITCHES.md burstGroundClassPowers), Law 10: the Fire Master's Fireball and the
++// Wyrmling's Scorch leave their seven hexes burning (content authors `paints` on the two class-power bursts; no engine code).
++// Every case frozen here (tools/capture-burst-ground-class-powers-cursor.mts; the fixture counts the hexes a class power's burst
++// painted). The four cases whose Fire Master throws Fireball moved (showcase.assembled-party, progression-surge-0..2: seven
++// strokes each, and the fight re-times from there). A `changed` case is checked here and skips the older layers.
++const classGroundGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-burst-ground-class-powers.json', import.meta.url), 'utf8'))
+ const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
+ // Explicit rule migration, not regenerated historical hashes. These nine old
+@@ -466,5 +472,8 @@ describe('resumable battle cursor', () => {
+       const freeAttackExpected = freeAttackGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+       const counterattackExpected = counterattackGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+-      const counterattackMoved = counterattackExpected?.changed === true
++      const classGroundExpected = classGroundGolden.cases.find((row:{id:string})=>row.id===fixture.id)
++      const classGroundMoved = classGroundExpected?.changed === true
++      // was: const counterattackMoved = counterattackExpected?.changed === true — a class-ground-moved case skips the counterattack layer too (fix.burst-ground-class-powers 2026-10-04)
++      const counterattackMoved = counterattackExpected?.changed === true || classGroundMoved
+       // was: const freeAttackMoved = freeAttackExpected?.changed === true — a counterattack-moved case skips the free-attack layer too (capability.counterattack-and-fend 2026-10-04)
+       const freeAttackMoved = freeAttackExpected?.changed === true || counterattackMoved
+@@ -577,5 +586,12 @@ describe('resumable battle cursor', () => {
+           }
+         } else result = battle.runBattle(ctx)
+-        if (counterattackExpected) {
++        if (classGroundExpected) {
++        expect(hash(ctx.events), 'full class-ground events').toBe(classGroundExpected.events)
++        expect(hash(ctx.state), 'full class-ground state').toBe(classGroundExpected.state)
++        expect(hash(ctx.rng.log), 'full class-ground RNG').toBe(classGroundExpected.rng)
++        expect(result).toEqual(classGroundExpected.result)
++        }
++        // was: if (counterattackExpected) { — fix.burst-ground-class-powers (2026-10-04): a class-ground-moved case is checked above instead
++        if (counterattackExpected && !classGroundMoved) {
+         expect(hash(ctx.events), 'full counterattack events').toBe(counterattackExpected.events)
+         expect(hash(ctx.state), 'full counterattack state').toBe(counterattackExpected.state)
+```
+</details>
   PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
   PASS  naming — new content ids use declared kinds
   PASS  naming — no banned words invented
@@ -28236,3 +28307,99 @@ index 853d9bb..b9f1cf9 100644
   PASS  naming — new content ids use declared kinds
   PASS  naming — no banned words invented
   PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+## fix.trigger-ids-and-scopes — LANDED `870ff13` **NEEDS REVIEW**
+2026-10-04 19:20
+
+  PASS  dependencies landed
+  WARN  not already decided — 2 candidate ruling(s) — READ BEFORE ASKING: SWITCHES.md:2117 · SWITCHES.md:1985
+  PASS  typecheck
+  PASS  the item's own tests — test/battle-cursor.test.ts, test/fire-imp-burn-spares-self.test.ts, test/imp-blast-tuned.test.ts, test/trigger-ids-and-scopes.test.ts
+  PASS  gate 1 — the id appears in a real battle — unit.fire-imp: 11 log lines, 11 fired, 2 changed state
+  PASS  brought its own tests — test/battle-cursor.test.ts, test/fire-imp-burn-spares-self.test.ts, test/imp-blast-tuned.test.ts, test/fixtures/battle-cursor-trigger-ids.json, test/trigger-ids-and-scopes.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/battle-cursor.test.ts (-2), test/fire-imp-burn-spares-self.test.ts (-1), test/imp-blast-tuned.test.ts (-1) — will land FLAGGED for review
+  PASS  control battles unchanged
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — shape 'data' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without unit.fire-imp — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/battle-cursor.test.ts b/test/battle-cursor.test.ts
+index e9ce7a9..00fd9cc 100644
+--- a/test/battle-cursor.test.ts
++++ b/test/battle-cursor.test.ts
+@@ -346,4 +346,11 @@ const counterattackGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-c
+ // strokes each, and the fight re-times from there). A `changed` case is checked here and skips the older layers.
+ const classGroundGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-burst-ground-class-powers.json', import.meta.url), 'utf8'))
++// fix.trigger-ids-and-scopes (2026-10-04; SWITCHES.md triggerIdsDistinctInARow, itemTriggerOwnAttacks, testDeltaTriggersOnce), Law 10:
++// no row holds two triggers under one id (the Fire Imp's Blast burn is trigger.fire-imp.burn.blast), a weapon's row-level trigger
++// rides only that weapon's own attacks (the axes' on-block: one trigger per attack, so the triggers a holder lists after them roll
++// on other slots), and a test delta holds its base's triggers once. Every case frozen here (tools/capture-trigger-ids-cursor.mts;
++// the fixture counts each case's rolls under a renamed id and of an own-scoped item trigger). 26 cases moved. A `changed` case is
++// checked here and skips the older layers.
++const triggerIdsGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-trigger-ids.json', import.meta.url), 'utf8'))
+ const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
+ // Explicit rule migration, not regenerated historical hashes. These nine old
+@@ -473,5 +480,8 @@ describe('resumable battle cursor', () => {
+       const counterattackExpected = counterattackGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+       const classGroundExpected = classGroundGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+-      const classGroundMoved = classGroundExpected?.changed === true
++      const triggerIdsExpected = triggerIdsGolden.cases.find((row:{id:string})=>row.id===fixture.id)
++      const triggerIdsMoved = triggerIdsExpected?.changed === true
++      // was: const classGroundMoved = classGroundExpected?.changed === true — a trigger-ids-moved case skips the class-ground layer too (fix.trigger-ids-and-scopes 2026-10-04)
++      const classGroundMoved = classGroundExpected?.changed === true || triggerIdsMoved
+       // was: const counterattackMoved = counterattackExpected?.changed === true — a class-ground-moved case skips the counterattack layer too (fix.burst-ground-class-powers 2026-10-04)
+       const counterattackMoved = counterattackExpected?.changed === true || classGroundMoved
+@@ -586,5 +596,12 @@ describe('resumable battle cursor', () => {
+           }
+         } else result = battle.runBattle(ctx)
+-        if (classGroundExpected) {
++        if (triggerIdsExpected) {
++        expect(hash(ctx.events), 'full trigger-ids events').toBe(triggerIdsExpected.events)
++        expect(hash(ctx.state), 'full trigger-ids state').toBe(triggerIdsExpected.state)
++        expect(hash(ctx.rng.log), 'full trigger-ids RNG').toBe(triggerIdsExpected.rng)
++        expect(result).toEqual(triggerIdsExpected.result)
++        }
++        // was: if (classGroundExpected) { — fix.trigger-ids-and-scopes (2026-10-04): a trigger-ids-moved case is checked above instead
++        if (classGroundExpected && !triggerIdsMoved) {
+         expect(hash(ctx.events), 'full class-ground events').toBe(classGroundExpected.events)
+         expect(hash(ctx.state), 'full class-ground state').toBe(classGroundExpected.state)
+diff --git a/test/fire-imp-burn-spares-self.test.ts b/test/fire-imp-burn-spares-self.test.ts
+index f400ef6..dfa078e 100644
+--- a/test/fire-imp-burn-spares-self.test.ts
++++ b/test/fire-imp-burn-spares-self.test.ts
+@@ -22,5 +22,5 @@ import { hexId } from './board16.js'
+ 
+ const FIRE_IMP = 'unit.fire-imp'
+-/** The Fire Imp's end-of-Activation trigger (its Blast's on-hit rider carries the same id, on another hook). */
++/** The Fire Imp's end-of-Activation trigger (its Blast's on-hit rider carried the same id until fix.trigger-ids-and-scopes, 2026-10-04: it is trigger.fire-imp.burn.blast now). */
+ const BURN = 'trigger.fire-imp.burn'
+ const HOOK = 'onActivationEnd'
+diff --git a/test/imp-blast-tuned.test.ts b/test/imp-blast-tuned.test.ts
+index 374bb71..098a61e 100644
+--- a/test/imp-blast-tuned.test.ts
++++ b/test/imp-blast-tuned.test.ts
+@@ -108,5 +108,8 @@ describe('in encounter.opening.bridge: the Imps\' Blasts burn about half the tim
+       for (const e of ctx.events) {
+         if (e.type === 'trigger.rolled' && e.causeId === BURN) { expect(e['chance']).toBe(50); impRolls++; if (e['fired']) impFired++ }
+-        if (e.type === 'trigger.rolled' && e.causeId === 'trigger.fire-imp.burn' && e['hook'] === 'onHit') { expect(e['chance']).toBe(100); fireRolls++; if (e['fired']) fireFired++ }
++        // was: e.causeId === 'trigger.fire-imp.burn' && e['hook'] === 'onHit' — the Blast's burn shared the end-of-Activation burn's id and was told apart by its hook;
++        // it has its own id now (fix.trigger-ids-and-scopes 2026-10-04, SWITCHES.md triggerIdsDistinctInARow). The hook is still asserted.
++        if (e.type === 'trigger.rolled' && e.causeId === 'trigger.fire-imp.burn.blast') { expect(e['hook']).toBe('onHit'); expect(e['chance']).toBe(100); fireRolls++; if (e['fired']) fireFired++ }
++        if (e.type === 'trigger.rolled' && e.causeId === 'trigger.fire-imp.burn') expect(e['hook']).toBe('onActivationEnd')
+         if (e.type === 'attack.declared' && e.causeId === BLAST && imps.has(e.actor!)) blastDamage++
+       }
+```
+</details>
+
+## kingdom.opening-loop — ABANDONED
+2026-10-04 19:59
+
+superseded: kingdom.opening-run-six (landed 2026-10-02) is the continuous run through the six battles; this item needs encounter.opening.bridge, abandoned 2026-09-30, so it can never start (the opening run's audit, 2026-10-03)
