@@ -658,13 +658,25 @@ html,body{margin:0;background:#08090b;color:var(--ink);
 /* a log row's "dmg" class is also the board's damage float (.dmg: absolute, 34px, animated) — not in the log */
 #playLog .ln.dmg{position:static;font-family:inherit;font-size:inherit;font-weight:inherit;text-shadow:none;animation:none}
 /* viewer.switch-hero-asks: the switch pop-up ("End activation of X and start activation of Y?") is the End Turn pop-up's twin */
-#playAsk,#playSwitch{position:absolute;inset:0;z-index:200;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.55)}
-#playAskBox,#playSwitchBox{max-width:560px;padding:26px 30px 22px;background:#15120d;border:1px solid var(--brass);border-radius:3px;
+#playAsk,#playSwitch,#playGear{position:absolute;inset:0;z-index:200;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.55)}
+#playAskBox,#playSwitchBox,#playGearBox{max-width:560px;padding:26px 30px 22px;background:#15120d;border:1px solid var(--brass);border-radius:3px;
   box-shadow:0 24px 60px rgba(0,0,0,.8),0 0 0 1px #000;color:var(--ink);font:500 18px/1.4 "Barlow Semi Condensed",ui-sans-serif,system-ui,sans-serif}
 #playAskText{margin:0 0 10px;font-size:21px;color:var(--gold)}
 #playSwitchText{margin:0 0 20px;font-size:21px;color:var(--gold)}
 #playAskWho{margin:0 0 20px;color:#b9b09a;font-size:15px}
-#playAskBtns,#playSwitchBtns{display:flex;gap:12px;justify-content:flex-end}
+#playAskBtns,#playSwitchBtns,#playGearBtns{display:flex;gap:12px;justify-content:flex-end}
+/* viewer.swap-button-rearranges: the gear panel — what the unit carries, in hand or stowed; a press moves an item across */
+#playGearBox{min-width:460px}
+#playGearTitle{margin:0 0 14px;font-size:21px;color:var(--gold)}
+#playGearCols{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+#playGearCols .gearHead{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#8b8778;margin-bottom:6px}
+#playGearCols .gearList{display:flex;flex-direction:column;gap:6px;min-height:96px;padding:8px;background:#0f0d09;border:1px solid var(--border);border-radius:2px}
+#playGearCols .gearItem{font:600 16px/1.2 "Barlow Semi Condensed",ui-sans-serif,system-ui,sans-serif;color:#e8dfc8;background:#1c1811;border:1px solid #4a3d22;border-radius:2px;padding:8px 10px;text-align:left;cursor:pointer}
+#playGearCols .gearItem:hover{background:#2a2110}
+#playGearCols .gearItem:focus-visible{outline:2px solid var(--gold);outline-offset:1px}
+#playGearCols .gearNone{color:#6f6857;font-size:14px;font-style:italic;padding:8px 2px}
+#playGearSay{margin:0 0 18px;color:#b9b09a;font-size:15px;min-height:21px}
+#stambar .swBtn.swNone{color:#8b8778}
 
 /* ── the first-affliction pop-up (viewer.affliction-pop-up, 2026-10-03; engine DECISIONS.md 2026-10-01 'the first-affliction
    pop-up': "pop up before and after art for that character with an explanation"; src/affliction.js). Over the whole screen —

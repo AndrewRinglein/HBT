@@ -14,9 +14,17 @@ const KEYS = ['actor', 'slot', 'reach', 'zoc', 'path', 'provokes', 'ghost', 'thr
    activation may be ended (a paid primary ends it by itself — engine rule.primary-ends-activation). */
 const ENDING_KEYS = ['endTurn', 'endActivation']
 /* movement.swap-and-shields (engine DECISIONS.md 2026-10-01 'the movements': "weapon swap and shield actions are part of
-   what's needed now"): the swap, optional too — {cost, choices: [{label}], why} while the acting hero carries something
-   to swap: the hand lists the engine would take (a click offers {kind:'swap', index, unit} back), the engine's swapCost,
-   and when there is none to make the engine's own reason. Null or absent: no swap on the bar. */
+   what's needed now"): the swap, optional too, while the acting hero carries something to swap. Null or absent: no swap on
+   the bar.
+   viewer.swap-button-rearranges (engine DECISIONS.md 2026-10-03 'the swap button says "Swap" and opens a rearranging of the
+   unit's gear'; "Just the ability to swap hands with inventory"): {cost, choices, why, carried, refused} —
+     carried  [{instance, item, name, held}]  everything the unit carries, hands first then stowed: what may be rearranged
+     choices  [{label, hands}]                the hand lists the engine would take (instances, in carried order); confirming
+                                              one offers {kind:'swap', index, unit} back
+     refused  [{hands, why}]                  every other arrangement of what it carries, with the engine's own reason
+     cost                                     the engine's swapCost, in stamina
+     why                                      with no choice at all, the engine's reason (the swap is spent, no stamina …)
+   Was {cost, choices: [{label}], why}: one button per hand list. */
 /* viewer.switch-hero-asks (engine DECISIONS.md 2026-10-03 'size and shadows are the default; ... switching heroes asks first
    ...': "it should pop up and say, 'End activation of X hero and start activation of Y hero.'"; '... the switch pop-up is
    for any player unit': "And you can click yes or no."): the question, optional too — ask {kind:'switch', from, to} (unit
@@ -62,11 +70,23 @@ export function playFacts(value, positions) {
     endTurn = { yetToAct: ids } }
   if (v.endActivation !== undefined && typeof v.endActivation !== 'boolean') fail('endActivation is a boolean')
   let swap = null
-  if (v.swap != null) { object(v.swap, ['cost', 'choices', 'why'], 'swap')
-    if (!Array.isArray(v.swap.choices)) fail('swap.choices is not an array')
-    const choices = v.swap.choices.map((c, i) => { object(c, ['label'], 'swap.choices[' + i + ']'); if (typeof c.label !== 'string' || !c.label) fail('swap.choices[' + i + '].label'); return { label: c.label } })
+  if (v.swap != null) { object(v.swap, ['cost', 'choices', 'why', 'carried', 'refused'], 'swap')
+    const word = (x, what) => { if (typeof x !== 'string' || !x) fail(what); return x }
+    const list = (a, what) => { if (!Array.isArray(a)) fail(what + ' is not an array'); return a }
+    const carried = list(v.swap.carried, 'swap.carried').map((c, i) => { const at = 'swap.carried[' + i + ']'; object(c, ['instance', 'item', 'name', 'held'], at)
+      if (typeof c.held !== 'boolean') fail(at + '.held is a boolean')
+      return { instance: word(c.instance, at + '.instance'), item: word(c.item, at + '.item'), name: word(c.name, at + '.name'), held: c.held } })
+    if (new Set(carried.map(c => c.instance)).size !== carried.length) fail('swap.carried repeats an instance')
+    /* a hand list names instances the unit carries, each once */
+    const hands = (a, what) => { const out = list(a, what).map((x, i) => word(x, what + '[' + i + ']'))
+      if (new Set(out).size !== out.length || out.some(x => !carried.some(c => c.instance === x))) fail(what + ' names an instance twice, or one the unit does not carry')
+      return out }
+    const choices = list(v.swap.choices, 'swap.choices').map((c, i) => { const at = 'swap.choices[' + i + ']'; object(c, ['label', 'hands'], at)
+      return { label: word(c.label, at + '.label'), hands: hands(c.hands, at + '.hands') } })
+    const refused = list(v.swap.refused, 'swap.refused').map((c, i) => { const at = 'swap.refused[' + i + ']'; object(c, ['hands', 'why'], at)
+      return { hands: hands(c.hands, at + '.hands'), why: word(c.why, at + '.why') } })
     if (v.swap.why !== null && typeof v.swap.why !== 'string') fail('swap.why')
-    swap = { cost: int(v.swap.cost, 'swap.cost'), choices, why: v.swap.why } }
+    swap = { cost: int(v.swap.cost, 'swap.cost'), choices, why: v.swap.why, carried, refused } }
   let ask = null
   if (v.ask != null) { object(v.ask, ['kind', 'from', 'to'], 'ask')
     if (v.ask.kind !== 'switch') fail('ask.kind is not a question the screen knows')
