@@ -31,6 +31,23 @@
 //                       and diff it byte-for-byte against battles/ — the engine's
 //                       own regression test for the library (plan §8.4). A
 //                       difference is reported, never written over. Not a part.
+//
+// TESTS FOLLOW WHAT CHANGED (Andrew, 2026-10-04, engine/DECISIONS.md 'combat is tested only when
+// the engine changed; a visual change does not re-run the fights' and 'the same for content and
+// kingdom changes: each kind of change runs its own tests'; engine/tools/code-stamp.mjs,
+// engine/tools/suites.mjs). The parts are still recorded against the exact tree, and a landing of
+// viewer CODE is what it was: every part on this tree, then --land. Two things are new:
+//   · when every part is green the gate appends one line to .state/passes.jsonl — the gate passed on
+//     THE VIEWER'S CODE (src/, tools/, test/, the battle library; not generated/ and not the built
+//     page), beside the other packages' code as it stood. A merge keeps that line; combine and wrap
+//     read it, so the merge-back does not run this gate again on the same code.
+//   · --land on a tree whose parts have NOT all passed no longer always refuses: when the viewer's
+//     code has a recorded pass — only a regenerated dump, a document or the commit the page stamps
+//     moved — it rebuilds the page and lands it, printing every part SKIPPED with the reason and the
+//     page REBUILT, NOT RE-VERIFIED. Never PASS for a part that did not run (Law 9).
+// What it costs, as ruled: the gate plays the engine's battles and kingdom's built page, and its
+// pass is keyed on the viewer's code alone — a new content pack or an engine change that breaks the
+// page's playback is found at the once-per-chat full run (combine --full), not at the rebuild.
 import '../../engine/tools/engine-modules.mjs'   // first: links engine/node_modules into a worker's copy (Andrew, 2026-10-01)
 import { readFileSync, readdirSync, statSync, writeFileSync, mkdirSync, copyFileSync, rmSync, existsSync } from 'node:fs'
 import { execFileSync, execSync } from 'node:child_process'
@@ -40,7 +57,8 @@ import { tmpdir } from 'node:os'
 import { createHash } from 'node:crypto'
 import { mergedFails } from './verify-slices.mjs'
 import { PAGE_TESTS } from './page-tests.mjs'
-import { codeStamp } from '../../engine/tools/code-stamp.mjs'
+import { codeStamp, stampOf, allStamps, PACKAGES } from '../../engine/tools/code-stamp.mjs'
+import { readPasses, hasPass, appendPass, copyName } from '../../engine/tools/suites.mjs'
 
 const PKG = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 process.chdir(PKG)
@@ -59,7 +77,8 @@ const TEST_PARTS = 2
 const PARTS = ['checks', ...Array.from({ length: SLICES }, (_, i) => `verify ${i + 1}/${SLICES}`), ...Array.from({ length: TEST_PARTS }, (_, i) => `tests ${i + 1}/${TEST_PARTS}`)]
 
 /* the working tree as `git add -A` would commit it, through a throwaway index;
-   .build/ (the record, the candidate) and BATTLE-VIEWER.html (what --land writes) leave the hash staged or not */
+   .build/ (the record, the candidate), BATTLE-VIEWER.html (what --land writes) and .state/ (the pass record the gate
+   itself appends) leave the hash staged or not */
 function treeHash() {
   const idx = join(tmpdir(), `vgate-index-${process.pid}-${Date.now()}`)
   try { copyFileSync(resolve(execSync('git rev-parse --git-path index', { encoding: 'utf8' }).trim()), idx) } catch {}
@@ -67,7 +86,7 @@ function treeHash() {
   try {
     execSync('git add -A -- .', { env, stdio: 'pipe' })   // .build/ is gitignored; a ":!.build" pathspec makes git refuse
     /* the page is the gate's output, not its input: --land writing it must not change the tree it was verified on (GBH SWITCHES gate.pageOutsideTree) */
-    execSync('git rm -r -q --cached --ignore-unmatch -- .build BATTLE-VIEWER.html', { env, stdio: 'pipe' })
+    execSync('git rm -r -q --cached --ignore-unmatch -- .build BATTLE-VIEWER.html .state', { env, stdio: 'pipe' })
     return execSync('git write-tree', { env, encoding: 'utf8' }).trim()
   } finally { try { rmSync(idx, { force: true }) } catch {} }
 }
@@ -198,6 +217,21 @@ function pageTests(k, rec) {
   return { ok, page, why: ok ? '' : 'a node --test list failed' }
 }
 
+/* ── the viewer's code, and the record a merge keeps (2026-10-04) ─────────── */
+const ROOT = resolve(PKG, '..')
+/** the viewer's code as it stands — engine/tools/code-stamp.mjs PACKAGE_CODE.viewer, the one definition */
+const codeNow = () => stampOf('viewer', PKG)
+const withKeyNow = () => { const s = allStamps(ROOT); return PACKAGES.map(p => s[p]).join('.') }
+const when = p => `${String(p.at).slice(0, 16).replace('T', ' ')}${p.by ? ', ' + p.by : ''}${p.in ? ', in ' + p.in : ''}`
+/** every part passed on this tree: one line in .state/passes.jsonl, against the viewer's code. `with` names the other
+    packages' code only when every part ran on this code beside the code they all have now (the full run reads it). */
+function recordGreen(parts) {
+  const stamps = allStamps(ROOT), code = stamps.viewer, key = PACKAGES.map(p => stamps[p]).join('.')
+  if (!PARTS.every(p => parts[p] && parts[p].code === code)) return   // the code moved under the parts: no pass for it
+  const together = PARTS.every(p => parts[p].withKey === key) && PACKAGES.every(p => /^[0-9a-f]{10}$/.test(stamps[p]))
+  appendPass(PKG, { suite: 'viewer', stamp: code, with: together ? stamps : null, at: new Date().toISOString(), by: 'gate (every part)', in: copyName(ROOT) })
+}
+
 /* ── one part, recorded ─────────────────────────────────────────────────── */
 function runPart(name) {
   const t0 = Date.now(), tree = treeHash()
@@ -209,7 +243,7 @@ function runPart(name) {
     else if (name.startsWith('tests ')) r = pageTests(+name.match(/^tests (\d+)\//)[1], rec)
     else r = verifySlice(+name.match(/^verify (\d+)\//)[1], rec)
   } catch (e) { if (!(e instanceof GateFail)) throw e; r = { ok: false, why: e.message } }
-  rec.parts[name] = { ...r, secs: secs(t0), at: new Date().toISOString() }
+  rec.parts[name] = { ...r, secs: secs(t0), at: new Date().toISOString(), code: codeNow(), withKey: withKeyNow() }
   mkdirSync('.build', { recursive: true })
   writeFileSync(RECORD, JSON.stringify(rec, null, 1) + '\n')
   console.log(`\npart ${name}: ${r.ok ? 'PASS' : 'FAIL — ' + r.why} (${secs(t0)} s) · tree ${tree.slice(0, 10)}`)
@@ -232,8 +266,12 @@ function status(tree = treeHash()) {
     lines.push(`  library-wide ${merged.length ? 'FAIL\n    ' + merged.join('\n    ') : 'PASS (every battle driven once; icons, row kinds, status frames over all slices)'}`)
   }
   const green = !todo.length && pages.size === 1 && merged && !merged.length
-  console.log(`gate parts on tree ${tree.slice(0, 10)}:\n${lines.join('\n')}\n` + (green ? 'ALL PARTS PASS — node tools/gate.mjs --land may write BATTLE-VIEWER.html'
-    : todo.length ? `still to run: ${todo.map(p => `node tools/gate.mjs --part ${p}`).join(' · ')}` : 'not landable'))
+  const code = codeNow()
+  if (green) recordGreen(cur)
+  const pass = green ? null : hasPass(readPasses(PKG), 'viewer', code)
+  console.log(`gate parts on tree ${tree.slice(0, 10)} (viewer code ${code}):\n${lines.join('\n')}\n` + (green ? 'ALL PARTS PASS — node tools/gate.mjs --land may write BATTLE-VIEWER.html'
+    : todo.length ? `still to run: ${todo.map(p => `node tools/gate.mjs --part ${p}`).join(' · ')}` : 'not landable')
+    + (pass ? `\nviewer code ${code} has a recorded pass (${when(pass)}): the parts above are not needed for a tree that differs only in regenerated files or documents — node tools/gate.mjs --land rebuilds the page and says the parts were SKIPPED` : ''))
   return { green, page: green ? [...pages][0] : null }
 }
 
@@ -247,7 +285,24 @@ if (partArg >= 0) {
 if (argv.includes('--status')) process.exit(status().green ? 0 : 1)
 if (argv.includes('--land')) {
   const tree = treeHash(), st = status(tree)
-  if (!st.green) { console.error('GATE REFUSES --land — every part must pass on this exact tree first'); process.exit(1) }
+  if (!st.green) {
+    // The parts have not all passed on this tree. If the viewer's CODE is the code its gate last passed on, only a
+    // regenerated file, a document or the stamped commit moved (2026-10-04: none of them starts the gate): rebuild
+    // the page and land it, every part said to be SKIPPED. Otherwise refuse, as always.
+    const code = codeNow()
+    const pass = hasPass(readPasses(PKG), 'viewer', code)
+    if (!pass) { console.error('GATE REFUSES --land — every part must pass on this exact tree first'); process.exit(1) }
+    let rec = readRecord()
+    if (!rec || rec.tree !== tree || rec.slices !== SLICES) rec = { tree, slices: SLICES, parts: {} }
+    let page
+    try { page = candidate(rec) } catch (e) { if (!(e instanceof GateFail)) throw e; console.error('GATE REFUSES --land — ' + e.message); process.exit(1) }
+    console.log('')
+    for (const p of PARTS) console.log(`  SKIPPED  part ${p} — viewer code ${code} unchanged since its gate passed (${when(pass)})`)
+    copyFileSync(CANDIDATE, 'BATTLE-VIEWER.html')
+    if (treeHash() !== tree) { console.error('GATE REFUSES --land — the tree changed while the page was written'); process.exit(1) }
+    console.log(`landed BATTLE-VIEWER.html · sha256 ${page.slice(0, 12)} · REBUILT, NOT RE-VERIFIED: no part was run on tree ${tree.slice(0, 10)} — the viewer's code is the code its gate passed on, and only regenerated files or documents differ. Its playback is next checked by the full run (combine --full), once per chat before the wrap.`)
+    process.exit(0)
+  }
   // no rebuild: the candidate every part checked is the page that lands, if it is still that page
   const rec = readRecord(), stale = staleCandidate(rec)
   if (stale) { console.error(`GATE REFUSES --land — ${stale}. Run the verify and tests parts again`); process.exit(1) }
