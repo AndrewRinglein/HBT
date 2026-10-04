@@ -140,9 +140,12 @@ export const TERRAIN_3D_TINT = { 'terrain.forest': '#72825a', 'terrain.woodland'
    of opportunity's own note hue; an enemy's reach is violet (walk) and red (hit); the notch eats the Health bar in the
    damage red and the skull is blood. Look choices (viewer SWITCHES playLook).
    viewer.battle-full-screen (engine DECISIONS.md 2026-09-30, Andrew: "The arrow for targeting should be red, not blue."):
-   the targeting arrow and the forecast numbers beside its head are red — aim, aimHit, aimDmg; the walk's path stays cool. */
+   the targeting arrow and the forecast numbers beside its head are red — aim, aimHit, aimDmg; the walk's path stays cool.
+   viewer.no-target-ring (engine DECISIONS.md 2026-10-04 'after the backlog run: the yellow target ring goes; ...'): `target`,
+   the yellow of the ring on every hex the chosen action could hit (rgba 255,215,100 at .9), is gone with the ring; the mark
+   on a unit that can be hit is the arrow's own red (aim). */
 export const PLAY_HUE = { reach: 'rgba(120,190,240,.20)', reachEdge: 'rgba(150,205,245,.55)', path: 'rgba(140,178,208,.96)',
   aim: 'rgba(222,52,46,.96)', aimHit: '#ff9d92', aimDmg: '#ff6a5c',
-  zoc: 'rgba(255,176,112,.50)', provoke: NOTE_HUE.aoo, ghost: 'rgba(191,242,255,.9)', target: 'rgba(255,215,100,.9)',
+  zoc: 'rgba(255,176,112,.50)', provoke: NOTE_HUE.aoo, ghost: 'rgba(191,242,255,.9)',
   threatMove: 'rgba(170,120,240,.24)', threatHit: 'rgba(235,80,80,.85)', loss: 'rgba(235,80,70,.8)', lethal: 'rgba(198,40,40,.95)',
   notch: 'rgba(255,255,255,.95)', skull: BLOOD_HUE, note: 'rgba(8,9,11,.82)' }
