@@ -491,7 +491,17 @@ export function createCast(V, scene, toWorld, platform = {}) {
   const faceToward = (B, p) => { const dx = p.x - B.stage.position.x, dz = p.z - B.stage.position.z; if (dx * dx + dz * dz > 1e-8) B.face = Math.atan2(dx, dz) }
   const hexWorld = h => { const p = V.data.POS?.[h]; return p ? new THREE.Vector3(p.px, p.py, 0).applyMatrix4(toWorld) : null }
   const whereIs = (id, out) => { const B = bodies.get(id); if (B) return out.copy(B.stage.position); const u = V.S.U[id], el = u && anchorOf(u); return el && place(el, out) ? out : null }
-  const rest = (B, life) => life === 'standing' ? (B.has('idle') ? 'idle' : null) : 'death'
+  /* viewer.prone-lies-down (engine DECISIONS.md 2026-10-05 'the playtest post answered: … knockdown is prone …', Andrew: "When
+     you are knocked down, we need to use the downed image, which is the same as the dead, like you're lying on the ground …
+     Because it's not dead. It's the same as if you were knocked down on your back." · "She failed a knockdown roll, and it
+     didn't change the way she looked."): a unit the fold says is prone (unit.proned … unit.stood, the engine's lines) LIES — the
+     pose its death ends in, held, where its token stands (it is alive: the token keeps its ring, bar and marks). It falls as
+     the knockdown lands (the death motion from its start), stays down whatever follows — struck, shoved, striking — and
+     rises when the fold says it stood. A body with no death motion gives way to its tipped token while it is prone. */
+  const proneOf = u => u.life === 'standing' && !!(u.prone && u.prone.length)
+  const rest = (B, u) => u.life === 'standing' && !proneOf(u) ? (B.has('idle') ? 'idle' : null) : 'death'
+  /** a body lying prone: its motions (a hit reaction, a strike, a raised shield) would stand it up, so it plays none */
+  const down = B => !!B && B.prone
   function frame(dt) {
     if (disposed) return
     /* the pump's clock: its speed, and a hitstop freezes the bodies with the tokens (board.js hitstop) */
@@ -527,7 +537,7 @@ export function createCast(V, scene, toWorld, platform = {}) {
         /* a look that cannot be stood up is its token, said once — never the whole scene's failure (Law 9: said, not swallowed) */
         try { body = createBody(entry.loaded, {scale:LOOK.bodyScale,shadows:LOOK.shadows,rim:rimOf(u),registry:platform.registry,loadHead:platform.loadHead||loadHead,onError:error=>platform.onError?.(look,error,{appearance:true})}) } catch (err) { entry.state = 'failed'; entry.error = err; platform.onError?.(look, err); continue }
         group.add(body.stage); bodies.set(u.id, body); changed = true
-        body.life = u.life; body.deadFor = Infinity; const r = rest(body, u.life); if (r) body.play(r, { snap: true })
+        body.life = u.life; body.deadFor = Infinity; body.prone = proneOf(u); const r = rest(body, u); if (r) body.play(r, { snap: true })
         body.face = body.yaw = restFace(u); body.hex = u.hex; body.side = u.side
         if (el) place(el, body.stage.position)
         body.last = body.stage.position.clone()
@@ -537,16 +547,24 @@ export function createCast(V, scene, toWorld, platform = {}) {
       body.setAfflictions(u)
       if (el) place(el, body.stage.position)
       /* life is the fold's: a change plays the death from its start (a seek lands on its end: snap) */
+      const prone = proneOf(u), lay = body.prone && body.motion === 'death'
       if (body.life !== u.life) {
         const was = body.life; body.life = u.life
-        if (u.life === 'standing') { if (body.has('idle')) body.play('idle') }
-        /* viewer.attack-impact-timing: a body already falling (it fell at the blow that killed it) goes on falling */
-        else if (was === 'standing' && !body.falling) body.play('death')
+        if (u.life === 'standing') { if (!prone && body.has('idle')) body.play('idle') }
+        /* viewer.attack-impact-timing: a body already falling (it fell at the blow that killed it) goes on falling;
+           viewer.prone-lies-down: one already lying prone lies as it lay — it does not get up to fall again */
+        else if (was === 'standing' && !body.falling && !lay) body.play('death')
         body.falling = false; body.deadFor = u.life === 'dead' ? 0 : Infinity
       } else if (u.life === 'dead') body.deadFor += step
-      body.base = rest(body, u.life) || body.motion
+      /* viewer.prone-lies-down: the knockdown lands — the fall, from its start; the unit stood — it rises */
+      if (u.life === 'standing' && body.prone !== prone) { if (prone) { if (!body.falling) body.play('death') } else if (body.has('idle')) body.play('idle') }
+      body.prone = prone
+      /* a body with no death motion cannot lie: prone, it gives way to its tipped token (board.js) and comes back standing */
+      const seen = !(prone && !body.has('death'))
+      if (body.stage.visible !== seen) { body.stage.visible = seen; changed = true }
+      body.base = rest(body, u) || body.motion
       const E = V.layers.UEL.get(u.id)
-      const walking = u.life === 'standing' && !!(E && E.walk && E.walk.playState !== 'finished' && E.walk.playState !== 'idle')
+      const walking = u.life === 'standing' && !prone && !!(E && E.walk && E.walk.playState !== 'finished' && E.walk.playState !== 'idle')
       if (walking) {
         /* a flight (the board's traversal says its shape — viewer.opening-cast) flies where the look can; else it walks */
         const going = E.walkShape === 'flight' && body.has('flight') ? 'flight' : 'move'
@@ -570,7 +588,8 @@ export function createCast(V, scene, toWorld, platform = {}) {
   return {
     frame,
     get size() { return bodies.size },
-    shows: id => bodies.has(id),
+    /** the unit is drawn as its body now (a body with no death motion is not, while its unit is prone) */
+    shows: id => { const B = bodies.get(id); return !!B && B.stage.visible },
     /** the unit has a body that is still loading — no token picture stands in for it meanwhile */
     pending: id => { const u = V.S.U[id], e = u && u.life !== 'dead' ? lookOf(u) : null; return !!e && (e.state === 'loading' || (e.state === 'ready' && !bodies.has(id))) },
     /** every unit now on the board's look, loaded or failed: the board opens when this settles */
@@ -590,7 +609,7 @@ export function createCast(V, scene, toWorld, platform = {}) {
         neither leans toward it (the shot itself is the board's projectile, fx.attack) */
     strike(a, t, kind) {
       const A = bodies.get(a); if (!A || V.S.U[a]?.life !== 'standing') return
-      if (!A.play(kind === 'ranged' && A.has('ranged') ? 'ranged' : 'attack')) A.lungeStart()
+      if (!down(A) && !A.play(kind === 'ranged' && A.has('ranged') ? 'ranged' : 'attack')) A.lungeStart()
       const p = whereIs(t, new THREE.Vector3()); if (!p) return
       faceToward(A, p)
       /* viewer.side-facing: "You also turn to face anybody who attacks you" */
@@ -615,7 +634,7 @@ export function createCast(V, scene, toWorld, platform = {}) {
     },
     /** the fold's flash (damage landed): the hit reaction, or a recoil where the look has none; true when the body reacted */
     flinch(id) {
-      const B = bodies.get(id); if (!B || V.S.U[id]?.life !== 'standing' || B.falling) return false
+      const B = bodies.get(id); if (!B || V.S.U[id]?.life !== 'standing' || B.falling || down(B)) return false
       if (B.has('hit')) B.play('hit'); else B.recoilStart()
       return true
     },
@@ -623,18 +642,19 @@ export function createCast(V, scene, toWorld, platform = {}) {
         at the blow that the log goes on to say killed it or brought it down; when the fold's life changes it goes on falling */
     fall(id) {
       const B = bodies.get(id); if (!B || V.S.U[id]?.life !== 'standing' || B.falling) return false
-      if (!B.play('death')) return false
+      /* viewer.prone-lies-down: a body lying prone is already down — the blow that kills it starts no second fall */
+      if (!(down(B) && B.motion === 'death') && !B.play('death')) return false
       B.falling = true; return true
     },
     /** viewer.shield-guard-motion: the fold's guard (a shield power used) — the body raises its shield, once, and returns to its rest;
         a body with no raise-the-shield clip plays nothing (it is listed: tools/character-models.mjs --list) */
     guard(id) {
-      const B = bodies.get(id); if (!B || V.S.U[id]?.life !== 'standing' || B.falling) return false
+      const B = bodies.get(id); if (!B || V.S.U[id]?.life !== 'standing' || B.falling || down(B)) return false
       return B.play('guard')
     },
     /** a seek: every body at its resting pose now — the dead and the downed at the death's end */
     snap() {
-      for (const [id, B] of bodies) { const u = V.S.U[id]; if (!u) continue; B.setAfflictions(u); B.life = u.life; B.falling = false; B.deadFor = Infinity; const r = rest(B, u.life); if (r) B.play(r, { snap: true }); B.yaw = B.face; B.hex = u.hex }
+      for (const [id, B] of bodies) { const u = V.S.U[id]; if (!u) continue; B.setAfflictions(u); B.life = u.life; B.prone = proneOf(u); B.stage.visible = !(B.prone && !B.has('death')); B.falling = false; B.deadFor = Infinity; const r = rest(B, u); if (r) B.play(r, { snap: true }); B.yaw = B.face; B.hex = u.hex }
     },
     dispose() {
       if (disposed) return; disposed = true
