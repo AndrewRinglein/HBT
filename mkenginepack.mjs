@@ -2471,6 +2471,35 @@ const maps = compileMaps(D.maps || []);
     stamped++;
   }
   console.log(`badge.hero stamped on ${stamped} hero rows (${optedIn} civilians opted in)`);
+  // ── ORIGIN BADGES, engine content.hero-origin-badges (2026-10-05) ────────────
+  // Ruled 2026-10-05 (engine DECISIONS.md 'seven answers: the first hero's card shows only what is modified; origin badges
+  // go on the heroes; …'): told that no base hero has a badge of its own in the game though the Codex names origin badges for
+  // most of the 24, and asked whether those should be put on the heroes' rows — "3, yes."
+  // Each of the 24 base heroes' rows carries, after the Hero badge, the badges its Codex row names (`originBadges`, badge
+  // NAMES, in the Codex's order). A name with no one badge row FAILS THE BUILD — never dropped, never guessed. The badge is
+  // the compiled badge row as it stands: what it can carry acts from the row, and each line of it the engine has no
+  // mechanism for is that badge's own named gap. Only the 24 (`hero.base.*`): the ruling is theirs; a fixed hero's
+  // origin badges stay in the Codex.
+  const badgeIdOfName = (name, heroId) => {
+    const rows = (D.badges || []).filter((b) => b && b.id && b.name === name);
+    if (rows.length !== 1 || !badges[rows[0].id]) throw new Error(`mkenginepack: ${heroId} names the origin badge '${name}', which ${rows.length} badge rows carry — an origin badge is one Codex badge row`);
+    return rows[0].id;
+  };
+  const originOf = new Map((D.heroes?.heroes || []).filter((h) => h.id.startsWith('hero.base.')).map((h) => [h.id, h.originBadges || []]));
+  let withOrigin = 0, origins = 0, found = 0;
+  for (const u of [...heroes, ...prologueParty, ...alphaTeam]) {
+    const names = originOf.get(u.typeId);
+    if (!names) continue;
+    found++;
+    if (!u.badges?.includes('badge.hero')) throw new Error(`mkenginepack: ${u.typeId} is a base hero without the Hero badge`);
+    const ids = names.map((n) => badgeIdOfName(n, u.typeId));
+    if (new Set(ids).size !== ids.length) throw new Error(`mkenginepack: ${u.typeId} names an origin badge twice`);
+    u.badges = [...u.badges, ...ids];
+    if (ids.length) withOrigin++;
+    origins += ids.length;
+  }
+  if (originOf.size !== 24 || found !== 24) throw new Error(`mkenginepack: ${originOf.size} base heroes in the Codex and ${found} of their rows in the pack, not 24 and 24`);
+  console.log(`origin badges: ${origins} on ${withOrigin} of the ${originOf.size} base heroes' rows`);
 }
 const packUnitIds = new Set([...heroes, ...enemies, ...authoredEnemies, ...prologueParty, ...alphaTeam].map((u) => u.typeId));
 function compileEncounter(row) {

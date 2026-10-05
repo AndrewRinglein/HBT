@@ -418,3 +418,22 @@ test('a second term names a stat the engine resolves, or the build fails; on a b
  assert.equal(burst.status,0,burst.stderr);
  assert.equal(burst.pack.authoredBursts['attack.halberd.cleave'].addsStats,undefined);
 });
+
+// engine content.hero-origin-badges (2026-10-05; engine DECISIONS.md 2026-10-05 'seven answers: … origin badges go on the heroes
+// …': asked whether the Codex's origin badges should be put on the heroes' rows - "3, yes."): each of the 24 base heroes' rows
+// carries, after the Hero badge, the origin badges the Codex names for it (gen/heroes.json `originBadges`, badge NAMES; the
+// rows are gen/badges.json), in the Codex's order. Only the 24: a fixed hero's row is as it was.
+test('each base hero\'s row carries the Codex\'s origin badges after the Hero badge; no other hero row gains one',()=>{
+ const heroes=JSON.parse(fs.readFileSync(path.join(source,'gen/heroes.json'),'utf8')).heroes,badges=JSON.parse(fs.readFileSync(path.join(source,'gen/badges.json'),'utf8')).badges;
+ const idOf=n=>{const rows=badges.filter(b=>b.name===n);assert.equal(rows.length,1,n);return rows[0].id};
+ const base=heroes.filter(h=>h.id.startsWith('hero.base.'));assert.equal(base.length,24);
+ const all=[...live.pack.heroes,...live.pack.prologueParty,...live.pack.alphaTeam],rowOf=id=>{const u=all.find(u=>u.typeId===id);assert.ok(u,id+' has a row in the pack');return u};
+ for(const h of base)assert.deepEqual(rowOf(h.id).badges,['badge.hero',...(h.originBadges||[]).map(idOf)],h.id);
+ assert.deepEqual(rowOf('hero.base.warrior-iron').badges,['badge.hero','badge.stalwart','badge.dwarf']);
+ assert.deepEqual(rowOf('hero.base.mage-fire').badges,['badge.hero']);
+ for(const u of all)if(!u.typeId.startsWith('hero.base.'))assert.ok((u.badges||[]).every(b=>b==='badge.hero'),u.typeId+' '+JSON.stringify(u.badges));
+});
+test('an origin badge the Codex has no row for fails the build by name; it is never dropped',()=>{
+ const bad=candidate(edit=>edit('gen/heroes.json',data=>{data.heroes.find(h=>h.id==='hero.base.warrior-iron').originBadges=['Stalwart','No Such Badge']}));
+ assert.notEqual(bad.status,0);assert.match(bad.stdout+bad.stderr,/hero\.base\.warrior-iron names the origin badge 'No Such Badge'/);
+});
