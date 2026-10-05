@@ -39,6 +39,8 @@ import { CLASSES } from '../content/classes.js'
 import { hashOf } from '../core/rng.js'
 import { listBattleCivilians } from '../view/civilians.js'
 import { statLabelOf } from '../content/stat-labels.js'
+import { itemCardOf } from '../content/item-card.js'
+import { itemCardHtml, isClickAway } from './item-card.js'
 import { xpForLevel } from '../content/levels.js'
 import { woundNameOf } from '../content/wounds.js'
 import { itemOf } from '../content/items.js'
@@ -413,13 +415,22 @@ export function mountRewards(root: HTMLElement, onConfirm: (itemId: string) => v
     selected = card.dataset['id'] ?? null
     playSound('reward-select')
     q(root, '#rw-confirm')?.classList.add('active')
+    showItem(selected)
   }
   row?.addEventListener('click', onRow)
+  // kingdom.equip-item-card (2026-10-05, Andrew: "… they pop up somewhere on the screen, to the right or somewhere, as a card
+  // with a description."): a revealed reward card clicked opens its item's card at the right — the same card Equip opens
+  // (content/item-card.ts itemCardOf, ui/item-card.ts itemCardHtml); another card replaces it; a click away closes it. The
+  // card chosen stays chosen: looking takes nothing.
+  const holder = document.createElement('div'); holder.className = 'itemcard-holder'; root.appendChild(holder)
+  function showItem(id: string | null): void { holder.innerHTML = id ? itemCardHtml(itemCardOf(id), itemArtOf(id)) : '' }
+  const onAway = (ev: Event) => { if (holder.innerHTML && isClickAway(ev) && !(ev.target as HTMLElement | null)?.closest?.('.reward-card')) showItem(null) }
+  root.addEventListener('click', onAway)
   const onReveal = () => { qa(root, '.reward-card.face-down').forEach((card, i) => at(i * 180, () => flipCard(card))) }
   q(root, '#rw-reveal a')?.addEventListener('click', onReveal)
   const onConfirmClick = () => { if (!selected) return; playSound('reward-purchase'); const id = selected; at(150, () => onConfirm(id)) }
   q(root, '#rw-confirm')?.addEventListener('click', onConfirmClick)
-  return () => { timers.forEach(clearTimeout); row?.removeEventListener('click', onRow) }
+  return () => { timers.forEach(clearTimeout); row?.removeEventListener('click', onRow); root.removeEventListener('click', onAway); holder.remove() }
 }
 
 // ─────────────────────────────────────────────────────────────────────────────

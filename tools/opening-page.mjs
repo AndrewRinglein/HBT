@@ -120,6 +120,10 @@ export const ITEM_ART_SEEN={rewardArt:0,rewardPlain:0,equipArt:0,equipPlain:0,sw
    set aside. As the rule now stands a card is his when its id is on the list (`listed`) or its base and its attribute are
    both on it (`made`); a card that is neither, and is not the battle's own named reward, still fails where it is shown */
 export const REWARD_CARDS_SEEN={listed:0,made:0,named:[]}
+/* kingdom.equip-item-card (engine DECISIONS.md 2026-10-05 'playtest post: …, item cards, …': "You need to be able to click on
+   them, and then they pop up somewhere on the screen, to the right or somewhere, as a card with a description."): every reward
+   card a run chose, and the item card it opened beside the cards (takeReward) */
+export const ITEM_CARDS_SEEN=[]
 const AUTHORED_IDS=new Set(E.AUTHORED.AUTHORED_ITEMS.map(r=>r.id))
 const madeOfHis=id=>{const r=E.ITEMS.itemOf(id);return r.base!==null&&AUTHORED_IDS.has(r.base)&&r.enchant!==null&&AUTHORED_IDS.has(r.enchant)}
 export const POOL_COSTS_TO_EQUIP=E.REWARD_POOL.REWARDS.filter(r=>Object.keys(E.ITEMS.itemOf(r.id).equipCost).length>0).map(r=>r.id)
@@ -802,7 +806,21 @@ export function openingPage(page,search,store){
    assert.ok(AUTHORED_IDS.has(id)||madeOfHis(id),`${label}: the reward screen shows ${id} (${E.ITEMS.itemOf(id).name}), which is not on the list of the items Andrew authored, is not one of his bases carrying one of his attributes, and is not this battle's named reward`)
    if(AUTHORED_IDS.has(id))REWARD_CARDS_SEEN.listed++;else REWARD_CARDS_SEEN.made++
   }
-  fire(row,'click',card);wait(1500);fire(row,'click',card);fire(byId('rw-confirm'),'click');wait(300)
+  fire(row,'click',card);wait(1500)
+  /* kingdom.equip-item-card: a card face down opens nothing; turned and clicked, it opens its item's card — the same card
+     Equip opens — beside the reward cards; one card, this item's, with its name; clicking away closes it and the reward
+     stays chosen */
+  assert.equal(byId('campaign').querySelectorAll('.itemcard').length,0,label+': no item card before a reward card is chosen')
+  fire(row,'click',card)
+  {const open=byId('campaign').querySelectorAll('.itemcard'),id=card.dataset.id,name=E.ITEMS.itemOf(id).name
+   assert.equal(open.length,1,label+': the reward card chosen opens one item card');assert.equal(open[0].dataset.itemCard,id,label+': the card of that item')
+   assert.ok(open[0].textContent.includes(name),`${label}: the item card names ${name}`)
+   assert.equal(open[0].dataset.art,ITEMS_ART[id]?'1':'0',`${label}: ${name}'s item card shows its art when it has any`)
+   const hx=byId('campaign').querySelectorAll('.hx')[0];fire(hx,'click',hx)
+   assert.equal(byId('campaign').querySelectorAll('.itemcard').length,0,label+': a click away closes the item card')
+   assert.ok(card.classList.contains('selected'),label+': and the reward stays chosen')
+   ITEM_CARDS_SEEN.push(name)}
+  fire(byId('rw-confirm'),'click');wait(300)
   return card.dataset.id
  }
 

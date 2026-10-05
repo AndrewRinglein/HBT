@@ -37,6 +37,7 @@ import { listBuildings, whyNotBuild, performBuild } from '../core/build.js'
 import { isShopOpen, listShopItems, canBuyItem, performBuyItem, costOfItem, canEquip, whyNotEquip, performEquip, canUnequip, performUnequip, loadoutOf, equipCostOf, isEquipOpen, equipWhere, performOpenEquip, performCloseEquip, forgeBandName, shelfSpecOf, whyNotTradeIn, performTradeIn, tradeCategoryOf } from '../core/shop.js'
 import { itemOf } from '../content/items.js'
 import { equipScreen, equipPage, displaceFor } from './equip.js'
+import { lookingAfter, isClickAway } from './item-card.js'
 import { rosterScreen as rosterCards } from './roster.js'
 import { recapScreen, mountRecap, rewardsScreen, mountRewards, levelUpScreen, mountLevelUp, toggleMute, stopMusic, type LastBattle, type Cleanup } from './after.js'
 import { canLevelUp } from '../core/rewards.js'
@@ -84,6 +85,8 @@ type App = {
   view: 'map' | 'town'
   /** The Equip screen's item in hand — a stash item clicked, waiting for a slot. A view choice, never saved. */
   picked: string | null
+  /** kingdom.equip-item-card: an item looked at where it lies (a worn item clicked) — a view choice, as `picked` is */
+  look: string | null
   /** The battle the writer just wrote, kept for the results screen (the cursor drops the result at apply). */
   lastBattle: LastBattle | null
   /** The level-up sheet is open for this hero — reached from the rewards or from the roster. */
@@ -91,7 +94,7 @@ type App = {
   /** The copied screens run a ceremony on the DOM once; a re-render mid-ceremony would restart it. The key names the instance mounted. */
   mounted: { key: string; cleanup: Cleanup } | null
 }
-const app: App = { ctx: null, draft: null, draftReckoning: null, status: '', error: false, slot: null, confirmEnd: null, roster: false, party: [], questLead: null, view: 'map', picked: null, lastBattle: null, levelHero: null, mounted: null }
+const app: App = { ctx: null, draft: null, draftReckoning: null, status: '', error: false, slot: null, confirmEnd: null, roster: false, party: [], questLead: null, view: 'map', picked: null, look: null, lastBattle: null, levelHero: null, mounted: null }
 
 // ── persistence ─────────────────────────────────────────────────────────────
 function persist(): void {
@@ -211,7 +214,7 @@ function screen(c: CampaignState): string {
 /** screen.roster — every hero, class, level, XP, wound, and what each slot holds this Week. */
 function rosterScreen(c: CampaignState): string {
   const alive = Object.values(c.roster).filter((h) => h.lifeState === 'alive').map((h) => h.id).sort()
-  if (equipWhere(c) === 'roster') return equipPage(c, alive, { where: 'roster', picked: app.picked })
+  if (equipWhere(c) === 'roster') return equipPage(c, alive, { where: 'roster', picked: app.picked, look: app.look })
   return rosterCards(c, '')
 }
 
@@ -338,7 +341,7 @@ function tradeInPanel(c: CampaignState): string {
 function prepScreen(c: CampaignState): string {
   const v = viewCombatPrep(c)
   // ruled 2026-09-04: Equip is its own screen, opened by prep once Deploy is done — not a step under the bar
-  if (v.step === 'equip') return equipPage(c, v.deployed, { where: 'prep', picked: app.picked, engagementId: v.engagementId, canAdvance: v.canAdvance })
+  if (v.step === 'equip') return equipPage(c, v.deployed, { where: 'prep', picked: app.picked, look: app.look, engagementId: v.engagementId, canAdvance: v.canAdvance })
   const at = PREP_STEP_ROWS.findIndex((r) => r.step === v.step)
   const steps = PREP_STEP_ROWS.map((r, i) => `<span class="${i === at ? 'on' : i < at ? 'done' : ''}">${i + 1} · ${esc(r.title)}</span>`).join('')
   let body = ''
@@ -435,7 +438,16 @@ function applyButton(): string {
 }
 
 // ── wiring ──────────────────────────────────────────────────────────────────
+/** kingdom.equip-item-card: what is looked at after a click (ui/item-card.ts lookingAfter) — the picked item and the card together */
+function looked(e: Parameters<typeof lookingAfter>[1]): void { const s = lookingAfter({ picked: app.picked, look: app.look }, e); app.picked = s.picked; app.look = s.look }
+
 function wire(root: HTMLElement): void {
+  // kingdom.equip-item-card: a click AWAY — on no control, no item, not on the card — closes the card and puts the item down.
+  // Bound once to the page's root, which every render keeps.
+  if (!root.dataset['lookAway']) {
+    root.dataset['lookAway'] = '1'
+    root.addEventListener('click', (ev) => { if ((app.picked !== null || app.look !== null) && isClickAway(ev)) { looked({ kind: 'away' }); render() } })
+  }
   root.querySelectorAll<HTMLElement>('[data-act]').forEach((el) => {
     const actName = el.dataset['act']!
     if (actName === 'slot-file') {
@@ -482,11 +494,13 @@ function wire(root: HTMLElement): void {
         case 'buy-catalog': return act(() => performBuyCatalog(app.ctx!, id!, 'slice'))
         case 'trade-in': return act(() => { const got = performTradeIn(app.ctx!, id!.split(','), 'slice'); note(`traded in — ${itemOf(got).name}`) })
         case 'equip': return act(() => performEquip(app.ctx!, id!, el.dataset['item']!, 'slice', el.dataset['displace']))
-        case 'pick': app.picked = app.picked === id ? null : id!; return render()
-        case 'drop': return act(() => { performEquip(app.ctx!, id!, el.dataset['item']!, 'slice', el.dataset['displace']); app.picked = null })
-        case 'unequip': return act(() => performUnequip(app.ctx!, id!, el.dataset['item']!, 'slice'))
+        // kingdom.equip-item-card: the item clicked is the one looked at — its card opens; ui/item-card.ts lookingAfter is the rule
+        case 'pick': looked({ kind: 'pick', id: id! }); return render()
+        case 'look': looked({ kind: 'look', id: id! }); return render()
+        case 'drop': return act(() => { performEquip(app.ctx!, id!, el.dataset['item']!, 'slice', el.dataset['displace']); looked({ kind: 'done' }) })
+        case 'unequip': return act(() => { performUnequip(app.ctx!, id!, el.dataset['item']!, 'slice'); looked({ kind: 'done' }) })
         case 'open-equip': return act(() => { performOpenEquip(app.ctx!, 'slice'); app.roster = true })
-        case 'close-equip': return act(() => { performCloseEquip(app.ctx!, 'slice'); app.picked = null })
+        case 'close-equip': return act(() => { performCloseEquip(app.ctx!, 'slice'); looked({ kind: 'done' }) })
         case 'council': return act(() => performCouncil(app.ctx!, viewCombatPrep(app.ctx!.campaign).tactic === id ? null : id!, 'slice'))
         case 'deploy': return act(() => performDeploy(app.ctx!, id!, 'slice'))
         case 'undeploy': return act(() => performUndeploy(app.ctx!, id!, 'slice'))
@@ -507,7 +521,7 @@ function wire(root: HTMLElement): void {
   })
   // the Equip screen: drag a stash item onto a slot (the click path is data-act pick → drop)
   root.querySelectorAll<HTMLElement>('.equip .item[draggable]').forEach((el) => {
-    el.addEventListener('dragstart', (ev) => { ev.dataTransfer?.setData('text/plain', el.dataset['id']!); app.picked = el.dataset['id']!; render() })
+    el.addEventListener('dragstart', (ev) => { ev.dataTransfer?.setData('text/plain', el.dataset['id']!); app.picked = el.dataset['id']!; app.look = app.picked; render() })
   })
   root.querySelectorAll<HTMLElement>('.equip .slot[data-slot]').forEach((el) => {
     el.addEventListener('dragover', (ev) => { ev.preventDefault(); el.classList.add('over') })
@@ -517,7 +531,7 @@ function wire(root: HTMLElement): void {
       const item = ev.dataTransfer?.getData('text/plain') || app.picked
       const hero = el.dataset['hero']!
       if (!item) return
-      act(() => { performEquip(app.ctx!, hero, item, 'slice', displaceFor(app.ctx!.campaign, hero, item, el.dataset['slot']!)); app.picked = null })
+      act(() => { performEquip(app.ctx!, hero, item, 'slice', displaceFor(app.ctx!.campaign, hero, item, el.dataset['slot']!)); looked({ kind: 'done' }) })
     })
   })
   // the outcome panel edits the draft result in place, then re-renders the numbers only on blur
