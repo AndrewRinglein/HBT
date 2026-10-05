@@ -63,6 +63,7 @@ import { mountOverlays } from './overlays.js'
 import { POLICY as CAM_POLICY, ARRIVAL_SIDES } from './camera-policy.js'
 import { screenOf as cameraScreenOf } from './camera3d.js'
 import { mountPlayChrome } from './chrome.js'
+import { mountItemCard } from './itemcard.js'
 import { opportunityPose, animateOpportunityStep, OPPORTUNITY_STEP_MS, feetOf, heightOf, fxAttack, flightOf, fxSlash, fxAreaBurst } from './board.js'
 import { areaBurstOf } from './theme.js'
 import { terrainLayer } from './terrain3d.js'
@@ -240,6 +241,10 @@ export function mountBattleViewer(root, data, opts = {}) {
   /* viewer.play-chrome: End Turn, End activation, 2×, the log — for a host that plays; nothing for a replay */
   V.asking = false
   const chrome = opts.onPlay ? mountPlayChrome(V, { offer: input => V.offerPlay(input), speed: x => api.speed(x) }) : { sync() {}, relog() {}, notice() {}, dispose() {} }
+
+  /* viewer.item-card-in-battle: for a host that has cards (opts.itemCard(itemId) -> the card's markup, or null), an item's
+     name in the panel opens that card beside the panel; a host with none mounts nothing (itemcard.js) */
+  V.itemCard = typeof opts.itemCard === 'function' ? mountItemCard(V, opts.itemCard, err => fault(err)) : null
 
   function render() {
     if (!V.layers.ground) buildGround(V)
@@ -1085,7 +1090,7 @@ export function mountBattleViewer(root, data, opts = {}) {
     },
     /* viewer.affliction-pop-up: whether the first-affliction pop-up is holding the pump */
     get held() { return V.hold },
-    dispose() { disposed = true; plan = null; resumeWalks(); dropHold(); overlays.dispose(); stopGlide(V); chrome.dispose(); clearTargeting(); V.play = null; V.heldPlay = null; cancelBurst(); cancelOpportunityLabel(); terrain.dispose(); pause(); cancelBeats(V); unbindCamera(); for (const E of V.layers.UEL.values()) if (E.walk) E.walk.cancel(); root.innerHTML = '' },
+    dispose() { disposed = true; plan = null; resumeWalks(); dropHold(); overlays.dispose(); stopGlide(V); chrome.dispose(); if (V.itemCard) { V.itemCard.dispose(); V.itemCard = null } clearTargeting(); V.play = null; V.heldPlay = null; cancelBurst(); cancelOpportunityLabel(); terrain.dispose(); pause(); cancelBeats(V); unbindCamera(); for (const E of V.layers.UEL.values()) if (E.walk) E.walk.cancel(); root.innerHTML = '' },
     _V: V,
   }
   /* first frame is already tilted; enable the half-speed camera glide after it */

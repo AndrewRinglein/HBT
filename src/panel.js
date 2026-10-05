@@ -159,8 +159,16 @@ export function drawPanel(V) {
      with what it gives, said on the row and on hover (items.js itemsOf: the log and the item's own row; nothing typed here) */
   const esc = x => String(x).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]))
   const itemRows = itemsOf(u, V.data)
+  /* viewer.item-card-in-battle (engine DECISIONS.md 2026-10-05, Andrew: "When you're focusing on a character, you need to be
+     able to look at their items when you're in battle."): for a host that has cards (viewer.js opts.itemCard — the kingdom's
+     one card), each item's name is a thing to click; the card stands beside the panel (itemcard.js). A card of another
+     unit's, or of an item this one no longer carries, is taken down as the panel is drawn. */
+  const cards = V.itemCard || null
+  if (cards) cards.shown(u.id, itemRows.map(r => r.item).filter(Boolean))
+  const looked = cards ? cards.openFor(u.id) : null
+  const lookAttrs = r => cards && r.item ? ' role="button" tabindex="0" aria-expanded="' + (r.item === looked) + '"' : ''
   const itemsBlock = itemRows.length ? '<div class="pItems"><div class="pItemsHead">Items</div>' + itemRows.map(r =>
-    '<div class="pItem' + (r.item ? '' : ' empty') + '" data-slot="' + r.slot + '" data-item="' + esc(r.item || '') + '"' + (r.title ? ' title="' + esc(r.title) + '"' : '') + '>' +
+    '<div class="pItem' + (r.item ? '' : ' empty') + (cards && r.item ? ' look' : '') + (r.item && r.item === looked ? ' looked' : '') + '" data-slot="' + r.slot + '" data-item="' + esc(r.item || '') + '"' + lookAttrs(r) + (r.title ? ' title="' + esc(r.title) + '"' : '') + '>' +
     '<span class="pItemSlot">' + (SLOT_LABEL[r.slot] || r.slot) + '</span><span class="pItemName">' + esc(r.name) + '</span>' +
     (r.gives ? '<span class="pItemGives">' + esc(r.gives) + '</span>' : '') + '</div>').join('') + '</div>' : ''
   const factsBlock = facts.length ? `<div style="margin:0 18px 8px;padding:6px 9px;background:#14120e;border:1px solid var(--border);border-radius:2px;font-size:11.5px;line-height:1.6;color:#a9a394">${facts.join('<br>')}</div>` : ''
@@ -252,4 +260,8 @@ export function drawPanel(V) {
   /* reattached every rebuild — the panel replaces its own innerHTML */
   const tg = P.querySelector('.statsToggle')
   if (tg) tg.addEventListener('click', ev2 => { ev2.stopPropagation(); view.statsOpen = !view.statsOpen; drawPanel(V) })
+  /* viewer.item-card-in-battle: an item's name, clicked (or Enter / Space on it), asks the host for its card */
+  if (cards) for (const r of P.querySelectorAll('.pItem')) { if (!r.classList.contains('look')) continue   /* one simple selector at a time: every DOM the page runs on answers it */
+    r.addEventListener('click', ev2 => { ev2.stopPropagation(); cards.toggle(r.dataset.item, u.id) })
+    r.addEventListener('keydown', ev2 => { if (ev2.key === 'Enter' || ev2.key === ' ') { ev2.preventDefault(); cards.toggle(r.dataset.item, u.id) } }) }
 }
