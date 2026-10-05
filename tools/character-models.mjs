@@ -69,6 +69,7 @@ import { readFileSync, existsSync, openSync, readSync, closeSync } from 'node:fs
 import { createHash } from 'node:crypto'
 import { resolve, dirname, posix } from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
+import { packEquipmentModels } from './equipment-models.mjs'
 
 const PKG = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const ROOT = resolve(PKG, '..')
@@ -649,6 +650,15 @@ export async function packCharacterModels() {
   const played = new Set()
   for (const { looks } of Object.values(pack)) for (const look of looks) { look.moments = momentsOf(look); for (const m of Object.values(look.moments)) played.add(m.clip) }
   for (const clip of Object.keys(MOMENTS)) if (!played.has(clip)) throw new Error(`MOMENTS['${clip}']: no body plays a clip of that name`)
+  // Live equipment follows the fold's actual hands, while the old props remain a preserved template baseline.
+  // Every available asset is registered; item bindings come only from the owning catalog's explicit IDs.
+  const equipment = packEquipmentModels()
+  for (const [typeId, binding] of Object.entries(pack)) {
+    if (!typeId.startsWith('hero.base.') && !CIVILIANS.includes(typeId)) continue
+    const legacy = {}, motions = binding.looks[0].motions
+    for (const item of Object.keys(HELD)) if (!equipment.items[item]) legacy[item] = heldProps(typeId, [item], motions).props
+    binding.equipment = { catalog: 'equipment-v2', classes, legacy }
+  }
   return pack
 }
 

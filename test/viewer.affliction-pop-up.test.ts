@@ -18,10 +18,16 @@ import { BADGES } from '../../engine/src/content/index.js'
 
 describe('the first-affliction pop-up: before and after art, the three explanations, the battle held until it is closed', () => {
   it('the engine states it on one line: a hero\'s badge.gained carries the stat modifiers, the written terms and the 0-Health rule', () => {
-    const ctx = createBattle(scenarioOptions(scenarioDef('showcase.prologue-party')))
+    // Law 10, 2026-10-05 — engine capability.damage-from-two-stats (engine DECISIONS.md 2026-10-04 'his 28 reward weapons read
+    // back …': of damage from two stats added, "We do need that."): this read
+    //   const ctx = createBattle(scenarioOptions(scenarioDef('showcase.prologue-party')))
+    // - the library battle in which a zombie afflicted a hero of the battle-2 party. The Priest's Holy Texts deals its written
+    // second term now and no hero is afflicted in that battle. The scene is a library battle that, on its own seed, afflicts a
+    // hero: showcase.waystation today (as tools/affliction-pop-up.test.mjs). Every check below is unchanged.
+    const ctx = createBattle(scenarioOptions(scenarioDef('showcase.waystation')))
     runBattle(ctx)
     const gain = ctx.events.find((e) => e.type === 'badge.gained' && e['atZero'] !== undefined) as Record<string, any> | undefined
-    expect(gain, 'a zombie afflicts a hero of the battle-2 party').toBeDefined()
+    expect(gain, 'the battle afflicts a hero').toBeDefined()
     const enter = ctx.events.find((e) => e.type === 'unit.enter' && e.actor === gain!['actor']) as Record<string, any>
     expect(enter['side']).toBe('hero')
     const row = BADGES[gain!['badgeId'] as string]!
