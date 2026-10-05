@@ -2779,7 +2779,7 @@
   {
    "id": "unit.wolf",
    "name": "Wolf",
-   "playerLine": "This creature's nip can leave whoever it bites Weak.",
+   "playerLine": "This enemy can leave whoever it bites Weak.",
    "tier": 1,
    "types": [
     "Beast"
