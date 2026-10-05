@@ -214,7 +214,9 @@
   "shape": "plumbing",
   "spec": "Ruled 2026-10-05 (Andrew, engine/DECISIONS.md 'playtest post: notices, target lines, item cards, arrows, move costs on hexes, knocked down, bodies, cursed ground, the first hero's positives' and 'the playtest post answered'): 'When you are in the movement phase, if there are squares in your movement area that cost 2 or can't be walked through, that number needs to be on the square.' Asked what shows on a hex that cannot be walked, his sentence broke off ('If you can't walk through an index'); the chat reads it as 'an X' (record as a viewer switch, the other side 'nothing'). Wanted: while a unit's move is being chosen and its movement area is shown, every hex in or bordering that area whose cost to enter for THIS unit is more than 1 shows the number on the hex (2, 3); a hex the unit cannot enter at all (impassable ground, a blocking prop - not a hex merely out of reach, and not a hex another unit stands on) shows an X; hexes that cost 1 show nothing. The cost is the engine's for that unit (a flier or a unit that ignores terrain sees no 2s) - read from the engine's move query, never worked out in the viewer. The marks go when the move is made or the action is dropped. Land by the viewer landing order (viewer sources, the viewer gate's parts and land, the page, the kingdom's pages rebuilt by their builders, the engine gate last). No art is needed unless the spec says so. RULED 2026-10-05: the X is right (engine/DECISIONS.md 'seven answers ...': asked 'is an X right for a hex you can't walk through' - '6, yes') - it is no longer the chat's reading; record it as ruled, not as a switch.",
   "expect": "In a battle with rough ground, choosing a walking hero's move shows 2 on each cost-2 hex in its area and an X on an impassable hex beside it, and nothing on plain hexes; a flying unit's area shows no numbers; the marks clear when the move is made.",
-  "note": "Filed by the home chat 2026-10-05."
+  "note": "Filed by the home chat 2026-10-05.",
+  "status": "done",
+  "sha": "954ce6f"
  },
  {
   "id": "viewer.shots-fly-straight",
@@ -222,7 +224,9 @@
   "shape": "plumbing",
   "spec": "Ruled 2026-10-05 (Andrew, engine/DECISIONS.md 'playtest post: notices, target lines, item cards, arrows, move costs on hexes, knocked down, bodies, cursed ground, the first hero's positives' and 'the playtest post answered'): 'Arrows fly in an overhead arc to hit an enemy. They should be a straight line from where the bow is pointed.' - asked whether thrown weapons keep their arc: 'No, everything should go straight for 4.' Every projectile the board draws - arrows, bolts, thrown weapons (javelin, rocks, knives, axes), magic bolts - flies in a straight line from where it leaves the attacker (the bow's or the hand's place on the model where the body gives one, else the unit's chest height) to the target's body, with no lobbed arc. The 2026-10-03 attack-impact timing stays: the hit, the recoil and the red slash still land when the projectile arrives. A shot over a blocker or from a height flies straight all the same. Land by the viewer landing order (viewer sources, the viewer gate's parts and land, the page, the kingdom's pages rebuilt by their builders, the engine gate last). No art is needed unless the spec says so.",
   "expect": "A Longbow shot, a Javelin throw and a Pile of Rocks throw each travel a straight line from the attacker to the target (the verify samples the projectile's path at three points and finds them on one line within a small tolerance); the impact still lands when the projectile arrives.",
-  "note": "Filed by the home chat 2026-10-05."
+  "note": "Filed by the home chat 2026-10-05.",
+  "status": "done",
+  "sha": "6a969bb"
  },
  {
   "id": "viewer.bodies-life-size",
