@@ -1,5 +1,16 @@
 [
  {
+  "id": "viewer.still-frame-draws-nothing",
+  "kind": "viewer",
+  "shape": "plumbing",
+  "needs": [
+   "viewer.scenery-shadow-drawn-once"
+  ],
+  "spec": "Split out of viewer.scene-drawn-in-few-calls by the home chat 2026-10-05 (ruled 2026-10-05, engine/DECISIONS.md 'the battle screen must feel smooth: the speed first ...'). The worker building viewer.scene-drawn-in-few-calls found that its targets (under 300 draw calls and under 8 ms a frame) cannot be met without changing how the two-sided blended foliage is drawn - a look decision that is Andrew's (viewer SWITCHES fewCallsFoliage) - but built three parts that change no pixel (0 of 2,073,536 pixels differ on all six 3D battles by the frame-cost tool's two-way compare), on the viewer branch next/scene-drawn-in-few-calls: (1) a frame in which nothing changed draws nothing - no scene pass, no shadow pass, no bodies' canvas; (2) the bodies' canvas takes depth only from the scene pieces that can hide a body, not from all of the scenery; (3) the scene's pieces are listed once at build instead of walked twice every frame. This item lands exactly those three and nothing that changes the picture. What counts as 'changed' must include everything that can move a pixel: the camera, a body's motion or idle, an effect, a notice, a highlight or mark, the fog or a ground fire, a hover - if any of these is live the frame draws; the page must never show a stale frame. The landing note carries the frame-cost tool's before and after for every battle (measured: Orphanage 1,531 to 1,139 draw calls and 15.5 to 13.7 ms with bodies idling; a held frame 0 draw calls) and the two-way pixel compare. viewer.scene-drawn-in-few-calls stays pending for the foliage ruling and for batching the solid pieces by material (viewer SWITCHES fewCallsOpaque), which keeps the picture and may be built under it without waiting. Land by the viewer landing order.",
+  "expect": "With the clock held and nothing live, a frame issues 0 draw calls on each of the six 3D battles; with bodies idling, the Orphanage's frame is at or under the measured 1,139 draw calls; the frame-cost tool's two-way compare finds 0 differing pixels on every battle against the page before this item; moving the camera, starting an effect, showing a notice or hovering a hex each draws the very next frame (a page test for each); the six battles' page verifies pass unchanged.",
+  "note": "Filed by the home chat 2026-10-05 from the frame-speed worker's report. Also reported there and NOT part of this item: with nothing moving, two consecutive Orphanage frames differ by a few hundred to 7,000 pixels by up to about 19 of 255 when the blended foliage is drawn (viewer SWITCHES blendedPiecesShimmer) - a faint shimmer on leaf edges that predates the speed items; its cause is not found."
+ },
+ {
   "id": "viewer.timed-effect-status-marks",
   "kind": "viewer",
   "shape": "plumbing",
@@ -101,7 +112,9 @@
    "viewer.frame-cost-measured"
   ],
   "spec": "Found 2026-10-05 (Andrew, engine/DECISIONS.md 'the battle screen must feel smooth'). The sun's shadow map (4096x4096) is drawn again on every drawn frame (src/terrain3d.js line 149: renderer.shadowMap.needsUpdate=true whenever the shadows look is on, and it is the default): on the Orphanage 916 draw calls and 3.06 million triangles a frame, though the scenery never moves and only the bodies do. Ruled 2026-10-03 'shadows are kept' - kept. Wanted: the scenery's shadow is drawn when the scene is built, and again only if the sun or the scenery changes; a frame in which a body moved or animated draws the bodies' shadows alone over the kept scenery shadow; a frame in which nothing moved draws no shadow at all. The picture is unchanged: a body still casts on the ground and on scenery, and scenery still shades a body standing in its shadow.",
-  "expect": "frame-cost's shadow-pass column on the Orphanage reads only the bodies' draw calls on a frame where a body animates, and none on a still frame, where it read 916; the shadows look reads as before in the characters-stand-out page's test and its screenshot; a body walked under the Orphanage's tree is shaded as before; the commit message carries frame-cost's table before and after."
+  "expect": "frame-cost's shadow-pass column on the Orphanage reads only the bodies' draw calls on a frame where a body animates, and none on a still frame, where it read 916; the shadows look reads as before in the characters-stand-out page's test and its screenshot; a body walked under the Orphanage's tree is shaded as before; the commit message carries frame-cost's table before and after.",
+  "status": "done",
+  "sha": "3b248f1"
  },
  {
   "id": "viewer.scene-drawn-in-few-calls",

@@ -35919,6 +35919,15 @@ index 0000000..c7e414f
   PASS  naming — no banned words invented
   PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
 
+## viewer.scenery-shadow-drawn-once — LANDED `3b248f1`
+2026-10-05 15:29
+
+  PASS  dependencies landed
+  WARN  not already decided — 3 candidate ruling(s) — READ BEFORE ASKING: SWITCHES.md:2247 · SWITCHES.md:2427
+  PASS  typecheck
+  PASS  the item's own tests — test/viewer.scenery-shadow-drawn-once.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — viewer/test/viewer.scenery-shadow-drawn-once.test.ts
 ## viewer.item-card-in-battle — LANDED `57e0281`
 2026-10-05 15:00
 
