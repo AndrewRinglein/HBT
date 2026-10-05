@@ -49,7 +49,12 @@ const ENDING_KEYS = ['endTurn', 'endActivation']
    cost it, or null for a hex it cannot enter at all (impassable ground, a blocking prop). Hexes outside the reach, each once.
    The board writes the number where it is more than one and an X where it is null, and adds nothing up; absent or empty:
    no marks (a flier's area carries none). */
-const OPTIONAL_KEYS = [...ENDING_KEYS, 'swap', 'ask', 'moveDone', 'reachCost', 'reachBorder']
+/* viewer.prone-turn-only-stand-up (engine DECISIONS.md 2026-10-05 'playtest post: …', Andrew: "if you are downed, when it's that
+   character's next turn, everything needs to be grayed out except 'stand up'."): the acting unit's actions that WAIT ON ITS
+   STAND, optional too — standFirst [action ids], the host's word from the engine (its unit is down, and the engine's limits
+   check refuses that action until it has stood). The bar gives those rows the disabled look and says why; the stand itself
+   is never one of them. Absent or empty: nothing waits. What a unit that is down may do is never worked out here. */
+const OPTIONAL_KEYS = [...ENDING_KEYS, 'swap', 'ask', 'moveDone', 'reachCost', 'reachBorder', 'standFirst']
 const AIM_KEYS = ['from', 'to', 'target', 'hit', 'dmg', 'hpAfter', 'lethal', 'locked']
 export function playFacts(value, positions) {
   const fail = why => { throw new Error('invalid play facts: ' + why) }
@@ -114,6 +119,11 @@ export function playFacts(value, positions) {
     if (!Array.isArray(v.moveDone) || v.moveDone.some(x => typeof x !== 'string' || !x)) fail('moveDone is not a list of action ids')
     if (new Set(v.moveDone).size !== v.moveDone.length) fail('moveDone repeats an action')
     moveDone = [...v.moveDone] }
+  let standFirst = []
+  if (v.standFirst != null) {
+    if (!Array.isArray(v.standFirst) || v.standFirst.some(x => typeof x !== 'string' || !x)) fail('standFirst is not a list of action ids')
+    if (new Set(v.standFirst).size !== v.standFirst.length) fail('standFirst repeats an action')
+    standFirst = [...v.standFirst] }
   const reach = hexes(v.reach, 'reach')
   let reachCost = []
   if (v.reachCost != null) {
@@ -131,6 +141,6 @@ export function playFacts(value, positions) {
       if (c.cost !== null && int(c.cost, at + '.cost') < 0) fail(at + '.cost is negative')
       return { hex: c.hex, cost: c.cost } })
     if (new Set(reachBorder.map(c => c.hex)).size !== reachBorder.length) fail('reachBorder repeats a hex') }
-  return { endTurn, endActivation: v.endActivation === true, swap, ask, moveDone, reachCost, reachBorder, actor: intOrNull(v.actor, 'actor'), slot: v.slot, reach, zoc: hexes(v.zoc, 'zoc'),
+  return { endTurn, endActivation: v.endActivation === true, swap, ask, moveDone, standFirst, reachCost, reachBorder, actor: intOrNull(v.actor, 'actor'), slot: v.slot, reach, zoc: hexes(v.zoc, 'zoc'),
     path: hexes(v.path, 'path', false), provokes: hexes(v.provokes, 'provokes'), ghost, threat, targets: hexes(v.targets, 'targets'), aim, note: v.note }
 }
