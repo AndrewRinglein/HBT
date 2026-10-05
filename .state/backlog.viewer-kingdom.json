@@ -1,11 +1,24 @@
 [
  {
+  "id": "viewer.still-frame-draws-nothing",
+  "kind": "viewer",
+  "shape": "plumbing",
+  "needs": [
+   "viewer.scenery-shadow-drawn-once"
+  ],
+  "spec": "Split out of viewer.scene-drawn-in-few-calls by the home chat 2026-10-05 (ruled 2026-10-05, engine/DECISIONS.md 'the battle screen must feel smooth: the speed first ...'). The worker building viewer.scene-drawn-in-few-calls found that its targets (under 300 draw calls and under 8 ms a frame) cannot be met without changing how the two-sided blended foliage is drawn - a look decision that is Andrew's (viewer SWITCHES fewCallsFoliage) - but built three parts that change no pixel (0 of 2,073,536 pixels differ on all six 3D battles by the frame-cost tool's two-way compare), on the viewer branch next/scene-drawn-in-few-calls: (1) a frame in which nothing changed draws nothing - no scene pass, no shadow pass, no bodies' canvas; (2) the bodies' canvas takes depth only from the scene pieces that can hide a body, not from all of the scenery; (3) the scene's pieces are listed once at build instead of walked twice every frame. This item lands exactly those three and nothing that changes the picture. What counts as 'changed' must include everything that can move a pixel: the camera, a body's motion or idle, an effect, a notice, a highlight or mark, the fog or a ground fire, a hover - if any of these is live the frame draws; the page must never show a stale frame. The landing note carries the frame-cost tool's before and after for every battle (measured: Orphanage 1,531 to 1,139 draw calls and 15.5 to 13.7 ms with bodies idling; a held frame 0 draw calls) and the two-way pixel compare. viewer.scene-drawn-in-few-calls stays pending for the foliage ruling and for batching the solid pieces by material (viewer SWITCHES fewCallsOpaque), which keeps the picture and may be built under it without waiting. Land by the viewer landing order.",
+  "expect": "With the clock held and nothing live, a frame issues 0 draw calls on each of the six 3D battles; with bodies idling, the Orphanage's frame is at or under the measured 1,139 draw calls; the frame-cost tool's two-way compare finds 0 differing pixels on every battle against the page before this item; moving the camera, starting an effect, showing a notice or hovering a hex each draws the very next frame (a page test for each); the six battles' page verifies pass unchanged.",
+  "note": "Filed by the home chat 2026-10-05 from the frame-speed worker's report. Also reported there and NOT part of this item: with nothing moving, two consecutive Orphanage frames differ by a few hundred to 7,000 pixels by up to about 19 of 255 when the blended foliage is drawn (viewer SWITCHES blendedPiecesShimmer) - a faint shimmer on leaf edges that predates the speed items; its cause is not found."
+ },
+ {
   "id": "viewer.timed-effect-status-marks",
   "kind": "viewer",
   "shape": "plumbing",
   "spec": "Found by the engine worker landing capability.effect-lasts-activations (2026-10-05; ruled 2026-10-04, engine/DECISIONS.md 'his 28 reward weapons read back ...': an effect that lasts a number of Activations). The three timed effects it wired - the Fire Gauntlet's Stoke, the Staff of the Ultimate Destroyer's Perfect Sight and Poison Coating - show on the unit as statuses with their count (engine SWITCHES lentEffectIsAStatus, lentStatusIds; viewer SWITCHES lentStatusShownAsAStatus), but they have no colour or glyph of their own: each wears the viewer's fallback, a green dot in Poison's hue, so a hero under Stoke reads as poisoned. Wanted: each timed-effect status has its own mark in the viewer's status table, by the rule the table already uses for a status that gives rather than harms (a buff's frame, not an affliction's), with a glyph from the icon set already shipped (a flame for the one that adds Burn to hits, an eye for doubled Precision, a vial or drop for the coating) - never Poison's dot; its name and what it does show in the panel and the tooltip in the row's own words with the count left. A timed effect added later with no mark of its own falls back to a neutral buff mark, not to Poison's, and the checks list it so it is not missed. No new art is made here: if no shipped glyph fits one of them, it takes the neutral buff mark and the need is named in the report.",
   "expect": "A hero who has used Stoke shows a flame-marked buff with 3, then 2, then 1, and never Poison's dot; Perfect Sight and Poison Coating each show their own mark and count; the panel and tooltip name each and say what it does; a status with no mark in the table shows the neutral buff mark and is listed by the checks.",
-  "note": "Filed by the home chat 2026-10-05 from the engine worker's report. Not art-dependent."
+  "note": "Filed by the home chat 2026-10-05 from the engine worker's report. Not art-dependent.",
+  "status": "done",
+  "sha": "384842a"
  },
  {
   "id": "kingdom.first-hero-each-rolls-own-gifts",
@@ -75,7 +88,9 @@
   "shape": "plumbing",
   "spec": "Found 2026-10-05 (Andrew, engine/DECISIONS.md 'the battle screen must feel smooth'): 'The game still feels clutzy ... I want this to feel smooth like a AAA game.' Measured by the root chat on the built page (kingdom/BATTLE-SANDBOX.html?play=<battle>, a 1920x1080 window, the board 1448x716, an RTX 5070): the script time of one call of viewer src/terrain3d.js frame() is 124-138 ms on the Orphanage (2,408 draw calls and 7.2 million triangles a frame), 66-76 ms on the Lumberjack House (1,944; 8.5 million), 46-76 ms on the Cathedral (491; 11.7 million) and 7-13 ms on the Bridge (284; 2.6 million) - 7 to 20 frames a second where 60 is smooth. No tool says so, so nothing holds it. Wanted: node tools/frame-cost.mjs [battle ...] in viewer/, which opens the built page in the real browser the kingdom's shot tools use (kingdom/tools/camera-shows-edge-units.shot.mjs is the pattern), for each of the six opening battles and the caravan encounter, and prints one row a battle: draw calls a frame and triangles a frame, split by pass (the shadow map, the scene, the bodies' canvas); script ms a frame with the see-through check and without it; each over at least 30 frames with nothing moving, and again while the view scrolls. How the chat measured by hand, for the tool to do the same: replace window.requestAnimationFrame with a function that only stores the callback (a hidden or headless page barely fires it, and timers are throttled there); wrap WebGL2RenderingContext.prototype.drawElements, drawArrays, drawElementsInstanced and drawArraysInstanced to count calls and triangles, keyed by canvas and bound framebuffer; call the stored callback by hand and time it with performance.now() - spaced more than SEE_EVERY ms apart by a busy wait for the cost with the check, back to back for the cost without. The tool asserts nothing by itself: the three items after it each name the column they bring down. viewer/CLAUDE.md's command list names it.",
   "expect": "node tools/frame-cost.mjs prints a row for each of the six opening battles and the caravan encounter (a flat battle with no 3D scene says so); on the tree it lands on the Orphanage's row reads about 2,400 draw calls and 7 million triangles a frame, 916 of the calls in the shadow pass; a test runs it on one battle and reads every column; the printed table is in the commit message.",
-  "note": "Filed by the root chat 2026-10-05, first in the queue with the ten after it: every playtest is felt through the frame rate."
+  "note": "Filed by the root chat 2026-10-05, first in the queue with the ten after it: every playtest is felt through the frame rate.",
+  "status": "done",
+  "sha": "ed9a377"
  },
  {
   "id": "viewer.see-through-only-when-moved",
@@ -85,7 +100,9 @@
    "viewer.frame-cost-measured"
   ],
   "spec": "Found 2026-10-05 (Andrew, engine/DECISIONS.md 'the battle screen must feel smooth'). The rule that draws see-through whatever hides a character (viewer.xcom-camera, src/terrain3d.js seeThrough; ruled 2026-10-01 'Anything blocking the view of a character is highly translucent' - kept exactly as it looks) is the largest cost on the battle screen: about 100 ms a run on the Orphanage, and it runs every 120 ms (SEE_EVERY) for the whole battle whether or not anything moved, because frame() marks the scene dirty on every frame that has a body on it (line 123: if(V.cast.size)dirty=true) and the check runs whenever the scene is dirty (line 137). Each run casts two rays for every standing body against every triangle of every scene piece taller than its waist (THREE.Raycaster.intersectObjects with nothing to speed it; the Orphanage has pieces of 420,000 triangles). With the check skipped the same frame costs about 20 ms. Wanted: (1) the check runs only when what it depends on changed - the camera's pose (V.camVersion), or a standing body's position, height or life - never because a body is animating where it stands; (2) one run costs under 4 ms on every opening battle - a ray tried against a piece's box before its triangles, and against a structure built once for the scene (the scene does not move; solidPieces already lists it once), or another means the worker records as a switch; no new package dependency without a recorded switch; (3) what is drawn see-through is unchanged: the same pieces fade for the same camera and bodies.",
-  "expect": "On the Orphanage with nothing moving, frame-cost's script ms with the see-through check and without it read the same, and a test counting the check's runs over 60 still frames reads none after the first; while the view scrolls one run is under 4 ms on every opening battle; a test holds a fixed camera and bodies on the Orphanage and on the Lumberjack House and reads the same set of faded pieces before the change and after; the commit message carries frame-cost's table before and after."
+  "expect": "On the Orphanage with nothing moving, frame-cost's script ms with the see-through check and without it read the same, and a test counting the check's runs over 60 still frames reads none after the first; while the view scrolls one run is under 4 ms on every opening battle; a test holds a fixed camera and bodies on the Orphanage and on the Lumberjack House and reads the same set of faded pieces before the change and after; the commit message carries frame-cost's table before and after.",
+  "status": "done-needs-review",
+  "sha": "0e2acff"
  },
  {
   "id": "viewer.scenery-shadow-drawn-once",
@@ -95,7 +112,9 @@
    "viewer.frame-cost-measured"
   ],
   "spec": "Found 2026-10-05 (Andrew, engine/DECISIONS.md 'the battle screen must feel smooth'). The sun's shadow map (4096x4096) is drawn again on every drawn frame (src/terrain3d.js line 149: renderer.shadowMap.needsUpdate=true whenever the shadows look is on, and it is the default): on the Orphanage 916 draw calls and 3.06 million triangles a frame, though the scenery never moves and only the bodies do. Ruled 2026-10-03 'shadows are kept' - kept. Wanted: the scenery's shadow is drawn when the scene is built, and again only if the sun or the scenery changes; a frame in which a body moved or animated draws the bodies' shadows alone over the kept scenery shadow; a frame in which nothing moved draws no shadow at all. The picture is unchanged: a body still casts on the ground and on scenery, and scenery still shades a body standing in its shadow.",
-  "expect": "frame-cost's shadow-pass column on the Orphanage reads only the bodies' draw calls on a frame where a body animates, and none on a still frame, where it read 916; the shadows look reads as before in the characters-stand-out page's test and its screenshot; a body walked under the Orphanage's tree is shaded as before; the commit message carries frame-cost's table before and after."
+  "expect": "frame-cost's shadow-pass column on the Orphanage reads only the bodies' draw calls on a frame where a body animates, and none on a still frame, where it read 916; the shadows look reads as before in the characters-stand-out page's test and its screenshot; a body walked under the Orphanage's tree is shaded as before; the commit message carries frame-cost's table before and after.",
+  "status": "done",
+  "sha": "3b248f1"
  },
  {
   "id": "viewer.scene-drawn-in-few-calls",
@@ -259,7 +278,9 @@
   ],
   "spec": "Ruled 2026-10-05 (Andrew, engine/DECISIONS.md 'playtest post: notices, target lines, item cards, arrows, move costs on hexes, knocked down, bodies, cursed ground, the first hero's positives' and 'the playtest post answered'): 'When you're selecting items in the equipment phase, you need to be able to look at your items somehow. You need to be able to click on them, and then they pop up somewhere on the screen, to the right or somewhere, as a card with a description.   We also need to be able to do something similar. When you're focusing on a character, you need to be able to look at their items when you're in battle.' In battle the focused character's panel lists its items by name (2026-10-03: 'We need the items listed under the characters on the right in battle'). Wanted: clicking an item's name there pops up that item's card beside the panel - its card art where it has one, its name, kind and tier, what it gives while equipped, and each attack and power it grants in the words the Codex uses; clicking elsewhere or the same name again closes it; it works for an enemy's items too. One card, shared with the kingdom's Equip screen (kingdom.equip-item-card builds the card's content from the same item data - use that card, do not write a second one).",
   "expect": "In a battle, focusing a hero and clicking 'Holy Symbol' in its panel shows a card with the Holy Symbol's art, 'Wrath' and 'Heal' with their lines; clicking away closes it; clicking an enemy's weapon shows its card; the card's words match the Equip screen's card for the same item.",
-  "note": "Filed by the home chat 2026-10-05."
+  "note": "Filed by the home chat 2026-10-05.",
+  "status": "done",
+  "sha": "57e0281"
  },
  {
   "id": "kingdom.equip-item-card",
@@ -307,7 +328,9 @@
   "shape": "plumbing",
   "spec": "Found twice on 2026-10-04/05 by the engine worker: in a full four-suite run (`node engine/tools/suites.mjs --run all --full`) the viewer's gate failed on `page.screenshot` timing out at 30 s in `viewer/test/viewer.bar-card-and-log.test.ts`, a test neither run had touched, and the viewer suite passed both times when run alone on the same tree. A full run is owed before every wrap, so this costs a viewer rerun each time and teaches chats to wave a red viewer through. Find why the screenshot stalls when the other suites share the machine (the page still animating or loading when the shot is asked for, the headless browser starved, a shot of a larger region than the test reads) and fix the cause in the test's harness - wait for the page's own settled signal before the shot, shoot only what is read, or have the full run give the viewer's browser parts the machine to themselves. Not allowed: weakening or removing an assertion, skipping the test in a full run, or a bare longer time-out with nothing else (a longer limit may accompany a real fix). Record what the cause was in viewer SWITCHES.md. If the same stall can strike other tests that take a shot, fix it where they share code.",
   "expect": "Three full runs in a row (`suites --run all --full`) on one tree pass the viewer's gate with no rerun, and the record says so; `viewer.bar-card-and-log` asserts everything it asserted before; viewer SWITCHES.md names the cause.",
-  "note": "Filed by the home chat 2026-10-05 from the engine worker's two reports. Not art-dependent."
+  "note": "Filed by the home chat 2026-10-05 from the engine worker's two reports. Not art-dependent.",
+  "status": "done-needs-review",
+  "sha": "7f511de"
  },
  {
   "id": "viewer.lost-counterattack-line",
