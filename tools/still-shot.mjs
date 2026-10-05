@@ -60,8 +60,13 @@ export async function settle(page, quick = QUICK_MS, limit = SETTLE_LIMIT_MS) {
     frame(tick)
   }), [quick, limit])
 }
-/** give the page its frame loop back: every callback kept while it was held is asked for again, in the order it came */
-export async function letGo(page) { await page.evaluate(() => { if (window.__heldFrames) window.__heldFrames() }) }
+/** give the page its frame loop back: every callback kept while it was held is asked for again, in the order it came — and
+    the page is handed back DRAWING: this waits for its next frame, so the first frame after the hold is not spent inside
+    whatever the tool does next (a click and a 5 s wait for its answer ran out there in a loaded gate, 2026-10-05). A page
+    that was not held is left alone. */
+export async function letGo(page) {
+  await page.evaluate(() => { if (!window.__heldFrames) return null; window.__heldFrames(); return new Promise(done => window.requestAnimationFrame(() => done(null))) })
+}
 
 /** the picture of a still page; `target` is the page or a locator; returns the milliseconds the shot itself took. The frame
     loop is given back whether the shot is taken or fails. */
