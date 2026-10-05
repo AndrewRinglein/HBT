@@ -39,7 +39,12 @@ say(`1 scrolled ${Math.round(gone)} board px from ${unit(hero).name}, who is off
 const wrap=V().dom.stage.parentNode,zoom=V().camTarget.zoom
 fire(wrap,'wheel',{deltaY:-300});w._flush(200)
 assert.ok(V().view.cam.zoom>1,'the wheel looked nearer');assert.ok(far(pose(),put)<1,`about the view's own centre: ${far(pose(),put).toFixed(2)} px`);assert.ok(!inView(unit(hero).hex),'the hero stays off the screen')
-w._flush(2500);assert.ok(far(pose(),put)<1&&Math.abs(V().camTarget.zoom-zoom)<1e-6,'the zoom back at the standard, the view still there')
+/* Law 10, 2026-10-05 (viewer.zoom-stays; engine DECISIONS.md 'the battle screen must feel smooth: … The wheel's zoom stays where it is
+   left', Andrew: "2 yes" — overturning 2026-10-01 "snaps back to standard when you stop"). This read: w._flush(2500);
+   assert.ok(far(pose(),put)<1&&Math.abs(V().camTarget.zoom-zoom)<1e-6,'the zoom back at the standard, the view still there').
+   The rule now: the zoom stays where the wheel left it, and the view is still there. */
+const near=V().camTarget.zoom;assert.ok(near>zoom*1.2,'nearer than the standard')
+w._flush(2500);assert.ok(far(pose(),put)<1&&Math.abs(V().camTarget.zoom-near)<1e-9,'two and a half seconds on: the zoom where the wheel left it, the view still there')
 say(`2 a notch of the wheel zoomed where the view was (it moved ${far(pose(),put).toFixed(2)} px) and ${unit(hero).name} stayed off the screen`)
 // 3. clicking an enemy there shows its panel and the view does not move
 const enemy=ctx().state.units.find(u=>u.side==='enemy'&&u.lifeState!=='dead'&&inView(u.hex))??ctx().state.units.find(u=>u.side==='enemy'&&u.lifeState!=='dead')

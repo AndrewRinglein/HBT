@@ -12,8 +12,8 @@
 // Expect (kingdom.tutorial-turns-in-battle-one): "the taking-turns lesson shows in the Orphanage the first time more than one of
 // the player's units can be activated, and not in the Lumberjack House; the camera controls lesson still shows in the Lumberjack
 // House at the second hero; … the page test asserts where each shows."
-// (The battle screen has no Reset button — the wheel's zoom springs back by itself — so the camera's notice carries no arrow:
-// kingdom SWITCHES.md lessonCameraNoReset.)
+// (The battle screen has no Reset button — the wheel's zoom sprang back by itself until 2026-10-05, and its button returns the
+// standard zoom since (viewer.zoom-stays) — so the camera's notice carries no arrow: kingdom SWITCHES.md lessonCameraNoReset.)
 //
 // The BUILT sandbox, a new run: battle 1 played through its first lesson and its first civilian's Activation, a Turn, then
 // settled won (the driver's strong party); battle 2 reached through the map, the draft and Equip and played with the mouse
@@ -71,8 +71,10 @@ assert.deepEqual(first.gold.filter(saysTurns),[],'battle 2 does not show the tak
 assert.ok(first.rows.every(id=>{const r=rowOf(id);return r.encounterId===LUMBERJACK||r.encounterId===undefined}),'only battle 2\'s rows, and the rows of any battle, were up: '+first.rows.join(', '))
 say(`h1 battle 2, both heroes activated: nothing about taking turns (the lessons' rows up: ${first.rows.join(', ')||'none'})`)
 /* (h2) the camera's controls as the second hero's Activation begins */
+/* LAW 10 — viewer.zoom-stays, 2026-10-05 (engine DECISIONS.md 'the battle screen must feel smooth: … The wheel's zoom stays where it is left, far enough out to see the whole board', Andrew: "2 yes" — overturning 2026-10-01 "snaps back to standard when you stop"): the second
+   line asserted below read "The wheel looks closer or further, and the view springs back."; the wheel's zoom stays now. */
 const c=first.seen[CAMERA.id];assert.ok(c,'the camera row showed')
-assert.deepEqual(c.lines,[...CAMERA.words]);assert.deepEqual(c.lines,['Q and E, or the left and right arrows, turn the view.','The wheel looks closer or further, and the view springs back.','Point at an edge of the screen to scroll the map.'])
+assert.deepEqual(c.lines,[...CAMERA.words]);assert.deepEqual(c.lines,['Q and E, or the left and right arrows, turn the view.','The wheel zooms in and out, and the view stays where you leave it.','Point at an edge of the screen to scroll the map.'])
 assert.equal(c.actor,first.heroIds[1],'the second hero is acting');assert.deepEqual(c.begun,first.heroIds,'both heroes have been activated');assert.ok(c.ended>=1,'the first hero\'s Activation is over')
 assert.deepEqual(c.ptrs.filter(p=>!/^card:/.test(p.target)),[],'no arrow: the battle screen has no Reset button');assert.equal(first.B.V().dom.root.querySelector('#playReset'),null)
 say(`h2 the second hero activated: "${CAMERA.words[0]}" / "${CAMERA.words[1]}" / "${CAMERA.words[2]}"`)
