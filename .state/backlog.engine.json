@@ -5750,7 +5750,16 @@
   "shape": "rule",
   "spec": "Found landing content.shields-reauthored (2026-10-04, engine SWITCHES.md shieldPowersDisplaceClassPowers): the Armory Ledger's shield powers cost 1 Stamina and have no cooldown (Brace, Raise Guard, Guard, Set Feet), and the computer's power rule (src/ai/modes.ts effectsPower) uses the FIRST ready power in the unit's kit order whenever it is not about to attack. A computer-played hero that holds a shield therefore raises it every Activation it does not swing, and never reaches the class powers behind it in its kit: in 40 replicates of showcase.assembled-party the Priest never used Circle of Healing and the Paladin never used Aegis (test/ability-effects.test.ts, whose liveness check now fields the party with its kits less the shields - a fielding choice with a dated Law 10 note, to be put back when this lands). The player's own heroes are not touched (the player chooses); what moves is every computer-played hero - the six opening recordings the viewer plays, the sandbox's watch-it-play, the control battles. Not ruled: what the computer should prefer. A proposal to put to Andrew in one line before building: among the ready powers that are legal now, the computer takes the one with the longest cooldown first (a power it can use only now and then is worth more than one it can use every Activation), kit order breaking ties - one comparison, no list of powers. Read ENGINE-CONSTITUTION.md (Law 5: one decision layer) and src/ai/modes.ts first.",
   "expect": "In the assembled party, fielded with its shields, the computer-played Paladin uses Aegis and still raises its shield on other Activations; test/ability-effects.test.ts fields the full kits again and every power of the party is used at least once in its replicates; a test asserts the choice for two units with different kits.",
-  "note": "Filed by the engine worker, 2026-10-04, from content.shields-reauthored. The first step is the one question to Andrew. variants: a hero with a shield and a class power, and an enemy with two powers of different cooldowns."
+  "note": "Filed by the engine worker, 2026-10-04, from content.shields-reauthored. The first step is the one question to Andrew. variants: a hero with a shield and a class power, and an enemy with two powers of different cooldowns.",
+  "variants": [
+   "power.sacred-shield.aegis",
+   "power.tower-shield.arrow-wall"
+  ],
+  "probeIds": [
+   "power.sacred-shield.aegis"
+  ],
+  "status": "done-needs-review",
+  "sha": "ad291d9"
  },
  {
   "id": "capability.effect-lasts-activations",

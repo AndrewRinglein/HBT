@@ -452,6 +452,12 @@ const counterattackReplacedAndLostGolden = JSON.parse(readFileSync(new URL('./fi
 // counterattack its holder makes rolls 10 higher.
 // Every case frozen here (tools/capture-free-attack-accuracy-cursor.mts). Moved: showcase.alpha-team, showcase.assembled-party, showcase.eve-24-a, showcase.eve-24-b, showcase.gash-variant, showcase.horrors, showcase.item-powers, showcase.kiln, showcase.rime, test.back-flip, test.counterattack, test.flaming-longsword, test.opening-cathedral, test.opening-cavern-trail, test.opening-gates, test.swap, progression-surge-0, progression-surge-1, progression-surge-2. A `changed` case is checked here and skips the older layers.
 const freeAttackAccuracyGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-free-attack-accuracy.json', import.meta.url), 'utf8'))
+// fix.computer-reaches-class-power-past-shield-power (2026-10-05; SWITCHES.md aiPowerLongestCooldownFirst), Law 10: the computer tries
+// a unit's powers longest cooldown first, the unit's own order breaking ties - it took the first its kit listed, so a shield's power
+// (no cooldown, listed before the class's) was raised every Activation and the class's never came up. A case moves where a
+// computer-played unit holds powers of different cooldowns and reaches for one: it now uses the class power it never reached.
+// Every case frozen here (tools/capture-computer-reaches-class-power-cursor.mts). Moved: showcase.assembled-party, showcase.eve-24-a, showcase.horrors, showcase.prologue-party, showcase.surrounded, progression-surge-0. A `changed` case is checked here and skips the older layers.
+const computerReachesClassPowerGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-computer-reaches-class-power.json', import.meta.url), 'utf8'))
 const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
 // Explicit rule migration, not regenerated historical hashes. These nine old
 // cases contain Surge ledger/refresh changes or terminal markers corrected
@@ -595,7 +601,10 @@ describe('resumable battle cursor', () => {
       const enchantStatsOnWeaponExpected = enchantStatsOnWeaponGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const counterattackReplacedAndLostExpected = counterattackReplacedAndLostGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const freeAttackAccuracyExpected = freeAttackAccuracyGolden.cases.find((row:{id:string})=>row.id===fixture.id)
-      const freeAttackAccuracyMoved = freeAttackAccuracyExpected?.changed === true
+      const computerReachesClassPowerExpected = computerReachesClassPowerGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+      const computerReachesClassPowerMoved = computerReachesClassPowerExpected?.changed === true
+      // was: const freeAttackAccuracyMoved = freeAttackAccuracyExpected?.changed === true — a case fix.computer-reaches-class-power-past-shield-power moved skips this layer too (fix.computer-reaches-class-power-past-shield-power 2026-10-04)
+      const freeAttackAccuracyMoved = freeAttackAccuracyExpected?.changed === true || computerReachesClassPowerMoved
       // was: const counterattackReplacedAndLostMoved = counterattackReplacedAndLostExpected?.changed === true — a case capability.free-attack-accuracy moved skips this layer too (capability.free-attack-accuracy 2026-10-04)
       const counterattackReplacedAndLostMoved = counterattackReplacedAndLostExpected?.changed === true || freeAttackAccuracyMoved
       // was: const enchantStatsOnWeaponMoved = enchantStatsOnWeaponExpected?.changed === true — a case rule.counterattack-replaced-and-lost moved skips this layer too (rule.counterattack-replaced-and-lost 2026-10-04)
@@ -743,7 +752,14 @@ describe('resumable battle cursor', () => {
             battle.completeActionCycle(ctx)
           }
         } else result = battle.runBattle(ctx)
-        if (freeAttackAccuracyExpected) {
+        if (computerReachesClassPowerExpected) {
+        expect(hash(ctx.events), 'full computer-reaches-class-power events').toBe(computerReachesClassPowerExpected.events)
+        expect(hash(ctx.state), 'full computer-reaches-class-power state').toBe(computerReachesClassPowerExpected.state)
+        expect(hash(ctx.rng.log), 'full computer-reaches-class-power RNG').toBe(computerReachesClassPowerExpected.rng)
+        expect(result).toEqual(computerReachesClassPowerExpected.result)
+        }
+        // was: if (freeAttackAccuracyExpected) { — fix.computer-reaches-class-power-past-shield-power (2026-10-04): a case it moved is checked above instead
+        if (freeAttackAccuracyExpected && !computerReachesClassPowerMoved) {
         expect(hash(ctx.events), 'full free-attack-accuracy events').toBe(freeAttackAccuracyExpected.events)
         expect(hash(ctx.state), 'full free-attack-accuracy state').toBe(freeAttackAccuracyExpected.state)
         expect(hash(ctx.rng.log), 'full free-attack-accuracy RNG').toBe(freeAttackAccuracyExpected.rng)

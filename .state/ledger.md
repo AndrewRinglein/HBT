@@ -31788,3 +31788,119 @@ index 9c5adab..2c02189 100644
   PASS  naming — new content ids use declared kinds
   PASS  naming — no banned words invented
   PASS  kill switch — the tests fail without the content — tests fail without item.elfbow — they genuinely test it
+
+## fix.computer-reaches-class-power-past-shield-power — LANDED `ad291d9` **NEEDS REVIEW**
+2026-10-05 07:55
+
+  PASS  dependencies landed
+  WARN  not already decided — 4 candidate ruling(s) — READ BEFORE ASKING: SWITCHES.md:2304 · SWITCHES.md:2414
+  PASS  typecheck
+  PASS  the item's own tests — test/ability-effects.test.ts, test/battle-cursor.test.ts, test/computer-reaches-class-power.test.ts
+  PASS  gate 1 — the id appears in a real battle — power.sacred-shield.aegis: 5 log lines, 5 fired, 2 changed state
+  PASS  brought its own tests — test/ability-effects.test.ts, test/battle-cursor.test.ts, test/computer-reaches-class-power.test.ts, test/fixtures/battle-cursor-computer-reaches-class-power.json
+  WARN  existing tests untouched — DELETED LINES in test/ability-effects.test.ts (-8), test/battle-cursor.test.ts (-2) — will land FLAGGED for review
+  PASS  control battles unchanged
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — power.sacred-shield.aegis live · power.tower-shield.arrow-wall live
+  PASS  naming — new content ids use declared kinds
+  WARN  naming — no banned words invented — 'buff/debuff' — say status — will land FLAGGED
+  PASS  kill switch — the tests fail without the content — tests fail without power.sacred-shield.aegis — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/ability-effects.test.ts b/test/ability-effects.test.ts
+index 54b766c..21b9414 100644
+--- a/test/ability-effects.test.ts
++++ b/test/ability-effects.test.ts
+@@ -106,11 +106,17 @@ describe('alive in a real battle', () => {
+   // shields - a fielding choice, as heroItems is for; every assertion below is as it was.
+   // was: const ctx = createBattle({ ...scenarioOptions(scenarioDef('showcase.assembled-party')), replicate: r })
+-  it('the assembled party uses its powers — a heal, a buff and an area blast all fire', () => {
++  // Law 10, 2026-10-05 — fix.computer-reaches-class-power-past-shield-power (SWITCHES.md aiPowerLongestCooldownFirst): the computer
++  // tries its power with the longest cooldown first now, so a shield's power no longer stands in front of the class's. The party is
++  // fielded with its FULL Codex kits again, as this test first had it (the line above), and Aegis and the blast are held there -
++  // Aegis was the power the shields hid. The heal is held in the fielding of 2026-10-04, the kits less their shields: with the
++  // Ledger's shields the party ends these fights in three or four Turns with nobody missing the four Health a 7-point Circle of
++  // Healing asks for (none in 20 replicates) - that is how hurt they are, not which power the computer reaches for, and
++  // test/computer-reaches-class-power.test.ts holds that she reaches for the Circle first when the circle holds someone hurt. So one
++  // test is two fieldings; no assertion is dropped, and Aegis is held on the harder one.
++  const played = (heroItems?: string[][]) => {
+     const used = new Set<string>(), bursts = new Set<string>()
+     const opts = scenarioOptions(scenarioDef('showcase.assembled-party'))
+-    const heroItems = opts.heroes!.map((h) => (UNITS[h]!.defaultItems ?? []).filter((i) => ITEMS[i]?.itemClass !== 'shield'))
+-    expect(heroItems.flat().length, 'three of the six leave a shield behind').toBe(opts.heroes!.flatMap((h) => UNITS[h]!.defaultItems ?? []).length - 3)
+     for (let r = 0; r < 3; r++) {
+-      const ctx = createBattle({ ...opts, heroItems, replicate: r })
++      const ctx = createBattle({ ...opts, ...(heroItems ? { heroItems } : {}), replicate: r })
+       runBattle(ctx)
+       for (const e of ctx.events) {
+@@ -119,9 +125,20 @@ describe('alive in a real battle', () => {
+       }
+     }
+-    expect(used.has(AEGIS)).toBe(true)
+-    expect(used.has(CIRCLE)).toBe(true)
++    return { used, bursts }
++  }
++  it('the assembled party uses its powers — a heal, a buff and an area blast all fire', () => {
++    const full = played()
++    expect(full.used.has(AEGIS)).toBe(true)
+     // V2 section 7 supersedes unit-centred power.used for the travelling blast.
+-    expect(bursts.has(FIREBALL)).toBe(true)
+-    expect(used.has(FIREBALL)).toBe(false)
++    expect(full.bursts.has(FIREBALL)).toBe(true)
++    expect(full.used.has(FIREBALL)).toBe(false)
++    const opts = scenarioOptions(scenarioDef('showcase.assembled-party'))
++    const heroItems = opts.heroes!.map((h) => (UNITS[h]!.defaultItems ?? []).filter((i) => ITEMS[i]?.itemClass !== 'shield'))
++    expect(heroItems.flat().length, 'three of the six leave a shield behind').toBe(opts.heroes!.flatMap((h) => UNITS[h]!.defaultItems ?? []).length - 3)
++    const bare = played(heroItems)
++    expect(bare.used.has(AEGIS)).toBe(true)
++    expect(bare.used.has(CIRCLE)).toBe(true)
++    expect(bare.bursts.has(FIREBALL)).toBe(true)
++    expect(bare.used.has(FIREBALL)).toBe(false)
+   })
+ })
+diff --git a/test/battle-cursor.test.ts b/test/battle-cursor.test.ts
+index 52e9b3f..0bdf006 100644
+--- a/test/battle-cursor.test.ts
++++ b/test/battle-cursor.test.ts
+@@ -453,4 +453,10 @@ const counterattackReplacedAndLostGolden = JSON.parse(readFileSync(new URL('./fi
+ // Every case frozen here (tools/capture-free-attack-accuracy-cursor.mts). Moved: showcase.alpha-team, showcase.assembled-party, showcase.eve-24-a, showcase.eve-24-b, showcase.gash-variant, showcase.horrors, showcase.item-powers, showcase.kiln, showcase.rime, test.back-flip, test.counterattack, test.flaming-longsword, test.opening-cathedral, test.opening-cavern-trail, test.opening-gates, test.swap, progression-surge-0, progression-surge-1, progression-surge-2. A `changed` case is checked here and skips the older layers.
+ const freeAttackAccuracyGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-free-attack-accuracy.json', import.meta.url), 'utf8'))
++// fix.computer-reaches-class-power-past-shield-power (2026-10-05; SWITCHES.md aiPowerLongestCooldownFirst), Law 10: the computer tries
++// a unit's powers longest cooldown first, the unit's own order breaking ties - it took the first its kit listed, so a shield's power
++// (no cooldown, listed before the class's) was raised every Activation and the class's never came up. A case moves where a
++// computer-played unit holds powers of different cooldowns and reaches for one: it now uses the class power it never reached.
++// Every case frozen here (tools/capture-computer-reaches-class-power-cursor.mts). Moved: showcase.assembled-party, showcase.eve-24-a, showcase.horrors, showcase.prologue-party, showcase.surrounded, progression-surge-0. A `changed` case is checked here and skips the older layers.
++const computerReachesClassPowerGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-computer-reaches-class-power.json', import.meta.url), 'utf8'))
+ const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
+ // Explicit rule migration, not regenerated historical hashes. These nine old
+@@ -596,5 +602,8 @@ describe('resumable battle cursor', () => {
+       const counterattackReplacedAndLostExpected = counterattackReplacedAndLostGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+       const freeAttackAccuracyExpected = freeAttackAccuracyGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+-      const freeAttackAccuracyMoved = freeAttackAccuracyExpected?.changed === true
++      const computerReachesClassPowerExpected = computerReachesClassPowerGolden.cases.find((row:{id:string})=>row.id===fixture.id)
++      const computerReachesClassPowerMoved = computerReachesClassPowerExpected?.changed === true
++      // was: const freeAttackAccuracyMoved = freeAttackAccuracyExpected?.changed === true — a case fix.computer-reaches-class-power-past-shield-power moved skips this layer too (fix.computer-reaches-class-power-past-shield-power 2026-10-04)
++      const freeAttackAccuracyMoved = freeAttackAccuracyExpected?.changed === true || computerReachesClassPowerMoved
+       // was: const counterattackReplacedAndLostMoved = counterattackReplacedAndLostExpected?.changed === true — a case capability.free-attack-accuracy moved skips this layer too (capability.free-attack-accuracy 2026-10-04)
+       const counterattackReplacedAndLostMoved = counterattackReplacedAndLostExpected?.changed === true || freeAttackAccuracyMoved
+@@ -744,5 +753,12 @@ describe('resumable battle cursor', () => {
+           }
+         } else result = battle.runBattle(ctx)
+-        if (freeAttackAccuracyExpected) {
++        if (computerReachesClassPowerExpected) {
++        expect(hash(ctx.events), 'full computer-reaches-class-power events').toBe(computerReachesClassPowerExpected.events)
++        expect(hash(ctx.state), 'full computer-reaches-class-power state').toBe(computerReachesClassPowerExpected.state)
++        expect(hash(ctx.rng.log), 'full computer-reaches-class-power RNG').toBe(computerReachesClassPowerExpected.rng)
++        expect(result).toEqual(computerReachesClassPowerExpected.result)
++        }
++        // was: if (freeAttackAccuracyExpected) { — fix.computer-reaches-class-power-past-shield-power (2026-10-04): a case it moved is checked above instead
++        if (freeAttackAccuracyExpected && !computerReachesClassPowerMoved) {
+         expect(hash(ctx.events), 'full free-attack-accuracy events').toBe(freeAttackAccuracyExpected.events)
+         expect(hash(ctx.state), 'full free-attack-accuracy state').toBe(freeAttackAccuracyExpected.state)
+```
+</details>
