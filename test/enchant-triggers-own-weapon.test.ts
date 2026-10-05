@@ -63,7 +63,12 @@ describe('an artifact attribute\'s triggers ride its own weapon\'s attacks', () 
   it('on crit - the Bloodletting Longsword with a Dagger in the other hand: Bleed on the Slash\'s crit, none on the Dagger\'s Stab or a Punch', () => {
     const SWORD = 'item.longsword.bloodletting', kit = [SWORD, 'item.dagger']
     expect(hooksOf(SWORD)).toEqual(['onCrit'])
-    const slash = landed(kit, 'attack.longsword.slash')
+    // Law 10, 2026-10-04 — fix.enchant-stats-on-weapon (DECISIONS.md 2026-09-28 'counterattack, special free attacks, the opening six, shields, custom weapons': "Strength becomes the weapon's damage (its attacks go up); Crit and Accuracy apply to that weapon's attacks"):
+    // this swung 'attack.longsword.slash'. The attribute's +3 Crit is the sword's own attack's now, so the row grants its own copy
+    // of the Slash (attack.longsword.slash.bloodletting) and the holder has that, not the plain one. The claim is unchanged and is
+    // said of the row's own attack. (was: const slash = landed(kit, 'attack.longsword.slash'))
+    expect(ITEMS[SWORD]!.grants).toEqual(['attack.longsword.slash.bloodletting'])
+    const slash = landed(kit, ITEMS[SWORD]!.grants[0]!)
     expect(rolls(slash, SWORD)).toEqual(['onCrit'])
     expect(slash.some((e) => e.type === 'status.applied' && e['statusId'] === 'status.bleed')).toBe(true)
     for (const other of ['attack.dagger.stab', 'attack.punch']) {
@@ -76,7 +81,11 @@ describe('an artifact attribute\'s triggers ride its own weapon\'s attacks', () 
   it('on damage - the Hobbling Daggers: Slow with the daggers\' own attacks, none with a Punch', () => {
     const DAGGERS = 'item.daggers.hobbling'
     expect(hooksOf(DAGGERS)).toEqual(['onDamage'])
-    const stab = landed([DAGGERS], 'attack.daggers.stab')
+    // Law 10, 2026-10-04 (the note at the Bloodletting Longsword, above): the Hobbling attribute's "+1 damage" rides the daggers' own
+    // attacks, so the row grants its own copies; the Stab swung is the row's. (was: const stab = landed([DAGGERS], 'attack.daggers.stab'))
+    const ownStab = ITEMS[DAGGERS]!.grants.find((g) => g.startsWith('attack.daggers.stab'))!
+    expect(ownStab).toBe('attack.daggers.stab.hobbling')
+    const stab = landed([DAGGERS], ownStab)
     expect(rolls(stab, DAGGERS)).toEqual(['onDamage'])
     expect(stab.some((e) => e.type === 'status.applied' && e['statusId'] === 'status.slow')).toBe(true)
     const punch = landed([DAGGERS], 'attack.punch')

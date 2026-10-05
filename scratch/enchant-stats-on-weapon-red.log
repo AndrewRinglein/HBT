@@ -1,0 +1,323 @@
+
+ RUN  v4.1.11 C:/Users/aring/Desktop/HBT-worker-engine/engine
+
+ ❯ test/enchant-stats-on-weapon.test.ts (15 tests | 13 failed) 21ms
+     × no weapon row carries Strength, Precision, Crit or Accuracy as a stat of its holder 5ms
+     × every attack a weapon row grants exists, and every rider scoped to an attack rides one the row itself grants 3ms
+     × its own attack hits for 1 more than the plain Greatsword's; the hero's Strength is unchanged; a Punch hits no harder 5ms
+     × the row says it on the attack: its own copy of the Hew, 1 more damage, the same cost — and the row keeps the base's Block and power 0ms
+     × the cutlass's attacks hit for 1 more; the Dagger's and the Punch do not; the −5 Dodge is the hero's 1ms
+     × +3 Crit is the weapon's attack's; the hero's Crit and a Punch's crit chance are unchanged 1ms
+     × +20 Accuracy is the weapon's attacks'; the hero's Accuracy and a Punch's are unchanged 1ms
+     × the throw, a Precision attack, hits for 1 more; the thrust, a Strength attack, does not; the hero's Precision is unchanged 1ms
+     × a stat no attack of the weapon uses rides nothing and is named, never dropped — the Greatsword of Sacrifice's +2 Precision 0ms
+     × the Death Blade's attacks carry its +1; the hero's Strength is the bare hero's; a Punch hits no harder than a bare hero's 1ms
+     × its numbers are on its own attack rows: the Codex's damage plus the row's Strength; the Shiv's plus its Crit 0ms
+     × a bow's Precision is its shots' — the Seraph Bow (+1 Precision) 2ms
+     × an attribute's "+1 damage" rides its weapon's attacks at tier 3 as it does at tier 2 — the Destroying Greatsword 0ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 13 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/enchant-stats-on-weapon.test.ts > the rule, over the whole pack > no weapon row carries Strength, Precision, Crit or Accuracy as a stat of its holder
+AssertionError: expected [ 'item.bloody-axe', …(64) ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   "item.bloody-axe",
++   "item.hammer-of-justice",
++   "item.death-blade",
++   "item.stormforged-blade",
++   "item.cursed-sand-blade",
++   "item.seraph-bow",
++   "item.death-bow",
++   "item.holy-avenger",
++   "item.demon-whip",
++   "item.demonic-shiv",
++   "item.blade-of-demon-slaying",
++   "item.pharaohs-gauntlets",
++   "item.tomb-sentinels-blade",
++   "item.siege-crossbow",
++   "item.stormforged-halberd",
++   "item.greatsword.bloodletting",
++   "item.greatsword.soul-reaper",
++   "item.greatsword.sacrifice",
++   "item.war-axe.bloodletting",
++   "item.war-axe.bloodthirsty",
++   "item.hunting-spear.hunting",
++   "item.glaive.bloodletting",
++   "item.crossbow.gale",
++   "item.crossbow.hunting",
++   "item.crossbow.magic",
++   "item.hand-crossbow.hunting",
++   "item.hand-crossbow.magic",
++   "item.rapier.shadow-touched",
++   "item.raiders-cutlass.bloodletting",
++   "item.raiders-cutlass.bloodthirsty",
++   "item.throwing-knives.hunting",
++   "item.throwing-knives.gale",
++   "item.poison-stars.hunting",
++   "item.obsidian-fang-dagger.bloodletting",
++   "item.obsidian-fang-dagger.shadow-touched",
++   "item.duel-runeblades.bloodletting",
++   "item.duel-runeblades.lightning",
++   "item.duel-runeblades.sacrifice",
++   "item.shepherds-sling.hunting",
++   "item.shepherds-sling.magic",
++   "item.shepherds-sling.gale",
++   "item.crippling-whip.shadow-touched",
++   "item.iron-claws.bloodletting",
++   "item.iron-claws.bloodthirsty",
++   "item.grappling-harpoon.hunting",
++   "item.apprentice-wand.lightning",
++   "item.ancient-tome.lightning",
++   "item.bane-blade.sacrifice",
++   "item.sword-of-the-fallen.soul-reaper",
++   "item.daggers.shadow-touched",
++   "item.daggers.bloodletting",
++   "item.longbow.gale",
++   "item.longbow.hunting",
++   "item.longbow.magic",
++   "item.shortbow.hunting",
++   "item.elfbow.gale",
++   "item.elfbow.magic",
++   "item.elfbow.shadow-touched",
++   "item.barbarian-bow.hunting",
++   "item.javelin.hunting",
++   "item.longsword.bloodletting",
++   "item.halberd.bloodletting",
++   "item.fire-staff.lightning",
++   "item.lightning-staff.lightning",
++   "item.force-staff.lightning",
++ ]
+
+ ❯ test/enchant-stats-on-weapon.test.ts:39:19
+     37|   it('no weapon row carries Strength, Precision, Crit or Accuracy as a…
+     38|     const still = ROWS.filter((i) => i.itemClass === 'weapon' && ATTAC…
+     39|     expect(still).toEqual([])
+       |                   ^
+     40|   })
+     41|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/13]⎯
+
+ FAIL  test/enchant-stats-on-weapon.test.ts > the rule, over the whole pack > every attack a weapon row grants exists, and every rider scoped to an attack rides one the row itself grants
+AssertionError: item.halberd grants attack.halberd.cleave: expected undefined to be defined
+ ❯ test/enchant-stats-on-weapon.test.ts:44:75
+     42|   it('every attack a weapon row grants exists, and every rider scoped …
+     43|     for (const i of ROWS.filter((r) => r.itemClass === 'weapon')) {
+     44|       for (const g of i.grants) expect(ATTACKS[g], `${i.id} grants ${g…
+       |                                                                           ^
+     45|       for (const t of i.triggers) if (t.onlyWithAttack) expect(i.grant…
+     46|     }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/13]⎯
+
+ FAIL  test/enchant-stats-on-weapon.test.ts > a tier-3 artifact attribute — the Soul Reaper Greatsword (+1 Strength) > its own attack hits for 1 more than the plain Greatsword's; the hero's Strength is unchanged; a Punch hits no harder
+AssertionError: expected 6 to be 5 // Object.is equality
+
+- Expected
++ Received
+
+- 5
++ 6
+
+ ❯ test/enchant-stats-on-weapon.test.ts:54:34
+     52|   it('its own attack hits for 1 more than the plain Greatsword\'s; the…
+     53|     const a = holder([PLAIN]), b = holder([REAPER])
+     54|     expect(sheet(b, 'strength')).toBe(sheet(a, 'strength'))
+       |                                  ^
+     55|     expect(look(b, own(REAPER, HEW)).damage).toBe(look(a, HEW).damage …
+     56|     expect(look(b, PUNCH)).toEqual(look(a, PUNCH))
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/13]⎯
+
+ FAIL  test/enchant-stats-on-weapon.test.ts > a tier-3 artifact attribute — the Soul Reaper Greatsword (+1 Strength) > the row says it on the attack: its own copy of the Hew, 1 more damage, the same cost — and the row keeps the base's Block and power
+AssertionError: expected 'attack.greatsword.hew' not to be 'attack.greatsword.hew' // Object.is equality
+ ❯ test/enchant-stats-on-weapon.test.ts:61:22
+     59|   it('the row says it on the attack: its own copy of the Hew, 1 more d…
+     60|     const copy = own(REAPER, HEW)
+     61|     expect(copy).not.toBe(HEW)
+       |                      ^
+     62|     expect(ATTACKS[copy]!.attack!.bonus).toBe(ATTACKS[HEW]!.attack!.bo…
+     63|     expect(ATTACKS[copy]!.staminaCost).toBe(ATTACKS[HEW]!.staminaCost)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/13]⎯
+
+ FAIL  test/enchant-stats-on-weapon.test.ts > the other hand's weapon is not raised — the Bloodthirsty Raider's Cutlass (+1 Strength, −5 Dodge) beside a Dagger > the cutlass's attacks hit for 1 more; the Dagger's and the Punch do not; the −5 Dodge is the hero's
+AssertionError: expected 6 to be 5 // Object.is equality
+
+- Expected
++ Received
+
+- 5
++ 6
+
+ ❯ test/enchant-stats-on-weapon.test.ts:74:34
+     72|   it('the cutlass\'s attacks hit for 1 more; the Dagger\'s and the Pun…
+     73|     const a = holder([PLAIN, DAGGER]), b = holder([THIRSTY, DAGGER])
+     74|     expect(sheet(b, 'strength')).toBe(sheet(a, 'strength'))
+       |                                  ^
+     75|     expect(sheet(b, 'dodge')).toBe(sheet(a, 'dodge') - 5)
+     76|     for (const base of ITEMS[PLAIN]!.grants) expect(look(b, own(THIRST…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/13]⎯
+
+ FAIL  test/enchant-stats-on-weapon.test.ts > Crit and Accuracy — the Bloodletting Greatsword (+3 Crit) and the Gale Crossbow (+20 Accuracy) > +3 Crit is the weapon's attack's; the hero's Crit and a Punch's crit chance are unchanged
+AssertionError: expected 3 to be +0 // Object.is equality
+
+- Expected
++ Received
+
+- 0
++ 3
+
+ ❯ test/enchant-stats-on-weapon.test.ts:84:30
+     82|   it('+3 Crit is the weapon\'s attack\'s; the hero\'s Crit and a Punch…
+     83|     const a = holder(['item.greatsword']), b = holder(['item.greatswor…
+     84|     expect(sheet(b, 'crit')).toBe(sheet(a, 'crit'))
+       |                              ^
+     85|     expect(look(b, own('item.greatsword.bloodletting', HEW)).crit).toB…
+     86|     expect(look(b, PUNCH)).toEqual(look(a, PUNCH))
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/13]⎯
+
+ FAIL  test/enchant-stats-on-weapon.test.ts > Crit and Accuracy — the Bloodletting Greatsword (+3 Crit) and the Gale Crossbow (+20 Accuracy) > +20 Accuracy is the weapon's attacks'; the hero's Accuracy and a Punch's are unchanged
+AssertionError: expected 100 to be 80 // Object.is equality
+
+- Expected
++ Received
+
+- 80
++ 100
+
+ ❯ test/enchant-stats-on-weapon.test.ts:91:34
+     89|   it('+20 Accuracy is the weapon\'s attacks\'; the hero\'s Accuracy an…
+     90|     const a = holder(['item.crossbow']), b = holder(['item.crossbow.ga…
+     91|     expect(sheet(b, 'accuracy')).toBe(sheet(a, 'accuracy'))
+       |                                  ^
+     92|     for (const base of ITEMS['item.crossbow']!.grants) expect(ATTACKS[…
+     93|     expect(look(b, PUNCH).accuracy).toBe(look(a, PUNCH).accuracy)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/13]⎯
+
+ FAIL  test/enchant-stats-on-weapon.test.ts > Precision rides the attacks that use it — the Hunting Spear of Hunting (+1 Precision): the Hurl, not the Thrust > the throw, a Precision attack, hits for 1 more; the thrust, a Strength attack, does not; the hero's Precision is unchanged
+AssertionError: expected 4 to be 3 // Object.is equality
+
+- Expected
++ Received
+
+- 3
++ 4
+
+ ❯ test/enchant-stats-on-weapon.test.ts:103:48
+    101|     const thrust = byStat('strength'), hurl = byStat('precision')
+    102|     expect(thrust && hurl).toBeTruthy()
+    103|     expect(sheet(holder([HUNT]), 'precision')).toBe(sheet(holder([PLAI…
+       |                                                ^
+    104|     expect(ATTACKS[own(HUNT, hurl)]!.attack!.bonus).toBe(ATTACKS[hurl]…
+    105|     expect(ATTACKS[own(HUNT, thrust)]!.attack!.bonus).toBe(ATTACKS[thr…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/13]⎯
+
+ FAIL  test/enchant-stats-on-weapon.test.ts > Precision rides the attacks that use it — the Hunting Spear of Hunting (+1 Precision): the Hurl, not the Thrust > a stat no attack of the weapon uses rides nothing and is named, never dropped — the Greatsword of Sacrifice's +2 Precision
+AssertionError: expected 2 to be 4 // Object.is equality
+
+- Expected
++ Received
+
+- 4
++ 2
+
+ ❯ test/enchant-stats-on-weapon.test.ts:110:51
+    108|   it('a stat no attack of the weapon uses rides nothing and is named, …
+    109|     const SAC = 'item.greatsword.sacrifice', HEW = 'attack.greatsword.…
+    110|     expect(ATTACKS[own(SAC, HEW)]!.attack!.bonus).toBe(ATTACKS[HEW]!.a…
+       |                                                   ^
+    111|     expect((ITEMS[SAC] as Row).gaps?.some((g) => /precision/i.test(g) …
+    112|     // what it conveys to the wielder is still his: −4 Health, −10 Dod…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/13]⎯
+
+ FAIL  test/enchant-stats-on-weapon.test.ts > a named weapon — the Death Blade (+1 Strength) and the Demonic Shiv (+1 Strength, +5 Crit) > the Death Blade's attacks carry its +1; the hero's Strength is the bare hero's; a Punch hits no harder than a bare hero's
+AssertionError: expected 6 to be 5 // Object.is equality
+
+- Expected
++ Received
+
+- 5
++ 6
+
+ ❯ test/enchant-stats-on-weapon.test.ts:121:34
+    119|   it('the Death Blade\'s attacks carry its +1; the hero\'s Strength is…
+    120|     const bare = holder([]), b = holder(['item.death-blade'])
+    121|     expect(sheet(b, 'strength')).toBe(sheet(bare, 'strength'))
+       |                                  ^
+    122|     expect(look(b, PUNCH)).toEqual(look(bare, PUNCH))
+    123|     expect(ITEMS['item.death-blade']!.grants.length).toBeGreaterThan(0)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/13]⎯
+
+ FAIL  test/enchant-stats-on-weapon.test.ts > a named weapon — the Death Blade (+1 Strength) and the Demonic Shiv (+1 Strength, +5 Crit) > its numbers are on its own attack rows: the Codex's damage plus the row's Strength; the Shiv's plus its Crit
+AssertionError: attack.death-blade.reap: expected 2 to be 3 // Object.is equality
+
+- Expected
++ Received
+
+- 3
++ 2
+
+ ❯ test/enchant-stats-on-weapon.test.ts:131:46
+    129|       for (const g of ITEMS[item]!.grants) {
+    130|         const row = PUBLISHED.attacks.find((a) => a.id === g)!
+    131|         expect(ATTACKS[g]!.attack!.bonus, g).toBe(row.damage + (row.st…
+       |                                              ^
+    132|         expect(ATTACKS[g]!.attack!.crit ?? 0, g).toBe((row.crit ?? 0) …
+    133|       }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/13]⎯
+
+ FAIL  test/enchant-stats-on-weapon.test.ts > a named weapon — the Death Blade (+1 Strength) and the Demonic Shiv (+1 Strength, +5 Crit) > a bow's Precision is its shots' — the Seraph Bow (+1 Precision)
+Error: battle options: test-warrior (class.warrior) cannot wield 'item.seraph-bow', a class.ranger item
+ ❯ applyItems src/core/items.ts:128:13
+    126|     if (it.classRestriction && !(base.tags ?? []).includes(it.classRes…
+    127|       const has = (base.tags ?? []).filter((t) => t.startsWith('class.…
+    128|       throw new Error(`${where}: ${base.typeId} (${has.join(', ') || '…
+       |             ^
+    129|     }
+    130|     // plumbing.shield-class (V2 R1, 2026-09-23): a shield is held, an…
+ ❯ assemble src/core/setup.ts:231:26
+ ❯ src/core/setup.ts:562:15
+ ❯ createBattle src/core/setup.ts:549:10
+ ❯ holder test/enchant-stats-on-weapon.test.ts:28:10
+ ❯ test/enchant-stats-on-weapon.test.ts:138:34
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/13]⎯
+
+ FAIL  test/enchant-stats-on-weapon.test.ts > the Forge's tier-2 enchantments are what they were — the one path > an attribute's "+1 damage" rides its weapon's attacks at tier 3 as it does at tier 2 — the Destroying Greatsword
+AssertionError: expected 2 to be 3 // Object.is equality
+
+- Expected
++ Received
+
+- 3
++ 2
+
+ ❯ test/enchant-stats-on-weapon.test.ts:164:76
+    162|   it('an attribute\'s "+1 damage" rides its weapon\'s attacks at tier …
+    163|     const HEW = 'attack.greatsword.hew'
+    164|     expect(ATTACKS[own('item.greatsword.destroying', HEW)]!.attack!.bo…
+       |                                                                            ^
+    165|   })
+    166| })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/13]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  13 failed | 2 passed (15)
+   Start at  21:05:45
+   Duration  812ms (transform 520ms, setup 0ms, import 668ms, tests 21ms, environment 0ms)
+

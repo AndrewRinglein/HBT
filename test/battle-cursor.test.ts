@@ -428,6 +428,14 @@ const shieldsReauthoredGolden = JSON.parse(readFileSync(new URL('./fixtures/batt
 // fields a Great Sword or a War Axe moves - the Alpha Team's among them.
 // Every case frozen here (tools/capture-greatsword-war-axe-reauthored-cursor.mts). Moved: showcase.alpha-team (text only), showcase.assembled-party, showcase.eve-24-a, showcase.eve-24-b (text only), showcase.gash-variant (text only), showcase.horrors, showcase.item-powers (text only), showcase.kiln, showcase.prologue-party, showcase.rime, showcase.supper, showcase.surrounded, showcase.waystation, test.back-flip (text only), test.counterattack (text only), test.fend, test.flaming-longsword (text only), test.flaming-war-axe, test.item-uses, test.opening-cathedral (text only), test.opening-cavern-trail (text only), test.opening-gates (text only), test.swap (text only), progression-surge-0, progression-surge-1, progression-surge-2. A `changed` case is checked here and skips the older layers.
 const greatswordWarAxeReauthoredGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-greatsword-war-axe-reauthored.json', import.meta.url), 'utf8'))
+// fix.enchant-stats-on-weapon (2026-10-04; DECISIONS.md 2026-09-28 'counterattack, special free attacks, the opening six, shields, custom
+// weapons': "Strength becomes the weapon's damage (its attacks go up); Crit and Accuracy apply to that weapon's attacks"), Law 10: a
+// weapon row's Strength, Precision, Crit and Accuracy ride its own attacks at every tier - a tier-3 row grants its own copy of each
+// attack it raises ('<attack id>.<attribute>'), a named weapon's attack rows are raised where they are - and are no stat of the holder.
+// A case that fields such a weapon moves: its holder's sheet is less by those numbers, his weapon's attacks carry them (under their
+// own ids on a tier-3 row), and a Punch, the other hand's weapon and a cast no longer do.
+// Every case frozen here (tools/capture-enchant-stats-on-weapon-cursor.mts). Moved: test.trigger-with-tag, progression-surge-0, progression-surge-1, progression-surge-2. A `changed` case is checked here and skips the older layers.
+const enchantStatsOnWeaponGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-enchant-stats-on-weapon.json', import.meta.url), 'utf8'))
 const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
 // Explicit rule migration, not regenerated historical hashes. These nine old
 // cases contain Surge ledger/refresh changes or terminal markers corrected
@@ -568,7 +576,10 @@ describe('resumable battle cursor', () => {
       const kitAttackClausesExpected = kitAttackClausesGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const shieldsReauthoredExpected = shieldsReauthoredGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const greatswordWarAxeReauthoredExpected = greatswordWarAxeReauthoredGolden.cases.find((row:{id:string})=>row.id===fixture.id)
-      const greatswordWarAxeReauthoredMoved = greatswordWarAxeReauthoredExpected?.changed === true
+      const enchantStatsOnWeaponExpected = enchantStatsOnWeaponGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+      const enchantStatsOnWeaponMoved = enchantStatsOnWeaponExpected?.changed === true
+      // was: const greatswordWarAxeReauthoredMoved = greatswordWarAxeReauthoredExpected?.changed === true — a case fix.enchant-stats-on-weapon moved skips this layer too (fix.enchant-stats-on-weapon 2026-10-04)
+      const greatswordWarAxeReauthoredMoved = greatswordWarAxeReauthoredExpected?.changed === true || enchantStatsOnWeaponMoved
       // was: const shieldsReauthoredMoved = shieldsReauthoredExpected?.changed === true — a case content.greatsword-war-axe-reauthored moved skips this layer too (content.greatsword-war-axe-reauthored 2026-10-04)
       const shieldsReauthoredMoved = shieldsReauthoredExpected?.changed === true || greatswordWarAxeReauthoredMoved
       // was: const kitAttackClausesMoved = kitAttackClausesExpected?.changed === true — a case content.shields-reauthored moved skips this layer too (content.shields-reauthored 2026-10-04)
@@ -710,7 +721,14 @@ describe('resumable battle cursor', () => {
             battle.completeActionCycle(ctx)
           }
         } else result = battle.runBattle(ctx)
-        if (greatswordWarAxeReauthoredExpected) {
+        if (enchantStatsOnWeaponExpected) {
+        expect(hash(ctx.events), 'full enchant-stats-on-weapon events').toBe(enchantStatsOnWeaponExpected.events)
+        expect(hash(ctx.state), 'full enchant-stats-on-weapon state').toBe(enchantStatsOnWeaponExpected.state)
+        expect(hash(ctx.rng.log), 'full enchant-stats-on-weapon RNG').toBe(enchantStatsOnWeaponExpected.rng)
+        expect(result).toEqual(enchantStatsOnWeaponExpected.result)
+        }
+        // was: if (greatswordWarAxeReauthoredExpected) { — fix.enchant-stats-on-weapon (2026-10-04): a case it moved is checked above instead
+        if (greatswordWarAxeReauthoredExpected && !enchantStatsOnWeaponMoved) {
         expect(hash(ctx.events), 'full greatsword-war-axe-reauthored events').toBe(greatswordWarAxeReauthoredExpected.events)
         expect(hash(ctx.state), 'full greatsword-war-axe-reauthored state').toBe(greatswordWarAxeReauthoredExpected.state)
         expect(hash(ctx.rng.log), 'full greatsword-war-axe-reauthored RNG').toBe(greatswordWarAxeReauthoredExpected.rng)

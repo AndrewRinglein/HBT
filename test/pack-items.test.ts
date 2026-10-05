@@ -64,14 +64,37 @@ describe('every Codex item is an ItemDef, and says exactly what it can and canno
   })
 
   it('stat modifiers: every Codex key the engine has is folded under the engine name; every other key is a named gap on the row', () => {
+    // Law 10, 2026-10-04 — fix.enchant-stats-on-weapon (DECISIONS.md 2026-09-28 'counterattack, special free attacks, the opening six, shields, custom weapons': "Strength becomes the weapon's damage (its attacks go up); Crit and Accuracy apply to that weapon's attacks"):
+    // a WEAPON row's Strength, Precision, Crit and Accuracy are no stat of its holder any more - they are on the attacks the row
+    // grants (the named weapons: the Bloody Axe's "+1 Strength"). The rule here had two halves (folded under the engine's name, or a
+    // named gap); it has a third, held as exactly: the row carries no such stat, and every attack it grants says the Codex's own
+    // number plus the row's - the damage where the attack uses that stat, the crit, the accuracy. Everything else is as it was.
+    const codexAttacks = new Map((JSON.parse(readFileSync(join(CONTENT, 'hbt-content.json'), 'utf8')).attacks as { id: string; damage?: number; stat?: string; crit?: number; accuracy?: number }[]).map((a) => [a.id, a]))
+    const ON_ATTACKS = new Set(['strength', 'precision', 'crit', 'accuracy'])
+    let raised = 0
     for (const [id, c] of codexItems()) {
       const it = ITEMS[id]!
       for (const [k, v] of Object.entries(c.statModifiers ?? {})) {
         const engineKey = STAT_WORD[k] ?? k
+        if (c.itemClass === 'weapon' && ON_ATTACKS.has(engineKey)) {
+          expect((it.statModifiers as Record<string, number>)[engineKey], `${id} ${k} is not the holder's`).toBeUndefined()
+          expect(it.grants.length, `${id} grants an attack to carry its ${k}`).toBeGreaterThan(0)
+          for (const g of it.grants) {
+            const row = codexAttacks.get(g)!, a = ATTACKS[g]!.attack!
+            expect(row, `${g} is the Codex's own attack row`).toBeDefined()
+            if (engineKey === 'crit') expect(a.crit ?? 0, `${g} crit`).toBe((row.crit ?? 0) + v)
+            else if (engineKey === 'accuracy') expect(a.accuracy ?? 0, `${g} accuracy`).toBe((row.accuracy ?? 0) + v)
+            else expect(a.bonus, `${g} damage`).toBe((row.damage ?? 0) + ((row.stat ?? 'strength') === engineKey ? v : 0))
+          }
+          expect(it.grants.some((g) => engineKey === 'crit' || engineKey === 'accuracy' || (codexAttacks.get(g)!.stat ?? 'strength') === engineKey) || it.gaps?.some((g) => g.includes(engineKey)), `${id}: its ${k} rides an attack or is named`).toBe(true)
+          raised++
+          continue
+        }
         if ((it.statModifiers as Record<string, number>)[engineKey] !== undefined) expect((it.statModifiers as Record<string, number>)[engineKey], `${id} ${k}`).toBe(v)
         else expect(it.gaps?.some((g) => g.startsWith(`statModifier '${k}'`)), `${id}: ${k} must be a named gap`).toBe(true)
       }
     }
+    expect(raised, 'the named weapons that carry such a number').toBeGreaterThanOrEqual(15)
   })
 
   it('grants: every attack an item grants is in ATTACKS, every power in ABILITIES, or the row names the gap — nothing is dropped silently', () => {

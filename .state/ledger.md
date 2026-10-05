@@ -31245,3 +31245,176 @@ index b015516..efb9947 100644
        expect(ITEMS[id]!.statModifiers.rangedBlock ?? 0, id).toBe(0)
 ```
 </details>
+
+## fix.enchant-stats-on-weapon — LANDED `ea847b1` **NEEDS REVIEW**
+2026-10-05 04:36
+
+  PASS  dependencies landed
+  WARN  not already decided — 2 candidate ruling(s) — READ BEFORE ASKING: SWITCHES.md:2205 · SWITCHES.md:2158
+  PASS  typecheck
+  PASS  the item's own tests — test/battle-cursor.test.ts, test/enchant-triggers-own-weapon.test.ts, test/hero-assembly.test.ts, test/pack-items.test.ts, test/enchant-stats-on-weapon.test.ts
+  PASS  gate 1 — the id appears in a real battle — item.greatsword: 2 log lines, 2 fired, 2 changed state
+  PASS  brought its own tests — test/battle-cursor.test.ts, test/enchant-triggers-own-weapon.test.ts, test/hero-assembly.test.ts, test/pack-items.test.ts, test/enchant-stats-on-weapon.test.ts, test/fixtures/battle-cursor-enchant-stats-on-weapon.json
+  WARN  existing tests untouched — DELETED LINES in test/battle-cursor.test.ts (-2), test/enchant-triggers-own-weapon.test.ts (-2), test/hero-assembly.test.ts (-1) — will land FLAGGED for review
+  PASS  control battles unchanged
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — shape 'data' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without item.greatsword — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/battle-cursor.test.ts b/test/battle-cursor.test.ts
+index 2b6533e..585be59 100644
+--- a/test/battle-cursor.test.ts
++++ b/test/battle-cursor.test.ts
+@@ -429,4 +429,12 @@ const shieldsReauthoredGolden = JSON.parse(readFileSync(new URL('./fixtures/batt
+ // Every case frozen here (tools/capture-greatsword-war-axe-reauthored-cursor.mts). Moved: showcase.alpha-team (text only), showcase.assembled-party, showcase.eve-24-a, showcase.eve-24-b (text only), showcase.gash-variant (text only), showcase.horrors, showcase.item-powers (text only), showcase.kiln, showcase.prologue-party, showcase.rime, showcase.supper, showcase.surrounded, showcase.waystation, test.back-flip (text only), test.counterattack (text only), test.fend, test.flaming-longsword (text only), test.flaming-war-axe, test.item-uses, test.opening-cathedral (text only), test.opening-cavern-trail (text only), test.opening-gates (text only), test.swap (text only), progression-surge-0, progression-surge-1, progression-surge-2. A `changed` case is checked here and skips the older layers.
+ const greatswordWarAxeReauthoredGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-greatsword-war-axe-reauthored.json', import.meta.url), 'utf8'))
++// fix.enchant-stats-on-weapon (2026-10-04; DECISIONS.md 2026-09-28 'counterattack, special free attacks, the opening six, shields, custom
++// weapons': "Strength becomes the weapon's damage (its attacks go up); Crit and Accuracy apply to that weapon's attacks"), Law 10: a
++// weapon row's Strength, Precision, Crit and Accuracy ride its own attacks at every tier - a tier-3 row grants its own copy of each
++// attack it raises ('<attack id>.<attribute>'), a named weapon's attack rows are raised where they are - and are no stat of the holder.
++// A case that fields such a weapon moves: its holder's sheet is less by those numbers, his weapon's attacks carry them (under their
++// own ids on a tier-3 row), and a Punch, the other hand's weapon and a cast no longer do.
++// Every case frozen here (tools/capture-enchant-stats-on-weapon-cursor.mts). Moved: test.trigger-with-tag, progression-surge-0, progression-surge-1, progression-surge-2. A `changed` case is checked here and skips the older layers.
++const enchantStatsOnWeaponGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-enchant-stats-on-weapon.json', import.meta.url), 'utf8'))
+ const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
+ // Explicit rule migration, not regenerated historical hashes. These nine old
+@@ -569,5 +577,8 @@ describe('resumable battle cursor', () => {
+       const shieldsReauthoredExpected = shieldsReauthoredGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+       const greatswordWarAxeReauthoredExpected = greatswordWarAxeReauthoredGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+-      const greatswordWarAxeReauthoredMoved = greatswordWarAxeReauthoredExpected?.changed === true
++      const enchantStatsOnWeaponExpected = enchantStatsOnWeaponGolden.cases.find((row:{id:string})=>row.id===fixture.id)
++      const enchantStatsOnWeaponMoved = enchantStatsOnWeaponExpected?.changed === true
++      // was: const greatswordWarAxeReauthoredMoved = greatswordWarAxeReauthoredExpected?.changed === true — a case fix.enchant-stats-on-weapon moved skips this layer too (fix.enchant-stats-on-weapon 2026-10-04)
++      const greatswordWarAxeReauthoredMoved = greatswordWarAxeReauthoredExpected?.changed === true || enchantStatsOnWeaponMoved
+       // was: const shieldsReauthoredMoved = shieldsReauthoredExpected?.changed === true — a case content.greatsword-war-axe-reauthored moved skips this layer too (content.greatsword-war-axe-reauthored 2026-10-04)
+       const shieldsReauthoredMoved = shieldsReauthoredExpected?.changed === true || greatswordWarAxeReauthoredMoved
+@@ -711,5 +722,12 @@ describe('resumable battle cursor', () => {
+           }
+         } else result = battle.runBattle(ctx)
+-        if (greatswordWarAxeReauthoredExpected) {
++        if (enchantStatsOnWeaponExpected) {
++        expect(hash(ctx.events), 'full enchant-stats-on-weapon events').toBe(enchantStatsOnWeaponExpected.events)
++        expect(hash(ctx.state), 'full enchant-stats-on-weapon state').toBe(enchantStatsOnWeaponExpected.state)
++        expect(hash(ctx.rng.log), 'full enchant-stats-on-weapon RNG').toBe(enchantStatsOnWeaponExpected.rng)
++        expect(result).toEqual(enchantStatsOnWeaponExpected.result)
++        }
++        // was: if (greatswordWarAxeReauthoredExpected) { — fix.enchant-stats-on-weapon (2026-10-04): a case it moved is checked above instead
++        if (greatswordWarAxeReauthoredExpected && !enchantStatsOnWeaponMoved) {
+         expect(hash(ctx.events), 'full greatsword-war-axe-reauthored events').toBe(greatswordWarAxeReauthoredExpected.events)
+         expect(hash(ctx.state), 'full greatsword-war-axe-reauthored state').toBe(greatswordWarAxeReauthoredExpected.state)
+diff --git a/test/enchant-triggers-own-weapon.test.ts b/test/enchant-triggers-own-weapon.test.ts
+index a97ceea..34af6b4 100644
+--- a/test/enchant-triggers-own-weapon.test.ts
++++ b/test/enchant-triggers-own-weapon.test.ts
+@@ -64,5 +64,10 @@ describe('an artifact attribute\'s triggers ride its own weapon\'s attacks', ()
+     const SWORD = 'item.longsword.bloodletting', kit = [SWORD, 'item.dagger']
+     expect(hooksOf(SWORD)).toEqual(['onCrit'])
+-    const slash = landed(kit, 'attack.longsword.slash')
++    // Law 10, 2026-10-04 — fix.enchant-stats-on-weapon (DECISIONS.md 2026-09-28 'counterattack, special free attacks, the opening six, shields, custom weapons': "Strength becomes the weapon's damage (its attacks go up); Crit and Accuracy apply to that weapon's attacks"):
++    // this swung 'attack.longsword.slash'. The attribute's +3 Crit is the sword's own attack's now, so the row grants its own copy
++    // of the Slash (attack.longsword.slash.bloodletting) and the holder has that, not the plain one. The claim is unchanged and is
++    // said of the row's own attack. (was: const slash = landed(kit, 'attack.longsword.slash'))
++    expect(ITEMS[SWORD]!.grants).toEqual(['attack.longsword.slash.bloodletting'])
++    const slash = landed(kit, ITEMS[SWORD]!.grants[0]!)
+     expect(rolls(slash, SWORD)).toEqual(['onCrit'])
+     expect(slash.some((e) => e.type === 'status.applied' && e['statusId'] === 'status.bleed')).toBe(true)
+@@ -77,5 +82,9 @@ describe('an artifact attribute\'s triggers ride its own weapon\'s attacks', ()
+     const DAGGERS = 'item.daggers.hobbling'
+     expect(hooksOf(DAGGERS)).toEqual(['onDamage'])
+-    const stab = landed([DAGGERS], 'attack.daggers.stab')
++    // Law 10, 2026-10-04 (the note at the Bloodletting Longsword, above): the Hobbling attribute's "+1 damage" rides the daggers' own
++    // attacks, so the row grants its own copies; the Stab swung is the row's. (was: const stab = landed([DAGGERS], 'attack.daggers.stab'))
++    const ownStab = ITEMS[DAGGERS]!.grants.find((g) => g.startsWith('attack.daggers.stab'))!
++    expect(ownStab).toBe('attack.daggers.stab.hobbling')
++    const stab = landed([DAGGERS], ownStab)
+     expect(rolls(stab, DAGGERS)).toEqual(['onDamage'])
+     expect(stab.some((e) => e.type === 'status.applied' && e['statusId'] === 'status.slow')).toBe(true)
+diff --git a/test/hero-assembly.test.ts b/test/hero-assembly.test.ts
+index b9f52fd..d2137dc 100644
+--- a/test/hero-assembly.test.ts
++++ b/test/hero-assembly.test.ts
+@@ -33,4 +33,19 @@ describe('the registries the assembly reads', () => {
+ })
+ 
++/** What the Codex says the held WEAPON rows give in Strength, Precision, Crit and Accuracy - the four the engine puts on the
++ *  weapon's own attacks (fix.enchant-stats-on-weapon): a codex row's own statModifiers, or - a row made from a base and an
++ *  attribute - the attribute's. Read from the published Codex, keyed by the schedule's stat words. */
++const PUBLISHED = JSON.parse(readFileSync(join(__dirname, '..', '..', 'content', 'hbt-content.json'), 'utf8')) as { items: { id: string; statModifiers?: Record<string, number> }[]; enchants: { id: string; statModifiers?: Record<string, number> }[] }
++function weaponNumbersOf(items: readonly string[]): Record<string, number> {
++  const out: Record<string, number> = {}
++  for (const id of items) {
++    const row = ITEMS[id] as ((typeof ITEMS)[string] & { enchant?: string }) | undefined
++    if (!row || row.itemClass !== 'weapon') continue
++    const said = row.enchant ? PUBLISHED.enchants.find((e) => e.id === row.enchant)?.statModifiers : PUBLISHED.items.find((x) => x.id === id)?.statModifiers
++    for (const k of ['strength', 'precision', 'crit', 'accuracy']) if (said?.[k]) out[k] = (out[k] ?? 0) + said[k]!
++  }
++  return out
++}
++
+ describe('the progression roster, assembled by the engine', () => {
+   it('all twenty battles: every fielded hero derives through fieldedDef() and the schedule\'s stat block agrees — findings printed', () => {
+@@ -44,5 +59,13 @@ describe('the progression roster, assembled by the engine', () => {
+         const def = fieldedDef(id, opts.heroItems[i], opts.heroProgress[i])
+         for (const w of opts.stowed[i]!) stowed.push(`battle ${b.battle} ${id} stows weapon ${w} in an item slot`)
+-        for (const d of disagreements(def, opts.oracle[i]!)) findings.push(`battle ${b.battle} ${id} ${d.stat}: engine ${d.engine} vs schedule ${d.schedule}`)
++        // Law 10, 2026-10-04 — fix.enchant-stats-on-weapon (DECISIONS.md 2026-09-28 'counterattack, special free attacks, the opening six, shields, custom weapons': "Strength becomes the weapon's damage (its attacks go up); Crit and Accuracy apply to that weapon's attacks"):
++        // the schedule's stat block is built by progression/build-schedule.mjs, which merges EVERY held item's numbers onto the hero -
++        // a weapon's Strength, Precision, Crit and Accuracy among them. The engine puts those four on the weapon's own attacks now, so
++        // the hero's sheet is less by exactly what his weapons' Codex rows say of them. The comparison adds that back (as the Crit base
++        // is added back in disagreements()), so the two still speak of one number and any OTHER difference is still a finding.
++        // FOUND: the schedule's own rule is older than the ruling; its builder is not changed here (SWITCHES.md weaponStatsSchedule).
++        // (was: for (const d of disagreements(def, opts.oracle[i]!)) findings.push(…) - every disagreement, with nothing added back)
++        const onWeapons = weaponNumbersOf(opts.heroItems[i] ?? [])
++        for (const d of disagreements(def, opts.oracle[i]!)) if (d.engine + (onWeapons[d.stat] ?? 0) !== d.schedule) findings.push(`battle ${b.battle} ${id} ${d.stat}: engine ${d.engine} vs schedule ${d.schedule}`)
+         // the abilities are in — every drafted power is on the fielded unit
+         for (const p of opts.heroProgress[i]!.powers ?? []) expect(def.abilities, `${id} carries ${p}`).toContain(p)
+diff --git a/test/pack-items.test.ts b/test/pack-items.test.ts
+index 40b871e..6328e8d 100644
+--- a/test/pack-items.test.ts
++++ b/test/pack-items.test.ts
+@@ -65,12 +65,35 @@ describe('every Codex item is an ItemDef, and says exactly what it can and canno
+ 
+   it('stat modifiers: every Codex key the engine has is folded under the engine name; every other key is a named gap on the row', () => {
++    // Law 10, 2026-10-04 — fix.enchant-stats-on-weapon (DECISIONS.md 2026-09-28 'counterattack, special free attacks, the opening six, shields, custom weapons': "Strength becomes the weapon's damage (its attacks go up); Crit and Accuracy apply to that weapon's attacks"):
++    // a WEAPON row's Strength, Precision, Crit and Accuracy are no stat of its holder any more - they are on the attacks the row
++    // grants (the named weapons: the Bloody Axe's "+1 Strength"). The rule here had two halves (folded under the engine's name, or a
++    // named gap); it has a third, held as exactly: the row carries no such stat, and every attack it grants says the Codex's own
++    // number plus the row's - the damage where the attack uses that stat, the crit, the accuracy. Everything else is as it was.
++    const codexAttacks = new Map((JSON.parse(readFileSync(join(CONTENT, 'hbt-content.json'), 'utf8')).attacks as { id: string; damage?: number; stat?: string; crit?: number; accuracy?: number }[]).map((a) => [a.id, a]))
++    const ON_ATTACKS = new Set(['strength', 'precision', 'crit', 'accuracy'])
++    let raised = 0
+     for (const [id, c] of codexItems()) {
+       const it = ITEMS[id]!
+       for (const [k, v] of Object.entries(c.statModifiers ?? {})) {
+         const engineKey = STAT_WORD[k] ?? k
++        if (c.itemClass === 'weapon' && ON_ATTACKS.has(engineKey)) {
++          expect((it.statModifiers as Record<string, number>)[engineKey], `${id} ${k} is not the holder's`).toBeUndefined()
++          expect(it.grants.length, `${id} grants an attack to carry its ${k}`).toBeGreaterThan(0)
++          for (const g of it.grants) {
++            const row = codexAttacks.get(g)!, a = ATTACKS[g]!.attack!
++            expect(row, `${g} is the Codex's own attack row`).toBeDefined()
++            if (engineKey === 'crit') expect(a.crit ?? 0, `${g} crit`).toBe((row.crit ?? 0) + v)
++            else if (engineKey === 'accuracy') expect(a.accuracy ?? 0, `${g} accuracy`).toBe((row.accuracy ?? 0) + v)
++            else expect(a.bonus, `${g} damage`).toBe((row.damage ?? 0) + ((row.stat ?? 'strength') === engineKey ? v : 0))
++          }
++          expect(it.grants.some((g) => engineKey === 'crit' || engineKey === 'accuracy' || (codexAttacks.get(g)!.stat ?? 'strength') === engineKey) || it.gaps?.some((g) => g.includes(engineKey)), `${id}: its ${k} rides an attack or is named`).toBe(true)
++          raised++
++          continue
++        }
+         if ((it.statModifiers as Record<string, number>)[engineKey] !== undefined) expect((it.statModifiers as Record<string, number>)[engineKey], `${id} ${k}`).toBe(v)
+         else expect(it.gaps?.some((g) => g.startsWith(`statModifier '${k}'`)), `${id}: ${k} must be a named gap`).toBe(true)
+       }
+     }
++    expect(raised, 'the named weapons that carry such a number').toBeGreaterThanOrEqual(15)
+   })
+ 
+```
+</details>

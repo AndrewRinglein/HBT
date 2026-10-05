@@ -32,6 +32,21 @@ describe('the registries the assembly reads', () => {
   })
 })
 
+/** What the Codex says the held WEAPON rows give in Strength, Precision, Crit and Accuracy - the four the engine puts on the
+ *  weapon's own attacks (fix.enchant-stats-on-weapon): a codex row's own statModifiers, or - a row made from a base and an
+ *  attribute - the attribute's. Read from the published Codex, keyed by the schedule's stat words. */
+const PUBLISHED = JSON.parse(readFileSync(join(__dirname, '..', '..', 'content', 'hbt-content.json'), 'utf8')) as { items: { id: string; statModifiers?: Record<string, number> }[]; enchants: { id: string; statModifiers?: Record<string, number> }[] }
+function weaponNumbersOf(items: readonly string[]): Record<string, number> {
+  const out: Record<string, number> = {}
+  for (const id of items) {
+    const row = ITEMS[id] as ((typeof ITEMS)[string] & { enchant?: string }) | undefined
+    if (!row || row.itemClass !== 'weapon') continue
+    const said = row.enchant ? PUBLISHED.enchants.find((e) => e.id === row.enchant)?.statModifiers : PUBLISHED.items.find((x) => x.id === id)?.statModifiers
+    for (const k of ['strength', 'precision', 'crit', 'accuracy']) if (said?.[k]) out[k] = (out[k] ?? 0) + said[k]!
+  }
+  return out
+}
+
 describe('the progression roster, assembled by the engine', () => {
   it('all twenty battles: every fielded hero derives through fieldedDef() and the schedule\'s stat block agrees — findings printed', () => {
     const findings: string[] = []
@@ -43,7 +58,15 @@ describe('the progression roster, assembled by the engine', () => {
         heroes++
         const def = fieldedDef(id, opts.heroItems[i], opts.heroProgress[i])
         for (const w of opts.stowed[i]!) stowed.push(`battle ${b.battle} ${id} stows weapon ${w} in an item slot`)
-        for (const d of disagreements(def, opts.oracle[i]!)) findings.push(`battle ${b.battle} ${id} ${d.stat}: engine ${d.engine} vs schedule ${d.schedule}`)
+        // Law 10, 2026-10-04 — fix.enchant-stats-on-weapon (DECISIONS.md 2026-09-28 'counterattack, special free attacks, the opening six, shields, custom weapons': "Strength becomes the weapon's damage (its attacks go up); Crit and Accuracy apply to that weapon's attacks"):
+        // the schedule's stat block is built by progression/build-schedule.mjs, which merges EVERY held item's numbers onto the hero -
+        // a weapon's Strength, Precision, Crit and Accuracy among them. The engine puts those four on the weapon's own attacks now, so
+        // the hero's sheet is less by exactly what his weapons' Codex rows say of them. The comparison adds that back (as the Crit base
+        // is added back in disagreements()), so the two still speak of one number and any OTHER difference is still a finding.
+        // FOUND: the schedule's own rule is older than the ruling; its builder is not changed here (SWITCHES.md weaponStatsSchedule).
+        // (was: for (const d of disagreements(def, opts.oracle[i]!)) findings.push(…) - every disagreement, with nothing added back)
+        const onWeapons = weaponNumbersOf(opts.heroItems[i] ?? [])
+        for (const d of disagreements(def, opts.oracle[i]!)) if (d.engine + (onWeapons[d.stat] ?? 0) !== d.schedule) findings.push(`battle ${b.battle} ${id} ${d.stat}: engine ${d.engine} vs schedule ${d.schedule}`)
         // the abilities are in — every drafted power is on the fielded unit
         for (const p of opts.heroProgress[i]!.powers ?? []) expect(def.abilities, `${id} carries ${p}`).toContain(p)
       })
