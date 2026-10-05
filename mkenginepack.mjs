@@ -1013,8 +1013,24 @@ function twoStatTerms(a) {
 }
 const DROPPED_ATTACK_FIELDS = [
   ['addsTargetStatus', "damage that adds the target's own status — engine capability.damage-adds-target-status"],
-  ['accuracyVs', 'Accuracy against one kind of enemy — engine capability.summons'],
 ];
+// engine capability.summons (2026-10-05; engine DECISIONS.md 2026-10-04 'his 28 reward weapons read back …': "We need:
+// summons"): `accuracyVs` — an attack's extra Accuracy against a kind of target — reaches the engine as written: each key
+// the flag `summon` (anything summoned) or a unit type the pack's units carry (as their tag, lower case), each number a
+// whole one. A kind no unit of the pack is FAILS THE BUILD. On a BURST it stays a named gap (a burst rolls no Accuracy).
+const UNIT_KINDS = new Set(AUTH.units.flatMap((u) => (u.types || []).map((t) => t.toLowerCase())));
+function accuracyVsOf(a) {
+  if (a.accuracyVs === undefined || burstOf(a)) return {};
+  const out = {};
+  for (const [kind, n] of Object.entries(a.accuracyVs)) {
+    const k = kind.toLowerCase();
+    if (k !== 'summon' && !UNIT_KINDS.has(k)) throw new Error(`mkenginepack: ${a.id} has Accuracy against '${kind}', which is neither 'summon' nor a type any unit of the pack is`);
+    if (!Number.isSafeInteger(n) || n === 0) throw new Error(`mkenginepack: ${a.id} has Accuracy against '${kind}' of '${n}' — a whole number`);
+    out[k] = n;
+  }
+  if (!Object.keys(out).length) throw new Error(`mkenginepack: ${a.id} has an empty accuracyVs`);
+  return { accuracyVs: out };
+}
 function settledAttackExtras(a, unitId) {
   const out = [];
   for (const t of a.triggers || []) {
@@ -1097,6 +1113,7 @@ function settledAttackExtras(a, unitId) {
   // against one kind of enemy. Each is a filed engine capability; until it lands the row deals its first stat alone.
   for (const [field, needs] of DROPPED_ATTACK_FIELDS) if (a[field] !== undefined) gap(unitId, `${a.id} ${field}: ${JSON.stringify(a[field])}`, needs);
   if (burstOf(a)) for (const field of TWO_STAT_FIELDS) if (a[field] !== undefined) gap(unitId, `${a.id} ${field}: ${JSON.stringify(a[field])}`, 'damage from two stats on a burst — a burst\'s damage is its packets\' (V2 bursts)');
+  if (burstOf(a) && a.accuracyVs !== undefined) gap(unitId, `${a.id} accuracyVs: ${JSON.stringify(a.accuracyVs)}`, 'Accuracy against a kind of target on a burst — a burst rolls no Accuracy (V2 bursts)');
   return out;
 }
 
@@ -1168,6 +1185,15 @@ function compiledPowerOf(p, unitId) {
     }
     POWER_GAPS.set(p.id, found);
     return { ...base, range: +range[1], burst, ...(found.length ? { gaps: found.map((x) => `${x.clause} — ${x.needs}`) } : {}) };
+  }
+  // engine capability.summons (2026-10-05): "Summon one <Unit> on a hex adjacent to you. It is a summoned ally with its own
+  // stat block and its own AI." on "an empty hex adjacent to you" -> a power aimed at an empty hex within 1 that places one
+  // unit of the pack's row NAMED <Unit> there, on the caster's side (the engine's `summon`). The name must be exactly one
+  // unit row of the pack — none, or two, FAILS THE BUILD: a summon of a unit the game cannot field is not a named gap.
+  if ((m = desc.match(/^Summon one ([A-Z][A-Za-z' -]+) on a hex adjacent to you\. It is a summoned ally with its own stat block and its own AI\.$/)) && tgt === 'an empty hex adjacent to you') {
+    const rows = AUTH.units.filter((u) => u.name === m[1]);
+    if (rows.length !== 1) throw new Error(`mkenginepack: ${p.id} summons '${m[1]}', which ${rows.length} unit rows of the pack are named`);
+    return { ...base, range: 1, target: { select: 'hex', side: 'any' }, effects: [{ kind: 'summon', unit: rows[0].id }] };
   }
   if ((m = desc.match(/^Heal the target for (\d+) \+ half your Spirit\./))
     && (r = tgt.match(/^one ally within (\d+) hexes$/))) {
@@ -1325,6 +1351,7 @@ for (const id of PARTY) {
         ...(a.hits > 1 ? { hits: a.hits } : {}),   // attack.multihit, 2026-09-03
     ...(a.cooldown ? { cooldown: a.cooldown } : {}),   // engine content.shields-reauthored (2026-10-04): the row's own cooldown — it was dropped, silently, on every weapon attack
     ...twoStatTerms(a),   // engine capability.damage-from-two-stats (2026-10-05)
+    ...accuracyVsOf(a),   // engine capability.summons (2026-10-05)
       };
       attackIds.push(a.id);
       kitTriggers.push(...settledAttackExtras(a, id));
@@ -1426,6 +1453,7 @@ const alphaTeam = [];
         ...(a.hits > 1 ? { hits: a.hits } : {}),   // attack.multihit, 2026-09-03
     ...(a.cooldown ? { cooldown: a.cooldown } : {}),   // engine content.shields-reauthored (2026-10-04): the row's own cooldown — it was dropped, silently, on every weapon attack
     ...twoStatTerms(a),   // engine capability.damage-from-two-stats (2026-10-05)
+    ...accuracyVsOf(a),   // engine capability.summons (2026-10-05)
       };
       attackIds.push(a.id);
       const extras = settledAttackExtras(a, id);
@@ -1535,6 +1563,7 @@ for (const id of CIVILIANS) {
         ...(a.hits > 1 ? { hits: a.hits } : {}),   // attack.multihit, 2026-09-03
     ...(a.cooldown ? { cooldown: a.cooldown } : {}),   // engine content.shields-reauthored (2026-10-04): the row's own cooldown — it was dropped, silently, on every weapon attack
     ...twoStatTerms(a),   // engine capability.damage-from-two-stats (2026-10-05)
+    ...accuracyVsOf(a),   // engine capability.summons (2026-10-05)
       };
       attackIds.push(a.id);
       civTriggers.push(...settledAttackExtras(a, id));
@@ -1675,6 +1704,7 @@ function takeItemAttack(a) {
     ...(a.hits > 1 ? { hits: a.hits } : {}),   // attack.multihit, 2026-09-03
     ...(a.cooldown ? { cooldown: a.cooldown } : {}),   // engine content.shields-reauthored (2026-10-04): the row's own cooldown — it was dropped, silently, on every weapon attack
     ...twoStatTerms(a),   // engine capability.damage-from-two-stats (2026-10-05)
+    ...accuracyVsOf(a),   // engine capability.summons (2026-10-05)
   };
 }
 // ── ITEM ACTIVES (capability.charges, 2026-09-03) ───────────────────────────
@@ -2352,7 +2382,7 @@ function testAbilities() {
   return out;
 }
 const UNIT_FIELDS = new Set(['typeId', 'name', 'side', 'levelTable', 'badges', 'maxHp', 'armor', 'resist', 'fireResist', 'poisonResist', 'shadowResist', 'coldResist', 'block', 'rangedBlock', 'accuracy', 'dodge', 'strength', 'precision', 'magic', 'spirit', 'crit', 'luck', 'toughness', 'surge', 'vision', 'bleedOutTurns', 'deathbedFighting', 'tier', 'auras', 'role', 'movement', 'reach', 'maxStamina', 'staminaRegen', 'ai', 'aiChanges', 'attacks', 'abilities', 'moves', 'tags', 'triggers', 'badges']);   // aiChanges: ai.mode-change (engine, 2026-09-26)
-const ATTACK_FIELDS = new Set(['id', 'name', 'slot', 'kind', 'damageType', 'bonus', 'stat', 'reach', 'staminaCost', 'crit', 'critCount', 'burst', 'cooldown', 'warmup', 'uses', 'free', 'accuracy', 'hits', 'secondaryDamage', 'armorPenetration', 'impact', 'destroy', 'tags', 'statMult', 'addsStats']);   // tags: engine capability.unit-trigger-with-tag (2026-10-04) — a delta keeps its real attack's; a test row may state its own
+const ATTACK_FIELDS = new Set(['accuracyVs', 'id', 'name', 'slot', 'kind', 'damageType', 'bonus', 'stat', 'reach', 'staminaCost', 'crit', 'critCount', 'burst', 'cooldown', 'warmup', 'uses', 'free', 'accuracy', 'hits', 'secondaryDamage', 'armorPenetration', 'impact', 'destroy', 'tags', 'statMult', 'addsStats']);   // tags: engine capability.unit-trigger-with-tag (2026-10-04) — a delta keeps its real attack's; a test row may state its own
 // a delta may start from any packed row — the real families AND the test
 // cohort (test-gash-zombie is the cohort's zombie plus one rider)
 const realUnits = new Map([...alphaTeam, ...prologueParty, ...authoredEnemies, ...heroes, ...enemies].map((u) => [u.typeId, u]));

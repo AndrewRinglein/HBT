@@ -1,0 +1,46 @@
+✖ Call the Wolf summons the pack's Wolf on an empty hex beside the caster; Unbinding carries its Accuracy against a summon; the Wolf is a unit row (1.1323ms)
+✖ a summon names exactly one unit row of the pack, and Accuracy against a kind names a kind a unit is - or the build fails (335.8677ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 0
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 784.7832
+
+✖ failing tests:
+
+test at test\trigger-ids.test.mjs:444:1
+✖ Call the Wolf summons the pack's Wolf on an empty hex beside the caster; Unbinding carries its Accuracy against a summon; the Wolf is a unit row (1.1323ms)
+  AssertionError [ERR_ASSERTION]: the power is in the pack
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-engine/content/test/trigger-ids.test.mjs:445:90)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.start (node:internal/test_runner/test:1003:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:358:17) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at test\trigger-ids.test.mjs:453:1
+✖ a summon names exactly one unit row of the pack, and Accuracy against a kind names a kind a unit is - or the build fails (335.8677ms)
+  AssertionError [ERR_ASSERTION]: Expected "actual" to be strictly unequal to: 0
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-engine/content/test/trigger-ids.test.mjs:455:9)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+      at Test.postRun (node:internal/test_runner/test:1235:19)
+      at Test.run (node:internal/test_runner/test:1163:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:358:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 0,
+    operator: 'notStrictEqual',
+    diff: 'simple'
+  }

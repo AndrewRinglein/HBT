@@ -582,16 +582,6 @@
    "needs": "item power — shape unparsed"
   },
   {
-   "unit": "item.staff-of-summoning",
-   "what": "grants power.staff-of-summoning.call-the-wolf",
-   "needs": "item power — shape unparsed"
-  },
-  {
-   "unit": "item.staff-of-summoning",
-   "what": "attack.staff-of-summoning.unbinding accuracyVs: {\"summon\":15}",
-   "needs": "Accuracy against one kind of enemy — engine capability.summons"
-  },
-  {
    "unit": "item.staff-of-the-magi",
    "what": "grants power.staff-of-the-magi.power-ward",
    "needs": "item power — shape unparsed"

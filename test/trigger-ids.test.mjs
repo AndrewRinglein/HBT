@@ -437,3 +437,24 @@ test('an origin badge the Codex has no row for fails the build by name; it is ne
  const bad=candidate(edit=>edit('gen/heroes.json',data=>{data.heroes.find(h=>h.id==='hero.base.warrior-iron').originBadges=['Stalwart','No Such Badge']}));
  assert.notEqual(bad.status,0);assert.match(bad.stdout+bad.stderr,/hero\.base\.warrior-iron names the origin badge 'No Such Badge'/);
 });
+
+// engine capability.summons (2026-10-05; engine DECISIONS.md 2026-10-04 'his 28 reward weapons read back …': "We need: summons"):
+// the Staff of Summoning's Call the Wolf compiles to a power aimed at an empty hex that summons the pack's Wolf, and its
+// Unbinding's Accuracy against anything summoned reaches the pack. Both were named gaps.
+test('Call the Wolf summons the pack\'s Wolf on an empty hex beside the caster; Unbinding carries its Accuracy against a summon; the Wolf is a unit row',()=>{
+ const call=live.pack.authoredAbilities['power.staff-of-summoning.call-the-wolf'];assert.ok(call,'the power is in the pack');
+ assert.deepEqual([call.range,call.staminaCost,call.cooldown,call.target,call.effects,call.gaps??[]],[1,2,5,{select:'hex',side:'any'},[{kind:'summon',unit:'unit.wolf'}],[]]);
+ assert.deepEqual(live.pack.authoredAttacks['attack.staff-of-summoning.unbinding'].accuracyVs,{summon:15});
+ const staff=live.pack.items.find?.(i=>i.id==='item.staff-of-summoning')??live.pack.items['item.staff-of-summoning'];
+ assert.deepEqual((staff.gaps??[]).filter(g=>/call-the-wolf|accuracyVs/.test(g)),[]);
+ const wolf=live.pack.authoredEnemies.find(u=>u.typeId==='unit.wolf');assert.ok(wolf,'the Wolf is a unit row of the pack');
+ assert.deepEqual([wolf.name,wolf.maxHp,wolf.strength,wolf.precision,wolf.accuracy,wolf.movement,wolf.attacks],['Wolf',5,3,2,67,6,['attack.wolf.pounce','attack.wolf.nip']]);
+});
+test('a summon names exactly one unit row of the pack, and Accuracy against a kind names a kind a unit is - or the build fails',()=>{
+ const none=candidate(edit=>edit('gen/settled-items.json',data=>{const p=data.powers.find(p=>p.id==='power.staff-of-summoning.call-the-wolf');p.description=p.description.replace('one Wolf','one Griffin')}));
+ assert.notEqual(none.status,0);assert.match(none.stdout+none.stderr,/call-the-wolf summons 'Griffin', which 0 unit rows/);
+ const kind=candidate(edit=>edit('gen/settled-items.json',data=>{data.attacks.find(a=>a.id==='attack.staff-of-summoning.unbinding').accuracyVs={gryphon:15}}));
+ assert.notEqual(kind.status,0);assert.match(kind.stdout+kind.stderr,/unbinding has Accuracy against 'gryphon'/);
+ const undead=candidate(edit=>edit('gen/settled-items.json',data=>{data.attacks.find(a=>a.id==='attack.staff-of-summoning.unbinding').accuracyVs={Undead:10}}));
+ assert.equal(undead.status,0,undead.stderr);assert.deepEqual(undead.pack.authoredAttacks['attack.staff-of-summoning.unbinding'].accuracyVs,{undead:10});
+});

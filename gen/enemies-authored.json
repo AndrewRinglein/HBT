@@ -2775,6 +2775,55 @@
     }
    ],
    "source": "Ruled 2026-09-29 (Andrew, engine/DECISIONS.md \"the Ghost as the bestiary has it; Cold Resist; ...\"): \"Should the Ghost go in with its bestiary numbers as-is ...?\" — \"Yes.\" · \"Ghost should inflict possession\". Ported as-is from gen/bestiary.json unit.ghost (rank 1: Strength 4, Precision 5, Armor 0, Health 4, Reach 1, Resist 0, Dodge 10; derived Accuracy 85, Movement 5; types Ghost and Flying — Flying is the flight move). Possess: the bestiary rider (gen/bestiary-riders.json, 25%, SOFT), fired onHit because Possess deals 0 — Magic 0 + 0 is exactly the authored 0 (engine SWITCHES ghostPossessReadsMagic). Attack: the bestiary gives it no number; it reads Strength, magic-typed (engine SWITCHES ghostAttackReadsStrength). Phase (\"grant a stat for the Battle\", value 2, no stat named) is left out — the bestiary names no stat. Family oddballs: no ghost family exists. | 2026-09-29 (Andrew, engine/DECISIONS.md \"the Ghost possesses on its Attack at 15%; ...\"): \"We should move it to a chance on attack. Let us give it a 15% chance on attack.\" The possession rider moved to Attack (onHit, 15%); Possess — 0 damage and nothing else — is dropped (the AI never chose it: 40 battles, 53 Attacks, 0 Possess)."
+  },
+  {
+   "id": "unit.wolf",
+   "name": "Wolf",
+   "playerLine": "This creature's nip can leave whoever it bites Weak.",
+   "tier": 1,
+   "types": [
+    "Beast"
+   ],
+   "stats": {
+    "movement": 6,
+    "strength": 3,
+    "precision": 2,
+    "accuracy": 67,
+    "health": 5
+   },
+   "attacks": [
+    {
+     "id": "attack.wolf.pounce",
+     "name": "Pounce",
+     "targets": "one enemy in melee reach",
+     "damage": {
+      "stat": "strength",
+      "mod": 0
+     }
+    },
+    {
+     "id": "attack.wolf.nip",
+     "name": "Nip",
+     "targets": "one enemy in melee reach",
+     "damage": {
+      "stat": "strength",
+      "mod": -1
+     },
+     "triggers": [
+      {
+       "hook": "onHit",
+       "effects": [
+        {
+         "effect": "apply a status",
+         "status": "weak",
+         "value": 1
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "source": "engine capability.summons (2026-10-05): the Staff of Summoning's Call the Wolf summons \"one Wolf\" and the pack held no Wolf row. Every number is the bestiary's own row for it (gen/bestiary.json unit.wolf: Strength 3, Precision 2, Health 5, Accuracy 67, Movement 6; Pounce at Strength, Nip at Strength -1 applying 1 Weak). Its hell-tcg types (Monster, Nature) are not this game's; Beast, as the hounds. The bestiary's reach 2 is a hell-tcg number and is not carried: both attacks say melee reach."
   }
  ]
 }
