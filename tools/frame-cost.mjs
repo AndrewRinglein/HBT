@@ -43,6 +43,12 @@
 // shadow's doing. The scene's blended pieces (leaves and the like) are left out of the picture for the comparison — they
 // still cast — because two frames of them drawn the same way differ by thousands of pixels (viewer SWITCHES
 // blendedPiecesShimmer; the row's JSON carries that count too, blendedNoise).
+//
+// viewer.still-frame-draws-nothing (2026-10-05): a frame in which nothing changed is no longer drawn, so the clock-held column
+// reads no draw call at all; and the comparison frames above — the clock held — are each drawn by moving the camera's
+// version on (the view itself stays). One more comparison rides with the shadow's: the bodies' canvas takes the scene's depth
+// from the pieces that can hide a body in the view (src/terrain3d.js V.bodiesDepth: how many), and the same frame is drawn
+// with the depth of every solid piece (V.bodiesDepth.whole = true, as first written) and the pixels compared.
 import {createRequire} from 'node:module'
 import {createServer} from 'node:net'
 import {spawn} from 'node:child_process'
@@ -119,22 +125,28 @@ function shadowBothWays(){
     hundred to a few thousand pixels differ by a few shades from one identical frame to the next, and none once those pieces
     are left out — nothing of the shadow's). So for the comparison itself they are left out of the PICTURE — their colour not
     written; they cast in the shadow pass as always, and every other piece and every body is shaded by them. */
- S.tick(0);const one=read();S.tick(0);const blendedNoise=differ(one,read()).n
+ /* (a frame in which nothing changed is not drawn — viewer.still-frame-draws-nothing — so each of these is drawn by moving the
+    camera's version on: the view is the same, the frame is drawn, and no body has moved) */
+ const draw=()=>{V.camVersion=(V.camVersion||0)+1;S.tick(0)}
+ draw();const one=read();draw();const blendedNoise=differ(one,read()).n
  let scene=V.seeThrough.pieces()[0]?.o;while(scene?.parent)scene=scene.parent
  const blended=new Set();scene?.traverse(o=>{if(o.isMesh)for(const m of [].concat(o.material))if(m&&m.transparent&&m.colorWrite)blended.add(m)})
  for(const m of blended)m.colorWrite=false
- let first,kept,full
+ let first,kept,full,depth=null
  try{
-  S.tick(0);first=read()
-  S.tick(0);kept=read()
-  k.whole=true;S.tick(0);full=read()
-  k.whole=false;S.tick(0)
+  draw();first=read()
+  draw();kept=read()
+  k.whole=true;draw();full=read()
+  k.whole=false;draw()
+  /* the bodies' depth: from the pieces that can hide a body, then from every solid piece */
+  if(V.bodiesDepth){draw();const few=read(),pieces=V.bodiesDepth.pieces;V.bodiesDepth.whole=true;draw();const all=read();V.bodiesDepth.whole=false;draw()
+   const d=differ(few,all);depth={pieces,differing:d.n,worst:d.worst}}
  }finally{for(const m of blended)m.colorWrite=true}
- S.tick(0)
+ draw()
  let pixels=0,drawn=0;for(const a of kept){pixels+=a.length/4;drawn+=drawnOf(a)}
  const both=differ(kept,full),same=differ(first,kept)
  /* (the bodies' own canvas is the second: what is drawn on it is the bodies in this view) */
- return {canvases:kept.length,pixels,drawn,bodies:kept[1]?drawnOf(kept[1]):0,differing:both.n,worst:both.worst,sameWay:same.n,blendedNoise,takes:k.takes}
+ return {canvases:kept.length,pixels,drawn,bodies:kept[1]?drawnOf(kept[1]):0,differing:both.n,worst:both.worst,sameWay:same.n,blendedNoise,takes:k.takes,depth}
 }
 function scrollStep(px){
  const v=window.__sandbox.viewer,V=v._V,S=window.__frameCost
@@ -199,7 +211,30 @@ async function shadowRound(page){
   await page.evaluate(quarterTurn);await arrive()}
  return {views:views.length,same:views.filter(v=>v.differing===0).length,pixels:views[0].pixels,drawn:Math.min(...views.map(v=>v.drawn)),bodies:Math.min(...views.map(v=>v.bodies)),
   differing:Math.max(...views.map(v=>v.differing)),worst:Math.max(...views.map(v=>v.worst)),
-  sameWay:Math.max(...views.map(v=>v.sameWay)),blendedNoise:Math.max(...views.map(v=>v.blendedNoise)),sceneryShadowDrawn:views[views.length-1].takes}
+  sameWay:Math.max(...views.map(v=>v.sameWay)),blendedNoise:Math.max(...views.map(v=>v.blendedNoise)),sceneryShadowDrawn:views[views.length-1].takes,
+  ...(views[0].depth?{depth:{pieces:Math.max(...views.map(v=>v.depth.pieces)),differing:Math.max(...views.map(v=>v.depth.differing)),worst:Math.max(...views.map(v=>v.depth.worst))}}:{})}
+}
+/** each thing that can move a pixel, started with the clock held, and what the very next frame did (viewer.still-frame-draws-nothing) */
+async function liveRound(page){
+ const one=async(step=0)=>{const f=await page.evaluate(tick,step);return Object.values(f.counts).reduce((a,p)=>a+p.draws,0)}
+ const out={}
+ await one();await one();out.held=await one()                                  // nothing live: nothing drawn
+ await page.evaluate(scrollStep,SCROLL_PX);out.camera=await one();out.afterCamera=await one()
+ out.idle=await one(16);out.afterIdle=await one()                             // time passed with bodies on the board
+ /* an effect on the effects layer (its own canvas, its own frames): started, drawn by the very next frame, and gone when done */
+ out.effect=await page.evaluate(()=>{const V=window.__sandbox.viewer._V,S=window.__frameCost,FX=V.fx&&V.fx.FX;if(!FX||!FX.add)return null
+  let n=0;FX.add(300,()=>{n++});S.tick(0);const first=n;S.tick(16);const next=n;for(let i=0;i<30;i++)S.tick(16);const ended=n;S.tick(16);return {first,next,ended,after:n}})
+ /* a notice: on the page at once and through the next frame */
+ out.notice=await page.evaluate(()=>{const v=window.__sandbox.viewer,S=window.__frameCost
+  const shown=()=>{const n=document.querySelector('#tutNotice');return !!n&&n.getClientRects().length>0&&/a notice, by hand/.test(n.textContent)}
+  v.tell('a notice, by hand');const atOnce=shown();S.tick(0);const nextFrame=shown();v.clearTell();return {atOnce,nextFrame}})
+ /* a hover: the pointer moved onto a hex of the board — its tip shows by the very next frame */
+ const mid=await page.evaluate(()=>{const r=window.__sandbox.viewer._V.dom.stage.parentNode.getBoundingClientRect();return {x:r.left+r.width/2,y:r.top+r.height/2,restY:r.top>80?r.top/2:r.bottom+(window.innerHeight-r.bottom)/2}})
+ await page.mouse.move(mid.x-40,mid.y-30);await page.mouse.move(mid.x,mid.y)
+ out.hover=await page.evaluate(()=>{window.__frameCost.tick(0);const t=document.querySelector('#hexTip');return {tip:!!t&&t.getClientRects().length>0&&t.textContent.trim().length>0,words:t?t.textContent.trim().slice(0,80):''}})
+ /* the pointer put away where it scrolls nothing: off the board, and not at an edge of the screen */
+ await page.mouse.move(mid.x,mid.restY);await one()
+ return out
 }
 async function battle(browser,port,id){
  const page=await browser.newPage({viewport:{width:1920,height:1080}}),errors=[]
@@ -231,6 +266,8 @@ async function battle(browser,port,id){
   row.held=await measure(page,0,false)
   const seen=await seeThroughRound(page);if(seen)row.seeThrough=seen
   const shadow=await shadowRound(page);if(shadow)row.shadow=shadow
+  /* last: it moves the pointer */
+  row.live=await liveRound(page)
   if(errors.length)row.pageErrors=errors
   return row
  }finally{await page.close()}
@@ -239,8 +276,8 @@ async function battle(browser,port,id){
 const n=x=>x==null?'—':x.toLocaleString('en-US')
 const short=id=>id.replace(/^encounter\.(opening\.)?/,'')
 function table(rows){
- const head=['battle','draw calls a frame (shadow · scene · bodies)','triangles a frame (shadow · scene · bodies)','script ms, still: with the check / without','script ms, scrolling: with / without','draw calls scrolling','see-through checks run: still / scrolling','one check, ms: now / every triangle','same pieces both ways','clock held: draw calls (shadow · scene · bodies)','shadow kept against shadow whole: the same picture?']
- const lines=rows.map(r=>r.flat?[short(r.battle),r.note,'','','','','','','','','']:[short(r.battle),
+ const head=['battle','draw calls a frame (shadow · scene · bodies)','triangles a frame (shadow · scene · bodies)','script ms, still: with the check / without','script ms, scrolling: with / without','draw calls scrolling','see-through checks run: still / scrolling','one check, ms: now / every triangle','same pieces both ways','clock held: draw calls (shadow · scene · bodies)','shadow kept against shadow whole: the same picture?','bodies\' depth: pieces drawn; same picture as every piece?']
+ const lines=rows.map(r=>r.flat?[short(r.battle),r.note,'','','','','','','','','','']:[short(r.battle),
   `${n(r.still.withoutCheck.draws.all)} (${n(r.still.withoutCheck.draws.shadow)} · ${n(r.still.withoutCheck.draws.scene)} · ${n(r.still.withoutCheck.draws.bodies)})`,
   `${n(r.still.withoutCheck.triangles.all)} (${n(r.still.withoutCheck.triangles.shadow)} · ${n(r.still.withoutCheck.triangles.scene)} · ${n(r.still.withoutCheck.triangles.bodies)})`,
   `${r.still.withCheck.ms.median} (${r.still.withCheck.ms.min}–${r.still.withCheck.ms.max}) / ${r.still.withoutCheck.ms.median} (${r.still.withoutCheck.ms.min}–${r.still.withoutCheck.ms.max})`,
@@ -250,7 +287,8 @@ function table(rows){
   r.seeThrough?`${r.seeThrough.ms.median} (to ${r.seeThrough.ms.max}) / ${r.seeThrough.plainMs.median} (to ${r.seeThrough.plainMs.max})`:'—',
   r.seeThrough?`${r.seeThrough.same} of ${r.seeThrough.views} views (${r.seeThrough.withSomethingHiding} with a piece in the way)`:'—',
   `${n(r.held.draws.all)} (${n(r.held.draws.shadow)} · ${n(r.held.draws.scene)} · ${n(r.held.draws.bodies)})`,
-  r.shadow?`at most ${n(r.shadow.differing)} of ${n(r.shadow.pixels)} pixels differ, by ${r.shadow.worst} of 255, over ${r.shadow.views} views (two frames drawn the same way: ${n(r.shadow.sameWay)}); bodies in every view: ${r.shadow.bodies>0?'yes':'NO'}`:'—'])
+  r.shadow?`at most ${n(r.shadow.differing)} of ${n(r.shadow.pixels)} pixels differ, by ${r.shadow.worst} of 255, over ${r.shadow.views} views (two frames drawn the same way: ${n(r.shadow.sameWay)}); bodies in every view: ${r.shadow.bodies>0?'yes':'NO'}`:'—',
+  r.shadow?.depth?`at most ${n(r.shadow.depth.pieces)} pieces; ${n(r.shadow.depth.differing)} pixels differ${r.shadow.depth.differing?`, by ${r.shadow.depth.worst} of 255`:''}`:'—'])
  const w=head.map((h,i)=>Math.max(h.length,...lines.map(l=>l[i].length)))
  const row=c=>'| '+c.map((x,i)=>x.padEnd(w[i])).join(' | ')+' |'
  return [row(head),'|'+w.map(x=>'-'.repeat(x+2)).join('|')+'|',...lines.map(row)].join('\n')
