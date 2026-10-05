@@ -1518,7 +1518,18 @@ export function applyCam(V, opts = {}) {
     if (!view.homeCentred) { view.homeCentred = true; view.home = null } }
   /* viewer.bubble-click-reveals: the slid view's hold — over once anything has played, an aim is drawn or the view is focused */
   if (view.revealed && (view.revealed.cursor !== V.cursor || S.AIM || opts.focus || fit)) view.revealed = null
-  const held = (!!view.revealed || !!view.looking) && !opts.pan
+  /* viewer.view-stays-where-put (2026-10-05; engine DECISIONS.md 'the battle screen must feel smooth: …', Andrew: "It's awkward
+     to try to roll the map around … Things are not on the screen."; ruled 2026-10-01: "You can look at different parts of the
+     map by just looking around on the map"). Once the PLAYER has moved the view (view.put: the edge scroll, the wheel, a pan
+     by hand) it stays where the player put it — through redraws, zooming, a look at another unit, clicks on hexes, the 3D
+     scene's load: every one of those came through here with no order of its own, and the rule below that keeps the activated
+     unit in view brought the view straight back. The view is the game's again when the game has reason to move it: a new
+     Activation begins (it centres — a focus, just above), the view is sent to a unit or a hex (a focus), the whole board is
+     asked for, Reset; and while an attack is drawn (S.AIM) its two ends are brought into view as they always were — after
+     which the view stays where that left it. This is the ONE hold a held view has (`held`): the player's own, a bubble's
+     reveal and a host's look are three reasons for it, each over by its own rule (viewer SWITCHES viewPutHold). */
+  if (view.put && (opts.focus || fit)) view.put = false
+  const held = (!!view.revealed || !!view.looking || (!!view.put && !S.AIM)) && !opts.pan
   /* viewer.camera-shows-edge-units: view.pastEdge says why the view stands past the board's own box, if it does — 'scroll'
      (the player scrolled or a slide took it there: it is left there, at the bound) or 'subject' (the least slide that shows
      the unit in sight whole: worked out afresh each time, so the view comes back when the unit no longer needs it). A change
@@ -1534,7 +1545,10 @@ export function applyCam(V, opts = {}) {
   else if (view.inspect) bound()                                                     // Inspect explores: selection never pulls the camera
   /* viewer.bubble-click-reveals: a view slid to show a unit off the screen stays where it was slid — the inclusion below
      would pull it straight back to the acting unit — until the board next plays or the camera is sent elsewhere */
-  else if (held) bound()
+  /* (viewer.view-stays-where-put: a view the player put is held to the board's own box, as every view of the game's is — the
+     wheel pulling back from it must not open white space (viewer.camera-no-void) — unless the player scrolled it past the
+     board's edge, where it is left at the bound as a scroll always was. A reveal's and a look's holds are as they were.) */
+  else if (held) bound(!!view.put && !view.revealed && !view.looking && view.pastEdge !== 'scroll')
   else {
     const keep = view.pastEdge === 'scroll'
     bound(!keep)
@@ -1695,6 +1709,7 @@ export function turnCam(V, { yaw = 0, tilt = 0, zoom = 1 } = {}) {
     Overhead and Inspect are left */
 export function resetCam(V) {
   V.view.cam = homeCam(); V.view.overhead = null; V.view.inspect = null; V.view.overview = false
+  V.view.put = false                                   // viewer.view-stays-where-put: Reset is the player asking for the opening view
   V.view.camF = V.view.home ? { x: V.view.home.x, y: V.view.home.y } : { x: null, y: null }
   applyCam(V); drawEdges(V)
 }
@@ -1709,6 +1724,8 @@ export function centreOn(V, id) {
 export function lookCloser(V, deltaY) {
   const c = V.view.cam || (V.view.cam = homeCam()), std = homeCam().zoom
   c.zoom = Math.min(std * POLICY.ZOOM_NEAR, Math.max(std * POLICY.ZOOM_FAR, c.zoom * Math.exp(-deltaY * CAM.WHEEL)))
+  /* viewer.view-stays-where-put: the wheel is the player's hand on the view — it zooms where the view is, and stays */
+  V.view.put = true
   V.view.overview = false; applyCam(V); drawEdges(V)
   if (V.zoomRest != null) clearTimeout(V.zoomRest)
   V.zoomRest = setTimeout(() => { V.zoomRest = null; if (!V.view.cam) return; V.view.cam.zoom = std; applyCam(V); drawEdges(V) }, POLICY.ZOOM_REST_MS)
@@ -1719,7 +1736,7 @@ export function edgeScroll(V, dir, dt) {
   const step = POLICY.EDGE_SCROLL_SPEED * dt, d = unturn(V, dir.x * step, dir.y * step)
   /* viewer.camera-no-void: the scroll is shown as it goes, at its own speed (viewer SWITCHES noVoidScrollShown) — through the
      1.1 s glide, restarted each frame, the view lagged far behind where the pointer had scrolled it */
-  V.view.scrolling = true
+  V.view.scrolling = true; V.view.put = true           // viewer.view-stays-where-put: the player put the view here
   try { applyCam(V, { pan: { x: d.x, y: d.y / isoK(V) } }) } finally { V.view.scrolling = false }
   drawEdges(V)
 }

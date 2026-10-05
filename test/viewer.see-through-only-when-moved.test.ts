@@ -43,7 +43,14 @@ describe('viewer.see-through-only-when-moved', () => {
       // so a still frame costs the same whether or not the check was due (the same within the run-to-run spread of one frame)
       const a = r.still.withCheck.ms.median, b = r.still.withoutCheck.ms.median
       expect(Math.abs(a - b), `${at}: a still frame with the check due ${a} ms, without ${b} ms`).toBeLessThanOrEqual(Math.max(4, .5 * Math.max(a, b)))
-      expect(a, `${at}: and nowhere near the 54–90 ms it was`).toBeLessThan(45)
+      // LAW 10 — 2026-10-05 (found landing viewer.still-frame-draws-nothing): this read
+      //   expect(a, `${at}: and nowhere near the 54–90 ms it was`).toBeLessThan(45)
+      // — a number of milliseconds, which measures the machine as much as the page: beside three other real-browser tests in
+      // the gate's checks the Lumberjack House's still frame read 60.8 ms with the check NOT running (0 runs counted, and the
+      // frame without the check as slow). The claim is that the still frame no longer carries the check's cost, and it is
+      // held against that cost as measured in the same run, under the same load (one check the old way: every triangle of
+      // every tall piece): what the frame costs with the check due, over what it costs without, is a small part of it.
+      expect(a - b, `${at}: a still frame with the check due costs ${a} ms, without ${b} ms — the old check alone was ${r.seeThrough!.plainMs.median} ms`).toBeLessThan(Math.max(4, r.seeThrough!.plainMs.median / 2))
       // while the view scrolls the check does run — the camera moves on every frame
       expect(r.scrolling.withCheck.checks!, `${at}: while scrolling`).toBeGreaterThan(30)
       // (2) one run costs under 4 ms
