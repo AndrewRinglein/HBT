@@ -7,7 +7,7 @@
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
-import { ACTIONS, BURSTS, ABILITIES, ATTACKS, UNITS } from '../src/content/index.js'
+import { ACTIONS, BADGES, BURSTS, ABILITIES, ATTACKS, UNITS } from '../src/content/index.js'
 import { scenarioDef, scenarioOptions } from '../src/content/scenarios.js'
 import { fieldedDef, createBattle } from '../src/core/setup.js'
 import { runBattle } from '../src/core/battle.js'
@@ -58,10 +58,16 @@ describe('all twenty-four field', () => {
       const u = fieldedDef(id)
       const h = heroes.get(id)!
       const mod = (stat: string) => kit.reduce((s, it) => s + (items.get(it)?.statModifiers?.[stat] ?? 0), 0)
-      expect(u.maxHp, `${id} maxHp`).toBe((h.ported.health ?? 0) + mod('health'))
-      expect(u.armor, `${id} armor`).toBe((h.ported.armor ?? 0) + mod('armor'))
-      expect(u.movement, `${id} movement`).toBe((h.derivedBase.movement ?? 0) + mod('movement'))
-      expect(u.dodge, `${id} dodge`).toBe((h.ported.dodge ?? 0) + mod('dodge'))
+      // Law 10, 2026-10-05 — content.hero-origin-badges (DECISIONS.md 2026-10-05 'seven answers: … origin badges go on the heroes …': "3, yes."): these four read
+      //   expect(u.maxHp, …).toBe((h.ported.health ?? 0) + mod('health'))          expect(u.armor, …).toBe((h.ported.armor ?? 0) + mod('armor'))
+      //   expect(u.movement, …).toBe((h.derivedBase.movement ?? 0) + mod('movement'))   expect(u.dodge, …).toBe((h.ported.dodge ?? 0) + mod('dodge'))
+      // - the Codex body plus the kit fold. A base hero's row carries its origin badges now and a badge acts from the row, so
+      // the fielded number is the body, the kit and exactly what the row's origin badges carry (the engine's compiled badge).
+      const origin = (stat: string) => (UNITS[id]!.badges ?? []).reduce((s, b) => s + ((BADGES[b]!.statModifiers as Record<string, number>)[stat] ?? 0), 0)
+      expect(u.maxHp, `${id} maxHp`).toBe((h.ported.health ?? 0) + mod('health') + origin('maxHp'))
+      expect(u.armor, `${id} armor`).toBe((h.ported.armor ?? 0) + mod('armor') + origin('armor'))
+      expect(u.movement, `${id} movement`).toBe((h.derivedBase.movement ?? 0) + mod('movement') + origin('movement'))
+      expect(u.dodge, `${id} dodge`).toBe((h.ported.dodge ?? 0) + mod('dodge') + origin('dodge'))
       expect(u.accuracy, `${id} accuracy`).toBe((h.derivedBase.accuracy ?? 0) + mod('accuracy'))
       // every attack the kit grants is on the row, in kit order, then Punch;
       // an attack the Codex names but no row authors must be a named gap

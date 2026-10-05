@@ -11,8 +11,8 @@ import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { fieldedDef, createBattle } from '../src/core/setup.js'
 import { runBattle } from '../src/core/battle.js'
-import { ABILITIES, ITEMS, LEVELS, SPECIALTIES, UNITS } from '../src/content/index.js'
-import { disagreements, rosterOptionsOf, type Schedule } from '../src/sim/progression.js'
+import { ABILITIES, BADGES, ITEMS, LEVELS, SPECIALTIES, UNITS } from '../src/content/index.js'
+import { disagreements, rosterOptionsOf, SCHEDULE_STAT, type Schedule } from '../src/sim/progression.js'
 
 const schedule = JSON.parse(readFileSync(join(__dirname, '..', '..', 'progression', 'PROGRESSION-SCHEDULE.json'), 'utf8')) as Schedule
 
@@ -66,7 +66,16 @@ describe('the progression roster, assembled by the engine', () => {
         // FOUND: the schedule's own rule is older than the ruling; its builder is not changed here (SWITCHES.md weaponStatsSchedule).
         // (was: for (const d of disagreements(def, opts.oracle[i]!)) findings.push(…) - every disagreement, with nothing added back)
         const onWeapons = weaponNumbersOf(opts.heroItems[i] ?? [])
-        for (const d of disagreements(def, opts.oracle[i]!)) if (d.engine + (onWeapons[d.stat] ?? 0) !== d.schedule) findings.push(`battle ${b.battle} ${id} ${d.stat}: engine ${d.engine} vs schedule ${d.schedule}`)
+        // Law 10, 2026-10-05 — content.hero-origin-badges (DECISIONS.md 2026-10-05 'seven answers: … origin badges go on the heroes …': "3, yes."): the line below read
+        //   for (const d of disagreements(def, opts.oracle[i]!)) if (d.engine + (onWeapons[d.stat] ?? 0) !== d.schedule) findings.push(…)
+        // The schedule's stat block (progression/build-schedule.mjs) is built from the hero's Codex body, level, picks and items;
+        // it knows no origin badge. A base hero's row carries its origin badges now and the engine fields them, so the engine's
+        // number is more by exactly what those badges carry. The comparison takes that out (as the weapons' numbers are added
+        // back), so the two still speak of one number and any OTHER difference is still a finding.
+        // FOUND: the schedule's builder is older than the ruling and is not changed here (SWITCHES.md originBadgeSchedule).
+        const onBadges: Record<string, number> = {}
+        for (const [word, key] of Object.entries(SCHEDULE_STAT)) onBadges[word] = (UNITS[id]!.badges ?? []).reduce((n, b) => n + ((BADGES[b]!.statModifiers as Record<string, number>)[key as string] ?? 0), 0)
+        for (const d of disagreements(def, opts.oracle[i]!)) if (d.engine + (onWeapons[d.stat] ?? 0) - (onBadges[d.stat] ?? 0) !== d.schedule) findings.push(`battle ${b.battle} ${id} ${d.stat}: engine ${d.engine} vs schedule ${d.schedule}`)
         // the abilities are in — every drafted power is on the fielded unit
         for (const p of opts.heroProgress[i]!.powers ?? []) expect(def.abilities, `${id} carries ${p}`).toContain(p)
       })

@@ -35798,3 +35798,364 @@ index 0000000..c7e414f
   PASS  naming — new content ids use declared kinds
   PASS  naming — no banned words invented
   PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+## content.hero-origin-badges — LANDED `329154b` **NEEDS REVIEW**
+2026-10-05 15:24
+
+  PASS  dependencies landed
+  WARN  not already decided — 1 candidate ruling(s) — READ BEFORE ASKING: SWITCHES.md:1944
+  PASS  typecheck
+  PASS  the item's own tests — test/battle-cursor.test.ts, test/deathbed.test.ts, test/field-eve-24.test.ts, test/hero-assembly.test.ts, test/items-per-unit.test.ts, test/opening-draft-one-rule.test.ts, test/opening-draft.test.ts, test/opening-gates.test.ts, test/peddlers-vest.test.ts, test/v2-shields.test.ts, test/hero-origin-badges.test.ts
+  PASS  gate 1 — the id appears in a real battle — badge.stalwart: 1 log lines, 1 fired, 1 changed state
+  PASS  brought its own tests — test/battle-cursor.test.ts, test/deathbed.test.ts, test/field-eve-24.test.ts, test/hero-assembly.test.ts, test/items-per-unit.test.ts, test/opening-draft-one-rule.test.ts, test/opening-draft.test.ts, test/opening-gates.test.ts, test/peddlers-vest.test.ts, test/v2-shields.test.ts, test/fixtures/battle-cursor-hero-origin-badges.json, test/hero-origin-badges.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/battle-cursor.test.ts (-2), test/deathbed.test.ts (-2), test/field-eve-24.test.ts (-5), test/hero-assembly.test.ts (-3), test/items-per-unit.test.ts (-3), test/opening-draft-one-rule.test.ts (-4), test/opening-draft.test.ts (-1), test/opening-gates.test.ts (-1), test/peddlers-vest.test.ts (-6), test/v2-shields.test.ts (-2) — will land FLAGGED for review
+  PASS  control battles unchanged
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — shape 'data' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without badge.stalwart — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/battle-cursor.test.ts b/test/battle-cursor.test.ts
+index f58f1a0..2718b35 100644
+--- a/test/battle-cursor.test.ts
++++ b/test/battle-cursor.test.ts
+@@ -479,4 +479,11 @@ const effectLastsActivationsGolden = JSON.parse(readFileSync(new URL('./fixtures
+ // Every case frozen here (tools/capture-damage-from-two-stats-cursor.mts). Moved: showcase.eve-24-b (text only), showcase.horrors, showcase.kiln (text only), showcase.prologue-party, showcase.rime (text only), showcase.supper, showcase.surrounded, showcase.waystation, test.caravan-aftermath, test.item-uses, test.opening-bridge (text only), test.opening-cathedral, test.opening-cavern-trail (text only), test.opening-gates, test.perfect-sight (text only), progression-surge-0, progression-surge-1, progression-surge-2. A `changed` case is checked here and skips the older layers.
+ const damageFromTwoStatsGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-damage-from-two-stats.json', import.meta.url), 'utf8'))
++// content.hero-origin-badges (2026-10-05; DECISIONS.md 2026-10-05 'seven answers: … origin badges go on the heroes …': asked whether
++// the Codex's origin badges should be put on the heroes' rows - "3, yes."), Law 10: each of the 24 base heroes' rows carries the
++// origin badges the Codex names for it, and a badge acts from the row. Every case that fields a base hero has one more line per
++// origin badge at fielding; the 13 heroes whose badges carry numbers are fielded with them (the Iron Dwarf +2 Health +1 Stamina,
++// the Pyre Witch and the Raven -2 Health +20 Dodge, …), so every such battle moves.
++// Every case frozen here (tools/capture-hero-origin-badges-cursor.mts). Moved: showcase.assembled-party, showcase.civilians, showcase.eve-24-a, showcase.eve-24-b, showcase.horrors, showcase.item-powers, showcase.kiln, showcase.prologue-party, showcase.rime, showcase.supper, showcase.surrounded, showcase.two-zombies-and-a-child, showcase.waystation, test.back-flip, test.caravan-aftermath, test.counterattack, test.fend, test.force-blast, test.item-uses, test.opening-bridge, test.opening-cathedral, test.opening-cavern-trail, test.opening-gates, test.opening-lumberjack, test.opening-orphanage, test.swap, progression-surge-0, progression-surge-1, progression-surge-2. A `changed` case is checked here and skips the older layers.
++const heroOriginBadgesGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-hero-origin-badges.json', import.meta.url), 'utf8'))
+ const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
+ // Explicit rule migration, not regenerated historical hashes. These nine old
+@@ -626,5 +633,8 @@ describe('resumable battle cursor', () => {
+       const effectLastsActivationsExpected = effectLastsActivationsGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+       const damageFromTwoStatsExpected = damageFromTwoStatsGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+-      const damageFromTwoStatsMoved = damageFromTwoStatsExpected?.changed === true
++      const heroOriginBadgesExpected = heroOriginBadgesGolden.cases.find((row:{id:string})=>row.id===fixture.id)
++      const heroOriginBadgesMoved = heroOriginBadgesExpected?.changed === true
++      // was: const damageFromTwoStatsMoved = damageFromTwoStatsExpected?.changed === true — a case content.hero-origin-badges moved skips this layer too (content.hero-origin-badges 2026-10-04)
++      const damageFromTwoStatsMoved = damageFromTwoStatsExpected?.changed === true || heroOriginBadgesMoved
+       // was: const effectLastsActivationsMoved = effectLastsActivationsExpected?.changed === true — a case capability.damage-from-two-stats moved skips this layer too (capability.damage-from-two-stats 2026-10-04)
+       const effectLastsActivationsMoved = effectLastsActivationsExpected?.changed === true || damageFromTwoStatsMoved
+@@ -782,5 +792,12 @@ describe('resumable battle cursor', () => {
+           }
+         } else result = battle.runBattle(ctx)
+-        if (damageFromTwoStatsExpected) {
++        if (heroOriginBadgesExpected) {
++        expect(hash(ctx.events), 'full hero-origin-badges events').toBe(heroOriginBadgesExpected.events)
++        expect(hash(ctx.state), 'full hero-origin-badges state').toBe(heroOriginBadgesExpected.state)
++        expect(hash(ctx.rng.log), 'full hero-origin-badges RNG').toBe(heroOriginBadgesExpected.rng)
++        expect(result).toEqual(heroOriginBadgesExpected.result)
++        }
++        // was: if (damageFromTwoStatsExpected) { — content.hero-origin-badges (2026-10-04): a case it moved is checked above instead
++        if (damageFromTwoStatsExpected && !heroOriginBadgesMoved) {
+         expect(hash(ctx.events), 'full damage-from-two-stats events').toBe(damageFromTwoStatsExpected.events)
+         expect(hash(ctx.state), 'full damage-from-two-stats state').toBe(damageFromTwoStatsExpected.state)
+diff --git a/test/deathbed.test.ts b/test/deathbed.test.ts
+index bb5ecf8..057e76a 100644
+--- a/test/deathbed.test.ts
++++ b/test/deathbed.test.ts
+@@ -111,10 +111,19 @@ describe('the roll', () => {
+     expect(BADGES[ctx.ruleBadges.wounded]!.flags.wounded).toBe(true)
+     const w = ctx.state.units[0]!
+-    expect(w.badges).toEqual(['badge.hero'])
++    // Law 10, 2026-10-05 — content.hero-origin-badges (DECISIONS.md 2026-10-05 'seven answers: … origin badges go on the heroes …': "3, yes."): this read
++    //   expect(w.badges).toEqual(['badge.hero'])
++    // - the Iron Dwarf's row carried the Hero badge alone. It carries its origin badges after it now (Stalwart, Dwarf); the
++    // claim here is the Hero badge, first on the row, and no Wounded yet.
++    expect(w.badges[0]).toBe('badge.hero')
++    expect(w.badges).toEqual(UNITS['hero.base.warrior-iron']!.badges)
++    expect(w.badges).not.toContain('badge.wounded')
+     w.toughness = 16
+     const acc = effective(ctx, w, 'accuracy').value, maxHp = w.maxHp
+     drop(ctx, w.id)
+     expect(w.lifeState).toBe('standing')
+-    expect(w.badges).toEqual(['badge.hero', 'badge.wounded'])
++    // Law 10, 2026-10-05 — content.hero-origin-badges, the note above: this read
++    //   expect(w.badges).toEqual(['badge.hero', 'badge.wounded'])
++    // - the row's badges, then Wounded. The row's are the Hero badge and his origin badges now.
++    expect(w.badges).toEqual([...UNITS['hero.base.warrior-iron']!.badges!, 'badge.wounded'])
+     expect(effective(ctx, w, 'accuracy').value).toBe(acc - 10)
+     expect(w.maxHp).toBe(maxHp - 2)
+diff --git a/test/field-eve-24.test.ts b/test/field-eve-24.test.ts
+index 6eac795..14b5857 100644
+--- a/test/field-eve-24.test.ts
++++ b/test/field-eve-24.test.ts
+@@ -8,5 +8,5 @@ import { readFileSync } from 'node:fs'
+ import { join } from 'node:path'
+ import { describe, expect, it } from 'vitest'
+-import { ACTIONS, BURSTS, ABILITIES, ATTACKS, UNITS } from '../src/content/index.js'
++import { ACTIONS, BADGES, BURSTS, ABILITIES, ATTACKS, UNITS } from '../src/content/index.js'
+ import { scenarioDef, scenarioOptions } from '../src/content/scenarios.js'
+ import { fieldedDef, createBattle } from '../src/core/setup.js'
+@@ -59,8 +59,14 @@ describe('all twenty-four field', () => {
+       const h = heroes.get(id)!
+       const mod = (stat: string) => kit.reduce((s, it) => s + (items.get(it)?.statModifiers?.[stat] ?? 0), 0)
+-      expect(u.maxHp, `${id} maxHp`).toBe((h.ported.health ?? 0) + mod('health'))
+-      expect(u.armor, `${id} armor`).toBe((h.ported.armor ?? 0) + mod('armor'))
+-      expect(u.movement, `${id} movement`).toBe((h.derivedBase.movement ?? 0) + mod('movement'))
+-      expect(u.dodge, `${id} dodge`).toBe((h.ported.dodge ?? 0) + mod('dodge'))
++      // Law 10, 2026-10-05 — content.hero-origin-badges (DECISIONS.md 2026-10-05 'seven answers: … origin badges go on the heroes …': "3, yes."): these four read
++      //   expect(u.maxHp, …).toBe((h.ported.health ?? 0) + mod('health'))          expect(u.armor, …).toBe((h.ported.armor ?? 0) + mod('armor'))
++      //   expect(u.movement, …).toBe((h.derivedBase.movement ?? 0) + mod('movement'))   expect(u.dodge, …).toBe((h.ported.dodge ?? 0) + mod('dodge'))
++      // - the Codex body plus the kit fold. A base hero's row carries its origin badges now and a badge acts from the row, so
++      // the fielded number is the body, the kit and exactly what the row's origin badges carry (the engine's compiled badge).
++      const origin = (stat: string) => (UNITS[id]!.badges ?? []).reduce((s, b) => s + ((BADGES[b]!.statModifiers as Record<string, number>)[stat] ?? 0), 0)
++      expect(u.maxHp, `${id} maxHp`).toBe((h.ported.health ?? 0) + mod('health') + origin('maxHp'))
++      expect(u.armor, `${id} armor`).toBe((h.ported.armor ?? 0) + mod('armor') + origin('armor'))
++      expect(u.movement, `${id} movement`).toBe((h.derivedBase.movement ?? 0) + mod('movement') + origin('movement'))
++      expect(u.dodge, `${id} dodge`).toBe((h.ported.dodge ?? 0) + mod('dodge') + origin('dodge'))
+       expect(u.accuracy, `${id} accuracy`).toBe((h.derivedBase.accuracy ?? 0) + mod('accuracy'))
+       // every attack the kit grants is on the row, in kit order, then Punch;
+diff --git a/test/hero-assembly.test.ts b/test/hero-assembly.test.ts
+index d2137dc..cfdaca3 100644
+--- a/test/hero-assembly.test.ts
++++ b/test/hero-assembly.test.ts
+@@ -12,6 +12,6 @@ import { join } from 'node:path'
+ import { fieldedDef, createBattle } from '../src/core/setup.js'
+ import { runBattle } from '../src/core/battle.js'
+-import { ABILITIES, ITEMS, LEVELS, SPECIALTIES, UNITS } from '../src/content/index.js'
+-import { disagreements, rosterOptionsOf, type Schedule } from '../src/sim/progression.js'
++import { ABILITIES, BADGES, ITEMS, LEVELS, SPECIALTIES, UNITS } from '../src/content/index.js'
++import { disagreements, rosterOptionsOf, SCHEDULE_STAT, type Schedule } from '../src/sim/progression.js'
+ 
+ const schedule = JSON.parse(readFileSync(join(__dirname, '..', '..', 'progression', 'PROGRESSION-SCHEDULE.json'), 'utf8')) as Schedule
+@@ -67,5 +67,14 @@ describe('the progression roster, assembled by the engine', () => {
+         // (was: for (const d of disagreements(def, opts.oracle[i]!)) findings.push(…) - every disagreement, with nothing added back)
+         const onWeapons = weaponNumbersOf(opts.heroItems[i] ?? [])
+-        for (const d of disagreements(def, opts.oracle[i]!)) if (d.engine + (onWeapons[d.stat] ?? 0) !== d.schedule) findings.push(`battle ${b.battle} ${id} ${d.stat}: engine ${d.engine} vs schedule ${d.schedule}`)
++        // Law 10, 2026-10-05 — content.hero-origin-badges (DECISIONS.md 2026-10-05 'seven answers: … origin badges go on the heroes …': "3, yes."): the line below read
++        //   for (const d of disagreements(def, opts.oracle[i]!)) if (d.engine + (onWeapons[d.stat] ?? 0) !== d.schedule) findings.push(…)
++        // The schedule's stat block (progression/build-schedule.mjs) is built from the hero's Codex body, level, picks and items;
++        // it knows no origin badge. A base hero's row carries its origin badges now and the engine fields them, so the engine's
++        // number is more by exactly what those badges carry. The comparison takes that out (as the weapons' numbers are added
++        // back), so the two still speak of one number and any OTHER difference is still a finding.
++        // FOUND: the schedule's builder is older than the ruling and is not changed here (SWITCHES.md originBadgeSchedule).
++        const onBadges: Record<string, number> = {}
++        for (const [word, key] of Object.entries(SCHEDULE_STAT)) onBadges[word] = (UNITS[id]!.badges ?? []).reduce((n, b) => n + ((BADGES[b]!.statModifiers as Record<string, number>)[key as string] ?? 0), 0)
++        for (const d of disagreements(def, opts.oracle[i]!)) if (d.engine + (onWeapons[d.stat] ?? 0) - (onBadges[d.stat] ?? 0) !== d.schedule) findings.push(`battle ${b.battle} ${id} ${d.stat}: engine ${d.engine} vs schedule ${d.schedule}`)
+         // the abilities are in — every drafted power is on the fielded unit
+         for (const p of opts.heroProgress[i]!.powers ?? []) expect(def.abilities, `${id} carries ${p}`).toContain(p)
+diff --git a/test/items-per-unit.test.ts b/test/items-per-unit.test.ts
+index fee29ff..5068f7b 100644
+--- a/test/items-per-unit.test.ts
++++ b/test/items-per-unit.test.ts
+@@ -15,5 +15,5 @@ import { runBattle } from '../src/core/battle.js'
+ import { applyItems } from '../src/core/items.js'
+ import { CRIT_BASE } from '../src/core/pipeline.js'
+-import { ATTACKS, ITEMS, UNITS } from '../src/content/index.js'
++import { ATTACKS, BADGES, ITEMS, UNITS } from '../src/content/index.js'
+ import { scenarioDef, scenarioOptions } from '../src/content/scenarios.js'
+ 
+@@ -67,5 +67,14 @@ describe('the invariant — no heroItems means the hero the converter used to fo
+       expect((fieldedDef(id) as unknown as Record<string, number>)['counterattackAccuracy'] ?? 0, `${id} Counterattack Accuracy is its kit's`).toBe(kitCounter)
+       const r1Kit = (fieldedDef(id).defaultItems ?? []).some((i) => ITEMS[i]?.itemClass === 'shield' || ITEMS[i]?.statModifiers.block || ITEMS[i]?.triggers.some((t) => t.hook === 'onBlock'))
+-      const keys = [...new Set([...Object.keys(f), ...Object.keys(r)])].filter((k) => !['attributes', 'tags', 'toughness', 'vision', 'levelTable', 'badges'].includes(k) && !(r1Kit && R1.has(k)) && JSON.stringify(f[k]) !== JSON.stringify(r[k]))
++      // Law 10, 2026-10-05 — content.hero-origin-badges (DECISIONS.md 2026-10-05 'seven answers: … origin badges go on the heroes …': "3, yes."): the line below read
++      //   const keys = […].filter((k) => !['attributes', …, 'badges'].includes(k) && !(r1Kit && R1.has(k)) && JSON.stringify(f[k]) !== JSON.stringify(r[k]))
++      // A base hero's row carries its origin badges now and a badge acts from the row - content moved, not the fold; the oracle
++      // stays frozen. A stat an origin badge carries is compared with exactly that badge's number taken out again, so a row
++      // differs here only where it differed before, and a wrong badge fold would still show.
++      const origin: Record<string, number> = {}
++      for (const b of UNITS[id]?.badges ?? []) for (const [k, v] of Object.entries(BADGES[b]!.statModifiers as Record<string, number>)) origin[k] = (origin[k] ?? 0) + v
++      const less = (k: string) => (origin[k] ? JSON.stringify(((f[k] as number | undefined) ?? 0) - origin[k]!) : JSON.stringify(f[k]))
++      const same = (k: string) => less(k) === JSON.stringify(r[k]) || (origin[k] !== undefined && r[k] === undefined && ((f[k] as number | undefined) ?? 0) - origin[k]! === 0)
++      const keys = [...new Set([...Object.keys(f), ...Object.keys(r)])].filter((k) => !['attributes', 'tags', 'toughness', 'vision', 'levelTable', 'badges'].includes(k) && !(r1Kit && R1.has(k)) && !same(k))
+       if (keys.length) differ[id] = keys
+     }
+@@ -144,5 +153,11 @@ describe('the invariant — no heroItems means the hero the converter used to fo
+       'hero.base.rogue-raven': ['maxHp', 'attacks'],   // 'attacks': Law 10, 2026-10-04, the note above (was: ['maxHp'])
+     })
+-    for (const id of ['hero.base.priest-robes', 'hero.base.rogue-raven']) expect(fieldedDef(id).maxHp, id).toBe((o[id]!['maxHp'] as number) + 2)
++    // Law 10, 2026-10-05 — content.hero-origin-badges, the note in the loop above: this read
++    //   for (const id of ['hero.base.priest-robes', 'hero.base.rogue-raven']) expect(fieldedDef(id).maxHp, id).toBe((o[id]!['maxHp'] as number) + 2)
++    // The vest's 2 Health came back to both; the Raven's row carries Lithe now (-2 Health), which is hers and not the vest's -
++    // taken out again here, the difference from the frozen oracle is still exactly the vest's 2.
++    const originHp = (id: string) => (UNITS[id]!.badges ?? []).reduce((n, b) => n + ((BADGES[b]!.statModifiers as Record<string, number>)['maxHp'] ?? 0), 0)
++    expect([originHp('hero.base.priest-robes'), originHp('hero.base.rogue-raven')]).toEqual([0, -2])
++    for (const id of ['hero.base.priest-robes', 'hero.base.rogue-raven']) expect(fieldedDef(id).maxHp - originHp(id), id).toBe((o[id]!['maxHp'] as number) + 2)
+     // fix.kit-attack-clauses (2026-10-04): the `triggers` that differ are exactly the weapon's stat rider, one more than the oracle's
+     for (const [id, rider] of [['hero.base.priest-scantily', 'trigger.iron-mace.crush.armor'], ['hero.base.ranger-ranger', 'trigger.elfbow.elf-shot.precision'], ['hero.base.ranger-scantily', 'trigger.elfbow.elf-shot.precision']] as const) {
+diff --git a/test/opening-draft-one-rule.test.ts b/test/opening-draft-one-rule.test.ts
+index 28f21cc..fea9789 100644
+--- a/test/opening-draft-one-rule.test.ts
++++ b/test/opening-draft-one-rule.test.ts
+@@ -37,6 +37,12 @@ const frozen = JSON.parse(readFileSync(new URL('./fixtures/opening-draft-one-rul
+ const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
+ const STAT_OF = OPENING.crucible.statOf as Record<string, string>
+-/** A row's own value of a stat in the Crucible's word — what the engine's own draft reads. */
+-const baseOfRow = (id: string): BaseOf => (stat) => ((UNITS[id] as unknown as Record<string, number | undefined>)[STAT_OF[stat] ?? stat]) ?? 0
++// Law 10, 2026-10-05 — content.hero-origin-badges (DECISIONS.md 2026-10-05 'seven answers: … origin badges go on the heroes …': "3, yes."; SWITCHES.md originBadgeDraftFloor): this read
++//   const baseOfRow = (id: string): BaseOf => (stat) => ((UNITS[id] as unknown as Record<string, number | undefined>)[STAT_OF[stat] ?? stat]) ?? 0
++// - this file's own copy of what the engine's draft reads, the row's number. The engine's base also says the hero as fielded
++// now (a rolled loss is held at its floor against that too), so the tests below hand the two functions the engine's own base
++// (exported for the played run's draft) - and hold here that its number is still the row's own.
++/** A row's own value of a stat in the Crucible's word, and the hero as fielded — what the engine's own draft reads. */
++const baseOfRow = (id: string): BaseOf => (opening as unknown as { baseOfRow: (id: string) => BaseOf }).baseOfRow(id)
++const rowNumber = (id: string, stat: string) => ((UNITS[id] as unknown as Record<string, number | undefined>)[STAT_OF[stat] ?? stat]) ?? 0
+ /** The engine's own draft stream for a replicate, as a roller. */
+ const engineRoller = (replicate: number): Roller => {
+@@ -54,8 +60,29 @@ describe('what openingHeroesOf returns did not move', () => {
+   it('every replicate\'s drafted party is byte for byte what it was before this item — rows, badges, rolls, mods, hands and scores', () => {
+     expect(frozen.replicates).toHaveLength(100)
++    // Law 10, 2026-10-05 — content.hero-origin-badges (DECISIONS.md 2026-10-05 'seven answers: … origin badges go on the heroes …': "3, yes."; SWITCHES.md originBadgeDraftFloor): this loop read
++    //   expect(hash(openingHeroesOf(row.replicate, frozen.drafted)), …).toBe(row.heroes)
++    //   expect(hash(openingPartyOf(frozen.position, row.replicate)), …).toBe(row.party)
++    // for every one of the hundred. A rolled LOSS is now held at its floor against the hero as fielded: the Forest Fey, fielded
++    // at Health 2 with Frail on her row, loses 1 Health where she lost 2 (and stood at 0, which the engine refused to field).
++    // Two of the hundred replicates offer her with that loss - 12 (offered at drafts 5 and 6, not taken: one score moves) and 17
++    // (taken at draft 5: her roll, her mod, and so the party). Those two are held at what they are now; the other 98 are byte
++    // for byte what the fixture froze, and nothing else may move.
++    const MOVED: Record<number, { heroes: string; party?: string }> = {
++      12: { heroes: '77458f86e4275914a36f332930afdfeb029e5eaf0ed020131e3ae535223dd246' },
++      17: { heroes: 'ba7051d51117002da3c96f61748c6f5864bc6e4ac98cb25d735ea2881e3f222a', party: '87ed70c171657e3e1d866ebfa52adfd6ce78a4014909dfb01acf67ba3c8ceac0' },
++    }
+     for (const row of frozen.replicates) {
+-      expect(hash(openingHeroesOf(row.replicate, frozen.drafted)), `replicate ${row.replicate}: the drafted heroes`).toBe(row.heroes)
+-      expect(hash(openingPartyOf(frozen.position, row.replicate)), `replicate ${row.replicate}: the party fielded at position ${frozen.position}`).toBe(row.party)
++      const moved = MOVED[row.replicate]
++      const heroes = openingHeroesOf(row.replicate, frozen.drafted)
++      expect(hash(heroes), `replicate ${row.replicate}: the drafted heroes`).toBe(moved?.heroes ?? row.heroes)
++      expect(hash(openingPartyOf(frozen.position, row.replicate)), `replicate ${row.replicate}: the party fielded at position ${frozen.position}`).toBe(moved?.party ?? row.party)
++      if (moved) {
++        expect(moved.heroes, `replicate ${row.replicate}: it did move`).not.toBe(row.heroes)
++        expect(heroes.some((h) => h.offered.includes('hero.base.ranger-nature')), `replicate ${row.replicate}: the Forest Fey is offered`).toBe(true)
++      }
+     }
++    // replicate 17, said out: she is taken, and her one Health loss is 1 - every other roll of the party is a whole step
++    const fey = openingHeroesOf(17, frozen.drafted).find((h) => h.id === 'hero.base.ranger-nature')!
++    expect(fey.rolls.filter((r) => r.stat === 'health')).toEqual([{ stat: 'health', amount: -1 }])
+     for (const w of frozen.whole) expect(JSON.parse(JSON.stringify(openingHeroesOf(w.replicate, frozen.drafted))), `replicate ${w.replicate}, whole`).toEqual(w.heroes)
+     expect(frozen.position).toBe(OPENING_POSITIONS[OPENING_POSITIONS.length - 1]!.position)
+@@ -70,4 +97,5 @@ describe('the engine exports what a played run needs', () => {
+ 
+   it('the engine\'s own draft IS those functions on its own stream: every badge, point, mod and score, sixty replicates', () => {
++    for (const id of POOL) for (const stat of ['health', 'strength', 'dodge', 'accuracy']) expect(baseOfRow(id)(stat), `${id} ${stat}: the base's number is the row's`).toBe(rowNumber(id, stat))
+     for (let replicate = 1; replicate <= 60; replicate++) {
+       const roller = engineRoller(replicate)
+diff --git a/test/opening-draft.test.ts b/test/opening-draft.test.ts
+index 2e30fb9..d0cc1e3 100644
+--- a/test/opening-draft.test.ts
++++ b/test/opening-draft.test.ts
+@@ -61,5 +61,19 @@ describe('fix.opening-draft — the first hero, the class rule, the Crucible\'s
+     const health = Array.from({ length: N }, (_, r) => openingHeroesOf(r, 6)).flat().flatMap((h) => h.rolls).filter((x) => x.stat === 'health')
+     expect(health.length).toBeGreaterThan(0)
+-    for (const x of health) expect(Math.abs(x.amount)).toBe(2)
++    // Law 10, 2026-10-05 — content.hero-origin-badges (DECISIONS.md 2026-10-05 'seven answers: … origin badges go on the heroes …': "3, yes."; SWITCHES.md originBadgeDraftFloor): this read
++    //   for (const x of health) expect(Math.abs(x.amount)).toBe(2)
++    // A Health point is still 2 Health. A LOSS is held at the Crucible's floor (Health 1) against the hero as fielded as well
++    // as against its row, so a hero fielded 1 above the floor loses 1: the one case is the Forest Fey (fielded at Health 2).
++    // Every gain is 2; a loss is 2, or exactly what takes the fielded hero to the floor.
++    const all = Array.from({ length: N }, (_, r) => openingHeroesOf(r, 6)).flat()
++    let held = 0
++    for (const h of all) for (const x of h.rolls.filter((r) => r.stat === 'health')) {
++      if (Math.abs(x.amount) === 2) continue
++      held++
++      expect(x.amount, h.id).toBeLessThan(0)
++      expect(fieldedDef(h.id).maxHp + x.amount, `${h.id}: held at the floor`).toBe(OPENING.crucible.statFloor.health)
++      expect(h.id).toBe('hero.base.ranger-nature')
++    }
++    expect(health.filter((x) => Math.abs(x.amount) === 2).length + held).toBe(health.length)
+   })
+ 
+diff --git a/test/opening-gates.test.ts b/test/opening-gates.test.ts
+index e952ac1..d2e3cbc 100644
+--- a/test/opening-gates.test.ts
++++ b/test/opening-gates.test.ts
+@@ -35,5 +35,11 @@ const S = 'test.opening-gates', ENC = 'encounter.opening.gates', FALL = 'trigger
+ // Counterattack — every replicate is another battle again. Replicates read from 0 upward on the combined tree, as the notes above did:
+ // replicate 6 is the first whose curse lands on a unit and which runs past Turn 7. Nothing here asks who wins.
+-const SEEN = 6
++// was: const SEEN = 6
++// Law 10, 2026-10-05 — content.hero-origin-badges (DECISIONS.md 2026-10-05 'seven answers: … origin badges go on the heroes …':
++// "3, yes."): each base hero is fielded with its origin badges (the Raven and the Pyre Witch 2 Health fewer and 20 Dodge more,
++// the Iron Dwarf 2 Health more, …), so every replicate is another battle; replicate 6's curse now lands on nobody (0 hit).
++// Replicates read from 0 upward, as the notes above did: none of 0 to 20 has a curse that lands on a unit; replicate 21 is the
++// first whose curse lands on a unit and which runs past Turn 7 (both Imps arrive). Nothing here asks who wins.
++const SEEN = 21
+ describe('encounter.opening.gates', () => {
+   it('fields the six defenders at the Ground Check\'s markers and carries the curse strike with the ruled numbers', () => {
+diff --git a/test/peddlers-vest.test.ts b/test/peddlers-vest.test.ts
+index af6e284..e6f079d 100644
+--- a/test/peddlers-vest.test.ts
++++ b/test/peddlers-vest.test.ts
+@@ -8,5 +8,5 @@ import { join } from 'node:path'
+ import { describe, expect, it } from 'vitest'
+ import { createBattle, fieldedDef } from '../src/core/setup.js'
+-import { ITEMS, UNITS } from '../src/content/index.js'
++import { BADGES, ITEMS, UNITS } from '../src/content/index.js'
+ import { scenarioDef, scenarioOptions } from '../src/content/scenarios.js'
+ import { openingDraftOf, openingPartyOf } from '../src/content/opening-party.js'
+@@ -31,9 +31,18 @@ describe('content.peddlers-vest — -5 Dodge, -5 Accuracy, +1 item slot, no Heal
+     for (const id of wearers) {
+       const row = UNITS[id]!, f = fieldedDef(id)
+-      expect(f.maxHp, `${id} Health`).toBe(row.maxHp)
+-      expect(f.dodge, `${id} Dodge`).toBe((row.dodge ?? 0) - 5)
+-      expect(f.accuracy, `${id} Accuracy`).toBe((row.accuracy ?? 0) - 5)
++      // Law 10, 2026-10-05 — content.hero-origin-badges (DECISIONS.md 2026-10-05 'seven answers: … origin badges go on the heroes …': "3, yes."): these read
++      //   expect(f.maxHp, …).toBe(row.maxHp)   expect(f.dodge, …).toBe((row.dodge ?? 0) - 5)   expect(f.accuracy, …).toBe((row.accuracy ?? 0) - 5)
++      //   … expect(fieldedDef('hero.base.rogue-raven').maxHp).toBe(5)
++      // The vest's rule is unchanged - no Health, -5 Dodge, -5 Accuracy. A wearer's own number is now its row's plus what its
++      // origin badges carry: the Raven is Lithe (-2 Health, +20 Dodge), so she fields Health 3 - her row's 5 less Lithe's 2,
++      // and nothing of the vest's.
++      const origin = (stat: string) => (row.badges ?? []).reduce((n, b) => n + ((BADGES[b]!.statModifiers as Record<string, number>)[stat] ?? 0), 0)
++      expect(f.maxHp, `${id} Health`).toBe(row.maxHp + origin('maxHp'))
++      expect(f.dodge, `${id} Dodge`).toBe((row.dodge ?? 0) + origin('dodge') - 5)
++      expect(f.accuracy, `${id} Accuracy`).toBe((row.accuracy ?? 0) + origin('accuracy') - 5)
+     }
+-    expect(fieldedDef('hero.base.rogue-raven').maxHp).toBe(5)
++    expect(UNITS['hero.base.rogue-raven']!.maxHp).toBe(5)
++    expect(fieldedDef('hero.base.rogue-raven').maxHp).toBe(5 + (BADGES['badge.lithe']!.statModifiers.maxHp ?? 0))
++    expect(fieldedDef('hero.base.rogue-raven').maxHp).toBe(3)
+   })
+   it('in a real battle the Raven stands with Health 5 — the Orphanage replicate that drafts her first, at level 1', () => {
+@@ -49,5 +58,11 @@ describe('content.peddlers-vest — -5 Dodge, -5 Accuracy, +1 item slot, no Heal
+     // was: expect([raven.maxHp, raven.hp]).toEqual([5, 5])
+     const handed = (openingPartyOf(1, r!).heroMods[0]?.stats ?? []).filter((m) => m.stat === 'maxHp').reduce((a, m) => a + m.add, 0)
+-    expect([raven.maxHp, raven.hp]).toEqual([5 + handed, 5 + handed])
++    // Law 10, 2026-10-05 — content.hero-origin-badges (DECISIONS.md 2026-10-05 'seven answers: … origin badges go on the heroes …': "3, yes."): this read
++    //   expect([raven.maxHp, raven.hp]).toEqual([5 + handed, 5 + handed])
++    // Her Health is her row's 5, less Lithe's 2 (her origin badge, on her row now), plus exactly what was handed in - and still
++    // nothing of the vest's.
++    const lithe = BADGES['badge.lithe']!.statModifiers.maxHp ?? 0
++    expect(lithe).toBe(-2)
++    expect([raven.maxHp, raven.hp]).toEqual([5 + lithe + handed, 5 + lithe + handed])
+   })
+ })
+diff --git a/test/v2-shields.test.ts b/test/v2-shields.test.ts
+index efb9947..ff0fb0b 100644
+--- a/test/v2-shields.test.ts
++++ b/test/v2-shields.test.ts
+@@ -11,5 +11,5 @@ import { effective } from '../src/core/stats.js'
+ import { applyItems } from '../src/core/items.js'
+ import { runBattle } from '../src/core/battle.js'
+-import { ACTIONS, ITEMS, UNITS } from '../src/content/index.js'
++import { ACTIONS, BADGES, ITEMS, UNITS } from '../src/content/index.js'
+ import type { Ctx } from '../src/core/types.js'
+ 
+@@ -70,5 +70,11 @@ describe('the three shields, as the pack publishes them', () => {
+     expect(effective(ctx, w, 'block').value).toBeGreaterThanOrEqual(row.block!)
+     expect(w.dodge).toBe(bare.dodge + row.dodge!)
+-    expect(w.maxStamina).toBe(bare.maxStamina + row.maxStamina!)
++    // Law 10, 2026-10-05 — content.hero-origin-badges (DECISIONS.md 2026-10-05 'seven answers: … origin badges go on the heroes …': "3, yes."): this read
++    //   expect(w.maxStamina).toBe(bare.maxStamina + row.maxStamina!)
++    // - `bare` is the Iron Dwarf's row with his other items, no badge folded. His row carries Stalwart now (+1 Stamina), and
++    // the fielded hero wears it: the Tower's part is still exactly its row's, on top of the hero's own.
++    const origin = (stat: string) => (warrior.badges ?? []).reduce((n, b) => n + ((BADGES[b]!.statModifiers as Record<string, number>)[stat] ?? 0), 0)
++    expect(w.maxStamina).toBe(bare.maxStamina + origin('maxStamina') + row.maxStamina!)
++    expect(w.dodge).toBe(bare.dodge + origin('dodge') + row.dodge!)
+   })
+ })
+```
+</details>

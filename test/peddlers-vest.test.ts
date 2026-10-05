@@ -7,7 +7,7 @@ import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { createBattle, fieldedDef } from '../src/core/setup.js'
-import { ITEMS, UNITS } from '../src/content/index.js'
+import { BADGES, ITEMS, UNITS } from '../src/content/index.js'
 import { scenarioDef, scenarioOptions } from '../src/content/scenarios.js'
 import { openingDraftOf, openingPartyOf } from '../src/content/opening-party.js'
 
@@ -30,11 +30,20 @@ describe('content.peddlers-vest — -5 Dodge, -5 Accuracy, +1 item slot, no Heal
     expect(wearers.length).toBeGreaterThan(0)
     for (const id of wearers) {
       const row = UNITS[id]!, f = fieldedDef(id)
-      expect(f.maxHp, `${id} Health`).toBe(row.maxHp)
-      expect(f.dodge, `${id} Dodge`).toBe((row.dodge ?? 0) - 5)
-      expect(f.accuracy, `${id} Accuracy`).toBe((row.accuracy ?? 0) - 5)
+      // Law 10, 2026-10-05 — content.hero-origin-badges (DECISIONS.md 2026-10-05 'seven answers: … origin badges go on the heroes …': "3, yes."): these read
+      //   expect(f.maxHp, …).toBe(row.maxHp)   expect(f.dodge, …).toBe((row.dodge ?? 0) - 5)   expect(f.accuracy, …).toBe((row.accuracy ?? 0) - 5)
+      //   … expect(fieldedDef('hero.base.rogue-raven').maxHp).toBe(5)
+      // The vest's rule is unchanged - no Health, -5 Dodge, -5 Accuracy. A wearer's own number is now its row's plus what its
+      // origin badges carry: the Raven is Lithe (-2 Health, +20 Dodge), so she fields Health 3 - her row's 5 less Lithe's 2,
+      // and nothing of the vest's.
+      const origin = (stat: string) => (row.badges ?? []).reduce((n, b) => n + ((BADGES[b]!.statModifiers as Record<string, number>)[stat] ?? 0), 0)
+      expect(f.maxHp, `${id} Health`).toBe(row.maxHp + origin('maxHp'))
+      expect(f.dodge, `${id} Dodge`).toBe((row.dodge ?? 0) + origin('dodge') - 5)
+      expect(f.accuracy, `${id} Accuracy`).toBe((row.accuracy ?? 0) + origin('accuracy') - 5)
     }
-    expect(fieldedDef('hero.base.rogue-raven').maxHp).toBe(5)
+    expect(UNITS['hero.base.rogue-raven']!.maxHp).toBe(5)
+    expect(fieldedDef('hero.base.rogue-raven').maxHp).toBe(5 + (BADGES['badge.lithe']!.statModifiers.maxHp ?? 0))
+    expect(fieldedDef('hero.base.rogue-raven').maxHp).toBe(3)
   })
   it('in a real battle the Raven stands with Health 5 — the Orphanage replicate that drafts her first, at level 1', () => {
     // the opening's draft (fix.opening-party) is the one path that fields a pool hero at level 1 on its own kit
@@ -48,6 +57,12 @@ describe('content.peddlers-vest — -5 Dodge, -5 Accuracy, +1 item slot, no Heal
     // in as unit mods — the vest's part is unchanged: her Health is her row's 5 plus exactly what was handed in.
     // was: expect([raven.maxHp, raven.hp]).toEqual([5, 5])
     const handed = (openingPartyOf(1, r!).heroMods[0]?.stats ?? []).filter((m) => m.stat === 'maxHp').reduce((a, m) => a + m.add, 0)
-    expect([raven.maxHp, raven.hp]).toEqual([5 + handed, 5 + handed])
+    // Law 10, 2026-10-05 — content.hero-origin-badges (DECISIONS.md 2026-10-05 'seven answers: … origin badges go on the heroes …': "3, yes."): this read
+    //   expect([raven.maxHp, raven.hp]).toEqual([5 + handed, 5 + handed])
+    // Her Health is her row's 5, less Lithe's 2 (her origin badge, on her row now), plus exactly what was handed in - and still
+    // nothing of the vest's.
+    const lithe = BADGES['badge.lithe']!.statModifiers.maxHp ?? 0
+    expect(lithe).toBe(-2)
+    expect([raven.maxHp, raven.hp]).toEqual([5 + lithe + handed, 5 + lithe + handed])
   })
 })

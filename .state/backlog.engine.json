@@ -5959,6 +5959,11 @@
   "shape": "data",
   "spec": "Ruled 2026-10-05 (Andrew, engine/DECISIONS.md 'seven answers: the first hero's card shows only what is modified; origin badges go on the heroes; Stand Up is one press; an X on a hex that cannot be walked; a walk closes every move-class action'): told that no base hero has a badge of its own in the game though the Codex names origin badges for most of the 24 (Dwarf, Elf, Lithe ...), and asked whether those should be put on the heroes' rows so the first-hero cards can show them - '3, yes.' Wanted: each of the 24 base heroes' rows carries the origin badge or badges the Codex names for it, through the content pipeline (content first, the engine pack, the viewer's dumps, the kingdom's pages, the engine gate last). Read the Codex's own list for which hero has which (CODEX.md and content/gen - quote the source in the landing note); a hero the Codex names no origin badge for gets none and is listed. A badge whose effect the engine already has acts from the moment it is on the row - so this changes battles: every control battle and opening recording that fields such a hero may move; declare changesBaseline if they do, re-export the six opening recordings together, and say in the report which heroes changed and by what. A badge whose effect names a mechanism the engine lacks is put on the row with the effect it can carry, its missing line named as a gap (engine SWITCHES) and listed in the report - do not build mechanisms here. Do not invent a badge, a name or a number: only what the Codex says. If the Codex's origin badges are themselves marked as not his (the 2026-10-04 item review's authorship list, CONTENT-DRAFTS/2026-10-04-item-review/ in the main folder, covers items, not badges - so this is not expected), say so and go on.",
   "expect": "Each base hero's row carries the origin badge the Codex names for it and the pack build passes; a hero with an origin badge shows it on its sheet and in the battle panel; a test walks the 24 heroes and fails if a row's badges differ from the Codex's list; the report lists per hero the badge added, any hero with none, any badge line that waits on a mechanism, and which recordings moved.",
-  "note": "Filed by the home chat 2026-10-05."
+  "note": "Filed by the home chat 2026-10-05.",
+  "probeIds": [
+   "badge.stalwart"
+  ],
+  "status": "done-needs-review",
+  "sha": "329154b"
  }
 ]

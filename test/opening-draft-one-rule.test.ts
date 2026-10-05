@@ -36,8 +36,14 @@ const frozen = JSON.parse(readFileSync(new URL('./fixtures/opening-draft-one-rul
 }
 const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
 const STAT_OF = OPENING.crucible.statOf as Record<string, string>
-/** A row's own value of a stat in the Crucible's word — what the engine's own draft reads. */
-const baseOfRow = (id: string): BaseOf => (stat) => ((UNITS[id] as unknown as Record<string, number | undefined>)[STAT_OF[stat] ?? stat]) ?? 0
+// Law 10, 2026-10-05 — content.hero-origin-badges (DECISIONS.md 2026-10-05 'seven answers: … origin badges go on the heroes …': "3, yes."; SWITCHES.md originBadgeDraftFloor): this read
+//   const baseOfRow = (id: string): BaseOf => (stat) => ((UNITS[id] as unknown as Record<string, number | undefined>)[STAT_OF[stat] ?? stat]) ?? 0
+// - this file's own copy of what the engine's draft reads, the row's number. The engine's base also says the hero as fielded
+// now (a rolled loss is held at its floor against that too), so the tests below hand the two functions the engine's own base
+// (exported for the played run's draft) - and hold here that its number is still the row's own.
+/** A row's own value of a stat in the Crucible's word, and the hero as fielded — what the engine's own draft reads. */
+const baseOfRow = (id: string): BaseOf => (opening as unknown as { baseOfRow: (id: string) => BaseOf }).baseOfRow(id)
+const rowNumber = (id: string, stat: string) => ((UNITS[id] as unknown as Record<string, number | undefined>)[STAT_OF[stat] ?? stat]) ?? 0
 /** The engine's own draft stream for a replicate, as a roller. */
 const engineRoller = (replicate: number): Roller => {
   const rng = makeRng(rootSeedOf(0, 0, replicate))
@@ -53,10 +59,31 @@ const POOL = (OPENING.pool as string[]).filter((id) => UNITS[id])
 describe('what openingHeroesOf returns did not move', () => {
   it('every replicate\'s drafted party is byte for byte what it was before this item — rows, badges, rolls, mods, hands and scores', () => {
     expect(frozen.replicates).toHaveLength(100)
-    for (const row of frozen.replicates) {
-      expect(hash(openingHeroesOf(row.replicate, frozen.drafted)), `replicate ${row.replicate}: the drafted heroes`).toBe(row.heroes)
-      expect(hash(openingPartyOf(frozen.position, row.replicate)), `replicate ${row.replicate}: the party fielded at position ${frozen.position}`).toBe(row.party)
+    // Law 10, 2026-10-05 — content.hero-origin-badges (DECISIONS.md 2026-10-05 'seven answers: … origin badges go on the heroes …': "3, yes."; SWITCHES.md originBadgeDraftFloor): this loop read
+    //   expect(hash(openingHeroesOf(row.replicate, frozen.drafted)), …).toBe(row.heroes)
+    //   expect(hash(openingPartyOf(frozen.position, row.replicate)), …).toBe(row.party)
+    // for every one of the hundred. A rolled LOSS is now held at its floor against the hero as fielded: the Forest Fey, fielded
+    // at Health 2 with Frail on her row, loses 1 Health where she lost 2 (and stood at 0, which the engine refused to field).
+    // Two of the hundred replicates offer her with that loss - 12 (offered at drafts 5 and 6, not taken: one score moves) and 17
+    // (taken at draft 5: her roll, her mod, and so the party). Those two are held at what they are now; the other 98 are byte
+    // for byte what the fixture froze, and nothing else may move.
+    const MOVED: Record<number, { heroes: string; party?: string }> = {
+      12: { heroes: '77458f86e4275914a36f332930afdfeb029e5eaf0ed020131e3ae535223dd246' },
+      17: { heroes: 'ba7051d51117002da3c96f61748c6f5864bc6e4ac98cb25d735ea2881e3f222a', party: '87ed70c171657e3e1d866ebfa52adfd6ce78a4014909dfb01acf67ba3c8ceac0' },
     }
+    for (const row of frozen.replicates) {
+      const moved = MOVED[row.replicate]
+      const heroes = openingHeroesOf(row.replicate, frozen.drafted)
+      expect(hash(heroes), `replicate ${row.replicate}: the drafted heroes`).toBe(moved?.heroes ?? row.heroes)
+      expect(hash(openingPartyOf(frozen.position, row.replicate)), `replicate ${row.replicate}: the party fielded at position ${frozen.position}`).toBe(moved?.party ?? row.party)
+      if (moved) {
+        expect(moved.heroes, `replicate ${row.replicate}: it did move`).not.toBe(row.heroes)
+        expect(heroes.some((h) => h.offered.includes('hero.base.ranger-nature')), `replicate ${row.replicate}: the Forest Fey is offered`).toBe(true)
+      }
+    }
+    // replicate 17, said out: she is taken, and her one Health loss is 1 - every other roll of the party is a whole step
+    const fey = openingHeroesOf(17, frozen.drafted).find((h) => h.id === 'hero.base.ranger-nature')!
+    expect(fey.rolls.filter((r) => r.stat === 'health')).toEqual([{ stat: 'health', amount: -1 }])
     for (const w of frozen.whole) expect(JSON.parse(JSON.stringify(openingHeroesOf(w.replicate, frozen.drafted))), `replicate ${w.replicate}, whole`).toEqual(w.heroes)
     expect(frozen.position).toBe(OPENING_POSITIONS[OPENING_POSITIONS.length - 1]!.position)
   })
@@ -69,6 +96,7 @@ describe('the engine exports what a played run needs', () => {
   })
 
   it('the engine\'s own draft IS those functions on its own stream: every badge, point, mod and score, sixty replicates', () => {
+    for (const id of POOL) for (const stat of ['health', 'strength', 'dodge', 'accuracy']) expect(baseOfRow(id)(stat), `${id} ${stat}: the base's number is the row's`).toBe(rowNumber(id, stat))
     for (let replicate = 1; replicate <= 60; replicate++) {
       const roller = engineRoller(replicate)
       const engine = openingHeroesOf(replicate, 6)

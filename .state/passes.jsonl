@@ -57,3 +57,6 @@
 {"suite":"control","stamp":"6067b2a8be","pack":"d2e1715375","golden":"2a98bd088f","at":"2026-10-05T12:38:48.765Z","by":"gate capability.damage-from-two-stats --land","in":"HBT-worker-engine","moved":null}
 {"suite":"engine","stamp":"6067b2a8be","with":{"engine":"6067b2a8be","content":"844a0069af","viewer":"79fcf1938f","kingdom":"3bb9ef351e"},"at":"2026-10-05T12:44:32.608Z","by":"gate --shard (1 of 1)","in":"HBT-worker-engine","tests":2954}
 {"suite":"control","stamp":"c5f16f0991","pack":"24ac096176","golden":"2a98bd088f","at":"2026-10-05T12:39:42.265Z","by":"gate viewer.lost-counterattack-line --land","in":"HBT-worker-content","moved":null}
+{"suite":"engine","stamp":"83b8cf1f00","failed":true,"at":"2026-10-05T13:57:07.576Z","by":"gate --shard 1/1","in":"HBT-worker-engine"}
+{"suite":"engine","stamp":"0cb9685661","failed":true,"at":"2026-10-05T14:15:14.372Z","by":"gate --shard 1/1","in":"HBT-worker-engine"}
+{"suite":"control","stamp":"f62baea959","pack":"37bcaaa447","golden":"2a98bd088f","at":"2026-10-05T15:24:52.871Z","by":"gate content.hero-origin-badges --land","in":"HBT-worker-engine","moved":null}
