@@ -33,6 +33,16 @@
 // check uses and by trying every triangle (the rule as first written — the cost it had); and, over a round of views — the
 // view turned through its four quarters and scrolled at each — in how many the two name the same pieces (all of them, or what
 // is drawn see-through has changed).
+//
+// viewer.scenery-shadow-drawn-once (2026-10-05) added two more, for the sun's shadow: the draw calls of a frame with the clock
+// HELD (stepped by nothing, so no body animates — "a still frame": the shadow pass should draw nothing in it); and, over a
+// round of views, the same frame drawn both ways — the scenery's shadow kept and the bodies' drawn over it, then the shadow
+// asked for whole as it was first written (src/terrain3d.js V.sceneryShadow.whole = true) — and both canvases' pixels
+// compared, every one (a page built before that item has no such switch and the column reads —). The frame is also drawn twice
+// the SAME way, and that count is printed beside the other: what differs between two frames drawn the same way is not the
+// shadow's doing. The scene's blended pieces (leaves and the like) are left out of the picture for the comparison — they
+// still cast — because two frames of them drawn the same way differ by thousands of pixels (viewer SWITCHES
+// blendedPiecesShimmer; the row's JSON carries that count too, blendedNoise).
 import {createRequire} from 'node:module'
 import {createServer} from 'node:net'
 import {spawn} from 'node:child_process'
@@ -61,6 +71,10 @@ function install(){
  window.requestAnimationFrame=cb=>{const id=++S.id;S.queue.set(id,cb);return id}
  window.cancelAnimationFrame=id=>{S.queue.delete(id)}
  performance.now=()=>S.fake
+ /* the board's camera glides on Date.now() (src/board.js clockOf): stepped with the same hand, or a turn asked for here would
+    still be easing — on the real clock — while frames said to be of one view are compared (found 2026-10-05: two frames drawn
+    the same way differed along every edge in the picture) */
+ const wall0=Date.now(),fake0=S.fake;Date.now=()=>Math.round(wall0+(S.fake-fake0))
  const P=WebGL2RenderingContext.prototype,bind=P.bindFramebuffer
  P.bindFramebuffer=function(target,f){if(target===this.FRAMEBUFFER||target===this.DRAW_FRAMEBUFFER)S.fb.set(this,f);return bind.call(this,target,f)}
  const note=(gl,mode,count,instances)=>{if(!S.counts)return
@@ -91,6 +105,37 @@ function hidingNow(){
  return {same:fast.length===plain.length&&fast.every((x,i)=>x===plain[i]),hiding:plain.length,ms:b-a,plainMs:c-b}
 }
 function quarterTurn(){window.__sandbox.viewer.turn(90);return true}
+/** the same frame drawn with the scenery's shadow kept, then with the shadow whole: are the two pictures the same, pixel for pixel? */
+function shadowBothWays(){
+ const V=window.__sandbox.viewer._V,k=V.sceneryShadow,S=window.__frameCost;if(!k||!V.seeThrough)return null
+ const read=()=>[...document.querySelectorAll('canvas.terrain3d-canvas,canvas.terrain3d-bodies')].map(c=>{const gl=c.getContext('webgl2'),w=gl.drawingBufferWidth,h=gl.drawingBufferHeight,px=new Uint8Array(w*h*4)
+  gl.readPixels(0,0,w,h,gl.RGBA,gl.UNSIGNED_BYTE,px);return px})
+ const differ=(A,B)=>{let n=0,worst=0;for(let c=0;c<A.length;c++){const a=A[c],b=B[c]
+   for(let i=0;i<a.length;i+=4){const d=Math.max(Math.abs(a[i]-b[i]),Math.abs(a[i+1]-b[i+1]),Math.abs(a[i+2]-b[i+2]),Math.abs(a[i+3]-b[i+3]));if(d){n++;if(d>worst)worst=d}}}return {n,worst}}
+ const drawnOf=a=>{let n=0;for(let i=3;i<a.length;i+=4)if(a[i])n++;return n}
+ /* The clock is held for every frame here: nothing animates between the pictures.
+    The scene's BLENDED pieces (its leaves and the like: several hundred on the Orphanage) are first counted as they are: two
+    frames of them drawn the same way are not the same picture (found 2026-10-05 while this comparison was written: a few
+    hundred to a few thousand pixels differ by a few shades from one identical frame to the next, and none once those pieces
+    are left out — nothing of the shadow's). So for the comparison itself they are left out of the PICTURE — their colour not
+    written; they cast in the shadow pass as always, and every other piece and every body is shaded by them. */
+ S.tick(0);const one=read();S.tick(0);const blendedNoise=differ(one,read()).n
+ let scene=V.seeThrough.pieces()[0]?.o;while(scene?.parent)scene=scene.parent
+ const blended=new Set();scene?.traverse(o=>{if(o.isMesh)for(const m of [].concat(o.material))if(m&&m.transparent&&m.colorWrite)blended.add(m)})
+ for(const m of blended)m.colorWrite=false
+ let first,kept,full
+ try{
+  S.tick(0);first=read()
+  S.tick(0);kept=read()
+  k.whole=true;S.tick(0);full=read()
+  k.whole=false;S.tick(0)
+ }finally{for(const m of blended)m.colorWrite=true}
+ S.tick(0)
+ let pixels=0,drawn=0;for(const a of kept){pixels+=a.length/4;drawn+=drawnOf(a)}
+ const both=differ(kept,full),same=differ(first,kept)
+ /* (the bodies' own canvas is the second: what is drawn on it is the bodies in this view) */
+ return {canvases:kept.length,pixels,drawn,bodies:kept[1]?drawnOf(kept[1]):0,differing:both.n,worst:both.worst,sameWay:same.n,blendedNoise,takes:k.takes}
+}
 function scrollStep(px){
  const v=window.__sandbox.viewer,V=v._V,S=window.__frameCost
  const before=V.camTarget?{...V.camTarget}:null
@@ -134,11 +179,27 @@ async function seeThroughRound(page){
    views.push(await page.evaluate(hidingNow))}
   await page.evaluate(quarterTurn)
   /* the turn is a glide of about a second: let it arrive */
-  for(let i=0;i<12;i++)await page.evaluate(tick,WITH_CHECK_MS)}
+  for(let i=0;i<14;i++)await page.evaluate(tick,WITH_CHECK_MS)}
  const ms=views.map(v=>v.ms),plain=views.map(v=>v.plainMs)
  const built=await page.evaluate(()=>window.__sandbox.viewer._V.seeThrough.built||null)
  return {...(built?{built:{pieces:built.pieces,triangles:built.triangles,ms:round(built.ms)}}:{}),views:views.length,same:views.filter(v=>v.same).length,withSomethingHiding:views.filter(v=>v.hiding>0).length,
   ms:{median:round(median(ms),2),max:round(Math.max(...ms),2)},plainMs:{median:round(median(plain),1),max:round(Math.max(...plain),1)}}
+}
+/** a round of views for the shadow: at each of the four quarters the view centred on the unit that acts (bodies and their
+    shadows in the picture), then scrolled a little — the frame drawn both ways at every one */
+async function shadowRound(page){
+ if(await page.evaluate(()=>!window.__sandbox.viewer._V.sceneryShadow))return null
+ const arrive=async()=>{for(let i=0;i<14;i++)await page.evaluate(tick,WITH_CHECK_MS)}   // a glide is 1.1 s of the stepped clock
+ const views=[]
+ for(let q=0;q<4;q++){
+  await page.evaluate(()=>{const s=window.__sandbox;s.viewer.centre(s.session.ctx.battleCursor.actor);return true});await arrive()
+  views.push(await page.evaluate(shadowBothWays))
+  for(let k=0;k<3;k++){await page.evaluate(scrollStep,SCROLL_PX*4);await page.evaluate(tick,WITH_CHECK_MS)}
+  views.push(await page.evaluate(shadowBothWays))
+  await page.evaluate(quarterTurn);await arrive()}
+ return {views:views.length,same:views.filter(v=>v.differing===0).length,pixels:views[0].pixels,drawn:Math.min(...views.map(v=>v.drawn)),bodies:Math.min(...views.map(v=>v.bodies)),
+  differing:Math.max(...views.map(v=>v.differing)),worst:Math.max(...views.map(v=>v.worst)),
+  sameWay:Math.max(...views.map(v=>v.sameWay)),blendedNoise:Math.max(...views.map(v=>v.blendedNoise)),sceneryShadowDrawn:views[views.length-1].takes}
 }
 async function battle(browser,port,id){
  const page=await browser.newPage({viewport:{width:1920,height:1080}}),errors=[]
@@ -157,6 +218,8 @@ async function battle(browser,port,id){
   const board=await page.evaluate(()=>{const wr=window.__sandbox.viewer._V.dom.stage.parentNode;return {w:wr.clientWidth,h:wr.clientHeight}})
   const gpu=await page.evaluate(()=>{const c=document.querySelector('canvas.terrain3d-canvas'),gl=c?.getContext('webgl2'),x=gl?.getExtension('WEBGL_debug_renderer_info');return gl?String(x?gl.getParameter(x.UNMASKED_RENDERER_WEBGL):gl.getParameter(gl.RENDERER)):'?'})
   await page.evaluate(install)
+  /* (the frame by hand, for the page's own use: a picture is taken in the same task as the frame that drew it) */
+  await page.evaluate(src=>{window.__frameCost.tick=(0,eval)('('+src+')')},tick.toString())
   /* the frames the browser already held are its own to fire: let them, so each lands in the tool's hands */
   await page.waitForFunction(()=>[...window.__frameCost.queue.values()].some(cb=>/sawThrough/.test(String(cb))),null,{timeout:30000})
   /* "nothing moving": the battle opens with a glide to the unit that begins — let it arrive before a still frame is counted */
@@ -165,7 +228,9 @@ async function battle(browser,port,id){
   const row={battle:id,name,board,gpu,loadMs}
   row.still={withCheck:await measure(page,WITH_CHECK_MS,false),withoutCheck:await measure(page,WITHOUT_CHECK_MS,false)}
   row.scrolling={withCheck:await measure(page,WITH_CHECK_MS,true),withoutCheck:await measure(page,WITHOUT_CHECK_MS,true)}
+  row.held=await measure(page,0,false)
   const seen=await seeThroughRound(page);if(seen)row.seeThrough=seen
+  const shadow=await shadowRound(page);if(shadow)row.shadow=shadow
   if(errors.length)row.pageErrors=errors
   return row
  }finally{await page.close()}
@@ -174,8 +239,8 @@ async function battle(browser,port,id){
 const n=x=>x==null?'—':x.toLocaleString('en-US')
 const short=id=>id.replace(/^encounter\.(opening\.)?/,'')
 function table(rows){
- const head=['battle','draw calls a frame (shadow · scene · bodies)','triangles a frame (shadow · scene · bodies)','script ms, still: with the check / without','script ms, scrolling: with / without','draw calls scrolling','see-through checks run: still / scrolling','one check, ms: now / every triangle','same pieces both ways']
- const lines=rows.map(r=>r.flat?[short(r.battle),r.note,'','','','','','','']:[short(r.battle),
+ const head=['battle','draw calls a frame (shadow · scene · bodies)','triangles a frame (shadow · scene · bodies)','script ms, still: with the check / without','script ms, scrolling: with / without','draw calls scrolling','see-through checks run: still / scrolling','one check, ms: now / every triangle','same pieces both ways','clock held: draw calls (shadow · scene · bodies)','shadow kept against shadow whole: the same picture?']
+ const lines=rows.map(r=>r.flat?[short(r.battle),r.note,'','','','','','','','','']:[short(r.battle),
   `${n(r.still.withoutCheck.draws.all)} (${n(r.still.withoutCheck.draws.shadow)} · ${n(r.still.withoutCheck.draws.scene)} · ${n(r.still.withoutCheck.draws.bodies)})`,
   `${n(r.still.withoutCheck.triangles.all)} (${n(r.still.withoutCheck.triangles.shadow)} · ${n(r.still.withoutCheck.triangles.scene)} · ${n(r.still.withoutCheck.triangles.bodies)})`,
   `${r.still.withCheck.ms.median} (${r.still.withCheck.ms.min}–${r.still.withCheck.ms.max}) / ${r.still.withoutCheck.ms.median} (${r.still.withoutCheck.ms.min}–${r.still.withoutCheck.ms.max})`,
@@ -183,7 +248,9 @@ function table(rows){
   `${n(r.scrolling.withoutCheck.draws.all)}`,
   r.still.withCheck.checks==null?'—':`${r.still.withCheck.checks} / ${r.scrolling.withCheck.checks} of ${r.still.withCheck.frames}`,
   r.seeThrough?`${r.seeThrough.ms.median} (to ${r.seeThrough.ms.max}) / ${r.seeThrough.plainMs.median} (to ${r.seeThrough.plainMs.max})`:'—',
-  r.seeThrough?`${r.seeThrough.same} of ${r.seeThrough.views} views (${r.seeThrough.withSomethingHiding} with a piece in the way)`:'—'])
+  r.seeThrough?`${r.seeThrough.same} of ${r.seeThrough.views} views (${r.seeThrough.withSomethingHiding} with a piece in the way)`:'—',
+  `${n(r.held.draws.all)} (${n(r.held.draws.shadow)} · ${n(r.held.draws.scene)} · ${n(r.held.draws.bodies)})`,
+  r.shadow?`at most ${n(r.shadow.differing)} of ${n(r.shadow.pixels)} pixels differ, by ${r.shadow.worst} of 255, over ${r.shadow.views} views (two frames drawn the same way: ${n(r.shadow.sameWay)}); bodies in every view: ${r.shadow.bodies>0?'yes':'NO'}`:'—'])
  const w=head.map((h,i)=>Math.max(h.length,...lines.map(l=>l[i].length)))
  const row=c=>'| '+c.map((x,i)=>x.padEnd(w[i])).join(' | ')+' |'
  return [row(head),'|'+w.map(x=>'-'.repeat(x+2)).join('|')+'|',...lines.map(row)].join('\n')

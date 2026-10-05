@@ -235,6 +235,10 @@ test('the ground look: the painted scene\'s own materials are drawn darker and l
   plain.dispose(); toned.dispose()
 })
 
+/* 2026-10-05, viewer.scenery-shadow-drawn-once: "takes the sun's shadow again every drawn frame" is held here with a renderer
+   that stands in for three's and cannot keep a shadow — and for such a renderer it still stands, as written. three's own
+   renderer no longer takes the shadow whole on every drawn frame: the scenery's is drawn once and kept, the bodies' drawn
+   over it when a body moved (tools/scenery-shadow-drawn-once.test.mjs). No assertion below is changed. */
 test('the driver: the ground look reaches the scene\'s load; the shadows look takes the sun\'s shadow again every drawn frame with the bodies in the scene\'s pass and the key light out of it; without them, as before', async () => {
   const fields = JSON.parse(readFileSync('generated/fields.json', 'utf8')), field = fields['map.opening.orphanage']
   const b = A.paintedBinding('map.opening.orphanage', field, (await import('./painted-scenes.mjs')).packPaintedScenes(fields))
