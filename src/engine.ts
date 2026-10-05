@@ -62,6 +62,8 @@ export { SPECIALTY_LEVEL, HANDS, HELD_CLASSES, handsOf, splitHandsOf, usesPerBat
 // kingdom.swap-cost-reads-as-stamina (2026-10-05): what a foldable stat holds with nothing folded onto it (a swap costs 1
 // Stamina) — the screens say what a swap costs with a row's change, and read the base here, never from a number of their own
 export { FOLD_BASE } from '../../engine/src/core/items.js'
+// capability.set-bonus (engine item, 2026-10-05): the one count of a hero's sets - the Equip screen reads the engine's lines
+export { setLinesOf } from '../../engine/src/core/items.js'
 export { fnv1a } from '../../engine/src/core/rng.js'
 // Human sandbox host: public lifecycle/commands and read-only previews only.
 // The passive viewer's separate door remains metadata-only.

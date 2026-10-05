@@ -49,9 +49,13 @@ describe('kingdom.reads-engine — the kingdom reads the engine', () => {
     const battle = (k: string) => (u as unknown as Record<string, number>)[k]! + u.mods.filter((m) => m.stat === k && m.op === 'add').reduce((s, m) => s + m.value, 0)
     for (const k of ['precision', 'strength', 'accuracy', 'dodge', 'armor', 'resist', 'magic', 'spirit']) expect([k, (now as unknown as Record<string, number>)[k]]).toEqual([k, battle(k)])
     expect(now.maxHp).toBe(u.maxHp)
-    // the chain set's +2 Precision is in both: the battle fought it
+    // Law 10, 2026-10-05 — capability.set-bonus (engine item; engine/DECISIONS.md 2026-10-04 'his 28 reward weapons read back …':
+    // "We need: … set bonus"): this read "the chain set's +2 Precision is in both" and
+    //   expect(now.precision).toBe(fieldedDef(chaplain.unitType, { items: fielded, stowed }).precision + 2)
+    // The Chains' sentence is "for every CHAIN item you carry" and the Chains are one: three carried, +3 - counted by the
+    // engine when it fields the hero, no longer handed in by the kingdom. In both, and the battle fought it: unchanged.
     const { fielded, stowed } = fieldedItemsOf(chaplain.equipped)
-    expect(now.precision).toBe(fieldedDef(chaplain.unitType, { items: fielded, stowed }).precision + 2)
+    expect(now.precision).toBe(fieldedDef(chaplain.unitType, { items: fielded, stowed }).precision + 3)
     expect(b.events.some((e) => e.type === 'unit.modified' && e['source'] === 'item.chains-of-the-wrathful')).toBe(true)
   })
 

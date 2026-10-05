@@ -20,8 +20,7 @@
 import { createBattle, runBattle, LEVELS, BADGES, RULE_BADGES, rosterUids, isUnitUid, UNITS, levelTableOf, fieldedPreview, isStatName } from '../engine.js'
 import type { BattleOptions, Event, Outcome, Side, HeroProgress, UnitDef } from '../engine.js'
 import { atlasFieldingOf } from '../content/atlas.js'
-import { itemOf } from '../content/items.js'
-import { fieldedModsOfRows, hasMods, type FieldedMods } from './sets.js'
+import { hasMods, type FieldedMods } from './sets.js'
 import { fieldedItemsOf, instanceSlotsOf } from './loadout.js'
 
 const combatBadges = (badges: readonly string[] = []) => badges.filter(id => Object.hasOwn(BADGES, id))
@@ -52,8 +51,10 @@ function draftedModsOf(h: { drafted?: DraftedMods | undefined }): NonNullable<Fi
 }
 /** What the battle is handed for one hero beside its items: its drafted points, then its sets' bonuses (sets.resolve). */
 function fieldedModsOf(h: { equipped?: readonly string[] | undefined; drafted?: DraftedMods | undefined }): FieldedMods {
-  const sets = fieldedModsOfRows((h.equipped ?? []).map(itemOf)), own = draftedModsOf(h)
-  return own.length ? { ...sets, stats: [...own, ...(sets.stats ?? [])] } : sets
+  // capability.set-bonus (engine item, 2026-10-05): the sets are the engine's own count at fielding — this handed their
+  // numbers too, which would now pay each set twice. What the fielding hands is the hero's drafted points alone.
+  const own = draftedModsOf(h)
+  return own.length ? { stats: [...own] } : {}
 }
 
 /** A campaign-free fielding: everything a battle needs, nothing about a Campaign. */

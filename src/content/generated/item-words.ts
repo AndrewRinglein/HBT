@@ -6,7 +6,7 @@
 /** A trigger as the Codex words it: the hook, the effect's sentence, and the chance (percent) when it is not certain. */
 export type TriggerWords = { readonly hook: string; readonly effect: string; readonly chance?: number }
 /** Per Codex item: its one line of what it is, and its own triggers. */
-export type ItemWords = { readonly id: string; readonly line: string; readonly triggers: readonly TriggerWords[] }
+export type ItemWords = { readonly id: string; readonly line: string; readonly triggers: readonly TriggerWords[]; /** Its set line, as the Codex writes it (capability.set-bonus). */ readonly setLine?: string }
 /** Per Codex Enchantment or attribute: its name, its line and its triggers. */
 export type AttributeWords = { readonly id: string; readonly name: string; readonly line: string; readonly triggers: readonly TriggerWords[] }
 /** An attack an item grants, in the Codex's own fields. */
@@ -47,7 +47,7 @@ export const ITEM_WORDS: readonly ItemWords[] = [
   {"id":"item.bloody-axe","line":"It has never once been cleaned, and it has never once needed to finish the job by itself.","triggers":[{"hook":"onDamage","effect":"apply 1 Bleed"},{"hook":"onBlock","effect":"the blocking target loses 20 Block and 20 Ranged Block for the rest of the Battle"}]},
   {"id":"item.boarding-hook","line":"A hook on a chain. It opens a wound that will not close while they run.","triggers":[{"hook":"onDamage","effect":"apply 1 Bleed"}]},
   {"id":"item.book-of-exorcisms","line":"Read quietly it kills one thing; read properly it clears the room and costs you your voice.","triggers":[{"hook":"onAttack","effect":"apply 1 Burn"}]},
-  {"id":"item.book-of-karma","line":"The ledger is kept whether or not you read it aloud. Reading it aloud is how someone else gets paid.","triggers":[]},
+  {"id":"item.book-of-karma","line":"The ledger is kept whether or not you read it aloud. Reading it aloud is how someone else gets paid.","triggers":[],"setLine":"+1 Resist for every BOOK you carry."},
   {"id":"item.borrowed-vestments","line":"They are not yours, they do not fit, and every single person in the room can tell which of those is the problem.","triggers":[]},
   {"id":"item.bracer-of-courage","line":"Bought the morning you learned the warband fields a Stunner, and worthless the morning you learned it does not.","triggers":[]},
   {"id":"item.brass-spyglass-of-thessan","line":"One stamina turns the whole party's Turn into a focus-fire order, which is worth more than any number you could have put on yourself.","triggers":[]},
@@ -61,7 +61,7 @@ export const ITEM_WORDS: readonly ItemWords[] = [
   {"id":"item.censer-of-true-light","line":"Three Armor and three Resist against two creature tags: worth more than any relic on the right map and literally nothing on the wrong one.","triggers":[{"hook":"passive","effect":"Immunity to Burn 1"}]},
   {"id":"item.chains-of-the-damned","line":"Six Health and two Armor bolted onto someone who can barely walk. There is nothing clever here and that is the point.","triggers":[]},
   {"id":"item.chains-of-the-faithful","line":"The fire has to go somewhere, and you decided it goes on you. Every swing costs you a little of it.","triggers":[{"hook":"aura","effect":"AURA radius 2 -- allies inside have Immunity to Burn 1"}]},
-  {"id":"item.chains-of-the-wrathful","line":"Both hands, swung wide. It is the only priest weapon that does not care which one of them it hits.","triggers":[]},
+  {"id":"item.chains-of-the-wrathful","line":"Both hands, swung wide. It is the only priest weapon that does not care which one of them it hits.","triggers":[],"setLine":"+1 Precision for every CHAIN item you carry."},
   {"id":"item.claws","line":"Not carried, not dropped, and it does not take a slot. It is part of you.","triggers":[]},
   {"id":"item.cloak-of-ghostform","line":"You are only really there when you decide to be, and the decision costs you the moment you make it.","triggers":[{"hook":"onDodge","effect":"gain +50 Dodge until the end of your next Turn"}]},
   {"id":"item.cloudsteel-plate","line":"Light for plate, which means it is merely very heavy, and it starts every fight with three points you did not have to earn.","triggers":[{"hook":"passive","effect":"You have AIRWALK: no trap and no terrain status from the hex you end your Turn on."}]},
@@ -238,9 +238,9 @@ export const ITEM_WORDS: readonly ItemWords[] = [
   {"id":"item.sniper-bow","line":"Fourteen hexes of patience; the moment anything reaches you, the expensive half of this weapon stops existing.","triggers":[{"hook":"onKill","effect":"gain +5 Accuracy for the rest of the Battle, stacking"}]},
   {"id":"item.soaked-plate","line":"Heavy plate with no penalty at all, which is the strangest thing in the band.","triggers":[]},
   {"id":"item.staff-of-summoning","line":"It calls one thing up and it is unusually good at putting other people's things back down.","triggers":[]},
-  {"id":"item.staff-of-the-destroyer","line":"Nothing it kills gets to be raised, walked past, or mourned. There is no corpse.","triggers":[]},
-  {"id":"item.staff-of-the-magi","line":"The staff is the smaller half. What it really is, is a reason to fill every slot you own with rings.","triggers":[]},
-  {"id":"item.staff-of-the-ultimate-destroyer","line":"The last staff. It doubles the stat it scales on and then scales on it.","triggers":[]},
+  {"id":"item.staff-of-the-destroyer","line":"Nothing it kills gets to be raised, walked past, or mourned. There is no corpse.","triggers":[],"setLine":"+1 damage for every DESTROYER item you carry."},
+  {"id":"item.staff-of-the-magi","line":"The staff is the smaller half. What it really is, is a reason to fill every slot you own with rings.","triggers":[],"setLine":"+1 Magic for every RING you are wearing."},
+  {"id":"item.staff-of-the-ultimate-destroyer","line":"The last staff. It doubles the stat it scales on and then scales on it.","triggers":[],"setLine":"+1 damage for every DESTROYER item you carry."},
   {"id":"item.starweaver-loom-fragment","line":"The threads still connect: it pays the party for standing together and pays double for standing on opposite sides of the same thing.","triggers":[{"hook":"aura","effect":"AURA radius 3 — every ally inside has +3 Luck, and an ally that ends its Activation inside gains 1 Protection."}]},
   {"id":"item.stoneskin-hauberk","line":"Two points of Armor for standing still and a third for refusing to stop standing still — it makes a doorway out of a person.","triggers":[{"hook":"onActivationEnd","effect":"gain +1 Armor until the end of your next Turn"}]},
   {"id":"item.storm-bastion","line":"It exists to be the thing arrows hit, and it is extremely good at being the thing arrows hit.","triggers":[{"hook":"aura","effect":"AURA radius 1 — an enemy that ends its movement inside gains 1 Frost. The Frost cancels any Burn it carried."}]},

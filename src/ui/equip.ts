@@ -50,7 +50,9 @@ const sign = (n: number) => `${n > 0 ? '+' : ''}${n}`
 /** "chain set bonus from Chains of the Wrathful: +2 precision (2 other chain items)". */
 export function setLineOf(l: SetLine): string {
   const paid = [...Object.entries(l.stats).map(([k, n]) => statWordsOf(k, n, { lower: true })), ...(l.attackDamage ? [`${sign(l.attackDamage)} damage on this weapon`] : [])].join(', ')
-  return `${l.tag} set bonus from ${itemOf(l.itemId).name}: ${paid} (${l.count} ${l.shape === 'per-other' ? `other ${l.tag} item${l.count === 1 ? '' : 's'}` : `${l.tag} items worn`})`
+  // capability.set-bonus (engine item, 2026-10-05): the count the line is at, in the wording's own terms
+  const counted = l.shape === 'per-other' ? `${l.count} other ${l.tag} item${l.count === 1 ? '' : 's'}` : l.shape === 'for-every' ? `${l.count} ${l.tag} item${l.count === 1 ? '' : 's'} carried` : `${l.count} ${l.tag} items carried`
+  return `${l.tag} set bonus from ${itemOf(l.itemId).name}: ${paid} (${counted})`
 }
 
 /** The red/green deltas one hero's gear makes — items and sets together. */

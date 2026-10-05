@@ -60,6 +60,8 @@ const setBonusOf = (sb, where) => {
   if (typeof sb.tag !== 'string') fail(`setBonus without a tag: ${JSON.stringify(sb)}`)
   const out = { tag: sb.tag }
   if (sb.each) out.each = payloadOf(sb.each, where)
+  // capability.set-bonus (engine item, 2026-10-05): "for every … you carry" — the carrier is counted too when it bears the tag
+  if (sb.withItself !== undefined) { if (sb.withItself !== true || !sb.each) fail(`setBonus on '${sb.tag}': withItself is true, on an each block, or absent`); out.withItself = true }
   if (sb.at !== undefined) { if (!Number.isInteger(sb.at) || !sb.once) fail(`setBonus at-count on '${sb.tag}' needs integer at and once{}`); out.at = sb.at; out.once = payloadOf(sb.once, where) }
   if (!out.each && out.at === undefined) fail(`setBonus on '${sb.tag}' pays nothing — each{} or at/once{}`)
   return out
