@@ -640,13 +640,27 @@ html,body{margin:0;background:#08090b;color:var(--ink);
   padding:4px 10px 5px;border:1px solid #4a4335;border-radius:3px;background:rgba(12,13,16,.9);box-shadow:0 2px 10px rgba(0,0,0,.55);white-space:nowrap;text-align:center}
 #hexTip .hexTipName{font-size:13px;font-weight:700;letter-spacing:.02em;color:#f0e6cf}
 #hexTip .hexTipLine{font-size:12px;color:#c9c2b2}
-#playNote{position:absolute;left:50%;top:12px;transform:translateX(-50%);z-index:50;padding:4px 12px;border:1px solid #2a251d;border-radius:2px;
-  background:rgba(8,9,11,.82);color:#e8dfc8;font:600 13px "Barlow Semi Condensed",ui-sans-serif,system-ui,sans-serif;pointer-events:none}
-/* viewer.auto-end-no-actions: the host's notice ("No remaining actions possible.") — over the board, under the phase banner's
-   place, large enough to read at a glance; it catches no click and holds nothing (src/chrome.js) */
-#playNotice{position:absolute;left:50%;top:84px;transform:translateX(-50%);z-index:53;padding:9px 22px;border:1px solid var(--brass);border-radius:3px;
-  background:rgba(8,9,11,.9);color:var(--gold);font:600 20px "Barlow Semi Condensed",ui-sans-serif,system-ui,sans-serif;letter-spacing:.2px;
-  box-shadow:0 10px 30px rgba(0,0,0,.6);pointer-events:none;white-space:nowrap}
+/* ── THE NOTICES (viewer.notices-gold-low-no-backdrop, 2026-10-05) ───────────────────────────────────────────────────────
+   Engine DECISIONS.md 2026-10-05 'the playtest post answered: every notice gold and low …' (Andrew: "The notifications are in a
+   very awkward spot. The fact that they have a backdrop makes them take up a lot more space. I was imagining this as gold and
+   bright text with no backdrop. Also, let's drop it lower down on the screen so it's right above the bottom of the screen." ·
+   "I don't like the way it is for anything.").
+   ONE LOOK: the rule between the two marks below is the lettering of every notice — gold, bright, an outline and a soft shadow
+   on the letters so it reads over snow and over dark ground, and nothing drawn behind them. The kingdom's builders lift that
+   one rule for the screens between battles (kingdom tools/battle-view-assets.mjs), so it is written with no variable.
+   ONE PLACE: #noticeStack, in the board's own frame, just above its bottom edge — which is just above the action bar (the
+   bar is the frame's sibling below it; the frame clips, so a notice is never over the bar). The notices stand in it one above
+   another, never over one another: the play note, the host's notice, the lesson (lowest). The stack's foot is 36 px up: clear of
+   the camera's own line of small print in the frame's lower-left corner (#camHud), which a long notice would lie over. */
+/* NOTICE-LOOK */
+.hbtNotice{color:#ffd45e;font-weight:700;letter-spacing:.02em;background:none;border:none;border-radius:0;box-shadow:none;text-shadow:-1px -1px 0 #000,1px -1px 0 #000,-1px 1px 0 #000,1px 1px 0 #000,0 0 5px rgba(0,0,0,.95),0 2px 10px rgba(0,0,0,.9)}
+/* END NOTICE-LOOK */
+#noticeStack{position:absolute;left:50%;bottom:36px;transform:translateX(-50%);z-index:58;width:max-content;max-width:86%;display:flex;flex-direction:column;align-items:center;gap:3px;
+  text-align:center;pointer-events:none}
+#playNote{font-family:"Barlow Semi Condensed",ui-sans-serif,system-ui,sans-serif;font-size:17px;line-height:1.25;pointer-events:none}
+/* viewer.auto-end-no-actions: the host's notice ("No remaining actions possible.") — large enough to read at a glance; it
+   catches no click and holds nothing (src/chrome.js) */
+#playNotice{font-family:"Barlow Semi Condensed",ui-sans-serif,system-ui,sans-serif;font-size:22px;line-height:1.25;letter-spacing:.2px;pointer-events:none;white-space:nowrap}
 /* viewer.no-hex-focus-border: kept. A play hex takes no pointer events (the board's pick reads the click), so it is never
    focused by the mouse, and Esc or an arrow key gives none the focus — this pale blue shows only on a hex reached with Tab,
    where it is the keyboard player's only cursor (viewer SWITCHES hexFocusPlayKept; measured in Chrome, kingdom
@@ -689,11 +703,13 @@ html,body{margin:0;background:#08090b;color:var(--ink);
 #playLog .ln.dmg{position:static;font-family:inherit;font-size:inherit;font-weight:inherit;text-shadow:none;animation:none}
 /* viewer.switch-hero-asks: the switch pop-up ("End activation of X and start activation of Y?") is the End Turn pop-up's twin */
 #playAsk,#playSwitch,#playGear{position:absolute;inset:0;z-index:200;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.55)}
-#playAskBox,#playSwitchBox,#playGearBox{max-width:560px;padding:26px 30px 22px;background:#15120d;border:1px solid var(--brass);border-radius:3px;
-  box-shadow:0 24px 60px rgba(0,0,0,.8),0 0 0 1px #000;color:var(--ink);font:500 18px/1.4 "Barlow Semi Condensed",ui-sans-serif,system-ui,sans-serif}
-#playAskText{margin:0 0 10px;font-size:21px;color:var(--gold)}
-#playSwitchText{margin:0 0 20px;font-size:21px;color:var(--gold)}
-#playAskWho{margin:0 0 20px;color:#b9b09a;font-size:15px}
+/* viewer.notices-gold-low-no-backdrop: a question keeps its buttons and its dimmed screen (it holds the click) and loses the box
+   behind its words, which wear the notice's lettering (.hbtNotice); the gear panel is a panel of controls and keeps its box */
+#playAskBox,#playSwitchBox,#playGearBox{max-width:560px;padding:26px 30px 22px;color:var(--ink);font:500 18px/1.4 "Barlow Semi Condensed",ui-sans-serif,system-ui,sans-serif}
+#playGearBox{background:#15120d;border:1px solid var(--brass);border-radius:3px;box-shadow:0 24px 60px rgba(0,0,0,.8),0 0 0 1px #000}
+#playAskText{margin:0 0 10px;font-size:24px}
+#playSwitchText{margin:0 0 20px;font-size:24px}
+#playAskWho{margin:0 0 20px;font-size:17px}
 #playAskBtns,#playSwitchBtns,#playGearBtns{display:flex;gap:12px;justify-content:flex-end}
 /* viewer.swap-button-rearranges: the gear panel — what the unit carries, in hand or stowed; a press moves an item across */
 #playGearBox{min-width:460px}
@@ -739,22 +755,19 @@ html,body{margin:0;background:#08090b;color:var(--ink);
 
 /* ── THE HOST'S LESSONS (viewer.tutorial-overlays, 2026-10-04; engine DECISIONS.md 2026-10-04 'the opening's tutorial …') ──
    the notice: "a notification message across the center that is gold and easy to see"; it takes a click (to clear it sooner),
-   the layer of pointers takes none. Screen space, outside the 3D scene. */
-#tutNotice{position:absolute;left:50%;top:46%;transform:translate(-50%,-50%);z-index:58;max-width:78%;padding:16px 34px;
-  text-align:center;cursor:pointer;pointer-events:auto;border-radius:4px;
-  background:linear-gradient(180deg,rgba(26,20,8,.93),rgba(14,11,5,.93));border:1px solid rgba(224,185,94,.75);
-  box-shadow:0 0 0 1px rgba(0,0,0,.6),0 10px 44px rgba(0,0,0,.75),0 0 46px rgba(224,185,94,.22)}
-#tutNotice b{display:block;font-family:Spectral,serif;font-size:34px;line-height:1.22;font-weight:600;color:var(--gold);
-  letter-spacing:.3px;text-shadow:0 0 22px rgba(224,185,94,.5),0 2px 3px rgba(0,0,0,.9)}
-#tutNotice b+b{margin-top:4px;font-size:27px}
+   the layer of pointers takes none. Screen space, outside the 3D scene.
+   Since viewer.notices-gold-low-no-backdrop (2026-10-05, "gold and bright text with no backdrop … right above the bottom of
+   the screen"): it stands in #noticeStack, lowest, in the notice's one lettering (.hbtNotice) — no box, no place of its own. */
+#tutNotice{max-width:100%;padding:2px 0 0;text-align:center;cursor:pointer;pointer-events:auto}
+#tutNotice b{display:block;font-family:Spectral,serif;font-size:32px;line-height:1.2;font-weight:700;letter-spacing:.3px}
+#tutNotice b+b{margin-top:2px;font-size:26px}
 #tutLayer{position:absolute;inset:0;z-index:90;pointer-events:none;overflow:hidden}
 .tutPtr{position:absolute;display:flex;align-items:center;gap:5px;pointer-events:none;filter:drop-shadow(0 2px 5px rgba(0,0,0,.85))}
 .tutPtr.tut-top{flex-direction:column;transform:translate(-50%,-100%)}
 .tutPtr.tut-bottom{flex-direction:column-reverse;transform:translate(-50%,0)}
 .tutPtr.tut-left{flex-direction:row;transform:translate(-100%,-50%)}
 .tutPtr.tut-right{flex-direction:row-reverse;transform:translate(0,-50%)}
-.tutWord{font:700 17px/1.15 'Barlow Semi Condensed',sans-serif;letter-spacing:.04em;color:#1a1408;background:var(--gold);
-  padding:4px 11px;border-radius:3px;max-width:300px;text-align:center}
+.tutWord{font-family:'Barlow Semi Condensed',sans-serif;font-size:19px;line-height:1.15;letter-spacing:.04em;padding:2px 4px;max-width:300px;text-align:center}
 .tutArrow{display:block;width:0;height:0;border:13px solid transparent;animation:tutBob .9s ease-in-out infinite}
 .tut-top .tutArrow{border-top-color:var(--gold);border-bottom-width:0;--bx:0;--by:-7px}
 .tut-bottom .tutArrow{border-bottom-color:var(--gold);border-top-width:0;--bx:0;--by:7px}

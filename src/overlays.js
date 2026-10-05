@@ -62,14 +62,15 @@ export function mountOverlays(V) {
     if (opts.ms !== undefined && !(Number.isFinite(opts.ms) && opts.ms > 0)) fail('a notice lasts a positive number of milliseconds')
     endTell('replaced')
     const ms = opts.ms ?? noticeMs(lines.join(' '))
-    const node = document.createElement('div'); node.id = 'tutNotice'; node.setAttribute('role', 'status'); node.setAttribute('aria-live', 'polite')
+    /* viewer.notices-gold-low-no-backdrop: the one lettering, in the one stack just above the bottom of the board */
+    const node = document.createElement('div'); node.id = 'tutNotice'; node.className = 'hbtNotice'; node.setAttribute('role', 'status'); node.setAttribute('aria-live', 'polite')
     node.innerHTML = lines.map(l => `<b>${esc(l)}</b>`).join('')
     const t = told = { node, lines, ms, hold: !!opts.hold, onDone: opts.onDone, timer: null }
     /* a click on the words clears them sooner; it is the notice's own, never the board's under it */
     node.addEventListener('click', ev => { if (ev && ev.stopPropagation) ev.stopPropagation(); if (told === t) endTell('click') })
     for (const type of ['pointerdown', 'pointerup', 'dblclick', 'contextmenu']) node.addEventListener(type, ev => { if (ev && ev.stopPropagation) ev.stopPropagation() })
-    ;(wrap || root).appendChild(node)
-    if (node.animate) node.animate([{ opacity: 0, transform: 'translate(-50%,-50%) scale(.96)' }, { opacity: 1, transform: 'translate(-50%,-50%) scale(1)' }], { duration: 220, easing: 'ease-out' })
+    ;(root.querySelector('#noticeStack') || wrap || root).appendChild(node)
+    if (node.animate) node.animate([{ opacity: 0, transform: 'scale(.96)' }, { opacity: 1, transform: 'scale(1)' }], { duration: 220, easing: 'ease-out' })
     if (t.hold) V.holdPump('notice')
     t.timer = setTimeout(() => { t.timer = null; if (told === t) endTell('time') }, ms)
     return { ms, clear: () => { if (told === t) endTell('cleared') } }
@@ -150,7 +151,7 @@ export function mountOverlays(V) {
     if (opts.word !== undefined && (typeof opts.word !== 'string' || !opts.word.trim())) fail('a pointer\'s word is words')
     const id = nextId++, node = document.createElement('div')
     node.className = 'tutPtr tut-' + side; node.setAttribute('data-ptr', String(id)); node.setAttribute('data-target', spec.key)
-    node.innerHTML = (opts.word ? `<span class="tutWord">${esc(opts.word.trim())}</span>` : '') + '<i class="tutArrow"></i>'
+    node.innerHTML = (opts.word ? `<span class="tutWord hbtNotice">${esc(opts.word.trim())}</span>` : '') + '<i class="tutArrow"></i>'
     layer.appendChild(node)
     const p = { id, spec, side, node, word: opts.word ? opts.word.trim() : null, target: spec.key, el: null, shown: null }
     pointers.set(id, p); place(p)

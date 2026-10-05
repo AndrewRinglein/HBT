@@ -144,7 +144,7 @@ const TEMPLATE = `
     <div id="boardwrap"><div id="stage"></div><div id="stageTop"></div>
       <canvas id="vfxC" style="position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none;z-index:35"></canvas>
       <div id="camHud" class="mono" style="position:absolute;left:10px;bottom:10px;z-index:50;font-size:11px;color:#8b8778;background:rgba(8,9,11,.72);padding:3px 9px;border:1px solid #2a251d;border-radius:2px;pointer-events:none"></div>
-      <div id="playNote" role="status" style="display:none"></div></div>
+      <div id="noticeStack"><div id="playNote" class="hbtNotice" role="status" style="display:none"></div></div></div>
     <div data-slot="transport" style="display:contents"></div>
     <div id="stambar"></div>
     <div id="barrow"><div id="unitPortrait" aria-hidden="true" style="display:none"><img alt=""></div><div id="actionbar"></div></div>

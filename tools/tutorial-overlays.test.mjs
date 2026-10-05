@@ -65,8 +65,15 @@ test('the NOTICE: gold words across the centre of the board, one to three lines;
   for (const bad of ['', [], ['a', 'b', 'c', 'd'], ['ok', ''], 7, null]) assert.throws(() => v.tell(bad), /one to three lines/)
   assert.throws(() => v.tell('x', { ms: 0 }), /positive/)
   assert.equal(v.tell(['One.', 'Two.', 'Three.']).ms > 0, true); assert.equal(noticeOf(V).querySelectorAll('b').length, 3); v.clearTell()
-  /* its look, in the page's stylesheet: across the centre, gold, large, above the board */
-  assert.match(css, /#tutNotice\{[^}]*left:50%[^}]*transform:translate\(-50%,-50%\)/); assert.match(css, /#tutNotice b\{[^}]*color:var\(--gold\)/)
+  /* Law 10, 2026-10-05 - viewer.notices-gold-low-no-backdrop (engine DECISIONS.md 2026-10-05 'the playtest post answered: every notice
+     gold and low ...', Andrew: "The notifications are in a very awkward spot. ... I was imagining this as gold and bright text with no
+     backdrop. Also, let's drop it lower down on the screen so it's right above the bottom of the screen." - "I don't like the way it
+     is for anything."). This held the notice ACROSS THE CENTRE of the board, as 2026-10-04 ruled it:
+       assert.match(css, /#tutNotice\{[^}]*left:50%[^}]*transform:translate\(-50%,-50%\)/); assert.match(css, /#tutNotice b\{[^}]*color:var\(--gold\)/)
+     The newer ruling moves it: the notice is still centred across the board, still gold, still large - and stands in the one stack
+     of notices just above the bottom of the board, in the one lettering (tools/notices-gold-low-no-backdrop.test.mjs holds the look
+     and the place whole). */
+  assert.match(css, /\.hbtNotice\{[^}]*color:#ffd45e/, 'gold'); assert.match(css, /#noticeStack\{[^}]*left:50%[^}]*bottom:\d+px[^}]*transform:translateX\(-50%\)/, 'across the centre, above the bottom of the board')
   const size = +css.match(/#tutNotice b\{[^}]*font-size:(\d+)px/)[1]; assert.ok(size >= 28, 'large enough to read at a glance: ' + size + ' px')
   v.dispose()
 })

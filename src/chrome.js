@@ -26,7 +26,7 @@ const CHROME = `<button id="playSpeed" type="button" class="pcBtn" aria-pressed=
 const ENDS = `<button id="playEndAct" type="button" class="pcBtn" aria-disabled="true" title="End this hero's activation">End activation</button>`
   + `<button id="playEndTurn" type="button" class="pcBtn pcEnd" aria-disabled="true" title="End the Player Phase">End Turn</button>`
 const ASK = `<div id="playAskBox" role="alertdialog" aria-modal="true" aria-labelledby="playAskText" aria-describedby="playAskWho">`
-  + `<p id="playAskText"></p><p id="playAskWho"></p>`
+  + `<p id="playAskText" class="hbtNotice"></p><p id="playAskWho" class="hbtNotice"></p>`
   + `<div id="playAskBtns"><button id="playAskNo" type="button" class="pcBtn">Keep playing</button><button id="playAskYes" type="button" class="pcBtn pcEnd">End Turn</button></div></div>`
 
 /* viewer.switch-hero-asks (engine DECISIONS.md 2026-10-03 'size and shadows are the default; ... switching heroes asks first
@@ -39,7 +39,7 @@ const ASK = `<div id="playAskBox" role="alertdialog" aria-modal="true" aria-labe
    ({kind:'answer', yes}); Esc is No. */
 export const switchAsk = (from, to) => `End activation of ${from} and start activation of ${to}?`
 const SWITCH = `<div id="playSwitchBox" role="alertdialog" aria-modal="true" aria-labelledby="playSwitchText">`
-  + `<p id="playSwitchText"></p>`
+  + `<p id="playSwitchText" class="hbtNotice"></p>`
   + `<div id="playSwitchBtns"><button id="playSwitchNo" type="button" class="pcBtn">No</button><button id="playSwitchYes" type="button" class="pcBtn pcEnd">Yes</button></div></div>`
 
 /* viewer.auto-end-no-actions (engine DECISIONS.md 2026-10-03 'a player unit with nothing left it can do ends its Activation by
@@ -76,7 +76,8 @@ export function mountPlayChrome(V, host) {
   const top = V.dom.root.querySelector('#topbar'); top.insertAdjacentHTML('beforeend', LOGBTN); const logBtn = top.lastElementChild || top.children[top.children.length - 1]
   const ask = document.createElement('div'); ask.id = 'playAsk'; ask.style.display = 'none'; ask.innerHTML = ASK
   const note = document.createElement('div'); note.id = 'playNotice'; note.setAttribute('role', 'status'); note.setAttribute('aria-live', 'polite'); note.style.display = 'none'
-  wrap.appendChild(note)
+  /* viewer.notices-gold-low-no-backdrop: in the one stack of notices, in the one lettering */
+  note.className = 'hbtNotice'; (V.dom.root.querySelector('#noticeStack') || wrap).appendChild(note)
   let noteTimer = null
   function endNotice() { if (noteTimer != null) { clearTimeout(noteTimer); noteTimer = null } note.style.display = 'none' }
   /** show the host's words for NOTICE_MS; a second notice takes the first one's place and its own time */
