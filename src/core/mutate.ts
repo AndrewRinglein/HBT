@@ -4,7 +4,7 @@
 
 import type { AiModeChange, Ctx, EncounterAiRule, Event, LifeState, Prop, Side, Unit, UnitMods } from './types.js'
 import type { HexId } from './hex.js'
-import { effective, isStatName } from './stats.js'
+import { effective, effectiveOwn, isStatName } from './stats.js'
 import { SPECIAL_FREE_ATTACKS, type FreeAttackKind } from './special-free-attacks.js'
 import { LAYER } from '../content/terrain.js'
 
@@ -35,7 +35,7 @@ export const EVENT_TYPES = [
   'status.applied', 'status.cancelled', 'status.expired', 'status.reduced', 'surge.checked',
   'surge.hit', 'thorns.reflected', 'trigger.fired', 'trigger.rolled', 'turn.begin', 'turn.end',
   'unit.badged', 'unit.enter', 'unit.equipped', 'unit.grown', 'unit.modified', 'unit.obliterated',
-  'unit.dismissed', 'unit.proned', 'unit.raised', 'unit.reverted', 'unit.shunted', 'unit.stood', 'unit.summoned', 'unit.transformed', 'zoc.ignored',
+  'side.stat.changed', 'side.stat.restored', 'unit.dismissed', 'unit.proned', 'unit.raised', 'unit.reverted', 'unit.shunted', 'unit.stood', 'unit.summoned', 'unit.transformed', 'zoc.ignored',
 ] as const
 export type EventType = (typeof EVENT_TYPES)[number] | `life.${LifeState}`
 
@@ -354,6 +354,14 @@ export function expireActivationMods(ctx: Ctx, id: number, causeId: string): voi
  */
 export function expireTurnMods(ctx: Ctx, causeId: string): void {
   const next = ctx.state.turn + 1
+  // capability.raise-lower-magic (2026-10-05): a side's change that lasted until this Turn's end goes with it, one line each,
+  // in the order they were made (Law 6) — the stat returns by what the change had actually taken or given
+  for (const m of (ctx.state.sideMods ?? []).filter((x) => x.expiresAtTurn !== undefined && x.expiresAtTurn <= next)) {
+    const before = sideStatOf(ctx, m.side, m.stat)
+    ctx.state.sideMods = ctx.state.sideMods!.filter((x) => x !== m)
+    emit(ctx, 'side.stat.restored', causeId, { side: m.side, stat: m.stat, by: -m.value, before, after: sideStatOf(ctx, m.side, m.stat), source: m.source })
+  }
+  if (ctx.state.sideMods && !ctx.state.sideMods.length) delete ctx.state.sideMods
   for (const u of ctx.state.units) {
     const gone = u.mods.filter((m) => m.expiresAtTurn !== undefined && m.expiresAtTurn <= next)
     if (!gone.length) continue
@@ -718,6 +726,43 @@ export function beginTurn(ctx: Ctx, causeId: string): void {
   expireTurnMods(ctx, causeId)
   ctx.state.turn += 1
   emit(ctx, 'turn.begin', causeId, { turn: ctx.state.turn })
+}
+
+// ── A SIDE'S PARTY STATS, RAISED AND LOWERED (capability.raise-lower-magic, 2026-10-05) ─────────────────────────
+// Ruled 2026-10-04 (DECISIONS.md 'his 28 reward weapons read back …'): "we need to lower and raise magic." A change is laid
+// OVER the stat, named for the effect that made it, and removable: the heroes' Magic or Spirit (the party's sum, and each
+// member's own, which an attack or a burst of that stat reads) or the enemy side's Power (the pool is untouched; every
+// share of it reads powerOf). No content name here.
+/** The sum of the changes standing on a side's stat. */
+export function sideModOf(ctx: Ctx, side: Side, stat: 'magic' | 'spirit' | 'power'): number {
+  let n = 0
+  for (const m of ctx.state.sideMods ?? []) if (m.side === side && m.stat === stat) n += m.value
+  return n
+}
+/** The enemy side's Power as everything reads it: the pool with the changes standing on it, never below 0. */
+export function powerOf(ctx: Ctx): number {
+  return Math.max(0, (ctx.state.power ?? 0) + sideModOf(ctx, 'enemy', 'power'))
+}
+/** A side's party stat as it stands: Power, or the sum of its living members' Magic or Spirit with the side's changes, never below 0. */
+function sideStatOf(ctx: Ctx, side: Side, stat: 'magic' | 'spirit' | 'power'): number {
+  if (stat === 'power') return powerOf(ctx)
+  let n = 0
+  for (const u of ctx.state.units) if (u.side === side && u.lifeState !== 'dead') n += effectiveOwn(ctx, u, stat).value
+  return Math.max(0, n + sideModOf(ctx, side, stat))
+}
+/**
+ * Raise or lower a side's party stat. `actingSide` is the side of the unit whose effect it is: `own` is that side, `enemy`
+ * the other; Power is the enemy side's pool whoever acts. A lowering never takes the stat below 0 — what it actually took
+ * is what is stored and said (`by`; `asked` when it differs); a change of nothing says nothing.
+ */
+export function changeSideStat(ctx: Ctx, actingSide: Side, c: import('./types.js').SideStatChange, causeId: string, actor: number | null): void {
+  const side: Side = c.stat === 'power' ? 'enemy' : (c.side ?? 'own') === 'own' ? actingSide : actingSide === 'hero' ? 'enemy' : 'hero'
+  const before = sideStatOf(ctx, side, c.stat)
+  const by = c.value < 0 ? Math.max(c.value, -before) : c.value
+  if (by === 0) return
+  const expiresAtTurn = c.until === 'endOfTurn' ? ctx.state.turn + 1 : c.until === 'endOfNextTurn' ? ctx.state.turn + 2 : undefined
+  ;(ctx.state.sideMods ??= []).push({ side, stat: c.stat, value: by, source: causeId, ...(expiresAtTurn !== undefined ? { expiresAtTurn } : {}) })
+  emit(ctx, 'side.stat.changed', causeId, { actor, side, stat: c.stat, by, ...(by !== c.value ? { asked: c.value } : {}), before, after: sideStatOf(ctx, side, c.stat), until: c.until, ...(expiresAtTurn !== undefined ? { expiresAtTurn } : {}) })
 }
 
 /**

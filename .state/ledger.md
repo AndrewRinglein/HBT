@@ -36670,6 +36670,17 @@ index 0000000..a125e58
 ```
 </details>
 
+## capability.set-bonus — LANDED `29b3934` **NEEDS REVIEW**
+2026-10-05 20:19
+
+  PASS  dependencies landed
+  WARN  not already decided — 3 candidate ruling(s) — READ BEFORE ASKING: SWITCHES.md:2528 · SWITCHES.md:2526
+  PASS  typecheck
+  PASS  the item's own tests — test/battle-cursor.test.ts, test/damage-from-two-stats.test.ts, test/kingdom-reads-engine.test.ts, test/set-bonus.test.ts
+  PASS  gate 1 — the id appears in a real battle — item.chains-of-the-wrathful: 2 log lines, 2 fired, 2 changed state
+  PASS  brought its own tests — test/battle-cursor.test.ts, test/damage-from-two-stats.test.ts, test/kingdom-reads-engine.test.ts, test/fixtures/battle-cursor-set-bonus.json, test/set-bonus.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/battle-cursor.test.ts (-2), test/damage-from-two-stats.test.ts (-1), test/kingdom-reads-engine.test.ts (-3) — will land FLAGGED for review
+  PASS  control battles unchanged
 ## viewer.edge-scroll-at-screen-edges — LANDED `4c3e4cd`
 2026-10-05 19:09
 
@@ -36685,6 +36696,10 @@ index 0000000..a125e58
   PASS  hardcode scan — core knows mechanisms, never names
   PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
   PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — item.chains-of-the-wrathful live · item.staff-of-the-magi live
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without item.chains-of-the-wrathful — they genuinely test it
   PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
   PASS  naming — new content ids use declared kinds
   PASS  naming — no banned words invented
@@ -36723,6 +36738,102 @@ index 0000000..a125e58
 <details><summary>Existing tests were edited — review this diff</summary>
 
 ```diff
+diff --git a/test/battle-cursor.test.ts b/test/battle-cursor.test.ts
+index 48b09da..cafa136 100644
+--- a/test/battle-cursor.test.ts
++++ b/test/battle-cursor.test.ts
+@@ -492,4 +492,11 @@ const heroOriginBadgesGolden = JSON.parse(readFileSync(new URL('./fixtures/battl
+ // Every case frozen here (tools/capture-summons-cursor.mts). Moved: none. A `changed` case is checked here and skips the older layers.
+ const summonsGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-summons.json', import.meta.url), 'utf8'))
++// capability.set-bonus (2026-10-05; DECISIONS.md 2026-10-04 'his 28 reward weapons read back …': "We need: … set bonus"; GEAR-DESIGN.md
++// §5: a set is a tag plus a block on the item that cares), Law 10: an item row carries its set block and the engine counts the
++// members a unit carries when it is fielded; and a unit mod of Magic or Spirit is the unit's own share of the party's, so it
++// reaches the party's sum (it reached nothing). Every case whose party carries a drafted gift of Magic or Spirit moves;
++// test.set-bonus is ADDED: four of the set rows live in a real battle.
++// Every case frozen here (tools/capture-set-bonus-cursor.mts). Moved: test.perfect-sight. A `changed` case is checked here and skips the older layers.
++const setBonusGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-set-bonus.json', import.meta.url), 'utf8'))
+ const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
+ // Explicit rule migration, not regenerated historical hashes. These nine old
+@@ -641,5 +648,8 @@ describe('resumable battle cursor', () => {
+       const heroOriginBadgesExpected = heroOriginBadgesGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+       const summonsExpected = summonsGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+-      const summonsMoved = summonsExpected?.changed === true
++      const setBonusExpected = setBonusGolden.cases.find((row:{id:string})=>row.id===fixture.id)
++      const setBonusMoved = setBonusExpected?.changed === true
++      // was: const summonsMoved = summonsExpected?.changed === true — a case capability.set-bonus moved skips this layer too (capability.set-bonus 2026-10-04)
++      const summonsMoved = summonsExpected?.changed === true || setBonusMoved
+       // was: const heroOriginBadgesMoved = heroOriginBadgesExpected?.changed === true — a case capability.summons moved skips this layer too (capability.summons 2026-10-04)
+       const heroOriginBadgesMoved = heroOriginBadgesExpected?.changed === true || summonsMoved
+@@ -801,5 +811,12 @@ describe('resumable battle cursor', () => {
+           }
+         } else result = battle.runBattle(ctx)
+-        if (summonsExpected) {
++        if (setBonusExpected) {
++        expect(hash(ctx.events), 'full set-bonus events').toBe(setBonusExpected.events)
++        expect(hash(ctx.state), 'full set-bonus state').toBe(setBonusExpected.state)
++        expect(hash(ctx.rng.log), 'full set-bonus RNG').toBe(setBonusExpected.rng)
++        expect(result).toEqual(setBonusExpected.result)
++        }
++        // was: if (summonsExpected) { — capability.set-bonus (2026-10-04): a case it moved is checked above instead
++        if (summonsExpected && !setBonusMoved) {
+         expect(hash(ctx.events), 'full summons events').toBe(summonsExpected.events)
+         expect(hash(ctx.state), 'full summons state').toBe(summonsExpected.state)
+diff --git a/test/damage-from-two-stats.test.ts b/test/damage-from-two-stats.test.ts
+index b4bdd52..b58c15c 100644
+--- a/test/damage-from-two-stats.test.ts
++++ b/test/damage-from-two-stats.test.ts
+@@ -93,5 +93,11 @@ describe('the damage is the sum, dealt as one damage of the attack\'s type', ()
+       const pre = stat(ctx, h, 'precision'), magic = partySum(ctx, h.side, 'magic')
+       const flat = ATTACKS[attack]!.attack!.bonus
+-      expect(source(ctx, h, z, attack).value, attack).toBe(flat + pre * pm + (mm === 0.5 ? half(magic) : magic * mm))
++      // Law 10, 2026-10-05 — capability.set-bonus (DECISIONS.md 2026-10-04 'his 28 reward weapons read back …': "We need: … set bonus"): this read
++      //   expect(source(ctx, h, z, attack).value, attack).toBe(flat + pre * pm + (mm === 0.5 ? half(magic) : magic * mm))
++      // The Destroyer staffs' set line acts now ("+1 damage for every DESTROYER item you carry", and each is one): held
++      // alone, a Destroyer staff's own attacks deal 1 more - the weapon's own damage, beside the sum, which is unchanged.
++      const set = (h.weaponBonuses ?? []).filter((b) => b.itemId === item).reduce((n, b) => n + b.damage, 0)
++      expect(set, item).toBe(ITEMS[item]!.setBonus?.each?.['attackDamage'] ?? 0)
++      expect(source(ctx, h, z, attack).value, attack).toBe(flat + set + pre * pm + (mm === 0.5 ? half(magic) : magic * mm))
+     }
+   })
+diff --git a/test/kingdom-reads-engine.test.ts b/test/kingdom-reads-engine.test.ts
+index 5ad2700..5fa7b0c 100644
+--- a/test/kingdom-reads-engine.test.ts
++++ b/test/kingdom-reads-engine.test.ts
+@@ -29,10 +29,17 @@ describe('kingdom.reads-engine — what the engine opens to the kingdom', () =>
+   })
+ 
+-  it('K3: fieldedPreview is the unit the battle fields, its set bonuses (heroMods) included', () => {
++  // Law 10, 2026-10-05 — capability.set-bonus (DECISIONS.md 2026-10-04 'his 28 reward weapons read back …': "We need: … set bonus"): this test was titled "K3: fieldedPreview is the unit the battle fields, its set bonuses
++  // (heroMods) included" and handed the chain set's numbers in itself:
++  //   const heroMods = { stats: [{ stat: 'precision' as const, add: 2, source: 'item.chains-of-the-wrathful' }, { stat: 'maxHp' as const, add: 1, source: 'item.chains-of-the-wrathful' }] }
++  //   expect(preview.precision).toBe(bare.precision + 2)   expect(preview.maxHp).toBe(bare.maxHp + 1)
++  // The set is the engine's own count now (two chain items carried: +2 Precision), so nobody hands it in; what a fielding
++  // hands in (a drafted gift) still adds. The claim is unchanged: the preview is the unit the battle fields, every mod in it.
++  it('K3: fieldedPreview is the unit the battle fields - its sets\' pay (the engine\'s count) and the mods handed in', () => {
+     const items = ['item.chains-of-the-wrathful', 'item.chains-of-the-faithful']
+-    const heroMods = { stats: [{ stat: 'precision' as const, add: 2, source: 'item.chains-of-the-wrathful' }, { stat: 'maxHp' as const, add: 1, source: 'item.chains-of-the-wrathful' }] }
++    const heroMods = { stats: [{ stat: 'precision' as const, add: 2, source: 'test.gift' }, { stat: 'maxHp' as const, add: 1, source: 'test.gift' }] }
+     const preview = fieldedPreview('hero.base.priest-armored', { items, heroMods })
+     const bare = fieldedDef('hero.base.priest-armored', { items })
+-    expect(preview.precision).toBe(bare.precision + 2)
++    expect(fieldedPreview('hero.base.priest-armored', { items }).precision).toBe(bare.precision + 2)   // the chain set: two chain items carried
++    expect(preview.precision).toBe(bare.precision + 2 + 2)
+     expect(preview.maxHp).toBe(bare.maxHp + 1)
+     const ctx = createBattle({ scenarioId: 'probe.mods', replicate: 1, heroes: ['hero.base.priest-armored'], heroItems: [items], heroMods: [heroMods], enemies: ['unit.zombie'], enemyCount: 1, mapId: 'map.open' })
+```
+</details>
+
+## capability.raise-lower-magic — LANDED `7474b7c` **NEEDS REVIEW**
+2026-10-05 22:52
+
+  PASS  dependencies landed
+  WARN  not already decided — 2 candidate ruling(s) — READ BEFORE ASKING: SWITCHES.md:2282 · COMBAT-SEQUENCE.md:484
+  PASS  typecheck
+  PASS  the item's own tests — test/battle-cursor.test.ts, test/raise-lower-magic.test.ts
+  PASS  gate 1 — the id appears in a real battle — power.staff-of-the-magi.vortex: 22 log lines, 22 fired, 13 changed state
+  PASS  brought its own tests — test/battle-cursor.test.ts, test/fixtures/battle-cursor-raise-lower-magic.json, test/raise-lower-magic.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/battle-cursor.test.ts (-2) — will land FLAGGED for review
+  PASS  control battles unchanged
 0cf51d8
 
 diff --git a/test/frame-cost-page.ts b/test/frame-cost-page.ts
@@ -37261,6 +37372,55 @@ index 4fa3021..39d00ad 100644
   PASS  hardcode scan — core knows mechanisms, never names
   PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
   PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — power.staff-of-the-magi.vortex live · power.test-mage.swell live
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without power.staff-of-the-magi.vortex — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/battle-cursor.test.ts b/test/battle-cursor.test.ts
+index cafa136..3b81571 100644
+--- a/test/battle-cursor.test.ts
++++ b/test/battle-cursor.test.ts
+@@ -499,4 +499,10 @@ const summonsGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-
+ // Every case frozen here (tools/capture-set-bonus-cursor.mts). Moved: test.perfect-sight. A `changed` case is checked here and skips the older layers.
+ const setBonusGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-set-bonus.json', import.meta.url), 'utf8'))
++// capability.raise-lower-magic (2026-10-05; DECISIONS.md 2026-10-04 'his 28 reward weapons read back …': "we need to lower and raise
++// magic"), Law 10: an effect can raise or lower a side's party stat - the heroes' Magic or Spirit, the enemy side's Power - for the
++// rest of the Battle or for Turns, never below 0, and everything that reads the stat reads the changed value. No case that was
++// fought before moves (nothing in them changed a party stat); test.vortex is ADDED: the Staff of the Magi's Vortex live in a real battle.
++// Every case frozen here (tools/capture-raise-lower-magic-cursor.mts). Moved: test.set-bonus. A `changed` case is checked here and skips the older layers.
++const raiseLowerMagicGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-raise-lower-magic.json', import.meta.url), 'utf8'))
+ const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
+ // Explicit rule migration, not regenerated historical hashes. These nine old
+@@ -649,5 +655,8 @@ describe('resumable battle cursor', () => {
+       const summonsExpected = summonsGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+       const setBonusExpected = setBonusGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+-      const setBonusMoved = setBonusExpected?.changed === true
++      const raiseLowerMagicExpected = raiseLowerMagicGolden.cases.find((row:{id:string})=>row.id===fixture.id)
++      const raiseLowerMagicMoved = raiseLowerMagicExpected?.changed === true
++      // was: const setBonusMoved = setBonusExpected?.changed === true — a case capability.raise-lower-magic moved skips this layer too (capability.raise-lower-magic 2026-10-04)
++      const setBonusMoved = setBonusExpected?.changed === true || raiseLowerMagicMoved
+       // was: const summonsMoved = summonsExpected?.changed === true — a case capability.set-bonus moved skips this layer too (capability.set-bonus 2026-10-04)
+       const summonsMoved = summonsExpected?.changed === true || setBonusMoved
+@@ -811,5 +820,12 @@ describe('resumable battle cursor', () => {
+           }
+         } else result = battle.runBattle(ctx)
+-        if (setBonusExpected) {
++        if (raiseLowerMagicExpected) {
++        expect(hash(ctx.events), 'full raise-lower-magic events').toBe(raiseLowerMagicExpected.events)
++        expect(hash(ctx.state), 'full raise-lower-magic state').toBe(raiseLowerMagicExpected.state)
++        expect(hash(ctx.rng.log), 'full raise-lower-magic RNG').toBe(raiseLowerMagicExpected.rng)
++        expect(result).toEqual(raiseLowerMagicExpected.result)
++        }
++        // was: if (setBonusExpected) { — capability.raise-lower-magic (2026-10-04): a case it moved is checked above instead
++        if (setBonusExpected && !raiseLowerMagicMoved) {
+         expect(hash(ctx.events), 'full set-bonus events').toBe(setBonusExpected.events)
+         expect(hash(ctx.state), 'full set-bonus state').toBe(setBonusExpected.state)
+```
+</details>
   PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
   PASS  naming — new content ids use declared kinds
   PASS  naming — no banned words invented

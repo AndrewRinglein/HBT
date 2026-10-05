@@ -30,12 +30,12 @@ import type { Targeting } from './target.js'
 import { resolveTargets, validateTargeting } from './target.js'
 import { roll100 } from './rng.js'
 import { carriesTag } from './action.js'
-import { addStatMod, applyDamage, applyHealing, breakStatuses, corpsesNear, drainStamina, emit, gainMaxHp, gainPower, gainStamina, grantBadge, loseMaxHp, loseMaxStamina, reduceStatus, removeCorpse, standUp, unit } from './mutate.js'
+import { addStatMod, applyDamage, applyHealing, breakStatuses, changeSideStat, powerOf, sideModOf, corpsesNear, drainStamina, emit, gainMaxHp, gainPower, gainStamina, grantBadge, loseMaxHp, loseMaxStamina, reduceStatus, removeCorpse, standUp, unit } from './mutate.js'
 import { paintRadius } from './vision.js'
 import { layerOfId } from '../content/maps.js'
 import { applyStatus, dealDirectDamage, incomingAbsorb, outgoingPenalty, removeStatus, spendAbsorb, lentTriggers } from './status.js'
 import { resolveDamage } from './pipeline.js'
-import { effective } from './stats.js'
+import { effective, effectiveOwn } from './stats.js'
 import type { StatName } from './stats.js'
 import { executeKnockback } from './movement.js'
 import { rulesSideOf } from './side.js'
@@ -287,9 +287,13 @@ export function resolveTriggerChance(_ctx: Ctx, _owner: Unit, t: Trigger): Resol
 export function partySum(ctx: Ctx, side: Unit['side'], stat: 'magic' | 'spirit'): number {
   let n = 0
   for (const u of ctx.state.units) {
-    if (u.side === side && u.lifeState !== 'dead') n += u[stat]
+    // capability.set-bonus (2026-10-05): each member's Magic or Spirit AS IT STANDS - its own number and every mod on it (a
+    // set's +Magic, a drafted gift, a badge gained in the battle), read the one way every stat is read (stats.ts effective).
+    // This summed the stored number alone, so a unit mod of Magic or Spirit was on the Equip card and in no sum.
+    if (u.side === side && u.lifeState !== 'dead') n += effectiveOwn(ctx, u, stat).value
   }
-  return n
+  // capability.raise-lower-magic (2026-10-05): the changes standing on the side, once — never below 0
+  return Math.max(0, n + sideModOf(ctx, side, stat))
 }
 
 export const partyMagicSum = (ctx: Ctx, side: Unit['side']) => partySum(ctx, side, 'magic')
@@ -303,7 +307,7 @@ export function valueOf(ctx: Ctx, owner: Unit, spec: ValueSpec): number {
   }
   if (spec.scale === 'power') {
     // the pool is the ENEMY side's; a hero-side owner reads 0 (nearest, 0.5 up — ENEMY-REVIEW P1)
-    const pool = rulesSideOf(ctx, owner) === 'enemy' ? (ctx.state.power ?? 0) : 0   // proving.mirror-row-rules
+    const pool = rulesSideOf(ctx, owner) === 'enemy' ? powerOf(ctx) : 0   // proving.mirror-row-rules; capability.raise-lower-magic: the pool as it stands
     return (spec.base ?? 0) + Math.floor((pool * (spec.mult ?? 1)) / (spec.div ?? 1) + 0.5)
   }
   if (spec.scale === 'partyMagic' || spec.scale === 'partySpirit') {
@@ -597,6 +601,8 @@ export function applyEffect(ctx: Ctx, e: Effect, src: EffectSource, targetId: nu
       }
       return 0
     }
+    // capability.raise-lower-magic (2026-10-05): a side's party stat raised or lowered — by the one acting's side
+    case 'side.stat': changeSideStat(ctx, actor.side, e, cause, src.actor); return 0
     // capability.summons (2026-10-05): a summon needs the hex it was aimed at, which only a hex-aimed power has (ability.ts
     // usePowerAt places the unit); anywhere else the row is refused at load (content/pack.ts), so reaching this is a bug.
     case 'summon': throw new Error(`'${cause}' summons '${e.unit}' with no hex to place it on — a summon belongs to a power aimed at a hex`)

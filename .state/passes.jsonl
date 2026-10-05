@@ -63,3 +63,10 @@
 {"suite":"engine","stamp":"39f3dab9dd","failed":true,"at":"2026-10-05T15:40:10.790Z","by":"gate --shard 1/1","in":"HBT-worker-engine"}
 {"suite":"control","stamp":"f9fdfb5dde","pack":"ad1c564a5a","golden":"2a98bd088f","at":"2026-10-05T17:45:14.701Z","by":"gate capability.summons --land","in":"HBT-worker-engine","moved":null}
 {"suite":"engine","stamp":"f9fdfb5dde","with":{"engine":"f9fdfb5dde","content":"a1cfec8160","viewer":"3d21dfbcdd","kingdom":"ed9436da02"},"at":"2026-10-05T18:33:46.648Z","by":"gate --shard (1 of 1)","in":"HBT-worker-engine","tests":2974}
+{"suite":"engine","stamp":"834a87e927","failed":true,"at":"2026-10-05T19:18:32.191Z","by":"gate --shard 1/1","in":"HBT-worker-engine"}
+{"suite":"engine","stamp":"e8b2eaa7e2","failed":true,"at":"2026-10-05T19:36:46.939Z","by":"gate --shard 1/1","in":"HBT-worker-engine"}
+{"suite":"control","stamp":"e8b2eaa7e2","pack":"3dbc581776","golden":"2a98bd088f","at":"2026-10-05T20:19:05.874Z","by":"gate capability.set-bonus --land","in":"HBT-worker-engine","moved":null}
+{"suite":"engine","stamp":"20639ac504","failed":true,"at":"2026-10-05T20:45:15.204Z","by":"gate --shard 1/1","in":"HBT-worker-engine"}
+{"suite":"engine","stamp":"83cd1ee3d6","failed":true,"at":"2026-10-05T21:01:10.136Z","by":"gate --shard 1/1","in":"HBT-worker-engine"}
+{"suite":"control","stamp":"83cd1ee3d6","pack":"d79c8c7203","golden":"2a98bd088f","at":"2026-10-05T22:52:06.412Z","by":"gate capability.raise-lower-magic --land","in":"HBT-worker-engine","moved":null}
+{"suite":"engine","stamp":"83cd1ee3d6","with":{"engine":"83cd1ee3d6","content":"e84e4cb7e0","viewer":"902c759a7d","kingdom":"c1522a2667"},"at":"2026-10-05T23:19:35.628Z","by":"gate --shard (1 of 1)","in":"HBT-worker-engine","tests":2995}

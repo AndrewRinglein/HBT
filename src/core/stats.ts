@@ -188,9 +188,13 @@ export function statusMods(ctx: Ctx, u: Unit): StatMod[] {
   return out
 }
 
-export function modsFor(ctx: Ctx, u: Unit): StatMod[] {
+export function modsFor(ctx: Ctx, u: Unit, own = false): StatMod[] {
   const stored = u.mods.filter((m) => m.expiresAtTurn === undefined || ctx.state.turn < m.expiresAtTurn)
-  const all = [...stored, ...terrainMods(ctx, u), ...auraMods(ctx, u), ...statusMods(ctx, u)]
+  // capability.raise-lower-magic (2026-10-05): the changes standing on the unit's SIDE reach each member's own Magic and
+  // Spirit — "every spell cast after it is smaller" — each under the name of the effect that made it. `own` leaves them
+  // out: the party's sum counts a side's change once, not once a member (trigger.ts partySum).
+  const side = own ? [] : (ctx.state.sideMods ?? []).filter((m) => m.side === u.side && m.stat !== 'power').map((m): StatMod => ({ stat: m.stat as StatName, op: 'add', value: m.value, source: m.source, scope: 'unit' }))
+  const all = [...stored, ...terrainMods(ctx, u), ...auraMods(ctx, u), ...statusMods(ctx, u), ...side]
   // Sorted so resolution never depends on the order things happened to be added.
   // `set` last, because an override is meaningless before the adds it replaces.
   return all.sort((a, b) =>
@@ -209,7 +213,9 @@ let resolving = false
  * another stat could loop forever — so cross-stat modifiers are forbidden and the
  * guard below makes the violation loud rather than silent.
  */
-export function effective(ctx: Ctx, u: Unit, stat: StatName): StatResult {
+/** The unit's own stat without its side's changes — what the party's sum adds up (capability.raise-lower-magic). */
+export function effectiveOwn(ctx: Ctx, u: Unit, stat: StatName): StatResult { return effective(ctx, u, stat, true) }
+export function effective(ctx: Ctx, u: Unit, stat: StatName, own = false): StatResult {
   if (resolving) {
     throw new Error(
       `re-entrant stat resolution while reading '${stat}'. A modifier may not read another stat — ` +
@@ -220,10 +226,13 @@ export function effective(ctx: Ctx, u: Unit, stat: StatName): StatResult {
     const base = BASE[stat](u)
     let v = base
     const ledger: StatLedgerRow[] = []
-    for (const m of modsFor(ctx, u)) {
+    const lowered = new Set((ctx.state.sideMods ?? []).filter((m) => m.value < 0).map((m) => m.source))
+    for (const m of modsFor(ctx, u, own)) {
       if (m.stat !== stat) continue
       const from = v
       v = m.op === 'set' ? m.value : v + m.value
+      // a side's lowering never takes a member's Magic or Spirit below 0 (capability.raise-lower-magic: "never below 0")
+      if ((stat === 'magic' || stat === 'spirit') && m.op === 'add' && m.value < 0 && lowered.has(m.source) && v < 0) v = Math.min(from, 0)
       if (v !== from) ledger.push({ source: m.source, op: m.op, delta: v - from, from, to: v })
     }
     return { value: v, base, ledger }

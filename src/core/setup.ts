@@ -4,7 +4,7 @@ import { makeRng, rootSeedOf, sample } from './rng.js'
 import type { AuthoredMap, Ctx, EncounterDef, HeroProgress, Side, State, Unit, UnitDef, UnitMods, Config } from './types.js'
 import { DEFAULT_CONFIG } from './types.js'
 import { ACTIONS, BADGES, CRIT_CHART, GENERAL_POOL, ITEMS, LEVELS, RULE_BADGES, SPECIALTIES, UNITS, FIRST_BATTLE } from '../content/index.js'
-import { applyItems, applyProgress, type Applied, FOLDABLE, applyBadges, type Badged, loadoutOf, itemUsesOf, instanceUsesLeft, foldStats } from './items.js'
+import { applyItems, applyProgress, type Applied, FOLDABLE, applyBadges, type Badged, loadoutOf, itemUsesOf, instanceUsesLeft, foldStats, setLinesOf, setModsOf } from './items.js'
 import { boardOf, decodeMap, deployOf, mapDef, terrainIdOf } from '../content/maps.js'
 import { paintGround } from './ground.js'
 import { STATUSES } from '../content/statuses.js'
@@ -210,6 +210,8 @@ type Assembled = {
   readonly worn: Applied['worn']
   readonly badged: Badged['worn']
   readonly uses: ReturnType<typeof itemUsesOf>
+  /** The unit's mods: what its sets pay (capability.set-bonus), then those the fielding handed in (seam.unit-mods). */
+  readonly mods?: UnitMods
 }
 
 /**
@@ -233,8 +235,13 @@ function assemble(bare: UnitDef, opts: FieldOptions, where: string, uid: number,
   const items = kitted ? applyItems(grown, kept.map((n) => itemIds[n]!), ITEMS, ACTIONS, where) : { def: grown, worn: [] }
   // badge.mechanism (2026-09-04): the row's own badges plus those handed in, folded after the kit
   const badges = applyBadges(items.def, [...(items.def.badges ?? []), ...(opts.badges ?? [])], badgeRows, where)
-  if (opts.heroMods) checkUnitMods(opts.heroMods, badges.def, [...itemIds, ...stowedIds], `${where}: ${bare.typeId}`)
-  return { bare, grown, def: badges.def, itemIds, stowedIds, kept, worn: items.worn, badged: badges.worn, uses }
+  // capability.set-bonus (2026-10-05): the sets are counted here, over everything the unit carries (in hand, then stowed), and
+  // what they pay joins the unit's mods ahead of those handed in — one application, one line per item that pays
+  const sets = kitted ? setModsOf(setLinesOf([...itemIds, ...stowedIds].flatMap((id) => (ITEMS[id] ? [ITEMS[id]!] : [])))) : {}
+  const stats = [...(sets.stats ?? []), ...(opts.heroMods?.stats ?? [])], attacks = [...(sets.attacks ?? []), ...(opts.heroMods?.attacks ?? [])]
+  const mods: UnitMods | undefined = stats.length || attacks.length || opts.heroMods ? { ...(stats.length ? { stats } : {}), ...(attacks.length ? { attacks } : {}) } : undefined
+  if (mods) checkUnitMods(mods, badges.def, [...itemIds, ...stowedIds], `${where}: ${bare.typeId}`)
+  return { bare, grown, def: badges.def, itemIds, stowedIds, kept, worn: items.worn, badged: badges.worn, uses, ...(mods ? { mods } : {}) }
 }
 
 /**
@@ -259,10 +266,13 @@ const isItemList = (o: FieldOptions | readonly string[]): o is readonly string[]
  * never to its def (SWITCHES.md heroModsInPreview), so fieldedDef stays the def the battle makes.
  */
 export function fieldedPreview(typeId: string, opts: FieldOptions = {}): UnitDef {
-  const def = fieldedDef(typeId, opts)
+  const bare = UNITS[typeId]
+  if (!bare) throw new Error(`fieldedPreview: unknown unit '${typeId}'`)
+  // capability.set-bonus: the assembled unit's mods — its sets' pay, then those handed in
+  const a = assemble(bare, opts, `fieldedDef(${typeId})`, 0)
   const delta: Record<string, number> = {}
-  for (const m of opts.heroMods?.stats ?? []) delta[m.stat] = (delta[m.stat] ?? 0) + m.add
-  return foldStats(def, delta, `fieldedPreview(${typeId})`)
+  for (const m of a.mods?.stats ?? []) delta[m.stat] = (delta[m.stat] ?? 0) + m.add
+  return foldStats(a.def, delta, `fieldedPreview(${typeId})`)
 }
 
 /** The name a unit is called by when its row names none: its typeId's last segment, title-cased — the one label (review E14). */
@@ -307,7 +317,7 @@ function fieldUnit(id: number, uid: number, name: string, a: Assembled, hex: num
     equipped: a.worn.map((w, j) => ({ ...w, instanceId: instanceIds[a.kept[j]!]! })),
     badged: a.badged,
     ...(grown ? { grown } : {}),
-    ...(opts.heroMods ? { mods: opts.heroMods } : {}),
+    ...(a.mods ? { mods: a.mods } : {}),
   }
 }
 

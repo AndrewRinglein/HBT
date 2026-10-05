@@ -290,6 +290,8 @@ type EffectBody =
    * within `radius` as `unit`, nearest first, ties by the lower corpse id (Law 6). A summon; leaves no corpse.
    */
   | { readonly kind: 'corpse.raise'; readonly unit: string; readonly radius: number; readonly count?: number }
+  /** capability.raise-lower-magic (2026-10-05): raise or lower a side's party stat — see SideStatChange. */
+  | ({ readonly kind: 'side.stat' } & SideStatChange)
   /**
    * capability.summons (2026-10-05): place one unit of the row `unit` on the hex the power was aimed at, on the side of the
    * one acting, flagged summoned. Only on a power whose target is `select: 'hex'` (ability.ts usePowerAt) — a hex is what
@@ -478,6 +480,17 @@ export type AiDecision = {
   readonly plans: readonly AiPlanLine[]
 }
 
+/**
+ * capability.raise-lower-magic (2026-10-05): a change to a side's PARTY stat — the Magic or the Spirit of the acting unit's
+ * own side (`side: 'own'`) or of the other (`'enemy'`), or the enemy side's Power (the one pool; it names no side) — by
+ * `value`, up or down, for the rest of the Battle or until a Turn ends (`until`: the Turn words every stat modifier uses).
+ * Never below 0: a lowering takes what is there and no more (mutate.ts changeSideStat). Everything that reads the stat
+ * reads the changed value: the party's sum, each member's own Magic or Spirit, every share of Power.
+ */
+export type SideStatChange = { readonly stat: 'magic' | 'spirit' | 'power'; readonly side?: 'own' | 'enemy'; readonly value: number; readonly until: 'battle' | 'endOfTurn' | 'endOfNextTurn' }
+/** One change standing on a side (state.sideMods): what it changes, by how much it actually changed it, whose effect it was, and the Turn it ends with. */
+export type SideMod = { side: Side; stat: 'magic' | 'spirit' | 'power'; value: number; source: string; expiresAtTurn?: number }
+
 /** Bursts freeze these authored source packets at declaration. */
 export type BurstProfile = {
   readonly shape: { readonly kind: 'arc' } | { readonly kind: 'radius'; readonly radius: number }
@@ -488,8 +501,12 @@ export type BurstProfile = {
     readonly damageType: DamageType
     readonly amount: number
     readonly stat?: 'strength' | 'precision' | 'magic' | 'spirit'
+    /** capability.raise-lower-magic: the packet's stat counted N times ("Magic x 3"), as an attack's statMult. */
+    readonly statMult?: number
     readonly powerScale?: number
   }[]
+  /** capability.raise-lower-magic: what using the burst does to a side's party stats, after its recipients are struck ("Using it lowers the party's Magic by 1 …"). */
+  readonly sideStats?: readonly SideStatChange[]
   readonly heal?: number
   /** v2.kdb: the burst's Impact for each recipient's KDB check (SWITCHES.md kdbBursts). Absent = 0. */
   readonly impact?: number
@@ -622,7 +639,7 @@ export type MoveDef = ActionDef & { readonly move: MoveProfile }
 export type AbilityDef = ActionDef
 
 /** plumbing.vocabulary-export: every effect kind, checked against the union by tsc — snapshot validation, pack validation and the exported vocabulary read it, never a copy. */
-export const EFFECT_KINDS = ['statDamage', 'damage', 'heal', 'status.apply', 'status.remove', 'statMod', 'stamina.gain', 'stamina.drain', 'loseMaxStamina', 'loseMaxHp', 'stand', 'knockback', 'badge.grant', 'power.gain', 'corpse.raise', 'summon', 'corpse.consume', 'corpse.eat', 'layer.paint', 'reveal', 'burstScale'] as const satisfies readonly Effect['kind'][]
+export const EFFECT_KINDS = ['statDamage', 'damage', 'heal', 'status.apply', 'status.remove', 'statMod', 'stamina.gain', 'stamina.drain', 'loseMaxStamina', 'loseMaxHp', 'stand', 'knockback', 'badge.grant', 'power.gain', 'corpse.raise', 'summon', 'side.stat', 'corpse.consume', 'corpse.eat', 'layer.paint', 'reveal', 'burstScale'] as const satisfies readonly Effect['kind'][]
 export type EffectKindsCovered = Assert<Covers<Effect['kind'], typeof EFFECT_KINDS>>
 
 
@@ -829,8 +846,20 @@ export type ItemDef = {
   readonly triggers: readonly import('./trigger.js').Trigger[]
   /** station.vs-target: slayer and its kin — a HELD item's reach only the attacks it grants, while in hand; a WORN item's (a bloodrune) reach every damage the unit deals, like a badge's. */
   readonly vsTarget?: readonly VsTargetRule[]
+  /**
+   * capability.set-bonus (2026-10-05; GEAR-DESIGN.md §5: a set is a tag, the bonus a block on the item that cares): the set
+   * tags this item bears — its tags that some item's set block names — and the block it carries, if it cares (items.ts
+   * setLinesOf). `each` pays per member the unit carries: every member, the carrier too when it bears the tag
+   * (`withItself`: "for every … you carry"), or every OTHER member ("per other"); `at`/`once` pays once when `at` members
+   * are carried, the carrier included. A payload key is a stat, or `attackDamage`: damage on this item's own attacks.
+   */
+  readonly setTags?: readonly string[]
+  readonly setBonus?: SetBonus
   readonly gaps?: readonly string[]
 }
+export type SetBonus = { readonly tag: string; readonly each?: Readonly<Record<string, number>>; readonly withItself?: true; readonly at?: number; readonly once?: Readonly<Record<string, number>> }
+/** One set that pays on one unit: the item that pays, what it counted, and what it pays — already multiplied. */
+export type SetLine = { readonly itemId: string; readonly tag: string; readonly shape: 'for-every' | 'per-other' | 'at-count'; readonly count: number; readonly stats: Readonly<Record<string, number>>; readonly attackDamage: number }
 
 /**
  * A hero's campaign state as the battle needs it — hero assembly (2026-09-03).
@@ -1231,6 +1260,8 @@ export type State = {
    * trigger effect). Consumers read it; it is never spent. Absent = 0.
    */
   power?: number
+  /** capability.raise-lower-magic (2026-10-05): the changes standing on the sides' party stats — absent until an effect makes one. */
+  sideMods?: SideMod[]
   /** One entry per HexId. Plain array so State stays JSON-round-trippable (Law 5b). */
   terrain: number[]
   /** Canonical obstruction state; authored x is normalized at map decode. */

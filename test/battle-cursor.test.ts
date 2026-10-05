@@ -491,6 +491,19 @@ const heroOriginBadgesGolden = JSON.parse(readFileSync(new URL('./fixtures/battl
 // test.call-the-wolf is ADDED: the Staff of Summoning's Call the Wolf live in a real battle.
 // Every case frozen here (tools/capture-summons-cursor.mts). Moved: none. A `changed` case is checked here and skips the older layers.
 const summonsGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-summons.json', import.meta.url), 'utf8'))
+// capability.set-bonus (2026-10-05; DECISIONS.md 2026-10-04 'his 28 reward weapons read back …': "We need: … set bonus"; GEAR-DESIGN.md
+// §5: a set is a tag plus a block on the item that cares), Law 10: an item row carries its set block and the engine counts the
+// members a unit carries when it is fielded; and a unit mod of Magic or Spirit is the unit's own share of the party's, so it
+// reaches the party's sum (it reached nothing). Every case whose party carries a drafted gift of Magic or Spirit moves;
+// test.set-bonus is ADDED: four of the set rows live in a real battle.
+// Every case frozen here (tools/capture-set-bonus-cursor.mts). Moved: test.perfect-sight. A `changed` case is checked here and skips the older layers.
+const setBonusGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-set-bonus.json', import.meta.url), 'utf8'))
+// capability.raise-lower-magic (2026-10-05; DECISIONS.md 2026-10-04 'his 28 reward weapons read back …': "we need to lower and raise
+// magic"), Law 10: an effect can raise or lower a side's party stat - the heroes' Magic or Spirit, the enemy side's Power - for the
+// rest of the Battle or for Turns, never below 0, and everything that reads the stat reads the changed value. No case that was
+// fought before moves (nothing in them changed a party stat); test.vortex is ADDED: the Staff of the Magi's Vortex live in a real battle.
+// Every case frozen here (tools/capture-raise-lower-magic-cursor.mts). Moved: test.set-bonus. A `changed` case is checked here and skips the older layers.
+const raiseLowerMagicGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-raise-lower-magic.json', import.meta.url), 'utf8'))
 const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
 // Explicit rule migration, not regenerated historical hashes. These nine old
 // cases contain Surge ledger/refresh changes or terminal markers corrected
@@ -640,7 +653,13 @@ describe('resumable battle cursor', () => {
       const damageFromTwoStatsExpected = damageFromTwoStatsGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const heroOriginBadgesExpected = heroOriginBadgesGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const summonsExpected = summonsGolden.cases.find((row:{id:string})=>row.id===fixture.id)
-      const summonsMoved = summonsExpected?.changed === true
+      const setBonusExpected = setBonusGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+      const raiseLowerMagicExpected = raiseLowerMagicGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+      const raiseLowerMagicMoved = raiseLowerMagicExpected?.changed === true
+      // was: const setBonusMoved = setBonusExpected?.changed === true — a case capability.raise-lower-magic moved skips this layer too (capability.raise-lower-magic 2026-10-04)
+      const setBonusMoved = setBonusExpected?.changed === true || raiseLowerMagicMoved
+      // was: const summonsMoved = summonsExpected?.changed === true — a case capability.set-bonus moved skips this layer too (capability.set-bonus 2026-10-04)
+      const summonsMoved = summonsExpected?.changed === true || setBonusMoved
       // was: const heroOriginBadgesMoved = heroOriginBadgesExpected?.changed === true — a case capability.summons moved skips this layer too (capability.summons 2026-10-04)
       const heroOriginBadgesMoved = heroOriginBadgesExpected?.changed === true || summonsMoved
       // was: const damageFromTwoStatsMoved = damageFromTwoStatsExpected?.changed === true — a case content.hero-origin-badges moved skips this layer too (content.hero-origin-badges 2026-10-04)
@@ -800,7 +819,21 @@ describe('resumable battle cursor', () => {
             battle.completeActionCycle(ctx)
           }
         } else result = battle.runBattle(ctx)
-        if (summonsExpected) {
+        if (raiseLowerMagicExpected) {
+        expect(hash(ctx.events), 'full raise-lower-magic events').toBe(raiseLowerMagicExpected.events)
+        expect(hash(ctx.state), 'full raise-lower-magic state').toBe(raiseLowerMagicExpected.state)
+        expect(hash(ctx.rng.log), 'full raise-lower-magic RNG').toBe(raiseLowerMagicExpected.rng)
+        expect(result).toEqual(raiseLowerMagicExpected.result)
+        }
+        // was: if (setBonusExpected) { — capability.raise-lower-magic (2026-10-04): a case it moved is checked above instead
+        if (setBonusExpected && !raiseLowerMagicMoved) {
+        expect(hash(ctx.events), 'full set-bonus events').toBe(setBonusExpected.events)
+        expect(hash(ctx.state), 'full set-bonus state').toBe(setBonusExpected.state)
+        expect(hash(ctx.rng.log), 'full set-bonus RNG').toBe(setBonusExpected.rng)
+        expect(result).toEqual(setBonusExpected.result)
+        }
+        // was: if (summonsExpected) { — capability.set-bonus (2026-10-04): a case it moved is checked above instead
+        if (summonsExpected && !setBonusMoved) {
         expect(hash(ctx.events), 'full summons events').toBe(summonsExpected.events)
         expect(hash(ctx.state), 'full summons state').toBe(summonsExpected.state)
         expect(hash(ctx.rng.log), 'full summons RNG').toBe(summonsExpected.rng)
