@@ -28,7 +28,7 @@ import { fieldedItemsOf } from '../core/loadout.js'
 import { fieldedPreviewOf } from '../core/seam.js'
 import type { UnitDef } from '../engine.js'
 import { portraitIdOf, portraitOf, itemArtOf } from './art.js'
-import { statLabelOf } from '../content/stat-labels.js'
+import { statChangeIsGain, statWordsOf } from '../content/stat-labels.js'
 import { itemCardOf } from '../content/item-card.js'
 import { itemCardHtml } from './item-card.js'
 
@@ -49,15 +49,17 @@ const sign = (n: number) => `${n > 0 ? '+' : ''}${n}`
 
 /** "chain set bonus from Chains of the Wrathful: +2 precision (2 other chain items)". */
 export function setLineOf(l: SetLine): string {
-  const paid = [...Object.entries(l.stats).map(([k, n]) => `${sign(n)} ${statLabelOf(k).toLowerCase()}`), ...(l.attackDamage ? [`${sign(l.attackDamage)} damage on this weapon`] : [])].join(', ')
+  const paid = [...Object.entries(l.stats).map(([k, n]) => statWordsOf(k, n, { lower: true })), ...(l.attackDamage ? [`${sign(l.attackDamage)} damage on this weapon`] : [])].join(', ')
   return `${l.tag} set bonus from ${itemOf(l.itemId).name}: ${paid} (${l.count} ${l.shape === 'per-other' ? `other ${l.tag} item${l.count === 1 ? '' : 's'}` : `${l.tag} items worn`})`
 }
 
 /** The red/green deltas one hero's gear makes — items and sets together. */
 export function deltasOf(c: CampaignState, heroId: string): string {
   const m = heroModsOf(c, heroId)
-  const stat = (k: string, n: number) => `<span class="delta ${n > 0 ? 'won' : 'lost'}">${sign(n)} ${esc(statLabelOf(k).toLowerCase())}</span>`
-  const parts = [...Object.entries(m.total).map(([k, n]) => stat(k, n)), ...Object.entries(m.weapons).map(([id, n]) => stat(`damage · ${itemOf(id).name}`, n))]
+  // (kingdom.swap-cost-reads-as-stamina: a stat's change as content/stat-labels.ts statWordsOf says it — a cost as its sentence,
+  // and less of a cost is the gain; a weapon's own damage is this line's alone and is worded here)
+  const delta = (gain: boolean, words: string) => `<span class="delta ${gain ? 'won' : 'lost'}">${esc(words)}</span>`
+  const parts = [...Object.entries(m.total).map(([k, n]) => delta(statChangeIsGain(k, n), statWordsOf(k, n, { lower: true }))), ...Object.entries(m.weapons).map(([id, n]) => delta(n > 0, `${sign(n)} damage · ${itemOf(id).name.toLowerCase()}`))]
   return parts.join(' ') || '<span class="meta">no change from gear</span>'
 }
 
@@ -224,7 +226,7 @@ function stashSections(c: CampaignState, heroIds: readonly string[], picked: str
       const fits = heroIds.filter((h) => canEquip(c, h, id) || c.roster[h]!.equipped.some((d) => canEquip(c, h, id, d)))
       return `<div class="item${picked === id ? ' picked' : ''}${fits.length ? '' : ' nofit'}" draggable="true" data-act="pick" data-id="${esc(id)}" title="${esc(fits.length ? `fits ${fits.map((h) => c.roster[h]!.name).join(', ')}` : heroIds.map((h) => whyNotEquip(c, h, id) ?? '').filter(Boolean)[0] ?? 'nobody can wear it')}">
         ${itemArt(id)}<b>${esc(row.name)}</b>
-        <small>${esc([`tier ${row.tier}`, row.itemClass === 'weapon' ? (isShield(row) ? 'shield' : `${Math.max(1, row.hands)}-hand`) : null, row.classRestriction ? row.classRestriction.replace('class.', '') + ' only' : null, row.uses ? `${row.uses} use` : null, cost ? `${cost} to equip` : free ? 'free to equip' : null, Object.entries(row.statModifiers).map(([k, n]) => `${sign(n)} ${statLabelOf(k).toLowerCase()}`).join(' ') || null, row.setBonus ? `${row.setBonus.tag} set` : null, row.sets.length && !row.setBonus ? row.sets.join('/') + ' set' : null].filter(Boolean).join(' · '))}</small>
+        <small>${esc([`tier ${row.tier}`, row.itemClass === 'weapon' ? (isShield(row) ? 'shield' : `${Math.max(1, row.hands)}-hand`) : null, row.classRestriction ? row.classRestriction.replace('class.', '') + ' only' : null, row.uses ? `${row.uses} use` : null, cost ? `${cost} to equip` : free ? 'free to equip' : null, Object.entries(row.statModifiers).map(([k, n]) => statWordsOf(k, n, { lower: true })).join(' ') || null, row.setBonus ? `${row.setBonus.tag} set` : null, row.sets.length && !row.setBonus ? row.sets.join('/') + ' set' : null].filter(Boolean).join(' · '))}</small>
       </div>`
     }).join('')}</div></div>`
   })

@@ -47,7 +47,12 @@ const aimOf = (c: object) => JSON.stringify(Object.fromEntries(Object.entries(c)
 const engineLists = (s: Sandbox, id: number) => [...new Set(legalActions(s.ctx, id).map(aimOf))].sort()
 const hostLists = (s: Sandbox) => [...new Set(sandboxChoices(s).map((c) => aimOf(c.command)))].sort()
 
-/** Press Stand Up on the bar and confirm it, as a move that goes nowhere is used: chosen, then chosen again. */
+// Law 10, 2026-10-05 (kingdom.stand-up-one-press; engine/DECISIONS.md 2026-10-05 'seven answers: …; Stand Up is one press; …' —
+// Andrew: "stand up one press."). This helper pressed Stand Up, and — while the unit was still down — held the move as planned
+// on its hex with "Stand Up: click it again, or the hero, to use it." and pressed again (kingdom SWITCHES.md
+// standUpIsUsedLikeAMoveThatGoesNowhere, overturned). As the rule now stands, ONE press stands the unit: the helper presses
+// once and the unit is standing, with nothing planned and no second press asked for.
+/** Press Stand Up on the bar, once: the unit stands. */
 function standsByTheBar(k: ReturnType<typeof knockedDown>) {
   const { s, u, P, stand } = k
   const row = s.ctx.actions[stand]!
@@ -62,12 +67,9 @@ function standsByTheBar(k: ReturnType<typeof knockedDown>) {
   const from = s.ctx.events.length, stamina = u.stamina, hex = u.hex
   // the press on the bar: taken
   expect(P.input({ kind: 'slot', actionId: stand, unit: u.id }), 'the press on Stand Up is taken').toBe(true)
-  if (k.isProne()) {
-    // a move that goes nowhere is planned on the unit's own hex and used by the next press (kingdom SWITCHES playInputStandStill)
-    expect(P.facts().ghost).toEqual({ unit: u.id, hex })
-    expect(P.facts().note).toBe('Stand Up: click it again, or the hero, to use it.')
-    expect(P.input({ kind: 'slot', actionId: stand, unit: u.id })).toBe(true)
-  }
+  expect(k.isProne(), 'one press stands the unit').toBe(false)
+  expect(P.facts().ghost, 'nothing is planned on its hex').toBeNull()
+  expect(P.facts().note ?? '', 'no second press is asked for').not.toMatch(/click it again/)
   const since = s.ctx.events.slice(from)
   // the engine logs the stand; the prone status is gone
   expect(since.filter((e) => e.type === 'unit.stood').map((e) => e['actor']), 'the engine logs the stand').toEqual([u.id])

@@ -38,7 +38,7 @@ import { encounterRewardOf, rewardTakersOf } from '../content/encounter-rewards.
 import { CLASSES } from '../content/classes.js'
 import { hashOf } from '../core/rng.js'
 import { listBattleCivilians } from '../view/civilians.js'
-import { statLabelOf } from '../content/stat-labels.js'
+import { statChangeIsGain, statWordsOf } from '../content/stat-labels.js'
 import { itemCardOf } from '../content/item-card.js'
 import { itemCardHtml, isClickAway } from './item-card.js'
 import { xpForLevel } from '../content/levels.js'
@@ -287,7 +287,7 @@ export function rewardsScreen(c: CampaignState, events: readonly KingdomEvent[],
   const cards = offers.map((o, i) => {
     const r = itemOf(o.id)
     const tier = Math.max(0, Math.min(6, r.tier))
-    const facts = [r.itemClass === 'weapon' ? `${Math.max(1, r.hands)}-hand` : null, r.classRestriction ? r.classRestriction.replace('class.', '') + ' only' : null, Object.entries(r.statModifiers).map(([k, n]) => `${sign(n)} ${label(k)}`).join(' ') || null, r.grants.length ? `${r.grants.length} attack${r.grants.length === 1 ? '' : 's'}/power${r.grants.length === 1 ? '' : 's'}` : null, r.setBonus ? `${r.setBonus.tag} set` : null].filter(Boolean).join(' · ')
+    const facts = [r.itemClass === 'weapon' ? `${Math.max(1, r.hands)}-hand` : null, r.classRestriction ? r.classRestriction.replace('class.', '') + ' only' : null, Object.entries(r.statModifiers).map(([k, n]) => statWordsOf(k, n)).join(' ') || null, r.grants.length ? `${r.grants.length} attack${r.grants.length === 1 ? '' : 's'}/power${r.grants.length === 1 ? '' : 's'}` : null, r.setBonus ? `${r.setBonus.tag} set` : null].filter(Boolean).join(' · ')
     // kingdom.opening-reward-card-art (engine DECISIONS.md 2026-10-03 'card art on the level-up and reward screens; …': "Card
     // art not showing in the reward screen for the flinging sword."): the item's card art fills the card's face; an item
     // with none (index.json itemsMissing) keeps the plain face and its words — never another item's picture
@@ -437,7 +437,6 @@ export function mountRewards(root: HTMLElement, onConfirm: (itemId: string) => v
 // THE LEVEL-UP — levelup.html
 // ─────────────────────────────────────────────────────────────────────────────
 
-const label = statLabelOf
 
 /**
  * `o.specialtyOwed` (kingdom.opening-loop-three): the sheet offers no level without a specialty — the sandbox's opening
@@ -450,9 +449,9 @@ export function levelUpScreen(c: CampaignState, heroId: string, from: 'rewards' 
   const v = viewLevelUp(c, heroId)
   const art = portraitOf(portraitIdOf(h))
   const grants = Object.entries(v.row.grants)
-  const bonuses = [...grants.map(([k, n]) => `<div class="bonus-item ${k === 'itemSlots' ? 'slot' : ''}"><span class="bonus-text">${sign(n)} ${esc(label(k))}</span></div>`), ...(v.needsSpecialty ? ['<div class="bonus-item specialty"><span class="bonus-text">Choose a specialty</span></div>'] : []), ...(v.pickOptions ? ['<div class="bonus-item"><span class="bonus-text">Pick one of ' + v.pickOptions.length + '</span></div>'] : [])]
-  const specialtyCards = v.specialtyOffers.map((s) => `<div class="choice-card" data-act="choose-specialty" data-id="${esc(s.id)}"><div class="choice-name">${esc(s.name)}</div><div class="choice-description">${esc(s.intent)}</div><div class="choice-stats">${Object.entries(s.statModifiers).map(([k, n]) => `<span class="stat-bonus ${n < 0 ? 'neg' : ''}">${sign(n)} ${esc(label(k))}</span>`).join('')}</div></div>`).join('')
-  const pickCards = (v.pickOptions ?? []).map((o, i) => `<div class="choice-card" data-act="choose-pick" data-id="${i}"><div class="choice-name">${esc(Object.entries(o).map(([k, n]) => `${sign(n)} ${label(k)}`).join(', '))}</div></div>`).join('')
+  const bonuses = [...grants.map(([k, n]) => `<div class="bonus-item ${k === 'itemSlots' ? 'slot' : ''}"><span class="bonus-text">${esc(statWordsOf(k, n))}</span></div>`), ...(v.needsSpecialty ? ['<div class="bonus-item specialty"><span class="bonus-text">Choose a specialty</span></div>'] : []), ...(v.pickOptions ? ['<div class="bonus-item"><span class="bonus-text">Pick one of ' + v.pickOptions.length + '</span></div>'] : [])]
+  const specialtyCards = v.specialtyOffers.map((s) => `<div class="choice-card" data-act="choose-specialty" data-id="${esc(s.id)}"><div class="choice-name">${esc(s.name)}</div><div class="choice-description">${esc(s.intent)}</div><div class="choice-stats">${Object.entries(s.statModifiers).map(([k, n]) => `<span class="stat-bonus ${statChangeIsGain(k, n) ? '' : 'neg'}">${esc(statWordsOf(k, n))}</span>`).join('')}</div></div>`).join('')
+  const pickCards = (v.pickOptions ?? []).map((o, i) => `<div class="choice-card" data-act="choose-pick" data-id="${i}"><div class="choice-name">${esc(Object.entries(o).map(([k, n]) => statWordsOf(k, n)).join(', '))}</div></div>`).join('')
   return `<div class="hx levelup" data-hero="${esc(heroId)}" data-from="${from}" data-to="${v.to}" data-needs-specialty="${v.needsSpecialty ? 1 : 0}" data-needs-pick="${v.pickOptions ? 1 : 0}" data-can="${canLevelUp(c, heroId) ? 1 : 0}">${muteButton()}
     <div class="ascension-chamber">
       <canvas id="particle-canvas"></canvas>

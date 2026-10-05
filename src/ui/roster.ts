@@ -20,6 +20,9 @@ import { woundNameOf } from '../content/wounds.js'
 import { itemOf } from '../content/items.js'
 import { specialtyOf } from '../content/progress.js'
 import { statBlock } from './equip.js'
+import { giftsBlock } from './draft.js'
+import { giftsOf } from '../core/draft-modifiers.js'
+import { FIRST_HERO } from '../content/crucible.js'
 import { portraitIdOf, portraitOf } from './art.js'
 
 const esc = (s: string) => s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]!))
@@ -54,6 +57,9 @@ export function heroRosterCard(c: CampaignState, heroId: string): string {
       ${gear('armor', l.armor ? [l.armor] : [], 'none')}
       ${gear(`slots ${l.itemSlots.used}/${l.itemSlots.max}`, l.items, 'empty')}
     </div>
+    ${/* kingdom.first-hero-each-rolls-own-gifts (2026-10-05; GLOSSARY.md: Gift): the hero's gifts — the random badges and stat
+          changes its draft rolled — under their heading; a hero that rolled none (a civilian, a recruit) has no such block */
+      h.drafted ? giftsBlock(giftsOf(h.drafted, FIRST_HERO)) : ''}
     ${xpBar(c, heroId)}
     <div class="facts">
       <div><span class="k">field</span><span class="v">${slot('field')}</span></div>

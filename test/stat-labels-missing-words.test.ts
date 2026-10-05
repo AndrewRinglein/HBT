@@ -8,10 +8,17 @@
 //
 // The words are ones the game's documents and its battle screen ALREADY say — taken, not invented; each is cited in the table
 // and in kingdom SWITCHES.md statLabelWords. A stat nobody has named stays raw and is listed (STATS_WITHOUT_A_WORD) for Andrew.
+//
+// LAW 10 — 2026-10-05, kingdom.swap-cost-reads-as-stamina (engine/DECISIONS.md 'seven answers: …' — Andrew, asked what swapCost
+// should be called on screen: "4 cost 1 stam"; read as a plain sentence of what a swap costs, in Stamina). This file held
+// swapCost as THE stat nobody has named — on the no-word list, shown raw — and let every row's check pass for it through that
+// exception (the item's Expect: "the stat-label test covers swapCost without an exception"). As the rule now stands: the no-word
+// list is empty; a stat a row carries has a label in the table OR a sentence (stat-labels.ts statHasWords), and swapCost has its
+// sentence; nothing passes by being listed. The other checks stand as written.
 import { describe, it, expect } from 'vitest'
 import { ITEMS, itemOf } from '../src/content/items.js'
 import * as LABELS from '../src/content/stat-labels.js'
-import { STAT_LABEL, statLabelOf } from '../src/content/stat-labels.js'
+import { STAT_LABEL, statHasWords, statLabelOf, statWordsOf } from '../src/content/stat-labels.js'
 import { BADGES, LEVELS, SPECIALTIES } from '../src/engine.js'
 import { makeNewCampaign } from '../src/core/opening.js'
 import { makeCtx } from '../src/core/mutate.js'
@@ -37,14 +44,21 @@ describe('kingdom.stat-labels-missing-words — the words', () => {
     expect(statLabelOf('corruption')).toBe('Corruption')
   })
 
-  it('a stat nobody has named stays raw and is on the list for Andrew — swapCost — and nothing on that list has a word', () => {
-    expect(NO_WORD).toEqual(['swapCost'])
-    for (const k of NO_WORD) { expect(k in STAT_LABEL, `${k} is on the no-word list and in the table`).toBe(false); expect(statLabelOf(k)).toBe(k) }
+  // (Law 10, 2026-10-05, above: this read "a stat nobody has named stays raw and is on the list for Andrew — swapCost", with
+  // expect(NO_WORD).toEqual(['swapCost']) and statLabelOf('swapCost') held to the raw name)
+  it('no stat is left without words: the no-word list is empty, and swapCost — which stood on it — reads as the sentence of what a swap costs', () => {
+    expect(NO_WORD).toEqual([])
+    expect('swapCost' in STAT_LABEL, 'not a stat word with a signed number').toBe(false)
+    expect(statHasWords('swapCost')).toBe(true)
+    expect(statWordsOf('swapCost', 0)).toMatch(/^Swap costs \d+ Stamina$/)
+    expect(statWordsOf('swapCost', 1)).not.toMatch(/swapCost|swapcost/)
   })
 })
 
 describe('kingdom.stat-labels-missing-words — no row can show a raw stat again', () => {
-  const unnamed = (keys: Iterable<string>) => [...new Set(keys)].filter((k) => !(k in STAT_LABEL) && !NO_WORD.includes(k)).sort()
+  // (Law 10, 2026-10-05, above: a stat passed here by being in the table or ON THE NO-WORD LIST; it passes now only by having
+  // words — a label or a sentence. The list is kept in the check so that a stat put back on it would still be named below.)
+  const unnamed = (keys: Iterable<string>) => [...new Set(keys)].filter((k) => !statHasWords(k) && !NO_WORD.includes(k)).sort()
 
   it('every stat an item row in the game carries — what it gives, and what its set pays — has a label or is on the no-word list', () => {
     const carried: Record<string, string[]> = {}
@@ -68,6 +82,8 @@ describe('kingdom.stat-labels-missing-words — no row can show a raw stat again
     expect(unnamed(specialties), 'specialties').toEqual([])
     // the no-word list holds nothing that no row carries: a stat leaves it the day it is named
     for (const k of NO_WORD) expect([...badges, ...levels, ...specialties, ...ITEMS.flatMap((r) => Object.keys(r.statModifiers))].includes(k), `${k} is carried by a row`).toBe(true)
+    // swapCost is carried (the Fast Hands and Slow Hands badges) and is covered by its sentence, not by an exception
+    expect(badges).toContain('swapCost'); expect(NO_WORD).not.toContain('swapCost')
   })
 
   it('a row that gains an unlabelled stat is caught: the check names it', () => {

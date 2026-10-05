@@ -36,7 +36,7 @@
 // draw), the input sends the engine's own end-cycle, the command End activation sends, and the host puts the notice on the
 // screen. A unit that has not acted, or that can still do anything, is left alone (kingdom SWITCHES autoEnd*).
 import {sandboxChoices,sandboxActivationChoices,sandboxSwapChoices,sandboxSwapRefusals,type Sandbox,type SandboxChoice,type SandboxSwapOffer} from '../core/sandbox.js'
-import {controllerOf,validateBattleCommand,forecastFrom,previewFrom,preview,threatOf,zocHoldersAt,heroesYetToAct,isAttack,isMove,isBurst,actionReach,stepCost,passableFor,grantedActionIds} from '../engine.js'
+import {controllerOf,validateBattleCommand,forecastFrom,previewFrom,preview,threatOf,zocHoldersAt,heroesYetToAct,isAttack,isMove,isBurst,actionReach,stepCost,passableFor,grantedActionIds,standsUp} from '../engine.js'
 import {refusalLine,switchLine,type SwitchRefusal} from './refusals.js'
 import {shownName} from '../../../viewer/src/names.js'
 import type {BattleCommand,Forecast} from '../engine.js'
@@ -468,6 +468,13 @@ export function createPlayInput(session:()=>Sandbox|null,run:(command:BattleComm
      /* the engine's own reason this move has no hex now (its slot is spent, it is rooted, not ready …) */
      const r=validateBattleCommand(s.ctx,s.policy,{kind:'action',actor,actionId:e.actionId,slot:'movement',destination:s.ctx.state.units[actor]!.hex,expectedSeq:s.ctx.state.seq})
      note=r.ok||r.reason==='unreachable-destination'?`${a.name}: no legal hex now.`:said(s,r.reason,actor,null,e.actionId);return true}
+    /* kingdom.stand-up-one-press (engine DECISIONS.md 2026-10-05 'seven answers: …; Stand Up is one press; …', Andrew: "stand up
+       one press."): the stand — the engine's own name for it (standsUp) — is used on the press itself: no plan on the hex, no
+       second press, no click on the unit. It is Stand Up's alone; every other move that goes nowhere keeps the two presses
+       below (kingdom SWITCHES standUpAloneIsOnePress; overturns standUpIsUsedLikeAMoveThatGoesNowhere of the same day) */
+    if(standsUp(a)&&standsStill(s,actor,mv.choices)){const c=mv.choices[0]!
+     const r=run(moveCommand(s,actor,{actionId:c.command.actionId,slot:c.command.slot??'movement',destination:(c.command as {destination:number}).destination} as Ghost))
+     note=r.ok?null:said(s,r.reason,actor,null,e.actionId);done();return true}
     if(standsStill(s,actor,mv.choices)){const c=mv.choices[0]!;ghost={actionId:c.command.actionId,slot:c.command.slot??'movement',destination:(c.command as {destination:number}).destination} as Ghost
      note=`${a.name}: click it again, or the hero, to use it.`;return true}
     note=null;return true}
