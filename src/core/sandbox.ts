@@ -1,5 +1,5 @@
 // Standalone host adapter. All choices and resolution belong to the engine.
-import {encounterDef,createBattle,advanceBattle,completeActionCycle,runActivation,activationChoices,controllerOf,validateBattleCommand,executeBattleCommand,isAttack,isMove,isBurst,burstCentres,previewBurst,preview,previewPower,saveBattle,restoreBattle,movementOptions,staminaCostOf,swapCostOf,propAttackHexes} from '../engine.js'
+import {encounterDef,createBattle,advanceBattle,completeActionCycle,runActivation,activationChoices,controllerOf,validateBattleCommand,executeBattleCommand,isAttack,isMove,isBurst,burstCentres,previewBurst,preview,previewPower,saveBattle,restoreBattle,movementOptions,staminaCostOf,swapCostOf,propAttackHexes,grantedActionIds} from '../engine.js'
 import type {Ctx,BattleOptions,BattleCommand,ControlPolicy} from '../engine.js'
 import {SANDBOX_HEROES,SANDBOX_ENEMIES,SANDBOX_ENCOUNTERS} from '../content/sandbox.js'
 import {atlasFieldingOf,type AtlasBinding} from '../content/atlas.js'
@@ -93,7 +93,10 @@ export function sandboxChoices(s:Sandbox):SandboxChoice[]{
  const ctx=s.ctx,actor=ctx.battleCursor?.actor
  if(ctx.state.outcome||ctx.battleCursor?.at!=='acting'||actor==null||controllerOf(ctx,actor,s.policy)!=='human')return []
  const u=ctx.state.units[actor]!,out:SandboxChoice[]=[]
- for(const id of u.actions){const a=ctx.actions[id];if(!a)continue
+ // fix.stand-up-does-nothing (2026-10-05): the actions the ENGINE grants the unit now (grantedActionIds) — its own list and
+ // what a status it holds grants while held: Stand Up, the prone status's. This walked the unit's stored list, which never
+ // holds a status's action, so a knocked-down unit was listed no Stand Up though the engine would take it.
+ for(const id of grantedActionIds(ctx,u)){const a=ctx.actions[id];if(!a)continue
   for(const slot of ['movement','primary'] as const){
    const aims=isMove(a)?movementOptions(ctx,actor,id,slot).map(p=>({destination:p.destination,path:p.path})):isBurst(a)?burstCentres(ctx,actor,id,slot).map(centre=>({centre,path:[]})):[...ctx.state.units.map(t=>({target:t.id,path:[]})),
      // V2 R7 (engine v2.prop-attack): an attack with Destroy may also be aimed at a prop's hex; the engine lists and validates them

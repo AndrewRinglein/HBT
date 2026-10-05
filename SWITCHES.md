@@ -1169,3 +1169,27 @@ Accuracy on every special free attack, Dodge against them.
 | Switch | Question | Default | Reason | Status |
 |---|---|---|---|---|
 | `freeAttackStatLabels` | Equip's line for an item words each stat by `src/content/stat-labels.ts`, and falls back to the engine's id — the Longsword would have read "+5 block, +10 counterattackaccuracy". | **Four labels added, keyed by the engine's names: Counterattack Accuracy, Fend Accuracy, Special Free Attack Accuracy, Dodge against Special Free Attacks** (the last two are on no Codex row yet). `test/free-attack-stat-labels.test.ts` (red log `free-attack-stat-labels-red.log`). Display words only — no rule reads the table. | A player reads the line; GLOSSARY's words for the thing are "special free attack" and "Counterattack". FOUND for the kingdom's queue, not changed here: the same table has no word for `rangedBlock` (a shield's line reads "rangedblock"), `fireResist`, `poisonResist`, `coldResist`, `deathbedFighting`, `bleedOutTurns` or `swapCost`. | Default — 2026-10-04 |
+
+## fix.stand-up-does-nothing — 2026-10-05
+
+Engine DECISIONS.md 2026-10-05 'playtest post, two more reports' (Andrew, playing battle 2 of the opening: "The stand-up button
+doesn't seem to work. When the lumberjack wife has been knocked down, I cannot seem to stand up with her.") and 'the playtest
+post answered' ("Stand-up is a special move that is only available if you were prone, and yes, it takes your move.").
+
+**The cause was the host's, in two places, and not the engine's.** Stand Up is not on a unit's stored action list: the prone
+status grants it while it is held, and the engine derives it (`grantedActionIds`). The host read the stored list —
+`src/core/sandbox.ts` `sandboxChoices` (the line `for(const id of u.actions)`) listed no choice for it, and
+`src/ui/play-input.ts`, the bar's `slot` event (the line `if(!u.actions.includes(e.actionId)…)return false`), dropped the
+press without a word. The engine took the command all along. Both now ask the engine what the unit is granted
+(`src/engine.ts` widened by `grantedActionIds`, read-only). None of the item's other candidates was it: not the walked-unit
+rule, not the knockback, not a Stamina cost, not the lessons, not the bar's greying. Probes: `test/stand-up-does-nothing.test.ts`,
+`tools/stand-up.verify.mjs` (seen red on the page as built before the fix: the button on the bar, the press answered by nothing).
+
+**What standing costs is the engine's and is unchanged:** Stand Up's row is a movement, not free, 0 Stamina — so it takes the
+unit's move, as ruled, and leaves the primary action. Nothing was changed in the engine.
+
+| Switch | Question | Default | Reason | Status |
+|---|---|---|---|---|
+| `standUpIsUsedLikeAMoveThatGoesNowhere` | Stand Up is a movement whose only destination is the unit's own hex. Does one press of its button stand the unit, or is it used as every other move that goes nowhere is (`playInputStandStill`, Devotion, 2026-10-01: chosen, it is planned on the unit's own hex; chosen again, or the unit clicked, it is used)? | **As every other: the first press plans it and the screen says "Stand Up: click it again, or the hero, to use it."; the second press, or a click on the unit, stands it. A knocked-down unit's Activation also begins with Stand Up as the move armed (it is the only movement the engine lists), so two clicks on the unit itself stand it without the bar.** The other side: one press stands the unit — there is nothing to aim and no other movement to choose while down. | One rule for moves that go nowhere; the fault was that no press was answered at all. The words say "the hero" of a civilian too, as they did. | Default — the answer is Andrew's — 2026-10-05 |
+| `standUpKnockdownInTheProbes` | "knock the Lumberjack's Wife down (by an enemy's knockdown, as in play)". | **The status the engine's own knockdown roll applies (`kdb.ts` `kdbDownStatus`), put on by the engine's own mutator in a Zombie's name; on the page, through the page's own save and import. The roll itself is not sought on a seed.** | No seed search (engine DECISIONS.md 2026-10-04); the state reached is the one the roll leaves. | Default — 2026-10-05 |
+| `hostListsWhatTheEngineGrants` | Other places in the host still read a unit's stored list (the move-done fact, the forecast of attacks from a planned hex, the reason shown for a refused walk). | **Left as they are: each asks about the unit's own moves and attacks, and a status grants only Stand Up today. The two that decide what can be chosen and pressed are changed.** | Kept as small as the fault. | Default — 2026-10-05 |
