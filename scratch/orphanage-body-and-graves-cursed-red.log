@@ -1,0 +1,88 @@
+
+ RUN  v4.1.11 C:/Users/aring/Desktop/HBT-worker-engine/engine
+
+ ❯ test/orphanage-body-and-graves-cursed.test.ts (7 tests | 3 failed) 371ms
+     × the encounter names its map's ground — the row holds the layer, the hexes are the map's 6ms
+     × the four hexes are layer.weak when the battle is fielded, each painted by a line that names the encounter; no other hex carries a layer 135ms
+     × a unit that walks onto the body's hex gains 1 Weak on entering, and 1 more when its Activation ends there — the written rule, by the engine's own layer 7ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/orphanage-body-and-graves-cursed.test.ts > the Lumberjack House: the body's hex and each grave's hex are cursed ground from the first frame > the encounter names its map's ground — the row holds the layer, the hexes are the map's
+AssertionError: expected undefined to deeply equal [ { layer: 'layer.weak', …(1) } ]
+
+- Expected:
+[
+  {
+    "hexes": [
+      119,
+      131,
+      139,
+      159,
+    ],
+    "layer": "layer.weak",
+  },
+]
+
++ Received:
+undefined
+
+ ❯ test/orphanage-body-and-graves-cursed.test.ts:54:64
+     52| describe('the Lumberjack House: the body\'s hex and each grave\'s hex …
+     53|   it('the encounter names its map\'s ground — the row holds the layer,…
+     54|     expect(encounterDef('encounter.opening.lumberjack').paint).toEqual…
+       |                                                                ^
+     55|   })
+     56|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  test/orphanage-body-and-graves-cursed.test.ts > the Lumberjack House: the body's hex and each grave's hex are cursed ground from the first frame > the four hexes are layer.weak when the battle is fielded, each painted by a line that names the encounter; no other hex carries a layer
+AssertionError: expected [] to deeply equal [ 119, 131, 139, 159 ]
+
+- Expected
++ Received
+
+- [
+-   119,
+-   131,
+-   139,
+-   159,
+- ]
++ []
+
+ ❯ test/orphanage-body-and-graves-cursed.test.ts:59:40
+     57|   it('the four hexes are layer.weak when the battle is fielded, each p…
+     58|     const ctx = field(LUMBERJACK)
+     59|     expect(painted(ctx, 'layer.weak')).toEqual([119, 131, 139, 159])
+       |                                        ^
+     60|     for (let h = 0; h < 20 * 14; h++) if (![119, 131, 139, 159].includ…
+     61|     const lines = ctx.events.filter((e) => e.type === 'layer.painted')
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  test/orphanage-body-and-graves-cursed.test.ts > the Lumberjack House: the body's hex and each grave's hex are cursed ground from the first frame > a unit that walks onto the body's hex gains 1 Weak on entering, and 1 more when its Activation ends there — the written rule, by the engine's own layer
+AssertionError: expected +0 to be 1 // Object.is equality
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ test/orphanage-body-and-graves-cursed.test.ts:83:20
+     81|     executeMove(ctx, u.id, pathTo(reachable(ctx, u, walk.move.budgetMo…
+     82|     expect(u.hex).toBe(BODY)
+     83|     expect(weak()).toBe(1)   // on entering
+       |                    ^
+     84|     endActivation(ctx, u.id, 'test'); endOfActivation(ctx, u.id)
+     85|     // and 1 more at the end of the Activation on it (the status's own…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  3 failed | 4 passed (7)
+   Start at  01:02:52
+   Duration  9.40s (transform 7.66s, setup 0ms, import 8.29s, tests 371ms, environment 0ms)
+

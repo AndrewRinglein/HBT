@@ -31939,3 +31939,68 @@ index 52e9b3f..0bdf006 100644
   PASS  naming — new content ids use declared kinds
   PASS  naming — no banned words invented
   PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+## content.orphanage-body-and-graves-cursed — LANDED `8fdaa09` **NEEDS REVIEW**
+2026-10-05 08:41
+
+  PASS  dependencies landed
+  WARN  not already decided — 3 candidate ruling(s) — READ BEFORE ASKING: SWITCHES.md:2427 · SWITCHES.md:2247
+  PASS  typecheck
+  PASS  the item's own tests — test/battle-cursor.test.ts, test/orphanage-body-and-graves-cursed.test.ts
+  PASS  gate 1 — the id appears in a real battle — encounter.opening.lumberjack: 17 log lines, 17 fired, 13 changed state
+  PASS  brought its own tests — test/battle-cursor.test.ts, test/fixtures/battle-cursor-lumberjack-graves-cursed.json, test/orphanage-body-and-graves-cursed.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/battle-cursor.test.ts (-2) — will land FLAGGED for review
+  PASS  control battles unchanged
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — shape 'data' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without encounter.opening.lumberjack — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/battle-cursor.test.ts b/test/battle-cursor.test.ts
+index 0bdf006..278c084 100644
+--- a/test/battle-cursor.test.ts
++++ b/test/battle-cursor.test.ts
+@@ -459,4 +459,10 @@ const freeAttackAccuracyGolden = JSON.parse(readFileSync(new URL('./fixtures/bat
+ // Every case frozen here (tools/capture-computer-reaches-class-power-cursor.mts). Moved: showcase.assembled-party, showcase.eve-24-a, showcase.horrors, showcase.prologue-party, showcase.surrounded, progression-surge-0. A `changed` case is checked here and skips the older layers.
+ const computerReachesClassPowerGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-computer-reaches-class-power.json', import.meta.url), 'utf8'))
++// content.orphanage-body-and-graves-cursed (2026-10-05; DECISIONS.md 2026-10-05 'playtest post: … bodies, cursed ground …' and 2026-09-28
++// 'cursed ground is the Weak ground layer, the one ground-status shape'), Law 10: the Lumberjack House's encounter paints its map's
++// cursed ground - layer.weak on the three graves and the body, four hexes - at setup. The one case that fields that battle moves: four
++// layer.painted lines at the start, and Weak on whoever enters or ends an Activation on one.
++// Every case frozen here (tools/capture-lumberjack-graves-cursed-cursor.mts). Moved: test.opening-lumberjack. A `changed` case is checked here and skips the older layers.
++const lumberjackGravesCursedGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-lumberjack-graves-cursed.json', import.meta.url), 'utf8'))
+ const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
+ // Explicit rule migration, not regenerated historical hashes. These nine old
+@@ -603,5 +609,8 @@ describe('resumable battle cursor', () => {
+       const freeAttackAccuracyExpected = freeAttackAccuracyGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+       const computerReachesClassPowerExpected = computerReachesClassPowerGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+-      const computerReachesClassPowerMoved = computerReachesClassPowerExpected?.changed === true
++      const lumberjackGravesCursedExpected = lumberjackGravesCursedGolden.cases.find((row:{id:string})=>row.id===fixture.id)
++      const lumberjackGravesCursedMoved = lumberjackGravesCursedExpected?.changed === true
++      // was: const computerReachesClassPowerMoved = computerReachesClassPowerExpected?.changed === true — a case content.orphanage-body-and-graves-cursed moved skips this layer too (content.orphanage-body-and-graves-cursed 2026-10-04)
++      const computerReachesClassPowerMoved = computerReachesClassPowerExpected?.changed === true || lumberjackGravesCursedMoved
+       // was: const freeAttackAccuracyMoved = freeAttackAccuracyExpected?.changed === true — a case fix.computer-reaches-class-power-past-shield-power moved skips this layer too (fix.computer-reaches-class-power-past-shield-power 2026-10-04)
+       const freeAttackAccuracyMoved = freeAttackAccuracyExpected?.changed === true || computerReachesClassPowerMoved
+@@ -753,5 +762,12 @@ describe('resumable battle cursor', () => {
+           }
+         } else result = battle.runBattle(ctx)
+-        if (computerReachesClassPowerExpected) {
++        if (lumberjackGravesCursedExpected) {
++        expect(hash(ctx.events), 'full lumberjack-graves-cursed events').toBe(lumberjackGravesCursedExpected.events)
++        expect(hash(ctx.state), 'full lumberjack-graves-cursed state').toBe(lumberjackGravesCursedExpected.state)
++        expect(hash(ctx.rng.log), 'full lumberjack-graves-cursed RNG').toBe(lumberjackGravesCursedExpected.rng)
++        expect(result).toEqual(lumberjackGravesCursedExpected.result)
++        }
++        // was: if (computerReachesClassPowerExpected) { — content.orphanage-body-and-graves-cursed (2026-10-04): a case it moved is checked above instead
++        if (computerReachesClassPowerExpected && !lumberjackGravesCursedMoved) {
+         expect(hash(ctx.events), 'full computer-reaches-class-power events').toBe(computerReachesClassPowerExpected.events)
+         expect(hash(ctx.state), 'full computer-reaches-class-power state').toBe(computerReachesClassPowerExpected.state)
+```
+</details>

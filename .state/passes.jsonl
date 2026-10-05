@@ -46,3 +46,5 @@
 {"suite":"engine","stamp":"f48a625458","with":{"engine":"f48a625458","content":"3ce22151fa","viewer":"5fe2ffec9f","kingdom":"ef4af0dac8"},"at":"2026-10-05T06:14:59.794Z","by":"gate --shard (1 of 1)","in":"HBT-worker-engine","tests":2903}
 {"suite":"engine","stamp":"3d773a1fc5","failed":true,"at":"2026-10-05T06:52:57.313Z","by":"gate --shard 1/1","in":"HBT-worker-engine"}
 {"suite":"control","stamp":"b81ef55233","pack":"73ba186f36","golden":"2a98bd088f","at":"2026-10-05T07:57:37.260Z","by":"gate fix.computer-reaches-class-power-past-shield-power --land","in":"HBT-worker-engine","moved":null}
+{"suite":"engine","stamp":"02514550fe","failed":true,"at":"2026-10-05T08:15:32.288Z","by":"gate --shard 1/1","in":"HBT-worker-engine"}
+{"suite":"control","stamp":"5e86ba4301","pack":"e4b7af80a6","golden":"2a98bd088f","at":"2026-10-05T08:41:36.467Z","by":"gate content.orphanage-body-and-graves-cursed --land","in":"HBT-worker-engine","moved":null}
