@@ -41,7 +41,24 @@ export const STYLE = {   // one hue per status, everywhere — pips, VFX, chips,
      instance test.status.floored reads as Prone (stStyle, below). */
   'status.prone': { hue: '#a8977c', gl: 'polygon(0 62%,100% 62%,100% 88%,0 88%)', provisional: true },
   'status.powers-locked': { hue: '#8f9bb3', gl: 'polygon(8% 8%,92% 8%,92% 92%,8% 92%)', sq: true, provisional: true },
+  /* viewer.timed-effect-status-marks (2026-10-05; engine capability.effect-lasts-activations): the timed effects a power puts
+     on its user — statuses that GIVE. Each wore the fallback, a green dot in Poison's hue, so a hero under Stoke read as
+     poisoned. A status that gives is marked as Regeneration always was (VFX/PLAYBACK-DESIGN.md: "the one helpful status —
+     shape cue on top of hue so it can never be misread as poison"): the square pip, and with it a frame (`buff`) and, where
+     the icon set the page ships has one that fits, its `glyph` in place of a flat shape — a flame for the one that adds Burn
+     to hits, a drop for the coating. `gl` stays as the shape where a glyph cannot be drawn (the float over a tick).
+     PROVISIONAL hues, Andrew to judge; neither is Poison's nor any other status's. Perfect Sight has no row here: the shipped
+     set holds no eye, so it wears the neutral buff mark below (an art need, named in the item's switch). */
+  'status.fire-gauntlet.stoke': { hue: '#ff7847', gl: 'polygon(8% 8%,92% 8%,92% 92%,8% 92%)', sq: true, buff: true, glyph: 'fire', provisional: true },
+  'status.poison-coating': { hue: '#5fbf8f', gl: 'polygon(8% 8%,92% 8%,92% 92%,8% 92%)', sq: true, buff: true, glyph: 'droplet', provisional: true },
 }
+/* A STATUS THE TABLE HAS NO MARK FOR (viewer.timed-effect-status-marks): it never borrows Poison's green dot again (Law 6: one
+   hue per status). One that gives — its engine row lends its holder something (D.STATUS_ROWS, static.json statusRows) —
+   wears the NEUTRAL BUFF MARK: the square pip and frame of a buff, in a warm white no status owns. Any other wears a plain
+   grey dot. Both are listed by the page test (tools/timed-effect-status-marks.test.mjs prints every status wearing one), so
+   a timed effect added later is seen, not missed. */
+export const BUFF_MARK = { hue: '#d8d2c0', gl: 'polygon(8% 8%,92% 8%,92% 92%,8% 92%)', sq: true, buff: true, neutral: true }
+export const PLAIN_MARK = { hue: '#9a958a', gl: 'circle(50%)', neutral: true }
 /* THE GROUND LAYERS (2026-09-03): a painted layer wears the hue of the status
    it applies — burning is Burn's orange, frost is Frost's ice, poisoned is
    Poison's green, weak is Weak's purple — so one hue per status holds on the
@@ -74,7 +91,8 @@ export function styleIdOf(id, D) {
     .map(([k, t]) => [k, t.length - mine.length]).sort((x, y) => x[1] - y[1])
   return like.length && (like.length === 1 || like[0][1] < like[1][1]) ? like[0][0] : null
 }
-export const stStyle = (id, D) => STYLE[styleIdOf(id, D)] || { hue: '#8ed14f', gl: 'circle(50%)' }
+/* was: … || { hue: '#8ed14f', gl: 'circle(50%)' } — Poison's own look, for every status with no row (viewer.timed-effect-status-marks) */
+export const stStyle = (id, D) => STYLE[styleIdOf(id, D)] || ((((D && D.STATUS_ROWS) || {})[String(id)] || {}).lends ? BUFF_MARK : PLAIN_MARK)
 /* viewer.area-trigger-burst (engine DECISIONS.md 2026-10-03 'an end-of-Activation area burn shows an explosion of fire', Andrew:
    "that should be an explosion of fire. We have the VFX for that."): the burst an AREA plays, by the effect its status already
    has in the table above (`vfx`) — burn: the effects library's explosion of fire. A status whose effect has no burst here

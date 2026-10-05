@@ -6,6 +6,10 @@ import {createCast} from './models.js'
 import {lens,orbitCamera} from './camera3d.js'
 import {subjectOf} from './subject.js'
 import {NO_LOOK} from './stand-out.js'
+import {hidersOf,hidersStats,readPieces} from './hiders.js'
+import {keptShadow} from './kept-shadow.js'
+export {keptShadow}
+export {hidersStats}
 // The units drawn as 3D models stand in the same scene (viewer.character-models, models.js): board px -> scene by the inverse of the scene's own map
 // Two scene sources behind one board: an Atlas layout (atlas.js) or a painted scene (painted.js, viewer.painted-board)
 /* viewer.true-3d-camera (2026-09-30; engine DECISIONS.md "a true 3D battle: an orbit camera, …, no flash of another
@@ -46,14 +50,12 @@ export function solidPieces(group){
   list.push({o,top:new THREE.Box3().setFromObject(o).max.y})})
  pieces.set(group,list);return list
 }
+/** viewer.see-through-only-when-moved: the solid pieces between the camera and a standing body's chest or head — the rule's
+    question, answered by a structure built once for each piece (hiders.js); how==='plain' answers it as it was first written,
+    by three's raycast over every triangle of every tall piece (the reference the tests hold the structure to) */
+export const hiders=(group,camera,aims,how)=>hidersOf(solidPieces(group),camera,aims,how)
 export function seeThrough(group,camera,aims,faded=new Map()){
- const ray=new THREE.Raycaster(),now=new Set(),eye=camera.getWorldPosition(new THREE.Vector3()),list=solidPieces(group)
- for(const a of aims){
-  const to=a.at.clone().sub(eye),far=to.length();if(!(far>0))continue
-  const waist=a.feet+(a.at.y-a.feet)*.5,tall=list.filter(p=>p.top>=waist).map(p=>p.o);if(!tall.length)continue
-  ray.set(eye,to.divideScalar(far));ray.far=far
-  for(const hit of ray.intersectObjects(tall,false)){if(hit.distance>far-.6||hit.point.y<waist)continue;now.add(hit.object)}
- }
+ const now=hiders(group,camera,aims)
  let changed=false
  for(const [o,solid] of faded)if(!now.has(o)){const glass=o.material;o.material=solid;for(const m of [].concat(glass))m.dispose();faded.delete(o);changed=true}
  for(const o of now)if(!faded.has(o)){const solid=o.material
@@ -106,7 +108,7 @@ export function createDriver(V,onFailure,platform={}){
  const scene=new THREE.Scene(),affine=V.data.boardAffine||(V.data.boardAffine=painted(V.data.atlas)?paintedToCSS(V.data.atlas):worldToCSS(V.data.atlas,V.data.F))
  /* viewer.characters-stand-out: the looks the host named, as numbers (a bare V has none) */
  const look=V.look||NO_LOOK
- let disposed=false,built,removeEnvironment,raf=null,seen=-1,viewportKey='',dirty=true,last=null,effectTime=0,sawThrough=-Infinity,key=null
+ let disposed=false,built,removeEnvironment,raf=null,seen=-1,viewportKey='',dirty=true,last=null,effectTime=0,sawThrough=-Infinity,sawWhat=null,sawRuns=0,sawBuilt=null,key=null,keeper,bodiesMoved=false,castSize=-1
  const faded=new Map()
  const clock=platform.now||(()=>performance.now())
  const onLost=e=>{e.preventDefault();onFailure(Error('WebGL context lost'))};canvas.addEventListener('webglcontextlost',onLost)
@@ -115,12 +117,18 @@ export function createDriver(V,onFailure,platform={}){
   if(disposed){result.dispose();return}built=result;scene.add(built.group);removeEnvironment=painted(V.data.atlas)?paintedEnvironment(scene,V.data.atlas):atlasEnvironment(scene,built)
   if(V.data.models)V.cast=(platform.createCast||createCast)(V,scene,affine.clone().invert(),{...(platform.models||{}),location:platform.location,onError:(look,error,detail)=>{const st=wrap.querySelector('#terrainStatus');if(st)st.textContent+=' · '+look.name+(detail?.appearance?' transformation unavailable: ':' is its token: ')+String(error?.message||error)}})
   if(renderer.shadowMap)renderer.shadowMap.needsUpdate=true
+  /* viewer.see-through-only-when-moved: the see-through rule's structures are built here, once, while the loading line still
+     shows — never at the first sight of a piece in the middle of a battle (viewer SWITCHES seeThroughStructureWhen) */
+  if(V.data.models){const t0=clock();sawBuilt={...readPieces(solidPieces(built.group)),ms:clock()-t0}}
   /* viewer.bodies-before-board: the board opens with every body on it standing — never their 2D tokens first */
   return V.cast?.settle?.()
  }).then(()=>{if(!disposed)frame()})
  function frame(){if(disposed)return;try{
   const t=clock(),dt=last===null?0:Math.min(.1,Math.max(0,(t-last)/1000));last=t
-  if(V.cast){V.cast.frame(dt);if(V.cast.size)dirty=true}
+  if(V.cast){V.cast.frame(dt);if(V.cast.size)dirty=true
+   /* viewer.scenery-shadow-drawn-once: has a body moved or animated since the shadow was last drawn? Time passed with a body
+      on the board (it animates where it stands), or a body came or went */
+   if((V.cast.size&&dt>0)||V.cast.size!==castSize){castSize=V.cast.size;bodiesMoved=true}}
   /* viewer.caravan-scene: a scene whose fires and fog move draws every frame, camera and units still or not */
   if(built?.animated&&V.camera3d){effectTime+=dt;built.animate(effectTime,V.camera3d);dirty=true}
   const w=wrap.clientWidth,h=wrap.clientHeight
@@ -132,9 +140,23 @@ export function createDriver(V,onFailure,platform={}){
   if(w>0&&h>0&&viewportKey!==w+'x'+h){renderer.setSize(w,h,false);bodies?.setSize(w,h,false);viewportKey=w+'x'+h;dirty=true}
   /* the lens follows the viewport's height; the stage's matrix does not depend on it */
   if(camera&&w>0&&h>0&&(camera.userData.viewport?.w!==w||camera.userData.viewport?.h!==h))lens(camera,{w,h})
-  /* viewer.xcom-camera: what hides a body is see-through — looked for when anything moved, at most every SEE_EVERY ms */
-  if(built?.group&&!V.seeThrough)V.seeThrough={faded,pieces:()=>solidPieces(built.group)}   // read-only: what is see-through now
-  if(camera&&built?.group&&V.cast?.aims&&dirty&&t-sawThrough>=SEE_EVERY){sawThrough=t;if(seeThrough(built.group,camera,V.cast.aims(),faded))dirty=true}
+  /* viewer.xcom-camera: what hides a body is see-through — looked for at most every SEE_EVERY ms.
+     viewer.see-through-only-when-moved (2026-10-05): and only when what the answer depends on changed — the camera's pose
+     (V.camVersion, and the viewport its lens follows) or a standing body's place, height or life (the cast's aims are exactly
+     those) — never because a body is animating where it stands. Until then it ran on every frame the scene was dirty, and a
+     frame with a body on it is always dirty: every 120 ms for the whole battle. A change that comes sooner than SEE_EVERY
+     after a run is looked at on the first frame the check may run again, moving or not. */
+  if(built?.group&&!V.seeThrough)V.seeThrough={faded,pieces:()=>solidPieces(built.group),   // read-only: what is see-through now,
+   get runs(){return sawRuns},                                                               // how often the check has run,
+   built:sawBuilt,                                                                           // what was read at load, and how long it took,
+   /* and, for the tests and tools/frame-cost.mjs, the pieces hiding a body NOW as places in pieces() — by the structure, or
+      ('plain') by every triangle; asking changes nothing that is drawn */
+   hiding(how){const cam=V.camera3d,list=solidPieces(built.group);if(!cam||!V.cast?.aims)return []
+    const now=hidersOf(list,cam,V.cast.aims(),how);return list.map((p,i)=>now.has(p.o)?i:-1).filter(i=>i>=0)}}
+  if(camera&&built?.group&&V.cast?.aims&&t-sawThrough>=SEE_EVERY){
+   const aims=V.cast.aims();let what=seen+'|'+viewportKey
+   for(const a of aims)what+='|'+a.feet+','+a.at.x+','+a.at.y+','+a.at.z
+   if(what!==sawWhat){sawWhat=what;sawThrough=t;sawRuns++;if(seeThrough(built.group,camera,aims,faded))dirty=true}}
   const characters=bodies?scene.getObjectByName('characters'):null
   /* viewer.characters-unfaded: the key light rides the body whose panel it is, above it and toward the camera */
   if(characters&&camera){const B=V.cast?.body(subjectOf(V))
@@ -143,14 +165,29 @@ export function createDriver(V,onFailure,platform={}){
    if(B){const h=B.standingHeight(),p=B.stage.position,to=camera.position.clone().sub(p).setY(0);if(to.lengthSq()>1e-9)to.normalize()
     key.position.set(p.x+to.x*h*.6,p.y+h*1.25,p.z+to.z*h*.6)}}
   if(dirty&&camera&&w>0&&h>0){
-   /* viewer.characters-stand-out, the shadows look: the sun's shadow is taken again every drawn frame (the bodies move), and
-      the bodies stay in the scene's own pass so that shadow holds them — drawn there under the board's marks exactly where
-      their own canvas draws them over the marks; the subject's key light is that canvas's alone, never the ground's */
-   if(look.shadows&&renderer.shadowMap)renderer.shadowMap.needsUpdate=true
-   if(characters){const lit=key&&key.visible;characters.visible=look.shadows;if(key&&look.shadows)key.visible=false
-    renderer.render(scene,camera);characters.visible=true;if(key&&look.shadows)key.visible=lit;drawBodies(bodies,scene,camera,characters)}
-   else renderer.render(scene,camera)
+   /* viewer.characters-stand-out, the shadows look: the bodies stay in the scene's own pass so that the sun's shadow holds
+      them — drawn there under the board's marks exactly where their own canvas draws them over the marks; the subject's key
+      light is that canvas's alone, never the ground's */
+   const drawScene=()=>{if(characters){const lit=key&&key.visible;characters.visible=look.shadows;if(key&&look.shadows)key.visible=false
+     renderer.render(scene,camera);characters.visible=true;if(key&&look.shadows)key.visible=lit}else renderer.render(scene,camera)}
+   /* viewer.scenery-shadow-drawn-once (2026-10-05): the sun's shadow was taken again, whole, on every drawn frame. The
+      scenery never moves: its shadow is drawn once and kept (kept-shadow.js); a frame in which a body moved or animated
+      draws the bodies' shadows alone over the kept one; a frame in which nothing moved draws no shadow — the map holds the
+      last. Where it cannot be kept (a stand-in renderer, more than one shadow light) it is taken whole, as before. */
+   if(look.shadows&&renderer.shadowMap){
+    if(keeper===undefined){keeper=keptShadow(renderer,scene,()=>scene.getObjectByName('characters'))
+     /* read by the tests and tools/frame-cost.mjs: how often the scenery's shadow was drawn, and the shadow asked for whole
+        (as first written, the reference the kept one is held to) */
+     V.sceneryShadow=keeper?{get takes(){return keeper.takes},get whole(){return keeper.whole},set whole(v){keeper.whole=v;bodiesMoved=true;dirty=true}}:null}
+    if(keeper?.keeps()){
+     /* the scenery's shadow, alone, into the keeping: one pass more, once (and again only if the sun or the scenery changed) */
+     if(!keeper.valid()){const still=keeper.take();drawScene();if(keeper.taken(still))bodiesMoved=true}
+     if(!keeper.valid())renderer.shadowMap.needsUpdate=true
+     else if(bodiesMoved)keeper.over()}
+    else renderer.shadowMap.needsUpdate=true}
+   drawScene();keeper?.done();bodiesMoved=false
+   if(characters)drawBodies(bodies,scene,camera,characters)
    dirty=false}raf=requestAnimationFrame(frame)
  }catch(error){onFailure(error)}}
- return{ready,dispose(){if(disposed)return;disposed=true;V.seeThrough=null;for(const [o,solid] of faded){for(const m of [].concat(o.material))m.dispose();o.material=solid}faded.clear();if(raf!==null)window.cancelAnimationFrame(raf);V.cast?.dispose();V.cast=null;canvas.removeEventListener('webglcontextlost',onLost);built?.dispose();removeEnvironment?.();renderer.dispose();renderer.forceContextLoss();canvas.remove();if(bodies){const c=bodies.domElement;bodies.dispose();bodies.forceContextLoss?.();c?.remove()}}}
+ return{ready,dispose(){if(disposed)return;disposed=true;V.seeThrough=null;V.sceneryShadow=null;keeper?.dispose();for(const [o,solid] of faded){for(const m of [].concat(o.material))m.dispose();o.material=solid}faded.clear();if(raf!==null)window.cancelAnimationFrame(raf);V.cast?.dispose();V.cast=null;canvas.removeEventListener('webglcontextlost',onLost);built?.dispose();removeEnvironment?.();renderer.dispose();renderer.forceContextLoss();canvas.remove();if(bodies){const c=bodies.domElement;bodies.dispose();bodies.forceContextLoss?.();c?.remove()}}}
 }

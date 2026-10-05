@@ -417,6 +417,29 @@ export function ridersOf(u, a, D) {
 }
 const riderLine = (t, D, SN) => `${HOOK_WORD[t.hook] || t.hook}: ${effectSentence(t.effect, t.select, D, SN)}${t.chance != null && t.chance < 100 ? ' (' + t.chance + '%)' : ''}`
 
+/* ── WHAT A TIMED EFFECT DOES, AND HOW LONG IT HAS LEFT (viewer.timed-effect-status-marks, 2026-10-05) ────────────────────
+   Engine capability.effect-lasts-activations: "a timed effect IS A STATUS" whose row LENDS its holder something while it is
+   held. A line per fact, in the words the bar already uses for a trigger and a stat, made of the status row's own fields
+   (D.STATUS_ROWS — static.json statusRows, copied from the engine's row) and nothing typed:
+     each lent trigger     "On hit: apply 1 Poison (60%)"         (riderLine, with its tag requirement when it has one)
+     each flat stat change "STR +2"
+     each stat doubled     "PRE doubled"
+     what is left          "3 Activations left" · "2 blade attacks left" · "for the rest of the Battle" — by what counts it
+                           down (countsDown, countsAttackTag); a row with neither and no Phase decay lasts the Battle
+   A status that lends nothing has no lines (its name and number say it, as before). */
+export function statusLines(id, value, D, SN) {
+  const row = ((D && D.STATUS_ROWS) || {})[id] || {}, L = row.lends
+  if (!L) return []
+  const n = Number(value) || 0, s = n === 1 ? '' : 's', out = []
+  for (const t of L.triggers || []) out.push(riderLine(t, D, SN || {}) + (tagRequirementWords(t) ? ' · ' + tagRequirementWords(t) : ''))
+  for (const m of L.mods || []) out.push(`${statWord(m.stat)} ${sgn(m.value)}`)
+  for (const k of L.doubles || []) out.push(`${statWord(k)} doubled`)
+  out.push(row.countsDown === 'activation' ? `${n} Activation${s} left`
+    : row.countsDown === 'attack' ? `${n} ${row.countsAttackTag ? row.countsAttackTag + ' ' : ''}attack${s} left`
+    : row.decayPerPhase ? `${n} left` : UNTIL_WORD.battle)
+  return out
+}
+
 /** every fact of one action, a line each — the row's tooltip, whole (the button shows what fits) */
 export function actionLines(a, u, D, SN) {
   const k = a.kind === 'move' ? 'move' : a.kind === 'burst' ? 'burst' : a.attack ? 'attack' : 'power'

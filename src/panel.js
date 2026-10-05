@@ -3,7 +3,7 @@
    STATS ABOVE THE CARD → card art with STATUSES TO ITS RIGHT → KEYWORDS BELOW
    THE PICTURE. The action bar owns actions (§9.7). Split out 2026-09-02. */
 import { stStyle } from './theme.js'
-import { sgn, STATSHORT, modOf, effectWord, absorbOf, targetWords, unitTriggers, freeAttacksUp, FREE_ATTACK, tagRequirementWords } from './actions.js'
+import { sgn, STATSHORT, modOf, effectWord, absorbOf, targetWords, unitTriggers, freeAttacksUp, FREE_ATTACK, tagRequirementWords, statusLines } from './actions.js'
 import { raIcon } from './icons.js'
 import { subjectOf, barUnitOf } from './subject.js'
 import { itemsOf, SLOT_LABEL } from './items.js'
@@ -67,11 +67,19 @@ export function drawPanel(V) {
     return `<div class="freeUpRow" data-kind="${k}" style="display:flex;align-items:center;gap:8px;padding:6px 8px;margin-bottom:5px;background:${NOTE_HUE.aoo}12;border:1px solid ${NOTE_HUE.aoo}44;border-radius:3px">
         ${raIcon(F.glyph, 'font-size:14px;flex:0 0 14px;color:' + NOTE_HUE.aoo)}<span style="flex:1;font-size:12.5px;color:${NOTE_HUE.aoo};font-weight:600">${F.word}</span>
         <span class="mono" style="font-size:12px;font-weight:700;color:${NOTE_HUE.aoo}">up${acc ? ' · ' + sgn(acc) + ' ACC' : ''}</span></div>` }).join('')
+  /* viewer.timed-effect-status-marks: a status that GIVES (theme.js `buff`) is drawn with its glyph from the shipped icon set
+     where the table names one (a small framed square where it names none), and under its name says what it does and what is
+     left, a line per fact (actions.js statusLines — the status row's own fields); the same words are its hover. Every other
+     status row is what it was. */
   const stCol = upCol + (sts.length ? sts.map(([id, v]) => { const st = stStyle(id, V.data)
-    return `<div style="display:flex;align-items:center;gap:8px;padding:6px 8px;margin-bottom:5px;
+    const does = st.buff ? statusLines(id, v, V.data, SN) : [], hover = does.length ? ` title="${String([SN[id] || id, ...does].join(' — ')).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;')}"` : ''
+    const mark = st.glyph ? raIcon(st.glyph, 'font-size:14px;flex:0 0 14px;color:' + st.hue)
+      : st.buff ? `<i style="width:14px;height:14px;flex:0 0 14px;display:block;box-sizing:border-box;border:1px solid ${st.hue};border-radius:3px;background:linear-gradient(${st.hue},${st.hue}) center/6px 6px no-repeat"></i>`
+      : `<i style="width:14px;height:14px;flex:0 0 14px;display:block;clip-path:${st.gl};background:${st.hue}"></i>`
+    return `<div class="pStatus${st.buff ? ' buff' : ''}" data-status="${id}"${hover} style="display:flex;align-items:center;gap:8px;padding:6px 8px;margin-bottom:5px;
         background:${st.hue}12;border:1px solid ${st.hue}44;border-radius:3px">
-        <i style="width:14px;height:14px;flex:0 0 14px;display:block;clip-path:${st.gl};background:${st.hue}"></i>
-        <span style="flex:1;font-size:12.5px;color:${st.hue};font-weight:600">${SN[id] || id}</span>
+        ${mark}
+        <span style="flex:1;font-size:12.5px;color:${st.hue};font-weight:600">${SN[id] || id}${does.map(l => `<span class="pStatusDoes" style="display:block;font-size:11px;font-weight:400;color:#cfc8b6;line-height:1.3">${String(l).replace(/&/g, '&amp;').replace(/</g, '&lt;')}</span>`).join('')}</span>
         <span class="mono" style="font-size:14px;font-weight:700;color:${st.hue}">${v}</span></div>` }).join('')
     : upCol ? '' : '<div style="font-size:11.5px;color:#5f594c;padding:6px 2px">no status effects</div>')
   const now = V.clock()
@@ -159,8 +167,16 @@ export function drawPanel(V) {
      with what it gives, said on the row and on hover (items.js itemsOf: the log and the item's own row; nothing typed here) */
   const esc = x => String(x).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]))
   const itemRows = itemsOf(u, V.data)
+  /* viewer.item-card-in-battle (engine DECISIONS.md 2026-10-05, Andrew: "When you're focusing on a character, you need to be
+     able to look at their items when you're in battle."): for a host that has cards (viewer.js opts.itemCard — the kingdom's
+     one card), each item's name is a thing to click; the card stands beside the panel (itemcard.js). A card of another
+     unit's, or of an item this one no longer carries, is taken down as the panel is drawn. */
+  const cards = V.itemCard || null
+  if (cards) cards.shown(u.id, itemRows.map(r => r.item).filter(Boolean))
+  const looked = cards ? cards.openFor(u.id) : null
+  const lookAttrs = r => cards && r.item ? ' role="button" tabindex="0" aria-expanded="' + (r.item === looked) + '"' : ''
   const itemsBlock = itemRows.length ? '<div class="pItems"><div class="pItemsHead">Items</div>' + itemRows.map(r =>
-    '<div class="pItem' + (r.item ? '' : ' empty') + '" data-slot="' + r.slot + '" data-item="' + esc(r.item || '') + '"' + (r.title ? ' title="' + esc(r.title) + '"' : '') + '>' +
+    '<div class="pItem' + (r.item ? '' : ' empty') + (cards && r.item ? ' look' : '') + (r.item && r.item === looked ? ' looked' : '') + '" data-slot="' + r.slot + '" data-item="' + esc(r.item || '') + '"' + lookAttrs(r) + (r.title ? ' title="' + esc(r.title) + '"' : '') + '>' +
     '<span class="pItemSlot">' + (SLOT_LABEL[r.slot] || r.slot) + '</span><span class="pItemName">' + esc(r.name) + '</span>' +
     (r.gives ? '<span class="pItemGives">' + esc(r.gives) + '</span>' : '') + '</div>').join('') + '</div>' : ''
   const factsBlock = facts.length ? `<div style="margin:0 18px 8px;padding:6px 9px;background:#14120e;border:1px solid var(--border);border-radius:2px;font-size:11.5px;line-height:1.6;color:#a9a394">${facts.join('<br>')}</div>` : ''
@@ -252,4 +268,8 @@ export function drawPanel(V) {
   /* reattached every rebuild — the panel replaces its own innerHTML */
   const tg = P.querySelector('.statsToggle')
   if (tg) tg.addEventListener('click', ev2 => { ev2.stopPropagation(); view.statsOpen = !view.statsOpen; drawPanel(V) })
+  /* viewer.item-card-in-battle: an item's name, clicked (or Enter / Space on it), asks the host for its card */
+  if (cards) for (const r of P.querySelectorAll('.pItem')) { if (!r.classList.contains('look')) continue   /* one simple selector at a time: every DOM the page runs on answers it */
+    r.addEventListener('click', ev2 => { ev2.stopPropagation(); cards.toggle(r.dataset.item, u.id) })
+    r.addEventListener('keydown', ev2 => { if (ev2.key === 'Enter' || ev2.key === ' ') { ev2.preventDefault(); cards.toggle(r.dataset.item, u.id) } }) }
 }

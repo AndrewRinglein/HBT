@@ -180,13 +180,20 @@ export function tagCarriers(): Record<string, string[]> {
  * appears only while prone). The board's tick effect reads the tick, the bar reads the stand action,
  * and a testing-lane status wears the look of the real status that behaves exactly as it does.
  */
-export type StatusRow = { flags: string[]; tickDamageType?: string; standAction?: string }
+/* viewer.timed-effect-status-marks (2026-10-05; engine capability.effect-lasts-activations — "a timed effect IS A STATUS"): a
+ * status whose row LENDS its holder something while held (triggers fired as the holder's own, flat stat changes, a stat
+ * doubled) carries that, copied whole, with what counts it down (`countsDown`: the holder's Activations or its attacks, and
+ * the tag an attack must carry; absent with no Phase decay — it lasts the Battle). The page marks such a status as one that
+ * GIVES and says what it does and how long it has left, in words made of these fields; none of it is typed in the page. */
+export type StatusRow = { flags: string[]; tickDamageType?: string; standAction?: string
+  lends?: { triggers?: unknown[]; mods?: { stat: string; value: number }[]; doubles?: string[] }; decayPerPhase?: number; countsDown?: string; countsAttackTag?: string }
 export function statusRows(): Record<string, StatusRow> {
   const out: Record<string, StatusRow> = {}
   for (const [id, s] of Object.entries(STATUSES) as [string, any][]) {
     const flags = Object.keys(s).filter((k) => s[k] === true).sort()
     if (s.prone) flags.push('prone')
-    out[id] = { flags: flags.sort(), ...(s.tickDamageType ? { tickDamageType: s.tickDamageType } : {}), ...(s.prone?.standAction ? { standAction: s.prone.standAction } : {}) }
+    out[id] = { flags: flags.sort(), ...(s.tickDamageType ? { tickDamageType: s.tickDamageType } : {}), ...(s.prone?.standAction ? { standAction: s.prone.standAction } : {}),
+      ...(s.lends ? { lends: s.lends, decayPerPhase: s.decayPerPhase, ...(s.countsDown ? { countsDown: s.countsDown } : {}), ...(s.countsAttackTag ? { countsAttackTag: s.countsAttackTag } : {}) } : {}) }
   }
   return out
 }
