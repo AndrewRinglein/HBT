@@ -16,7 +16,12 @@ import { actionLines, ridersOf, unitTriggers, triggersFor } from '../src/actions
 const html = readFileSync(process.env.VIEWER_PAGE || 'BATTLE-VIEWER.html', 'utf8')
 const ROSTER = JSON.parse(readFileSync('tools/fixtures/bar-audit-roster.json', 'utf8'))
 const STATIC = JSON.parse(readFileSync('generated/static.json', 'utf8'))
-const D = { UD: STATIC.units, ACT: STATIC.actions, BADGES: STATIC.badges, LAYERS: STATIC.layers, ITEMS: STATIC.items, KINDS: STATIC.actionKinds }
+/* Law 10, 2026-10-04 - viewer.bar-shows-tag-requirement (engine DECISIONS.md 2026-10-04 'after the backlog run: ... a trigger on the hero with a tag
+   requirement ...'): a trigger may require a tag (`onlyWithTag`), and which actions carry a tag is the engine's answer, dumped (static.json tagCarriers).
+   The page's functions are handed that table as the page hands it (was: D without it - the functions then had no answer for Pharaoh's Gauntlets'
+   brawl requirement and refuse to guess). No assertion below is changed: every trigger an item brings is still said on each attack it rides - and
+   which attacks a tag-required trigger rides is now the audit's question too (tools/bar-audit.mjs actionNeeds). */
+const D = { UD: STATIC.units, ACT: STATIC.actions, BADGES: STATIC.badges, LAYERS: STATIC.layers, ITEMS: STATIC.items, KINDS: STATIC.actionKinds, TAG_CARRIERS: STATIC.tagCarriers }
 let audit
 const run = () => (audit ??= auditPage(html, ROSTER))
 

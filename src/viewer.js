@@ -187,7 +187,10 @@ export function mountBattleViewer(root, data, opts = {}) {
       /* viewer.reads-engine: what each action IS (the engine's predicates) and what each status DOES (its row's flags) */
       KINDS: data.actionKinds || {}, STATUS_ROWS: data.statusRows || {}, ITEM_CLASSES: data.itemClasses || {},
       /* viewer.panel-lists-items: each item's own row (name, class, hands, what it gives) and the engine's count of hands */
-      ITEMS: data.items || {}, HANDS: Number.isInteger(data.hands) ? data.hands : null, ARTMAP: data.artmap, ASSETS: data.assets, atlas, displayHeights: null,
+      ITEMS: data.items || {}, HANDS: Number.isInteger(data.hands) ? data.hands : null,
+      /* viewer.bar-shows-tag-requirement: which actions carry each tag a trigger requires (static.json tagCarriers — the engine's
+         carriesTag); a host that hands none has no answer, and a tag-required trigger on its bar is a fault, never a guess */
+      TAG_CARRIERS: data.tagCarriers || {}, ARTMAP: data.artmap, ASSETS: data.assets, atlas, displayHeights: null,
       /* viewer.true-3d-camera: the board's map from the scene's metres to board px — the battle's 3D scene's own, else the
          flat board's (camera3d.js); the one camera, the stage and the 3D layer all stand on it */
       boardAffine: atlas ? (atlas.kind === 'painted' ? paintedToCSS(atlas) : worldToCSS(atlas, F)) : flatAffine(F),

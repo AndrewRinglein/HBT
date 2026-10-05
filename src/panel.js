@@ -3,7 +3,7 @@
    STATS ABOVE THE CARD → card art with STATUSES TO ITS RIGHT → KEYWORDS BELOW
    THE PICTURE. The action bar owns actions (§9.7). Split out 2026-09-02. */
 import { stStyle } from './theme.js'
-import { sgn, STATSHORT, modOf, effectWord, absorbOf, targetWords, unitTriggers, freeAttacksUp, FREE_ATTACK } from './actions.js'
+import { sgn, STATSHORT, modOf, effectWord, absorbOf, targetWords, unitTriggers, freeAttacksUp, FREE_ATTACK, tagRequirementWords } from './actions.js'
 import { raIcon } from './icons.js'
 import { subjectOf, barUnitOf } from './subject.js'
 import { itemsOf, SLOT_LABEL } from './items.js'
@@ -93,7 +93,10 @@ export function drawPanel(V) {
       const num = w.val == null ? '' : w.radius ? ` r${w.val}` : ' ' + (w.signed ? sgn(w.val) : w.val)
       /* viewer.bar-shows-every-effect: a trigger that rides one attack only says which (the Dagger's Protection: "with Stab") */
       const scoped = t.onlyWithAttack ? ` · with ${((V.data.ACT || {})[t.onlyWithAttack] || {}).name || t.onlyWithAttack}` : ''
-      const eff = `${w.word}${num}${w.badge || w.radius ? '' : who}${scoped}`
+      /* viewer.bar-shows-tag-requirement: a trigger with a tag requirement says it, in the Codex's words (the Burning Touch:
+         "Burn 1 · only with a melee attack") — the bar lists it on the attacks that have the tag only */
+      const tagged = tagRequirementWords(t) ? ' · ' + tagRequirementWords(t) : ''
+      const eff = `${w.word}${num}${w.badge || w.radius ? '' : who}${scoped}${tagged}`
       const TF = S.TRIGFLASH
       const firing = TF && TF.unit === u.id && TF.id === t.id && TF.until > now
       return `<div style="display:flex;align-items:center;gap:7px;padding:5px 8px;margin-bottom:4px;
