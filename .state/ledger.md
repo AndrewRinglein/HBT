@@ -36689,3 +36689,295 @@ index 0000000..a125e58
   PASS  naming — new content ids use declared kinds
   PASS  naming — no banned words invented
   PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+## viewer.map-drag-and-keys — LANDED `6577f89` **NEEDS REVIEW**
+2026-10-05 20:39
+
+  PASS  dependencies landed
+  WARN  not already decided — 3 candidate ruling(s) — READ BEFORE ASKING: ..\ATLAS-COMBAT-INTEGRATION.md:222 · SWITCHES.md:1944
+  PASS  typecheck
+  PASS  the item's own tests — test/viewer.frame-cost-measured.test.ts, test/viewer.map-drag-and-keys.test.ts, test/viewer.scenery-shadow-drawn-once.test.ts, test/viewer.see-through-only-when-moved.test.ts, test/viewer.still-frame-draws-nothing.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — viewer/test/frame-cost-page.ts, viewer/test/viewer.frame-cost-measured.test.ts, viewer/test/viewer.map-drag-and-keys.test.ts, viewer/test/viewer.scenery-shadow-drawn-once.test.ts, viewer/test/viewer.see-through-only-when-moved.test.ts, viewer/test/viewer.still-frame-draws-nothing.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/viewer.frame-cost-measured.test.ts (-7), test/viewer.map-drag-and-keys.test.ts (-1), test/viewer.scenery-shadow-drawn-once.test.ts (-6), test/viewer.see-through-only-when-moved.test.ts (-6), test/viewer.still-frame-draws-nothing.test.ts (-6) — will land FLAGGED for review
+  SKIPPED  control battles unchanged — engine code f9fdfb5dde and the content pack are the ones the control battles last passed on (2026-10-05 17:45, gate capability.summons --land, in HBT-worker-engine) — not run
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+0cf51d8
+
+diff --git a/test/frame-cost-page.ts b/test/frame-cost-page.ts
+new file mode 100644
+index 0000000..4d1897e
+--- /dev/null
++++ b/test/frame-cost-page.ts
+@@ -0,0 +1,53 @@
++// ONE run of tools/frame-cost.mjs in real Chrome for every test file that reads it (2026-10-05, found landing
++// viewer.map-drag-and-keys: four test files each built a sandbox page of their own and each opened real Chrome on it — the
++// frame-cost tool's own test, the see-through check's, the kept shadow's and the still frame's — and the gate's checks run
++// its test files side by side, so four page builds and four browsers measured frame times at once: the Bridge's run passed
++// its 280 s limit twice running). The first file to ask builds one sandbox page from the sources and runs the tool once on
++// the battles any of them reads, 60 frames a number; the others wait for that run's result and read it. What each file
++// asserts of its rows is unchanged.
++// Not a test file. Used by test/viewer.frame-cost-measured.test.ts, test/viewer.see-through-only-when-moved.test.ts,
++// test/viewer.scenery-shadow-drawn-once.test.ts and test/viewer.still-frame-draws-nothing.test.ts.
++import { execFileSync } from 'node:child_process'
++import { mkdirSync, readFileSync, rmSync, statSync, writeFileSync } from 'node:fs'
++
++const DIR = '.build', OUT = `${DIR}/frame-cost-page.json`, LOCK = `${DIR}/frame-cost-page.lock`
++/** the page the run is made on: a sandbox built from these sources (the kingdom's committed page is rebuilt only after the viewer's gate) */
++export const FRAME_COST_PAGE = 'kingdom/scratch/frame-cost-page.html'
++/** the battles any of the files reads: two foliage scenes, the lightest scene, and the one whose fog and fires move */
++export const FRAME_COST_BATTLES = ['encounter.opening.orphanage', 'encounter.opening.lumberjack', 'encounter.opening.bridge', 'encounter.caravan-aftermath']
++/** how long a file may wait for the run (its own, or another file's): the limit to give a test or a beforeAll that asks */
++export const FRAME_COST_WAIT_MS = 1_500_000
++export type FrameCost<Row> = { page: string; window: { w: number; h: number }; frames: number; software: boolean; rows: Row[] }
++
++const sleep = (ms: number) => { Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, ms) }
++/* every file of one vitest run is a child of the same process: that is the run a result belongs to */
++const RUN = String(process.ppid)
++
++/** the tool's result on the page built from these sources — made once a run, whichever file asks first */
++export function frameCostOnThePage<Row>(): FrameCost<Row> {
++  mkdirSync(DIR, { recursive: true })
++  const have = (): FrameCost<Row> | null => { try { const j = JSON.parse(readFileSync(OUT, 'utf8')) as { run: string; at: number; result: FrameCost<Row> }
++    return j.run === RUN && Date.now() - j.at < 3_600_000 ? j.result : null } catch { return null } }
++  for (let waited = 0; waited < FRAME_COST_WAIT_MS - 60_000; waited += 2000) {
++    const got = have(); if (got) return got
++    let mine = false
++    try { mkdirSync(LOCK); mine = true } catch {
++      /* another file of this run is making it — or a run that died left its lock behind */
++      try { if (Date.now() - statSync(LOCK).mtimeMs > 25 * 60_000) rmSync(LOCK, { recursive: true, force: true }) } catch { /* gone already */ } }
++    if (!mine) { sleep(2000); continue }
++    try {
++      const again = have(); if (again) return again
++      mkdirSync('../kingdom/scratch', { recursive: true })
++      execFileSync(process.execPath, ['tools/build-sandbox.mjs', FRAME_COST_PAGE.replace(/^kingdom\//, '')], { cwd: '../kingdom', stdio: 'pipe' })
++      const out = execFileSync(process.execPath, ['tools/frame-cost.mjs', ...FRAME_COST_BATTLES, '--frames', '60', '--json', '--page', '../' + FRAME_COST_PAGE], { cwd: '../viewer', encoding: 'utf8', maxBuffer: 1 << 26, timeout: 1_200_000 })
++      const result = JSON.parse(out) as FrameCost<Row>
++      writeFileSync(OUT, JSON.stringify({ run: RUN, at: Date.now(), result }))
++      return result
++    } finally { rmSync(LOCK, { recursive: true, force: true }) }
++  }
++  throw new Error('frame-cost on the page: no result within ' + Math.round(FRAME_COST_WAIT_MS / 60_000) + ' minutes')
++}
++/** one battle's row of a result, by its encounter id */
++export function rowOf<Row extends { battle: string }>(got: FrameCost<Row>, battle: string): Row {
++  const r = got.rows.find((x) => x.battle === battle); if (!r) throw new Error('frame-cost on the page: no row for ' + battle); return r
++}
+diff --git a/test/viewer.frame-cost-measured.test.ts b/test/viewer.frame-cost-measured.test.ts
+index 629f490..e653976 100644
+--- a/test/viewer.frame-cost-measured.test.ts
++++ b/test/viewer.frame-cost-measured.test.ts
+@@ -8,5 +8,5 @@
+ // Imports no page code.
+ import { describe, it, expect } from 'vitest'
+-import { execFileSync } from 'node:child_process'
++import { frameCostOnThePage, rowOf, FRAME_COST_PAGE, FRAME_COST_WAIT_MS } from './frame-cost-page.js'
+ import { existsSync, readFileSync } from 'node:fs'
+ 
+@@ -24,11 +24,20 @@ describe('viewer.frame-cost-measured — the tool that says what a frame costs',
+   it('run on the Bridge it prints one row, and every column of it reads: draw calls and triangles by pass, script ms with the see-through check and without, still and scrolling, each over 30 frames or more', () => {
+     expect(existsSync(PAGE), 'the built page the tool opens').toBe(true)
+-    const out = execFileSync(process.execPath, ['tools/frame-cost.mjs', 'bridge', '--json'], { encoding: 'utf8', maxBuffer: 1 << 24, timeout: 280000 })
+-    const got = JSON.parse(out) as { page: string; window: { w: number; h: number }; frames: number; rows: Row[] }
+-    expect(got.page).toBe('kingdom/BATTLE-SANDBOX.html')
++    // LAW 10 — 2026-10-05 (found landing viewer.map-drag-and-keys; test/frame-cost-page.ts says why): this file ran the tool by
++    // itself —
++    //   const out = execFileSync(process.execPath, ['tools/frame-cost.mjs', 'bridge', '--json'], { …, timeout: 280000 })
++    //   expect(got.page).toBe('kingdom/BATTLE-SANDBOX.html')
++    //   expect(got.rows.map((r) => r.battle), 'the short name is its encounter').toEqual(['encounter.opening.bridge'])
++    //   const row = got.rows[0]!
++    // — as three other test files did, each on a page of its own, all at once in the gate's checks. The tool is now run ONCE
++    // a test run, on one sandbox page built from the sources, for every file that reads it; this file reads its rows of
++    // that result. Every assertion on those rows below stands as written.
++    // (the page is the one built from the sources, not the kingdom's committed one; the Bridge's row is one of the run's)
++    const got = frameCostOnThePage<Row>()
++    expect(got.page).toBe(FRAME_COST_PAGE)
+     expect(got.window).toEqual({ w: 1920, h: 1080 })
+     expect(got.frames).toBeGreaterThanOrEqual(30)
+-    expect(got.rows.map((r) => r.battle), 'the short name is its encounter').toEqual(['encounter.opening.bridge'])
+-    const row = got.rows[0]!
++    expect(got.rows.map((r) => r.battle), 'the short name is its encounter').toContain('encounter.opening.bridge')
++    const row = rowOf(got, 'encounter.opening.bridge')
+     expect(row.flat, row.note).toBeFalsy()
+     expect(row.pageErrors ?? [], 'no page error while it measured').toEqual([])
+@@ -58,4 +67,4 @@ describe('viewer.frame-cost-measured — the tool that says what a frame costs',
+     expect(row.scrolling.withoutCheck.draws.bodies).toBeGreaterThan(0)
+     expect(row.scrolling.withoutCheck.triangles.all).toBeGreaterThan(100000)
+-  }, 290000)
++  }, FRAME_COST_WAIT_MS)
+ })
+diff --git a/test/viewer.map-drag-and-keys.test.ts b/test/viewer.map-drag-and-keys.test.ts
+index 6e2ef7a..aed8900 100644
+--- a/test/viewer.map-drag-and-keys.test.ts
++++ b/test/viewer.map-drag-and-keys.test.ts
+@@ -17,5 +17,5 @@ describe('the map moves by dragging it and on W, A, S and D, beside the edge scr
+     const src = readFileSync('src/camera-policy.js', 'utf8')
+     const n = (name: string) => Number(src.match(new RegExp(name + ':\\s*([\\d.]+)'))?.[1])
+-    expect(n('DRAG_PX')).toBe(6); expect(n('TURN_MS')).toBe(300)
++    expect(n('MAP_DRAG_PX')).toBe(6); expect(n('TURN_MS')).toBe(300)
+     expect(n('EDGE_SCROLL_SPEED'), 'the keys move the map at the edge scroll\'s speed').toBe(700)
+   })
+diff --git a/test/viewer.scenery-shadow-drawn-once.test.ts b/test/viewer.scenery-shadow-drawn-once.test.ts
+index d55aa5b..a370bb7 100644
+--- a/test/viewer.scenery-shadow-drawn-once.test.ts
++++ b/test/viewer.scenery-shadow-drawn-once.test.ts
+@@ -12,5 +12,5 @@
+ import { describe, it, expect } from 'vitest'
+ import { execFileSync } from 'node:child_process'
+-import { mkdirSync } from 'node:fs'
++import { frameCostOnThePage, rowOf, FRAME_COST_WAIT_MS } from './frame-cost-page.js'
+ 
+ type Pass = { all: number; shadow: number; scene: number; bodies: number }
+@@ -26,8 +26,14 @@ describe('viewer.scenery-shadow-drawn-once', () => {
+ 
+   it('the built page, the Orphanage: the shadow pass draws only the bodies on a frame where a body animates and nothing on a still frame, where it drew 916; the picture is the same, pixel for pixel, as with the shadow whole', () => {
+-    mkdirSync('../kingdom/scratch', { recursive: true })
+-    execFileSync(process.execPath, ['tools/build-sandbox.mjs', 'scratch/scenery-shadow-drawn-once.html'], { cwd: '../kingdom', stdio: 'pipe' })
+-    const out = execFileSync(process.execPath, ['tools/frame-cost.mjs', 'orphanage', '--json', '--page', '../kingdom/scratch/scenery-shadow-drawn-once.html'], { cwd: '../viewer', encoding: 'utf8', maxBuffer: 1 << 24, timeout: 400000 })
+-    const r = (JSON.parse(out) as { rows: Row[] }).rows[0]!
++    // LAW 10 — 2026-10-05 (found landing viewer.map-drag-and-keys; test/frame-cost-page.ts says why): this file ran the tool by
++    // itself —
++    //   mkdirSync('../kingdom/scratch', { recursive: true })
++    //   execFileSync(process.execPath, ['tools/build-sandbox.mjs', 'scratch/scenery-shadow-drawn-once.html'], { cwd: '../kingdom', stdio: 'pipe' })
++    //   const out = execFileSync(process.execPath, ['tools/frame-cost.mjs', 'orphanage', '--json', '--page', …], { …, timeout: 400000 })
++    //   const r = (JSON.parse(out) as { rows: Row[] }).rows[0]!
++    // — as three other test files did, each on a page of its own, all at once in the gate's checks. The tool is now run ONCE
++    // a test run, on one sandbox page built from the sources, for every file that reads it; this file reads its rows of
++    // that result. Every assertion on those rows below stands as written.
++    const r = rowOf(frameCostOnThePage<Row>(), 'encounter.opening.orphanage')
+     expect(r.battle).toBe('encounter.opening.orphanage')
+     expect(r.flat, r.note).toBeFalsy(); expect(r.pageErrors ?? []).toEqual([])
+@@ -56,4 +62,4 @@ describe('viewer.scenery-shadow-drawn-once', () => {
+     expect(r.shadow!.differing, `pixels that differ at the worst view, of ${r.shadow!.pixels} (two frames drawn the same way: ${r.shadow!.sameWay})`).toBeLessThanOrEqual(Math.max(40, 3 * r.shadow!.sameWay))
+     expect(r.shadow!.same, 'and some views are the same in every pixel').toBeGreaterThan(0)
+-  }, 600000)
++  }, FRAME_COST_WAIT_MS)
+ })
+diff --git a/test/viewer.see-through-only-when-moved.test.ts b/test/viewer.see-through-only-when-moved.test.ts
+index 0d8d35c..53530b4 100644
+--- a/test/viewer.see-through-only-when-moved.test.ts
++++ b/test/viewer.see-through-only-when-moved.test.ts
+@@ -15,5 +15,5 @@
+ import { describe, it, expect } from 'vitest'
+ import { execFileSync } from 'node:child_process'
+-import { mkdirSync } from 'node:fs'
++import { frameCostOnThePage, rowOf, FRAME_COST_WAIT_MS } from './frame-cost-page.js'
+ 
+ type Ms = { median: number; min: number; max: number }
+@@ -29,8 +29,14 @@ describe('viewer.see-through-only-when-moved', () => {
+ 
+   it('the built page, the Orphanage and the Lumberjack House: no check over 60 still frames; a still frame costs the same with the check due as without; one check under 4 ms; the same pieces as every triangle finds, at every view of a round', () => {
+-    mkdirSync('../kingdom/scratch', { recursive: true })
+-    execFileSync(process.execPath, ['tools/build-sandbox.mjs', 'scratch/see-through-only-when-moved.html'], { cwd: '../kingdom', stdio: 'pipe' })
+-    const out = execFileSync(process.execPath, ['tools/frame-cost.mjs', 'orphanage', 'lumberjack', '--frames', '60', '--json', '--page', '../kingdom/scratch/see-through-only-when-moved.html'], { cwd: '../viewer', encoding: 'utf8', maxBuffer: 1 << 24, timeout: 560000 })
+-    const rows = (JSON.parse(out) as { rows: Row[] }).rows
++    // LAW 10 — 2026-10-05 (found landing viewer.map-drag-and-keys; test/frame-cost-page.ts says why): this file ran the tool by
++    // itself —
++    //   mkdirSync('../kingdom/scratch', { recursive: true })
++    //   execFileSync(process.execPath, ['tools/build-sandbox.mjs', 'scratch/see-through-only-when-moved.html'], { cwd: '../kingdom', stdio: 'pipe' })
++    //   const out = execFileSync(process.execPath, ['tools/frame-cost.mjs', 'orphanage', 'lumberjack', '--frames', '60', '--json', '--page', …], { …, timeout: 560000 })
++    //   const rows = (JSON.parse(out) as { rows: Row[] }).rows
++    // — as three other test files did, each on a page of its own, all at once in the gate's checks. The tool is now run ONCE
++    // a test run, on one sandbox page built from the sources, for every file that reads it; this file reads its rows of
++    // that result. Every assertion on those rows below stands as written.
++    const got = frameCostOnThePage<Row>(), rows = [rowOf(got, 'encounter.opening.orphanage'), rowOf(got, 'encounter.opening.lumberjack')]
+     expect(rows.map((r) => r.battle)).toEqual(['encounter.opening.orphanage', 'encounter.opening.lumberjack'])
+     for (const r of rows) {
+@@ -63,4 +69,4 @@ describe('viewer.see-through-only-when-moved', () => {
+       expect(r.seeThrough!.withSomethingHiding, `${at}: and many of those views have a piece in the way — the two are not agreeing about nothing`).toBeGreaterThanOrEqual(r.seeThrough!.views / 4)
+     }
+-  }, 780000)
++  }, FRAME_COST_WAIT_MS)
+ })
+diff --git a/test/viewer.still-frame-draws-nothing.test.ts b/test/viewer.still-frame-draws-nothing.test.ts
+index ed91e57..0e02fbe 100644
+--- a/test/viewer.still-frame-draws-nothing.test.ts
++++ b/test/viewer.still-frame-draws-nothing.test.ts
+@@ -18,5 +18,5 @@
+ import { describe, it, expect, beforeAll } from 'vitest'
+ import { execFileSync } from 'node:child_process'
+-import { mkdirSync } from 'node:fs'
++import { frameCostOnThePage, rowOf, FRAME_COST_WAIT_MS } from './frame-cost-page.js'
+ 
+ type Pass = { all: number; shadow: number; scene: number; bodies: number }
+@@ -35,12 +35,19 @@ describe('viewer.still-frame-draws-nothing', () => {
+     let orphanage: Row, caravan: Row
+     beforeAll(() => {
+-      mkdirSync('../kingdom/scratch', { recursive: true })
+-      execFileSync(process.execPath, ['tools/build-sandbox.mjs', 'scratch/still-frame-draws-nothing.html'], { cwd: '../kingdom', stdio: 'pipe' })
+-      const out = execFileSync(process.execPath, ['tools/frame-cost.mjs', 'orphanage', 'caravan-aftermath', '--json', '--page', '../kingdom/scratch/still-frame-draws-nothing.html'], { cwd: '../viewer', encoding: 'utf8', maxBuffer: 1 << 24, timeout: 560000 })
+-      const rows = (JSON.parse(out) as { rows: Row[] }).rows
++    // LAW 10 — 2026-10-05 (found landing viewer.map-drag-and-keys; test/frame-cost-page.ts says why): this file ran the tool by
++    // itself —
++    //   mkdirSync('../kingdom/scratch', { recursive: true })
++    //   execFileSync(process.execPath, ['tools/build-sandbox.mjs', 'scratch/still-frame-draws-nothing.html'], { cwd: '../kingdom', stdio: 'pipe' })
++    //   const out = execFileSync(process.execPath, ['tools/frame-cost.mjs', 'orphanage', 'caravan-aftermath', '--json', '--page', …], { …, timeout: 560000 })
++    //   const rows = (JSON.parse(out) as { rows: Row[] }).rows
++    //   expect(rows.map((r) => r.battle)).toEqual(['encounter.opening.orphanage', 'encounter.caravan-aftermath'])
++    // — as three other test files did, each on a page of its own, all at once in the gate's checks. The tool is now run ONCE
++    // a test run, on one sandbox page built from the sources, for every file that reads it; this file reads its rows of
++    // that result. Every assertion on those rows below stands as written.
++      const got = frameCostOnThePage<Row>(), rows = [rowOf(got, 'encounter.opening.orphanage'), rowOf(got, 'encounter.caravan-aftermath')]
+       expect(rows.map((r) => r.battle)).toEqual(['encounter.opening.orphanage', 'encounter.caravan-aftermath'])
+       for (const r of rows) { expect(r.flat, r.note).toBeFalsy(); expect(r.pageErrors ?? [], r.battle).toEqual([]) }
+       ;[orphanage, caravan] = rows as [Row, Row]
+-    }, 780000)
++    }, FRAME_COST_WAIT_MS)
+ 
+     it('the clock held and nothing live: a frame issues 0 draw calls — no scene pass, no shadow pass, no bodies\' canvas', () => {
+dd0d35e
+
+diff --git a/test/viewer.map-drag-and-keys.test.ts b/test/viewer.map-drag-and-keys.test.ts
+new file mode 100644
+index 0000000..6e2ef7a
+--- /dev/null
++++ b/test/viewer.map-drag-and-keys.test.ts
+@@ -0,0 +1,35 @@
++// viewer.map-drag-and-keys (engine backlog; ruled 2026-10-05, Andrew, engine DECISIONS.md 'the battle screen must feel smooth: …
++// the map drags and moves on W/A/S/D; …' — asked "Should the map also move by dragging it and by W/A/S/D, alongside edge
++// scroll (this overturns 'no grab-drag')?": "Yes"). Overturns 2026-10-01 'the XCOM-style camera' "no grab-drag": the edge scroll
++// stays, the drag and the keys are added. Expect: "On the Orphanage: a press dragged 300 px left moves the board 300 px left
++// under the pointer and it stays there on release; a click with 3 px of travel still selects its hex; a right press that
++// drags does not step the plan back and a right click still does; holding D scrolls right until the bound and W with D goes
++// diagonally; the left arrow turns a quarter in about 300 ms; a page test reads each; the tests that asserted 'no grab-drag'
++// are changed to assert these, citing the ruling."
++// The engine's side — nothing is asked of it: moving the map is no command, and a drag sends none. The viewer's half is
++// ../viewer/tools/map-drag-and-keys.test.mjs, on the page (VIEWER_PAGE) as the gate runs it. Imports no page code.
++import { describe, it, expect } from 'vitest'
++import { execFileSync } from 'node:child_process'
++import { readFileSync } from 'node:fs'
++
++describe('the map moves by dragging it and on W, A, S and D, beside the edge scroll', () => {
++  it('the numbers are the camera\'s policy: 6 px of travel makes a press a drag; a quarter turn takes 300 ms', () => {
++    const src = readFileSync('src/camera-policy.js', 'utf8')
++    const n = (name: string) => Number(src.match(new RegExp(name + ':\\s*([\\d.]+)'))?.[1])
++    expect(n('DRAG_PX')).toBe(6); expect(n('TURN_MS')).toBe(300)
++    expect(n('EDGE_SCROLL_SPEED'), 'the keys move the map at the edge scroll\'s speed').toBe(700)
++  })
++  it('the viewer page, the Orphanage: the drag, the click that travels less than 6 px, the right button, W A S D, the 300 ms quarter turn, the HUD line', () => {
++    const out = execFileSync(process.execPath, ['--test', '--test-reporter=tap', 'tools/map-drag-and-keys.test.mjs'], { cwd: '../viewer', encoding: 'utf8', maxBuffer: 1 << 24, env: { ...process.env, VIEWER_PAGE: process.env.VIEWER_PAGE ?? '' } })
++    expect(out).toMatch(/# pass 6/); expect(out).toMatch(/# fail 0/)
++  }, 170000)
++  it('the tests that asserted "no grab-drag" now assert the drag, each citing the ruling', () => {
++    // (tools/true-3d-camera.test.mjs names "no grab-drag" too, in a note: what it asserts — no drag tilts the camera or leaves
++    // Overhead, a click that ends a drag is no click — is still the rule and passes unchanged)
++    for (const f of ['tools/targeting.test.mjs', 'tools/painted-board.test.mjs']) {
++      const src = readFileSync(f, 'utf8')
++      expect(src, `${f}: its dated note`).toMatch(/2026-10-05, viewer\.map-drag-and-keys/)
++      expect(src, `${f}: the ruling's own word`).toMatch(/"Yes"/)
++    }
++  })
++})
+```
+</details>
