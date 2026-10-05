@@ -2,6 +2,7 @@
    A development affordance, not a game surface (ruled 9.6). */
 import { sgn, freeAttackOf } from './actions.js'
 import { fallWord } from './fold.js'
+import { shownName } from './names.js'
 const escape = value => String(value).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))
 /** basis points as a percent, by moving the decimal point in the engine's own digits — no arithmetic (Law 0) */
 export const bpsPct = bps => { const s = String(bps).padStart(3, '0'), f = s.slice(-2).replace(/0+$/, ''); return s.slice(0, -2) + (f ? '.' + f : '') }
@@ -10,7 +11,8 @@ export const bpsPct = bps => { const s = String(bps).padStart(3, '0'), f = s.sli
 const wordsOf = (id, prefix) => String(id).replace(prefix, '').split(/[-.]/).map(w => w ? w[0].toUpperCase() + w.slice(1) : w).join(' ')
 export function buildLog(events, SN, turns) {
   const NAMES = {}, SIDES = {}
-  for (const e of events) if (e.type === 'unit.enter') { NAMES[e.actor] = e.name; SIDES[e.actor] = e.side }
+  /* viewer.unit-names-no-letters-or-numbers: a line names a unit as the board does - the engine's name, less its mark */
+  for (const e of events) if (e.type === 'unit.enter') { NAMES[e.actor] = shownName(e.name); SIDES[e.actor] = e.side }
   const nmAt = e => NAMES[e.actor] ?? ('#' + e.actor), nmT = e => NAMES[e.target] ?? ('#' + e.target)
   const side = e => SIDES[e.actor] === 'enemy' ? 'enemy' : 'hero'
   const b = (cls, t) => ({ cls, t })

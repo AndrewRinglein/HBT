@@ -16,6 +16,7 @@
    a unit is fielded with (unit.equipped).
    ══════════════════════════════════════════════════════════════════════════ */
 import { sgn, freeAttackOf } from './actions.js'
+import { shownName } from './names.js'
 
 /* view-state clocks the fold stamps from the `now` it is handed — a beat's
    duration is the pump's business, but the fold knows WHICH beats linger */
@@ -53,7 +54,8 @@ export function createState() {
 
 /** a unit's row in S.U — one shape, whether it entered at setup or arrived */
 function mkUnit(e, UD) {
-  return { id: e.actor, name: e.name, typeId: e.typeId, side: e.side, hex: e.hex,
+  /* viewer.unit-names-no-letters-or-numbers: the name a player reads - the engine's, less its mark (names.js shownName) */
+  return { id: e.actor, name: shownName(e.name), typeId: e.typeId, side: e.side, hex: e.hex,
     hp: e.hp, maxHp: e.maxHp, stam: e.stamina, maxStam: e.maxStamina, st: {}, stBy: {}, life: 'standing', bleed: 0,
     /* `mvBase` was the resting movement until mvOf() read it off the sheet plus
        the log's modifiers (2026-09-03); it is kept OUT rather than set-and-unread */

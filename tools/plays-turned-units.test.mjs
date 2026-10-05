@@ -18,6 +18,7 @@ import { THREE, modules } from './atlas-test-runtime.mjs'
 import { packCharacterModels, UNBODIED } from './character-models.mjs'
 import { foldTo, FOLDED_TYPES } from '../src/fold.js'
 import { buildLog } from '../src/log.js'
+import { shownName } from '../src/names.js'
 const A = await modules(), pack = await packCharacterModels()
 const html = readFileSync(process.env.VIEWER_PAGE || 'BATTLE-VIEWER.html', 'utf8')
 const load = f => JSON.parse(readFileSync(f, 'utf8'))
@@ -208,7 +209,10 @@ test('the Cavern Trail\'s recording plays through: the bite\'s first-affliction 
 test('the log says each in a sentence, and the turn floats its word over the unit', () => {
   const { v, V, EV } = boot(fixture), { e, i } = turns(EV)[0], back = EV.findIndex((x, k) => k > i && x.type === 'unit.reverted' && x.actor === e.actor)
   const lines = buildLog(EV, statics.statuses, 99), lineOf = k => lines.find(l => l.i === k)?.t ?? null
-  const formName = statics.units[e.into].name, heroName = EV.find(x => x.type === 'unit.enter' && x.actor === e.actor).name
+  /* Law 10, 2026-10-05 - viewer.unit-names-no-letters-or-numbers (engine DECISIONS.md 2026-10-05 'no unit is shown with a number or a
+     letter', Andrew: "it shouldn't be Soldier A or Lumberjack 1"): `heroName` was the unit.enter line's own name, mark and all, and the turn's and the revert's sentences were asked for it. The claim is unchanged - the unit is named - and the
+     name is the engine's less its mark, through the function the page itself reads (src/names.js shownName). */
+  const formName = statics.units[e.into].name, heroName = shownName(EV.find(x => x.type === 'unit.enter' && x.actor === e.actor).name)
   const t = lineOf(i), r = lineOf(back)
   assert.ok(t && t.includes(heroName) && t.includes(formName), `the turn's sentence names the hero and the form: ${t}`)
   assert.ok(t.includes('Lycanthropy'), 'and the affliction'); assert.ok(/enem/i.test(t), 'and the side it now fights for')

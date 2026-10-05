@@ -8,6 +8,7 @@
 // (the fieldings test.counterattack and test.fend, made by test/viewer.free-attack-kind-words.test.ts) and the Cathedral's
 // recording (ordinary attacks of opportunity).
 import { test } from 'node:test'
+import { shownName } from '../src/names.js'
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import { makeWindow } from './fakedom.mjs'
@@ -38,7 +39,10 @@ function boot(battle, opts = {}) {
 /** the floats the fold says for line i of a battle */
 function floatsAt(battle, i) { const S = createState(); let cues = []; for (let k = 0; k <= i; k++) cues = fold(S, battle.events[k], CTX, 0); return cues.filter(c => c.k === 'float').map(c => c.text) }
 const provoked = (battle, as) => battle.events.map((e, i) => ({ e, i })).filter(x => x.e.type === 'aoo.provoked' && x.e.as === as)
-const nameOf = (battle, id) => battle.events.find(e => e.type === 'unit.enter' && e.actor === id).name
+/* Law 10, 2026-10-05 - viewer.unit-names-no-letters-or-numbers (engine DECISIONS.md 2026-10-05 'no unit is shown with a number or a
+   letter', Andrew: "it shouldn't be Soldier A or Lumberjack 1"): `nameOf` was the unit.enter line's own name, mark and all, and the log's sentences were asked for it. The claim is unchanged - the unit is named - and the
+   name is the engine's less its mark, through the function the page itself reads (src/names.js shownName). */
+const nameOf = (battle, id) => shownName(battle.events.find(e => e.type === 'unit.enter' && e.actor === id).name)
 const WORDS = { counterattack: 'Counterattack', fend: 'Fend', undefined: 'Attack of opportunity' }
 
 test('one table names the three free attacks and the glyph of each up-state: Counterattack (crossed swords), Fend (a shield) — existing glyphs, proposed', () => {
