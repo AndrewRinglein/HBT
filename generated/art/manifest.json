@@ -190,6 +190,7 @@
   "lieutenant-demon_256.png",
   "lucius_256.png",
   "lumberjack_256.png",
+  "lumberjacks-wife_256.png",
   "mage-fire_256.png",
   "mage-fireaura_256.png",
   "mage-sexy_256.png",
@@ -211,7 +212,6 @@
   "ph-fishermans-wife.png",
   "ph-group-farmers.png",
   "ph-librarian.png",
-  "ph-lumberjacks-wife.png",
   "ph-old-wise-man.png",
   "ph-scary-kid.png",
   "ph-skeleton.png",
@@ -1047,9 +1047,9 @@
    "height": 1.55
   },
   "hero.fixed.lumberjacks-wife": {
-   "token": "ph-lumberjacks-wife.png",
+   "token": "lumberjacks-wife_256.png",
    "card": null,
-   "aspect": 0.64,
+   "aspect": 0.3945,
    "height": 1.5
   }
  },
