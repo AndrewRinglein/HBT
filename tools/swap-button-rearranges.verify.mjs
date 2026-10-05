@@ -7,6 +7,7 @@
 // test presses Swap, rearranges, and reads the unit's hands from the engine's state." The board plays by its own clock.
 // Prints one line per step and `swap-button-rearranges: … passed`.
 import assert from 'node:assert/strict'
+import {shownName} from '../../viewer/src/names.js'
 import {bootSlice} from './atlas-dom.mjs'
 const {w}=bootSlice(process.argv[2]??'BATTLE-SANDBOX.html',{search:'?play=encounter.opening.orphanage'}),h=w.__sandbox
 w.prompt=q=>{throw Error('window.prompt: '+q)}
@@ -35,7 +36,10 @@ assert.equal(V().dom.stambar.querySelector('.swCost').textContent,`${V().play.sw
 say(`1 ${unit(me).name} (${weapon} and ${shield}): one button reading "${swapBtns()[0].textContent}", ${V().dom.stambar.querySelector('.swCost').textContent}`)
 // 2. pressing it opens the gear panel with both hands and the carried items — and nothing the unit does not carry
 swapBtns()[0].handlers.click({detail:1});settle()
-assert.ok(shown($('playGear')),'the gear panel opens');assert.ok(text($('playGearTitle').textContent).includes(unit(me).name))
+/* Law 10, 2026-10-05 - viewer.unit-names-no-letters-or-numbers (engine DECISIONS.md 2026-10-05 'no unit is shown with a number or a
+   letter', Andrew: "it shouldn't be Soldier A or Lumberjack 1"): the gear panel's title was asked for the engine's marked name
+   (`includes(unit(me).name)`). The claim is unchanged; the name the screen shows is the engine's less its mark (viewer src/names.js shownName). */
+assert.ok(shown($('playGear')),'the gear panel opens');assert.ok(text($('playGearTitle').textContent).includes(shownName(unit(me).name)))
 assert.deepEqual(side('playGearHand'),hands(me),'both hands');assert.deepEqual(side('playGearStowed'),stowed(me),'what is stowed')
 assert.deepEqual($('playGear').querySelectorAll('.gearItem').map(b=>b.dataset.instance).sort(),[...unit(me).loadout.hands,...unit(me).loadout.stowed].map(i=>i.instanceId).sort(),'exactly what the unit carries')
 assert.ok(off($('playGearYes')),'what it already holds cannot be confirmed');assert.equal($('playGearSay').textContent,'Nothing changes.')
