@@ -998,6 +998,14 @@ const allHeroes = [];
 // anything that is not exactly "apply <N> <KnownStatus>" is a named gap. Also
 // names the drops a settled attack row can carry: a crit field (no AttackDef
 // slot) and an area/arc targets clause (the engine attacks one target).
+const DROPPED_ATTACK_FIELDS = [
+  ['addsStat', 'damage from two stats — engine capability.damage-from-two-stats'],
+  ['halfStatBonus', 'damage from two stats — engine capability.damage-from-two-stats'],
+  ['doubleStatBonus', 'damage from two stats — engine capability.damage-from-two-stats'],
+  ['doubleStat', 'damage from two stats — engine capability.damage-from-two-stats'],
+  ['addsTargetStatus', "damage that adds the target's own status — engine capability.damage-adds-target-status"],
+  ['accuracyVs', 'Accuracy against one kind of enemy — engine capability.summons'],
+];
 function settledAttackExtras(a, unitId) {
   const out = [];
   for (const t of a.triggers || []) {
@@ -1012,6 +1020,10 @@ function settledAttackExtras(a, unitId) {
     // Knockback anyway).
     const push = typeof t.effect === 'string'
       && t.effect.match(/^push the target (\d+) hex(?:es)? directly away from you$/);
+    // engine fix.kit-attack-clauses (2026-10-04): the two stat-moving phrases, read below
+    const lose = typeof t.effect === 'string' && t.effect.match(/^(?:the )?target loses (\d+) ([A-Za-z]+(?: [A-Za-z]+)?)(?: for the rest of the Battle)?$/);
+    const moved = lose ? { word: lose[2], stat: modStatOf(lose[2]), value: -parseInt(lose[1], 10), select: 'target' }
+      : m && m[1] === 'gain' && !STATUS_OK.has(status) ? { word: m[3], stat: modStatOf(m[3]), value: parseInt(m[2], 10), select: 'self' } : null;
     if (push && TRIG_HOOKS.has(t.hook)) {
       out.push({
         id: `trigger.${a.id.replace(/^attack\./, '')}.knockback`,
@@ -1026,6 +1038,25 @@ function settledAttackExtras(a, unitId) {
         effect: { kind: 'status.apply', statusId: 'status.' + status, value: parseInt(m[2], 10) },
         source: unitId, onlyWithAttack: a.id,
       });
+    } else if (moved && moved.stat && TRIG_HOOKS.has(t.hook) && t.hook !== 'onAttack' && t.hook !== 'onCrit') {
+      // engine fix.kit-attack-clauses (2026-10-04; engine DECISIONS.md 2026-10-04 'the weapon audit …': "the pack drops clauses
+      // from weapons the 24 base heroes carry"): a rider that moves a stat — "the target loses N Stat [for the rest of the
+      // Battle]" (the Iron Mace's Crush, the Obsidian Fang) on the struck unit, "gain N Stat" (the Elfbow's Elf Shot) on the
+      // one attacking. The engine's battle-long stat modifier, the shape the War Axe's on-block already is; a second instance,
+      // no engine code. A row that states no duration lasts the Battle (the Elf Shot's own note: "stacking, for the Battle";
+      // engine SWITCHES.md kitClauseStatLastsTheBattle). Not on onAttack or onCrit: a stat moved before the damage is computed
+      // would change the number the preview promised (Law 1), as the unit-row path above refuses it.
+      out.push({
+        id: `trigger.${a.id.replace(/^attack\./, '')}.${moved.stat.replace(/[A-Z]/g, (ch) => '-' + ch.toLowerCase())}`,
+        hook: t.hook, chance: t.chance ?? 100, select: moved.select,
+        effect: { kind: 'statMod', stat: moved.stat, value: moved.value, until: 'battle' },
+        source: unitId, onlyWithAttack: a.id,
+      });
+    } else if (moved && /^surge$/i.test(moved.word)) {
+      // … and the one stat word no effect can move: a unit's Surge amount is the engine's own counter (the Surge check adds
+      // to it and spends it), not a stat a modifier reaches. Named for what is missing, never guessed (the crit chart's
+      // Knocked Sprawling, −50 Surge, waits on the same; filed as engine capability.trigger-moves-surge).
+      gap(unitId, `${a.id} ${t.hook}: ${JSON.stringify(t.effect).slice(0, 60)}`, "no effect moves a unit's Surge amount — engine capability.trigger-moves-surge");
     } else {
       gap(unitId, `${a.id} ${t.hook}: ${JSON.stringify(t.effect).slice(0, 60)}`, 'trigger shape unparsed');
     }
@@ -1035,7 +1066,17 @@ function settledAttackExtras(a, unitId) {
   // gear"). The gap it used to raise is closed in takeAttack below.
   if (((a.tags || []).includes('area') || /adjacent to both/.test(a.targets || '')) && !burstOf(a)) {
     gap(unitId, `${a.id} targets '${String(a.targets).slice(0, 50)}' — lands SINGLE-TARGET`, 'area attack shape');
+  } else if (!burstOf(a) && a.targets && !/^one enemy (in melee reach|within \d+ hex(es)?)$/.test(a.targets)) {
+    // engine fix.kit-attack-clauses (2026-10-04): EVERY targets clause that is not one enemy, on a row that is not a burst,
+    // is named — the engine attacks one unit. "up to N enemies" (the Throwing Knives' Fan) is its own missing mechanism:
+    // one attack aimed at several chosen units (filed as engine capability.attack-several-targets).
+    gap(unitId, `${a.id} targets '${String(a.targets).slice(0, 60)}' — lands SINGLE-TARGET`, /^up to \d+ enemies/.test(a.targets) ? 'an attack at several chosen targets — engine capability.attack-several-targets' : 'area attack shape');
   }
+  // … an Accuracy on a burst has nothing to modify: a burst is not an attack and does not roll to hit (V2 bursts, 2026-09-16)
+  if (burstOf(a) && a.accuracy) gap(unitId, `${a.id} accuracy ${a.accuracy} — a burst does not roll to hit`, 'accuracy on a burst — a burst is not an attack (V2 bursts)');
+  // … and the damage terms the one damage function does not have: a second stat, the target's own status, Accuracy
+  // against one kind of enemy. Each is a filed engine capability; until it lands the row deals its first stat alone.
+  for (const [field, needs] of DROPPED_ATTACK_FIELDS) if (a[field] !== undefined) gap(unitId, `${a.id} ${field}: ${JSON.stringify(a[field])}`, needs);
   return out;
 }
 
@@ -1977,7 +2018,7 @@ for (const combo of TIER3) {
 // the throw a melee attack. A row with no tags from either (the bestiary's attacks, the test lane's) carries none here, and the
 // engine reads its kind — melee or ranged — instead. Written before the Forge copies attack rows, so a copy keeps its
 // original's; a test attack that is a delta over a real one keeps the real one's.
-const TAG_GROUP = new Map((D.tags || []).map((t) => [String(t.id).replace(/^tag./, ''), t.group]));
+const TAG_GROUP = new Map((D.tags || []).map((t) => [String(t.id).replace(/^tag\./, ''), t.group]));
 {
   const tagsOfAttack = new Map();
   const add = (id, tags) => { if (!tagsOfAttack.has(id)) tagsOfAttack.set(id, new Set()); for (const t of tags) tagsOfAttack.get(id).add(t); };

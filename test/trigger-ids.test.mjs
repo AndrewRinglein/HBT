@@ -226,3 +226,21 @@ test('the word is the same on a unit\'s own row, and beside attack: own on a wea
  assert.equal(none.status,0,none.stderr);
  assert.equal(none.pack.items['item.rune-burning-touch'].triggers[0].onlyWithTag,undefined);
 });
+
+// engine fix.kit-attack-clauses (2026-10-04; engine DECISIONS.md 2026-10-04 'the weapon audit …'): a settled attack's rider that
+// moves a stat compiles to the engine's battle-long stat modifier, scoped to that attack — "the target loses N Stat [for the
+// rest of the Battle]" on the struck unit, "gain N Stat" on the one attacking. A phrase the compiler does not read stays a gap.
+test('a weapon attack\'s stat rider: Crush takes 1 Armor, Elf Shot gives 1 Precision, the Obsidian Fang takes 1 Strength at 20% — each scoped to its attack, for the Battle',()=>{
+ const of=(item,attack)=>live.pack.items[item].triggers.filter(t=>t.onlyWithAttack===attack).map(t=>[t.id,t.hook,t.chance,t.select,t.effect]);
+ assert.deepEqual(of('item.iron-mace','attack.iron-mace.crush'),[['trigger.iron-mace.crush.armor','onHit',100,'target',{kind:'statMod',stat:'armor',value:-1,until:'battle'}]]);
+ assert.deepEqual(of('item.iron-mace','attack.iron-mace.swing'),[]);
+ assert.deepEqual(of('item.elfbow','attack.elfbow.elf-shot'),[['trigger.elfbow.elf-shot.precision','onHit',100,'self',{kind:'statMod',stat:'precision',value:1,until:'battle'}]]);
+ for(const a of ['fang','gut'])assert.deepEqual(of('item.obsidian-fang-dagger','attack.obsidian-fang-dagger.'+a),[[`trigger.obsidian-fang-dagger.${a}.strength`,'onHit',20,'target',{kind:'statMod',stat:'strength',value:-1,until:'battle'}]]);
+ // the Surge the Thrown Dagger's kill gives is no stat a modifier reaches: nothing compiled for it, nothing guessed
+ assert.deepEqual(of('item.daggers','attack.daggers.thrown-dagger'),[]);
+});
+test('the phrase is exact: a stat the engine cannot modify, or other words, compile nothing',()=>{
+ const run=candidate(edit=>edit('gen/weapons.json',data=>{const a=data.attacks.find(x=>x.id==='attack.iron-mace.crush');a.triggers=[{hook:'onHit',effect:'the target loses 1 Nerve for the rest of the Battle'},{hook:'onHit',effect:'the target is rattled'}]}));
+ assert.equal(run.status,0,run.stderr);
+ assert.deepEqual(run.pack.items['item.iron-mace'].triggers.filter(t=>t.onlyWithAttack==='attack.iron-mace.crush'),[]);
+});
