@@ -169,7 +169,7 @@ export function mountPlayChrome(V, host) {
   B.log.addEventListener('click', () => { const on = log.style.display === 'none'; log.style.display = on ? '' : 'none'
     B.log.classList.toggle('on', on); B.log.setAttribute('aria-pressed', String(on)); B.log.setAttribute('aria-expanded', String(on)); if (on) log.scrollTop = log.scrollHeight })
   /** the log's lines, rebuilt when events arrive (a live battle pushes more); battle.end names its own Turn */
-  function relog() { const end = V.EV.find(e => e.type === 'battle.end'); lines = buildLog(V.EV, V.data.SN, end ? end.turn : V.meta.turns) }
+  function relog() { const end = V.EV.find(e => e.type === 'battle.end'); lines = buildLog(V.EV, V.data.SN, end ? end.turn : V.meta.turns, V.data) }
   function row(l) { const d = document.createElement('div'); d.className = 'ln ' + l.cls; d.setAttribute('data-i', String(l.i)); d.innerHTML = l.t; return d }
   function syncLog() {
     let n = 0; while (n < lines.length && lines[n].i < V.cursor) n++

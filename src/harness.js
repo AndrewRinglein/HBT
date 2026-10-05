@@ -78,7 +78,8 @@ export function startHarness(mountEl, lib) {
     viewer.speed(chrome.speed); if (chrome.bare) viewer.setBare(true); if (chrome.zoom !== '1x') viewer.setZoom(chrome.zoom)
     viewer.dom.actionbar.parentNode.style.display = chrome.log ? 'none' : ''; logbox.style.display = chrome.log ? '' : 'none'
     const EV = b.battle.events
-    const lines = buildLog(EV, lib.static.statuses, b.battle.turns)
+    /* viewer.log-names-damage-cause: the page's tables, for the names of what dealt a damage line */
+    const lines = buildLog(EV, lib.static.statuses, b.battle.turns, { ACT: lib.static.actions, ITEMS: lib.static.items, BADGES: lib.static.badges, UD: lib.static.units, TERRAIN_NAMES: lib.static.terrainNames })
     logbox.innerHTML = lines.map(l => `<div class="ln ${l.cls}" data-i="${l.i}">${l.t}</div>`).join('')
     q('#scrub').max = String(EV.length); q('#scrub').value = '0'
     q('#seedline').innerHTML =

@@ -9,8 +9,44 @@ export const bpsPct = bps => { const s = String(bps).padStart(3, '0'), f = s.sli
 
 /** an id as words: 'badge.lycanthropy' -> 'Lycanthropy', 'unit.werewolf' -> 'Werewolf' */
 const wordsOf = (id, prefix) => String(id).replace(prefix, '').split(/[-.]/).map(w => w ? w[0].toUpperCase() + w.slice(1) : w).join(' ')
-export function buildLog(events, SN, turns) {
+/* ── WHAT DEALT THE DAMAGE (viewer.log-names-damage-cause, 2026-10-05) ───────────────────────────────────────────────────
+   Engine DECISIONS.md 2026-10-05 'playtest post: …' (Andrew: "The priest was attacking the skeleton archer, and it was taking
+   damage. I don't know why that was."): a status's tick lands at the end of its bearer's own Activation, right after its own
+   attack, and the line said only "takes 2 poison". Every damage line now says what dealt it, read off the engine's own line
+   and worked out nowhere:
+     statusId            a status's tick                    "from Poison"            (the status's name, the dump's)
+     thorns              the struck unit's Thorns           "from <unit>'s Thorns"
+     collision           a shove that met something         "from the collision"     (what it met follows, as before)
+     hazard              the ground under it                "from <ground>"          (the ground's name, the dump's)
+     aoo.provoked before it, the same attacker, target and attack — a free attack, said by its kind (`as`):
+                                                            "from an attack of opportunity by <unit>" · "a counterattack" · "a fend"
+     attackId/abilityId  an attack, a burst, a power        "from <unit>'s <action>" · "from its own <action>" (a cost to its caster)
+     causeId trigger.*   a trigger's own damage             "from <unit>'s <what brought the trigger>" (an item's or a badge's name)
+     any other causeId   (a fall from above, …)             the engine's id for it, as words
+   `D` is the page's tables (V.data: ACT, ITEMS, BADGES, UD, TERRAIN_NAMES) for the names; a host that hands none still
+   gets the cause, named by the engine's ids as words. */
+const lastWords = id => wordsOf(String(id ?? '').split('.').pop(), '')
+function triggerSource(id, D) {
+  for (const table of [D.ITEMS, D.BADGES, D.UD]) for (const row of Object.values(table || {})) if ((row.triggers || []).some(t => t.id === id)) return row.name
+  return null
+}
+export function buildLog(events, SN, turns, D = {}) {
   const NAMES = {}, SIDES = {}
+  /* the free attack the engine has just said is being made (aoo.provoked): its damage line, if it lands, is that attack's */
+  let free = null
+  const actionName = id => (D.ACT && D.ACT[id] && D.ACT[id].name) || lastWords(id)
+  const dealtBy = e => {
+    const by = e.actor != null ? escape(NAMES[e.actor] ?? ('#' + e.actor)) : null
+    if (e.statusId) return escape((SN && SN[e.statusId]) || lastWords(e.statusId))
+    if (e.thorns) return (by ? by + '\'s ' : '') + 'Thorns'
+    if (e.collision) return 'the collision'
+    if (e.hazard) return escape((D.TERRAIN_NAMES && D.TERRAIN_NAMES[e.causeId]) || lastWords(e.causeId))
+    const id = e.attackId || e.abilityId
+    if (free && id && free.actor === e.actor && free.target === e.target && free.attackId === id) { const kind = freeAttackOf(free.as).word.toLowerCase(); return `${/^[aeiou]/.test(kind) ? 'an' : 'a'} ${kind} by ${by}` }
+    if (id) return e.actor === e.target ? 'its own ' + escape(actionName(id)) : (by ? by + '\'s ' : '') + escape(actionName(id))
+    if (String(e.causeId).startsWith('trigger.')) return (by ? by + '\'s ' : '') + escape(triggerSource(e.causeId, D) || lastWords(e.causeId))
+    return escape(e.causeId == null ? 'an unnamed cause' : lastWords(e.causeId))
+  }
   /* viewer.unit-names-no-letters-or-numbers: a line names a unit as the board does - the engine's name, less its mark */
   for (const e of events) if (e.type === 'unit.enter') { NAMES[e.actor] = shownName(e.name); SIDES[e.actor] = e.side }
   const nmAt = e => NAMES[e.actor] ?? ('#' + e.actor), nmT = e => NAMES[e.target] ?? ('#' + e.target)
@@ -33,9 +69,9 @@ export function buildLog(events, SN, turns) {
       case 'attack.declared': return b(side(e), `&nbsp;&nbsp;attacks <b>${nmT(e)}</b> <span class="sq">· ${typeof e.blockChance === 'number' ? `block ${e.blockChance}% · hit ${e.hitChance}% if not blocked · connects ${bpsPct(e.connectionChanceBps)}%` : `hit ${e.hitChance}%`}${e.of > 1 ? ' · hit ' + e.hit + ' of ' + e.of : ''}</span>`)
       case 'attack.hit': return b('dmg', `&nbsp;&nbsp;&nbsp;&nbsp;rolled ${e.roll} vs ${e.hitChance} — HIT${e.crit ? ' <b>CRIT</b>' : ''}`)
       case 'attack.miss': return b('', `&nbsp;&nbsp;&nbsp;&nbsp;rolled ${e.roll} vs ${e.hitChance} — miss`)
-      case 'damage.applied': return b('dmg', `&nbsp;&nbsp;&nbsp;&nbsp;<b>${nmT(e)}</b> takes ${e.amount} ${e.packets ? 'damage' : e.damageType}` +
+      /* viewer.log-names-damage-cause: what dealt it, then (for damage no packet itemises) its type */
+      case 'damage.applied': return b('dmg', `&nbsp;&nbsp;&nbsp;&nbsp;<b>${nmT(e)}</b> takes ${e.amount}${e.packets ? ' damage' : ''} from ${dealtBy(e)}` + (e.packets || !e.damageType ? '' : ` <span class="sq">· ${escape(e.damageType)}</span>`) +
         (e.collision ? ` <span class="sq">· collision (${escape(e.collidedWith)}${e.blocker != null ? ' ' + escape(NAMES[e.blocker] ?? e.blocker) : ''} ${e.collisionValue} × ${e.remaining} remaining)${e.consumedBy ? ' · consumed by ' + escape(e.consumedBy) : ''}</span>` : '') +
-        (e.thorns ? ` <span class="sq">· thorns</span>` : '') +
         (e.resisted ? ` <span class="sq">· ${e.resisted} resisted</span>` : '') + (e.absorbed ? ` <span class="sq">· ${e.absorbed} absorbed</span>` : '') +
         (e.overkill ? ` <span class="sq">· ${e.overkill} overkill</span>` : '') +
         (e.packets ? e.packets.map(p => `<br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="sq">${escape(p.source)} / ${escape(p.id)}</span>: ${escape(`${p.applied} ${p.damageType} · raw ${p.raw} · ${p.absorbed} absorbed · defense ${p.defense} · ${p.resisted} resisted · mitigation ${p.mitigationDelta} · floor ${p.floorAdjustment} · resolved ${p.resolved} · ${p.overkill} overkill`)}`).join('') : ''))
@@ -146,5 +182,8 @@ export function buildLog(events, SN, turns) {
     }
   }
   /* a turned unit's lines are its side's at that line (viewer.plays-turned-units): the side changes as the log says */
-  return events.map((e, i) => { const s = sentence(e); if (e.type === 'unit.transformed' || e.type === 'unit.reverted') SIDES[e.actor] = e.side; return s ? { i, ...s } : null }).filter(Boolean)
+  /* the free attack in hand: named by aoo.provoked, over at the next line that is not part of it (another attack's declaration, an Activation's end or start) */
+  const track = e => { if (e.type === 'aoo.provoked') free = { actor: e.actor, target: e.target, attackId: e.attackId, as: e.as }
+    else if (free && ((e.type === 'attack.declared' && !(e.actor === free.actor && e.target === free.target && e.attackId === free.attackId)) || e.type === 'activation.begin' || e.type === 'activation.end' || e.type === 'aoo.skipped' || (e.type === 'damage.applied' && e.actor === free.actor && e.target === free.target && (e.attackId || e.abilityId) === free.attackId))) free = null }
+  return events.map((e, i) => { const s = sentence(e); track(e); if (e.type === 'unit.transformed' || e.type === 'unit.reverted') SIDES[e.actor] = e.side; return s ? { i, ...s } : null }).filter(Boolean)
 }

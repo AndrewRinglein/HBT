@@ -350,7 +350,8 @@ export function syncAuras(V) {
 /* the cue says WHAT the float is; the hue is theme.js's (Law 6) */
 export function floatHue(c, D) {
   switch (c.kind) {
-    case 'damage': return DMG_HUE[c.dt] || DMG_HUE.other
+    /* viewer.log-names-damage-cause: a status's tick is the status's colour (Bleed's true damage was a hit's white) */
+    case 'damage': return c.statusId ? stStyle(c.statusId, D).hue : DMG_HUE[c.dt] || DMG_HUE.other
     case 'heal': return HEAL_HUE
     case 'status': return stStyle(c.statusId, D).hue
     case 'crit': return CRIT_HUE
@@ -378,6 +379,10 @@ export function pushFloat(V, hex, text, col, o = {}) {
   wrap.appendChild(el('dmg', `left:-34px;top:${-136 - slot * 30}px;color:${col};` +
     (o.big ? 'font-size:36px;' : o.small ? 'font-size:15px;' : 'font-size:20px;') +
     `animation:floatUp ${life}ms ease-out forwards`)).textContent = text
+  /* viewer.log-names-damage-cause: a status's tick wears the status's mark (theme.js: its glyph, its hue) beside its number */
+  if (o.kind === 'damage' && o.statusId) { const st = stStyle(o.statusId, V.data)
+    const mark = el('dmgMark', `position:absolute;left:-62px;top:${-128 - slot * 30}px;width:22px;height:22px;background:${st.hue};clip-path:${st.gl || 'circle(50%)'};animation:floatUp ${life}ms ease-out forwards`)
+    mark.dataset.status = o.statusId; wrap.appendChild(mark) }
   L.floatL.appendChild(wrap)
   /* registered like every other beat: an unregistered timer survives seek(),
      fires against a cleared FLOAT_SLOTS and stacks the next floats (REVIEW §C3) */

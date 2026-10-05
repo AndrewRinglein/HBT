@@ -866,11 +866,24 @@ export function mountBattleViewer(root, data, opts = {}) {
     fxAreaBurst(V, e.actor, t.select.radius, burst)
     return AREA_BURST_BEAT
   }
+  /* viewer.log-names-damage-cause: the breath between a unit's own strike ending and its status's tick; the place held */
+  const TICK_AFTER_STRIKE = 120
+  let tickHeld = -1
   function beat(e) {
     cancelOpportunityLabel()
     let d
     /* viewer.attack-impact-timing: a held attack's outcome line waits for its blow */
     if (strike && V.playing) { const wait = strikeStep(); if (wait != null) return wait }
+    /* viewer.log-names-damage-cause (engine DECISIONS.md 2026-10-05 'playtest post: …'): a status's tick lands at the end of
+       its bearer's own Activation, the line after its attack's — the pump holds it until that unit's own strike has finished
+       playing (its body's clip, to its end), so the number is not shown on top of the attack. Held once, by the clip's own
+       remaining length; a unit with no body (its token's lunge is over within the attack's beat) is not held. */
+    if (V.playing && e.type === 'damage.applied' && e.statusId != null) {
+      if (tickHeld === V.cursor) tickHeld = -1
+      else { const B = V.cast?.body?.(e.target), m = B && (B.motion === 'attack' || B.motion === 'ranged') ? B.motion : null
+        const left = m ? (B.clipLength(m) - B.clipTime(m)) * 1000 / (V.speed || 1) : 0
+        if (left > 0) { tickHeld = V.cursor; return Math.ceil(left) + TICK_AFTER_STRIKE } }
+    }
     if (e.type === 'encounter.wave' && V.playing && !V.invalid) return waveBeat(e)
     if (e.type === 'move.begin' || e.type === 'moved') d = stepMove(e)
     else if (PAINT.has(e.type)) d = stepPaint(e)

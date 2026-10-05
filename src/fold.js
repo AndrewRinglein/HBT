@@ -447,7 +447,12 @@ export function fold(S, e, ctx, now = 0) {
             if (p.absorbed) cue('float', { hex: U[e.target].hex, kind: 'absorbed', text: p.absorbed + ' absorbed', n: p.absorbed, of: 'absorbed', packetIndex, small: true })
           })
         } else {
-          cue('float', { hex: U[e.target].hex, kind: 'damage', dt: e.damageType, text: '−' + e.amount, n: e.amount, of: 'amount', big: true, crit: critical })
+          /* viewer.log-names-damage-cause (engine DECISIONS.md 2026-10-05, Andrew: "The priest was attacking the skeleton archer, and
+             it was taking damage. I don't know why that was."): a status's tick (the engine's statusId on the line) floats as the
+             STATUS's number — its colour and its mark (board.js floatHue, pushFloat), its name beside it — so it does not read as
+             a hit from the unit just attacked */
+          cue('float', { hex: U[e.target].hex, kind: 'damage', dt: e.damageType, ...(e.statusId ? { statusId: e.statusId } : {}), text: '−' + e.amount, n: e.amount, of: 'amount', big: true, crit: critical })
+          if (e.statusId) cue('float', { hex: U[e.target].hex, kind: 'status', statusId: e.statusId, text: SN[e.statusId] || e.statusId, small: true })
           if (e.resisted) cue('float', { hex: U[e.target].hex, kind: 'resisted', text: e.resisted + ' resisted', n: e.resisted, of: 'resisted', small: true })
           if (e.absorbed) cue('float', { hex: U[e.target].hex, kind: 'absorbed', text: e.absorbed + ' absorbed', n: e.absorbed, of: 'absorbed', small: true })
         }
