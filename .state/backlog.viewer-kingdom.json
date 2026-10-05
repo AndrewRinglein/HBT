@@ -27,7 +27,9 @@
   "shape": "plumbing",
   "spec": "Ruled 2026-10-05 (Andrew, engine/DECISIONS.md 'seven answers: the first hero's card shows only what is modified; origin badges go on the heroes; Stand Up is one press; an X on a hex that cannot be walked; a walk closes every move-class action'): asked whether Stand Up should stand the unit on one press instead of two - 'stand up one press.' Today (fix.stand-up-does-nothing; kingdom SWITCHES standUpIsUsedLikeAMoveThatGoesNowhere) the first press shows 'Stand Up: click it again, or the hero, to use it.' and the second stands the unit. Wanted: one press of Stand Up on a prone unit's bar stands it at once - no second press, no click on the hero. It still takes the unit's move and costs what the engine charges. Mark the switch overturned with his words. Other moves that go nowhere keep their two presses - this ruling is Stand Up's alone (record that reading as a switch). Rebuild the pages.",
   "expect": "In the opening's battle 2 a knocked-down Lumberjack's Wife stands on ONE press of Stand Up; the engine logs the stand; her move is spent; Back Flip and the other moves keep the gesture they had; the page verify presses once and finds her standing.",
-  "note": "Filed by the home chat 2026-10-05."
+  "note": "Filed by the home chat 2026-10-05.",
+  "status": "done-needs-review",
+  "sha": "6008e0e"
  },
  {
   "id": "kingdom.first-hero-card-only-what-is-modified",
