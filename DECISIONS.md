@@ -4986,3 +4986,20 @@ Ruled:
 
 - **A row made of one of his bases carrying one of his attributes is his**, and the reward draw deals it. The kingdom switch `rewards.derivedRowsOffered` goes on. Filed: `kingdom.rewards-derived-rows-offered`.
 - **The Flaming Longsword stays the Lumberjack House's reward** (opening battle 2), though the Long Sword it is made from is not on his list.
+
+## 2026-10-04 — every dead line on his items is a feature that is needed; his items stay in rewards; the six Hell-TCG items are his
+
+Andrew, in the kingdom chat. Two questions had stood unanswered since the item review was read back (1 do the six Hell-TCG items that came over unchanged - Shadow Dagger, Twin Talon Bow, Pharaoh's Gauntlets, Silkweave Armor, Scorpion Carapace, Wraithform Cloak - count as yours; 2 should the 22 of your items that are in the game with a dead line stay in rewards as they are, or come out until the mechanic exists). He wrote:
+
+“1. Yes. 2 yes”
+
+and, asked whether that meant the Hell-TCG six are his and the 22 stay in rewards:
+
+“All of those deadlines need to be added in as features that we need.   So all of these are in.”
+
+Ruled:
+
+- **Every dead line on his items in the game is a feature to build** ("deadlines" is "dead lines" - dictation). Filed already from the entry of the same day on his 28 reward weapons: the Elfbow's one target, effects that last Activations, damage from two stats, summons, the set bonus, raising and lowering Magic, destroying the corpse, removing a status by a stat's amount. Filed now for the rest of the 22: `capability.planted-banners` (the five Banners - the planted object and its aura, Surge Chance gained in it, Immunity to Weak in it, what the Banner of Heroism gives, the class that may plant it), `capability.placed-traps` (Bear Traps, Explosive Trap, Fire Trap, Magic Trap) and `capability.stabilise-downed-ally` (Bandages).
+- **His 22 items with a dead line stay in rewards** as they are; the line begins to act when its feature lands.
+- **The six Hell-TCG items are his** - the chat's reading of "1. Yes" and "So all of these are in", said to him the same day. Filed: `kingdom.rewards-hell-tcg-rows-his`. The three relics with no known author (Tracker's Eyeglass, Censer of the High Choir, Gravedigger's Lantern) were not asked about and stay off.
+- **Not ruled, the chat's placing:** the mechanics that only his DRAFTED rows use (the sweep, the Strength requirement, ignoring Block, a class limit on a series, extra damage and Crit on special free attacks, and a dozen single-row ones) stay with the deferred item content, since no item in the game needs them yet.
