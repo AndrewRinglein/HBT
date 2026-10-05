@@ -3,7 +3,7 @@
    the viewer context V; nothing here is module state, so two viewers can live
    on one page. Split out of viewer-core.js 2026-09-02 with the drawing intact. */
 import { TSWATCH, stStyle, SIDE_TINT, SIDE_GLOW, DMG_HUE, HEAL_HUE, MOD_UP, MOD_DOWN, CRIT_HUE, NOTE_HUE, rgb, layerHue, AURA_HUE, BLOOD_HUE, onBodyAs, movementOnly, PLAY_HUE } from './theme.js'
-import { mvOf, absorbOf, freeAttacksUp, FREE_ATTACK, helpsTarget } from './actions.js'
+import { mvOf, absorbOf, freeAttacksUp, FREE_ATTACK, helpsTarget, statusLines } from './actions.js'
 import { subjectOf, barUnitOf } from './subject.js'
 import { dangerOf } from './projection.js'
 import { afflictionPopup } from './affliction.js'
@@ -1106,7 +1106,15 @@ export function syncUnits(V) {
     const dbSkull = u.deathbed ? `<div class="badge dbSkull" title="stood at the Deathbed">${raIcon('skull', `font-size:13px;color:${BLOOD_HUE}`)}</div>` : ''
     /* viewer.free-attack-kind-words: a free attack the unit has up (Counterattack, Fend) — its glyph in the status row over its head */
     const freeUp = freeAttacksUp(u, V.data).map(k => `<div class="badge freeUp" data-kind="${k}" title="${FREE_ATTACK[k].word} is up">${raIcon(FREE_ATTACK[k].glyph, 'font-size:14px;color:' + NOTE_HUE.aoo)}</div>`).join('')
+    /* viewer.timed-effect-status-marks: a status that GIVES (theme.js `buff`: a timed effect — Stoke, Perfect Sight, Poison
+       Coating — and any status the table has no mark for whose row lends something) wears a buff's frame and square pip, its
+       glyph from the shipped icon set where the table names one, and says on hover its name, what it does and what is left
+       (actions.js statusLines — the status row's own fields). Every other status is drawn as it was. */
     E.badges.innerHTML = dbSkull + freeUp + sts.map(([id, v]) => { const st = stStyle(id, V.data)
+      if (st.buff) { const tip = [(V.data.SN || {})[id] || id, ...statusLines(id, v, V.data, V.data.SN)].join(' — ').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;')
+        return `<div class="badge buff" data-status="${id}" title="${tip}" style="color:${st.hue}">` +
+               (st.glyph ? raIcon(st.glyph, `color:${st.hue}`) : `<div class="gl" style="clip-path:${st.gl};background:${st.hue}"></div>`) +
+               `<div class="pip sq" style="background:${st.hue}">${v}</div></div>` }
       return `<div class="badge"><div class="gl" style="clip-path:${st.gl};background:${st.hue};position:absolute;inset:0"></div>` +
              `<div class="pip${st.sq ? ' sq' : ''}" style="background:${st.hue}">${v}</div></div>` }).join('')
       + (chev !== 0 ? `<div class="badge"><div class="gl" style="position:absolute;inset:0;background:${chev > 0 ? MOD_UP : MOD_DOWN};` +
