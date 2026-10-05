@@ -8,10 +8,13 @@
 // Lumberjack House and reads the same set of faded pieces before the change and after".
 // The sources' half — the runs counted frame by frame over 60 still frames, the structure against three's own raycast over
 // 300 made scenes — is ../viewer/tools/see-through-only-when-moved.test.mjs (run here). The page's half is the frame-cost
-// tool on the built page in real Chrome: the Orphanage and the Lumberjack House, their real scenes and bodies.
+// tool in real Chrome on a sandbox page built here from these sources (as test/viewer.no-hex-focus-border.test.ts builds its
+// own: the kingdom's committed page is rebuilt only after the viewer's gate): the Orphanage and the Lumberjack House, their
+// real scenes and bodies.
 // Imports no page code.
 import { describe, it, expect } from 'vitest'
 import { execFileSync } from 'node:child_process'
+import { mkdirSync } from 'node:fs'
 
 type Ms = { median: number; min: number; max: number }
 type Measure = { frames: number; ms: Ms; checks?: number }
@@ -25,7 +28,9 @@ describe('viewer.see-through-only-when-moved', () => {
   }, 170000)
 
   it('the built page, the Orphanage and the Lumberjack House: no check over 60 still frames; a still frame costs the same with the check due as without; one check under 4 ms; the same pieces as every triangle finds, at every view of a round', () => {
-    const out = execFileSync(process.execPath, ['tools/frame-cost.mjs', 'orphanage', 'lumberjack', '--frames', '60', '--json'], { cwd: '../viewer', encoding: 'utf8', maxBuffer: 1 << 24, timeout: 560000 })
+    mkdirSync('../kingdom/scratch', { recursive: true })
+    execFileSync(process.execPath, ['tools/build-sandbox.mjs', 'scratch/see-through-only-when-moved.html'], { cwd: '../kingdom', stdio: 'pipe' })
+    const out = execFileSync(process.execPath, ['tools/frame-cost.mjs', 'orphanage', 'lumberjack', '--frames', '60', '--json', '--page', '../kingdom/scratch/see-through-only-when-moved.html'], { cwd: '../viewer', encoding: 'utf8', maxBuffer: 1 << 24, timeout: 560000 })
     const rows = (JSON.parse(out) as { rows: Row[] }).rows
     expect(rows.map((r) => r.battle)).toEqual(['encounter.opening.orphanage', 'encounter.opening.lumberjack'])
     for (const r of rows) {
@@ -50,5 +55,5 @@ describe('viewer.see-through-only-when-moved', () => {
       expect(r.seeThrough!.same, `${at}: views where both name the same pieces`).toBe(r.seeThrough!.views)
       expect(r.seeThrough!.withSomethingHiding, `${at}: and many of those views have a piece in the way — the two are not agreeing about nothing`).toBeGreaterThanOrEqual(r.seeThrough!.views / 4)
     }
-  }, 570000)
+  }, 780000)
 })
