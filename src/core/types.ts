@@ -829,8 +829,20 @@ export type ItemDef = {
   readonly triggers: readonly import('./trigger.js').Trigger[]
   /** station.vs-target: slayer and its kin — a HELD item's reach only the attacks it grants, while in hand; a WORN item's (a bloodrune) reach every damage the unit deals, like a badge's. */
   readonly vsTarget?: readonly VsTargetRule[]
+  /**
+   * capability.set-bonus (2026-10-05; GEAR-DESIGN.md §5: a set is a tag, the bonus a block on the item that cares): the set
+   * tags this item bears — its tags that some item's set block names — and the block it carries, if it cares (items.ts
+   * setLinesOf). `each` pays per member the unit carries: every member, the carrier too when it bears the tag
+   * (`withItself`: "for every … you carry"), or every OTHER member ("per other"); `at`/`once` pays once when `at` members
+   * are carried, the carrier included. A payload key is a stat, or `attackDamage`: damage on this item's own attacks.
+   */
+  readonly setTags?: readonly string[]
+  readonly setBonus?: SetBonus
   readonly gaps?: readonly string[]
 }
+export type SetBonus = { readonly tag: string; readonly each?: Readonly<Record<string, number>>; readonly withItself?: true; readonly at?: number; readonly once?: Readonly<Record<string, number>> }
+/** One set that pays on one unit: the item that pays, what it counted, and what it pays — already multiplied. */
+export type SetLine = { readonly itemId: string; readonly tag: string; readonly shape: 'for-every' | 'per-other' | 'at-count'; readonly count: number; readonly stats: Readonly<Record<string, number>>; readonly attackDamage: number }
 
 /**
  * A hero's campaign state as the battle needs it — hero assembly (2026-09-03).

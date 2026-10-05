@@ -449,6 +449,28 @@ export function packItems(attacks: Readonly<Record<string, AttackDef>>, abilitie
     for (const a of it.abilities) if (!abilities[a] && !bursts[a]) throw new Error(`item pack: '${k}' grants power '${a}', which is not in the pack's abilities`)
     for (const t of it.triggers) { validateTrigger(t); if (t.source !== k) throw new Error(`item pack: '${k}' carries a trigger sourced '${t.source}'`) }
     validateVsTarget(it.vsTarget, `item pack: '${k}'`)
+    // capability.set-bonus (2026-10-05): the set tags and the set block, as the engine reads them (core/items.ts setLinesOf)
+    if (it.setTags !== undefined && (!Array.isArray(it.setTags) || !it.setTags.length || it.setTags.some((t) => typeof t !== 'string' || !t))) throw new Error(`item pack: '${k}' has setTags that is not a list of tags`)
+    const sb = it.setBonus
+    if (sb !== undefined) {
+      const where = `item pack: '${k}' setBonus`
+      if (sb === null || typeof sb !== 'object' || typeof sb.tag !== 'string' || !sb.tag) throw new Error(`${where} names no tag`)
+      const payload = (o: unknown, what: string) => {
+        if (o === null || typeof o !== 'object' || !Object.keys(o).length) throw new Error(`${where} ${what} pays nothing`)
+        for (const [s, v] of Object.entries(o as Record<string, unknown>)) {
+          if (s === 'attackDamage' ? !(it.grants.length > 0) : !STATS.includes(s)) throw new Error(`${where} ${what} pays '${s}', which is not an engine stat (or damage on attacks it does not grant)`)
+          if (!Number.isSafeInteger(v) || v === 0) throw new Error(`${where} ${what} ${s} is not a whole number`)
+        }
+      }
+      if (sb.each !== undefined) {
+        if (sb.at !== undefined || sb.once !== undefined) throw new Error(`${where} is both an each block and an at-count block`)
+        if (sb.withItself !== undefined && sb.withItself !== true) throw new Error(`${where} withItself is true or absent`)
+        payload(sb.each, 'each')
+      } else {
+        if (!Number.isSafeInteger(sb.at) || sb.at! < 1 || sb.withItself !== undefined) throw new Error(`${where} pays nothing - each{}, or a whole at with once{}`)
+        payload(sb.once, 'once')
+      }
+    }
   }
   return raw
 }
