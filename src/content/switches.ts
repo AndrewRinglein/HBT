@@ -41,8 +41,8 @@ export const SWITCHES = {
   sanctuaryLostDefenceSupplies: 5,
   /** rewards.includeWaystation — may the reward draw deal a row the Waystation sells (a one-use potion, a torch)? The odds name classes and tiers, not shops; unsaid. */
   rewardsIncludeWaystation: false,
-  /** rewards.hellTcgRowsOffered — may the reward draw deal the rows the item review could not class as Andrew's or a chat's (six from Hell-TCG unchanged, three relics with no known author — src/content/authored-items.ts AUTHORSHIP_UNDECIDED)? Off until he says (kingdom.rewards-only-authored, 2026-10-04). */
-  rewardsHellTcgRowsOffered: false,
+  /** rewards.unknownAuthorRowsOffered — may the reward draw deal the three relics the item review found no author for (Tracker's Eyeglass, Censer of the High Choir, Gravedigger's Lantern — src/content/authored-items.ts AUTHORSHIP_UNDECIDED)? Off until he says. Split 2026-10-04 from rewards.hellTcgRowsOffered, which covered these and the six Hell-TCG items: he ruled the six his ("1. Yes" — "So all of these are in."; kingdom.rewards-hell-tcg-rows-his), so they are rows of the list and no switch; the relics were not asked about. */
+  rewardsUnknownAuthorRowsOffered: false,
   /** rewards.derivedRowsOffered — may the reward draw deal a row that is not itself on his list but is MADE of rows that are: a listed base carrying a listed attribute (a tier-3 Forge row)? RULED on, 2026-10-04 (Andrew, engine/DECISIONS.md 'rewards: one of his bases carrying one of his attributes is his; …': asked "should a row made of one of your bases carrying one of your attributes count as yours" — "1 yes"; kingdom.rewards-derived-rows-offered). The other side, off — only an id on the list is dealt — is how kingdom.rewards-only-authored landed it; its code path is kept. */
   rewardsDerivedRowsOffered: true,
   /** rewards.emptyClass — a class of the odds table with no row left to deal: 'spread' rolls the card among the classes that have one, their weights kept in proportion; 'left-out' rolls the whole table and deals no card when it lands on an empty class (kingdom.rewards-only-authored, 2026-10-04). */
