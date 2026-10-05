@@ -1,5 +1,16 @@
 [
  {
+  "id": "kingdom.rewards-hell-tcg-rows-his",
+  "kind": "kingdom",
+  "shape": "plumbing",
+  "needs": [
+   "kingdom.rewards-derived-rows-offered"
+  ],
+  "spec": "Ruled 2026-10-04 (Andrew, engine/DECISIONS.md 'every dead line on his items is a feature that is needed; his items stay in rewards; the six Hell-TCG items are his'): asked whether the six Hell-TCG items that came over unchanged count as his - '1. Yes' and 'So all of these are in.' (the chat's reading, said to him the same day). The six - Shadow Dagger, Twin Talon Bow, Pharaoh's Gauntlets, Silkweave Armor, Scorpion Carapace, Wraithform Cloak - move onto the checked-in list (kingdom/src/content/authored-items.ts) as his, each with a why line that says 'from Hell-TCG as it was; ruled his 2026-10-04', so the reward draw deals them at the tiers it deals and a row made of one of them carrying one of his attributes counts as made of his rows. The three relics with no known author (Tracker's Eyeglass, Censer of the High Choir, Gravedigger's Lantern) were not asked about and stay off: if the one switch rewards.hellTcgRowsOffered covers both groups, split it so the six are on the list by ruling and the switch that is left covers the three relics alone, off. kingdom/SWITCHES.md says which is ruled and quotes him. Tests that pinned the six as off the list are rewritten as the rule now stands with a dated note (Law 10); never loosen an assertion. Rebuild the pages.",
+  "expect": "The six ids are on the list and a test names any that is not an item in the game; across 200 seeded draws the cards dealt are rows on the list or made of listed rows, and one of the six (or a row made of one) appears among them where its tier is dealt; the three unknown relics are never dealt; the landing note gives the pool's size and its count per class.",
+  "note": "Filed by the home chat 2026-10-04."
+ },
+ {
   "id": "kingdom.rewards-derived-rows-offered",
   "kind": "kingdom",
   "shape": "plumbing",
