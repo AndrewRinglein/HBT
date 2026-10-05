@@ -5122,3 +5122,11 @@ Ruled:
 - **Gift is the word** for a random modifier applied to a hero - a random badge or a random stat change; a hero's gifts are all of them. GLOSSARY.md 'Settled, 2026-10-05'. It replaces 'draft modifier' and 'what the first hero is given' where a player or a document reads them; ids and field names are not renamed.
 - **Each of the three first-hero choices rolls its own gifts** - not one roll shared by all three. So each card shows its own, and the one line said once for the pick goes. Folded into `kingdom.first-hero-card-only-what-is-modified` if it has not landed, else filed as `kingdom.first-hero-each-rolls-own-gifts`.
 - **The Deathbed and injury plates, the phase and wave banners, the hex tooltip and the affliction pop-up take the gold, no-backdrop look too** ("One, yes"). Filed: `viewer.plates-banners-tooltip-gold-look`. The gear panel was not asked about and stays.
+
+## 2026-10-05 — Leadership is given to every first hero, not rolled
+
+Andrew, in the kingdom chat, asked whether Leadership is a gift that each first-hero choice rolls, or something every first hero gets by rule:
+
+“I don't really understand what you're saying about one. Every first hero choice gets leadership. They don't roll it, they just get it.”
+
+Ruled: **every first hero gets Leadership; it is not rolled, so it is not a gift.** It is said once for the pick; each card's own gifts are its random badges and random stats.
