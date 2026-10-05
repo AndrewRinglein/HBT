@@ -5167,3 +5167,24 @@ Under the ruling ("don't use the DSY sounds as first picks") the kingdom's copie
 Where the work is: `sound/` at the root, declared in `DOCS.md` - `sound/SOUND-PLAN.md` (the plan and what the merge needs), the list of every made sound, the voice pack's roles and each hero's voice, the 21 tracks and their places, the tools that make the takes, and the page he listens on. Nothing in a package reads it.
 
 His ElevenLabs account, read through the key he made the same day: the Creator plan, 300,000 credits. A made sound was charged 10 credits a second, not the 40 the entry above took from ElevenLabs' page.
+
+## 2026-10-05 — sound, after his first listen: the clicks are important; no crying; the place loops are set aside; less to sift
+
+Andrew, in the root chat (sound), after about an hour on the listening page, in two messages:
+
+“Thing like: Is any of this repeated?   See sounds for button clicks, like when you click hero, when you click the movement, when you click this thing, when you click that thing. There are a lot of clicks, including in Kingdom, and the clicking sounds are important.  Most of the shouting and voices seemed good, except for the first set of dying, which was like people crying. Very weird.   I marked those sounds as bad.  Any way you could do more of this? This is just an enormous thing to sift through.”
+
+“If we're going to have music, why would we have ambiance?”
+
+On the page itself he crossed out every cry of the first woman's voice, the nine big-attack files of the second woman's voice, and all three bow takes with the note "2 javelyn works better for bow".
+
+Ruled:
+
+- **The clicking sounds are important.** The chat reads it as: every plain click, in the battle and in the kingdom, is one of six - hover, select, pick, confirm, back, refused - and those six are made to belong together, so the same sounds repeat everywhere on purpose. Three kits are made for him to choose between (`sound/sound-list.json` `clicks`). Twenty-two moments that each had a sound of their own now play one of the six.
+- **No crying.** The crying files answered the 'downed' role; no voice uses a crying file now, and that role is set aside with 'tired' and 'choke', which answer moments the battle does not mark yet. The other voices stand: "Most of the shouting and voices seemed good".
+- **The bow plays the javelin's second take** (his note on the page).
+
+The chat's own defaults, said to him and his to change in a line:
+
+- **The place loops are set aside, not deleted** - his question was "why would we have ambiance?", and the chat's answer was that under music they add little: they are what is heard when the music is turned down. The fifteen are on disk and off the listening page.
+- **He hears one take a sound, not three.** A measurement pass (`sound/tools/sift.mjs`) picks the cleanest take of each - it cannot tell whether a take sounds right, only that it starts at once, is one event, is not cut off and is not too faint - and the page plays a group through with one key to mark the one that is wrong. A voice shows only the six files that would play for each moment.
