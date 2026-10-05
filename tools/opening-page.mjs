@@ -133,8 +133,14 @@ const FLAMING_LONGSWORD='item.longsword.flaming'
    '… the specialty three are random; …': "It's random: 3 of the 9."): every specialty choice a run reached, as the page
    showed it — the hero, the three offered and the one taken (levelUps). SPECIALTY_OFFER is the sources' row */
 export const SPECIALTY_CHOICES=[],SPECIALTY_OFFER=E.PROGRESS.SPECIALTY_OFFER
-/* what a draft should move each engine stat by: its rolled points (and the first hero's Health), and its badges' own rows */
-const movedBy=d=>{const out={};for(const m of d.mods)out[m.stat]=(out[m.stat]??0)+m.add;for(const b of d.badges)for(const [k,n] of Object.entries(E.BADGES[b].statModifiers??{}))out[k]=(out[k]??0)+n;return out}
+/* what a draft should move each engine stat by: its rolled points (and the first hero's Health), and its badges' own rows.
+   Law 10, 2026-10-05 - content.hero-origin-badges (engine item; engine/DECISIONS.md 2026-10-05 'seven answers: ... origin badges
+   go on the heroes ...': "3, yes."): this was movedBy(d) and counted every rolled badge:
+     const movedBy=d=>{...;for(const b of d.badges)for(const [k,n] of Object.entries(E.BADGES[b].statModifiers??{}))out[k]=(out[k]??0)+n;return out}
+   A base hero's row carries its origin badges now, and a badge is a fact about the unit - twice is once: a rolled badge the
+   hero's own row already carries (the Mountain Berserker rolled Huge) moves nothing more. The claim is unchanged: the hero is
+   shown and fielded as its row moved by exactly what its draft added (engine SWITCHES.md originBadgeRolledAgain). */
+const movedBy=(d,unitType)=>{const out={},own=new Set(E.UNITS[unitType]?.badges??[]);for(const m of d.mods)out[m.stat]=(out[m.stat]??0)+m.add;for(const b of d.badges)if(!own.has(b))for(const [k,n] of Object.entries(E.BADGES[b].statModifiers??{}))out[k]=(out[k]??0)+n;return out}
 const numbersOf=text=>Object.fromEntries(text.split(',').map(p=>{const [k,n]=p.split(':');return [k,Number(n)]}))
 
 /* kingdom.page-test-strong-party — ruled 2026-10-04 (Andrew, engine/DECISIONS.md 'no testing that the battles can be won
@@ -471,7 +477,7 @@ export function openingPage(page,search,store){
    assert.equal(o.dataset.badges,d.badges.join(','),who+': its rolled badges');assert.equal(o.dataset.rolls,d.rolls.map(r=>r.stat+':'+r.amount).join(','),who+': its rolled points')
    assert.ok(d.badges.length>=1&&d.badges.every(b=>POSITIVE_BADGES.includes(b)||FLAWED_BADGES.includes(b)),who+': one to three of the Crucible\'s badges')
    for(const b of d.badges)assert.ok(o.textContent.includes(E.BADGES[b].name),`${who}: ${E.BADGES[b].name} is named`)
-   const stats=numbersOf(o.dataset.stats),now=E.SEAM.fieldedPreviewOf(want).now,row=E.SEAM.fieldedPreviewOf(E.HEROES.heroRowOf(id)).now,moved=movedBy(d)
+   const stats=numbersOf(o.dataset.stats),now=E.SEAM.fieldedPreviewOf(want).now,row=E.SEAM.fieldedPreviewOf(E.HEROES.heroRowOf(id)).now,moved=movedBy(d,E.HEROES.heroRowOf(id).unitType)
    for(const k of ['maxHp','strength','precision','armor','resist','accuracy','dodge','movement','itemSlots'])assert.ok(k in stats,`${who}: ${k} is shown`)
    for(const [k,n] of Object.entries(stats)){
     if(k==='itemSlots'){assert.equal(n,want.itemSlots,who+': its item slots');continue}
