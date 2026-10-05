@@ -30649,6 +30649,17 @@ index ec53fe2..afaca92 100644
   PASS  brought its own tests — test/battle-cursor.test.ts, test/items-per-unit.test.ts, test/fixtures/battle-cursor-kit-attack-clauses.json, test/kit-attack-clauses.test.ts
   WARN  existing tests untouched — DELETED LINES in test/battle-cursor.test.ts (-2) — will land FLAGGED for review
   PASS  control battles unchanged
+## viewer.bar-shows-tag-requirement — LANDED `3f9783a`
+2026-10-05 02:08
+
+  PASS  dependencies landed
+  WARN  not already decided — 1 candidate ruling(s) — READ BEFORE ASKING: SWITCHES.md:2263
+  PASS  typecheck
+  PASS  the item's own tests — test/viewer.bar-shows-tag-requirement.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — viewer/test/viewer.bar-shows-tag-requirement.test.ts
+  PASS  existing tests untouched
+  SKIPPED  control battles unchanged — engine code 1ce370525e and the content pack are the ones the control battles last passed on (2026-10-05 01:12, gate capability.unit-trigger-with-tag --land, in HBT-worker-engine) — not run
   PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
   PASS  hardcode scan — core knows mechanisms, never names
   PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
@@ -30728,3 +30739,7 @@ index 88a6af9..ee28075 100644
      expect(fieldedDef('hero.base.rogue-raven').attacks).toEqual((o['hero.base.rogue-raven']!['attacks'] as string[]).filter((a) => ATTACKS[a]))
 ```
 </details>
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable

@@ -5,7 +5,9 @@
   "shape": "plumbing",
   "spec": "Found by the engine worker landing capability.unit-trigger-with-tag (2026-10-04; ruled the same day, engine/DECISIONS.md 'after the backlog run: ...': a trigger on the hero itself may carry a tag requirement such as melee). The engine now reads `onlyWithTag` on a unit's trigger - Burning Touch burns on melee hits only, the Pharaoh's Gauntlets' trigger rides brawl attacks only - and the dumps carry the fact, but the action bar and the unit panel do not know it (viewer SWITCHES tagRequirementNotShown): a Burning Touch bearer's bow shot still reads 'On hit: apply 1 Burn' on the bar though the Burn no longer fires with it. 2026-10-03 ruled that the bar shows every effect an action will have and none it will not ('a dagger giving you one protection is not shown in the dagger attack' was the report). Wanted: where the bar and the panel list the effects of an attack, a trigger of the unit's own with a tag requirement is listed only on the attacks that have the tag (the engine's rule for 'has the tag' - engine SWITCHES attackHasTag - read from the dump, never re-derived in the viewer); where the trigger itself is described (the unit's badges and powers in the panel, the codex) its line says the requirement, as the Codex now does: 'apply 1 Burn - only with a melee attack'. No art is needed. Land by the viewer landing order: viewer sources, the viewer gate's parts and land, the page, the kingdom's pages rebuilt, the engine gate last.",
   "expect": "For a hero with Burning Touch holding a Shortbow, the bar's line for the bow shot lists no Burn and the line for Punch lists 'On hit: apply 1 Burn'; the panel's line for Burning Touch says 'only with a melee attack'; a trigger with no tag requirement (Bleeding Strike) is listed on every attack as before; a hero with no such trigger shows the bar it showed before.",
-  "note": "Filed by the home chat 2026-10-04 from the engine worker's report. Not art-dependent."
+  "note": "Filed by the home chat 2026-10-04 from the engine worker's report. Not art-dependent.",
+  "status": "done",
+  "sha": "3f9783a"
  },
  {
   "id": "kingdom.rewards-hell-tcg-rows-his",
