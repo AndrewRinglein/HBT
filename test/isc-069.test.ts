@@ -158,8 +158,13 @@ describe('ISC-069 — all24 authored standalone base heroes',()=>{
      Frost Staff's Frost Nova reach the engine as bursts, so the four staff mages field one beside the three cleavers. The rule is
      unchanged: exactly the base heroes whose kit grants a burst, each with exactly its kit's bursts.
      was: expect(burstKits).toEqual({'hero.base.paladin-dark':['attack.greatsword.great-cleave'],'hero.base.warrior-barbarian':['attack.greatsword.great-cleave'],'hero.base.warrior-fearsome':['attack.halberd.cleave']}) */
+  /* Law 10, 2026-10-04 (engine content.greatsword-war-axe-reauthored; engine DECISIONS.md 2026-09-28 'counterattack, special free attacks,
+     the opening six, shields, custom weapons' and the Armory Ledger approved that day): the Great Sword is the Hew and the power
+     Heavy Counterattack - its Great Cleave, a burst, is gone - so the two heroes who hold one field no burst. The rule is unchanged.
+     was: … 'hero.base.paladin-dark':['attack.greatsword.great-cleave'],'hero.base.warrior-barbarian':['attack.greatsword.great-cleave'],'hero.base.warrior-fearsome':['attack.halberd.cleave']}) */
   expect(burstKits).toEqual({'hero.base.mage-fire':['power.fire-staff.fireball'],'hero.base.mage-fireaura':['power.fire-staff.fireball'],'hero.base.mage-sexy':['power.fire-staff.fireball'],'hero.base.mage-thinking':['power.frost-staff.frost-nova'],
-   'hero.base.paladin-dark':['attack.greatsword.great-cleave'],'hero.base.warrior-barbarian':['attack.greatsword.great-cleave'],'hero.base.warrior-fearsome':['attack.halberd.cleave']})
+   'hero.base.warrior-fearsome':['attack.halberd.cleave']})
+  for(const id of ['hero.base.paladin-dark','hero.base.warrior-barbarian'])expect(createSandbox({...SANDBOX_DEFAULT,heroes:[id],enemies:['unit.zombie']}).ctx.state.units[0]!.actions,id).toEqual(expect.arrayContaining(['attack.greatsword.hew','power.greatsword.counterattack']))
   /* the two priests field Mercy, a power aimed at one ally (the same item) */
   for(const id of ['hero.base.priest-armored','hero.base.priest-pauper'])expect(createSandbox({...SANDBOX_DEFAULT,heroes:[id],enemies:['unit.zombie']}).ctx.state.units[0]!.actions,id).toContain('power.holy-texts.mercy')
   /* Law 10, 2026-10-02 (kingdom.reads-engine, review finding K9; kingdom SWITCHES.md poolHeroesAreRows): the campaign pool's two
