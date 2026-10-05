@@ -25,9 +25,16 @@ function candidate(change){
  }
 }
 const burst={shape:{kind:'radius',radius:1},side:'enemy',packets:[{id:'ember',damageType:'fire',amount:4},{id:'shade',damageType:'shadow',amount:3}]};
+// Law 10, 2026-10-04 — engine content.greatsword-war-axe-reauthored (engine DECISIONS.md 2026-09-28 'counterattack, special free attacks, the opening six, shields, custom weapons' and the Armory Ledger approved that day): the Great Sword's
+// Great Cleave, one of the migrated area rows, is gone from the Codex (the Ledger's Great Sword is one attack and a power), so it
+// is not in the list below, and the three tests that bent a weapon's burst row bend the Halberd's Cleave (gen/settled-items.json) — the other weapon
+// burst, the same arc. Every check is unchanged.
+//  was: for(const id of ['attack.halberd.cleave','attack.greatsword.great-cleave','power.lightning-staff.storm']){
+//       … data.attacks.find(a=>a.id==='attack.greatsword.great-cleave') …   (three times)
 test('compiler separates all four migrated area rows and both TEST burst profiles, preserving gear grants and deltas',()=>{
  const run=candidate(()=>{});assert.equal(run.status,0,run.stderr);
- for(const id of ['attack.halberd.cleave','attack.greatsword.great-cleave','power.lightning-staff.storm']){
+ assert.equal(run.pack.authoredBursts['attack.greatsword.great-cleave'],undefined);
+ for(const id of ['attack.halberd.cleave','power.lightning-staff.storm']){
   assert.ok(run.pack.authoredBursts[id]);assert.equal(run.pack.authoredAttacks[id],undefined);assert.equal(run.pack.authoredAbilities[id],undefined);
  }
  assert.deepEqual(run.pack.test.bursts['attack.test-arc.sweep'].burst,run.pack.authoredBursts['attack.halberd.cleave'].burst);
@@ -39,7 +46,7 @@ test('compiler separates all four migrated area rows and both TEST burst profile
  assert.deepEqual(ward.triggers.find(t=>t.effect.kind==='burstScale').effect,{kind:'burstScale',percent:50});
 });
 for(const patch of [{side:'foe'},{shape:{kind:'blast1'}},{shape:{kind:'radius',radius:1.5}},{heal:-1},{packets:[{id:'x',amount:3,damageType:'holy'}]},{packets:[{id:'x',amount:1,damageType:'fire'},{id:'x',amount:2,damageType:'fire'}]}])test('compiler rejects malformed burst '+JSON.stringify(patch),()=>{
- const run=candidate(edit=>edit('gen/weapons.json',data=>{data.attacks.find(a=>a.id==='attack.greatsword.great-cleave').burst={...burst,...patch}}));
+ const run=candidate(edit=>edit('gen/settled-items.json',data=>{data.attacks.find(a=>a.id==='attack.halberd.cleave').burst={...burst,...patch}}));
  assert.notEqual(run.status,0);assert.match(run.stdout+run.stderr,/burst/i);assert.equal(run.pack,null);
 });
 
@@ -49,7 +56,7 @@ for(const patch of [{effects:[{kind:'heal',amount:3}],target:{select:'self',side
 });
 
 for(const patch of [{secondaryDamage:[{id:'extra',when:'hit',amount:2,damageType:'fire'}]},{armorPenetration:2}])test('weapon burst refuses attack-only packet metadata '+JSON.stringify(patch),()=>{
- const run=candidate(edit=>edit('gen/weapons.json',data=>Object.assign(data.attacks.find(a=>a.id==='attack.greatsword.great-cleave'),patch)));
+ const run=candidate(edit=>edit('gen/settled-items.json',data=>Object.assign(data.attacks.find(a=>a.id==='attack.halberd.cleave'),patch)));
  assert.notEqual(run.status,0);assert.match(run.stdout+run.stderr,/burst/i);assert.equal(run.pack,null);
 });
 

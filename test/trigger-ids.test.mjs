@@ -72,7 +72,11 @@ test('a row whose every trigger already has its own id keeps every id as it was'
  assert.deepEqual(enemy(live.pack,'unit.zombie').triggers.map(t=>t.id),['trigger.zombie.afflict-rotting-flesh','trigger.zombie.poison']);
  assert.deepEqual(live.pack.enemies.find(u=>u.typeId==='test-zombie').triggers.map(t=>t.id),['trigger.zombie.rot','test.zombie.sap','test.zombie.grasp']);
  assert.deepEqual(live.pack.items['item.dagger'].triggers.map(t=>t.id),['trigger.dagger.stab.protection']);
- assert.deepEqual(live.pack.items['item.war-axe'].triggers.filter(t=>t.hook==='onHit').map(t=>t.id),['trigger.war-axe.hack.bleed']);
+ // Law 10, 2026-10-04 — engine content.greatsword-war-axe-reauthored (engine DECISIONS.md 2026-09-28 'counterattack, special free attacks, the opening six, shields, custom weapons' and the Armory Ledger approved that day): this read
+ //   assert.deepEqual(live.pack.items['item.war-axe'].triggers.filter(t=>t.hook==='onHit').map(t=>t.id),['trigger.war-axe.hack.bleed']);
+ // — the Hack's Bleed, which is not in the Ledger's Heavy Chop and is gone. The War Axe's triggers that remain keep their ids.
+ assert.deepEqual(live.pack.items['item.war-axe'].triggers.filter(t=>t.hook==='onHit').map(t=>t.id),[]);
+ assert.deepEqual(live.pack.items['item.war-axe'].triggers.map(t=>t.id).sort(),['trigger.war-axe.on-block.block.chop','trigger.war-axe.on-block.block.hack','trigger.war-axe.on-block.ranged-block.chop','trigger.war-axe.on-block.ranged-block.hack']);
 });
 
 test('two triggers the rule cannot tell apart fail the build, naming the row and the id',()=>{
@@ -280,7 +284,7 @@ test('the Great Sword\'s Counterattack: the free attack up and +2 Strength, both
  assert.equal(odd.pack.authoredAbilities['power.greatsword.counterattack'],undefined);
 });
 test('the War Axe\'s attacks at the Ledger\'s numbers: the basic attack −10 Accuracy, Heavy Chop Strength +3 at −15, and the on-block rider on each and on nothing else',()=>{
- const A=live.pack.authoredAttacks,of=id=>[A[id].name,A[id].staminaCost,A[id].attack.accuracy,A[id].attack.damage.bonus];
+ const A=live.pack.authoredAttacks,of=id=>[A[id].name,A[id].staminaCost,A[id].accuracy??0,A[id].bonus];
  assert.deepEqual(of('attack.war-axe.chop'),['Chop',1,-10,1]);assert.deepEqual(of('attack.war-axe.hack'),['Heavy Chop',2,-15,3]);
  assert.deepEqual(of('attack.greatsword.hew'),['Hew',1,0,2]);assert.equal(A['attack.greatsword.great-cleave'],undefined);
  const T=live.pack.items['item.war-axe'].triggers;
