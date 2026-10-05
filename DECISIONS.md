@@ -5021,3 +5021,23 @@ Andrew, in the kingdom chat, minutes after the post above, still playing:
 “The stand-up button doesn't seem to work. When the lumberjack wife has been knocked down, I cannot seem to stand up with her.”
 
 Both are faults, not rulings. Filed at once: `fix.stand-up-does-nothing` (a knocked-down unit that cannot stand cannot be played). The card art joins the items filed on his answers to the post above.
+
+## 2026-10-05 — the playtest post answered: every notice gold and low, green for a friend, a glow for a heal, everything flies straight, knockdown is prone, Stand Up takes the move, the first hero's own positives and negatives
+
+Andrew, in the kingdom chat, answering the eleven questions on the post above (1 does the gold, no-backdrop, bottom-of-screen style apply to every notice or only some; 2 for a buff or heal, another colour for the line to the target, or no line; 3 what a heal shows instead of the bolt; 4 do thrown weapons keep their arc; 5 what shows on a hex you cannot walk through; 6 is knocked down the same state as prone; 7 what Stand Up costs; 8 how much larger the bodies; 9 what cursed ground does; 10 the first hero - its own positives or none, given the earlier 'description only'; 11 which battle, and was the priest next to the skeleton archer):
+
+“I don't like the way it is for anything.   They should be two. They should be green.   3. It should show a glow on the healed ally only, or on the area if an area is healed.   No, everything should go straight for 4.   If you can't walk through an index   knockdown is prone. That's what I'm talking about. She failed a knockdown roll, and it didn't change the way she looked.   Stand-up is a special move that is only available if you were prone, and yes, it takes your move.   The body should be the size of living units lying down, yes. 9. It is already written down somewhere that you should take it from. It's a cursed round.  10. It should show its positives and negatives compared to a standard hero of that type. It should say one line about what it is, like a ranger, and then it should do something similar to what you have there, but just about the positives and negatives it has, stats, and badges.  10. It was the lumberjack house. They were not next to the skeleton archer when they attacked.”
+
+Ruled:
+
+- **Every notice** takes the new look - gold, bright text, no backdrop, just above the bottom of the screen ("I don't like the way it is for anything").
+- **A buff's or a heal's line to its target is green**, never red.
+- **A heal shows a glow** on the healed ally only, or on the area if an area is healed - no bolt.
+- **Everything that flies goes straight** - arrows, bolts and thrown weapons alike.
+- **Knockdown is prone**, one state: the unit lies on the ground as the dead do. Reported with it: the Lumberjack's Wife "failed a knockdown roll, and it didn't change the way she looked."
+- **Stand Up is a special move, offered only to a prone unit, and it takes the unit's move.**
+- **A body on the ground is the size of a living unit lying down.**
+- **Cursed ground is what the documents already say it is** ("It's a cursed round" is "cursed ground" - dictation); the Orphanage's body and graves are that ground.
+- **The first hero's card:** one line saying what it is ("a ranger"), then its own positives and negatives against a standard hero of that type - stats and badges - and nobody else's. This replaces 2026-10-03's "no stats or badges shown, just a description".
+- **The priest's damage** was at the Lumberjack House (battle 2), and the priest was not next to the skeleton archer. Being traced.
+- **Not answered - the hex you cannot walk through.** His sentence breaks off: "If you can't walk through an index". The chat reads it as "an X" on that hex (said to him the same day; one line to change).

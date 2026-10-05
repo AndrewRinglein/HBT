@@ -1,5 +1,13 @@
 [
  {
+  "id": "content.orphanage-body-and-graves-cursed",
+  "kind": "engine",
+  "shape": "data",
+  "spec": "Ruled 2026-10-05 (Andrew, engine/DECISIONS.md 'playtest post: notices, target lines, item cards, arrows, move costs on hexes, knocked down, bodies, cursed ground, the first hero's positives' and 'the playtest post answered'): 'In the Orphanage, both the body and the graves are supposed to be cursed ground, and they're not.' - asked what cursed ground does: 'It is already written down somewhere that you should take it from.' On the Orphanage's map (the opening's battle 1) the hex of the body and the hexes of the graves are plain ground today. Find what is written: run `node tools/decided.mjs \"cursed ground\"` (it finds engine SWITCHES.md caravanGround - 'The corpses are cur...' - and placedRemainsGround, ATLAS-COMBAT-INTEGRATION.md, DESIGN-DUMP-CLEANED.md) and read GLOSSARY.md and the terrain rows in content for the engine's cursed ground and what it does to a unit on it; use that ground exactly - do not write a new one. Then mark the Orphanage's body hex and each grave hex as that ground in the map's own source, by the pipeline the caravan's cursed corpses use (content first, the engine pack, the viewer's dumps, the six opening recordings re-exported together on their recorded seeds, the kingdom's pages, the engine gate last). The board shows cursed ground as it shows it elsewhere. The Orphanage is the tutorial battle: if cursed ground under the first hero's opening walk changes the authored first moves (kingdom's lesson table), say so in the report and keep the lessons true rather than move the ground. If what is written does not say what cursed ground does, stop building, abandon with that finding and quote what you found.",
+  "expect": "On the Orphanage's map the body's hex and every grave's hex are the engine's cursed ground and a unit entering one gets what cursed ground gives by the written rule; the board marks them as cursed ground; hexes that were plain and hold no body or grave are unchanged; the tutorial's first battle still runs its lessons; the report quotes the rule used and where it is written.",
+  "note": "Filed by the home chat 2026-10-05."
+ },
+ {
   "id": "tool.kingdom-vitest-workers",
   "kind": "engine",
   "shape": "plumbing",
