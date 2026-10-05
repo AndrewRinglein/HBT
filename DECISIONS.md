@@ -5130,3 +5130,28 @@ Andrew, in the kingdom chat, asked whether Leadership is a gift that each first-
 “I don't really understand what you're saying about one. Every first hero choice gets leadership. They don't roll it, they just get it.”
 
 Ruled: **every first hero gets Leadership; it is not rolled, so it is not a gift.** It is said once for the pick; each card's own gifts are its random badges and random stats.
+
+## 2026-10-05 — sound: planned and made apart from the game first; the effects are generated, not taken from the other game; the other game's music and the voice pack are used; settings, and music that dips
+
+Andrew, in the root chat (sound), over six messages the same morning:
+
+“I want to add sound to this game. I have a number of voices I downloaded in a giant voice pack, and then I have 11 labs.   I think we can do some voices from the voice pack for different male and female attacks and taking damage, and then there are just lots of things that need sound effects. I also have some music that I really like from Dungeon Slays You or Hell-TCG, so I'd like to bring that music over. I think there are two or three music tracks.   Can you plan all this out?”
+
+“We also need settings. We need music that dips when sound effects happen.”
+
+“No, don't use the DSY sounds as first picks.  Some of the sounds are fucked up.   I do want to use the music.   And I do want to use the voice pack. [...] I don't know what the tracks were. I just know that the tracks for music in the other game are good.   That is the right voice pack, yes. I have 300,000 credits in Eleven Labs.   For, I think grunts, shouts, and cries are fine.  I also think anything from that voice pack is probably fine.”
+
+“I want you to do research. I want you to not build into the app, but build a plan and plan out all of the sound files. Let's get all of the sound going. We can do it separately before we merge it in.”
+
+“Let's run this separately.”
+
+Ruled:
+
+- **Sound is started** - ROADMAP B4 (Sound), B5 (Music) and B6 (Sound controller) stood at 'someday' with nothing on disk.
+- **It is planned and made apart from the game first.** Every sound file is planned and made in its own folder; nothing is built into the battle page or the kingdom until he says to merge it in. So no sound item is filed in the viewer-and-kingdom queue yet, and no worker takes one.
+- **The effects are not taken from the other game** ("don't use the DSY sounds as first picks. Some of the sounds are fucked up"). The chat reads 'the DSY sounds' as every effect in that game's folders - its monster sounds and its interface clicks among them - and makes the effects with ElevenLabs instead (his 300,000 credits; 40 credits a second of sound). Said to him the same day; one line to change.
+- **The other game's music is used.** He does not know the track names: "the tracks for music in the other game are good". That game's own list (`DSY/src/shared/audioManager.js`) names 21.
+- **The voice pack is used**: `hell-tcg/_unused/assets/audio/sfx/human-vocalizations` (four male voices, three female, 1,034 files) - "That is the right voice pack, yes"; "anything from that voice pack is probably fine". Heroes grunt, shout and cry out; nobody speaks words.
+- **There are settings, and the music dips when sound effects happen.**
+
+The chat's own defaults, said to him and his to change in a line: the music dips under voices and the big sounds (a hit, a spell, a death) and not under footsteps and clicks, so it does not pump; each hero has one fixed voice, a man's or a woman's by the `gender` the content pack already records for that hero; three takes are made of each generated effect and he keeps the one he likes.
