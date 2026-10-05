@@ -1471,6 +1471,37 @@ Ruled: engine DECISIONS.md 2026-10-05 'playtest post: …' and 'the playtest pos
 | `straightRelease` | "From where it leaves the attacker (the bow's or the hand's place on the model where the body gives one, else the unit's chest height)." Where does a body give one? | **Where its 3D body holds a model: the cast's `heldAt` is the place, in the scene, of the first model fitted to one of its hands that is not a shield (the pack's own word for each held model) — the bow, the thrown weapon's hand — wherever the motion has it at that moment; `releaseOf` sees it through the board's camera and names it as the release height and place of the shot. A unit with no body, a body that holds nothing (every enemy today: the Skeleton Archers hold no bow), or a board with no 3D camera: the chest of the unit's token, as before.** The target's end is its chest, as before. | The held model's socket is the one place a body states; no bone is guessed by name. The other side: the bow's nock or the open hand of a caster — nobody has authored those points. | Default — 2026-10-05 |
 | `straightNoSandboxHalf` | The landing order ends on the kingdom's pages; what is checked there? | **Nothing new: the pages are rebuilt and the kingdom's suite run. The path is held where it is made — the effects library (every projectile, four shots each, sampled at five points) and the board's two functions, with a real approved body (the Forest Elf's bow) for the held place.** Not looked at in a real browser by this item: under the test's DOM every element has one rectangle, so a shot's two ends coincide there. | A real-browser shot of a 320 ms arrow is the stall `viewer.screenshot-time-out-under-load` is about. The other side: a browser verify once that item has landed. | Default — 2026-10-05 |
 
+## fix.computer-reaches-class-power-past-shield-power (engine item) — the stamp, 2026-10-05
+
+The computer tries a unit's powers longest cooldown first (engine SWITCHES.md `aiPowerLongestCooldownFirst`). No viewer source
+changed.
+
+| Switch | Question | Default | Reason | Status |
+|---|---|---|---|---|
+| `aiPowerOrderStampOnly` | What moves in the viewer? | **The engine code stamp the dumps, the swap fixture and the six opening recordings carry (b9058ca112) — re-dumped and re-exported together on their seeds (Orphanage 5, Lumberjack House 3, Bridge 19, Cavern Trail 11, Gates 0, Cathedral 10); no event of any recording differs** (nobody in the opening holds powers of different cooldowns and reaches for one). `tools/fixtures/enemies-together.json` rewritten by its command. | A dump and a recording carry the stamp of the engine that made them, and the six go together. | Default — 2026-10-05 |
+
+## content.orphanage-body-and-graves-cursed (engine item) — the Lumberjack House's cursed hexes, 2026-10-05
+
+The Lumberjack House's encounter paints its map's cursed ground — `layer.weak` on the three graves and the body (engine
+DECISIONS.md 2026-10-05 'playtest post: … bodies, cursed ground …'; 2026-09-28 'cursed ground is the Weak ground layer'; engine
+SWITCHES.md `cursedGravesAreTheLumberjackHouses`). No viewer source changed.
+
+| Switch | Question | Default | Reason | Status |
+|---|---|---|---|---|
+| `lumberjackCursedHexesDrawn` | How does the board mark the four hexes? | **As it marks every painted ground layer: the page folds the engine's four `layer.painted` lines and draws the Weak layer's tinted tile on each hex (`src/board.js` `syncLayers`), from the battle's first frame — the Cathedral's remains and the Gates' curse areas are drawn the same way.** The caravan's drifting cursed fog is a painted scene's LOOK setting (`tools/presentation-profiles.json`, read with the scene's own `cursedCells`); the Lumberjack's scene has no presentation profile and is not given one here. FOUND for the viewer's queue: `lumberjack-forest/navigation.json` already lists the same four `cursedCells`, so a profile with `cursedGround: true` would put the fog on the graves and the body — it also sets the scene's backdrop, which is a look he has not seen. | "The board shows cursed ground as it shows it elsewhere"; a look setting is not an engine item's to choose. | Default — 2026-10-05 |
+| `lumberjackCursedOpeningSeeds` | Which recordings move? | **The Lumberjack House's alone (712 events where it had 708: the four painted lines at the start; as it fell, still a win on Turn 8 — not read for its outcome). All six re-exported together on their seeds (Orphanage 5, Lumberjack House 3, Bridge 19, Cavern Trail 11, Gates 0, Cathedral 10) at engine code stamp 7b13456ca1; the other five are event for event what they were.** The dumps and the engine-made rosters and fixtures rewritten by their own commands. | A recording carries the stamp of the engine that made it, and the six go together. | Default — 2026-10-05 |
+
+## capability.effect-lasts-activations (engine item) — a timed effect is a status, 2026-10-05
+
+A power's timed line — the Fire Gauntlet's Stoke, the Staff of the Ultimate Destroyer's Perfect Sight, Poison Coating — is a
+counted status the engine puts on the unit (engine DECISIONS.md 2026-10-04 'his 28 reward weapons read back …'; engine
+SWITCHES.md lent*). No viewer source changed.
+
+| Switch | Question | Default | Reason | Status |
+|---|---|---|---|---|
+| `lentStatusShownAsAStatus` | "The effect shows on the unit with its count" — how? | **As every status is: the engine's lines for it are `status.applied`, `status.reduced` and `status.expired`, which the page folds and draws — the chip with its number, 3 then 2 then 1 then gone — and the panel names it by the status row's own name (Stoke, Perfect Sight, Poison Coating), read from `generated/static.json` (32 statuses where it had 28: the three, and the engine's test row for the attack-count kind).** FOUND for the viewer's queue: the three new statuses have no entry in `src/theme.js` `STYLE`, so they wear the fallback style — a green dot, which is Poison's hue. A hue and a glyph each is a look he has not chosen; not chosen here. | No new event type and no new drawing: a timed effect was made a status so that the board already shows it. | Default — 2026-10-05 |
+| `lentStatusStampOnly` | Which recordings move? | **None in their events: the dumps, the swap fixture and the six opening recordings are re-dumped and re-exported together on their seeds (Orphanage 5, Lumberjack House 3, Bridge 19, Cavern Trail 11, Gates 0, Cathedral 10) at the engine's new code stamp, and no event of any recording differs** (nobody in the opening holds one of the three items). | A dump and a recording carry the stamp of the engine that made them, and the six go together. | Default — 2026-10-05 |
+
 ## viewer.plates-banners-tooltip-gold-look — 2026-10-05
 
 Ruled: engine DECISIONS.md 2026-10-05 'gifts: the word; each first-hero choice rolls its own; the plates, banners, tooltip and pop-up
