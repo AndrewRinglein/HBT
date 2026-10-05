@@ -3,7 +3,7 @@
    the viewer context V; nothing here is module state, so two viewers can live
    on one page. Split out of viewer-core.js 2026-09-02 with the drawing intact. */
 import { TSWATCH, stStyle, SIDE_TINT, SIDE_GLOW, DMG_HUE, HEAL_HUE, MOD_UP, MOD_DOWN, CRIT_HUE, NOTE_HUE, rgb, layerHue, AURA_HUE, BLOOD_HUE, onBodyAs, movementOnly, PLAY_HUE } from './theme.js'
-import { mvOf, absorbOf, freeAttacksUp, FREE_ATTACK } from './actions.js'
+import { mvOf, absorbOf, freeAttacksUp, FREE_ATTACK, helpsTarget } from './actions.js'
 import { subjectOf, barUnitOf } from './subject.js'
 import { dangerOf } from './projection.js'
 import { afflictionPopup } from './affliction.js'
@@ -350,7 +350,8 @@ export function syncAuras(V) {
 /* the cue says WHAT the float is; the hue is theme.js's (Law 6) */
 export function floatHue(c, D) {
   switch (c.kind) {
-    case 'damage': return DMG_HUE[c.dt] || DMG_HUE.other
+    /* viewer.log-names-damage-cause: a status's tick is the status's colour (Bleed's true damage was a hit's white) */
+    case 'damage': return c.statusId ? stStyle(c.statusId, D).hue : DMG_HUE[c.dt] || DMG_HUE.other
     case 'heal': return HEAL_HUE
     case 'status': return stStyle(c.statusId, D).hue
     case 'crit': return CRIT_HUE
@@ -378,6 +379,10 @@ export function pushFloat(V, hex, text, col, o = {}) {
   wrap.appendChild(el('dmg', `left:-34px;top:${-136 - slot * 30}px;color:${col};` +
     (o.big ? 'font-size:36px;' : o.small ? 'font-size:15px;' : 'font-size:20px;') +
     `animation:floatUp ${life}ms ease-out forwards`)).textContent = text
+  /* viewer.log-names-damage-cause: a status's tick wears the status's mark (theme.js: its glyph, its hue) beside its number */
+  if (o.kind === 'damage' && o.statusId) { const st = stStyle(o.statusId, V.data)
+    const mark = el('dmgMark', `position:absolute;left:-62px;top:${-128 - slot * 30}px;width:22px;height:22px;background:${st.hue};clip-path:${st.gl || 'circle(50%)'};animation:floatUp ${life}ms ease-out forwards`)
+    mark.dataset.status = o.statusId; wrap.appendChild(mark) }
   L.floatL.appendChild(wrap)
   /* registered like every other beat: an unregistered timer survives seek(),
      fires against a cleared FLOAT_SLOTS and stacks the next floats (REVIEW §C3) */
@@ -449,6 +454,19 @@ export function fxSlash(V, tId, dt, n, crit = false) {
 /* viewer.attack-impact-timing: the projectile an attack flies — fxAttack's own choice above — and its time in the air; a blow
    flies none */
 export const flightOf = (kind, dt) => kind === 'melee' ? null : dt === 'magic' ? FLIGHTS.magic : dt === 'true' ? FLIGHTS.holy : FLIGHTS.arrow
+/* viewer.friend-line-green-heal-glows (engine DECISIONS.md 2026-10-05, Andrew: "It should show a glow on the healed ally only, or on
+   the area if an area is healed."): an area heal's hexes glow — every hex within the engine's radius of its centre, by the
+   engine's own distance (V.data.distance), in the heal's colour — for HEAL_AREA_SHOWN of the pump's time, then fade by
+   themselves; a seek takes them down (cancelBeats). Each unit healed in it glows as any healed unit does (fxStatus 'heal'). */
+const HEAL_AREA_SHOWN = 1100
+export function fxHealArea(V, centre, radius) {
+  const dist = V.data.distance, POS = V.data.POS; if (!dist || !POS || !POS[centre] || !Number.isInteger(radius)) return false
+  const hexes = []; for (let hex = 0; hex < POS.length; hex++) if (POS[hex] && dist(centre, hex) <= radius) hexes.push(hex)
+  const A = V.view.healArea = { hexes, centre, radius }
+  const t = setTimeout(() => { V.fx.timers.delete(t); if (V.view.healArea !== A) return; V.view.healArea = null; try { V.render?.() } catch (e) {} }, HEAL_AREA_SHOWN / (V.speed || 1))
+  V.fx.timers.add(t)
+  return true
+}
 /* a status's canvas effect is the ONE style map's (theme.js STYLE .vfx), ringed in the status's own hue — the
    heal is the only effect that is not a status (viewer.reads-engine, review V5) */
 export function fxStatus(V, tId, styleId) {
@@ -564,6 +582,7 @@ export function queueInjury(V, id, name) {
 export function cancelBeats(V) {
   for (const t of V.fx.timers) clearTimeout(t)
   V.fx.timers.clear()
+  if (V.view) V.view.healArea = null          // viewer.friend-line-green-heal-glows: its timer went with the rest
   /* a seek that lands inside a hitstop would otherwise leave every token frozen
      mid-animation, with the paused animation overriding anything a render
      writes (REVIEW §C5) */
@@ -771,6 +790,7 @@ export function playCues(V, cues) {
       case 'kick': cameraKick(V, c.a, c.t); break
       case 'injury': queueInjury(V, c.id, c.name); break
       case 'fx.status': fxStatus(V, c.id, c.style); break
+      case 'fx.healArea': fxHealArea(V, c.centre, c.radius); break
       case 'fx.tick': fxTick(V, c.id, c.cause); break
       case 'inspect.clear': V.view.inspectId = null; break
       /* 2026-09-03 */
@@ -1136,6 +1156,8 @@ export function drawAim(V) {
   }
   /* viewer.area-trigger-burst: an area trigger's reach, while its burst plays — the burst's own tiles, in the effect's colour */
   if (V.view.areaBurst) for (const hex of V.view.areaBurst.hexes) burstTile(hex, 'burstHex areaBurstHex', V.view.areaBurst.colour)
+  /* viewer.friend-line-green-heal-glows: the hexes of an area that is being healed, while the glow holds (fxHealArea) */
+  if (V.view.healArea) for (const hex of V.view.healArea.hexes) burstTile(hex, 'burstHex healAreaHex', PLAY_HUE.healArea)
   // Copy the engine footprint. No radius, recipient or shielding calculation.
   if (S.BURST && V.view.burstVisible) {
     const B = S.BURST
@@ -1254,7 +1276,11 @@ export function drawPlay(V) {
      wears a thin ring round its own feet in the targeting arrow's red - the footprint ring's ellipse, drawn in the plan's
      layer so it goes with the facts. The hero acting wears none (a self power shows nothing on its own hex), and a target
      hex nobody stands on shows nothing: the arrow, stopping at the action's reach, tells that (viewer SWITCHES targetMark*). */
-  for (const h of P.targets) for (const u of Object.values(V.S.U)) if (u.hex === h && u.life !== 'dead' && u.id !== P.actor) drawTargetMark(V, layer, u)
+  /* viewer.friend-line-green-heal-glows: the mark, and the line below, are green when the chosen action helps that unit and red
+     when it does not — the engine's own row for the action (actions.js helpsTarget); an action the page has no row for is red */
+  const chosen = P.slot != null ? (V.data.ACT || {})[P.slot] : null, mine = P.actor != null && V.S.U[P.actor] ? V.S.U[P.actor].side : null
+  const helps = u => helpsTarget(chosen, mine, u ? u.side : null) === true
+  for (const h of P.targets) for (const u of Object.values(V.S.U)) if (u.hex === h && u.life !== 'dead' && u.id !== P.actor) drawTargetMark(V, layer, u, helps(u) ? PLAY_HUE.aid : PLAY_HUE.aim)
   const svg = svgEl('svg')
   svg.setAttribute('width', F.w); svg.setAttribute('height', F.h)
   svg.style.cssText = 'position:absolute;left:0;top:0;overflow:visible;pointer-events:none'
@@ -1267,10 +1293,13 @@ export function drawPlay(V) {
   for (const h of P.provokes) { const n = ring(h, 'playProvoke', PLAY_HUE.provoke); n.title = 'Attack of opportunity' }
   if (P.ghost) drawGhost(V, layer, P.ghost)
   if (P.aim) {
-    const A = P.aim, line = aimArrow(V, layer, svg, A.from, A.to, PLAY_HUE.aim, !A.locked)   /* red (viewer.battle-full-screen) */
+    /* red (viewer.battle-full-screen) — green for an action that helps the unit aimed at (viewer.friend-line-green-heal-glows);
+       a hex nobody stands on is helped when the action helps its user's own side */
+    const A = P.aim, friend = A.target != null ? helps(V.S.U[A.target]) : helpsTarget(chosen, mine, mine) === true
+    const line = aimArrow(V, layer, svg, A.from, A.to, friend ? PLAY_HUE.aid : PLAY_HUE.aim, !A.locked)
     const lines = []
-    if (A.hit != null) lines.push(line(0, `<span class="playHit" style="font-size:24px;font-weight:700;color:${PLAY_HUE.aimHit}">${A.hit}%</span>`))
-    if (A.dmg != null) lines.push(line(28, `<span class="playDmg" style="font-size:46px;font-weight:700;color:${PLAY_HUE.aimDmg};line-height:1">${A.dmg}</span>`))
+    if (A.hit != null) lines.push(line(0, `<span class="playHit" style="font-size:24px;font-weight:700;color:${friend ? PLAY_HUE.aidHit : PLAY_HUE.aimHit}">${A.hit}%</span>`))
+    if (A.dmg != null) lines.push(line(28, `<span class="playDmg" style="font-size:46px;font-weight:700;color:${friend ? PLAY_HUE.aidDmg : PLAY_HUE.aimDmg};line-height:1">${A.dmg}</span>`))
     for (const w of lines) w.classList.add('playAim')
     const E = A.target != null ? V.layers.UEL.get(A.target) : null, u = A.target != null ? V.S.U[A.target] : null
     if (E && u && A.hpAfter != null && u.maxHp > 0) {
@@ -1289,9 +1318,9 @@ export function drawPlay(V) {
 }
 /* the mark on a unit the chosen action can hit (viewer.no-target-ring): an ellipse round its feet, a little wider than its
    own footprint ring and scaled with its stature as that ring is (footScale) */
-function drawTargetMark(V, layer, u) {
+function drawTargetMark(V, layer, u, colour = PLAY_HUE.aim) {
   const { ARTMAP } = V.data, f = feetOf(V, u.hex), fp = footScale(standeeSize(ARTMAP[u.typeId] || ARTMAP._pending, u.life === 'downed').hpx)
-  const n = el('playTargetUnit', `left:${f.x + Math.round(-52 * fp)}px;top:${f.y + Math.round(-34 * fp)}px;width:${Math.round(104 * fp)}px;height:${Math.round(68 * fp)}px;border-color:${PLAY_HUE.aim}`)
+  const n = el('playTargetUnit', `left:${f.x + Math.round(-52 * fp)}px;top:${f.y + Math.round(-34 * fp)}px;width:${Math.round(104 * fp)}px;height:${Math.round(68 * fp)}px;border-color:${colour}`)
   n.dataset.unit = String(u.id); n.dataset.hex = String(u.hex); n.style.transform = `translateZ(${heightOf(V, u.hex) + 3}px)`
   layer.appendChild(n)
 }

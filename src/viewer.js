@@ -144,7 +144,7 @@ const TEMPLATE = `
     <div id="boardwrap"><div id="stage"></div><div id="stageTop"></div>
       <canvas id="vfxC" style="position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none;z-index:35"></canvas>
       <div id="camHud" class="mono" style="position:absolute;left:10px;bottom:10px;z-index:50;font-size:11px;color:#8b8778;background:rgba(8,9,11,.72);padding:3px 9px;border:1px solid #2a251d;border-radius:2px;pointer-events:none"></div>
-      <div id="playNote" role="status" style="display:none"></div></div>
+      <div id="noticeStack"><div id="playNote" class="hbtNotice" role="status" style="display:none"></div></div></div>
     <div data-slot="transport" style="display:contents"></div>
     <div id="stambar"></div>
     <div id="barrow"><div id="unitPortrait" aria-hidden="true" style="display:none"><img alt=""></div><div id="actionbar"></div></div>
@@ -207,7 +207,8 @@ export function mountBattleViewer(root, data, opts = {}) {
     /* viewer.affliction-pop-up: the pump is held while the first-affliction pop-up stands (affliction.js) */
     hold: false, affliction: null,
   }
-  const ctx = () => ({ UD: V.data.UD, SN: V.data.SN, IC: V.data.ITEM_CLASSES })
+  /* ACT: the engine's action rows — viewer.friend-line-green-heal-glows reads whether a power helps its target */
+  const ctx = () => ({ UD: V.data.UD, SN: V.data.SN, IC: V.data.ITEM_CLASSES, ACT: V.data.ACT })
   /* the BEAT clock: wall time scaled by playback speed, so a row that lights
      for 1600 beat-ms lights for the same number of beats at ×⅓ and ×4. The fold
      stamps its `until`s from this, and the draw compares against it. */
@@ -866,11 +867,24 @@ export function mountBattleViewer(root, data, opts = {}) {
     fxAreaBurst(V, e.actor, t.select.radius, burst)
     return AREA_BURST_BEAT
   }
+  /* viewer.log-names-damage-cause: the breath between a unit's own strike ending and its status's tick; the place held */
+  const TICK_AFTER_STRIKE = 120
+  let tickHeld = -1
   function beat(e) {
     cancelOpportunityLabel()
     let d
     /* viewer.attack-impact-timing: a held attack's outcome line waits for its blow */
     if (strike && V.playing) { const wait = strikeStep(); if (wait != null) return wait }
+    /* viewer.log-names-damage-cause (engine DECISIONS.md 2026-10-05 'playtest post: …'): a status's tick lands at the end of
+       its bearer's own Activation, the line after its attack's — the pump holds it until that unit's own strike has finished
+       playing (its body's clip, to its end), so the number is not shown on top of the attack. Held once, by the clip's own
+       remaining length; a unit with no body (its token's lunge is over within the attack's beat) is not held. */
+    if (V.playing && e.type === 'damage.applied' && e.statusId != null) {
+      if (tickHeld === V.cursor) tickHeld = -1
+      else { const B = V.cast?.body?.(e.target), m = B && (B.motion === 'attack' || B.motion === 'ranged') ? B.motion : null
+        const left = m ? (B.clipLength(m) - B.clipTime(m)) * 1000 / (V.speed || 1) : 0
+        if (left > 0) { tickHeld = V.cursor; return Math.ceil(left) + TICK_AFTER_STRIKE } }
+    }
     if (e.type === 'encounter.wave' && V.playing && !V.invalid) return waveBeat(e)
     if (e.type === 'move.begin' || e.type === 'moved') d = stepMove(e)
     else if (PAINT.has(e.type)) d = stepPaint(e)

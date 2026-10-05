@@ -7,6 +7,7 @@
 // what happens at 0 Health, every number and name the event's or the sheet's — and goes on when it is closed. A hero with no
 // after art is told so, never shown borrowed art. Runs against the page (VIEWER_PAGE, else BATTLE-VIEWER.html).
 import { test } from 'node:test'
+import { shownName } from '../src/names.js'
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import { execFileSync } from 'node:child_process'
@@ -54,7 +55,10 @@ test('a hero first afflicted: the battle holds on the pop-up — its card before
   w._flush(60000); assert.equal(v.cursor, i + 1, 'a minute on, the battle has not moved'); assert.equal(v.playing, true, 'held, not paused'); assert.equal(t.drains(), 0, 'not drained')
   // who and what, in the engine's names
   const title = P.querySelector('#afflTitle').textContent
-  assert.ok(title.includes(hero.name), `names the hero: ${title}`); assert.ok(title.includes(e.name), `names the affliction: ${title}`)
+  /* Law 10, 2026-10-05 - viewer.unit-names-no-letters-or-numbers (engine DECISIONS.md 2026-10-05 'no unit is shown with a number or a
+     letter', Andrew: "it shouldn't be Soldier A or Lumberjack 1"): this asked the title for the engine's marked name (`title.includes(hero.name)`, "Iron Dwarf A"). The claim is unchanged - the unit is named - and the
+     name is the engine's less its mark, through the function the page itself reads (src/names.js shownName). */
+  assert.ok(title.includes(shownName(hero.name)) && !title.includes(hero.name), `names the hero: ${title}`); assert.ok(title.includes(e.name), `names the affliction: ${title}`)
   // before and after: the hero's own card, and the art manifest's after card for this affliction
   const art = L.art.artmap[hero.typeId], before = P.querySelector('#afflBefore').querySelector('img'), after = P.querySelector('#afflAfter').querySelector('img')
   assert.ok(art.after && art.after[e.badgeId], `the art manifest names ${hero.typeId}'s after card for ${e.badgeId}`)

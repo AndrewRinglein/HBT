@@ -15,7 +15,8 @@
    control and attacks of opportunity, the Deathbed, Surge, Power, and the kit
    a unit is fielded with (unit.equipped).
    ══════════════════════════════════════════════════════════════════════════ */
-import { sgn, freeAttackOf } from './actions.js'
+import { sgn, freeAttackOf, helpsTarget } from './actions.js'
+import { shownName } from './names.js'
 
 /* view-state clocks the fold stamps from the `now` it is handed — a beat's
    duration is the pump's business, but the fold knows WHICH beats linger */
@@ -53,7 +54,8 @@ export function createState() {
 
 /** a unit's row in S.U — one shape, whether it entered at setup or arrived */
 function mkUnit(e, UD) {
-  return { id: e.actor, name: e.name, typeId: e.typeId, side: e.side, hex: e.hex,
+  /* viewer.unit-names-no-letters-or-numbers: the name a player reads - the engine's, less its mark (names.js shownName) */
+  return { id: e.actor, name: shownName(e.name), typeId: e.typeId, side: e.side, hex: e.hex,
     hp: e.hp, maxHp: e.maxHp, stam: e.stamina, maxStam: e.maxStamina, st: {}, stBy: {}, life: 'standing', bleed: 0,
     /* `mvBase` was the resting movement until mvOf() read it off the sheet plus
        the log's modifiers (2026-09-03); it is kept OUT rather than set-and-unread */
@@ -445,7 +447,12 @@ export function fold(S, e, ctx, now = 0) {
             if (p.absorbed) cue('float', { hex: U[e.target].hex, kind: 'absorbed', text: p.absorbed + ' absorbed', n: p.absorbed, of: 'absorbed', packetIndex, small: true })
           })
         } else {
-          cue('float', { hex: U[e.target].hex, kind: 'damage', dt: e.damageType, text: '−' + e.amount, n: e.amount, of: 'amount', big: true, crit: critical })
+          /* viewer.log-names-damage-cause (engine DECISIONS.md 2026-10-05, Andrew: "The priest was attacking the skeleton archer, and
+             it was taking damage. I don't know why that was."): a status's tick (the engine's statusId on the line) floats as the
+             STATUS's number — its colour and its mark (board.js floatHue, pushFloat), its name beside it — so it does not read as
+             a hit from the unit just attacked */
+          cue('float', { hex: U[e.target].hex, kind: 'damage', dt: e.damageType, ...(e.statusId ? { statusId: e.statusId } : {}), text: '−' + e.amount, n: e.amount, of: 'amount', big: true, crit: critical })
+          if (e.statusId) cue('float', { hex: U[e.target].hex, kind: 'status', statusId: e.statusId, text: SN[e.statusId] || e.statusId, small: true })
           if (e.resisted) cue('float', { hex: U[e.target].hex, kind: 'resisted', text: e.resisted + ' resisted', n: e.resisted, of: 'resisted', small: true })
           if (e.absorbed) cue('float', { hex: U[e.target].hex, kind: 'absorbed', text: e.absorbed + ' absorbed', n: e.absorbed, of: 'absorbed', small: true })
         }
@@ -769,7 +776,22 @@ export function fold(S, e, ctx, now = 0) {
          engine's (ctx.IC, static.json itemClasses) — raises the shield on the body */
       if (e.causeId && U[e.actor] && ctx.IC && U[e.actor].kit.held.some(h => (h.abilities.includes(e.causeId) || h.grants.includes(e.causeId)) && ctx.IC[h.itemId] === 'shield'))
         cue('guard', { id: e.actor, power: e.causeId })
-      if (e.target != null && U[e.target] && e.target !== e.actor) cue('fx.attack', { kind: 'ranged', dt: 'magic', a: e.actor, t: e.target, dmg: null })
+      /* viewer.friend-line-green-heal-glows (engine DECISIONS.md 2026-10-05, Andrew: "When you're healing someone, it shouldn't
+         show a magic attack bolt flying at them." · "It should show a glow on the healed ally only, or on the area if an area is
+         healed."): a power that HELPS whom it is aimed at — the engine's own row for it (ctx.ACT, actions.js helpsTarget) —
+         launches nothing. A heal's glow and number are the heal's own line (heal.applied, below); a heal over an area names
+         its area here, from the row: its radius, round its user or round the unit aimed at. A power aimed at an enemy flies
+         its bolt as before, and so does any power when the host handed the fold no rows. */
+      const row = e.causeId && ctx.ACT ? ctx.ACT[e.causeId] : null
+      const helping = row ? helpsTarget(row, U[e.actor] ? U[e.actor].side : null, e.target != null && U[e.target] ? U[e.target].side : null) === true : false
+      if (helping) {
+        const t = row.target
+        if (t.select === 'area' && Number.isInteger(t.radius) && (row.effects || []).some(x => x.kind === 'heal')) {
+          const at = t.origin === 'target' ? (e.target != null && U[e.target] ? U[e.target].hex : null) : (U[e.actor] ? U[e.actor].hex : null)
+          if (at != null) cue('fx.healArea', { centre: at, radius: t.radius })
+        }
+      }
+      else if (e.target != null && U[e.target] && e.target !== e.actor) cue('fx.attack', { kind: 'ranged', dt: 'magic', a: e.actor, t: e.target, dmg: null })
       else {
         /* the power's own effect from the sheet, never a guess: selfGuard reads as
            protection, heal as heal, anything else gets no status flourish */
