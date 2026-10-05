@@ -12611,7 +12611,22 @@ export const UNIT_PACK = {
         "attack.iron-mace.crush"
       ],
       "abilities": [],
-      "triggers": []
+      "triggers": [
+        {
+          "id": "trigger.iron-mace.crush.armor",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "statMod",
+            "stat": "armor",
+            "value": -1,
+            "until": "battle"
+          },
+          "source": "item.iron-mace",
+          "onlyWithAttack": "attack.iron-mace.crush"
+        }
+      ]
     },
     "item.war-hammer": {
       "id": "item.war-hammer",
@@ -12844,7 +12859,36 @@ export const UNIT_PACK = {
         "attack.obsidian-fang-dagger.gut"
       ],
       "abilities": [],
-      "triggers": []
+      "triggers": [
+        {
+          "id": "trigger.obsidian-fang-dagger.fang.strength",
+          "hook": "onHit",
+          "chance": 20,
+          "select": "target",
+          "effect": {
+            "kind": "statMod",
+            "stat": "strength",
+            "value": -1,
+            "until": "battle"
+          },
+          "source": "item.obsidian-fang-dagger",
+          "onlyWithAttack": "attack.obsidian-fang-dagger.fang"
+        },
+        {
+          "id": "trigger.obsidian-fang-dagger.gut.strength",
+          "hook": "onHit",
+          "chance": 20,
+          "select": "target",
+          "effect": {
+            "kind": "statMod",
+            "stat": "strength",
+            "value": -1,
+            "until": "battle"
+          },
+          "source": "item.obsidian-fang-dagger",
+          "onlyWithAttack": "attack.obsidian-fang-dagger.gut"
+        }
+      ]
     },
     "item.duel-runeblades": {
       "id": "item.duel-runeblades",
@@ -14080,7 +14124,22 @@ export const UNIT_PACK = {
         "attack.pickaxe.pick"
       ],
       "abilities": [],
-      "triggers": []
+      "triggers": [
+        {
+          "id": "trigger.pickaxe.pick.armor",
+          "hook": "onHit",
+          "chance": 90,
+          "select": "target",
+          "effect": {
+            "kind": "statMod",
+            "stat": "armor",
+            "value": -1,
+            "until": "battle"
+          },
+          "source": "item.pickaxe",
+          "onlyWithAttack": "attack.pickaxe.pick"
+        }
+      ]
     },
     "item.burning-torch": {
       "id": "item.burning-torch",
@@ -14894,7 +14953,22 @@ export const UNIT_PACK = {
         "attack.elfbow.double-shot"
       ],
       "abilities": [],
-      "triggers": []
+      "triggers": [
+        {
+          "id": "trigger.elfbow.elf-shot.precision",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "self",
+          "effect": {
+            "kind": "statMod",
+            "stat": "precision",
+            "value": 1,
+            "until": "battle"
+          },
+          "source": "item.elfbow",
+          "onlyWithAttack": "attack.elfbow.elf-shot"
+        }
+      ]
     },
     "item.barbarian-bow": {
       "id": "item.barbarian-bow",
@@ -31265,7 +31339,22 @@ export const UNIT_PACK = {
         "attack.iron-mace.crush"
       ],
       "abilities": [],
-      "triggers": [],
+      "triggers": [
+        {
+          "id": "trigger.iron-mace.crush.armor",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "statMod",
+            "stat": "armor",
+            "value": -1,
+            "until": "battle"
+          },
+          "source": "item.iron-mace",
+          "onlyWithAttack": "attack.iron-mace.crush"
+        }
+      ],
       "vsTarget": [
         {
           "tag": "construct",
@@ -31292,7 +31381,22 @@ export const UNIT_PACK = {
         "attack.iron-mace.crush"
       ],
       "abilities": [],
-      "triggers": [],
+      "triggers": [
+        {
+          "id": "trigger.iron-mace.crush.armor",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "statMod",
+            "stat": "armor",
+            "value": -1,
+            "until": "battle"
+          },
+          "source": "item.iron-mace",
+          "onlyWithAttack": "attack.iron-mace.crush"
+        }
+      ],
       "vsTarget": [
         {
           "tag": "undead",
@@ -31326,7 +31430,22 @@ export const UNIT_PACK = {
         "attack.iron-mace.crush"
       ],
       "abilities": [],
-      "triggers": [],
+      "triggers": [
+        {
+          "id": "trigger.iron-mace.crush.armor",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "statMod",
+            "stat": "armor",
+            "value": -1,
+            "until": "battle"
+          },
+          "source": "item.iron-mace",
+          "onlyWithAttack": "attack.iron-mace.crush"
+        }
+      ],
       "vsTarget": [
         {
           "tag": "undead",
@@ -31352,7 +31471,22 @@ export const UNIT_PACK = {
         "attack.iron-mace.crush"
       ],
       "abilities": [],
-      "triggers": [],
+      "triggers": [
+        {
+          "id": "trigger.iron-mace.crush.armor",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "statMod",
+            "stat": "armor",
+            "value": -1,
+            "until": "battle"
+          },
+          "source": "item.iron-mace",
+          "onlyWithAttack": "attack.iron-mace.crush"
+        }
+      ],
       "base": "item.iron-mace",
       "enchant": "enchant.heavens-edge",
       "gaps": [
@@ -33094,6 +33228,34 @@ export const UNIT_PACK = {
       "abilities": [],
       "triggers": [
         {
+          "id": "trigger.obsidian-fang-dagger.fang.strength",
+          "hook": "onHit",
+          "chance": 20,
+          "select": "target",
+          "effect": {
+            "kind": "statMod",
+            "stat": "strength",
+            "value": -1,
+            "until": "battle"
+          },
+          "source": "item.obsidian-fang-dagger",
+          "onlyWithAttack": "attack.obsidian-fang-dagger.fang"
+        },
+        {
+          "id": "trigger.obsidian-fang-dagger.gut.strength",
+          "hook": "onHit",
+          "chance": 20,
+          "select": "target",
+          "effect": {
+            "kind": "statMod",
+            "stat": "strength",
+            "value": -1,
+            "until": "battle"
+          },
+          "source": "item.obsidian-fang-dagger",
+          "onlyWithAttack": "attack.obsidian-fang-dagger.gut"
+        },
+        {
           "id": "trigger.obsidian-fang-dagger.venomous.poison.fang",
           "hook": "onDamage",
           "chance": 100,
@@ -33168,6 +33330,34 @@ export const UNIT_PACK = {
       "abilities": [],
       "triggers": [
         {
+          "id": "trigger.obsidian-fang-dagger.fang.strength",
+          "hook": "onHit",
+          "chance": 20,
+          "select": "target",
+          "effect": {
+            "kind": "statMod",
+            "stat": "strength",
+            "value": -1,
+            "until": "battle"
+          },
+          "source": "item.obsidian-fang-dagger",
+          "onlyWithAttack": "attack.obsidian-fang-dagger.fang"
+        },
+        {
+          "id": "trigger.obsidian-fang-dagger.gut.strength",
+          "hook": "onHit",
+          "chance": 20,
+          "select": "target",
+          "effect": {
+            "kind": "statMod",
+            "stat": "strength",
+            "value": -1,
+            "until": "battle"
+          },
+          "source": "item.obsidian-fang-dagger",
+          "onlyWithAttack": "attack.obsidian-fang-dagger.gut"
+        },
+        {
           "id": "trigger.obsidian-fang-dagger.bloodletting.bleed-crit.fang",
           "hook": "onCrit",
           "chance": 100,
@@ -33214,7 +33404,36 @@ export const UNIT_PACK = {
         "attack.obsidian-fang-dagger.gut"
       ],
       "abilities": [],
-      "triggers": [],
+      "triggers": [
+        {
+          "id": "trigger.obsidian-fang-dagger.fang.strength",
+          "hook": "onHit",
+          "chance": 20,
+          "select": "target",
+          "effect": {
+            "kind": "statMod",
+            "stat": "strength",
+            "value": -1,
+            "until": "battle"
+          },
+          "source": "item.obsidian-fang-dagger",
+          "onlyWithAttack": "attack.obsidian-fang-dagger.fang"
+        },
+        {
+          "id": "trigger.obsidian-fang-dagger.gut.strength",
+          "hook": "onHit",
+          "chance": 20,
+          "select": "target",
+          "effect": {
+            "kind": "statMod",
+            "stat": "strength",
+            "value": -1,
+            "until": "battle"
+          },
+          "source": "item.obsidian-fang-dagger",
+          "onlyWithAttack": "attack.obsidian-fang-dagger.gut"
+        }
+      ],
       "base": "item.obsidian-fang-dagger",
       "enchant": "enchant.shadow-touched",
       "gaps": [
@@ -33238,6 +33457,34 @@ export const UNIT_PACK = {
       ],
       "abilities": [],
       "triggers": [
+        {
+          "id": "trigger.obsidian-fang-dagger.fang.strength",
+          "hook": "onHit",
+          "chance": 20,
+          "select": "target",
+          "effect": {
+            "kind": "statMod",
+            "stat": "strength",
+            "value": -1,
+            "until": "battle"
+          },
+          "source": "item.obsidian-fang-dagger",
+          "onlyWithAttack": "attack.obsidian-fang-dagger.fang"
+        },
+        {
+          "id": "trigger.obsidian-fang-dagger.gut.strength",
+          "hook": "onHit",
+          "chance": 20,
+          "select": "target",
+          "effect": {
+            "kind": "statMod",
+            "stat": "strength",
+            "value": -1,
+            "until": "battle"
+          },
+          "source": "item.obsidian-fang-dagger",
+          "onlyWithAttack": "attack.obsidian-fang-dagger.gut"
+        },
         {
           "id": "trigger.obsidian-fang-dagger.addling.confusion.fang",
           "hook": "onHit",
@@ -33286,6 +33533,34 @@ export const UNIT_PACK = {
       "abilities": [],
       "triggers": [
         {
+          "id": "trigger.obsidian-fang-dagger.fang.strength",
+          "hook": "onHit",
+          "chance": 20,
+          "select": "target",
+          "effect": {
+            "kind": "statMod",
+            "stat": "strength",
+            "value": -1,
+            "until": "battle"
+          },
+          "source": "item.obsidian-fang-dagger",
+          "onlyWithAttack": "attack.obsidian-fang-dagger.fang"
+        },
+        {
+          "id": "trigger.obsidian-fang-dagger.gut.strength",
+          "hook": "onHit",
+          "chance": 20,
+          "select": "target",
+          "effect": {
+            "kind": "statMod",
+            "stat": "strength",
+            "value": -1,
+            "until": "battle"
+          },
+          "source": "item.obsidian-fang-dagger",
+          "onlyWithAttack": "attack.obsidian-fang-dagger.gut"
+        },
+        {
           "id": "trigger.obsidian-fang-dagger.hobbling.slow.fang",
           "hook": "onDamage",
           "chance": 100,
@@ -33331,7 +33606,36 @@ export const UNIT_PACK = {
         "attack.obsidian-fang-dagger.gut"
       ],
       "abilities": [],
-      "triggers": [],
+      "triggers": [
+        {
+          "id": "trigger.obsidian-fang-dagger.fang.strength",
+          "hook": "onHit",
+          "chance": 20,
+          "select": "target",
+          "effect": {
+            "kind": "statMod",
+            "stat": "strength",
+            "value": -1,
+            "until": "battle"
+          },
+          "source": "item.obsidian-fang-dagger",
+          "onlyWithAttack": "attack.obsidian-fang-dagger.fang"
+        },
+        {
+          "id": "trigger.obsidian-fang-dagger.gut.strength",
+          "hook": "onHit",
+          "chance": 20,
+          "select": "target",
+          "effect": {
+            "kind": "statMod",
+            "stat": "strength",
+            "value": -1,
+            "until": "battle"
+          },
+          "source": "item.obsidian-fang-dagger",
+          "onlyWithAttack": "attack.obsidian-fang-dagger.gut"
+        }
+      ],
       "vsTarget": [
         {
           "tag": "werewolf",
@@ -35715,7 +36019,22 @@ export const UNIT_PACK = {
         "attack.elfbow.double-shot"
       ],
       "abilities": [],
-      "triggers": [],
+      "triggers": [
+        {
+          "id": "trigger.elfbow.elf-shot.precision",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "self",
+          "effect": {
+            "kind": "statMod",
+            "stat": "precision",
+            "value": 1,
+            "until": "battle"
+          },
+          "source": "item.elfbow",
+          "onlyWithAttack": "attack.elfbow.elf-shot"
+        }
+      ],
       "base": "item.elfbow",
       "enchant": "enchant.gale",
       "gaps": [
@@ -35738,7 +36057,22 @@ export const UNIT_PACK = {
         "attack.elfbow.double-shot"
       ],
       "abilities": [],
-      "triggers": [],
+      "triggers": [
+        {
+          "id": "trigger.elfbow.elf-shot.precision",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "self",
+          "effect": {
+            "kind": "statMod",
+            "stat": "precision",
+            "value": 1,
+            "until": "battle"
+          },
+          "source": "item.elfbow",
+          "onlyWithAttack": "attack.elfbow.elf-shot"
+        }
+      ],
       "base": "item.elfbow",
       "enchant": "enchant.magic"
     },
@@ -35758,7 +36092,22 @@ export const UNIT_PACK = {
         "attack.elfbow.double-shot"
       ],
       "abilities": [],
-      "triggers": [],
+      "triggers": [
+        {
+          "id": "trigger.elfbow.elf-shot.precision",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "self",
+          "effect": {
+            "kind": "statMod",
+            "stat": "precision",
+            "value": 1,
+            "until": "battle"
+          },
+          "source": "item.elfbow",
+          "onlyWithAttack": "attack.elfbow.elf-shot"
+        }
+      ],
       "base": "item.elfbow",
       "enchant": "enchant.shadow-touched",
       "gaps": [
@@ -35780,6 +36129,20 @@ export const UNIT_PACK = {
       ],
       "abilities": [],
       "triggers": [
+        {
+          "id": "trigger.elfbow.elf-shot.precision",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "self",
+          "effect": {
+            "kind": "statMod",
+            "stat": "precision",
+            "value": 1,
+            "until": "battle"
+          },
+          "source": "item.elfbow",
+          "onlyWithAttack": "attack.elfbow.elf-shot"
+        },
         {
           "id": "trigger.elfbow.rooting.root.elf-shot",
           "hook": "onDamage",
@@ -35825,6 +36188,20 @@ export const UNIT_PACK = {
       ],
       "abilities": [],
       "triggers": [
+        {
+          "id": "trigger.elfbow.elf-shot.precision",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "self",
+          "effect": {
+            "kind": "statMod",
+            "stat": "precision",
+            "value": 1,
+            "until": "battle"
+          },
+          "source": "item.elfbow",
+          "onlyWithAttack": "attack.elfbow.elf-shot"
+        },
         {
           "id": "trigger.elfbow.fire.burn.elf-shot",
           "hook": "onHit",
@@ -39705,7 +40082,22 @@ export const UNIT_PACK = {
         "attack.iron-mace.crush"
       ],
       "abilities": [],
-      "triggers": [],
+      "triggers": [
+        {
+          "id": "trigger.iron-mace.crush.armor",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "statMod",
+            "stat": "armor",
+            "value": -1,
+            "until": "battle"
+          },
+          "source": "item.iron-mace",
+          "onlyWithAttack": "attack.iron-mace.crush"
+        }
+      ],
       "base": "item.iron-mace"
     },
     "item.iron-mace.heavy": {
@@ -39721,7 +40113,22 @@ export const UNIT_PACK = {
         "attack.iron-mace.crush.heavy"
       ],
       "abilities": [],
-      "triggers": [],
+      "triggers": [
+        {
+          "id": "trigger.iron-mace.crush.armor",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "statMod",
+            "stat": "armor",
+            "value": -1,
+            "until": "battle"
+          },
+          "source": "item.iron-mace",
+          "onlyWithAttack": "attack.iron-mace.crush.heavy"
+        }
+      ],
       "base": "item.iron-mace",
       "enchant": "enchant.heavy"
     },
@@ -39738,7 +40145,22 @@ export const UNIT_PACK = {
         "attack.iron-mace.crush.keen"
       ],
       "abilities": [],
-      "triggers": [],
+      "triggers": [
+        {
+          "id": "trigger.iron-mace.crush.armor",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "statMod",
+            "stat": "armor",
+            "value": -1,
+            "until": "battle"
+          },
+          "source": "item.iron-mace",
+          "onlyWithAttack": "attack.iron-mace.crush.keen"
+        }
+      ],
       "base": "item.iron-mace",
       "enchant": "enchant.keen"
     },
@@ -39755,7 +40177,22 @@ export const UNIT_PACK = {
         "attack.iron-mace.crush.cruel"
       ],
       "abilities": [],
-      "triggers": [],
+      "triggers": [
+        {
+          "id": "trigger.iron-mace.crush.armor",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "statMod",
+            "stat": "armor",
+            "value": -1,
+            "until": "battle"
+          },
+          "source": "item.iron-mace",
+          "onlyWithAttack": "attack.iron-mace.crush.cruel"
+        }
+      ],
       "base": "item.iron-mace",
       "enchant": "enchant.cruel"
     },
@@ -40716,7 +41153,36 @@ export const UNIT_PACK = {
         "attack.obsidian-fang-dagger.gut"
       ],
       "abilities": [],
-      "triggers": [],
+      "triggers": [
+        {
+          "id": "trigger.obsidian-fang-dagger.fang.strength",
+          "hook": "onHit",
+          "chance": 20,
+          "select": "target",
+          "effect": {
+            "kind": "statMod",
+            "stat": "strength",
+            "value": -1,
+            "until": "battle"
+          },
+          "source": "item.obsidian-fang-dagger",
+          "onlyWithAttack": "attack.obsidian-fang-dagger.fang"
+        },
+        {
+          "id": "trigger.obsidian-fang-dagger.gut.strength",
+          "hook": "onHit",
+          "chance": 20,
+          "select": "target",
+          "effect": {
+            "kind": "statMod",
+            "stat": "strength",
+            "value": -1,
+            "until": "battle"
+          },
+          "source": "item.obsidian-fang-dagger",
+          "onlyWithAttack": "attack.obsidian-fang-dagger.gut"
+        }
+      ],
       "base": "item.obsidian-fang-dagger"
     },
     "item.obsidian-fang-dagger.heavy": {
@@ -40735,7 +41201,36 @@ export const UNIT_PACK = {
         "attack.obsidian-fang-dagger.gut.heavy"
       ],
       "abilities": [],
-      "triggers": [],
+      "triggers": [
+        {
+          "id": "trigger.obsidian-fang-dagger.fang.strength",
+          "hook": "onHit",
+          "chance": 20,
+          "select": "target",
+          "effect": {
+            "kind": "statMod",
+            "stat": "strength",
+            "value": -1,
+            "until": "battle"
+          },
+          "source": "item.obsidian-fang-dagger",
+          "onlyWithAttack": "attack.obsidian-fang-dagger.fang.heavy"
+        },
+        {
+          "id": "trigger.obsidian-fang-dagger.gut.strength",
+          "hook": "onHit",
+          "chance": 20,
+          "select": "target",
+          "effect": {
+            "kind": "statMod",
+            "stat": "strength",
+            "value": -1,
+            "until": "battle"
+          },
+          "source": "item.obsidian-fang-dagger",
+          "onlyWithAttack": "attack.obsidian-fang-dagger.gut.heavy"
+        }
+      ],
       "base": "item.obsidian-fang-dagger",
       "enchant": "enchant.heavy"
     },
@@ -40755,7 +41250,36 @@ export const UNIT_PACK = {
         "attack.obsidian-fang-dagger.gut.keen"
       ],
       "abilities": [],
-      "triggers": [],
+      "triggers": [
+        {
+          "id": "trigger.obsidian-fang-dagger.fang.strength",
+          "hook": "onHit",
+          "chance": 20,
+          "select": "target",
+          "effect": {
+            "kind": "statMod",
+            "stat": "strength",
+            "value": -1,
+            "until": "battle"
+          },
+          "source": "item.obsidian-fang-dagger",
+          "onlyWithAttack": "attack.obsidian-fang-dagger.fang.keen"
+        },
+        {
+          "id": "trigger.obsidian-fang-dagger.gut.strength",
+          "hook": "onHit",
+          "chance": 20,
+          "select": "target",
+          "effect": {
+            "kind": "statMod",
+            "stat": "strength",
+            "value": -1,
+            "until": "battle"
+          },
+          "source": "item.obsidian-fang-dagger",
+          "onlyWithAttack": "attack.obsidian-fang-dagger.gut.keen"
+        }
+      ],
       "base": "item.obsidian-fang-dagger",
       "enchant": "enchant.keen"
     },
@@ -40775,7 +41299,36 @@ export const UNIT_PACK = {
         "attack.obsidian-fang-dagger.gut.cruel"
       ],
       "abilities": [],
-      "triggers": [],
+      "triggers": [
+        {
+          "id": "trigger.obsidian-fang-dagger.fang.strength",
+          "hook": "onHit",
+          "chance": 20,
+          "select": "target",
+          "effect": {
+            "kind": "statMod",
+            "stat": "strength",
+            "value": -1,
+            "until": "battle"
+          },
+          "source": "item.obsidian-fang-dagger",
+          "onlyWithAttack": "attack.obsidian-fang-dagger.fang.cruel"
+        },
+        {
+          "id": "trigger.obsidian-fang-dagger.gut.strength",
+          "hook": "onHit",
+          "chance": 20,
+          "select": "target",
+          "effect": {
+            "kind": "statMod",
+            "stat": "strength",
+            "value": -1,
+            "until": "battle"
+          },
+          "source": "item.obsidian-fang-dagger",
+          "onlyWithAttack": "attack.obsidian-fang-dagger.gut.cruel"
+        }
+      ],
       "base": "item.obsidian-fang-dagger",
       "enchant": "enchant.cruel"
     },
@@ -42424,7 +42977,22 @@ export const UNIT_PACK = {
         "attack.elfbow.double-shot"
       ],
       "abilities": [],
-      "triggers": [],
+      "triggers": [
+        {
+          "id": "trigger.elfbow.elf-shot.precision",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "self",
+          "effect": {
+            "kind": "statMod",
+            "stat": "precision",
+            "value": 1,
+            "until": "battle"
+          },
+          "source": "item.elfbow",
+          "onlyWithAttack": "attack.elfbow.elf-shot"
+        }
+      ],
       "base": "item.elfbow"
     },
     "item.elfbow.heavy": {
@@ -42441,7 +43009,22 @@ export const UNIT_PACK = {
         "attack.elfbow.double-shot.heavy"
       ],
       "abilities": [],
-      "triggers": [],
+      "triggers": [
+        {
+          "id": "trigger.elfbow.elf-shot.precision",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "self",
+          "effect": {
+            "kind": "statMod",
+            "stat": "precision",
+            "value": 1,
+            "until": "battle"
+          },
+          "source": "item.elfbow",
+          "onlyWithAttack": "attack.elfbow.elf-shot.heavy"
+        }
+      ],
       "base": "item.elfbow",
       "enchant": "enchant.heavy"
     },
@@ -42459,7 +43042,22 @@ export const UNIT_PACK = {
         "attack.elfbow.double-shot.keen"
       ],
       "abilities": [],
-      "triggers": [],
+      "triggers": [
+        {
+          "id": "trigger.elfbow.elf-shot.precision",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "self",
+          "effect": {
+            "kind": "statMod",
+            "stat": "precision",
+            "value": 1,
+            "until": "battle"
+          },
+          "source": "item.elfbow",
+          "onlyWithAttack": "attack.elfbow.elf-shot.keen"
+        }
+      ],
       "base": "item.elfbow",
       "enchant": "enchant.keen"
     },
@@ -42477,7 +43075,22 @@ export const UNIT_PACK = {
         "attack.elfbow.double-shot.cruel"
       ],
       "abilities": [],
-      "triggers": [],
+      "triggers": [
+        {
+          "id": "trigger.elfbow.elf-shot.precision",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "self",
+          "effect": {
+            "kind": "statMod",
+            "stat": "precision",
+            "value": 1,
+            "until": "battle"
+          },
+          "source": "item.elfbow",
+          "onlyWithAttack": "attack.elfbow.elf-shot.cruel"
+        }
+      ],
       "base": "item.elfbow",
       "enchant": "enchant.cruel"
     },
@@ -42495,7 +43108,22 @@ export const UNIT_PACK = {
         "attack.elfbow.double-shot.far"
       ],
       "abilities": [],
-      "triggers": [],
+      "triggers": [
+        {
+          "id": "trigger.elfbow.elf-shot.precision",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "self",
+          "effect": {
+            "kind": "statMod",
+            "stat": "precision",
+            "value": 1,
+            "until": "battle"
+          },
+          "source": "item.elfbow",
+          "onlyWithAttack": "attack.elfbow.elf-shot.far"
+        }
+      ],
       "base": "item.elfbow",
       "enchant": "enchant.far"
     },
@@ -42513,7 +43141,22 @@ export const UNIT_PACK = {
         "attack.elfbow.double-shot.long"
       ],
       "abilities": [],
-      "triggers": [],
+      "triggers": [
+        {
+          "id": "trigger.elfbow.elf-shot.precision",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "self",
+          "effect": {
+            "kind": "statMod",
+            "stat": "precision",
+            "value": 1,
+            "until": "battle"
+          },
+          "source": "item.elfbow",
+          "onlyWithAttack": "attack.elfbow.elf-shot.long"
+        }
+      ],
       "base": "item.elfbow",
       "enchant": "enchant.long"
     },
