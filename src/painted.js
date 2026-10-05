@@ -58,6 +58,31 @@ export function toneScene(root, tone) {
 }
 const hex = buf => Array.from(new Uint8Array(buf), n => n.toString(16).padStart(2, '0')).join('')
 
+/* viewer.bodies-life-size (engine DECISIONS.md 2026-10-05 'the playtest post answered: … a body on the ground is the size of a
+   living unit lying down', Andrew: "The bodies on the terrain are smaller than they should be." · "The body should be the size
+   of living units lying down, yes."): the bodies that lie on a painted scene are models made at a person's real size, and the
+   board stands every unit's body larger than that (the size look: stand-out.js bodyScale, 1.44 against its hex). Each of the
+   scene's bodies takes that same number — the one the unit beside it is drawn at, handed in by the driver — about its own
+   place on the ground: where it lies and how it is turned are untouched, and a body lying on another rides as much higher.
+   WHICH things are bodies is the pack's (tools/painted-scenes.mjs: the scene's own record, related to its file's nodes by
+   place); a pack that names a body the scene does not hold is a failure, never a skipped body (Law 1). Nothing is measured. */
+const SAME_PLACE = 1e-3
+export function scaleBodies(root, bodies, k) {
+  if (!(k > 0)) throw new Error('painted scene: the body scale is not a positive number')
+  root.updateMatrixWorld(true)
+  const here = new THREE.Vector3(), at = (o, p) => { o.getWorldPosition(here); return Math.abs(here.x - p[0]) < SAME_PLACE && Math.abs(here.z - p[2]) < SAME_PLACE }
+  for (const b of bodies) {
+    /* the scene's nodes that stand at the body's place: the topmost object there (a node of several parts is a group, its parts inside it) */
+    const found = []
+    root.traverse(o => { if (o === root || !at(o, b.at)) return; for (let p = o.parent; p && p !== root; p = p.parent) if (at(p, b.at)) return; found.push(o) })
+    if (!found.length) throw new Error(`painted scene: the body at ${b.at.map(n => n.toFixed(2)).join(', ')} is not in the scene`)
+    if (found.length !== b.nodes) throw new Error(`painted scene: the place ${b.at.map(n => n.toFixed(2)).join(', ')} holds ${found.length} of the ${b.nodes} parts its body was packed with`)
+    for (const o of found) { o.scale.multiplyScalar(k); o.position.y *= k; o.userData.body = true }
+  }
+  root.updateMatrixWorld(true)
+  return bodies.length
+}
+
 /** fetch the scene, refuse it unless it is the scene the hexes were measured on, and parse it */
 export async function loadPaintedScene(b, platform = {}) {
   const cancelled = () => platform.cancelled?.() === true
@@ -79,6 +104,8 @@ export async function loadPaintedScene(b, platform = {}) {
     for (const m of [].concat(o.material)) if (o.name.startsWith('River_Water')) { m.roughness = .34; m.metalness = .18 }
   })
   if (platform.tone) toneScene(root, platform.tone)
+  /* viewer.bodies-life-size: the scene's bodies at the size the board draws a unit's (the look's number; none, or 1: as made) */
+  if (b.bodies?.length && platform.bodyScale != null && platform.bodyScale !== 1) scaleBodies(root, b.bodies, platform.bodyScale)
   const group = new THREE.Group(); group.name = 'painted:' + b.scene; group.add(root)
   /* viewer.caravan-scene (2026-10-01): the scene's presentation profile (tools/presentation-profile.mjs) — its decorative
      surroundings, its fires and its cursed fog, all as the accepted caravan preview draws them (assets/battle-atlas/
