@@ -28,12 +28,19 @@ describe('kingdom.reads-engine — what the engine opens to the kingdom', () => 
     expect(hero.usesLeft['attack.net.cast']).toBe(1)
   })
 
-  it('K3: fieldedPreview is the unit the battle fields, its set bonuses (heroMods) included', () => {
+  // Law 10, 2026-10-05 — capability.set-bonus (DECISIONS.md 2026-10-04 'his 28 reward weapons read back …': "We need: … set bonus"): this test was titled "K3: fieldedPreview is the unit the battle fields, its set bonuses
+  // (heroMods) included" and handed the chain set's numbers in itself:
+  //   const heroMods = { stats: [{ stat: 'precision' as const, add: 2, source: 'item.chains-of-the-wrathful' }, { stat: 'maxHp' as const, add: 1, source: 'item.chains-of-the-wrathful' }] }
+  //   expect(preview.precision).toBe(bare.precision + 2)   expect(preview.maxHp).toBe(bare.maxHp + 1)
+  // The set is the engine's own count now (two chain items carried: +2 Precision), so nobody hands it in; what a fielding
+  // hands in (a drafted gift) still adds. The claim is unchanged: the preview is the unit the battle fields, every mod in it.
+  it('K3: fieldedPreview is the unit the battle fields - its sets\' pay (the engine\'s count) and the mods handed in', () => {
     const items = ['item.chains-of-the-wrathful', 'item.chains-of-the-faithful']
-    const heroMods = { stats: [{ stat: 'precision' as const, add: 2, source: 'item.chains-of-the-wrathful' }, { stat: 'maxHp' as const, add: 1, source: 'item.chains-of-the-wrathful' }] }
+    const heroMods = { stats: [{ stat: 'precision' as const, add: 2, source: 'test.gift' }, { stat: 'maxHp' as const, add: 1, source: 'test.gift' }] }
     const preview = fieldedPreview('hero.base.priest-armored', { items, heroMods })
     const bare = fieldedDef('hero.base.priest-armored', { items })
-    expect(preview.precision).toBe(bare.precision + 2)
+    expect(fieldedPreview('hero.base.priest-armored', { items }).precision).toBe(bare.precision + 2)   // the chain set: two chain items carried
+    expect(preview.precision).toBe(bare.precision + 2 + 2)
     expect(preview.maxHp).toBe(bare.maxHp + 1)
     const ctx = createBattle({ scenarioId: 'probe.mods', replicate: 1, heroes: ['hero.base.priest-armored'], heroItems: [items], heroMods: [heroMods], enemies: ['unit.zombie'], enemyCount: 1, mapId: 'map.open' })
     const u = ctx.state.units.find((x) => x.side === 'hero')!

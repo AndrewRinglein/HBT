@@ -3,7 +3,7 @@
 // clearly differentiated text. We're not hardcoding." The pack file itself is
 // GENERATED (content/mkenginepack.mjs) and never hand-edited; this loader
 // validates it LOUDLY at import time (Law 9) and hands back plain UnitDefs.
-import { validateBurstAction } from '../core/burst-profile.js'
+import { sideStatChange, validateBurstAction } from '../core/burst-profile.js'
 import { isDamageType } from '../core/types.js'
 import { attackPacketFields } from '../core/attack-profile.js'
 import { UNIT_PACK } from './generated/pack.js'
@@ -139,6 +139,7 @@ export function packAbilities(): Readonly<Record<string, AbilityDef>> {
     if (!a.effects && !a.burst) throw new Error(`unit pack: power '${k}' carries no effects list — regenerate the pack`)
     for (const e of a.effects ?? []) if (!EFFECT_KINDS.includes(e.kind)) throw new Error(`unit pack: power '${k}' has an effect of kind '${String((e as { kind: string }).kind)}'`)
     validateHexPower(a, `unit pack: power '${k}'`)
+    for (const e of a.effects ?? []) if (e.kind === 'side.stat') sideStatChange(e, `unit pack: power '${k}'`)   // capability.raise-lower-magic
   }
   return raw
 }
@@ -449,6 +450,28 @@ export function packItems(attacks: Readonly<Record<string, AttackDef>>, abilitie
     for (const a of it.abilities) if (!abilities[a] && !bursts[a]) throw new Error(`item pack: '${k}' grants power '${a}', which is not in the pack's abilities`)
     for (const t of it.triggers) { validateTrigger(t); if (t.source !== k) throw new Error(`item pack: '${k}' carries a trigger sourced '${t.source}'`) }
     validateVsTarget(it.vsTarget, `item pack: '${k}'`)
+    // capability.set-bonus (2026-10-05): the set tags and the set block, as the engine reads them (core/items.ts setLinesOf)
+    if (it.setTags !== undefined && (!Array.isArray(it.setTags) || !it.setTags.length || it.setTags.some((t) => typeof t !== 'string' || !t))) throw new Error(`item pack: '${k}' has setTags that is not a list of tags`)
+    const sb = it.setBonus
+    if (sb !== undefined) {
+      const where = `item pack: '${k}' setBonus`
+      if (sb === null || typeof sb !== 'object' || typeof sb.tag !== 'string' || !sb.tag) throw new Error(`${where} names no tag`)
+      const payload = (o: unknown, what: string) => {
+        if (o === null || typeof o !== 'object' || !Object.keys(o).length) throw new Error(`${where} ${what} pays nothing`)
+        for (const [s, v] of Object.entries(o as Record<string, unknown>)) {
+          if (s === 'attackDamage' ? !(it.grants.length > 0) : !STATS.includes(s)) throw new Error(`${where} ${what} pays '${s}', which is not an engine stat (or damage on attacks it does not grant)`)
+          if (!Number.isSafeInteger(v) || v === 0) throw new Error(`${where} ${what} ${s} is not a whole number`)
+        }
+      }
+      if (sb.each !== undefined) {
+        if (sb.at !== undefined || sb.once !== undefined) throw new Error(`${where} is both an each block and an at-count block`)
+        if (sb.withItself !== undefined && sb.withItself !== true) throw new Error(`${where} withItself is true or absent`)
+        payload(sb.each, 'each')
+      } else {
+        if (!Number.isSafeInteger(sb.at) || sb.at! < 1 || sb.withItself !== undefined) throw new Error(`${where} pays nothing - each{}, or a whole at with once{}`)
+        payload(sb.once, 'once')
+      }
+    }
   }
   return raw
 }
@@ -486,6 +509,7 @@ export function packClassPowers(): Readonly<Record<string, AbilityDef>> {
     if (!Array.isArray(a.effects)) throw new Error(`class powers: '${k}' carries no effects list — regenerate the pack`)
     for (const e of a.effects) if (!EFFECT_KINDS.includes(e.kind)) throw new Error(`class powers: '${k}' has an effect of kind '${String((e as { kind: string }).kind)}'`)
     validateHexPower(a, `class powers: '${k}'`)
+    for (const e of a.effects) if (e.kind === 'side.stat') sideStatChange(e, `class powers: '${k}'`)   // capability.raise-lower-magic
     if (!a.target) throw new Error(`class powers: '${k}' has no targeting`)
     if (a.effects.length === 0 && !(a.gaps && a.gaps.length)) throw new Error(`class powers: '${k}' compiled nothing and names no gap — the converter must say why`)
   }

@@ -1,0 +1,113 @@
+
+ RUN  v4.1.11 C:/Users/aring/Desktop/HBT-worker-engine/engine
+
+ ❯ test/set-bonus.test.ts (7 tests | 6 failed) 11ms
+     × his five rows carry their set line as written - every member carried - and the members carry the tag it counts 5ms
+     × "for every … you carry": every member carried, the carrier among them when it bears the tag 1ms
+     × "per other" (GEAR-DESIGN §5: three slaying weapons, +2 each) and "at count" (three shadows items, +20 Crit, once) are the same function 0ms
+     × the set pays the unit when it is fielded: the Chains alone +1 Precision, with another chain item +2; an item with no set line changes nothing 2ms
+     × a member that is stowed is still carried: the count is over everything the unit brings, and a swap in the battle changes none of it 1ms
+     × in a real battle: one line per item that pays, the party's Magic takes the Staff of the Magi's share, and the Destroyer's attacks deal the set's damage 0ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 6 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/set-bonus.test.ts > the rows > his five rows carry their set line as written - every member carried - and the members carry the tag it counts
+AssertionError: expected undefined to deeply equal { tag: 'ring', …(2) }
+
+- Expected:
+{
+  "each": {
+    "magic": 1,
+  },
+  "tag": "ring",
+  "withItself": true,
+}
+
++ Received:
+undefined
+
+ ❯ test/set-bonus.test.ts:27:35
+     25| describe('the rows', () => {
+     26|   it('his five rows carry their set line as written - every member car…
+     27|     expect(ITEMS[MAGI]!.setBonus).toEqual({ tag: 'ring', each: { magic…
+       |                                   ^
+     28|     expect(ITEMS[DESTROYER]!.setBonus).toEqual({ tag: 'destroyer', eac…
+     29|     expect(ITEMS[ULTIMATE]!.setBonus).toEqual({ tag: 'destroyer', each…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/6]⎯
+
+ FAIL  test/set-bonus.test.ts > the count: one rule, three wordings > "for every … you carry": every member carried, the carrier among them when it bears the tag
+TypeError: setLinesOf is not a function
+ ❯ test/set-bonus.test.ts:45:12
+     43| describe('the count: one rule, three wordings', () => {
+     44|   it('"for every … you carry": every member carried, the carrier among…
+     45|     expect(setLinesOf(rows(CHAINS))).toEqual([{ itemId: CHAINS, tag: '…
+       |            ^
+     46|     expect(setLinesOf(rows(CHAINS, FAITHFUL))[0]).toMatchObject({ coun…
+     47|     expect(setLinesOf(rows(KARMA, TOME))).toEqual([{ itemId: KARMA, ta…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/6]⎯
+
+ FAIL  test/set-bonus.test.ts > the count: one rule, three wordings > "per other" (GEAR-DESIGN §5: three slaying weapons, +2 each) and "at count" (three shadows items, +20 Crit, once) are the same function
+TypeError: setLinesOf is not a function
+ ❯ test/set-bonus.test.ts:58:12
+     56|     const slaying = { tag: 'slaying', each: { attackDamage: 1 } }
+     57|     const three = [row('item.a', ['slaying'], slaying), row('item.b', …
+     58|     expect(setLinesOf(three).map((l) => [l.shape, l.count, l.attackDam…
+       |            ^
+     59|     expect(setLinesOf([three[0]!])).toEqual([])   // alone it pays not…
+     60|     const shadows = { tag: 'shadows', at: 3, once: { crit: 20 } }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/6]⎯
+
+ FAIL  test/set-bonus.test.ts > fielded > the set pays the unit when it is fielded: the Chains alone +1 Precision, with another chain item +2; an item with no set line changes nothing
+AssertionError: expected +0 to be 1 // Object.is equality
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ test/set-bonus.test.ts:75:46
+     73|     const alone = fieldedPreview(PRIEST, { items: [CHAINS] }), two = f…
+     74|     const faithful = fieldedPreview(PRIEST, { items: ['item.holy-texts…
+     75|     expect(alone.precision - bare.precision).toBe(1)
+       |                                              ^
+     76|     expect(two.precision - faithful.precision).toBe(2)
+     77|     // the def the battle makes carries no set number: the set is the …
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/6]⎯
+
+ FAIL  test/set-bonus.test.ts > fielded > a member that is stowed is still carried: the count is over everything the unit brings, and a swap in the battle changes none of it
+TypeError: Cannot read properties of undefined (reading 'replicate')
+ ❯ scenarioOptions src/content/scenarios.ts:901:71
+    899|  * battles gave the party: levels and items, fielded instead of the bu…
+    900|  */
+    901| export function scenarioOptions(s: ScenarioDef, replicate: number = s.…
+       |                                                                       ^
+    902|   // fix.opening-levels: a carry (the kingdom's run through the openin…
+    903|   if (carry && !s.openingPosition) throw new Error(`scenario '${s.id}'…
+ ❯ test/set-bonus.test.ts:83:30
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/6]⎯
+
+ FAIL  test/set-bonus.test.ts > fielded > in a real battle: one line per item that pays, the party's Magic takes the Staff of the Magi's share, and the Destroyer's attacks deal the set's damage
+TypeError: Cannot read properties of undefined (reading 'replicate')
+ ❯ scenarioOptions src/content/scenarios.ts:901:71
+    899|  * battles gave the party: levels and items, fielded instead of the bu…
+    900|  */
+    901| export function scenarioOptions(s: ScenarioDef, replicate: number = s.…
+       |                                                                       ^
+    902|   // fix.opening-levels: a carry (the kingdom's run through the openin…
+    903|   if (carry && !s.openingPosition) throw new Error(`scenario '${s.id}'…
+ ❯ test/set-bonus.test.ts:88:30
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/6]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  6 failed | 1 passed (7)
+   Start at  11:41:38
+   Duration  1.24s (transform 864ms, setup 0ms, import 1.09s, tests 11ms, environment 0ms)
+

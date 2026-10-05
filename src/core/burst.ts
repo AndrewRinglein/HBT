@@ -8,7 +8,7 @@ import { attackLineClear, segmentCrossesCell } from './los.js'
 import { centerPoint, segmentCrossesPolygon } from './geometry.js'
 import { canSeeHex } from './vision.js'
 import { isBlocked, outgoingPenalty, spendAbsorb } from './status.js'
-import { applyAttackPackets, applyHealing, beginBurst, breakStatuses, damageProp, emit, unit } from './mutate.js'
+import { applyAttackPackets, applyHealing, beginBurst, breakStatuses, changeSideStat, damageProp, emit, unit } from './mutate.js'
 import { propsTouching } from './props.js'
 import { DMG, finishDamage, planPackets, resolveSourceDamage, type LedgerRow, type PacketRow } from './pipeline.js'
 import { fireTriggers, HOOKS, type BurstAdjustment } from './trigger.js'
@@ -65,7 +65,7 @@ function prepare(ctx: Ctx, actor: Unit, centre: number, a: BurstDef) {
     .sort((x, y) => x.uid - y.uid).map(u => ({ id: u.id, uid: u.uid, hex: u.hex,
       shielded: burstCrossings(ctx, centre, u.hex, 'high'), low: burstCrossings(ctx, centre, u.hex, 'low') }))
   const payload = a.burst.packets.map(p => ({ id: p.id, damageType: p.damageType,
-    ...resolveSourceDamage(ctx, actor, { id: a.id, ...(p.stat ? { stat: p.stat } : {}), bonus: p.amount, damageType: p.damageType, ...(p.powerScale !== undefined ? { powerScale: p.powerScale } : {}) }, outgoingPenalty(ctx, actor)) }))
+    ...resolveSourceDamage(ctx, actor, { id: a.id, ...(p.stat ? { stat: p.stat } : {}), ...(p.statMult !== undefined ? { statMult: p.statMult } : {}), bonus: p.amount, damageType: p.damageType, ...(p.powerScale !== undefined ? { powerScale: p.powerScale } : {}) }, outgoingPenalty(ctx, actor)) }))
   return { hexes, targets, payload, heal: a.burst.heal ?? 0 }
 }
 
@@ -124,7 +124,9 @@ export function previewBurst(ctx: Ctx, actorId: number, centre: number, actionId
   return { centre, hexes: prepared.hexes, targets, damage: targets.reduce((n, t) => n + t.damage, 0), heal: targets.reduce((n, t) => n + t.heal, 0),
     // capability.burst-paints-ground: the ground the burst will leave, named before it is used. The entry beat of
     // that ground on the units standing there is not forecast here (the ground's own rows say what it gives).
-    ...(a.burst.paints !== undefined ? { paints: { layer: a.burst.paints, hexes: prepared.hexes } } : {}) }
+    ...(a.burst.paints !== undefined ? { paints: { layer: a.burst.paints, hexes: prepared.hexes } } : {}),
+    // capability.raise-lower-magic: what using it will do to the sides' party stats, named before it is used
+    ...(a.burst.sideStats !== undefined ? { sideStats: a.burst.sideStats } : {}) }
 }
 
 export function useBurst(ctx: Ctx, actorId: number, centre: number, actionId: string, slot?: import('./types.js').ActionSlot): void {
@@ -167,5 +169,8 @@ export function useBurst(ctx: Ctx, actorId: number, centre: number, actionId: st
   // unit there or not - once, after the recipients are struck and before the settle. Through paintGround, the
   // one rule: a standing unit on a painted hex takes that layer's entry beat (SWITCHES.md burstGroundEntryBeat).
   if (a.burst.paints !== undefined && !ctx.state.outcome) paintGround(ctx, prepared.hexes, layerOfId(a.burst.paints), a.id)
+  // capability.raise-lower-magic (2026-10-05): "Using it lowers the party's Magic by 1 AND the enemy side's Power by 1" —
+  // after the recipients are struck, so this use is dealt on the stat as it stood and the next on the changed one
+  if (!ctx.state.outcome) for (const c of a.burst.sideStats ?? []) changeSideStat(ctx, actor.side, c, a.id, actorId)
   settle(ctx, a.id)
 }

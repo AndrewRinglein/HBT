@@ -12396,6 +12396,44 @@ export const UNIT_PACK = {
       },
       "source": "item",
       "free": false
+    },
+    "power.staff-of-the-magi.vortex": {
+      "id": "power.staff-of-the-magi.vortex",
+      "name": "Vortex",
+      "staminaCost": 3,
+      "cooldown": 0,
+      "range": 5,
+      "burst": {
+        "shape": {
+          "kind": "radius",
+          "radius": 1
+        },
+        "side": "any",
+        "packets": [
+          {
+            "id": "base",
+            "damageType": "magic",
+            "amount": 0,
+            "stat": "magic",
+            "statMult": 3
+          }
+        ],
+        "sideStats": [
+          {
+            "stat": "magic",
+            "side": "own",
+            "value": -1,
+            "until": "battle"
+          },
+          {
+            "stat": "power",
+            "value": -1,
+            "until": "battle"
+          }
+        ]
+      },
+      "source": "item",
+      "free": false
     }
   },
   "prologueParty": [
@@ -15466,7 +15504,10 @@ export const UNIT_PACK = {
         "attack.ancient-tome.long-passage"
       ],
       "abilities": [],
-      "triggers": []
+      "triggers": [],
+      "setTags": [
+        "book"
+      ]
     },
     "item.holy-texts": {
       "id": "item.holy-texts",
@@ -15932,6 +15973,9 @@ export const UNIT_PACK = {
           "source": "item.book-of-exorcisms",
           "onlyWithAttack": "attack.book-of-exorcisms.rite-of-expulsion"
         }
+      ],
+      "setTags": [
+        "book"
       ]
     },
     "item.cursed-sand-blade": {
@@ -16014,6 +16058,9 @@ export const UNIT_PACK = {
           "source": "item.boarding-hook",
           "onlyWithAttack": "attack.boarding-hook.drag-down"
         }
+      ],
+      "setTags": [
+        "chain"
       ]
     },
     "item.mirage-dagger": {
@@ -16114,6 +16161,9 @@ export const UNIT_PACK = {
       ],
       "abilities": [],
       "triggers": [],
+      "setTags": [
+        "chain"
+      ],
       "gaps": [
         "onAttack: apply 2 Burn to the target — trigger shape unparsed"
       ]
@@ -16962,6 +17012,9 @@ export const UNIT_PACK = {
       "grants": [],
       "abilities": [],
       "triggers": [],
+      "setTags": [
+        "chain"
+      ],
       "gaps": [
         "aura: AURA radius 2 -- allies inside have Immunity to Bu — hook: aura (declared, engine never fires it)"
       ]
@@ -17276,7 +17329,10 @@ export const UNIT_PACK = {
       },
       "grants": [],
       "abilities": [],
-      "triggers": []
+      "triggers": [],
+      "setTags": [
+        "chain"
+      ]
     },
     "item.storm-bastion": {
       "id": "item.storm-bastion",
@@ -17622,6 +17678,9 @@ export const UNIT_PACK = {
       ],
       "abilities": [],
       "triggers": [],
+      "setTags": [
+        "chain"
+      ],
       "gaps": [
         "grants power.priest-chain.benediction — item power — shape unparsed"
       ]
@@ -18010,11 +18069,19 @@ export const UNIT_PACK = {
       "classRestriction": "class.mage",
       "statModifiers": {},
       "grants": [],
-      "abilities": [],
+      "abilities": [
+        "power.staff-of-the-magi.vortex"
+      ],
       "triggers": [],
+      "setBonus": {
+        "tag": "ring",
+        "each": {
+          "magic": 1
+        },
+        "withItself": true
+      },
       "gaps": [
-        "grants power.staff-of-the-magi.power-ward — item power — shape unparsed",
-        "grants power.staff-of-the-magi.vortex — item power — shape unparsed"
+        "grants power.staff-of-the-magi.power-ward — item power — shape unparsed"
       ]
     },
     "item.staff-of-the-destroyer": {
@@ -18045,7 +18112,17 @@ export const UNIT_PACK = {
           "source": "item.staff-of-the-destroyer",
           "onlyWithAttack": "attack.staff-of-the-destroyer.sundering"
         }
-      ]
+      ],
+      "setTags": [
+        "destroyer"
+      ],
+      "setBonus": {
+        "tag": "destroyer",
+        "each": {
+          "attackDamage": 1
+        },
+        "withItself": true
+      }
     },
     "item.staff-of-the-ultimate-destroyer": {
       "id": "item.staff-of-the-ultimate-destroyer",
@@ -18062,7 +18139,17 @@ export const UNIT_PACK = {
       "abilities": [
         "power.staff-of-the-ultimate-destroyer.perfect-sight"
       ],
-      "triggers": []
+      "triggers": [],
+      "setTags": [
+        "destroyer"
+      ],
+      "setBonus": {
+        "tag": "destroyer",
+        "each": {
+          "attackDamage": 1
+        },
+        "withItself": true
+      }
     },
     "item.chains-of-the-wrathful": {
       "id": "item.chains-of-the-wrathful",
@@ -18078,6 +18165,16 @@ export const UNIT_PACK = {
       ],
       "abilities": [],
       "triggers": [],
+      "setTags": [
+        "chain"
+      ],
+      "setBonus": {
+        "tag": "chain",
+        "each": {
+          "precision": 1
+        },
+        "withItself": true
+      },
       "gaps": [
         "grants power.chains-of-the-wrathful.weight-of-sin — item power — shape unparsed"
       ]
@@ -18111,6 +18208,16 @@ export const UNIT_PACK = {
       "grants": [],
       "abilities": [],
       "triggers": [],
+      "setTags": [
+        "book"
+      ],
+      "setBonus": {
+        "tag": "book",
+        "each": {
+          "resist": 1
+        },
+        "withItself": true
+      },
       "gaps": [
         "grants power.book-of-karma.balance-the-ledger — item power — shape unparsed"
       ]
@@ -18530,6 +18637,9 @@ export const UNIT_PACK = {
       "grants": [],
       "abilities": [],
       "triggers": [],
+      "setTags": [
+        "ring"
+      ],
       "gaps": [
         "active: Free. This is not movement and cannot be interrupt — an ability with charges/targets — capability.consumables"
       ]
@@ -19245,7 +19355,10 @@ export const UNIT_PACK = {
       },
       "grants": [],
       "abilities": [],
-      "triggers": []
+      "triggers": [],
+      "setTags": [
+        "book"
+      ]
     },
     "item.quartermasters-manifest": {
       "id": "item.quartermasters-manifest",
@@ -20199,6 +20312,9 @@ export const UNIT_PACK = {
       "grants": [],
       "abilities": [],
       "triggers": [],
+      "setTags": [
+        "ring"
+      ],
       "gaps": [
         "startOfBattle: gain Protection equal to 4 + the party's Spirit — trigger shape unparsed"
       ]
@@ -23085,6 +23201,68 @@ export const UNIT_PACK = {
           }
         ],
         "typeId": "test-raiser"
+      },
+      {
+        "typeId": "test-swell-mage",
+        "name": "Swell Mage (TEST)",
+        "side": "hero",
+        "maxHp": 6,
+        "armor": 0,
+        "resist": 0,
+        "accuracy": 75,
+        "dodge": 0,
+        "toughness": 2,
+        "strength": 0,
+        "precision": 3,
+        "magic": 2,
+        "spirit": 0,
+        "role": "ranged",
+        "movement": 5,
+        "reach": 3,
+        "maxStamina": 5,
+        "staminaRegen": 1,
+        "ai": "ranged-kite",
+        "attacks": [
+          "attack.test-mage.staff",
+          "attack.test-mage.strike"
+        ],
+        "abilities": [
+          "power.test-mage.swell"
+        ],
+        "tags": [
+          "hero",
+          "class.mage"
+        ],
+        "moves": [
+          "power.move",
+          "power.focus"
+        ],
+        "triggers": [
+          {
+            "id": "test.mage.dampen",
+            "hook": "onHit",
+            "chance": 20,
+            "select": "target",
+            "effect": {
+              "kind": "status.apply",
+              "statusId": "test.status.enfeeble",
+              "value": 1
+            },
+            "source": "unit.test-swell-mage"
+          },
+          {
+            "id": "test.mage.arcane-ward",
+            "hook": "onTakingDamage",
+            "chance": 100,
+            "select": "self",
+            "effect": {
+              "kind": "status.apply",
+              "statusId": "status.protection",
+              "value": 3
+            },
+            "source": "unit.test-swell-mage"
+          }
+        ]
       }
     ],
     "attacks": {
@@ -23468,6 +23646,26 @@ export const UNIT_PACK = {
             "who": "self"
           }
         ]
+      },
+      "power.test-mage.swell": {
+        "id": "power.test-mage.swell",
+        "name": "Swell (TEST)",
+        "range": 0,
+        "target": {
+          "select": "self",
+          "side": "any"
+        },
+        "effects": [
+          {
+            "kind": "side.stat",
+            "stat": "magic",
+            "side": "own",
+            "value": 2,
+            "until": "endOfNextTurn"
+          }
+        ],
+        "staminaCost": 1,
+        "cooldown": 6
       }
     },
     "statuses": {
@@ -37185,6 +37383,9 @@ export const UNIT_PACK = {
       ],
       "abilities": [],
       "triggers": [],
+      "setTags": [
+        "book"
+      ],
       "base": "item.ancient-tome",
       "enchant": "enchant.lightning",
       "gaps": [
@@ -37236,6 +37437,9 @@ export const UNIT_PACK = {
           "onlyWithAttack": "attack.ancient-tome.long-passage"
         }
       ],
+      "setTags": [
+        "book"
+      ],
       "base": "item.ancient-tome",
       "enchant": "enchant.eternal-ice",
       "gaps": [
@@ -37260,6 +37464,9 @@ export const UNIT_PACK = {
       ],
       "abilities": [],
       "triggers": [],
+      "setTags": [
+        "book"
+      ],
       "base": "item.ancient-tome",
       "enchant": "enchant.cursed-skull",
       "gaps": [
@@ -40417,6 +40624,9 @@ export const UNIT_PACK = {
       ],
       "abilities": [],
       "triggers": [],
+      "setTags": [
+        "chain"
+      ],
       "gaps": [
         "grants power.priest-chain.benediction — item power — shape unparsed",
         "enchant onHit: if the target is undead, demon or vampire, apply 2 — trigger shape unparsed"
@@ -40452,6 +40662,9 @@ export const UNIT_PACK = {
       ],
       "abilities": [],
       "triggers": [],
+      "setTags": [
+        "chain"
+      ],
       "gaps": [
         "grants power.priest-chain.benediction — item power — shape unparsed",
         "enchant onKill: if the target was undead, heal 2 — trigger shape unparsed"
@@ -40479,6 +40692,9 @@ export const UNIT_PACK = {
       ],
       "abilities": [],
       "triggers": [],
+      "setTags": [
+        "chain"
+      ],
       "gaps": [
         "grants power.priest-chain.benediction — item power — shape unparsed",
         "enchant onDamage: heal for half your Spirit, rounded down — trigger shape unparsed"
@@ -40502,6 +40718,9 @@ export const UNIT_PACK = {
       ],
       "abilities": [],
       "triggers": [],
+      "setTags": [
+        "chain"
+      ],
       "gaps": [
         "grants power.priest-chain.benediction — item power — shape unparsed"
       ],
@@ -44384,6 +44603,9 @@ export const UNIT_PACK = {
       ],
       "abilities": [],
       "triggers": [],
+      "setTags": [
+        "book"
+      ],
       "base": "item.ancient-tome"
     },
     "item.ancient-tome.heavy": {
@@ -44401,6 +44623,9 @@ export const UNIT_PACK = {
       ],
       "abilities": [],
       "triggers": [],
+      "setTags": [
+        "book"
+      ],
       "base": "item.ancient-tome",
       "enchant": "enchant.heavy"
     },
@@ -44419,6 +44644,9 @@ export const UNIT_PACK = {
       ],
       "abilities": [],
       "triggers": [],
+      "setTags": [
+        "book"
+      ],
       "base": "item.ancient-tome",
       "enchant": "enchant.keen"
     },
@@ -44437,6 +44665,9 @@ export const UNIT_PACK = {
       ],
       "abilities": [],
       "triggers": [],
+      "setTags": [
+        "book"
+      ],
       "base": "item.ancient-tome",
       "enchant": "enchant.cruel"
     },
@@ -46730,6 +46961,9 @@ export const UNIT_PACK = {
       ],
       "abilities": [],
       "triggers": [],
+      "setTags": [
+        "chain"
+      ],
       "base": "item.priest-chain",
       "gaps": [
         "grants power.priest-chain.benediction — item power — shape unparsed"
@@ -46749,6 +46983,9 @@ export const UNIT_PACK = {
       ],
       "abilities": [],
       "triggers": [],
+      "setTags": [
+        "chain"
+      ],
       "base": "item.priest-chain",
       "enchant": "enchant.heavy",
       "gaps": [
@@ -46769,6 +47006,9 @@ export const UNIT_PACK = {
       ],
       "abilities": [],
       "triggers": [],
+      "setTags": [
+        "chain"
+      ],
       "base": "item.priest-chain",
       "enchant": "enchant.keen",
       "gaps": [
@@ -46789,6 +47029,9 @@ export const UNIT_PACK = {
       ],
       "abilities": [],
       "triggers": [],
+      "setTags": [
+        "chain"
+      ],
       "base": "item.priest-chain",
       "enchant": "enchant.cruel",
       "gaps": [

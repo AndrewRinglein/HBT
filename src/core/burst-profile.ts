@@ -17,8 +17,16 @@ function dense(value: unknown, max: number): asserts value is any[] {
 }
 const integer = (v: unknown, min = 0, max = LIMIT): v is number => typeof v === 'number' && Number.isSafeInteger(v) && v >= min && v <= max
 
+/** capability.raise-lower-magic: one change to a side's party stat, as a row may write it — refused loudly otherwise (pack.ts reads this too). */
+export function sideStatChange(c: unknown, where: string): void {
+  record(c, ['kind', 'stat', 'side', 'value', 'until', 'who'])
+  if (!['magic', 'spirit', 'power'].includes(c.stat)) throw Error(`${where}: a side's party stat is magic, spirit or power`)
+  if (c.stat === 'power' ? c.side !== undefined : c.side !== 'own' && c.side !== 'enemy') throw Error(`${where}: Magic and Spirit name whose - own or enemy; Power is the enemy side's and names none`)
+  if (typeof c.value !== 'number' || !Number.isSafeInteger(c.value) || c.value === 0 || Math.abs(c.value) > LIMIT) throw Error(`${where}: a side's stat changes by a whole number that is not 0`)
+  if (!['battle', 'endOfTurn', 'endOfNextTurn'].includes(c.until)) throw Error(`${where}: a side's stat changes for the rest of the Battle or until a Turn ends`)
+}
 export function burstProfile(value: unknown): BurstProfile {
-  record(value, ['shape', 'side', 'requireTags', 'packets', 'heal', 'impact', 'destroy', 'paints'])
+  record(value, ['shape', 'side', 'requireTags', 'packets', 'heal', 'impact', 'destroy', 'paints', 'sideStats'])
   record(value.shape, ['kind', 'radius'])
   if (value.shape.kind === 'arc') {
     if (Object.hasOwn(value.shape, 'radius')) throw Error('burst: arc has no radius')
@@ -31,7 +39,8 @@ export function burstProfile(value: unknown): BurstProfile {
   dense(value.packets, 32)
   const ids = new Set<string>()
   for (const p of value.packets) {
-    record(p, ['id', 'damageType', 'amount', 'stat', 'powerScale'])
+    record(p, ['id', 'damageType', 'amount', 'stat', 'statMult', 'powerScale'])
+    if (p.statMult !== undefined && (!integer(p.statMult, 2, 100) || p.stat === undefined)) throw Error('burst: a packet counts its stat a whole number of times, 2 or more')
     if (typeof p.id !== 'string' || !/^[a-z][a-z0-9.-]*$/.test(p.id) || ids.has(p.id)) throw Error('burst: invalid packet ID')
     ids.add(p.id)
     if (!isDamageType(p.damageType) || !integer(p.amount, -LIMIT)) throw Error('burst: invalid packet damage')
@@ -39,6 +48,8 @@ export function burstProfile(value: unknown): BurstProfile {
     if (p.powerScale !== undefined && (typeof p.powerScale !== 'number' || !Number.isFinite(p.powerScale) || p.powerScale < 0 || p.powerScale > 1)) throw Error('burst: invalid Power share')
   }
   if (value.heal !== undefined && !integer(value.heal)) throw Error('burst: healing must be a bounded nonnegative integer')
+  // capability.raise-lower-magic (2026-10-05): what using the burst does to a side's party stats
+  if (value.sideStats !== undefined) { dense(value.sideStats, 8); if (!value.sideStats.length) throw Error('burst: sideStats is a list of changes'); for (const c of value.sideStats) sideStatChange(c, 'burst') }
   if (value.impact !== undefined && !integer(value.impact, 0, 1000)) throw Error('burst: Impact must be a bounded nonnegative integer')
   // v2.prop-destroy (COMBAT-V2 §12.2): steps to every prop touching the shape.
   if (value.destroy !== undefined && !integer(value.destroy, 0, 1000)) throw Error('burst: Destroy must be a bounded nonnegative integer')

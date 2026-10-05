@@ -14,7 +14,7 @@
 // Refusals are loud (Law 9): an unknown item, more than two hands of weapons and shields,
 // more than one armor. The same row twice is two instances (v2.loadout, 2026-09-24). Slot counts, class restrictions and per-class caps are
 // the kingdom's legality, not the engine's (GAME-ARCHITECTURE §2.3).
-import type { BadgeDef, ItemDef, UnitDef } from './types.js'
+import type { BadgeDef, ItemDef, SetLine, UnitDef, UnitMods } from './types.js'
 import type { ActionDef } from './types.js'
 
 export type Applied = {
@@ -259,6 +259,46 @@ export function applyProgress(
     abilities: [...base.abilities, ...powers.filter((p) => !base.abilities.includes(p))],
     moves,
   }
+}
+
+// ── SETS (capability.set-bonus, 2026-10-05) ────────────────────────────────────
+// GEAR-DESIGN.md §5 (resolved 2026-09-03): a set is a TAG, and the bonus a block on the item that cares; "resolved when the
+// hero is built for battle — counted over what is equipped". The rule lived in the kingdom, which handed the battle numbers;
+// it lives here now, so every fielding fights it and the Equip screen reads the same lines. Counted over everything the
+// unit CARRIES — in hand, stowed, worn — in carried order (Law 6). This file knows no tag and no item by name.
+//   for-every  `each` with `withItself`: per member carried, the carrier among them when it bears the tag
+//              (his rows: "+1 Precision for every CHAIN item you carry")
+//   per-other  `each` alone: per OTHER member carried ("three slaying weapons → +2 each")
+//   at-count   `at`/`once`: once, when `at` members are carried, the carrier included ("three shadows items → +20 Crit")
+export function setLinesOf(carried: readonly Pick<ItemDef, 'id' | 'setTags' | 'setBonus'>[]): SetLine[] {
+  const out: SetLine[] = []
+  const pay = (o: Readonly<Record<string, number>>, n: number): { stats: Record<string, number>; attackDamage: number } => {
+    const stats: Record<string, number> = {}
+    let attackDamage = 0
+    for (const k of Object.keys(o).sort()) { if (k === 'attackDamage') attackDamage += o[k]! * n; else stats[k] = o[k]! * n }
+    return { stats, attackDamage }
+  }
+  carried.forEach((r, i) => {
+    const sb = r.setBonus
+    if (!sb) return
+    const others = carried.filter((w, j) => j !== i && (w.setTags ?? []).includes(sb.tag)).length
+    const all = others + ((r.setTags ?? []).includes(sb.tag) ? 1 : 0)
+    if (sb.each) {
+      const count = sb.withItself ? all : others
+      if (count === 0) return
+      out.push({ itemId: r.id, tag: sb.tag, shape: sb.withItself ? 'for-every' : 'per-other', count, ...pay(sb.each, count) })
+    } else if (sb.at !== undefined && sb.once) {
+      if (all < sb.at) return
+      out.push({ itemId: r.id, tag: sb.tag, shape: 'at-count', count: all, ...pay(sb.once, 1) })
+    }
+  })
+  return out
+}
+/** The sets' pay as unit mods (seam.unit-mods' own shape): each stat and each weapon's damage naming the item that pays it. */
+export function setModsOf(lines: readonly SetLine[]): UnitMods {
+  const stats = lines.flatMap((l) => Object.keys(l.stats).sort().filter((k) => l.stats[k] !== 0).map((k) => ({ stat: k as NonNullable<UnitMods['stats']>[number]['stat'], add: l.stats[k]!, source: l.itemId })))
+  const attacks = lines.filter((l) => l.attackDamage !== 0).map((l) => ({ itemId: l.itemId, damage: l.attackDamage, source: l.itemId }))
+  return { ...(stats.length ? { stats } : {}), ...(attacks.length ? { attacks } : {}) }
 }
 
 // ── BADGES AT FIELDING (badge.mechanism, 2026-09-04) ─────────────────────────

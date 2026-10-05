@@ -5945,10 +5945,10 @@
     "item.staff-of-the-magi"
    ],
    "action": "power.staff-of-the-magi.vortex",
-   "name": "power.staff-of-the-magi.vortex",
-   "kind": null,
-   "engine": "no",
-   "bar": null,
+   "name": "Vortex",
+   "kind": "burst",
+   "engine": "yes",
+   "bar": "power",
    "motion": null,
    "bodies": {
     "Ancient Elf": null,
@@ -5974,9 +5974,14 @@
     "The Skull": null
    },
    "motionStatus": "missing",
-   "selected": null,
+   "selected": {
+    "key": "spell",
+    "label": "Casting / power gesture",
+    "clip": "Spell_Simple_Shoot",
+    "record": "assets/characters/oathblade-armor/rebuild/free-motion-study/selections.json"
+   },
    "ruling": null,
-   "note": "the pack names it; the engine has no row (item power — shape unparsed)",
+   "note": null,
    "variants": 0
   },
   {
@@ -22689,10 +22694,10 @@
  "counts": {
   "rows": 521,
   "missing": 352,
-  "noEngine": 33,
+  "noEngine": 32,
   "inert": 239,
   "noMotion": 352,
-  "selectedUnbound": 312,
+  "selectedUnbound": 313,
   "partial": 81
  }
 }

@@ -271,6 +271,11 @@ export function restoreBattle(json: string, runtime: BattleRuntime): Ctx {
     }
   }
   requireThat(st.power === undefined || integer(st.power, 0), 'power pool')
+  // capability.raise-lower-magic: the changes standing on the sides' party stats
+  if (st.sideMods !== undefined) {
+    requireThat(Array.isArray(st.sideMods) && st.sideMods.length > 0, 'side mods')
+    for (const m of st.sideMods) requireThat(m !== null && typeof m === 'object' && phases.includes(m.side) && ['magic', 'spirit', 'power'].includes(m.stat) && (m.stat !== 'power' || m.side === 'enemy') && Number.isSafeInteger(m.value) && m.value !== 0 && typeof m.source === 'string' && m.source.length > 0 && (m.expiresAtTurn === undefined || integer(m.expiresAtTurn, 0)) && Object.keys(m).every((k) => ['side', 'stat', 'value', 'source', 'expiresAtTurn'].includes(k)), 'side mod')
+  }
   if (s.cursor !== undefined) {
     const c = s.cursor; record(c)
     requireThat(steps.includes(c.at) && phases.includes(c.phase), 'cursor step/phase')
