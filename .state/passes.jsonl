@@ -62,3 +62,4 @@
 {"suite":"control","stamp":"f62baea959","pack":"37bcaaa447","golden":"2a98bd088f","at":"2026-10-05T15:24:52.871Z","by":"gate content.hero-origin-badges --land","in":"HBT-worker-engine","moved":null}
 {"suite":"engine","stamp":"39f3dab9dd","failed":true,"at":"2026-10-05T15:40:10.790Z","by":"gate --shard 1/1","in":"HBT-worker-engine"}
 {"suite":"control","stamp":"f9fdfb5dde","pack":"ad1c564a5a","golden":"2a98bd088f","at":"2026-10-05T17:45:14.701Z","by":"gate capability.summons --land","in":"HBT-worker-engine","moved":null}
+{"suite":"engine","stamp":"f9fdfb5dde","with":{"engine":"f9fdfb5dde","content":"a1cfec8160","viewer":"3d21dfbcdd","kingdom":"ed9436da02"},"at":"2026-10-05T18:33:46.648Z","by":"gate --shard (1 of 1)","in":"HBT-worker-engine","tests":2974}
