@@ -1,5 +1,29 @@
 [
  {
+  "id": "viewer.screenshot-time-out-under-load",
+  "kind": "viewer",
+  "shape": "plumbing",
+  "spec": "Found twice on 2026-10-04/05 by the engine worker: in a full four-suite run (`node engine/tools/suites.mjs --run all --full`) the viewer's gate failed on `page.screenshot` timing out at 30 s in `viewer/test/viewer.bar-card-and-log.test.ts`, a test neither run had touched, and the viewer suite passed both times when run alone on the same tree. A full run is owed before every wrap, so this costs a viewer rerun each time and teaches chats to wave a red viewer through. Find why the screenshot stalls when the other suites share the machine (the page still animating or loading when the shot is asked for, the headless browser starved, a shot of a larger region than the test reads) and fix the cause in the test's harness - wait for the page's own settled signal before the shot, shoot only what is read, or have the full run give the viewer's browser parts the machine to themselves. Not allowed: weakening or removing an assertion, skipping the test in a full run, or a bare longer time-out with nothing else (a longer limit may accompany a real fix). Record what the cause was in viewer SWITCHES.md. If the same stall can strike other tests that take a shot, fix it where they share code.",
+  "expect": "Three full runs in a row (`suites --run all --full`) on one tree pass the viewer's gate with no rerun, and the record says so; `viewer.bar-card-and-log` asserts everything it asserted before; viewer SWITCHES.md names the cause.",
+  "note": "Filed by the home chat 2026-10-05 from the engine worker's two reports. Not art-dependent."
+ },
+ {
+  "id": "viewer.lost-counterattack-line",
+  "kind": "viewer",
+  "shape": "plumbing",
+  "spec": "Found by the engine worker landing rule.counterattack-replaced-and-lost (2026-10-05; ruled 2026-10-04, engine/DECISIONS.md 'after the backlog run: ...' - a counterattack used again replaces the old one, and being knocked down or knocked to another hex loses it). The engine's line for a counterattack that ends carries why (`reason`: replaced, lost) but the battle log words every one as 'counterattack +1 ends' (viewer SWITCHES counterattackLostLine). Wanted: the log says what happened in plain words from the engine's reason, never worked out in the viewer - a counterattack lost to a knockdown or a knockback reads as lost and says to what ('<unit> loses its counterattack - knocked down'), one replaced by a newer one reads as replaced, and one that runs out reads as it does today. Read GLOSSARY.md for the words. No art is needed.",
+  "expect": "In a battle where a hero holding a counterattack is knocked down, the log line says the counterattack is lost and that the knockdown did it; where it is knocked to another hex, that the knockback did it; where the hero uses the power again, that the old one is replaced; where it runs out, the line is what it was before. A battle with no counterattack reads the same log as before.",
+  "note": "Filed by the home chat 2026-10-05 from the engine worker's report. Not art-dependent."
+ },
+ {
+  "id": "kingdom.stat-labels-missing-words",
+  "kind": "kingdom",
+  "shape": "plumbing",
+  "spec": "Found by the engine worker landing content.shields-reauthored (2026-10-05): the kingdom's stat-label table (kingdom/src/content/stat-labels.ts) has no word for several stats that item rows now carry, so the Equip screen and the item card show the raw field - a shield reads 'rangedblock'. Missing by the worker's list: rangedBlock, fireResist, poisonResist, coldResist, deathbedFighting, bleedOutTurns, swapCost. Give each its word from GLOSSARY.md (the naming authority - never invent one; 'Ranged Block' is the Armory Ledger's own word for the shields); a stat the GLOSSARY does not name is left raw and listed in the landing note for Andrew to name. Add a test that fails when any stat an item row in the game carries has no label, so the next new stat cannot show raw. Rebuild the pages.",
+  "expect": "The Equip screen and the item card for a Tower Shield read 'Ranged Block', not 'rangedblock'; every stat carried by an item row in the game has a label or is on the landing note's list of stats the GLOSSARY does not name; the new test fails if a row gains an unlabelled stat.",
+  "note": "Filed by the home chat 2026-10-05 from the engine worker's report."
+ },
+ {
   "id": "viewer.bar-shows-tag-requirement",
   "kind": "viewer",
   "shape": "plumbing",
