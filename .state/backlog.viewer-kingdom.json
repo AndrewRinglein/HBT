@@ -206,7 +206,9 @@
   "shape": "plumbing",
   "spec": "Ruled 2026-10-05 (Andrew, engine/DECISIONS.md 'playtest post: notices, target lines, item cards, arrows, move costs on hexes, knocked down, bodies, cursed ground, the first hero's positives' and 'the playtest post answered'): 'When you are in the movement phase, if there are squares in your movement area that cost 2 or can't be walked through, that number needs to be on the square.' Asked what shows on a hex that cannot be walked, his sentence broke off ('If you can't walk through an index'); the chat reads it as 'an X' (record as a viewer switch, the other side 'nothing'). Wanted: while a unit's move is being chosen and its movement area is shown, every hex in or bordering that area whose cost to enter for THIS unit is more than 1 shows the number on the hex (2, 3); a hex the unit cannot enter at all (impassable ground, a blocking prop - not a hex merely out of reach, and not a hex another unit stands on) shows an X; hexes that cost 1 show nothing. The cost is the engine's for that unit (a flier or a unit that ignores terrain sees no 2s) - read from the engine's move query, never worked out in the viewer. The marks go when the move is made or the action is dropped. Land by the viewer landing order (viewer sources, the viewer gate's parts and land, the page, the kingdom's pages rebuilt by their builders, the engine gate last). No art is needed unless the spec says so. RULED 2026-10-05: the X is right (engine/DECISIONS.md 'seven answers ...': asked 'is an X right for a hex you can't walk through' - '6, yes') - it is no longer the chat's reading; record it as ruled, not as a switch.",
   "expect": "In a battle with rough ground, choosing a walking hero's move shows 2 on each cost-2 hex in its area and an X on an impassable hex beside it, and nothing on plain hexes; a flying unit's area shows no numbers; the marks clear when the move is made.",
-  "note": "Filed by the home chat 2026-10-05."
+  "note": "Filed by the home chat 2026-10-05.",
+  "status": "done",
+  "sha": "954ce6f"
  },
  {
   "id": "viewer.shots-fly-straight",
