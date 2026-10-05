@@ -49,6 +49,16 @@
 // version on (the view itself stays). One more comparison rides with the shadow's: the bodies' canvas takes the scene's depth
 // from the pieces that can hide a body in the view (src/terrain3d.js V.bodiesDepth: how many), and the same frame is drawn
 // with the depth of every solid piece (V.bodiesDepth.whole = true, as first written) and the pixels compared.
+//
+// viewer.frame-time-tests-hold-under-load (2026-10-05): the page tests that read this tool's JSON went red in loaded gates on
+// milliseconds that measured the machine. The table above keeps its milliseconds — a report. For the tests the JSON also
+// carries what load cannot move or moves on both sides alike, and they assert only these:
+//   · each measure's wallMs — the tool's own clock over the frames it measured — beside ms.total, the frames' script time
+//     added up: the one can never be more than the other, whatever the machine is doing (the unit, checked without a number);
+//   · stillPaired — still frames taken turn about, one with the see-through check due and one without (A, B, A, B …), the
+//     median of each kind, their ratio, and how often the check ran over them;
+//   · seeThrough.pairs and seeThrough.ratio — the two askings "which pieces hide a body now" are already made back to back at
+//     every view of the round (the structure, then every triangle): the ratio of their medians.
 import {createRequire} from 'node:module'
 import {createServer} from 'node:net'
 import {spawn} from 'node:child_process'
@@ -165,21 +175,36 @@ function summed(frames){
  const of=p=>({draws:median((passes[p]??[]).map(c=>c.draws).concat(Array(frames.length-(passes[p]?.length??0)).fill(0)))??0,triangles:Math.round(median((passes[p]??[]).map(c=>c.triangles).concat(Array(frames.length-(passes[p]?.length??0)).fill(0)))??0)})
  const shadow=of('shadow'),scene=of('scene'),bodies=of('bodies'),other=of('other')
  const ms=frames.map(f=>f.ms).filter(n=>n!=null)
- return {frames:frames.length,ms:{median:round(median(ms)),min:round(Math.min(...ms)),max:round(Math.max(...ms))},
+ return {frames:frames.length,ms:{median:round(median(ms)),min:round(Math.min(...ms)),max:round(Math.max(...ms)),total:round(ms.reduce((a,b)=>a+b,0))},
   draws:{all:shadow.draws+scene.draws+bodies.draws+other.draws,shadow:shadow.draws,scene:scene.draws,bodies:bodies.draws,...(other.draws?{other:other.draws}:{})},
   triangles:{all:shadow.triangles+scene.triangles+bodies.triangles+other.triangles,shadow:shadow.triangles,scene:scene.triangles,bodies:bodies.triangles,...(other.triangles?{other:other.triangles}:{})}}
 }
 async function measure(page,step,scroll){
- const frames=[]
+ const frames=[];let wall0=0
  for(let i=0;i<WARM_UP+FRAMES;i++){
+  if(i===WARM_UP)wall0=Date.now()
   if(scroll)await page.evaluate(scrollStep,SCROLL_PX)
   const f=await page.evaluate(tick,step)
   if(f.ms==null)throw Error('the 3D scene\'s frame was not among the page\'s stored frames')
   if(i>=WARM_UP)frames.push(f)}
  const out=summed(frames),runs=frames.map(f=>f.runs)
+ /* the tool's own clock over the measured frames (viewer.frame-time-tests-hold-under-load): each frame's script ran inside it */
+ out.wallMs=Date.now()-wall0+1
  /* how often the see-through check ran over these frames, where the page says (src/terrain3d.js V.seeThrough.runs) */
  if(runs[0]!=null)out.checks=runs[runs.length-1]-runs[0]
  return out
+}
+/** still frames taken turn about — one with the see-through check due, one without (A, B, A, B …) — so the two kinds are
+    timed under the same load, frame for frame (viewer.frame-time-tests-hold-under-load) */
+async function stillPaired(page){
+ const a=[],b=[];let runs0=null,runs1=null
+ for(let i=0;i<WARM_UP/2+FRAMES;i++){
+  const A=await page.evaluate(tick,WITH_CHECK_MS),B=await page.evaluate(tick,WITHOUT_CHECK_MS)
+  if(A.ms==null||B.ms==null)throw Error('the 3D scene\'s frame was not among the page\'s stored frames')
+  if(i<WARM_UP/2){runs0=B.runs;continue}
+  a.push(A.ms);b.push(B.ms);runs1=B.runs}
+ const ma=median(a),mb=median(b)
+ return {pairs:a.length,withCheck:round(ma,2),withoutCheck:round(mb,2),ratio:round(ma/mb,3),...(runs0!=null?{checks:runs1-runs0}:{})}
 }
 /** a round of views: the four quarters, the view scrolled at each — which pieces hide a body, both ways, at every one */
 async function seeThroughRound(page){
@@ -195,6 +220,8 @@ async function seeThroughRound(page){
  const ms=views.map(v=>v.ms),plain=views.map(v=>v.plainMs)
  const built=await page.evaluate(()=>window.__sandbox.viewer._V.seeThrough.built||null)
  return {...(built?{built:{pieces:built.pieces,triangles:built.triangles,ms:round(built.ms)}}:{}),views:views.length,same:views.filter(v=>v.same).length,withSomethingHiding:views.filter(v=>v.hiding>0).length,
+  /* the two askings are made back to back at every view: the ratio of their medians (viewer.frame-time-tests-hold-under-load) */
+  pairs:views.length,ratio:round(median(ms)/median(plain),4),
   ms:{median:round(median(ms),2),max:round(Math.max(...ms),2)},plainMs:{median:round(median(plain),1),max:round(Math.max(...plain),1)}}
 }
 /** a round of views for the shadow: at each of the four quarters the view centred on the unit that acts (bodies and their
@@ -262,6 +289,7 @@ async function battle(browser,port,id){
   for(let i=0;i<3;i++)await page.evaluate(tick,WITH_CHECK_MS)
   const row={battle:id,name,board,gpu,loadMs}
   row.still={withCheck:await measure(page,WITH_CHECK_MS,false),withoutCheck:await measure(page,WITHOUT_CHECK_MS,false)}
+  row.stillPaired=await stillPaired(page)
   row.scrolling={withCheck:await measure(page,WITH_CHECK_MS,true),withoutCheck:await measure(page,WITHOUT_CHECK_MS,true)}
   row.held=await measure(page,0,false)
   const seen=await seeThroughRound(page);if(seen)row.seeThrough=seen
