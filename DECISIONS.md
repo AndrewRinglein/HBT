@@ -5155,3 +5155,15 @@ Ruled:
 - **There are settings, and the music dips when sound effects happen.**
 
 The chat's own defaults, said to him and his to change in a line: the music dips under voices and the big sounds (a hit, a spell, a death) and not under footsteps and clicks, so it does not pump; each hero has one fixed voice, a man's or a woman's by the `gender` the content pack already records for that hero; three takes are made of each generated effect and he keeps the one he likes.
+
+## 2026-10-05 — sound: a correction to the entry above, and where the work is
+
+The entry "sound: planned and made apart from the game first" says sound stood "with nothing on disk". That is the roadmap's line, and it is not true of the kingdom. The chat told Andrew "the battle viewer and the kingdom have no sound code" after searching only the viewer; a helper's read of `kingdom/` the same morning found otherwise, and he was told.
+
+What exists: the kingdom's recap, rewards and level-up screens play sounds and one music track copied from Hell-TCG (`kingdom/tools/prep-after.py`, the ids in its table; `kingdom/src/ui/sound.ts`), with a sound on/off button that is not remembered between pages; the farming prototype plays its own tones (`prototypes/farming/audio.js`). The battle viewer has none. There is no settings screen, and the browser keeps saves only, no preferences.
+
+Under the ruling ("don't use the DSY sounds as first picks") the kingdom's copied sounds are replaced by made ones when sound is merged in, and not before: they stay as they are until he says to merge.
+
+Where the work is: `sound/` at the root, declared in `DOCS.md` - `sound/SOUND-PLAN.md` (the plan and what the merge needs), the list of every made sound, the voice pack's roles and each hero's voice, the 21 tracks and their places, the tools that make the takes, and the page he listens on. Nothing in a package reads it.
+
+His ElevenLabs account, read through the key he made the same day: the Creator plan, 300,000 credits. A made sound was charged 10 credits a second, not the 40 the entry above took from ElevenLabs' page.
