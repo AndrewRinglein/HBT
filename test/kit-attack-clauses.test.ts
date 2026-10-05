@@ -142,10 +142,21 @@ describe('the clauses the engine cannot yet do are named, never dropped', () => 
         // its Accuracy otherwise is the attack's own
         if (!burst && (row.accuracy ?? 0) !== 0) { clauses++; if (ACTIONS[id]?.attack?.accuracy !== row.accuracy) silent.push(`${item} ${id} accuracy ${row.accuracy}`) }
         // damage read from a second quantity (the target's status, another stat): the engine has no such term yet - named
-        for (const k of ['addsTargetStatus', 'addsStat', 'halfStatBonus', 'doubleStatBonus', 'doubleStat', 'accuracyVs']) {
+        // Law 10, 2026-10-05 — capability.damage-from-two-stats (DECISIONS.md 2026-10-04 'his 28 reward weapons read back …': of damage from two stats added, "We do need that."): this loop read
+        //   for (const k of ['addsTargetStatus', 'addsStat', 'halfStatBonus', 'doubleStatBonus', 'doubleStat', 'accuracyVs'])
+        // and held each as a NAMED line - "the engine has no such term yet". It has the second-stat terms now: the four fields are on
+        // the engine's sheet for the attack (its sum of terms), held exactly below; on a burst, whose damage is its packets', they
+        // are still a named line. The target's own status and Accuracy against one kind of enemy are named as before.
+        for (const k of ['addsTargetStatus', 'accuracyVs']) {
           if (row[k] === undefined) continue
           clauses++
           if (!isNamed(id, k)) silent.push(`${item} ${id} ${k}: ${JSON.stringify(row[k])}`)
+        }
+        const terms = [...(row['addsStat'] ? [{ stat: row['addsStat'], mult: 1 }] : []), ...(row['halfStatBonus'] ? [{ stat: row['halfStatBonus'], mult: 1, div: 2 }] : []), ...(row['doubleStatBonus'] ? [{ stat: row['doubleStatBonus'], mult: 2 }] : [])]
+        if (terms.length || row['doubleStat']) {
+          clauses++
+          if (burst) { for (const k of ['addsStat', 'halfStatBonus', 'doubleStatBonus', 'doubleStat']) if (row[k] !== undefined && !isNamed(id, k)) silent.push(`${item} ${id} ${k} on a burst`) }
+          else if (JSON.stringify(ACTIONS[id]?.attack?.addsStats ?? []) !== JSON.stringify(terms) || (ACTIONS[id]?.attack?.statMult ?? 1) !== (row['doubleStat'] ? 2 : 1)) silent.push(`${item} ${id} its second term is not on the engine's sheet`)
         }
       }
     }

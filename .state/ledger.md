@@ -35473,3 +35473,125 @@ index 0000000..f8e67d2
   PASS  naming — new content ids use declared kinds
   PASS  naming — no banned words invented
   PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+## capability.damage-from-two-stats — LANDED `278e0d4` **NEEDS REVIEW**
+2026-10-05 12:38
+
+  PASS  dependencies landed
+  WARN  not already decided — 3 candidate ruling(s) — READ BEFORE ASKING: COMBAT-SEQUENCE.md:484 · SWITCHES.md:2463
+  PASS  typecheck
+  PASS  the item's own tests — test/battle-cursor.test.ts, test/caravan-aftermath.test.ts, test/kit-attack-clauses.test.ts, test/damage-from-two-stats.test.ts
+  PASS  gate 1 — the id appears in a real battle — attack.force-staff.force-blast: 19 log lines, 19 fired, 7 changed state
+  PASS  brought its own tests — test/battle-cursor.test.ts, test/caravan-aftermath.test.ts, test/kit-attack-clauses.test.ts, test/damage-from-two-stats.test.ts, test/fixtures/battle-cursor-damage-from-two-stats.json
+  WARN  existing tests untouched — DELETED LINES in test/battle-cursor.test.ts (-2), test/caravan-aftermath.test.ts (-1), test/kit-attack-clauses.test.ts (-1) — will land FLAGGED for review
+  PASS  control battles unchanged
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — attack.force-staff.force-blast live · attack.staff-of-the-ultimate-destroyer.annihilation live
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without attack.force-staff.force-blast — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/battle-cursor.test.ts b/test/battle-cursor.test.ts
+index 4575a20..f58f1a0 100644
+--- a/test/battle-cursor.test.ts
++++ b/test/battle-cursor.test.ts
+@@ -471,4 +471,12 @@ const lumberjackGravesCursedGolden = JSON.parse(readFileSync(new URL('./fixtures
+ // Every case frozen here (tools/capture-effect-lasts-activations-cursor.mts). Moved: none. A `changed` case is checked here and skips the older layers.
+ const effectLastsActivationsGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-effect-lasts-activations.json', import.meta.url), 'utf8'))
++// capability.damage-from-two-stats (2026-10-05; DECISIONS.md 2026-10-04 'his 28 reward weapons read back …': of damage from two stats
++// added, "We do need that."; 'the Force Staff is Precision plus half Magic, as magic damage'), Law 10: an attack's damage is a sum of
++// terms - its own stat, counted as often as its row says, plus each added stat (the party's Magic or Spirit, or a stat of the
++// attacker's own) times its multiple - where the row's second term was dropped. Every case that fields an attack with a second term
++// moves (the Holy Texts' Verse adds the party's Spirit; the Ancient Tome, the War Hammer's Skullsplitter and the rest), and
++// test.force-blast is ADDED: the Force Staff's Force Blast live in a real battle.
++// Every case frozen here (tools/capture-damage-from-two-stats-cursor.mts). Moved: showcase.eve-24-b (text only), showcase.horrors, showcase.kiln (text only), showcase.prologue-party, showcase.rime (text only), showcase.supper, showcase.surrounded, showcase.waystation, test.caravan-aftermath, test.item-uses, test.opening-bridge (text only), test.opening-cathedral, test.opening-cavern-trail (text only), test.opening-gates, test.perfect-sight (text only), progression-surge-0, progression-surge-1, progression-surge-2. A `changed` case is checked here and skips the older layers.
++const damageFromTwoStatsGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-damage-from-two-stats.json', import.meta.url), 'utf8'))
+ const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
+ // Explicit rule migration, not regenerated historical hashes. These nine old
+@@ -617,5 +625,8 @@ describe('resumable battle cursor', () => {
+       const lumberjackGravesCursedExpected = lumberjackGravesCursedGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+       const effectLastsActivationsExpected = effectLastsActivationsGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+-      const effectLastsActivationsMoved = effectLastsActivationsExpected?.changed === true
++      const damageFromTwoStatsExpected = damageFromTwoStatsGolden.cases.find((row:{id:string})=>row.id===fixture.id)
++      const damageFromTwoStatsMoved = damageFromTwoStatsExpected?.changed === true
++      // was: const effectLastsActivationsMoved = effectLastsActivationsExpected?.changed === true — a case capability.damage-from-two-stats moved skips this layer too (capability.damage-from-two-stats 2026-10-04)
++      const effectLastsActivationsMoved = effectLastsActivationsExpected?.changed === true || damageFromTwoStatsMoved
+       // was: const lumberjackGravesCursedMoved = lumberjackGravesCursedExpected?.changed === true — a case capability.effect-lasts-activations moved skips this layer too (capability.effect-lasts-activations 2026-10-04)
+       const lumberjackGravesCursedMoved = lumberjackGravesCursedExpected?.changed === true || effectLastsActivationsMoved
+@@ -771,5 +782,12 @@ describe('resumable battle cursor', () => {
+           }
+         } else result = battle.runBattle(ctx)
+-        if (effectLastsActivationsExpected) {
++        if (damageFromTwoStatsExpected) {
++        expect(hash(ctx.events), 'full damage-from-two-stats events').toBe(damageFromTwoStatsExpected.events)
++        expect(hash(ctx.state), 'full damage-from-two-stats state').toBe(damageFromTwoStatsExpected.state)
++        expect(hash(ctx.rng.log), 'full damage-from-two-stats RNG').toBe(damageFromTwoStatsExpected.rng)
++        expect(result).toEqual(damageFromTwoStatsExpected.result)
++        }
++        // was: if (effectLastsActivationsExpected) { — capability.damage-from-two-stats (2026-10-04): a case it moved is checked above instead
++        if (effectLastsActivationsExpected && !damageFromTwoStatsMoved) {
+         expect(hash(ctx.events), 'full effect-lasts-activations events').toBe(effectLastsActivationsExpected.events)
+         expect(hash(ctx.state), 'full effect-lasts-activations state').toBe(effectLastsActivationsExpected.state)
+diff --git a/test/caravan-aftermath.test.ts b/test/caravan-aftermath.test.ts
+index 6873afa..d61c4e7 100644
+--- a/test/caravan-aftermath.test.ts
++++ b/test/caravan-aftermath.test.ts
+@@ -50,4 +50,5 @@ describe('encounter.caravan-aftermath', () => {
+   it('runs deterministically on its map', () => deterministic(S))
+   it('reaches a win or a loss on every seed tried — never the turn cap — and both the hounds and the Imps attack', () => {
++    const everAttacked = new Set<string>()
+     for (const r of SEEDS) {
+       const ctx = openingBattle(S, r)
+@@ -55,7 +56,17 @@ describe('encounter.caravan-aftermath', () => {
+       for (const type of ['unit.bloodhound', 'unit.imp']) {
+         const ids = new Set(ctx.state.units.filter((u) => u.typeId === type).map((u) => u.id))
+-        expect(ctx.events.some((e) => e.type === 'attack.declared' && ids.has(e.actor!)), `replicate ${r}: no ${type} attacked`).toBe(true)
++        // Law 10, 2026-10-05 — capability.damage-from-two-stats (DECISIONS.md 2026-10-04 'his 28 reward weapons read back …': of damage from two stats added, "We do need that."): this read
++        //   expect(ctx.events.some((e) => e.type === 'attack.declared' && ids.has(e.actor!)), `replicate ${r}: no ${type} attacked`).toBe(true)
++        // - on every seed, each kind attacks. The party's staffs and books deal their second term now (the Force Staff its half
++        // Magic, the Holy Texts its Spirit), and on one seed both Bloodhounds are killed before either has swung. What the line
++        // holds is that the fight is a fight: a kind attacks, unless every unit of it was killed before it could - a hound left
++        // alive that never attacks still fails. And over the seeds tried each kind does attack.
++        const attacked = ctx.events.some((e) => e.type === 'attack.declared' && ids.has(e.actor!))
++        const allKilled = ctx.state.units.filter((u) => u.typeId === type).every((u) => u.lifeState === 'dead')
++        expect(attacked || allKilled, `replicate ${r}: a living ${type} never attacked`).toBe(true)
++        if (attacked) everAttacked.add(type)
+       }
+     }
++    expect([...everAttacked].sort(), 'over the seeds tried, both the hounds and the Imps attack').toEqual(['unit.bloodhound', 'unit.imp'])
+   })
+   it('nobody ever stands on a wreck', () => {
+diff --git a/test/kit-attack-clauses.test.ts b/test/kit-attack-clauses.test.ts
+index a4bb3f0..95fc83f 100644
+--- a/test/kit-attack-clauses.test.ts
++++ b/test/kit-attack-clauses.test.ts
+@@ -143,9 +143,20 @@ describe('the clauses the engine cannot yet do are named, never dropped', () =>
+         if (!burst && (row.accuracy ?? 0) !== 0) { clauses++; if (ACTIONS[id]?.attack?.accuracy !== row.accuracy) silent.push(`${item} ${id} accuracy ${row.accuracy}`) }
+         // damage read from a second quantity (the target's status, another stat): the engine has no such term yet - named
+-        for (const k of ['addsTargetStatus', 'addsStat', 'halfStatBonus', 'doubleStatBonus', 'doubleStat', 'accuracyVs']) {
++        // Law 10, 2026-10-05 — capability.damage-from-two-stats (DECISIONS.md 2026-10-04 'his 28 reward weapons read back …': of damage from two stats added, "We do need that."): this loop read
++        //   for (const k of ['addsTargetStatus', 'addsStat', 'halfStatBonus', 'doubleStatBonus', 'doubleStat', 'accuracyVs'])
++        // and held each as a NAMED line - "the engine has no such term yet". It has the second-stat terms now: the four fields are on
++        // the engine's sheet for the attack (its sum of terms), held exactly below; on a burst, whose damage is its packets', they
++        // are still a named line. The target's own status and Accuracy against one kind of enemy are named as before.
++        for (const k of ['addsTargetStatus', 'accuracyVs']) {
+           if (row[k] === undefined) continue
+           clauses++
+           if (!isNamed(id, k)) silent.push(`${item} ${id} ${k}: ${JSON.stringify(row[k])}`)
+         }
++        const terms = [...(row['addsStat'] ? [{ stat: row['addsStat'], mult: 1 }] : []), ...(row['halfStatBonus'] ? [{ stat: row['halfStatBonus'], mult: 1, div: 2 }] : []), ...(row['doubleStatBonus'] ? [{ stat: row['doubleStatBonus'], mult: 2 }] : [])]
++        if (terms.length || row['doubleStat']) {
++          clauses++
++          if (burst) { for (const k of ['addsStat', 'halfStatBonus', 'doubleStatBonus', 'doubleStat']) if (row[k] !== undefined && !isNamed(id, k)) silent.push(`${item} ${id} ${k} on a burst`) }
++          else if (JSON.stringify(ACTIONS[id]?.attack?.addsStats ?? []) !== JSON.stringify(terms) || (ACTIONS[id]?.attack?.statMult ?? 1) !== (row['doubleStat'] ? 2 : 1)) silent.push(`${item} ${id} its second term is not on the engine's sheet`)
++        }
+       }
+     }
+```
+</details>

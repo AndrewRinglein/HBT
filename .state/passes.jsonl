@@ -53,3 +53,5 @@
 {"suite":"engine","stamp":"b31863a611","failed":true,"at":"2026-10-05T10:00:44.282Z","by":"gate --shard 1/1","in":"HBT-worker-engine"}
 {"suite":"engine","stamp":"c5f16f0991","failed":true,"at":"2026-10-05T10:29:21.364Z","by":"gate --shard 1/1","in":"HBT-worker-engine"}
 {"suite":"engine","stamp":"c5f16f0991","with":{"engine":"c5f16f0991","content":"8de9847058","viewer":"ffd21a0fb8","kingdom":"c5b9c50b79"},"at":"2026-10-05T10:35:45.560Z","by":"gate --shard (1 of 1)","in":"HBT-worker-engine","tests":2940}
+{"suite":"engine","stamp":"1e3547c1de","failed":true,"at":"2026-10-05T11:05:24.708Z","by":"gate --shard 1/1","in":"HBT-worker-engine"}
+{"suite":"control","stamp":"6067b2a8be","pack":"d2e1715375","golden":"2a98bd088f","at":"2026-10-05T12:38:48.765Z","by":"gate capability.damage-from-two-stats --land","in":"HBT-worker-engine","moved":null}
