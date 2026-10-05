@@ -82,3 +82,4 @@
 {"suite":"kingdom","stamp":"91cfd14efb","with":{"engine":"f48a625458","content":"3ce22151fa","viewer":"403b9daa6e","kingdom":"91cfd14efb"},"at":"2026-10-05T10:06:43.763Z","by":"gate --shard (4 of 4)","in":"HBT-worker-content"}
 {"suite":"kingdom","stamp":"3bb9ef351e","with":{"engine":"f48a625458","content":"3ce22151fa","viewer":"403b9daa6e","kingdom":"3bb9ef351e"},"at":"2026-10-05T10:27:09.431Z","by":"gate --shard (4 of 4)","in":"HBT-worker-kingdom"}
 {"suite":"kingdom","stamp":"3bb9ef351e","with":{"engine":"c5f16f0991","content":"8de9847058","viewer":"e1f81e1c82","kingdom":"3bb9ef351e"},"at":"2026-10-05T10:54:14.242Z","by":"suites --run","in":"HBT-worker-engine"}
+{"suite":"kingdom","stamp":"3bb9ef351e","failed":true,"at":"2026-10-05T12:26:54.354Z","by":"suites --run","in":"HBT-worker-engine"}
