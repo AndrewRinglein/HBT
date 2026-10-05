@@ -1854,10 +1854,10 @@ function compileItems() {
     // trigger did not compile (or disagrees with) stays a gap, never a second grant.
     if (row.thorns !== undefined && row.thorns !== statModifiers.thorns) g(`thorns: ${JSON.stringify(row.thorns)}`, 'item field: thorns');
     for (const k of ['airwalk', 'immunity', 'natural']) if (row[k] !== undefined) g(`${k}: ${JSON.stringify(row[k]).slice(0, 40)}`, `item field: ${k}`);
-    // engine content.greatsword-war-axe-reauthored (2026-10-04): the Armory Ledger's swords read "+10 counterattack" while
-    // equipped — "'+10 counterattack' on a weapon is +10 Accuracy on your counterattacks". The row says it in its own field,
-    // and no item row carries that stat yet: named, never dropped, until engine capability.free-attack-accuracy.
-    if (row.counterattackAccuracy !== undefined) g(`counterattackAccuracy: ${JSON.stringify(row.counterattackAccuracy)}`, 'Accuracy on the holder\'s counterattack while the weapon is held — engine capability.free-attack-accuracy');
+    // engine capability.free-attack-accuracy (2026-10-04): the swords' "+10 counterattack" was a row FIELD and a named gap here
+    // (content.greatsword-war-axe-reauthored); it is a stat modifier of the row now (statModifiers counterattackAccuracy, a word
+    // of stat-words.mjs). A row that still says it in the old field is refused, so the clause cannot be left behind unread.
+    if (row.counterattackAccuracy !== undefined) throw new Error(`mkenginepack: ${it.id} carries the field counterattackAccuracy — say it in statModifiers (stat-words.mjs: counterattackAccuracy)`);
     // station.vs-target: the slayer field is data — on a HELD item (weapon, shield) its rules
     // reach the attacks it grants; on a WORN item (the bloodrunes) every damage the hero deals.
     // fix.vs-target-worn-and-flat (engine, 2026-09-25): "Bloodrune Slayer bonus happens" (Andrew,

@@ -276,7 +276,10 @@ test('the Great Sword\'s Counterattack: the free attack up and +2 Strength, both
  const A=live.pack.authoredAbilities['power.greatsword.counterattack'];
  assert.deepEqual([A.staminaCost,A.target,A.effects],[2,{select:'self',side:'any'},[{kind:'statMod',stat:'counterattack',value:1,until:'endOfNextTurn',who:'self'},{kind:'statMod',stat:'strength',value:2,until:'endOfNextTurn',who:'self'}]]);
  assert.deepEqual(live.pack.items['item.greatsword'].abilities,['power.greatsword.counterattack']);assert.deepEqual(live.pack.items['item.greatsword'].grants,['attack.greatsword.hew']);
- assert.deepEqual(live.pack.items['item.greatsword'].statModifiers,{block:5});
+ // Law 10, 2026-10-04 — engine capability.free-attack-accuracy (engine DECISIONS.md 2026-09-28, the Armory Ledger's rules: "'+10
+ // counterattack' on a weapon is +10 Accuracy on your counterattacks."): this read {block:5} while the row's "+10 counterattack" was a
+ // named gap; the clause is a stat modifier of the row now. The Block the claim was about is the same 5.
+ assert.deepEqual(live.pack.items['item.greatsword'].statModifiers,{block:5,counterattackAccuracy:10});
  // the Longsword's sentence is read as it was
  assert.deepEqual(live.pack.authoredAbilities['power.longsword.counterattack'].effects.map(e=>[e.stat,e.value]),[['counterattack',1],['counterattackAccuracy',10]]);
  const odd=candidate(edit=>edit('gen/settled-items.json',data=>{data.powers.find(p=>p.id==='power.greatsword.counterattack').description='Gain Counterattack and +2 Nerve until the end of your next Turn.'}));
@@ -334,4 +337,25 @@ test('a named weapon\'s own attack rows are raised where they are; the Forge\'s 
  const hew=A['attack.greatsword.hew'];
  assert.equal(A['attack.greatsword.hew.heavy'].bonus,hew.bonus+1);assert.equal(A['attack.greatsword.hew.keen'].accuracy,(hew.accuracy??0)+6);
  assert.deepEqual([A['attack.greatsword.hew.cruel'].accuracy,A['attack.greatsword.hew.cruel'].crit],[(hew.accuracy??0)+3,(hew.crit??0)+4]);
+});
+
+// engine capability.free-attack-accuracy (2026-10-04; engine DECISIONS.md 2026-09-28, the Armory Ledger's rules: "'+10 counterattack'
+// on a weapon is +10 Accuracy on your counterattacks." / "Bonuses 'to special attacks' and 'Dodge against special attacks' apply
+// to all three."): the Codex's stat words reach the engine's four stats, and the two swords carry the clause as a stat of the row.
+test('the swords\' "+10 counterattack" is a stat modifier of the row — Counterattack Accuracy 10 — and no longer a named gap; the stat words map to the engine\'s',async()=>{
+ const {statOf}=await import('../stat-words.mjs');
+ assert.deepEqual(['Counterattack Accuracy','counterattackAccuracy','Fend Accuracy','Free Attack Accuracy','freeAttackAccuracy','Free Attack Dodge','freeAttackDodge'].map(statOf),
+  ['counterattackAccuracy','counterattackAccuracy','fendAccuracy','freeAttackAccuracy','freeAttackAccuracy','freeAttackDodge','freeAttackDodge']);
+ for(const sword of ['item.longsword','item.greatsword']){
+  assert.deepEqual(live.pack.items[sword].statModifiers,{block:5,counterattackAccuracy:10},sword);
+  assert.deepEqual((live.pack.items[sword].gaps??[]).filter(g=>/counterattack/i.test(g)),[],sword);
+ }
+ // rows made from them carry it; it is the wielder's stat (fix.enchant-stats-on-weapon moves Accuracy, Crit, Strength and Precision only)
+ assert.equal(live.pack.enchanted['item.longsword.flaming'].statModifiers.counterattackAccuracy,10);
+ assert.equal(live.pack.derivedItems['item.greatsword.masterwork'].statModifiers.counterattackAccuracy,10);
+ // the general stats' instances are test badges; a stat word the Codex does not hold is refused by the assembler, by name
+ const B=live.pack.test.badges;
+ assert.deepEqual(B['test.badge.free-attack-aim'].statModifiers,{freeAttackAccuracy:15});assert.deepEqual(B['test.badge.free-attack-slip'].statModifiers,{freeAttackDodge:20});
+ const odd=candidate(edit=>edit('gen/settled-items.json',data=>{data.items.find(i=>i.id==='item.longsword').statModifiers.counterAccuracy=10}));
+ assert.notEqual(odd.status,0);assert.match(odd.stdout+odd.stderr,/item item\.longsword: unknown stat "counterAccuracy"/);assert.equal(odd.pack,null);
 });

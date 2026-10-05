@@ -6,7 +6,7 @@
       "armor": 2,
       "dodge": -5
     },
-    "note": "badge.mechanism (2026-09-04): the plainest badge \u2014 two stat modifiers, folded at fielding or granted mid-battle. The mechanism's first instance."
+    "note": "badge.mechanism (2026-09-04): the plainest badge — two stat modifiers, folded at fielding or granted mid-battle. The mechanism's first instance."
   },
   {
     "id": "test.badge.brand",
@@ -30,7 +30,7 @@
         }
       }
     ],
-    "note": "badge.mechanism (2026-09-04): a badge that carries a TRIGGER and a FLAG \u2014 the second instance, pure data. Its rider sears whatever it hits; its flag is the Hero badge's (bleeds out on a failed deathbed roll) so the flag path is proved before content authors badge.hero."
+    "note": "badge.mechanism (2026-09-04): a badge that carries a TRIGGER and a FLAG — the second instance, pure data. Its rider sears whatever it hits; its flag is the Hero badge's (bleeds out on a failed deathbed roll) so the flag path is proved before content authors badge.hero."
   },
   {
     "id": "test.badge.deaths-door",
@@ -45,7 +45,7 @@
     "flags": {
       "wounded": true
     },
-    "note": "fix.deathbed-no-stands (2026-09-04): the Wounded badge's SHAPE \u2014 the ruled numbers (\u221210 Accuracy, \u221210 Dodge, \u22121 Strength, \u22121 Precision, \u22122 Max HP) and the flag that makes the next zero fatal \u2014 as a TEST row, so the rule is proved before 4-BADGES-SETTLED publishes badge.wounded. The real row is content's; this one never ships."
+    "note": "fix.deathbed-no-stands (2026-09-04): the Wounded badge's SHAPE — the ruled numbers (−10 Accuracy, −10 Dodge, −1 Strength, −1 Precision, −2 Max HP) and the flag that makes the next zero fatal — as a TEST row, so the rule is proved before 4-BADGES-SETTLED publishes badge.wounded. The real row is content's; this one never ships."
   },
   {
     "id": "test.badge.bramble",
@@ -88,7 +88,7 @@
         "add": 2
       }
     ],
-    "note": "station.vs-target (engine, 2026-09-25): damage by what the target IS \u2014 +2 against a unit tagged undead, at DMG.VS_TARGET. The mechanism's first instance; a slayer {undead: 2} as the converter compiles it. Never ships."
+    "note": "station.vs-target (engine, 2026-09-25): damage by what the target IS — +2 against a unit tagged undead, at DMG.VS_TARGET. The mechanism's first instance; a slayer {undead: 2} as the converter compiles it. Never ships."
   },
   {
     "id": "test.badge.bane-venom",
@@ -112,7 +112,7 @@
         "add": 3
       }
     ],
-    "note": "station.vs-target (engine, 2026-09-25): damage by what the target CARRIES \u2014 +3 against a poisoned target, with its own poison rider so a battle reaches it. The second instance, pure data. Never ships. fix.vs-target-worn-and-flat (engine, 2026-09-25): was +50%; Andrew: 'There had been no percentage modifiers to damage' \u2014 a TEST value, flat."
+    "note": "station.vs-target (engine, 2026-09-25): damage by what the target CARRIES — +3 against a poisoned target, with its own poison rider so a battle reaches it. The second instance, pure data. Never ships. fix.vs-target-worn-and-flat (engine, 2026-09-25): was +50%; Andrew: 'There had been no percentage modifiers to damage' — a TEST value, flat."
   },
   {
     "id": "test.badge.fender",
@@ -159,5 +159,21 @@
       }
     ],
     "note": "capability.unit-trigger-with-tag (2026-10-04): the same trigger with no requirement - it fires for every attack of the unit, as a unit trigger always has. The control the requirement is read against."
+  },
+  {
+    "id": "test.badge.free-attack-aim",
+    "name": "Practised Riposte (TEST)",
+    "statModifiers": {
+      "freeAttackAccuracy": 15
+    },
+    "note": "engine capability.free-attack-accuracy (2026-10-04): +15 Accuracy on every special free attack the wearer makes - a counterattack, a fend, an attack of opportunity. The stat's instance, pure data (the Ledger's relic that gives Accuracy on special free attacks is not in the Codex yet). Test data only."
+  },
+  {
+    "id": "test.badge.free-attack-slip",
+    "name": "Hard to Punish (TEST)",
+    "statModifiers": {
+      "freeAttackDodge": 20
+    },
+    "note": "engine capability.free-attack-accuracy (2026-10-04): +20 Dodge against special free attacks - the three of them, and no other attack. The stat's instance, pure data (the Ledger's '+20 Dodge versus special free attacks' is not in the Codex yet). Test data only."
   }
 ]

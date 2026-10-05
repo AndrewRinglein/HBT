@@ -1,0 +1,70 @@
+✔ the pack compiles, and no row in it holds two triggers under one id (6.3466ms)
+✔ the Fire Imp: the end-of-Activation burn keeps the plain id; the burn of its Blast is named for the Blast (0.1555ms)
+✔ the three parts of the rule, each on the row that needs it: the attack, then the hook, then the effect (0.2296ms)
+✔ a row whose every trigger already has its own id keeps every id as it was (0.1888ms)
+✔ two triggers the rule cannot tell apart fail the build, naming the row and the id (179.1558ms)
+✔ a test unit that is a delta over another holds the triggers of its base once (0.1759ms)
+✔ the War Axe says attack: own — its on-block pair rides Chop and Hack, each scoped; its copies follow their own attacks (0.1857ms)
+✔ the scope is the word on the row: without it the trigger rides every attack its holder makes, as before (244.2323ms)
+✔ a scope word the compiler does not read, or a row with no attack of its own, is a named gap — never a guessed scope (501.7389ms)
+✔ the nine weapons that say attack: own, and the three rows whose words are every strike of their bearer (0.4525ms)
+✔ an attribute on a weapon: every trigger it adds on an attacker's hook is scoped to an attack that weapon grants — over every tier-3 row (0.3712ms)
+✔ the attribute's own word still decides: basic is the first attack alone (Flaming), own is said the same as unsaid, another word is a named gap (508.1602ms)
+✔ a hook that is not the attacker's keeps no scope: an attribute on worn armor is its wearer's (0.2632ms)
+✔ the rows that say attackTag: the Burning Touch requires melee, Pharaoh's Gauntlets brawl; the Bleeding Strike says nothing and requires nothing (0.1199ms)
+✔ an attack's tags: its own Codex tags, joined with its item's tags less the manner words; a Forge copy keeps its original's (10.8457ms)
+✔ an unknown tag fails the build, naming the row, the trigger and the tag — on an item's row and on a test badge (449.4268ms)
+✔ the word is the same on a unit's own row, and beside attack: own on a weapon's row; without it nothing is required (751.2003ms)
+✔ a weapon attack's stat rider: Crush takes 1 Armor, Elf Shot gives 1 Precision, the Obsidian Fang takes 1 Strength at 20% — each scoped to its attack, for the Battle (0.1976ms)
+✔ the phrase is exact: a stat the engine cannot modify, or other words, compile nothing (251.6383ms)
+✔ Lock Shields lends its Block to every ally within 1 of the holder; Cover Ally puts Protection on one adjacent ally; a sentence the compiler does not read compiles nothing (537.601ms)
+✔ a weapon attack's own cooldown reaches the pack: the Knight Shield's Shield Slam, and the staffs whose rows always said one (0.1257ms)
+✔ the Great Sword's Counterattack: the free attack up and +2 Strength, both until the end of the next Turn; a stat the engine has no name for compiles nothing (249.7036ms)
+✔ the War Axe's attacks at the Ledger's numbers: the basic attack −10 Accuracy, Heavy Chop Strength +3 at −15, and the on-block rider on each and on nothing else (0.1523ms)
+✔ a weapon row carries no Strength, Precision, Crit or Accuracy for its wielder — codex rows, tier-3 rows and the Forge's rows alike (0.8583ms)
+✔ a tier-3 row grants its own copy of each attack it raises, by the damage stat the attack uses; a number that can ride nothing is named (0.2002ms)
+✔ a named weapon's own attack rows are raised where they are; the Forge's rows are what they were (1.1192ms)
+✖ the swords' "+10 counterattack" is a stat modifier of the row — Counterattack Accuracy 10 — and no longer a named gap; the stat words map to the engine's (1.5242ms)
+ℹ tests 27
+ℹ suites 0
+ℹ pass 26
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4039.4193
+
+✖ failing tests:
+
+test at test\trigger-ids.test.mjs:342:1
+✖ the swords' "+10 counterattack" is a stat modifier of the row — Counterattack Accuracy 10 — and no longer a named gap; the stat words map to the engine's (1.5242ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    [
+  +   undefined,
+  +   undefined,
+  +   undefined,
+  +   undefined,
+  +   undefined,
+  +   undefined,
+  +   undefined
+  -   'counterattackAccuracy',
+  -   'counterattackAccuracy',
+  -   'fendAccuracy',
+  -   'freeAttackAccuracy',
+  -   'freeAttackAccuracy',
+  -   'freeAttackDodge',
+  -   'freeAttackDodge'
+    ]
+  
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-engine/content/test/trigger-ids.test.mjs:344:9)
+      at async Test.run (node:internal/test_runner/test:1113:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ undefined, undefined, undefined, undefined, undefined, undefined, undefined ],
+    expected: [ 'counterattackAccuracy', 'counterattackAccuracy', 'fendAccuracy', 'freeAttackAccuracy', 'freeAttackAccuracy', 'freeAttackDodge', 'freeAttackDodge' ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
