@@ -15,7 +15,7 @@
 // or disagreeing fact is a build failure, never a best fit).
 //
 //   node tools/painted-scenes.mjs --json      print the pack (test/painted-board.test.ts reads it)
-import { readFileSync, existsSync } from 'node:fs'
+import { readFileSync, existsSync, openSync, readSync, closeSync } from 'node:fs'
 import { resolve, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { packPresentation } from './presentation-profile.mjs'
@@ -65,6 +65,47 @@ export function packPaintedScenes(fields = JSON.parse(readFileSync(resolve(PKG, 
   return pack
 }
 
+/* ── THE BODIES THAT LIE ON A SCENE (viewer.bodies-life-size, 2026-10-05) ───────────────────────────────────────────────
+   Engine DECISIONS.md 2026-10-05 'the playtest post answered: … a body on the ground is the size of a living unit lying
+   down' (Andrew: "The bodies on the terrain are smaller than they should be. They should be larger." · "The body should be
+   the size of living units lying down, yes."). The bodies are models in the scene, made at a person's real size; the page
+   stands every unit's body larger (the size look), so it must enlarge these with them — and for that it must know WHICH
+   things in the scene are bodies. Two facts, two owners, related once here:
+     which are bodies      the scene's own record: assets/terrain-3d/<scene>/assembly.json 'bodies' (place, source, kind)
+     which nodes they are  the scene file's own node list (the head of scene.glb): the nodes that stand at a body's place
+   The pack names each place a body lies and how many of the file's nodes stand there; the page scales those and refuses a
+   scene that does not hold them (painted.js scaleBodies). A recorded body no node stands at is a build failure.
+   NOT SCALED, and said: a body made as ONE model with furniture cannot be made larger without the furniture — it is left
+   at its made size and listed (the pack's 'bodiesLeft'; the art need is that model, separated). */
+export const BODY_WITH_FURNITURE = {
+  'pew-remains': 'the remains and the pew they lie on are one model: scaling the body scales the pew (art: the remains apart from the pew)',
+}
+/** a scene file's own JSON — its nodes — read off the file's head; the file is never read whole */
+function sceneNodes(dir) {
+  const fd = openSync(resolve(ROOT, dir, 'scene.glb'), 'r')
+  try { const head = Buffer.alloc(20); readSync(fd, head, 0, 20, 0)
+    if (head.readUInt32LE(0) !== 0x46546c67 || head.readUInt32LE(16) !== 0x4e4f534a) throw new Error(dir + '/scene.glb is not a GLB')
+    const json = Buffer.alloc(head.readUInt32LE(12)); readSync(fd, json, 0, json.length, 20)
+    return JSON.parse(json.toString('utf8')).nodes || [] } finally { closeSync(fd) }
+}
+const SAME_PLACE = 1e-3            // scene metres: a node stands at a body's place when its x and z are the record's
+export function packBodies(mapId, dir) {
+  if (!existsSync(resolve(ROOT, dir, 'assembly.json'))) return { bodies: [], bodiesLeft: [] }
+  const record = read(dir + '/assembly.json').bodies
+  if (!Array.isArray(record)) throw new Error(`painted ${mapId}: ${dir}/assembly.json records no 'bodies' list`)
+  if (!record.length) return { bodies: [], bodiesLeft: [] }
+  const nodes = sceneNodes(dir).filter(n => Array.isArray(n.translation)), at = (n, p) => Math.abs(n.translation[0] - p[0]) < SAME_PLACE && Math.abs(n.translation[2] - p[2]) < SAME_PLACE
+  const bodies = [], bodiesLeft = []
+  for (const b of record) {
+    if (!Array.isArray(b.position) || b.position.length !== 3) throw new Error(`painted ${mapId}: a recorded body has no place`)
+    const count = nodes.filter(n => at(n, b.position)).length
+    if (!count) throw new Error(`painted ${mapId}: the scene file holds no node at the recorded body ${b.name ?? b.source} (${b.position.join(', ')})`)
+    if (Object.hasOwn(BODY_WITH_FURNITURE, b.source)) { bodiesLeft.push({ name: b.name ?? b.source, source: b.source, why: BODY_WITH_FURNITURE[b.source] }); continue }
+    if (!bodies.some(e => Math.abs(e.at[0] - b.position[0]) < SAME_PLACE && Math.abs(e.at[2] - b.position[2]) < SAME_PLACE)) bodies.push({ at: [...b.position], nodes: count })
+  }
+  return { bodies, bodiesLeft }
+}
+
 /** one scene bound to one engine map: the scene's measured hexes against the engine's, refused at the first disagreement */
 function bindScene(mapId, name, scene, catalog, fields, measuredOn = null) {
   const dir = 'assets/terrain-3d/' + scene
@@ -90,7 +131,10 @@ function bindScene(mapId, name, scene, catalog, fields, measuredOn = null) {
     heights.push(cell.stand[1] * sx)
   })
   const presentation = packPresentation(scene, nav)
-  return { kind: 'painted', mapId, name, scene, sceneSha256: nav.sceneSha256, cols: nav.cols, rows: nav.rows, radius: R, toBoard, heights, ...(presentation ? { presentation } : {}) }
+  /* viewer.bodies-life-size: the places a body lies on this scene (and the bodies left at their made size, with why) */
+  const lying = packBodies(mapId, dir)
+  return { kind: 'painted', mapId, name, scene, sceneSha256: nav.sceneSha256, cols: nav.cols, rows: nav.rows, radius: R, toBoard, heights, ...(presentation ? { presentation } : {}),
+    ...(lying.bodies.length ? { bodies: lying.bodies } : {}), ...(lying.bodiesLeft.length ? { bodiesLeft: lying.bodiesLeft } : {}) }
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url) && process.argv.includes('--json')) process.stdout.write(JSON.stringify(packPaintedScenes()))

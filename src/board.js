@@ -624,7 +624,7 @@ function playInjury(V) {
   const p = V.data.POS[u.hex]
   const bb = el('bb', `left:${p.px}px;top:${p.py}px`)
   bb.style.transform = 'scale3d(1, var(--aniso, 1), 1) rotateZ(var(--unspin, 0deg)) rotateX(var(--anti)) translateZ(160px)'
-  const plate = el('injPlate', 'left:-90px;top:-118px;width:180px', `<b>✶</b> ${job.name}`)
+  const plate = el('injPlate hbtNotice', 'left:-90px;top:-118px;width:180px', `<b>✶</b> ${job.name}`)
   bb.appendChild(plate); V.dom.stage.appendChild(bb); V.fx.nodes.add(bb)
   if (plate.animate) plate.animate([{ transform: 'scale(1.25)', opacity: 0 }, { transform: 'scale(1)', opacity: 1 }], { duration: 140, easing: 'cubic-bezier(.2,1.2,.4,1)' })
   const t = setTimeout(() => {
@@ -640,7 +640,7 @@ function playInjury(V) {
     } catch (e) {}
     bb.remove(); V.fx.nodes.delete(bb)
     if (from && to && document.body.animate) {
-      const fly = el('injPlate fly', `position:fixed;left:${from.left}px;top:${from.top}px;width:${from.width}px;z-index:1000;margin:0`, `<b>✶</b> ${job.name}`)
+      const fly = el('injPlate fly hbtNotice', `position:fixed;left:${from.left}px;top:${from.top}px;width:${from.width}px;z-index:1000;margin:0`, `<b>✶</b> ${job.name}`)
       document.body.appendChild(fly); V.fx.nodes.add(fly)
       const a = fly.animate([{ transform: 'translate(0,0) scale(1)', opacity: 1 }, { transform: `translate(${to.left - from.left}px,${to.top - from.top}px) scale(.6)`, opacity: .9 }],
         { duration: PLATE_FLY, easing: 'cubic-bezier(.4,0,.2,1)' })
@@ -707,7 +707,8 @@ export function rise(V, id) {
 export function banner(V, kind, text, sub) {
   const wrap = V.dom.stage.parentNode; if (!wrap) return
   const old = wrap.querySelector('.banner'); if (old) { old.remove(); V.fx.nodes.delete(old) }
-  const b = el('banner ' + kind, '', `<b>${text}</b>${sub ? `<span>${sub}</span>` : ''}`)
+  /* viewer.plates-banners-tooltip-gold-look: the notices' one lettering (styles.css .hbtNotice) */
+  const b = el('banner hbtNotice ' + kind, '', `<b>${text}</b>${sub ? `<span>${sub}</span>` : ''}`)
   wrap.appendChild(b); V.fx.nodes.add(b)
   if (b.animate) b.animate([{ opacity: 0, transform: 'translate(-50%,-8px)' }, { opacity: 1, transform: 'translate(-50%,0)', offset: .12 }, { opacity: 1, offset: .8 }, { opacity: 0 }], { duration: 1600, fill: 'forwards' })
   const t = setTimeout(() => { b.remove(); V.fx.nodes.delete(b); V.fx.timers.delete(t) }, dilate(V, 1650))
@@ -777,12 +778,12 @@ export function deathbedModal(V, c) {
      verifier runs (found 2026-09-04) */
   const m = el('dbModal ' + c.result, '')
   m.appendChild(el('dbVeil', ''))
-  const plate = el('dbPlate', '')
+  const plate = el('dbPlate hbtNotice', '')
   plate.innerHTML = stage1
   m.appendChild(plate)
   wrap.appendChild(m); V.fx.nodes.add(m)
   if (plate.animate) plate.animate([{ transform: 'scale(1.12)', opacity: 0 }, { transform: 'scale(1)', opacity: 1 }], { duration: 160, easing: 'cubic-bezier(.2,1.2,.4,1)' })
-  const t1 = setTimeout(() => { V.fx.timers.delete(t1); plate.innerHTML = stage2; plate.className = 'dbPlate ' + c.result
+  const t1 = setTimeout(() => { V.fx.timers.delete(t1); plate.innerHTML = stage2; plate.className = 'dbPlate hbtNotice ' + c.result
     if (plate.animate) plate.animate([{ transform: 'scale(1.25)' }, { transform: 'scale(1)' }], { duration: 220, easing: 'cubic-bezier(.2,1.3,.4,1)' }) }, dilate(V, DB_STAGE))
   const t2 = setTimeout(() => { V.fx.timers.delete(t2); m.remove(); V.fx.nodes.delete(m) }, dilate(V, DB_TOTAL))
   V.fx.timers.add(t1); V.fx.timers.add(t2)

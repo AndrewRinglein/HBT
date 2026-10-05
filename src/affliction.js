@@ -64,7 +64,7 @@ export function afflictionPopup(V, c) {
   const node = document.createElement('div')
   node.id = 'afflPop'; node.setAttribute('role', 'dialog'); node.setAttribute('aria-modal', 'true'); node.setAttribute('aria-labelledby', 'afflTitle')
   node.setAttribute('data-unit', String(c.id)); node.setAttribute('data-badge', c.badgeId)
-  node.innerHTML = `<div id="afflBox"><div id="afflHead">Afflicted</div><div id="afflTitle">${who} — ${what}</div>
+  node.innerHTML = `<div id="afflBox" class="hbtNotice"><div id="afflHead">Afflicted</div><div id="afflTitle">${who} — ${what}</div>
     <div id="afflBody"><div id="afflCards">${card('afflBefore', 'Before', before, `No card art for ${who} yet.`)}<span class="afflArrow" aria-hidden="true">&rarr;</span>${
       card('afflAfter', 'After', after, `No after art for ${who} with ${what} yet.`)}</div>
     <div id="afflText">
