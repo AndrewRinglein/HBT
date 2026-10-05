@@ -132,7 +132,8 @@ export function itemCardOf(itemId: string): ItemCard {
   return {
     id: row.id, name: row.name, kind: kindOf(row), tier: row.tier, facts,
     gives: Object.entries(row.statModifiers).map(([stat, amount]) => ({ stat, amount, words: statWordsOf(stat, amount) })),
-    lines: (own?.triggers ?? []).map(triggerLine),
+    // capability.set-bonus (engine item, 2026-10-05): the set line, in the Codex's own words (the count it is at is the hero's, on the Equip screen)
+    lines: [...(own?.triggers ?? []).map(triggerLine), ...(own?.setLine ? [`Set bonus: ${own.setLine}`] : [])],
     grants: row.grants.map((g) => grantOf(g, row)).filter((g): g is ItemCardGrant => g !== null),
     attribute: row.enchant ? { id: row.enchant, name: attribute?.name ?? row.enchant.replace('enchant.', ''), lines: [...(attribute?.line ? [attribute.line] : []), ...(attribute?.triggers ?? []).map(triggerLine)] } : null,
     line: own?.line ?? '',

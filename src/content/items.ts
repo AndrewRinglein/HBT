@@ -51,7 +51,7 @@ export type ItemRow = {
    * `at` members are worn, this item included. Keys are the engine's stat names, or `attackDamage` for
    * this weapon's own attacks; the battle receives them as heroMods.
    */
-  readonly setBonus: { readonly tag: string; readonly each?: Readonly<Record<string, number>>; readonly at?: number; readonly once?: Readonly<Record<string, number>> } | null
+  readonly setBonus: { readonly tag: string; readonly each?: Readonly<Record<string, number>>; readonly withItself?: true; readonly at?: number; readonly once?: Readonly<Record<string, number>> } | null
   /** Uses per battle for a one-use item, restocked after; null = permanent. The engine's (its powers' uses). */
   readonly uses: number | null
   /** The Waystation band that opens this row in its catalog, or null — it is not sold there. */
