@@ -236,7 +236,9 @@
   "shape": "plumbing",
   "spec": "Ruled 2026-10-05 (Andrew, engine/DECISIONS.md 'playtest post: notices, target lines, item cards, arrows, move costs on hexes, knocked down, bodies, cursed ground, the first hero's positives' and 'the playtest post answered'): 'The bodies on the terrain are smaller than they should be. They should be larger.' - 'The body should be the size of living units lying down, yes.' The bodies that lie on a map as terrain or props (the Orphanage's body, the caravan's corpses, the Cathedral's remains where they are drawn as bodies) are drawn smaller than a unit. Wanted: each is the size a living unit of that kind is when lying down - the same scale the board gives a dead or prone unit. Find where the prop's scale is set (the map's prop table, the atlas scene, the model's import scale) and fix it at its home; a prop baked into an authored Atlas scene image that cannot be scaled without re-authoring the scene is listed in the report and its art need filed by name rather than faked.",
   "expect": "On the Orphanage's board the body prop is as long as a prone hero beside it (the verify measures both on screen, within 10%); the same for the caravan's corpses; the report lists any body that could not be scaled and why.",
-  "note": "Filed by the home chat 2026-10-05."
+  "note": "Filed by the home chat 2026-10-05.",
+  "status": "done",
+  "sha": "e29f661"
  },
  {
   "id": "viewer.item-card-in-battle",
