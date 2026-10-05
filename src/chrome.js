@@ -18,7 +18,15 @@ export const END_TURN_ASK = 'Are you sure you want to end your turn? You have un
    is the top bar's last, at its right end (viewer SWITCHES barLogPlace); open, the log drops over the right-hand panel, never
    the board. Was: on the board beside 2×, the log open over the board's lower left. */
 const LOGBTN = `<button id="playLogBtn" type="button" class="pcBtn" aria-pressed="false" aria-expanded="false" aria-controls="playLog" title="Show or hide the battle log">Log</button>`
-const CHROME = `<button id="playSpeed" type="button" class="pcBtn" aria-pressed="false" title="Play at double speed">2&times;</button>`
+/* kingdom.move-click-setting (engine DECISIONS.md 2026-10-05 '… one click or two to move is a setting', Andrew: "let's have a setting
+   where it can be either way, so I can just play with it either way."): one small control beside 2× that says which way a
+   move is made — drawn from the host's fact (play facts moveClick), hidden until the host hands one. Pressed, it offers the
+   other way back ({kind:'move-click', clicks}); it changes nothing itself, and its words change only with the host's next
+   facts. What one click or two does to a move is the host's. */
+export const MOVE_CLICK_WORDS = { one: 'Move: 1 click', two: 'Move: 2 clicks' }
+const MOVE_CLICK_TITLE = 'How a move is made. 2 clicks: a click on a hex shows the path, a second click walks. 1 click: a click on a hex walks at once (a walk that draws a free attack still asks for a second). Press to change.'
+const CHROME = `<button id="playMoveClick" type="button" class="pcBtn" aria-pressed="false" style="display:none" title="${MOVE_CLICK_TITLE}"></button>`
+  + `<button id="playSpeed" type="button" class="pcBtn" aria-pressed="false" title="Play at double speed">2&times;</button>`
 /* viewer.battle-full-screen (engine DECISIONS.md 2026-09-30, Andrew: "You've got End Turn and End Activation on the battle
    map. They shouldn't be. Put them in the lower right-hand corner."): the two endings are off the board, in the screen's
    own lower right-hand corner — the foot of the right-hand panel, beside the action bar. 2× stays on the board (the Log button
@@ -88,7 +96,7 @@ export function mountPlayChrome(V, host) {
   wrap.appendChild(bar); V.dom.root.appendChild(log); left.appendChild(ask); left.appendChild(sw); left.appendChild(gear)
   V.dom.root.appendChild(ends); V.dom.root.classList.add('pcEndsOn')    /* the screen's corner, not the board (#left) */
   const q = (root, id) => root.querySelector('#' + id)
-  const B = { log: logBtn, speed: q(bar, 'playSpeed'), endAct: q(ends, 'playEndAct'), endTurn: q(ends, 'playEndTurn'),
+  const B = { log: logBtn, speed: q(bar, 'playSpeed'), moveClick: q(bar, 'playMoveClick'), endAct: q(ends, 'playEndAct'), endTurn: q(ends, 'playEndTurn'),
     text: q(ask, 'playAskText'), who: q(ask, 'playAskWho'), no: q(ask, 'playAskNo'), yes: q(ask, 'playAskYes'),
     swText: q(sw, 'playSwitchText'), swNo: q(sw, 'playSwitchNo'), swYes: q(sw, 'playSwitchYes'),
     gTitle: q(gear, 'playGearTitle'), gHand: q(gear, 'playGearHand'), gStowed: q(gear, 'playGearStowed'), gSay: q(gear, 'playGearSay'), gNo: q(gear, 'playGearNo'), gYes: q(gear, 'playGearYes') }
@@ -164,6 +172,9 @@ export function mountPlayChrome(V, host) {
 
   /* ── 2× (engine DECISIONS.md 2026-09-29: "Enemy turns play out in full animation. Have a double-speed button.") ── */
   B.speed.addEventListener('click', () => { host.speed(V.speed === 2 ? 1 : 2); sync() })
+  /* kingdom.move-click-setting: the other way, offered to the host — which keeps it and hands it back in its facts */
+  B.moveClick.addEventListener('click', ev => { if (ev && ev.stopPropagation) ev.stopPropagation()
+    const now = B.moveClick.dataset.clicks; if (now === 'one' || now === 'two') host.offer({ kind: 'move-click', clicks: now === 'one' ? 'two' : 'one' }) })
 
   /* ── the log: the sentences of the events already played, appended as the pump plays them ── */
   let lines = [], shown = 0
@@ -191,6 +202,12 @@ export function mountPlayChrome(V, host) {
     if (gearing()) { if (!P || !P.swap || P.actor !== gearUnit) closeGear(); else drawGear() }
     const fast = V.speed === 2
     B.speed.classList.toggle('on', fast); B.speed.setAttribute('aria-pressed', String(fast))
+    /* kingdom.move-click-setting: drawn from the fact; left as it was while the host takes no orders (no facts), gone when the
+       host's facts carry none */
+    if (P) { const mc = P.moveClick
+      B.moveClick.style.display = mc ? '' : 'none'
+      if (mc) { B.moveClick.textContent = MOVE_CLICK_WORDS[mc]; B.moveClick.dataset.clicks = mc; B.moveClick.setAttribute('aria-pressed', String(mc === 'one')); B.moveClick.classList.toggle('on', mc === 'one') }
+      else delete B.moveClick.dataset.clicks }
     syncLog()
   }
   function dispose() { document.removeEventListener('keydown', key); V.asking = false; delete V.openGear; gear.remove(); endNotice(); note.remove(); bar.remove(); ends.remove(); log.remove(); ask.remove(); sw.remove(); logBtn.remove(); V.dom.root.classList.remove('pcEndsOn') }

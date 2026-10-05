@@ -54,7 +54,12 @@ const ENDING_KEYS = ['endTurn', 'endActivation']
    STAND, optional too — standFirst [action ids], the host's word from the engine (its unit is down, and the engine's limits
    check refuses that action until it has stood). The bar gives those rows the disabled look and says why; the stand itself
    is never one of them. Absent or empty: nothing waits. What a unit that is down may do is never worked out here. */
-const OPTIONAL_KEYS = [...ENDING_KEYS, 'swap', 'ask', 'moveDone', 'reachCost', 'reachBorder', 'standFirst']
+/* kingdom.move-click-setting (engine DECISIONS.md 2026-10-05 'the battle screen must feel smooth: …; one click or two to move is
+   a setting', Andrew: "let's have a setting where it can be either way, so I can just play with it either way."): which way
+   a move is made, optional too — moveClick 'one' | 'two', the host's setting. The chrome draws one small control from it
+   that says which way it is set and offers the other way back ({kind:'move-click', clicks}); what one click or two DOES is
+   the host's. Absent: no control. */
+const OPTIONAL_KEYS = [...ENDING_KEYS, 'swap', 'ask', 'moveDone', 'reachCost', 'reachBorder', 'standFirst', 'moveClick']
 const AIM_KEYS = ['from', 'to', 'target', 'hit', 'dmg', 'hpAfter', 'lethal', 'locked']
 export function playFacts(value, positions) {
   const fail = why => { throw new Error('invalid play facts: ' + why) }
@@ -124,6 +129,8 @@ export function playFacts(value, positions) {
     if (!Array.isArray(v.standFirst) || v.standFirst.some(x => typeof x !== 'string' || !x)) fail('standFirst is not a list of action ids')
     if (new Set(v.standFirst).size !== v.standFirst.length) fail('standFirst repeats an action')
     standFirst = [...v.standFirst] }
+  let moveClick = null
+  if (v.moveClick != null) { if (v.moveClick !== 'one' && v.moveClick !== 'two') fail('moveClick is neither one nor two'); moveClick = v.moveClick }
   const reach = hexes(v.reach, 'reach')
   let reachCost = []
   if (v.reachCost != null) {
@@ -141,6 +148,6 @@ export function playFacts(value, positions) {
       if (c.cost !== null && int(c.cost, at + '.cost') < 0) fail(at + '.cost is negative')
       return { hex: c.hex, cost: c.cost } })
     if (new Set(reachBorder.map(c => c.hex)).size !== reachBorder.length) fail('reachBorder repeats a hex') }
-  return { endTurn, endActivation: v.endActivation === true, swap, ask, moveDone, standFirst, reachCost, reachBorder, actor: intOrNull(v.actor, 'actor'), slot: v.slot, reach, zoc: hexes(v.zoc, 'zoc'),
+  return { endTurn, endActivation: v.endActivation === true, swap, ask, moveDone, standFirst, moveClick, reachCost, reachBorder, actor: intOrNull(v.actor, 'actor'), slot: v.slot, reach, zoc: hexes(v.zoc, 'zoc'),
     path: hexes(v.path, 'path', false), provokes: hexes(v.provokes, 'provokes'), ghost, threat, targets: hexes(v.targets, 'targets'), aim, note: v.note }
 }
