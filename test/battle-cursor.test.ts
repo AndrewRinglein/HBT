@@ -491,6 +491,13 @@ const heroOriginBadgesGolden = JSON.parse(readFileSync(new URL('./fixtures/battl
 // test.call-the-wolf is ADDED: the Staff of Summoning's Call the Wolf live in a real battle.
 // Every case frozen here (tools/capture-summons-cursor.mts). Moved: none. A `changed` case is checked here and skips the older layers.
 const summonsGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-summons.json', import.meta.url), 'utf8'))
+// capability.set-bonus (2026-10-05; DECISIONS.md 2026-10-04 'his 28 reward weapons read back …': "We need: … set bonus"; GEAR-DESIGN.md
+// §5: a set is a tag plus a block on the item that cares), Law 10: an item row carries its set block and the engine counts the
+// members a unit carries when it is fielded; and a unit mod of Magic or Spirit is the unit's own share of the party's, so it
+// reaches the party's sum (it reached nothing). Every case whose party carries a drafted gift of Magic or Spirit moves;
+// test.set-bonus is ADDED: four of the set rows live in a real battle.
+// Every case frozen here (tools/capture-set-bonus-cursor.mts). Moved: test.perfect-sight. A `changed` case is checked here and skips the older layers.
+const setBonusGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-set-bonus.json', import.meta.url), 'utf8'))
 const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
 // Explicit rule migration, not regenerated historical hashes. These nine old
 // cases contain Surge ledger/refresh changes or terminal markers corrected
@@ -640,7 +647,10 @@ describe('resumable battle cursor', () => {
       const damageFromTwoStatsExpected = damageFromTwoStatsGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const heroOriginBadgesExpected = heroOriginBadgesGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const summonsExpected = summonsGolden.cases.find((row:{id:string})=>row.id===fixture.id)
-      const summonsMoved = summonsExpected?.changed === true
+      const setBonusExpected = setBonusGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+      const setBonusMoved = setBonusExpected?.changed === true
+      // was: const summonsMoved = summonsExpected?.changed === true — a case capability.set-bonus moved skips this layer too (capability.set-bonus 2026-10-04)
+      const summonsMoved = summonsExpected?.changed === true || setBonusMoved
       // was: const heroOriginBadgesMoved = heroOriginBadgesExpected?.changed === true — a case capability.summons moved skips this layer too (capability.summons 2026-10-04)
       const heroOriginBadgesMoved = heroOriginBadgesExpected?.changed === true || summonsMoved
       // was: const damageFromTwoStatsMoved = damageFromTwoStatsExpected?.changed === true — a case content.hero-origin-badges moved skips this layer too (content.hero-origin-badges 2026-10-04)
@@ -800,7 +810,14 @@ describe('resumable battle cursor', () => {
             battle.completeActionCycle(ctx)
           }
         } else result = battle.runBattle(ctx)
-        if (summonsExpected) {
+        if (setBonusExpected) {
+        expect(hash(ctx.events), 'full set-bonus events').toBe(setBonusExpected.events)
+        expect(hash(ctx.state), 'full set-bonus state').toBe(setBonusExpected.state)
+        expect(hash(ctx.rng.log), 'full set-bonus RNG').toBe(setBonusExpected.rng)
+        expect(result).toEqual(setBonusExpected.result)
+        }
+        // was: if (summonsExpected) { — capability.set-bonus (2026-10-04): a case it moved is checked above instead
+        if (summonsExpected && !setBonusMoved) {
         expect(hash(ctx.events), 'full summons events').toBe(summonsExpected.events)
         expect(hash(ctx.state), 'full summons state').toBe(summonsExpected.state)
         expect(hash(ctx.rng.log), 'full summons RNG').toBe(summonsExpected.rng)

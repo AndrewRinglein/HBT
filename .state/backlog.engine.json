@@ -5831,7 +5831,16 @@
   "shape": "modifier",
   "spec": "Ruled 2026-10-04 (Andrew, engine/DECISIONS.md 'his 28 reward weapons read back: ... the mechanics his own items need are wanted'): 'We need: ... set bonus'. Five of his items in the game carry a set-bonus line that does nothing today (the item review of 2026-10-04): the Staff of the Magi 'Set bonus: +1 Magic for every RING you are wearing'; the Staff of the Destroyer and the Staff of the Ultimate Destroyer 'Set bonus: +1 damage for every DESTROYER item you carry'; the Chains of the Wrathful 'Set bonus: +1 Precision for every CHAIN item you carry'; the Book of Karma 'Set bonus: +1 Resist for every BOOK you carry'. Wanted, with no content name in core: an item row may carry a set bonus - a stat (or flat damage on the item's own attacks) of +N for each item the holder has equipped that bears a named item tag; the count is taken from the holder's equipped items when the unit is fielded and again whenever its gear changes in a battle (a swap). Whether the item counts itself is not ruled: the chat's choice is that it does when it bears the tag (the Staff of the Destroyer is a DESTROYER item) - record it as a switch, the other side 'only the others'. Party stats (Magic, Spirit) take the bonus as the holder's share the way an item's plain +Magic does today. The kingdom's Equip screen and the item card show the line and the count it is at. Content: the five rows' lines wired, and the tags they count (ring, destroyer, chain, book) present on the rows that should bear them - if a tag is missing from rows that plainly are of the set, add it and list them in the landing note.",
   "expect": "A hero with the Chains of the Wrathful and one other chain item has +2 Precision from the set (the chains count themselves), +1 with the Chains alone; swapping the other chain item out in a battle drops it by 1 at once; the Staff of the Magi gives +1 Magic per ring worn; the Destroyer staffs' attacks deal +1 per destroyer item carried; an item with no set line is unchanged; the Equip screen shows the count.",
-  "note": "Filed by the home chat 2026-10-04."
+  "note": "Filed by the home chat 2026-10-04.",
+  "probeIds": [
+   "item.chains-of-the-wrathful"
+  ],
+  "variants": [
+   "item.chains-of-the-wrathful",
+   "item.staff-of-the-magi"
+  ],
+  "status": "done-needs-review",
+  "sha": "29b3934"
  },
  {
   "id": "capability.raise-lower-magic",

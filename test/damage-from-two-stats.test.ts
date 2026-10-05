@@ -92,7 +92,13 @@ describe('the damage is the sum, dealt as one damage of the attack\'s type', () 
       const { ctx, h, z } = rig(item)
       const pre = stat(ctx, h, 'precision'), magic = partySum(ctx, h.side, 'magic')
       const flat = ATTACKS[attack]!.attack!.bonus
-      expect(source(ctx, h, z, attack).value, attack).toBe(flat + pre * pm + (mm === 0.5 ? half(magic) : magic * mm))
+      // Law 10, 2026-10-05 — capability.set-bonus (DECISIONS.md 2026-10-04 'his 28 reward weapons read back …': "We need: … set bonus"): this read
+      //   expect(source(ctx, h, z, attack).value, attack).toBe(flat + pre * pm + (mm === 0.5 ? half(magic) : magic * mm))
+      // The Destroyer staffs' set line acts now ("+1 damage for every DESTROYER item you carry", and each is one): held
+      // alone, a Destroyer staff's own attacks deal 1 more - the weapon's own damage, beside the sum, which is unchanged.
+      const set = (h.weaponBonuses ?? []).filter((b) => b.itemId === item).reduce((n, b) => n + b.damage, 0)
+      expect(set, item).toBe(ITEMS[item]!.setBonus?.each?.['attackDamage'] ?? 0)
+      expect(source(ctx, h, z, attack).value, attack).toBe(flat + set + pre * pm + (mm === 0.5 ? half(magic) : magic * mm))
     }
   })
 
