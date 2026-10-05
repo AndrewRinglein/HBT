@@ -5167,3 +5167,65 @@ Under the ruling ("don't use the DSY sounds as first picks") the kingdom's copie
 Where the work is: `sound/` at the root, declared in `DOCS.md` - `sound/SOUND-PLAN.md` (the plan and what the merge needs), the list of every made sound, the voice pack's roles and each hero's voice, the 21 tracks and their places, the tools that make the takes, and the page he listens on. Nothing in a package reads it.
 
 His ElevenLabs account, read through the key he made the same day: the Creator plan, 300,000 credits. A made sound was charged 10 credits a second, not the 40 the entry above took from ElevenLabs' page.
+
+## 2026-10-05 — sound, after his first listen: the clicks are important; no crying; the place loops are set aside; less to sift
+
+Andrew, in the root chat (sound), after about an hour on the listening page, in two messages:
+
+“Thing like: Is any of this repeated?   See sounds for button clicks, like when you click hero, when you click the movement, when you click this thing, when you click that thing. There are a lot of clicks, including in Kingdom, and the clicking sounds are important.  Most of the shouting and voices seemed good, except for the first set of dying, which was like people crying. Very weird.   I marked those sounds as bad.  Any way you could do more of this? This is just an enormous thing to sift through.”
+
+“If we're going to have music, why would we have ambiance?”
+
+On the page itself he crossed out every cry of the first woman's voice, the nine big-attack files of the second woman's voice, and all three bow takes with the note "2 javelyn works better for bow".
+
+Ruled:
+
+- **The clicking sounds are important.** The chat reads it as: every plain click, in the battle and in the kingdom, is one of six - hover, select, pick, confirm, back, refused - and those six are made to belong together, so the same sounds repeat everywhere on purpose. Three kits are made for him to choose between (`sound/sound-list.json` `clicks`). Twenty-two moments that each had a sound of their own now play one of the six.
+- **No crying.** The crying files answered the 'downed' role; no voice uses a crying file now, and that role is set aside with 'tired' and 'choke', which answer moments the battle does not mark yet. The other voices stand: "Most of the shouting and voices seemed good".
+- **The bow plays the javelin's second take** (his note on the page).
+
+The chat's own defaults, said to him and his to change in a line:
+
+- **The place loops are set aside, not deleted** - his question was "why would we have ambiance?", and the chat's answer was that under music they add little: they are what is heard when the music is turned down. The fifteen are on disk and off the listening page.
+- **He hears one take a sound, not three.** A measurement pass (`sound/tools/sift.mjs`) picks the cleanest take of each - it cannot tell whether a take sounds right, only that it starts at once, is one event, is not cut off and is not too faint - and the page plays a group through with one key to mark the one that is wrong. A voice shows only the six files that would play for each moment.
+
+## 2026-10-05 — the characters stand out, measured against XCOM 2: our heroes are darker and greyer than the ground they stand on; red on a hero is not a problem
+
+Andrew, in the root chat (the XCOM 2 study), in three messages:
+
+“Can you do research on the background colors and tiles of XCOM 2? I think they're mostly gray, and that makes the heroes stand out more. I'm trying to figure out how to make heroes stand out more against backdrops, and I want to use XCOM 2 as my study.”
+
+“one thing we could do is also paint the heroes brighter colors, red, blue.”
+
+“what colors do we use? I dont think red is a problem because of attack arrows”
+
+Measured the same morning. Lightness runs 0 (black) to 1 (white); colourfulness 0 is pure grey and 0.12 and up reads as a strong colour (both are OKLCH, the median of the pixels). Ours are read from the battle page itself - the bodies are drawn on their own layer, so hero pixels are exact and the ground is the ring around them - at each battle's opening view, with the default looks (size and shadows). XCOM 2 is one overhead community screenshot, a night slum map, the soldier boxed by hand; it is a small sample.
+
+| | unit lightness | ground beside it | unit colourfulness | ground beside it |
+|---|---|---|---|---|
+| XCOM 2 | 0.68 | 0.41 | 0.072 | 0.050 |
+| Orphanage | 0.40 | 0.56 | 0.027 | 0.085 |
+| Orphanage, with the `ground` look of 2026-10-03 | 0.40 | 0.52 | 0.027 | 0.049 |
+| Lumberjack | 0.38 | 0.61 | 0.03 | 0.10 |
+| Bridge | 0.39 | 0.64 | 0.03 | 0.10 |
+| Cavern Trail | 0.12 | 0.65 | 0.01 | 0.10 |
+| Cathedral | 0.25 | 0.77 | 0.022 | 0.048 |
+
+What it shows:
+
+- **XCOM 2's ground is muted, not grey, and strong colour is rationed**: 1 to 5% of the picture in five of six screenshots, most of it on the interface (red danger tiles and bars, a yellow move line, pale cyan rings). Its soldier is lighter and more colourful than the floor.
+- **Ours is the other way round on every board measured.** The heroes are darker than the ground and a third as colourful; 70 to 90% of hero pixels are near grey and none is a strong colour. Every board's ground is yellow to green (hue 60 to 120) and every body is brown (hue 55 to 70), the colour next to it.
+- **Why the `ground` look of 2026-10-03 "did not help that much"**: it left the ground still lighter than the heroes and almost twice as colourful. The ground alone would have to go to about 0.15 lightness to match XCOM 2's gap - the almost-black he found drab.
+- **The hero gold `#e0b95e` (hue 86) is the grass's own hue**; the enemy violet `#a964d8` (hue 310) is far from everything.
+- The Cavern Trail's three bodies read almost black (0.12). Not looked into: it may be the page still loading in a hidden pane, or the lighting there.
+- The Gates did not load in the chat's pane and is not measured.
+
+Ruled:
+
+- **Red on a hero is not a problem.** The chat had said the attack mark and the downed ring are already red; his answer is the third message above.
+
+Not ruled - his idea and the chat's proposal, his to pick:
+
+- **Painting the heroes brighter colours** is his idea ("one thing we could do"), red and blue the two he named. No outfit is repainted on this entry.
+- **The chat's proposal for which**: a scarlet `#e0483a` (lightness 0.61, colourfulness 0.19), a light blue `#4f9be8` (0.68, 0.14; kept toward sky blue, away from the enemy violet) and bone white `#ebe5d6` (0.92); a teal `#2bb3a3` if a fourth is wanted. Kept off the heroes: green, yellow, brown, orange and gold (the ground's) and violet, purple and pink (the enemies').
+- **The chat's proposal for the rest**: show every body brighter (about 0.60 lightness; today only the unit whose panel is shown has its own light, and the unlit outfits take no light at all), and grey only the plain ground (about 0.40 to 0.45 lightness, colourfulness under 0.05) - his own idea of the same day, which is so far only in the comments of `.scratch-ground-tones/index.html`. A board passes when hero lightness clears the ground beside it by 0.2 on either side.
