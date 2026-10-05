@@ -1365,3 +1365,14 @@ changed.
 | Switch | Question | Default | Reason | Status |
 |---|---|---|---|---|
 | `aiPowerOrderStampOnly` | What moves in the viewer? | **The engine code stamp the dumps, the swap fixture and the six opening recordings carry (b9058ca112) — re-dumped and re-exported together on their seeds (Orphanage 5, Lumberjack House 3, Bridge 19, Cavern Trail 11, Gates 0, Cathedral 10); no event of any recording differs** (nobody in the opening holds powers of different cooldowns and reaches for one). `tools/fixtures/enemies-together.json` rewritten by its command. | A dump and a recording carry the stamp of the engine that made them, and the six go together. | Default — 2026-10-05 |
+
+## content.orphanage-body-and-graves-cursed (engine item) — the Lumberjack House's cursed hexes, 2026-10-05
+
+The Lumberjack House's encounter paints its map's cursed ground — `layer.weak` on the three graves and the body (engine
+DECISIONS.md 2026-10-05 'playtest post: … bodies, cursed ground …'; 2026-09-28 'cursed ground is the Weak ground layer'; engine
+SWITCHES.md `cursedGravesAreTheLumberjackHouses`). No viewer source changed.
+
+| Switch | Question | Default | Reason | Status |
+|---|---|---|---|---|
+| `lumberjackCursedHexesDrawn` | How does the board mark the four hexes? | **As it marks every painted ground layer: the page folds the engine's four `layer.painted` lines and draws the Weak layer's tinted tile on each hex (`src/board.js` `syncLayers`), from the battle's first frame — the Cathedral's remains and the Gates' curse areas are drawn the same way.** The caravan's drifting cursed fog is a painted scene's LOOK setting (`tools/presentation-profiles.json`, read with the scene's own `cursedCells`); the Lumberjack's scene has no presentation profile and is not given one here. FOUND for the viewer's queue: `lumberjack-forest/navigation.json` already lists the same four `cursedCells`, so a profile with `cursedGround: true` would put the fog on the graves and the body — it also sets the scene's backdrop, which is a look he has not seen. | "The board shows cursed ground as it shows it elsewhere"; a look setting is not an engine item's to choose. | Default — 2026-10-05 |
+| `lumberjackCursedOpeningSeeds` | Which recordings move? | **The Lumberjack House's alone (712 events where it had 708: the four painted lines at the start; as it fell, still a win on Turn 8 — not read for its outcome). All six re-exported together on their seeds (Orphanage 5, Lumberjack House 3, Bridge 19, Cavern Trail 11, Gates 0, Cathedral 10) at engine code stamp 7b13456ca1; the other five are event for event what they were.** The dumps and the engine-made rosters and fixtures rewritten by their own commands. | A recording carries the stamp of the engine that made it, and the six go together. | Default — 2026-10-05 |
