@@ -5110,3 +5110,15 @@ Ruled:
 - **A unit that has walked loses every move-class action for that Activation** - Focus and Devotion among them: "7, yes. Everything that is categorized as a move class action, because there are other things that are that too". As `rule.walked-unit-has-moved` built it.
 - **swapCost on screen:** "4 cost 1 stam". The chat reads it as: the line says what swapping costs, in Stamina - "Swap costs 1 Stamina" with the badge's own number - rather than a stat word and a number (said to him the same day; one line to change). Filed: `kingdom.swap-cost-reads-as-stamina`.
 - **All the remaining items go to this chat's workers, on different workers at once** ("can you continue all the remaining items by different workers?"; "I'd like to get it done without spending a day") - the eleven 'feel smooth' items the root chat filed among them, since he did not say the root chat builds them. Said to him: the root chat should not start workers on those eleven while these run.
+
+## 2026-10-05 — gifts: the word; each first-hero choice rolls its own; the plates, banners, tooltip and pop-up take the gold look
+
+Andrew, in the kingdom chat, answering two questions (1 should any of the things the viewer worker left alone - the Deathbed and injury plates, the phase and wave banners, the hex tooltip, the affliction pop-up - take the gold no-backdrop look too; 2 should each of the three first-hero choices roll its own gifts, instead of one roll shared by all three):
+
+“One, yes.   Yeah, they each roll their own gifts.  Oh, I like that term. Let's standardize on that term. Basically, the random modifiers that are applied to a hero are called gifts. That includes the random badges and random stats.”
+
+Ruled:
+
+- **Gift is the word** for a random modifier applied to a hero - a random badge or a random stat change; a hero's gifts are all of them. GLOSSARY.md 'Settled, 2026-10-05'. It replaces 'draft modifier' and 'what the first hero is given' where a player or a document reads them; ids and field names are not renamed.
+- **Each of the three first-hero choices rolls its own gifts** - not one roll shared by all three. So each card shows its own, and the one line said once for the pick goes. Folded into `kingdom.first-hero-card-only-what-is-modified` if it has not landed, else filed as `kingdom.first-hero-each-rolls-own-gifts`.
+- **The Deathbed and injury plates, the phase and wave banners, the hex tooltip and the affliction pop-up take the gold, no-backdrop look too** ("One, yes"). Filed: `viewer.plates-banners-tooltip-gold-look`. The gear panel was not asked about and stays.
