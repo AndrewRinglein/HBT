@@ -5704,7 +5704,14 @@
   ],
   "spec": "Ruled 2026-09-28 (the Armory Ledger's rules, approved that day: 'A new counterattack replaces the old one. Knocked down, knocked back or moved by an enemy's power: it is lost.') and recorded as not built by capability.counterattack-and-fend (engine SWITCHES.md counterattackNewOverridesOld, counterattackLostWhenMoved). Build both on the counterattack state as it stands (engine src/core: the `counterattack` / `counterattackAccuracy` stats and pipeline.ts): using a counterattack power while one is up replaces it - the newer power's Accuracy and other riders, not a sum; and a unit that is knocked down, knocked back or moved by an enemy's power loses its counterattack, with a line in the log saying so. Fend follows the same two rules unless COMBAT-SEQUENCE says otherwise - decide and record. Also from the same rules line: Thorns needs a hit from an ADJACENT melee attacker (engine src/core/thorns.ts checks melee and a hit, not adjacency) - add the adjacency check. Read ENGINE-CONSTITUTION.md and COMBAT-SEQUENCE.md first. Check whether the control battles move before claiming changesBaseline.",
   "expect": "A hero with Counterattack up who uses a second counterattack power has only the second's bonus; pushed, knocked down or moved by an enemy's power it loses the counterattack and the log says so; a reach attacker two hexes away takes no Thorns; a test asserts each.",
-  "note": "Filed by the kingdom chat, 2026-10-04, from the weapon audit. Small."
+  "note": "Filed by the kingdom chat, 2026-10-04, from the weapon audit. Small.",
+  "changesBaseline": true,
+  "variants": [
+   "power.longsword.counterattack",
+   "power.test-fend"
+  ],
+  "status": "done-needs-review",
+  "sha": "82d3ffa"
  },
  {
   "id": "capability.free-attack-accuracy",

@@ -436,6 +436,14 @@ const greatswordWarAxeReauthoredGolden = JSON.parse(readFileSync(new URL('./fixt
 // own ids on a tier-3 row), and a Punch, the other hand's weapon and a cast no longer do.
 // Every case frozen here (tools/capture-enchant-stats-on-weapon-cursor.mts). Moved: test.trigger-with-tag, progression-surge-0, progression-surge-1, progression-surge-2. A `changed` case is checked here and skips the older layers.
 const enchantStatsOnWeaponGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-enchant-stats-on-weapon.json', import.meta.url), 'utf8'))
+// rule.counterattack-replaced-and-lost (2026-10-04; DECISIONS.md 2026-09-28, the Armory Ledger's rules: "A new counterattack replaces the
+// old one. Knocked down, knocked back or moved by an enemy's power: it is lost."), Law 10: a power that grants a special free attack
+// first takes away the one its receiver has up (the kind's two stats and the older grant's riders), and a unit that goes prone or is
+// knocked to another hex loses the kind's two stats - one statmod.expired line each, saying why. Thorns answers an ADJACENT melee
+// attacker. A case moves where a unit uses its counterattack power again while one is up (the computer does: it had Counterattack 2 and
+// +20, now 1 and +10), or is knocked down or back with one up.
+// Every case frozen here (tools/capture-counterattack-replaced-and-lost-cursor.mts). Moved: showcase.eve-24-a, test.opening-gates. A `changed` case is checked here and skips the older layers.
+const counterattackReplacedAndLostGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-counterattack-replaced-and-lost.json', import.meta.url), 'utf8'))
 const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
 // Explicit rule migration, not regenerated historical hashes. These nine old
 // cases contain Surge ledger/refresh changes or terminal markers corrected
@@ -577,7 +585,10 @@ describe('resumable battle cursor', () => {
       const shieldsReauthoredExpected = shieldsReauthoredGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const greatswordWarAxeReauthoredExpected = greatswordWarAxeReauthoredGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const enchantStatsOnWeaponExpected = enchantStatsOnWeaponGolden.cases.find((row:{id:string})=>row.id===fixture.id)
-      const enchantStatsOnWeaponMoved = enchantStatsOnWeaponExpected?.changed === true
+      const counterattackReplacedAndLostExpected = counterattackReplacedAndLostGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+      const counterattackReplacedAndLostMoved = counterattackReplacedAndLostExpected?.changed === true
+      // was: const enchantStatsOnWeaponMoved = enchantStatsOnWeaponExpected?.changed === true — a case rule.counterattack-replaced-and-lost moved skips this layer too (rule.counterattack-replaced-and-lost 2026-10-04)
+      const enchantStatsOnWeaponMoved = enchantStatsOnWeaponExpected?.changed === true || counterattackReplacedAndLostMoved
       // was: const greatswordWarAxeReauthoredMoved = greatswordWarAxeReauthoredExpected?.changed === true — a case fix.enchant-stats-on-weapon moved skips this layer too (fix.enchant-stats-on-weapon 2026-10-04)
       const greatswordWarAxeReauthoredMoved = greatswordWarAxeReauthoredExpected?.changed === true || enchantStatsOnWeaponMoved
       // was: const shieldsReauthoredMoved = shieldsReauthoredExpected?.changed === true — a case content.greatsword-war-axe-reauthored moved skips this layer too (content.greatsword-war-axe-reauthored 2026-10-04)
@@ -721,7 +732,14 @@ describe('resumable battle cursor', () => {
             battle.completeActionCycle(ctx)
           }
         } else result = battle.runBattle(ctx)
-        if (enchantStatsOnWeaponExpected) {
+        if (counterattackReplacedAndLostExpected) {
+        expect(hash(ctx.events), 'full counterattack-replaced-and-lost events').toBe(counterattackReplacedAndLostExpected.events)
+        expect(hash(ctx.state), 'full counterattack-replaced-and-lost state').toBe(counterattackReplacedAndLostExpected.state)
+        expect(hash(ctx.rng.log), 'full counterattack-replaced-and-lost RNG').toBe(counterattackReplacedAndLostExpected.rng)
+        expect(result).toEqual(counterattackReplacedAndLostExpected.result)
+        }
+        // was: if (enchantStatsOnWeaponExpected) { — rule.counterattack-replaced-and-lost (2026-10-04): a case it moved is checked above instead
+        if (enchantStatsOnWeaponExpected && !counterattackReplacedAndLostMoved) {
         expect(hash(ctx.events), 'full enchant-stats-on-weapon events').toBe(enchantStatsOnWeaponExpected.events)
         expect(hash(ctx.state), 'full enchant-stats-on-weapon state').toBe(enchantStatsOnWeaponExpected.state)
         expect(hash(ctx.rng.log), 'full enchant-stats-on-weapon RNG').toBe(enchantStatsOnWeaponExpected.rng)

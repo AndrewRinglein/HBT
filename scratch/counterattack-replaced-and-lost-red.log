@@ -1,0 +1,258 @@
+
+ RUN  v4.1.11 C:/Users/aring/Desktop/HBT-worker-engine/engine
+
+ ❯ test/counterattack-replaced-and-lost.test.ts (16 tests | 13 failed) 25ms
+     × the same power used again while it is up: Counterattack 1 and +10, not 2 and +20 — the old two modifiers end first, and the log says why 7ms
+     × a different power: only the second's bonus — the Longsword's +10 Accuracy goes, the Great Sword's +2 Strength stands 1ms
+     × the older power's other riders go with it: the Great Sword's +2 Strength is not kept under the Longsword's, nor summed by a second use 1ms
+     × the answer he gives is the newer one's: after the Great Sword's replaces the Longsword's, his counterattack rolls without the +10 5ms
+     × a modifier another thing put on him is not the old counterattack's and stays 1ms
+     × knocked back a hex by an enemy: Counterattack and its Accuracy are gone, each with a line that says why — after the line that moved him 1ms
+     × and it stays lost: an enemy that then swings at him from the next hex is not answered 1ms
+     × knocked down: lost at the line that puts him down 1ms
+     × what is lost is the counterattack: the Great Sword's +2 Strength, its own clause, stays until its own end 1ms
+     × his own movement loses nothing; nor does a unit with no counterattack up write a line 0ms
+     × used again while up: Fend 1, not 2; knocked back: gone, and the line says it was the fend 1ms
+     × a fend and a counterattack are two things: putting one up does not take the other down; a knock takes both 1ms
+     × two hexes away with a reach weapon: the hit lands and costs him nothing, and the preview said nothing 1ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 13 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/counterattack-replaced-and-lost.test.ts > a new counterattack replaces the old one > the same power used again while it is up: Counterattack 1 and +10, not 2 and +20 — the old two modifiers end first, and the log says why
+AssertionError: expected 2 to be 1 // Object.is equality
+
+- Expected
++ Received
+
+- 1
++ 2
+
+ ❯ test/counterattack-replaced-and-lost.test.ts:61:43
+     59|     const from = ctx.events.length
+     60|     use(ctx, h, LONG, true)
+     61|     expect(stat(ctx, h, 'counterattack')).toBe(1)
+       |                                           ^
+     62|     expect(stat(ctx, h, 'counterattackAccuracy')).toBe(10)
+     63|     const after = ctx.events.slice(from)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/13]⎯
+
+ FAIL  test/counterattack-replaced-and-lost.test.ts > a new counterattack replaces the old one > a different power: only the second's bonus — the Longsword's +10 Accuracy goes, the Great Sword's +2 Strength stands
+AssertionError: expected 2 to be 1 // Object.is equality
+
+- Expected
++ Received
+
+- 1
++ 2
+
+ ❯ test/counterattack-replaced-and-lost.test.ts:77:43
+     75|     use(ctx, h, LONG)
+     76|     use(ctx, h, GREAT, true)
+     77|     expect(stat(ctx, h, 'counterattack')).toBe(1)
+       |                                           ^
+     78|     expect(stat(ctx, h, 'counterattackAccuracy')).toBe(0)
+     79|     expect(stat(ctx, h, 'strength')).toBe(strength + 2)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/13]⎯
+
+ FAIL  test/counterattack-replaced-and-lost.test.ts > a new counterattack replaces the old one > the older power's other riders go with it: the Great Sword's +2 Strength is not kept under the Longsword's, nor summed by a second use
+AssertionError: used twice: +2, not +4: expected 7 to be 5 // Object.is equality
+
+- Expected
++ Received
+
+- 5
++ 7
+
+ ❯ test/counterattack-replaced-and-lost.test.ts:87:64
+     85|     use(ctx, h, GREAT)
+     86|     use(ctx, h, GREAT, true)
+     87|     expect(stat(ctx, h, 'strength'), 'used twice: +2, not +4').toBe(st…
+       |                                                                ^
+     88|     const from = ctx.events.length
+     89|     use(ctx, h, LONG, true)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/13]⎯
+
+ FAIL  test/counterattack-replaced-and-lost.test.ts > a new counterattack replaces the old one > the answer he gives is the newer one's: after the Great Sword's replaces the Longsword's, his counterattack rolls without the +10
+AssertionError: expected 62 to be 52 // Object.is equality
+
+- Expected
++ Received
+
+- 52
++ 62
+
+ ❯ test/counterattack-replaced-and-lost.test.ts:104:32
+    102|     const swing = ctx.events.find((e) => e.type === 'attack.declared' …
+    103|     expect(swing).toBeDefined()
+    104|     expect(swing['hitChance']).toBe(Math.max(0, Math.min(100, own.accu…
+       |                                ^
+    105|   })
+    106|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/13]⎯
+
+ FAIL  test/counterattack-replaced-and-lost.test.ts > a new counterattack replaces the old one > a modifier another thing put on him is not the old counterattack's and stays
+AssertionError: expected 6 to be 4 // Object.is equality
+
+- Expected
++ Received
+
+- 4
++ 6
+
+ ❯ test/counterattack-replaced-and-lost.test.ts:113:38
+    111|     use(ctx, h, GREAT)
+    112|     use(ctx, h, LONG, true)
+    113|     expect(stat(ctx, h, 'strength')).toBe(strength + 1)
+       |                                      ^
+    114|   })
+    115| })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/13]⎯
+
+ FAIL  test/counterattack-replaced-and-lost.test.ts > knocked down, knocked back or moved: it is lost > knocked back a hex by an enemy: Counterattack and its Accuracy are gone, each with a line that says why — after the line that moved him
+AssertionError: expected 1 to be +0 // Object.is equality
+
+- Expected
++ Received
+
+- 0
++ 1
+
+ ❯ test/counterattack-replaced-and-lost.test.ts:124:43
+    122|     executeKnockback(ctx, z.id, h.id, 1, 'test.shove')
+    123|     expect(h.hex).not.toBe(was)
+    124|     expect(stat(ctx, h, 'counterattack')).toBe(0)
+       |                                           ^
+    125|     expect(stat(ctx, h, 'counterattackAccuracy')).toBe(0)
+    126|     const after = ctx.events.slice(from)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/13]⎯
+
+ FAIL  test/counterattack-replaced-and-lost.test.ts > knocked down, knocked back or moved: it is lost > and it stays lost: an enemy that then swings at him from the next hex is not answered
+TypeError: ctx.geo.neighbors is not a function
+ ❯ test/counterattack-replaced-and-lost.test.ts:136:21
+    134|     use(ctx, h, LONG)
+    135|     executeKnockback(ctx, z.id, h.id, 1, 'test.shove')
+    136|     z.hex = ctx.geo.neighbors(h.hex).find((n) => !ctx.state.units.some…
+       |                     ^
+    137|     beginActivation(ctx, z.id, 'test')
+    138|     performAttack(ctx, z.id, h.id, z.actions.find((a) => ctx.actions[a…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/13]⎯
+
+ FAIL  test/counterattack-replaced-and-lost.test.ts > knocked down, knocked back or moved: it is lost > knocked down: lost at the line that puts him down
+AssertionError: expected 1 to be +0 // Object.is equality
+
+- Expected
++ Received
+
+- 0
++ 1
+
+ ❯ test/counterattack-replaced-and-lost.test.ts:147:43
+    145|     const from = ctx.events.length
+    146|     applyStatus(ctx, h.id, prone(ctx), 1, 'test.trip')
+    147|     expect(stat(ctx, h, 'counterattack')).toBe(0)
+       |                                           ^
+    148|     const after = ctx.events.slice(from)
+    149|     expect(ended(after)).toEqual([['counterattack', 1, LONG, 'knocked-…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/13]⎯
+
+ FAIL  test/counterattack-replaced-and-lost.test.ts > knocked down, knocked back or moved: it is lost > what is lost is the counterattack: the Great Sword's +2 Strength, its own clause, stays until its own end
+AssertionError: expected 1 to be +0 // Object.is equality
+
+- Expected
++ Received
+
+- 0
++ 1
+
+ ❯ test/counterattack-replaced-and-lost.test.ts:158:43
+    156|     use(ctx, h, GREAT)
+    157|     executeKnockback(ctx, z.id, h.id, 1, 'test.shove')
+    158|     expect(stat(ctx, h, 'counterattack')).toBe(0)
+       |                                           ^
+    159|     expect(stat(ctx, h, 'strength')).toBe(strength + 2)
+    160|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/13]⎯
+
+ FAIL  test/counterattack-replaced-and-lost.test.ts > knocked down, knocked back or moved: it is lost > his own movement loses nothing; nor does a unit with no counterattack up write a line
+TypeError: ctx.geo.neighbors is not a function
+ ❯ test/counterattack-replaced-and-lost.test.ts:165:26
+    163|     const { ctx, h, z } = rig()
+    164|     use(ctx, h, LONG)
+    165|     const free = ctx.geo.neighbors(h.hex).find((n) => !ctx.state.units…
+       |                          ^
+    166|     moveUnit(ctx, h.id, free, 1, 'test.walk', 'terrain.open')
+    167|     expect(stat(ctx, h, 'counterattack')).toBe(1)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/13]⎯
+
+ FAIL  test/counterattack-replaced-and-lost.test.ts > Fend follows the same two rules > used again while up: Fend 1, not 2; knocked back: gone, and the line says it was the fend
+Error: illegal power: Lion of the Host A -> Lion of the Host A with power.test-fend
+ ❯ usePower src/core/ability.ts:150:11
+    148|   const a = abilityDef(ctx, abilityId)
+    149|   if (!canUsePower(ctx, userId, targetId, abilityId, slot)) {
+    150|     throw new Error(`illegal power: ${u.name} -> ${tg.name} with ${abi…
+       |           ^
+    151|   }
+    152|   // refactor.one-action-type: THE ONE SPEND — stamina, the primary (u…
+ ❯ use test/counterattack-replaced-and-lost.test.ts:44:139
+ ❯ test/counterattack-replaced-and-lost.test.ts:185:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/13]⎯
+
+ FAIL  test/counterattack-replaced-and-lost.test.ts > Fend follows the same two rules > a fend and a counterattack are two things: putting one up does not take the other down; a knock takes both
+AssertionError: expected [ 1, 1 ] to deeply equal [ +0, +0 ]
+
+- Expected
++ Received
+
+  [
+-   0,
+-   0,
++   1,
++   1,
+  ]
+
+ ❯ test/counterattack-replaced-and-lost.test.ts:200:67
+    198|     expect([stat(ctx, h, 'counterattack'), stat(ctx, h, 'fend')]).toEq…
+    199|     executeKnockback(ctx, z.id, h.id, 1, 'test.shove')
+    200|     expect([stat(ctx, h, 'counterattack'), stat(ctx, h, 'fend')]).toEq…
+       |                                                                   ^
+    201|   })
+    202| })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/13]⎯
+
+ FAIL  test/counterattack-replaced-and-lost.test.ts > Thorns answers a hit from an ADJACENT melee attacker > two hexes away with a reach weapon: the hit lands and costs him nothing, and the preview said nothing
+AssertionError: expected 3 to be +0 // Object.is equality
+
+- Expected
++ Received
+
+- 0
++ 3
+
+ ❯ test/counterattack-replaced-and-lost.test.ts:229:49
+    227|     const { ctx, at } = duel(2)
+    228|     expect(ctx.geo.distance(at.hex, ctx.state.units[1]!.hex)).toBe(2)
+    229|     expect(preview(ctx, 0, 1, AXE).thornsOnHit).toBe(0)
+       |                                                 ^
+    230|     expect(performAttack(ctx, 0, 1, AXE).hit).toBe(true)
+    231|     expect(at.hp).toBe(100)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/13]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  13 failed | 3 passed (16)
+   Start at  21:40:38
+   Duration  914ms (transform 599ms, setup 0ms, import 752ms, tests 25ms, environment 0ms)
+

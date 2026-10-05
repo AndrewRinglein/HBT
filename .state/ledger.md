@@ -31418,3 +31418,70 @@ index 40b871e..6328e8d 100644
  
 ```
 </details>
+
+## rule.counterattack-replaced-and-lost — LANDED `82d3ffa` **NEEDS REVIEW**
+2026-10-05 05:03
+
+  PASS  dependencies landed
+  WARN  not already decided — 3 candidate ruling(s) — READ BEFORE ASKING: SWITCHES.md:2247 · DECISIONS.md:4731
+  PASS  typecheck
+  PASS  the item's own tests — test/battle-cursor.test.ts, test/counterattack-replaced-and-lost.test.ts
+  PASS  gate 1 — the id appears in a real battle — power.longsword.counterattack: 1 log lines, 1 fired, 1 changed state
+  PASS  brought its own tests — test/battle-cursor.test.ts, test/counterattack-replaced-and-lost.test.ts, test/fixtures/battle-cursor-counterattack-replaced-and-lost.json
+  WARN  existing tests untouched — DELETED LINES in test/battle-cursor.test.ts (-2) — will land FLAGGED for review
+  PASS  control battles unchanged — will re-bless at commit — this item DECLARED it changes the control battles: test.map.embers bc438bce->95a5d84c, test.map.dungeon-16x8 5107f8bb->5e3ac185
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — power.longsword.counterattack live · power.test-fend live
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without power.longsword.counterattack — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/battle-cursor.test.ts b/test/battle-cursor.test.ts
+index 585be59..82e068d 100644
+--- a/test/battle-cursor.test.ts
++++ b/test/battle-cursor.test.ts
+@@ -437,4 +437,12 @@ const greatswordWarAxeReauthoredGolden = JSON.parse(readFileSync(new URL('./fixt
+ // Every case frozen here (tools/capture-enchant-stats-on-weapon-cursor.mts). Moved: test.trigger-with-tag, progression-surge-0, progression-surge-1, progression-surge-2. A `changed` case is checked here and skips the older layers.
+ const enchantStatsOnWeaponGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-enchant-stats-on-weapon.json', import.meta.url), 'utf8'))
++// rule.counterattack-replaced-and-lost (2026-10-04; DECISIONS.md 2026-09-28, the Armory Ledger's rules: "A new counterattack replaces the
++// old one. Knocked down, knocked back or moved by an enemy's power: it is lost."), Law 10: a power that grants a special free attack
++// first takes away the one its receiver has up (the kind's two stats and the older grant's riders), and a unit that goes prone or is
++// knocked to another hex loses the kind's two stats - one statmod.expired line each, saying why. Thorns answers an ADJACENT melee
++// attacker. A case moves where a unit uses its counterattack power again while one is up (the computer does: it had Counterattack 2 and
++// +20, now 1 and +10), or is knocked down or back with one up.
++// Every case frozen here (tools/capture-counterattack-replaced-and-lost-cursor.mts). Moved: showcase.eve-24-a, test.opening-gates. A `changed` case is checked here and skips the older layers.
++const counterattackReplacedAndLostGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-counterattack-replaced-and-lost.json', import.meta.url), 'utf8'))
+ const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
+ // Explicit rule migration, not regenerated historical hashes. These nine old
+@@ -578,5 +586,8 @@ describe('resumable battle cursor', () => {
+       const greatswordWarAxeReauthoredExpected = greatswordWarAxeReauthoredGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+       const enchantStatsOnWeaponExpected = enchantStatsOnWeaponGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+-      const enchantStatsOnWeaponMoved = enchantStatsOnWeaponExpected?.changed === true
++      const counterattackReplacedAndLostExpected = counterattackReplacedAndLostGolden.cases.find((row:{id:string})=>row.id===fixture.id)
++      const counterattackReplacedAndLostMoved = counterattackReplacedAndLostExpected?.changed === true
++      // was: const enchantStatsOnWeaponMoved = enchantStatsOnWeaponExpected?.changed === true — a case rule.counterattack-replaced-and-lost moved skips this layer too (rule.counterattack-replaced-and-lost 2026-10-04)
++      const enchantStatsOnWeaponMoved = enchantStatsOnWeaponExpected?.changed === true || counterattackReplacedAndLostMoved
+       // was: const greatswordWarAxeReauthoredMoved = greatswordWarAxeReauthoredExpected?.changed === true — a case fix.enchant-stats-on-weapon moved skips this layer too (fix.enchant-stats-on-weapon 2026-10-04)
+       const greatswordWarAxeReauthoredMoved = greatswordWarAxeReauthoredExpected?.changed === true || enchantStatsOnWeaponMoved
+@@ -722,5 +733,12 @@ describe('resumable battle cursor', () => {
+           }
+         } else result = battle.runBattle(ctx)
+-        if (enchantStatsOnWeaponExpected) {
++        if (counterattackReplacedAndLostExpected) {
++        expect(hash(ctx.events), 'full counterattack-replaced-and-lost events').toBe(counterattackReplacedAndLostExpected.events)
++        expect(hash(ctx.state), 'full counterattack-replaced-and-lost state').toBe(counterattackReplacedAndLostExpected.state)
++        expect(hash(ctx.rng.log), 'full counterattack-replaced-and-lost RNG').toBe(counterattackReplacedAndLostExpected.rng)
++        expect(result).toEqual(counterattackReplacedAndLostExpected.result)
++        }
++        // was: if (enchantStatsOnWeaponExpected) { — rule.counterattack-replaced-and-lost (2026-10-04): a case it moved is checked above instead
++        if (enchantStatsOnWeaponExpected && !counterattackReplacedAndLostMoved) {
+         expect(hash(ctx.events), 'full enchant-stats-on-weapon events').toBe(enchantStatsOnWeaponExpected.events)
+         expect(hash(ctx.state), 'full enchant-stats-on-weapon state').toBe(enchantStatsOnWeaponExpected.state)
+```
+</details>

@@ -228,6 +228,21 @@ stands with its `counterattack` stat above 0, the unit makes its special free at
 Stamina, −20 Accuracy, plus its `counterattackAccuracy`), then settle. A burst is not an attack and draws none; a special
 free attack (an attack of opportunity, a fend, a counterattack) is never answered.
 
+**A special free attack that is up is replaced, and can be lost** (rule.counterattack-replaced-and-lost, 2026-10-04;
+DECISIONS.md 2026-09-28, the Armory Ledger's rules: "A new counterattack replaces the old one. Knocked down, knocked back or
+moved by an enemy's power: it is lost."). **Built: yes.** A counterattack or a fend a unit has *up* is the stored modifiers
+a power put on that kind's stat and on its Accuracy stat (`special-free-attacks.ts`); a number on the unit's own row or gear
+is not one of them.
+- **Replaced.** A power that grants the kind first takes away the one its receiver has up — before any of the power's own
+  effects (`ability.ts performEffects`): the kind's two stats, and every other modifier the older grant put on with the same
+  source and the same lifetime (its riders). The newer power's numbers stand alone — never a sum.
+- **Lost.** A unit that goes prone (`status.ts`, at `unit.proned`), or is put on another hex by anything but its own movement
+  (`mutate.ts knockUnit` — the one mutator for it; a push that moved it nowhere loses nothing), loses the kind's two stats.
+  What else the power gave stays until its own end.
+- Each modifier that goes is one `statmod.expired` line — after the line that caused it, under that line's cause — carrying
+  `reason` (`replaced`, `knocked-down`, `knocked-back`) and `lost` (the kind). A counterattack and a fend are two things:
+  putting one up leaves the other; a knock takes both.
+
 ### Surge check
 
 | # | Rung | Built? |
@@ -284,6 +299,7 @@ See V2-BLOCK.md and SWITCHES.md for provisional details and verification.
 | 7 | `onHit` | **yes** |
 | 8 | Apply the damage | **yes** |
 | 9 | If damage ≥ 1: **`onDamage`** *(the attacker's)* → **`onTakingDamage`** *(the **victim's** — its owner is the unit that was hit, so a retaliation aims back at the attacker)* | **yes** |
+| 9b | **Thorns** — a connecting **melee** hit on a unit with Thorns N, made by an attacker **in the next hex**, costs the attacker N true damage (not gated on damage dealt). The adjacency is read as the hit lands, before anything the hit does can move either unit — the number the preview gave | **yes** — v2.thorns 2026-09-24; the adjacency is rule.counterattack-replaced-and-lost, 2026-10-04 (the Armory Ledger's rules: Thorns needs a hit from an adjacent melee attacker — a melee attack that reaches two hexes, from a wall or a tower, is out of the spikes' reach). `src/core/thorns.ts` |
 | 10 | **`onKill`**, if the target died — *the **killer's** hook* | **yes** |
 | 11 | **Settle** | **yes** |
 
