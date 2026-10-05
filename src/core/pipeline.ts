@@ -8,7 +8,7 @@ import { absorbDamage, flatDamage } from './mitigation.js'
 import type { Geometry, HexId } from './hex.js'
 import { roll100 } from './rng.js'
 import type { AttackDef, Ctx, Unit, VsTargetRule } from './types.js'
-import { fireTriggers, HOOKS } from './trigger.js'
+import { fireTriggers, HOOKS, partySum } from './trigger.js'
 import { applyStatus, decayOnKill, incomingAbsorb, incomingPhysicalBonus, outgoingBonus, outgoingPenalty, proneRulesOf, spendAbsorb, untargetableBy, countDownByAttack } from './status.js'
 import { rollCritEffect } from './crit.js'
 import { effective, stat } from './stats.js'
@@ -248,10 +248,10 @@ export function resolveAccuracy(ctx: Ctx, attacker: Unit, target: Unit, a: Attac
  * it — which is the mechanism behind Law 1: powers do not get a second pipeline,
  * they get this one with crit forced false (Design Law 23: no roll, no crit).
  */
-export type DamageSource = { readonly id: string; readonly bonus: number; readonly stat?: 'strength' | 'precision' | 'magic' | 'spirit'; readonly damageType: import('./types.js').DamageType; readonly powerScale?: number; readonly attackKind?: 'melee' | 'ranged'; readonly armorPenetration?: number }
+export type DamageSource = { readonly id: string; readonly bonus: number; readonly stat?: 'strength' | 'precision' | 'magic' | 'spirit'; readonly statMult?: number; readonly addsStats?: readonly { readonly stat: import('./stats.js').StatName; readonly mult: number; readonly div?: number }[]; readonly damageType: import('./types.js').DamageType; readonly powerScale?: number; readonly attackKind?: 'melee' | 'ranged'; readonly armorPenetration?: number }
 /** An attack as the one damage function reads it — the profile with the action's id. */
 export function damageSourceOfAttack(a: AttackDef): DamageSource {
-  return { attackKind:a.attack.kind, id: a.id, bonus: a.attack.bonus, stat: a.attack.stat, damageType: a.attack.damageType, ...(a.attack.powerScale !== undefined ? { powerScale: a.attack.powerScale } : {}), ...(a.attack.armorPenetration!==undefined?{armorPenetration:a.attack.armorPenetration}:{}) }
+  return { attackKind:a.attack.kind, id: a.id, bonus: a.attack.bonus, stat: a.attack.stat, damageType: a.attack.damageType, ...(a.attack.statMult !== undefined ? { statMult: a.attack.statMult } : {}), ...(a.attack.addsStats ? { addsStats: a.attack.addsStats } : {}), ...(a.attack.powerScale !== undefined ? { powerScale: a.attack.powerScale } : {}), ...(a.attack.armorPenetration!==undefined?{armorPenetration:a.attack.armorPenetration}:{}) }
 }
 
 /** Power × share, rounded nearest with 0.5 up — the ruled rounding (ENEMY-REVIEW P1). Integers only (Law 7). */
@@ -279,7 +279,17 @@ export function resolveSourceDamage(ctx: Ctx, attacker: Unit, a: DamageSource, o
 
   if (a.stat) {
     const src = effective(ctx, attacker, a.stat)
-    v = step(ledger, DMG.SOURCE_STAT, 'SOURCE_STAT', `unit.${attacker.typeId}`, v, v + src.value)
+    // capability.damage-from-two-stats: the attack's own stat, counted as many times as the row says ("twice your Precision")
+    v = step(ledger, DMG.SOURCE_STAT, 'SOURCE_STAT', `unit.${attacker.typeId}`, v, v + src.value * (a.statMult ?? 1))
+  }
+  // capability.damage-from-two-stats (2026-10-05): each added term, at the same station — a stat times its multiple over its
+  // divisor, nearest with 0.5 up (Law 7: an integer, one stated rounding). Magic and Spirit are the side's total (partySum,
+  // the number every "the party's Magic" reads); any other stat is the attacker's own, resolved. Its own row, named for whose
+  // number it is (Law 12); a term that comes to 0 writes none.
+  for (const t of a.addsStats ?? []) {
+    const party = t.stat === 'magic' || t.stat === 'spirit'
+    const raw = party ? partySum(ctx, attacker.side, t.stat as 'magic' | 'spirit') : effective(ctx, attacker, t.stat).value
+    v = step(ledger, DMG.SOURCE_STAT, 'SOURCE_STAT_ADDED', party ? `party.${t.stat}` : `unit.${attacker.typeId}`, v, v + Math.floor((raw * t.mult) / (t.div ?? 1) + 0.5))
   }
   // POWER (225): the enemy side's pool, by this attack's share — capability.
   // power-pool (2026-09-03). Nearest, 0.5 up (Law 7). Zero pool, zero row.

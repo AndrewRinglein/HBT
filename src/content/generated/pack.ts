@@ -3668,6 +3668,12 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 4,
       "staminaCost": 1,
+      "addsStats": [
+        {
+          "stat": "spirit",
+          "mult": 1
+        }
+      ],
       "tags": [
         "holy",
         "ranged"
@@ -3990,6 +3996,12 @@ export const UNIT_PACK = {
       "staminaCost": 3,
       "crit": 3,
       "accuracy": -10,
+      "addsStats": [
+        {
+          "stat": "armor",
+          "mult": 1
+        }
+      ],
       "tags": [
         "2-hander",
         "hammer",
@@ -4208,6 +4220,12 @@ export const UNIT_PACK = {
       "staminaCost": 2,
       "crit": 3,
       "accuracy": 5,
+      "addsStats": [
+        {
+          "stat": "magic",
+          "mult": 1
+        }
+      ],
       "tags": [
         "blade",
         "melee"
@@ -4328,6 +4346,12 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 4,
       "staminaCost": 2,
+      "addsStats": [
+        {
+          "stat": "strength",
+          "mult": 1
+        }
+      ],
       "tags": [
         "ranged",
         "spear",
@@ -4375,6 +4399,13 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 4,
       "staminaCost": 1,
+      "addsStats": [
+        {
+          "stat": "magic",
+          "mult": 1,
+          "div": 2
+        }
+      ],
       "tags": [
         "book",
         "magic",
@@ -4523,6 +4554,12 @@ export const UNIT_PACK = {
       "staminaCost": 3,
       "crit": 3,
       "accuracy": -5,
+      "addsStats": [
+        {
+          "stat": "spirit",
+          "mult": 1
+        }
+      ],
       "tags": [
         "hammer",
         "melee"
@@ -4552,6 +4589,12 @@ export const UNIT_PACK = {
       "stat": "strength",
       "reach": 1,
       "staminaCost": 2,
+      "addsStats": [
+        {
+          "stat": "armor",
+          "mult": 1
+        }
+      ],
       "tags": [
         "melee",
         "shield"
@@ -4735,6 +4778,12 @@ export const UNIT_PACK = {
       "reach": 1,
       "staminaCost": 2,
       "crit": 5,
+      "addsStats": [
+        {
+          "stat": "resist",
+          "mult": 1
+        }
+      ],
       "tags": [
         "melee",
         "sword"
@@ -4780,6 +4829,13 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 4,
       "staminaCost": 1,
+      "addsStats": [
+        {
+          "stat": "spirit",
+          "mult": 1,
+          "div": 2
+        }
+      ],
       "tags": [
         "book",
         "holy",
@@ -4795,6 +4851,17 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 3,
       "staminaCost": 2,
+      "addsStats": [
+        {
+          "stat": "resist",
+          "mult": 1
+        },
+        {
+          "stat": "spirit",
+          "mult": 1,
+          "div": 2
+        }
+      ],
       "tags": [
         "area",
         "book",
@@ -4827,6 +4894,12 @@ export const UNIT_PACK = {
       "reach": 1,
       "staminaCost": 2,
       "crit": 5,
+      "addsStats": [
+        {
+          "stat": "magic",
+          "mult": 1
+        }
+      ],
       "tags": [
         "melee",
         "sword"
@@ -5075,6 +5148,12 @@ export const UNIT_PACK = {
       "reach": 1,
       "staminaCost": 2,
       "crit": 15,
+      "addsStats": [
+        {
+          "stat": "precision",
+          "mult": 1
+        }
+      ],
       "tags": [
         "dagger",
         "melee"
@@ -5153,6 +5232,13 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 4,
       "staminaCost": 1,
+      "addsStats": [
+        {
+          "stat": "spirit",
+          "mult": 1,
+          "div": 2
+        }
+      ],
       "tags": [
         "holy",
         "ranged"
@@ -5184,6 +5270,12 @@ export const UNIT_PACK = {
       "staminaCost": 2,
       "crit": 3,
       "accuracy": 5,
+      "addsStats": [
+        {
+          "stat": "armor",
+          "mult": 1
+        }
+      ],
       "tags": [
         "melee",
         "sword"
@@ -5214,6 +5306,12 @@ export const UNIT_PACK = {
       "staminaCost": 3,
       "crit": 3,
       "accuracy": -5,
+      "addsStats": [
+        {
+          "stat": "strength",
+          "mult": 1
+        }
+      ],
       "tags": [
         "crossbow",
         "ranged"
@@ -5523,6 +5621,13 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 4,
       "staminaCost": 1,
+      "addsStats": [
+        {
+          "stat": "magic",
+          "mult": 1,
+          "div": 2
+        }
+      ],
       "tags": [
         "ranged",
         "staff"
@@ -5583,6 +5688,13 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 5,
       "staminaCost": 2,
+      "addsStats": [
+        {
+          "stat": "magic",
+          "mult": 1,
+          "div": 2
+        }
+      ],
       "tags": [
         "magic",
         "ranged",
@@ -5599,6 +5711,12 @@ export const UNIT_PACK = {
       "reach": 8,
       "staminaCost": 3,
       "cooldown": 3,
+      "addsStats": [
+        {
+          "stat": "magic",
+          "mult": 2
+        }
+      ],
       "tags": [
         "destroyer",
         "magic",
@@ -5616,6 +5734,12 @@ export const UNIT_PACK = {
       "reach": 10,
       "staminaCost": 3,
       "cooldown": 3,
+      "addsStats": [
+        {
+          "stat": "magic",
+          "mult": 2
+        }
+      ],
       "tags": [
         "destroyer",
         "magic",
@@ -5634,6 +5758,13 @@ export const UNIT_PACK = {
       "reach": 8,
       "staminaCost": 4,
       "cooldown": 5,
+      "statMult": 2,
+      "addsStats": [
+        {
+          "stat": "magic",
+          "mult": 2
+        }
+      ],
       "tags": [
         "destroyer",
         "magic",
@@ -5838,6 +5969,12 @@ export const UNIT_PACK = {
       "staminaCost": 3,
       "crit": 3,
       "accuracy": -10,
+      "addsStats": [
+        {
+          "stat": "armor",
+          "mult": 1
+        }
+      ],
       "tags": [
         "2-hander",
         "hammer",
@@ -6351,6 +6488,12 @@ export const UNIT_PACK = {
       "staminaCost": 2,
       "crit": 6,
       "accuracy": 5,
+      "addsStats": [
+        {
+          "stat": "magic",
+          "mult": 1
+        }
+      ],
       "tags": [
         "blade",
         "melee"
@@ -6383,6 +6526,12 @@ export const UNIT_PACK = {
       "staminaCost": 2,
       "crit": 3,
       "accuracy": 10,
+      "addsStats": [
+        {
+          "stat": "magic",
+          "mult": 1
+        }
+      ],
       "tags": [
         "blade",
         "melee"
@@ -6414,6 +6563,12 @@ export const UNIT_PACK = {
       "staminaCost": 2,
       "crit": 3,
       "accuracy": 5,
+      "addsStats": [
+        {
+          "stat": "magic",
+          "mult": 1
+        }
+      ],
       "tags": [
         "blade",
         "melee"
@@ -6613,6 +6768,12 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 4,
       "staminaCost": 2,
+      "addsStats": [
+        {
+          "stat": "strength",
+          "mult": 1
+        }
+      ],
       "tags": [
         "ranged",
         "spear",
@@ -6661,6 +6822,13 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 4,
       "staminaCost": 1,
+      "addsStats": [
+        {
+          "stat": "magic",
+          "mult": 1,
+          "div": 2
+        }
+      ],
       "tags": [
         "book",
         "magic",
@@ -7319,6 +7487,13 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 4,
       "staminaCost": 1,
+      "addsStats": [
+        {
+          "stat": "magic",
+          "mult": 1,
+          "div": 2
+        }
+      ],
       "tags": [
         "ranged",
         "staff"
@@ -7590,6 +7765,12 @@ export const UNIT_PACK = {
       "staminaCost": 3,
       "crit": 3,
       "accuracy": -10,
+      "addsStats": [
+        {
+          "stat": "armor",
+          "mult": 1
+        }
+      ],
       "tags": [
         "2-hander",
         "hammer",
@@ -7625,6 +7806,12 @@ export const UNIT_PACK = {
       "staminaCost": 3,
       "crit": 3,
       "accuracy": -4,
+      "addsStats": [
+        {
+          "stat": "armor",
+          "mult": 1
+        }
+      ],
       "tags": [
         "2-hander",
         "hammer",
@@ -7661,6 +7848,12 @@ export const UNIT_PACK = {
       "staminaCost": 3,
       "crit": 7,
       "accuracy": -7,
+      "addsStats": [
+        {
+          "stat": "armor",
+          "mult": 1
+        }
+      ],
       "tags": [
         "2-hander",
         "hammer",
@@ -8548,6 +8741,12 @@ export const UNIT_PACK = {
       "staminaCost": 2,
       "crit": 3,
       "accuracy": 5,
+      "addsStats": [
+        {
+          "stat": "magic",
+          "mult": 1
+        }
+      ],
       "tags": [
         "blade",
         "melee"
@@ -8580,6 +8779,12 @@ export const UNIT_PACK = {
       "staminaCost": 2,
       "crit": 3,
       "accuracy": 11,
+      "addsStats": [
+        {
+          "stat": "magic",
+          "mult": 1
+        }
+      ],
       "tags": [
         "blade",
         "melee"
@@ -8613,6 +8818,12 @@ export const UNIT_PACK = {
       "staminaCost": 2,
       "crit": 7,
       "accuracy": 8,
+      "addsStats": [
+        {
+          "stat": "magic",
+          "mult": 1
+        }
+      ],
       "tags": [
         "blade",
         "melee"
@@ -8923,6 +9134,12 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 4,
       "staminaCost": 2,
+      "addsStats": [
+        {
+          "stat": "strength",
+          "mult": 1
+        }
+      ],
       "tags": [
         "ranged",
         "spear",
@@ -8954,6 +9171,12 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 4,
       "staminaCost": 2,
+      "addsStats": [
+        {
+          "stat": "strength",
+          "mult": 1
+        }
+      ],
       "tags": [
         "ranged",
         "spear",
@@ -8987,6 +9210,12 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 4,
       "staminaCost": 2,
+      "addsStats": [
+        {
+          "stat": "strength",
+          "mult": 1
+        }
+      ],
       "tags": [
         "ranged",
         "spear",
@@ -9103,6 +9332,13 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 4,
       "staminaCost": 1,
+      "addsStats": [
+        {
+          "stat": "magic",
+          "mult": 1,
+          "div": 2
+        }
+      ],
       "tags": [
         "book",
         "magic",
@@ -9134,6 +9370,13 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 4,
       "staminaCost": 1,
+      "addsStats": [
+        {
+          "stat": "magic",
+          "mult": 1,
+          "div": 2
+        }
+      ],
       "tags": [
         "book",
         "magic",
@@ -9166,6 +9409,13 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 4,
       "staminaCost": 1,
+      "addsStats": [
+        {
+          "stat": "magic",
+          "mult": 1,
+          "div": 2
+        }
+      ],
       "tags": [
         "book",
         "magic",
@@ -9200,6 +9450,12 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 4,
       "staminaCost": 1,
+      "addsStats": [
+        {
+          "stat": "spirit",
+          "mult": 1
+        }
+      ],
       "tags": [
         "holy",
         "ranged"
@@ -9214,6 +9470,12 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 4,
       "staminaCost": 1,
+      "addsStats": [
+        {
+          "stat": "spirit",
+          "mult": 1
+        }
+      ],
       "tags": [
         "holy",
         "ranged"
@@ -9229,6 +9491,12 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 4,
       "staminaCost": 1,
+      "addsStats": [
+        {
+          "stat": "spirit",
+          "mult": 1
+        }
+      ],
       "tags": [
         "holy",
         "ranged"
@@ -10631,6 +10899,13 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 4,
       "staminaCost": 1,
+      "addsStats": [
+        {
+          "stat": "magic",
+          "mult": 1,
+          "div": 2
+        }
+      ],
       "tags": [
         "ranged",
         "staff"
@@ -10645,6 +10920,13 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 4,
       "staminaCost": 1,
+      "addsStats": [
+        {
+          "stat": "magic",
+          "mult": 1,
+          "div": 2
+        }
+      ],
       "tags": [
         "ranged",
         "staff"
@@ -10660,6 +10942,13 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 4,
       "staminaCost": 1,
+      "addsStats": [
+        {
+          "stat": "magic",
+          "mult": 1,
+          "div": 2
+        }
+      ],
       "tags": [
         "ranged",
         "staff"
