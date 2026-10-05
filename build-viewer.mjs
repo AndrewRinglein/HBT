@@ -179,7 +179,7 @@ function mods(m){ if(!m||!Object.keys(m).length) return '';
   return '<div class="mods">'+Object.entries(m).map(([k,v])=>
     '<span class="mod '+(v<0?'n':'p')+'">'+(v>0?'+':'')+v+' '+k.replace(/([A-Z])/g,' $1')+'</span>').join('')+'</div>'; }
 function trigs(t){ if(!t||!t.length) return '';
-  return '<div class="trig">'+t.map(x=>typeof x==='string'?esc(x):'<b>'+esc(x.hook||x.on||'')+'</b> '+esc(x.effect||x.description||JSON.stringify(x))).join('<br>')+'</div>'; }
+  return '<div class="trig">'+t.map(x=>typeof x==='string'?esc(x):'<b>'+esc(x.hook||x.on||'')+'</b> '+esc(x.effect||x.description||JSON.stringify(x))+(x.attackTag?' — only with a '+esc(x.attackTag)+' attack':'')).join('<br>')+'</div>'; }
 function packets(a){return (a.armorPenetration!=null?'<div class="trig"><b>Armor penetration</b> '+a.armorPenetration+'</div>':'')+(a.secondaryDamage||[]).map(p=>'<div class="trig"><b>on '+esc(p.when)+'</b> '+p.amount+' '+esc(p.damageType)+' damage, separate packet</div>').join('')+(a.packetInterpretation?'<div class="intent">'+esc(a.packetInterpretation)+'</div>':'');}
 function tags(a){ if(!a||!a.length) return '';
   return '<div class="tags">'+a.map(t=>'<span class="'+tagCls(t)+'">'+esc(String(t).replace('tag.',''))+'</span>').join('')+'</div>'; }

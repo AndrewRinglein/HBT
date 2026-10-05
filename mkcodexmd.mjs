@@ -12,7 +12,7 @@ const w=s=>O.push(s);
 const esc=s=>String(s==null?'':s).replace(/\|/g,'\\|').replace(/\r?\n/g,' ').trim();
 const num=n=>(n>0?'+':'')+n;
 const mods=m=>{const e=Object.entries(m||{}).filter(([,v])=>v);return e.length?e.map(([k,v])=>num(v)+' '+k).join(' · '):'—'};
-const trig=e=>(Array.isArray(e.triggers)?e.triggers:[]).map(g=>'**`'+g.hook+'`** '+esc(g.effect||g.description||'')).join('<br>')||'';
+const trig=e=>(Array.isArray(e.triggers)?e.triggers:[]).map(g=>'**`'+g.hook+'`** '+esc(g.effect||g.description||'')+(g.attackTag?' — only with a '+esc(g.attackTag)+' attack':'')).join('<br>')||'';   // attackTag: engine capability.unit-trigger-with-tag (2026-10-04) — the Codex says a trigger's tag requirement
 const packets=a=>[...(a.secondaryDamage||[]).map(p=>'**on '+p.when+'** '+p.amount+' '+p.damageType+' damage (separate packet)'),...(a.armorPenetration!=null?['Armor penetration '+a.armorPenetration]:[]),a.packetInterpretation||''].filter(Boolean).map(esc).join('<br>');
 const src=e=>e.source?'\n  <sub>'+esc(e.source)+'</sub>':'';
 
