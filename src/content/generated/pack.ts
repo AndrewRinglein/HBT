@@ -3459,7 +3459,7 @@ export const UNIT_PACK = {
       "bonus": 2,
       "stat": "strength",
       "reach": 1,
-      "staminaCost": 2,
+      "staminaCost": 1,
       "tags": [
         "2-hander",
         "blade",
@@ -3595,6 +3595,7 @@ export const UNIT_PACK = {
       "stat": "strength",
       "reach": 1,
       "staminaCost": 1,
+      "accuracy": -10,
       "tags": [
         "axe",
         "melee"
@@ -3602,15 +3603,14 @@ export const UNIT_PACK = {
     },
     "attack.war-axe.hack": {
       "id": "attack.war-axe.hack",
-      "name": "Hack",
+      "name": "Heavy Chop",
       "kind": "melee",
       "damageType": "physical",
-      "bonus": 2,
+      "bonus": 3,
       "stat": "strength",
       "reach": 1,
       "staminaCost": 2,
-      "crit": 5,
-      "accuracy": -5,
+      "accuracy": -15,
       "tags": [
         "axe",
         "melee"
@@ -5694,7 +5694,7 @@ export const UNIT_PACK = {
       "bonus": 3,
       "stat": "strength",
       "reach": 1,
-      "staminaCost": 2,
+      "staminaCost": 1,
       "tags": [
         "2-hander",
         "blade",
@@ -5709,7 +5709,7 @@ export const UNIT_PACK = {
       "bonus": 2,
       "stat": "strength",
       "reach": 1,
-      "staminaCost": 2,
+      "staminaCost": 1,
       "tags": [
         "2-hander",
         "blade",
@@ -5725,7 +5725,7 @@ export const UNIT_PACK = {
       "bonus": 2,
       "stat": "strength",
       "reach": 1,
-      "staminaCost": 2,
+      "staminaCost": 1,
       "tags": [
         "2-hander",
         "blade",
@@ -5743,6 +5743,7 @@ export const UNIT_PACK = {
       "stat": "strength",
       "reach": 1,
       "staminaCost": 1,
+      "accuracy": -10,
       "tags": [
         "axe",
         "melee"
@@ -5750,15 +5751,14 @@ export const UNIT_PACK = {
     },
     "attack.war-axe.hack.heavy": {
       "id": "attack.war-axe.hack.heavy",
-      "name": "Hack",
+      "name": "Heavy Chop",
       "kind": "melee",
       "damageType": "physical",
-      "bonus": 3,
+      "bonus": 4,
       "stat": "strength",
       "reach": 1,
       "staminaCost": 2,
-      "crit": 5,
-      "accuracy": -5,
+      "accuracy": -15,
       "tags": [
         "axe",
         "melee"
@@ -5773,23 +5773,22 @@ export const UNIT_PACK = {
       "stat": "strength",
       "reach": 1,
       "staminaCost": 1,
+      "accuracy": -4,
       "tags": [
         "axe",
         "melee"
-      ],
-      "accuracy": 6
+      ]
     },
     "attack.war-axe.hack.keen": {
       "id": "attack.war-axe.hack.keen",
-      "name": "Hack",
+      "name": "Heavy Chop",
       "kind": "melee",
       "damageType": "physical",
-      "bonus": 2,
+      "bonus": 3,
       "stat": "strength",
       "reach": 1,
       "staminaCost": 2,
-      "crit": 5,
-      "accuracy": 1,
+      "accuracy": -9,
       "tags": [
         "axe",
         "melee"
@@ -5804,28 +5803,28 @@ export const UNIT_PACK = {
       "stat": "strength",
       "reach": 1,
       "staminaCost": 1,
+      "accuracy": -7,
       "tags": [
         "axe",
         "melee"
       ],
-      "accuracy": 3,
       "crit": 4
     },
     "attack.war-axe.hack.cruel": {
       "id": "attack.war-axe.hack.cruel",
-      "name": "Hack",
+      "name": "Heavy Chop",
       "kind": "melee",
       "damageType": "physical",
-      "bonus": 2,
+      "bonus": 3,
       "stat": "strength",
       "reach": 1,
       "staminaCost": 2,
-      "crit": 9,
-      "accuracy": -2,
+      "accuracy": -12,
       "tags": [
         "axe",
         "melee"
-      ]
+      ],
+      "crit": 4
     },
     "attack.iron-mace.swing.heavy": {
       "impact": 2,
@@ -9186,6 +9185,34 @@ export const UNIT_PACK = {
         "ai: 'use whenever available' — an action hint on the row (AI-DESIGN.md §3D) waits on ai.scorer"
       ]
     },
+    "power.greatsword.counterattack": {
+      "id": "power.greatsword.counterattack",
+      "name": "Heavy Counterattack",
+      "free": false,
+      "staminaCost": 2,
+      "cooldown": 0,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [
+        {
+          "kind": "statMod",
+          "stat": "counterattack",
+          "value": 1,
+          "until": "endOfNextTurn",
+          "who": "self"
+        },
+        {
+          "kind": "statMod",
+          "stat": "strength",
+          "value": 2,
+          "until": "endOfNextTurn",
+          "who": "self"
+        }
+      ]
+    },
     "power.longsword.counterattack": {
       "id": "power.longsword.counterattack",
       "name": "Counterattack",
@@ -10197,28 +10224,6 @@ export const UNIT_PACK = {
       "source": "class",
       "warmup": 1,
       "free": false
-    },
-    "attack.greatsword.great-cleave": {
-      "id": "attack.greatsword.great-cleave",
-      "name": "Great Cleave",
-      "staminaCost": 3,
-      "cooldown": 0,
-      "range": 1,
-      "burst": {
-        "shape": {
-          "kind": "arc"
-        },
-        "side": "any",
-        "packets": [
-          {
-            "id": "base",
-            "damageType": "physical",
-            "amount": 1,
-            "stat": "strength"
-          }
-        ]
-      },
-      "source": "weapon"
     },
     "attack.halberd.cleave": {
       "id": "attack.halberd.cleave",
@@ -12738,14 +12743,18 @@ export const UNIT_PACK = {
       "hands": 2,
       "slots": 2,
       "statModifiers": {
-        "block": 10
+        "block": 5
       },
       "grants": [
-        "attack.greatsword.hew",
-        "attack.greatsword.great-cleave"
+        "attack.greatsword.hew"
       ],
-      "abilities": [],
-      "triggers": []
+      "abilities": [
+        "power.greatsword.counterattack"
+      ],
+      "triggers": [],
+      "gaps": [
+        "counterattackAccuracy: 10 — Accuracy on the holder's counterattack while the weapon is held — engine capability.free-attack-accuracy"
+      ]
     },
     "item.war-axe": {
       "id": "item.war-axe",
@@ -12762,19 +12771,6 @@ export const UNIT_PACK = {
       ],
       "abilities": [],
       "triggers": [
-        {
-          "id": "trigger.war-axe.hack.bleed",
-          "hook": "onHit",
-          "chance": 100,
-          "select": "target",
-          "effect": {
-            "kind": "status.apply",
-            "statusId": "status.bleed",
-            "value": 2
-          },
-          "source": "item.war-axe",
-          "onlyWithAttack": "attack.war-axe.hack"
-        },
         {
           "id": "trigger.war-axe.on-block.block.chop",
           "hook": "onBlock",
@@ -15281,7 +15277,10 @@ export const UNIT_PACK = {
       "abilities": [
         "power.longsword.counterattack"
       ],
-      "triggers": []
+      "triggers": [],
+      "gaps": [
+        "counterattackAccuracy: 10 — Accuracy on the holder's counterattack while the weapon is held — engine capability.free-attack-accuracy"
+      ]
     },
     "item.halberd": {
       "id": "item.halberd",
@@ -31001,17 +31000,18 @@ export const UNIT_PACK = {
       "hands": 2,
       "slots": 2,
       "statModifiers": {
-        "block": 10,
+        "block": 5,
         "crit": 3
       },
       "grants": [
-        "attack.greatsword.hew",
-        "attack.greatsword.great-cleave"
+        "attack.greatsword.hew"
       ],
-      "abilities": [],
+      "abilities": [
+        "power.greatsword.counterattack"
+      ],
       "triggers": [
         {
-          "id": "trigger.greatsword.bloodletting.bleed-crit.hew",
+          "id": "trigger.greatsword.bloodletting.bleed-crit",
           "hook": "onCrit",
           "chance": 100,
           "select": "target",
@@ -31022,20 +31022,10 @@ export const UNIT_PACK = {
           },
           "source": "item.greatsword.bloodletting",
           "onlyWithAttack": "attack.greatsword.hew"
-        },
-        {
-          "id": "trigger.greatsword.bloodletting.bleed-crit.great-cleave",
-          "hook": "onCrit",
-          "chance": 100,
-          "select": "target",
-          "effect": {
-            "kind": "status.apply",
-            "statusId": "status.bleed",
-            "value": 2
-          },
-          "source": "item.greatsword.bloodletting",
-          "onlyWithAttack": "attack.greatsword.great-cleave"
         }
+      ],
+      "gaps": [
+        "counterattackAccuracy: 10 — Accuracy on the holder's counterattack while the weapon is held — engine capability.free-attack-accuracy"
       ],
       "base": "item.greatsword",
       "enchant": "enchant.bloodletting"
@@ -31048,20 +31038,22 @@ export const UNIT_PACK = {
       "hands": 2,
       "slots": 2,
       "statModifiers": {
-        "block": 10,
+        "block": 5,
         "strength": 1
       },
       "grants": [
-        "attack.greatsword.hew",
-        "attack.greatsword.great-cleave"
+        "attack.greatsword.hew"
       ],
-      "abilities": [],
+      "abilities": [
+        "power.greatsword.counterattack"
+      ],
       "triggers": [],
-      "base": "item.greatsword",
-      "enchant": "enchant.soul-reaper",
       "gaps": [
+        "counterattackAccuracy: 10 — Accuracy on the holder's counterattack while the weapon is held — engine capability.free-attack-accuracy",
         "enchant onKill: heal 3 and gain +1 Strength for the rest of the Ba — trigger shape unparsed"
-      ]
+      ],
+      "base": "item.greatsword",
+      "enchant": "enchant.soul-reaper"
     },
     "item.greatsword.sacrifice": {
       "id": "item.greatsword.sacrifice",
@@ -31071,18 +31063,22 @@ export const UNIT_PACK = {
       "hands": 2,
       "slots": 2,
       "statModifiers": {
-        "block": 10,
+        "block": 5,
         "strength": 2,
         "precision": 2,
         "maxHp": -4,
         "dodge": -10
       },
       "grants": [
-        "attack.greatsword.hew",
-        "attack.greatsword.great-cleave"
+        "attack.greatsword.hew"
       ],
-      "abilities": [],
+      "abilities": [
+        "power.greatsword.counterattack"
+      ],
       "triggers": [],
+      "gaps": [
+        "counterattackAccuracy: 10 — Accuracy on the holder's counterattack while the weapon is held — engine capability.free-attack-accuracy"
+      ],
       "base": "item.greatsword",
       "enchant": "enchant.sacrifice"
     },
@@ -31094,15 +31090,19 @@ export const UNIT_PACK = {
       "hands": 2,
       "slots": 2,
       "statModifiers": {
-        "block": 10,
+        "block": 5,
         "resist": 1
       },
       "grants": [
-        "attack.greatsword.hew",
-        "attack.greatsword.great-cleave"
+        "attack.greatsword.hew"
       ],
-      "abilities": [],
+      "abilities": [
+        "power.greatsword.counterattack"
+      ],
       "triggers": [],
+      "gaps": [
+        "counterattackAccuracy: 10 — Accuracy on the holder's counterattack while the weapon is held — engine capability.free-attack-accuracy"
+      ],
       "vsTarget": [
         {
           "tag": "demon",
@@ -31120,19 +31120,21 @@ export const UNIT_PACK = {
       "hands": 2,
       "slots": 2,
       "statModifiers": {
-        "block": 10
+        "block": 5
       },
       "grants": [
-        "attack.greatsword.hew",
-        "attack.greatsword.great-cleave"
+        "attack.greatsword.hew"
       ],
-      "abilities": [],
+      "abilities": [
+        "power.greatsword.counterattack"
+      ],
       "triggers": [],
-      "base": "item.greatsword",
-      "enchant": "enchant.destroying",
       "gaps": [
+        "counterattackAccuracy: 10 — Accuracy on the holder's counterattack while the weapon is held — engine capability.free-attack-accuracy",
         "enchant onKill: the corpse is destroyed — trigger shape unparsed"
-      ]
+      ],
+      "base": "item.greatsword",
+      "enchant": "enchant.destroying"
     },
     "item.greatsword.the-master": {
       "id": "item.greatsword.the-master",
@@ -31142,20 +31144,22 @@ export const UNIT_PACK = {
       "hands": 2,
       "slots": 2,
       "statModifiers": {
-        "block": 10
+        "block": 5
       },
       "grants": [
-        "attack.greatsword.hew",
-        "attack.greatsword.great-cleave"
+        "attack.greatsword.hew"
       ],
-      "abilities": [],
+      "abilities": [
+        "power.greatsword.counterattack"
+      ],
       "triggers": [],
-      "base": "item.greatsword",
-      "enchant": "enchant.the-master",
       "gaps": [
+        "counterattackAccuracy: 10 — Accuracy on the holder's counterattack while the weapon is held — engine capability.free-attack-accuracy",
         "enchant onHit: gain +10 Accuracy and +1 Crit — trigger shape unparsed",
         "enchant onMiss: gain -20 Accuracy — trigger shape unparsed"
-      ]
+      ],
+      "base": "item.greatsword",
+      "enchant": "enchant.the-master"
     },
     "item.war-axe.bloodletting": {
       "id": "item.war-axe.bloodletting",
@@ -31174,19 +31178,6 @@ export const UNIT_PACK = {
       ],
       "abilities": [],
       "triggers": [
-        {
-          "id": "trigger.war-axe.hack.bleed",
-          "hook": "onHit",
-          "chance": 100,
-          "select": "target",
-          "effect": {
-            "kind": "status.apply",
-            "statusId": "status.bleed",
-            "value": 2
-          },
-          "source": "item.war-axe",
-          "onlyWithAttack": "attack.war-axe.hack"
-        },
         {
           "id": "trigger.war-axe.on-block.block.chop",
           "hook": "onBlock",
@@ -31293,19 +31284,6 @@ export const UNIT_PACK = {
       "abilities": [],
       "triggers": [
         {
-          "id": "trigger.war-axe.hack.bleed",
-          "hook": "onHit",
-          "chance": 100,
-          "select": "target",
-          "effect": {
-            "kind": "status.apply",
-            "statusId": "status.bleed",
-            "value": 2
-          },
-          "source": "item.war-axe",
-          "onlyWithAttack": "attack.war-axe.hack"
-        },
-        {
           "id": "trigger.war-axe.on-block.block.chop",
           "hook": "onBlock",
           "chance": 100,
@@ -31398,19 +31376,6 @@ export const UNIT_PACK = {
       "abilities": [],
       "triggers": [
         {
-          "id": "trigger.war-axe.hack.bleed",
-          "hook": "onHit",
-          "chance": 100,
-          "select": "target",
-          "effect": {
-            "kind": "status.apply",
-            "statusId": "status.bleed",
-            "value": 2
-          },
-          "source": "item.war-axe",
-          "onlyWithAttack": "attack.war-axe.hack"
-        },
-        {
           "id": "trigger.war-axe.on-block.block.chop",
           "hook": "onBlock",
           "chance": 100,
@@ -31493,19 +31458,6 @@ export const UNIT_PACK = {
       "abilities": [],
       "triggers": [
         {
-          "id": "trigger.war-axe.hack.bleed",
-          "hook": "onHit",
-          "chance": 100,
-          "select": "target",
-          "effect": {
-            "kind": "status.apply",
-            "statusId": "status.bleed",
-            "value": 2
-          },
-          "source": "item.war-axe",
-          "onlyWithAttack": "attack.war-axe.hack"
-        },
-        {
           "id": "trigger.war-axe.on-block.block.chop",
           "hook": "onBlock",
           "chance": 100,
@@ -31587,19 +31539,6 @@ export const UNIT_PACK = {
       ],
       "abilities": [],
       "triggers": [
-        {
-          "id": "trigger.war-axe.hack.bleed",
-          "hook": "onHit",
-          "chance": 100,
-          "select": "target",
-          "effect": {
-            "kind": "status.apply",
-            "statusId": "status.bleed",
-            "value": 2
-          },
-          "source": "item.war-axe",
-          "onlyWithAttack": "attack.war-axe.hack"
-        },
         {
           "id": "trigger.war-axe.on-block.block.chop",
           "hook": "onBlock",
@@ -37158,6 +37097,9 @@ export const UNIT_PACK = {
           "onlyWithAttack": "attack.longsword.slash"
         }
       ],
+      "gaps": [
+        "counterattackAccuracy: 10 — Accuracy on the holder's counterattack while the weapon is held — engine capability.free-attack-accuracy"
+      ],
       "base": "item.longsword",
       "enchant": "enchant.bloodletting"
     },
@@ -37178,12 +37120,13 @@ export const UNIT_PACK = {
         "power.longsword.counterattack"
       ],
       "triggers": [],
-      "base": "item.longsword",
-      "enchant": "enchant.the-master",
       "gaps": [
+        "counterattackAccuracy: 10 — Accuracy on the holder's counterattack while the weapon is held — engine capability.free-attack-accuracy",
         "enchant onHit: gain +10 Accuracy and +1 Crit — trigger shape unparsed",
         "enchant onMiss: gain -20 Accuracy — trigger shape unparsed"
-      ]
+      ],
+      "base": "item.longsword",
+      "enchant": "enchant.the-master"
     },
     "item.longsword.demon-slayer": {
       "id": "item.longsword.demon-slayer",
@@ -37203,6 +37146,9 @@ export const UNIT_PACK = {
         "power.longsword.counterattack"
       ],
       "triggers": [],
+      "gaps": [
+        "counterattackAccuracy: 10 — Accuracy on the holder's counterattack while the weapon is held — engine capability.free-attack-accuracy"
+      ],
       "vsTarget": [
         {
           "tag": "demon",
@@ -37229,6 +37175,10 @@ export const UNIT_PACK = {
         "power.longsword.counterattack"
       ],
       "triggers": [],
+      "gaps": [
+        "counterattackAccuracy: 10 — Accuracy on the holder's counterattack while the weapon is held — engine capability.free-attack-accuracy",
+        "enchant onKill: if the target was undead, heal 2 — trigger shape unparsed"
+      ],
       "vsTarget": [
         {
           "tag": "undead",
@@ -37236,10 +37186,7 @@ export const UNIT_PACK = {
         }
       ],
       "base": "item.longsword",
-      "enchant": "enchant.undead-slayer",
-      "gaps": [
-        "enchant onKill: if the target was undead, heal 2 — trigger shape unparsed"
-      ]
+      "enchant": "enchant.undead-slayer"
     },
     "item.longsword.werewolf-bane": {
       "id": "item.longsword.werewolf-bane",
@@ -37258,6 +37205,9 @@ export const UNIT_PACK = {
         "power.longsword.counterattack"
       ],
       "triggers": [],
+      "gaps": [
+        "counterattackAccuracy: 10 — Accuracy on the holder's counterattack while the weapon is held — engine capability.free-attack-accuracy"
+      ],
       "vsTarget": [
         {
           "tag": "werewolf",
@@ -37302,6 +37252,9 @@ export const UNIT_PACK = {
           "onlyWithAttack": "attack.longsword.slash"
         }
       ],
+      "gaps": [
+        "counterattackAccuracy: 10 — Accuracy on the holder's counterattack while the weapon is held — engine capability.free-attack-accuracy"
+      ],
       "base": "item.longsword",
       "enchant": "enchant.taunting"
     },
@@ -37322,11 +37275,12 @@ export const UNIT_PACK = {
         "power.longsword.counterattack"
       ],
       "triggers": [],
-      "base": "item.longsword",
-      "enchant": "enchant.destroying",
       "gaps": [
+        "counterattackAccuracy: 10 — Accuracy on the holder's counterattack while the weapon is held — engine capability.free-attack-accuracy",
         "enchant onKill: the corpse is destroyed — trigger shape unparsed"
-      ]
+      ],
+      "base": "item.longsword",
+      "enchant": "enchant.destroying"
     },
     "item.halberd.giant-slayer": {
       "id": "item.halberd.giant-slayer",
@@ -39854,6 +39808,9 @@ export const UNIT_PACK = {
           "onlyWithAttack": "attack.longsword.slash"
         }
       ],
+      "gaps": [
+        "counterattackAccuracy: 10 — Accuracy on the holder's counterattack while the weapon is held — engine capability.free-attack-accuracy"
+      ],
       "base": "item.longsword",
       "enchant": "enchant.flaming"
     },
@@ -39872,19 +39829,6 @@ export const UNIT_PACK = {
       ],
       "abilities": [],
       "triggers": [
-        {
-          "id": "trigger.war-axe.hack.bleed",
-          "hook": "onHit",
-          "chance": 100,
-          "select": "target",
-          "effect": {
-            "kind": "status.apply",
-            "statusId": "status.bleed",
-            "value": 2
-          },
-          "source": "item.war-axe",
-          "onlyWithAttack": "attack.war-axe.hack"
-        },
         {
           "id": "trigger.war-axe.on-block.block.chop",
           "hook": "onBlock",
@@ -39985,16 +39929,20 @@ export const UNIT_PACK = {
       "hands": 2,
       "slots": 2,
       "statModifiers": {
-        "block": 10,
+        "block": 5,
         "maxStamina": 1
       },
       "grants": [
-        "attack.greatsword.hew",
-        "attack.greatsword.great-cleave"
+        "attack.greatsword.hew"
       ],
-      "abilities": [],
+      "abilities": [
+        "power.greatsword.counterattack"
+      ],
       "triggers": [],
-      "base": "item.greatsword"
+      "base": "item.greatsword",
+      "gaps": [
+        "counterattackAccuracy: 10 — Accuracy on the holder's counterattack while the weapon is held — engine capability.free-attack-accuracy"
+      ]
     },
     "item.greatsword.heavy": {
       "id": "item.greatsword.heavy",
@@ -40004,18 +39952,19 @@ export const UNIT_PACK = {
       "hands": 2,
       "slots": 2,
       "statModifiers": {
-        "block": 10
+        "block": 5
       },
       "grants": [
-        "attack.greatsword.hew.heavy",
-        "attack.greatsword.great-cleave"
+        "attack.greatsword.hew.heavy"
       ],
-      "abilities": [],
+      "abilities": [
+        "power.greatsword.counterattack"
+      ],
       "triggers": [],
       "base": "item.greatsword",
       "enchant": "enchant.heavy",
       "gaps": [
-        "enchant enchant.heavy on attack.greatsword.great-cleave: not an attack row — not copied"
+        "counterattackAccuracy: 10 — Accuracy on the holder's counterattack while the weapon is held — engine capability.free-attack-accuracy"
       ]
     },
     "item.greatsword.keen": {
@@ -40026,18 +39975,19 @@ export const UNIT_PACK = {
       "hands": 2,
       "slots": 2,
       "statModifiers": {
-        "block": 10
+        "block": 5
       },
       "grants": [
-        "attack.greatsword.hew.keen",
-        "attack.greatsword.great-cleave"
+        "attack.greatsword.hew.keen"
       ],
-      "abilities": [],
+      "abilities": [
+        "power.greatsword.counterattack"
+      ],
       "triggers": [],
       "base": "item.greatsword",
       "enchant": "enchant.keen",
       "gaps": [
-        "enchant enchant.keen on attack.greatsword.great-cleave: not an attack row — not copied"
+        "counterattackAccuracy: 10 — Accuracy on the holder's counterattack while the weapon is held — engine capability.free-attack-accuracy"
       ]
     },
     "item.greatsword.cruel": {
@@ -40048,18 +39998,19 @@ export const UNIT_PACK = {
       "hands": 2,
       "slots": 2,
       "statModifiers": {
-        "block": 10
+        "block": 5
       },
       "grants": [
-        "attack.greatsword.hew.cruel",
-        "attack.greatsword.great-cleave"
+        "attack.greatsword.hew.cruel"
       ],
-      "abilities": [],
+      "abilities": [
+        "power.greatsword.counterattack"
+      ],
       "triggers": [],
       "base": "item.greatsword",
       "enchant": "enchant.cruel",
       "gaps": [
-        "enchant enchant.cruel on attack.greatsword.great-cleave: not an attack row — not copied"
+        "counterattackAccuracy: 10 — Accuracy on the holder's counterattack while the weapon is held — engine capability.free-attack-accuracy"
       ]
     },
     "item.war-axe.masterwork": {
@@ -40079,19 +40030,6 @@ export const UNIT_PACK = {
       ],
       "abilities": [],
       "triggers": [
-        {
-          "id": "trigger.war-axe.hack.bleed",
-          "hook": "onHit",
-          "chance": 100,
-          "select": "target",
-          "effect": {
-            "kind": "status.apply",
-            "statusId": "status.bleed",
-            "value": 2
-          },
-          "source": "item.war-axe",
-          "onlyWithAttack": "attack.war-axe.hack"
-        },
         {
           "id": "trigger.war-axe.on-block.block.chop",
           "hook": "onBlock",
@@ -40170,19 +40108,6 @@ export const UNIT_PACK = {
       ],
       "abilities": [],
       "triggers": [
-        {
-          "id": "trigger.war-axe.hack.bleed",
-          "hook": "onHit",
-          "chance": 100,
-          "select": "target",
-          "effect": {
-            "kind": "status.apply",
-            "statusId": "status.bleed",
-            "value": 2
-          },
-          "source": "item.war-axe",
-          "onlyWithAttack": "attack.war-axe.hack.heavy"
-        },
         {
           "id": "trigger.war-axe.on-block.block.chop",
           "hook": "onBlock",
@@ -40263,19 +40188,6 @@ export const UNIT_PACK = {
       "abilities": [],
       "triggers": [
         {
-          "id": "trigger.war-axe.hack.bleed",
-          "hook": "onHit",
-          "chance": 100,
-          "select": "target",
-          "effect": {
-            "kind": "status.apply",
-            "statusId": "status.bleed",
-            "value": 2
-          },
-          "source": "item.war-axe",
-          "onlyWithAttack": "attack.war-axe.hack.keen"
-        },
-        {
           "id": "trigger.war-axe.on-block.block.chop",
           "hook": "onBlock",
           "chance": 100,
@@ -40354,19 +40266,6 @@ export const UNIT_PACK = {
       ],
       "abilities": [],
       "triggers": [
-        {
-          "id": "trigger.war-axe.hack.bleed",
-          "hook": "onHit",
-          "chance": 100,
-          "select": "target",
-          "effect": {
-            "kind": "status.apply",
-            "statusId": "status.bleed",
-            "value": 2
-          },
-          "source": "item.war-axe",
-          "onlyWithAttack": "attack.war-axe.hack.cruel"
-        },
         {
           "id": "trigger.war-axe.on-block.block.chop",
           "hook": "onBlock",
@@ -43870,7 +43769,10 @@ export const UNIT_PACK = {
         "power.longsword.counterattack"
       ],
       "triggers": [],
-      "base": "item.longsword"
+      "base": "item.longsword",
+      "gaps": [
+        "counterattackAccuracy: 10 — Accuracy on the holder's counterattack while the weapon is held — engine capability.free-attack-accuracy"
+      ]
     },
     "item.longsword.heavy": {
       "id": "item.longsword.heavy",
@@ -43890,7 +43792,10 @@ export const UNIT_PACK = {
       ],
       "triggers": [],
       "base": "item.longsword",
-      "enchant": "enchant.heavy"
+      "enchant": "enchant.heavy",
+      "gaps": [
+        "counterattackAccuracy: 10 — Accuracy on the holder's counterattack while the weapon is held — engine capability.free-attack-accuracy"
+      ]
     },
     "item.longsword.keen": {
       "id": "item.longsword.keen",
@@ -43910,7 +43815,10 @@ export const UNIT_PACK = {
       ],
       "triggers": [],
       "base": "item.longsword",
-      "enchant": "enchant.keen"
+      "enchant": "enchant.keen",
+      "gaps": [
+        "counterattackAccuracy: 10 — Accuracy on the holder's counterattack while the weapon is held — engine capability.free-attack-accuracy"
+      ]
     },
     "item.longsword.cruel": {
       "id": "item.longsword.cruel",
@@ -43930,7 +43838,10 @@ export const UNIT_PACK = {
       ],
       "triggers": [],
       "base": "item.longsword",
-      "enchant": "enchant.cruel"
+      "enchant": "enchant.cruel",
+      "gaps": [
+        "counterattackAccuracy: 10 — Accuracy on the holder's counterattack while the weapon is held — engine capability.free-attack-accuracy"
+      ]
     },
     "item.halberd.masterwork": {
       "id": "item.halberd.masterwork",
