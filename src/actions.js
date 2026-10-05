@@ -213,6 +213,7 @@ function effectWordOf(ef, D, SN) {
     case 'layer.paint':    return { word: layerName(ef.layer) + ' ground', val: ef.radius, radius: true }
     case 'corpse.raise':   return { word: 'Raises a corpse', val: ef.radius, radius: true }
     /* capability.summons (engine item, 2026-10-05): one unit of the engine's named row, placed on the hex aimed at */
+    case 'side.stat':      return { word: (ef.value < 0 ? 'Lowers ' : 'Raises ') + (ef.stat === 'power' ? 'Power' : (ef.side === 'enemy' ? 'enemy ' : 'party ') + (ef.stat === 'magic' ? 'Magic' : 'Spirit')), val: Math.abs(ef.value) }
     case 'summon':         return { word: 'Summons ' + ((((D && D.UD) || {})[ef.unit] || {}).name || String(ef.unit || '').replace(/^unit\./, '')) }
     case 'corpse.consume': return { word: 'Consumes a corpse', val: ef.radius, radius: true }
     /* an effect kind the engine added and the viewer has not been taught: show
@@ -228,6 +229,13 @@ function effectWordOf(ef, D, SN) {
    engine's own phrase for them (core/target.ts: "every OTHER unit within N hexes", "every other ally"): nothing is
    typed per unit, and a shape the viewer has not been taught throws rather than guess (Law 1). The engine has no
    namer of its own to read (viewer SWITCHES areaTargetWords). */
+/* capability.raise-lower-magic (engine item, 2026-10-05): one change to a side's party stat, as the engine's row writes it —
+   "lowers the party's Magic by 1 for the rest of the Battle", "raises the enemy side's Power by 2 until the end of the next Turn" */
+const SIDE_UNTIL = { battle: 'for the rest of the Battle', endOfTurn: 'until the end of the Turn', endOfNextTurn: 'until the end of the next Turn' }
+export function sideStatWords(c) {
+  const whose = c.stat === 'power' ? "the enemy side's Power" : (c.side === 'enemy' ? "the enemy side's " : "the party's ") + (c.stat === 'magic' ? 'Magic' : 'Spirit')
+  return `${c.value < 0 ? 'lowers' : 'raises'} ${whose} by ${Math.abs(c.value)} ${SIDE_UNTIL[c.until] || c.until}`
+}
 export function targetWords(sel) {
   if (sel === 'self') return 'self'
   if (sel === 'target') return 'the target'
@@ -249,7 +257,8 @@ export function effectTag(a, u, D, SN) {
     const b = a.burst
     bits.push(b.shape.kind === 'radius' ? 'radius ' + b.shape.radius : b.shape.kind, b.side)
     if (b.requireTags?.length) bits.push('tags ' + b.requireTags.join(', '))
-    for (const p of b.packets) bits.push((p.stat ? (STATSHORT[p.stat] || p.stat) + ' ' + sgn(p.amount) : String(p.amount)) + ' ' + p.damageType + (p.powerScale != null ? ' · Power scale ' + p.powerScale : ''))
+    for (const p of b.packets) bits.push((p.stat ? (p.statMult ? p.statMult + ' × ' : '') + (STATSHORT[p.stat] || p.stat) + ' ' + sgn(p.amount) : String(p.amount)) + ' ' + p.damageType + (p.powerScale != null ? ' · Power scale ' + p.powerScale : ''))
+    for (const c of b.sideStats || []) bits.push(sideStatWords(c))
     if (b.heal != null) bits.push('heal ' + b.heal)
     if (a.uses != null) bits.push(a.uses + ' uses per battle')
     if (a.free) bits.push('free')
@@ -360,6 +369,7 @@ export function effectSentence(ef, sel, D, SN) {
     case 'power.gain':     return `Power ${typeof ef.value === 'number' ? sgn(ef.value) : '+ ' + amt(ef.value)}`
     case 'layer.paint':    return `${String(ef.layer || '').replace(/^layer\./, '')} ground, radius ${ef.radius}${ef.origin === 'target' ? ' round the target' : ''}`
     case 'corpse.raise':   return `raise ${ef.count == null ? 'a corpse' : ef.count + ' corpses'} within ${hexes(ef.radius)} as ${(UD[ef.unit] || {}).name || ef.unit}`
+    case 'side.stat':      return sideStatWords(ef)
     case 'summon':         return `summon one ${(UD[ef.unit] || {}).name || ef.unit} on that hex, on your side — it acts by its own AI`
     case 'corpse.consume': return `consume every corpse within ${hexes(ef.radius)}, heal ${ef.healPer} for each`
     case 'corpse.eat':     return `eat a corpse within ${hexes(ef.radius)}: heal ${ef.heal}${Object.entries(ef.mods || {}).map(([k, v]) => ', ' + statWord(k) + ' ' + sgn(v)).join('')}${ef.maxHp ? ', MAX HEALTH ' + sgn(ef.maxHp) : ''}`
@@ -488,7 +498,9 @@ export function actionLines(a, u, D, SN) {
   if (b) {
     const bits = [b.shape.kind === 'radius' ? 'radius ' + b.shape.radius : b.shape.kind, 'strikes ' + ({ any: 'any unit', ally: 'allies', enemy: 'enemies' }[b.side] || b.side) + ' (' + b.side + ')']
     if (b.requireTags && b.requireTags.length) bits.push('tags ' + b.requireTags.join(', '))
-    for (const q of b.packets) bits.push((q.stat ? statWord(q.stat) + ' ' + sgn(q.amount) : String(q.amount)) + ' ' + q.damageType + (q.powerScale != null ? ' · Power scale ' + q.powerScale : ''))
+    for (const q of b.packets) bits.push((q.stat ? (q.statMult ? q.statMult + ' × ' : '') + statWord(q.stat) + ' ' + sgn(q.amount) : String(q.amount)) + ' ' + q.damageType + (q.powerScale != null ? ' · Power scale ' + q.powerScale : ''))
+    /* capability.raise-lower-magic (engine item): what using it does to the sides' party stats */
+    for (const c of b.sideStats || []) bits.push('using it ' + sideStatWords(c))
     if (b.heal != null) bits.push('heal ' + b.heal)
     if (b.impact) bits.push('Impact ' + b.impact)
     if (b.destroy) bits.push('Destroy ' + b.destroy)

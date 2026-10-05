@@ -77,6 +77,8 @@ ARTMAP = {
  # v2.prone test riders (2026-09-23): Tripper A is test-osric plus a trip trigger, Tripper B the
  # cohort zombie plus one (content/test/units.json `from`); same bodies, as with test-gash-zombie.
  'test-trip-a': {'token':'osric_256.png','card':'card-osric','src':'battle-tokens/units/osric_256.png','cardsrc':'crucible/art/base/paladin-shiney1.png'},
+ # capability.raise-lower-magic (engine item, 2026-10-05): the Air Mage's body with one test power (Swell) - the Air Mage's own art
+ 'test-swell-mage':   {'token':'air-mage_256.png',   'card':'card-airmage',   'src':'battle-tokens/units/air-mage_256.png',   'cardsrc':'crucible/art/aeronissa/air-mage.png'},
  'test-trip-b': {'token':'zombie_256.png','card':'card-zombie','src':'battle-tokens/units/zombie_256.png','cardsrc':'assets/bestiary/eve/zombie.png'},
  # v2.kdb test riders (2026-09-23): the Mauler and the Basher are test-osric swinging a TEST Impact
  # attack; the Firm, Agile and Giant zombies are the cohort zombie wearing one badge

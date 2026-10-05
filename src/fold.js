@@ -737,6 +737,19 @@ export function fold(S, e, ctx, now = 0) {
         U[e.actor].activeMv = e.movePoints ?? U[e.actor].activeMv
         U[e.actor].moveUsed = false; U[e.actor].primaryUsed = false; cue('float', { hex: U[e.actor].hex, kind: 'surge', text: 'SURGE!', big: true }) }
       break
+    /* capability.raise-lower-magic (engine item, 2026-10-05): a side's party stat raised or lowered by an effect — the heroes'
+       Magic or Spirit, the enemy side's Power — and, when a change lasted Turns, its return. Side-wide numbers, not a unit's:
+       the top strip shows each as it stands (Power on its own chip, as it always was), and the word floats over whoever did it. */
+    case 'side.stat.changed':
+    case 'side.stat.restored': {
+      if (e.stat === 'power') S.power = e.after
+      else (S.party || (S.party = {}))[e.side + '.' + e.stat] = e.after
+      const word = (e.stat === 'power' ? 'POWER' : (e.side === 'hero' ? 'PARTY ' : 'ENEMY ') + String(e.stat).toUpperCase()) + ' ' + (e.by > 0 ? '+' : '−') + Math.abs(e.by)
+      /* the number in the word is the line's own `by` (a float that prints a number names where the engine said it) */
+      if (e.actor != null && U[e.actor]) cue('float', { hex: U[e.actor].hex, kind: 'note', text: word, small: true, n: e.by, of: 'by' })
+      if (e.stat === 'power') cue('power', { after: e.after, amount: e.by })
+      break
+    }
     case 'power.gained':
       /* the enemy side's Power pool rose — a side-wide number, not a unit's */
       S.power = e.after
@@ -855,6 +868,8 @@ export const FOLDED_TYPES = ['burst.declared', 'burst.shielded', 'burst.struck',
   'unit.transformed', 'unit.reverted',
   /* capability.summons (engine item, 2026-10-05) */
   'unit.summoned', 'unit.dismissed',
+  /* capability.raise-lower-magic (engine item, 2026-10-05) */
+  'side.stat.changed', 'side.stat.restored',
   'deathbed.stood', 'deathbed.fell', 'deathbed.none', 'hp.reset',
   'unit.badged', 'unit.modified', 'badge.gained', 'badge.held', 'power.exhausted', 'charge.spent', 'maxstamina.gained',
   'surge.checked', 'surge.hit', 'power.gained',
