@@ -34,6 +34,7 @@ import { draftScreen } from '../src/ui/draft.js'
 import { runOf, runSaveOf } from '../src/ui/opening-run.js'
 import { BADGES, UNITS, encounterDef, openingHeroesOf, draftScoreOf, firstHeroDraftOf, draftHandOf } from '../src/engine.js'
 import { makeRng, rootSeedOf, rollBelow, roll100 } from '../../engine/src/core/rng.js'
+import { baseOfRow } from '../../engine/src/content/opening-party.js'
 
 const FIRST = OPENING.firstHero, CRUCIBLE = OPENING.crucible, ROLL_SOURCE = OPENING.draftScore.rollSource
 const LEADERSHIP = FIRST.badges[0]!
@@ -62,11 +63,19 @@ function atSecondDraft(seed: number, take = 0): Ctx {
 }
 /** The numbers the battle fields a hero with — the engine's own preview over what the seam hands it. */
 const fielded = (h: Hero) => fieldedPreviewOf(h).now as unknown as Record<string, number | undefined>
-/** What a hero's draft should move each engine stat by: its rolled mods, and its rolled badges' own rows. */
-function movedBy(d: Drafted): Record<string, number> {
+/**
+ * What a hero's draft should move each engine stat by: its rolled mods, and its rolled badges' own rows.
+ * Law 10, 2026-10-05 — content.hero-origin-badges (engine item; engine/DECISIONS.md 2026-10-05 'seven answers: … origin badges go on the heroes …': "3, yes."): this was movedBy(d) and counted every rolled badge. A base hero's row carries its origin
+ * badges now, and a badge is a fact about the unit - twice is once (the engine's applyBadges): a rolled badge the hero's own
+ * row already carries (the Mountain Berserker rolled Huge, the Forest Fey rolled Frail) moves nothing more. The claim is
+ * unchanged - the hero is fielded as its row moved by exactly what the draft added to it.
+ * FOUND, not changed here: the draft can roll a hero a badge its row already has (engine SWITCHES.md originBadgeRolledAgain).
+ */
+function movedBy(d: Drafted, row: { unitType: string }): Record<string, number> {
   const out: Record<string, number> = {}
+  const own = new Set((UNITS[row.unitType] as unknown as { badges?: readonly string[] }).badges ?? [])
   for (const m of d.mods) out[m.stat] = (out[m.stat] ?? 0) + m.add
-  for (const b of d.badges) for (const [stat, v] of Object.entries(BADGES[b]!.statModifiers ?? {})) out[stat] = (out[stat] ?? 0) + (v as number)
+  for (const b of d.badges) if (!own.has(b)) for (const [stat, v] of Object.entries(BADGES[b]!.statModifiers ?? {})) out[stat] = (out[stat] ?? 0) + (v as number)
   return out
 }
 /** Each offer on the draft screen: its attributes and its words, tags stripped. */
@@ -77,7 +86,10 @@ function offersOn(html: string): { id: string; attrs: Record<string, string>; te
     const body = chunk.slice(chunk.indexOf('>') + 1).split('<p class="meta">Not at the fire')[0]!
     const words = (x: string) => x.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim()
     // `apart`: the card's words without its own differences from its class's standard (kingdom.first-hero-own-positives-negatives)
-    return { id: attrs['id']!, attrs, text: words(body), apart: words(body.replace(/<ul class="own"[^>]*>[\s\S]*?<\/ul>|<p class="own same"[^>]*>[\s\S]*?<\/p>/g, ' ')) }
+    // Law 10, 2026-10-05 — content.hero-origin-badges (engine item; engine/DECISIONS.md 2026-10-05 'seven answers: … origin badges go on the heroes …': "3, yes."): the pattern read /<ul class="own"[^>]*>…/ - the gifts' list. A hero's own differences are
+    // also the badges its ROW carries now (the card's `<ul class="own origin">`, src/ui/draft.ts ownList), so both lists are
+    // the card's own differences; everything else on the card is still held to no number and no badge.
+    return { id: attrs['id']!, attrs, text: words(body), apart: words(body.replace(/<ul class="own(?: origin)?"[^>]*>[\s\S]*?<\/ul>|<p class="own same"[^>]*>[\s\S]*?<\/p>/g, ' ')) }
   })
 }
 
@@ -90,7 +102,13 @@ describe('kingdom.opening-draft-modifiers — the first hero by description, lat
   // stream they still give the engine's opening party, every badge, point and score (the old assertion, kept whole); and
   // the file that used to hold the procedure throws no dice and reads no table.
   it('ONE RULE, ONE HOME: the kingdom\'s draft is the engine\'s function — the same rolls on the same dice, and on the engine\'s own stream the engine\'s opening party, every badge, point and score', () => {
-    const baseOf = (id: string) => (stat: string) => ((UNITS[id] as unknown as Record<string, number | undefined>)[engineStat(stat)]) ?? 0
+    // Law 10, 2026-10-05 — content.hero-origin-badges (engine item; engine/DECISIONS.md 2026-10-05 'seven answers: … origin badges go on the heroes …': "3, yes."): this read
+    //   const baseOf = (id: string) => (stat: string) => ((UNITS[id] as unknown as Record<string, number | undefined>)[engineStat(stat)]) ?? 0
+    // - this test's own copy of the engine's base, the row's number. The engine's base also says the hero as fielded now (a
+    // rolled loss is held at its floor against that too; engine SWITCHES.md originBadgeDraftFloor), so the test hands both
+    // functions the engine's own base instead of a copy of it - and holds that its row number is still the row's.
+    const baseOf = (id: string) => baseOfRow(id)
+    for (const id of Object.keys(UNITS).filter((k) => k.startsWith('hero.base.'))) expect(baseOf(id)('health'), id).toBe((UNITS[id] as unknown as Record<string, number>)[engineStat('health')])
     const rollerOf = (replicate: number) => {
       const rng = makeRng(rootSeedOf(0, 0, replicate))
       return { below: (n: number, ...keys: number[]) => rollBelow(rng, n, 'draft', ...keys), d100: (...keys: number[]) => roll100(rng, 'draft', ...keys) }
@@ -200,7 +218,7 @@ describe('kingdom.opening-draft-modifiers — the first hero by description, lat
           `${label}: every point is fielded as a unit mod, or named as one the battle cannot take`).toEqual(d.rolls.map((r) => ({ stat: engineStat(r.stat), amount: r.amount })).sort((a, b) => a.stat.localeCompare(b.stat)))
         for (const m of d.mods.slice(1)) expect(m.source, label).toBe(ROLL_SOURCE)
         // fielded: exactly its row moved by the mods and the badges — so +2 Health or more over its row
-        const now = fielded(h), bare = fielded(row), moved = movedBy(d)
+        const now = fielded(h), bare = fielded(row), moved = movedBy(d, row)
         for (const stat of new Set([...Object.keys(moved), 'maxHp', 'armor', 'strength'])) expect((now[stat] ?? 0) - (bare[stat] ?? 0), `${label}: ${stat} over its row`).toBe(moved[stat] ?? 0)
         expect(now['maxHp']! - bare['maxHp']!, `${label}: +2 Health or more over its row`).toBeGreaterThanOrEqual(FIRST.health)
         // a point of Item Slots is the campaign's own: on the hero, and its gear still fits
@@ -280,14 +298,20 @@ describe('kingdom.opening-draft-modifiers — the first hero by description, lat
                 // a point is the stat's step up or down from the row's own value, held at the stat's floor
                 const step = (CRUCIBLE.statStep as Record<string, number>)[r.stat] ?? CRUCIBLE.statStep.default, floor = (CRUCIBLE.statFloor as Record<string, number>)[r.stat] ?? CRUCIBLE.statFloor.default
                 const base = r.stat === 'itemSlots' ? row.itemSlots : ((UNITS[row.unitType] as unknown as Record<string, number | undefined>)[engineStat(r.stat)] ?? 0)
-                expect([Math.max(floor, base + step) - base, Math.max(floor, base - step) - base], `${who}: a point of ${r.stat} from ${base}`).toContain(r.amount)
+                // Law 10, 2026-10-05 — content.hero-origin-badges (engine item; engine SWITCHES.md originBadgeDraftFloor): this read
+                //   expect([Math.max(floor, base + step) - base, Math.max(floor, base - step) - base], …).toContain(r.amount)
+                // A LOSS is also held at the stat's floor against the hero AS FIELDED (its row, its kit and its row's badges):
+                // the Forest Fey's row says Health 6 and she fields 2, so she loses 1, not 2. A gain is as it was.
+                const fieldedAt = r.stat === 'itemSlots' ? row.itemSlots : ((fielded(row)[engineStat(r.stat)] as number | undefined) ?? 0)
+                const loss = Math.max(Math.max(floor, base - step) - base, -Math.max(0, fieldedAt - floor))
+                expect([Math.max(floor, base + step) - base, loss], `${who}: a point of ${r.stat} from ${base} (fielded ${fieldedAt})`).toContain(r.amount)
               }
               expect(d.badges.length >= 1 && d.badges.length <= 3, `${who}: one to three badges`).toBe(true)
               for (const b of d.badges) expect([...FAVOURABLE, ...FLAWED], who).toContain(b)
               expect(d.badges, `${who}: never Leadership — that is the first hero's`).not.toContain(LEADERSHIP)
               for (const m of d.mods) expect(m.source, who).toBe(ROLL_SOURCE)
               // shown and fielded: the row moved by exactly the rolled mods and the rolled badges
-              const now = fielded(h), bare = fielded(row), moved = movedBy(d)
+              const now = fielded(h), bare = fielded(row), moved = movedBy(d, row)
               for (const stat of new Set([...Object.keys(moved), 'maxHp', 'armor', 'resist', 'strength', 'precision', 'accuracy', 'dodge', 'movement'])) expect((now[stat] ?? 0) - (bare[stat] ?? 0), `${who}: ${stat} against its row`).toBe(moved[stat] ?? 0)
               expect(h.badges).toEqual(d.badges)
               const l = Math.max(0, row.itemSlots + d.rolls.filter((r) => r.stat === 'itemSlots').reduce((s, r) => s + r.amount, 0) + d.badges.reduce((s, b) => s + (([...CRUCIBLE.badges.favourable, ...CRUCIBLE.badges.flawed].find((x) => x.id === b)?.stats as Record<string, number> | undefined)?.['itemSlots'] ?? 0), 0))

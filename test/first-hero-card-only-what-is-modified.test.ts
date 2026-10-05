@@ -72,7 +72,16 @@ describe('kingdom.first-hero-card-only-what-is-modified — no standard hero', (
       for (const c of cards) {
         expect(c.html, `${c.id}: nothing "against" a class`).not.toMatch(/data-against=|standard/)
         const drafted = draftedThings(ctx, c.id)
-        for (const x of ownOn(c.html)) expect(Object.keys(drafted), `${c.id}: "${x.words}" is a thing its own draft gave it`).toContain(x.of)
+        // Law 10, 2026-10-05 — content.hero-origin-badges (engine item; engine/DECISIONS.md 2026-10-05 'seven answers: … origin badges
+        // go on the heroes …': "3, yes."): this read
+        //   for (const x of ownOn(c.html)) expect(Object.keys(drafted), …).toContain(x.of)
+        // The three heroes' rows carry their origin badges now (the Hunter Vengeful, the Iron Dwarf Stalwart and Dwarf, the
+        // Barefoot Mendicant Faithful). A line on a card is a thing its own draft gave it or a badge its own ROW carries -
+        // still never a stat set against the others of its class.
+        const rowBadges = ((UNITS[c.id] as unknown as { badges?: string[] }).badges ?? []).filter((b) => b !== RULE_BADGES.hero).map((b) => `badge:${b}`)
+        expect(rowBadges.length, `${c.id}: its row carries an origin badge`).toBeGreaterThan(0)
+        for (const x of ownOn(c.html)) expect([...Object.keys(drafted), ...rowBadges], `${c.id}: "${x.words}" is a thing its own draft gave it, or a badge of its row`).toContain(x.of)
+        for (const b of rowBadges) expect(ownOn(c.html).map((x) => x.of), `${c.id}: its row's ${b} is on its card`).toContain(b)
       }
     }
   })
@@ -89,17 +98,36 @@ describe('kingdom.first-hero-card-only-what-is-modified — the card', () => {
         const className = CLASSES.find((k) => k.id === row.classes[0])!.name.toLowerCase()
         expect(card.html, `${who}: one line of what it is`).toContain(`<small class="whatitis" data-what="${row.classes[0]}">${/^[aeiou]/.test(className) ? 'An' : 'A'} ${className}.</small>`)
         const drafted = draftedThings(ctx, card.id), own = ownOn(card.html)
-        // nothing on the card but what its own draft gave it (no row carries an origin badge today)
+        // Law 10, 2026-10-05 — content.hero-origin-badges (engine item; engine/DECISIONS.md 2026-10-05 'seven answers: … origin badges go on the heroes …': "3, yes."): this block read
+        //   // nothing on the card but what its own draft gave it (no row carries an origin badge today)
+        //   for (const x of own) { expect(Object.keys(drafted), …).toContain(x.of); expect(x.side, …).toBe(drafted[x.of]!.side); … }
+        //   expect([...own.map((x) => x.of), ...pick.filter((k) => k in drafted)].sort(), …).toEqual(Object.keys(drafted).sort())
+        //   expect(own.map((x) => x.side).join(' ')).toMatch(/^(pos ?)*(neg ?)*$/)
+        // The base heroes' rows carry their origin badges now. The card is still ONLY what is modified on that hero: the badges
+        // its own row carries (read from the engine's row; the rule badge every hero carries is not one), then what its draft
+        // gave it - each thing once, each list positives first (the card lists the row's badges, then the gifts under their heading).
+        const rule = new Set<string>(Object.values(RULE_BADGES))
+        const rowBadges = ((UNITS[row.unitType] as unknown as { badges?: string[] }).badges ?? []).filter((b) => !rule.has(b))
+        const origin = Object.fromEntries(rowBadges.filter((b) => !(`badge:${b}` in drafted)).map((b) => [`badge:${b}`, { side: CRUCIBLE.flawed.some((f) => f.id === b) ? 'neg' : 'pos', name: BADGES[b]!.name! }]))
+        // nothing on the card but its row's own badges and what its own draft gave it
         for (const x of own) {
+          const o = origin[x.of]
+          if (o) {
+            expect(x.side, `${who}: ${x.of}`).toBe(o.side)
+            expect(x.words.startsWith(`${o.name} `) && x.words.length > o.name.length + 1, `${who}: ${x.of} is named with its meaning: "${x.words}"`).toBe(true)
+            continue
+          }
           expect(Object.keys(drafted), `${who}: "${x.words}" (${x.of}) is its own`).toContain(x.of)
           expect(x.side, `${who}: ${x.of}`).toBe(drafted[x.of]!.side)
           if (drafted[x.of]!.words) expect(x.words, `${who}: ${x.of}`).toBe(drafted[x.of]!.words)
           expect(pick, `${who}: ${x.of} is on the card, so it is not said again for the pick`).not.toContain(x.of)
         }
-        // and everything its draft gave it is said exactly once — on its card, or once for the pick
-        expect([...own.map((x) => x.of), ...pick.filter((k) => k in drafted)].sort(), `${who}: every thing its draft gave it, each once`).toEqual(Object.keys(drafted).sort())
-        // positives before negatives
-        expect(own.map((x) => x.side).join(' ')).toMatch(/^(pos ?)*(neg ?)*$/)
+        // and everything its row carries and its draft gave it is said exactly once — on its card, or once for the pick
+        expect([...own.map((x) => x.of), ...pick.filter((k) => k in drafted)].sort(), `${who}: every badge of its row and every thing its draft gave it, each once`).toEqual([...Object.keys(origin), ...Object.keys(drafted)].sort())
+        // positives before negatives, in each of the card's two lists: its row's badges, then its gifts
+        const lists = [...card.html.matchAll(/<ul class="own(?: origin)?"[^>]*>([\s\S]*?)<\/ul>/g)].map((m) => ownOn(m[1]!).map((x) => x.side).join(' '))
+        expect(lists.length, `${who}: a list for its row's badges, a list for its gifts`).toBe((Object.keys(origin).length ? 1 : 0) + (own.length > Object.keys(origin).length ? 1 : 0))
+        for (const sides of lists) expect(sides, `${who}: positives first`).toMatch(/^(pos ?)*(neg ?)*$/)
         // a hero with nothing of its own says so in one plain line, and lists nothing
         const none = card.html.match(/<p class="own same" data-own="none">([^<]*)<\/p>/)
         if (own.length === 0) expect(none?.[1], `${who}: says nothing is modified`).toBe('No extra stats and no badges of its own.')

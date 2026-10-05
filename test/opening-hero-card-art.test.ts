@@ -144,7 +144,9 @@ describe('kingdom.opening-hero-card-art — every screen that shows a hero shows
         expect(id).toBe(offers[i]!.id)
         expect(imagesIn(card), `seed ${seed}: ${id}'s card shows its own art, once`).toEqual([uriOf(id)])
         expect(textOf(card), `seed ${seed}: ${id} is named`).toContain(offers[i]!.name)
-        expect(textOf(card.replace(/<ul class="own"[^>]*>[\s\S]*?<\/ul>|<p class="own same"[^>]*>[\s\S]*?<\/p>/g, ' ')), `seed ${seed}: ${id}: no number but its own differences`).not.toMatch(/\d/)
+        // Law 10, 2026-10-05 — content.hero-origin-badges (engine item; engine/DECISIONS.md 2026-10-05 'seven answers: … origin badges go on the heroes …': "3, yes."): the pattern read /<ul class="own"[^>]*>…/ - the gifts' list. A hero's own differences are
+        // also the badges its ROW carries now (the card's `<ul class="own origin">`); both lists are the card's own differences.
+        expect(textOf(card.replace(/<ul class="own(?: origin)?"[^>]*>[\s\S]*?<\/ul>|<p class="own same"[^>]*>[\s\S]*?<\/p>/g, ' ')), `seed ${seed}: ${id}: no number but its own differences`).not.toMatch(/\d/)
         expect(card, `seed ${seed}: ${id} carries no stats, badges or rolls`).not.toMatch(/data-(stats|badges|rolls)=/)
         expect(textOf(card)).not.toMatch(/carries/i)
       }

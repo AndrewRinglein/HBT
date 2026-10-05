@@ -1,0 +1,52 @@
+
+ RUN  v4.1.11 C:/Users/aring/Desktop/HBT-worker-engine/kingdom
+
+ ❯ test/summons-in-a-battle.test.ts (3 tests | 3 failed) 1199ms
+     × the battle offers it once for each empty hex beside the hero, as the engine's hex order, and for nothing else 553ms
+     × ordered on a hex: a Wolf stands there on the heroes' side; it is the computer's, never offered to the player - and still so after a save 332ms
+     × the battle's result keys the Wolf to no hero: an arrival, outside the roster the reckoning reads - and it leaves when the battle ends 313ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/summons-in-a-battle.test.ts > Call the Wolf in a played battle > the battle offers it once for each empty hex beside the hero, as the engine's hex order, and for nothing else
+AssertionError: expected 0 to be greater than 0
+ ❯ test/summons-in-a-battle.test.ts:33:28
+     31|     expect(u.typeId).toBe(HERO)
+     32|     const offered = calls(s)
+     33|     expect(offered.length).toBeGreaterThan(0)
+       |                            ^
+     34|     for (const c of offered) {
+     35|       expect('hex' in c.command, 'aimed at a hex').toBe(true)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  test/summons-in-a-battle.test.ts > Call the Wolf in a played battle > ordered on a hex: a Wolf stands there on the heroes' side; it is the computer's, never offered to the player - and still so after a save
+TypeError: Cannot read properties of undefined (reading 'command')
+ ❯ test/summons-in-a-battle.test.ts:45:40
+     43|     const { box } = start(), u = me(box.s)
+     44|     const order = calls(box.s).find((c) => c.command.slot === 'primary…
+     45|     expect(commandSandbox(box.s, order.command)).toEqual({ ok: true })
+       |                                        ^
+     46|     const wolf = box.s.ctx.state.units.at(-1)!
+     47|     expect([wolf.typeId, wolf.side, wolf.summoned, wolf.summonedBy, wo…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  test/summons-in-a-battle.test.ts > Call the Wolf in a played battle > the battle's result keys the Wolf to no hero: an arrival, outside the roster the reckoning reads - and it leaves when the battle ends
+TypeError: Cannot read properties of undefined (reading 'command')
+ ❯ test/summons-in-a-battle.test.ts:59:81
+     57|   it('the battle\'s result keys the Wolf to no hero: an arrival, outsi…
+     58|     const { box } = start()
+     59|     commandSandbox(box.s, calls(box.s).find((c) => c.command.slot === …
+       |                                                                                 ^
+     60|     runBattle(box.s.ctx)
+     61|     const r = sandboxResult(box.s)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  3 failed (3)
+   Start at  08:36:50
+   Duration  7.10s (transform 4.63s, setup 0ms, import 5.70s, tests 1.20s, environment 0ms)
+
