@@ -38,6 +38,10 @@ export async function readCatalog() {
     ABILITIES: content.ABILITIES, BADGES: content.BADGES, MOVES: moves.MOVES,
     STATUSES: statuses.STATUSES, MAPS: maps.MAPS, LAYER_IDS: maps.LAYER_IDS, VOCABULARY: vocabulary.engineVocabulary(),
     ACTION_KIND: { isCharge: action.isCharge, isAttack: action.isAttack, isMove: action.isMove, isBurst: action.isBurst, isPower: action.isPower },
+    // viewer.bar-shows-tag-requirement: the engine's ONE reading of "this action carries the tag" (core/action.ts carriesTag,
+    // engine SWITCHES attackHasTag) — a pure predicate over a content row, asked at dump time for every tag a trigger
+    // requires, so the viewer keeps no copy of it
+    CARRIES_TAG: action.carriesTag,
     LOADOUT: { HANDS: items.HANDS, handsOf: items.handsOf } }
 }
 /* THE BOARD IS THE MAP'S (engine 5603c40, EVENTS-FOR-THE-VIEWER §10): no WIDTH/HEIGHT constants,

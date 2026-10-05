@@ -298,8 +298,9 @@ export const ATTACK_HOOKS = new Set(['onHit', 'onAttack', 'onDamage', 'onKill', 
      effectSentence — one effect as a sentence, in the Codex's wording ("gain 1 Protection", "apply 2 Bleed",
                      "regain 1 Stamina", "STR +2 for the rest of the Battle").
      ridersOf      — the unit's triggers that ride one action: an attacker hook, on an action with an attack profile
-                     (the engine fires them from its attack pipeline only — a power fires none), unscoped or scoped
-                     to this attack, and never a defender's onBlock.
+                     (the engine fires them from its attack pipeline only — a power fires none), unscoped or scoped to
+                     this attack, and never a defender's onBlock. Since viewer.bar-shows-tag-requirement: and, for a
+                     trigger with a tag requirement, only an attack that carries the tag (carriesTag, below).
      actionLines   — the whole of one action, a line per fact: the row's tooltip. */
 const STAT_WORD = { ...STATSHORT, maxHp: 'MAX HEALTH', maxStamina: 'MAX STAMINA', staminaRegen: 'STAMINA REGEN', rangedBlock: 'RANGED BLOCK',
   /* viewer.free-attack-kind-words: the free attacks' own words, not their stat ids in capitals */
@@ -358,9 +359,30 @@ export function effectSentence(ef, sel, D, SN) {
   }
 }
 
+/* ── A TRIGGER'S TAG REQUIREMENT (viewer.bar-shows-tag-requirement, 2026-10-04) ──────────────────────────────────────────
+   Engine DECISIONS.md 2026-10-04 'after the backlog run: … a trigger on the hero with a tag requirement …' (Andrew: "it only
+   triggers when you're using something that has the tag melee"): a trigger may name one tag (`onlyWithTag` — the Burning
+   Touch melee, Pharaoh's Gauntlets brawl) and then fires only for an attack that carries it. The bar showed its effect on
+   every attack; 2026-10-03 ruled the bar shows every effect an action will have and none it will not.
+     carriesTag          — does this action carry the tag: the ENGINE's answer (core/action.ts carriesTag), dumped for every
+                           tag a trigger requires (static.json tagCarriers, D.TAG_CARRIERS) and read as a list. The viewer
+                           reads no tags off a row and works nothing out; a tag the page holds no answer for is a fault
+                           (SWITCHES tagAnswerMissing), as an unknown target shape is.
+     tagRequirementWords — the requirement as words, the Codex's own ("only with a melee attack", content mkcodexmd.mjs),
+                           made of the trigger's one field; '' for a trigger with none. Said where the trigger itself is
+                           described (the panel's row), not on the attack it rides. */
+export function carriesTag(a, tag, D) {
+  const list = ((D && D.TAG_CARRIERS) || {})[tag]
+  if (!Array.isArray(list)) throw new Error(`viewer: the page holds no answer for which actions carry the tag '${tag}' — re-dump generated/static.json (npm run static) and hand its tagCarriers to the viewer`)
+  return list.includes(a.id)
+}
+export const tagRequirementWords = t => t && t.onlyWithTag !== undefined ? `only with a ${t.onlyWithTag} attack` : ''
+
 export function ridersOf(u, a, D) {
   if (!a || !a.attack) return []
-  return unitTriggers(u, D).filter(t => ATTACK_HOOKS.has(t.hook) && !(t.onlyWithAttack && t.onlyWithAttack !== a.id) && t.role !== 'defender')
+  return unitTriggers(u, D).filter(t => ATTACK_HOOKS.has(t.hook) && !(t.onlyWithAttack && t.onlyWithAttack !== a.id) && t.role !== 'defender'
+    /* the tag requirement, joined with the attack scope when a trigger has both — the engine's order (core/trigger.ts fireTriggers) */
+    && (t.onlyWithTag === undefined || carriesTag(a, t.onlyWithTag, D)))
 }
 const riderLine = (t, D, SN) => `${HOOK_WORD[t.hook] || t.hook}: ${effectSentence(t.effect, t.select, D, SN)}${t.chance != null && t.chance < 100 ? ' (' + t.chance + '%)' : ''}`
 

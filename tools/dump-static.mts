@@ -9,7 +9,7 @@ import { writeFileSync } from 'node:fs'
 // wherever it is run from (tools/runtime-metadata.test.mjs bundles it and runs it in an empty folder)
 import AUTHORED_ENEMIES from '../../content/gen/enemies-authored.json' with { type: 'json' }
 import { codeStamp } from '../../engine/tools/code-stamp.mjs'
-import { allSheets, absorbingStatusIds, statusNames, attackTable, abilityTable, actionTable, badgeTable, layerNames, groundApplies, groundNames, actionKinds, statusRows, itemClasses, itemTable, handCount } from '../src/sheet.js'
+import { allSheets, absorbingStatusIds, statusNames, attackTable, abilityTable, actionTable, badgeTable, layerNames, groundApplies, groundNames, actionKinds, statusRows, itemClasses, itemTable, handCount, tagCarriers } from '../src/sheet.js'
 import { readCatalog } from '../src/engine.js'
 const { MAPS } = await readCatalog()
 
@@ -44,6 +44,9 @@ const out = { engineCommit, engineDirty: dirty, maps: MAPS.map((m) => m.id), uni
   /* viewer.shield-guard-motion: each item's own class — a power a held shield grants raises the shield */
   itemClasses: itemClasses(),
   /* viewer.panel-lists-items: each item's own row (name, class, hands, slots, what it gives) and the engine's count of hands */
-  items: itemTable(), hands: handCount() }
+  items: itemTable(), hands: handCount(),
+  /* viewer.bar-shows-tag-requirement: for each tag a trigger requires (onlyWithTag), the actions that carry it — the engine's
+     carriesTag, asked action by action; the bar lists a tag-required trigger on those attacks only */
+  tagCarriers: tagCarriers() }
 writeFileSync('generated/static.json', JSON.stringify(out))
-console.log(`static.json: ${out.maps.length} maps · ${Object.keys(out.units).length} units · ${Object.keys(out.unitLines).length} unit lines · ${Object.keys(out.statuses).length} statuses · ${Object.keys(out.actions).length} actions · ${Object.keys(out.badges).length} badges · ${Object.keys(out.itemClasses).length} items · engine ${engineCommit}${dirty ? ' (DIRTY tree)' : ''}`)
+console.log(`static.json: ${out.maps.length} maps · ${Object.keys(out.units).length} units · ${Object.keys(out.unitLines).length} unit lines · ${Object.keys(out.statuses).length} statuses · ${Object.keys(out.actions).length} actions · ${Object.keys(out.badges).length} badges · ${Object.keys(out.itemClasses).length} items · ${Object.entries(out.tagCarriers).map(([tag, ids]) => ids.length + ' carry ' + tag).join(', ') || 'no tag requirement'} · engine ${engineCommit}${dirty ? ' (DIRTY tree)' : ''}`)

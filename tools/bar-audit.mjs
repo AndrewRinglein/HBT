@@ -119,9 +119,16 @@ export function actionNeeds(a, triggers, S) {
     if (b.destroy) need('burst destroy ' + b.destroy, [word('destroy'), num(b.destroy)])
   }
   for (const [i, e] of (a.effects ?? []).entries()) need(`effect ${i + 1} ${e.kind}`, effectNeeds(e, S))
-  /* the unit's triggers that ride this action: an attacker hook, on an attack (or a charge), unscoped or scoped to this one */
+  /* the unit's triggers that ride this action: an attacker hook, on an attack (or a charge), unscoped or scoped to this one,
+     and with a tag requirement only when the attack carries the tag */
   if (p) for (const t of triggers ?? []) {
     if (!ATTACKER_HOOKS.includes(t.hook) || (t.onlyWithAttack && t.onlyWithAttack !== a.id) || t.role === 'defender') continue
+    /* viewer.bar-shows-tag-requirement: a trigger with a tag requirement rides only an attack that carries the tag — the
+       engine's answer (static.json tagCarriers: its carriesTag, action by action), read here as on the page, never worked
+       out; with no answer the audit stops (the bar must not be asked for an effect on a guess) */
+    if (t.onlyWithTag !== undefined) { const carriers = (S.tagCarriers || {})[t.onlyWithTag]
+      if (!Array.isArray(carriers)) throw new Error(`bar-audit: static.json holds no answer for the tag '${t.onlyWithTag}' (tagCarriers) — npm run static`)
+      if (!carriers.includes(a.id)) continue }
     need(`trigger ${t.id} (${t.hook})`, [word(HOOK_WORDS[t.hook]), ...effectNeeds(t.effect, S), ...targetNeeds(t.select), ...(t.chance < 100 ? [num(t.chance), word('%')] : [])])
   }
   return out
@@ -160,7 +167,7 @@ export function auditPage(html, roster) {
   for (const b of roster.battles) {
     const EV = b.events, mapId = EV.find(e => e.type === 'map.loaded').mapId
     const data = { field: L.fields[mapId], fieldMapId: mapId, initialEvents: EV, units: S.units, statuses: S.statuses, absorbingStatuses: S.absorbingStatuses, actions: S.actions, badges: S.badges,
-      layers: S.layers, actionKinds: S.actionKinds, statusRows: S.statusRows, itemClasses: S.itemClasses, items: S.items, hands: S.hands, artmap: L.art.artmap, assets: L.art.assets, glyphs: L.glyphs, meta: { seed: { mapId } } }
+      layers: S.layers, actionKinds: S.actionKinds, statusRows: S.statusRows, itemClasses: S.itemClasses, items: S.items, hands: S.hands, tagCarriers: S.tagCarriers, artmap: L.art.artmap, assets: L.art.assets, glyphs: L.glyphs, meta: { seed: { mapId } } }
     const el = w.document.createElement('div'); w.document.body.appendChild(el)
     const v = B.mount(el, data, { autoplay: false }); v.push(EV); v.seek(EV.length)
     for (const u of b.units) {

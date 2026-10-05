@@ -114,7 +114,9 @@ const { outputFiles, warnings, metafile } = esbuild.buildSync({
       /* viewer.shield-guard-motion: each item's own class — a power a held shield grants raises the shield */
       itemClasses: statics.itemClasses,
       /* viewer.panel-lists-items: each item's own row and the engine's count of hands — the panel's items section */
-      items: statics.items, hands: statics.hands }),
+      items: statics.items, hands: statics.hands,
+      /* viewer.bar-shows-tag-requirement: which actions carry each tag a trigger requires — the engine's answers, for the bar */
+      tagCarriers: statics.tagCarriers }),
     __BUNDLED_FIELDS__: JSON.stringify(Object.fromEntries(Object.entries(fields).filter(([k]) => !k.startsWith('_')))),
     /* noAfterArt (viewer.affliction-pop-up): the heroes with no after card, listed by prep-art — never faked */
     __BUNDLED_ART__: JSON.stringify({ artmap: manifest.artmap, assets, noAfterArt: manifest.noAfterArt || {} }),

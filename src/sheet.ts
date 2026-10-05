@@ -10,7 +10,7 @@
 // FIRST entry in tools/exemptions.json — EXEMPTION sheet. It reads content only, through the
 // door, and computes nothing: every field is copied from a definition.
 import { readCatalog } from './engine.js'
-const { UNITS, ACTIONS, ATTACKS, ABILITIES, MOVES, BADGES, STATUSES, LAYER_IDS, VOCABULARY, ACTION_KIND, ITEMS, LOADOUT } = await readCatalog()
+const { UNITS, ACTIONS, ATTACKS, ABILITIES, MOVES, BADGES, STATUSES, LAYER_IDS, VOCABULARY, ACTION_KIND, CARRIES_TAG, ITEMS, LOADOUT } = await readCatalog()
 
 const plain = (o: unknown) => (o ? JSON.parse(JSON.stringify(o)) : undefined)
 const many = (ids: readonly string[] | undefined, table: Record<string, unknown>) =>
@@ -152,6 +152,24 @@ export function actionKinds(): Record<string, 'charge' | 'attack' | 'move' | 'bu
   for (const [id, a] of Object.entries(ACTIONS) as [string, any][])
     out[id] = K.isCharge(a) ? 'charge' : K.isAttack(a) ? 'attack' : K.isMove(a) ? 'move' : K.isBurst(a) ? 'burst' : 'power'
   for (const [id, k] of Object.entries(out)) if (k === 'power' && !K.isPower((ACTIONS as any)[id])) throw new Error(`actionKinds: ${id} is none of the engine's kinds`)
+  return out
+}
+
+/**
+ * viewer.bar-shows-tag-requirement (engine DECISIONS.md 2026-10-04 'after the backlog run: … a trigger on the hero with a tag
+ * requirement …', Andrew: "it only triggers when you're using something that has the tag melee"): WHICH ACTIONS CARRY EACH
+ * TAG A TRIGGER REQUIRES — the engine's own answer, asked of its one function (core/action.ts carriesTag; engine SWITCHES
+ * attackHasTag: the row's tags, and for an attack that states none its kind) for every action, in the registry's order.
+ * The tags are those some trigger names in `onlyWithTag` — on a unit's row, an item's, a badge's, the three rows that
+ * bring triggers to a fielded unit. The action bar keeps a tag-required trigger off an attack this table does not list
+ * (src/actions.js carriesTag) and keeps no copy of the rule; a new requirement appears here on the next dump.
+ */
+export function tagCarriers(): Record<string, string[]> {
+  const tags = new Set<string>()
+  for (const table of [UNITS, ITEMS, BADGES] as Record<string, { triggers?: readonly { onlyWithTag?: string }[] }>[])
+    for (const row of Object.values(table)) for (const t of row.triggers ?? []) if (t.onlyWithTag !== undefined) tags.add(t.onlyWithTag)
+  const out: Record<string, string[]> = {}
+  for (const tag of [...tags].sort()) out[tag] = (Object.entries(ACTIONS) as [string, any][]).filter(([, a]) => CARRIES_TAG(a, tag)).map(([id]) => id)
   return out
 }
 
