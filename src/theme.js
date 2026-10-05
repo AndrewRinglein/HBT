@@ -146,6 +146,11 @@ export const TERRAIN_3D_TINT = { 'terrain.forest': '#72825a', 'terrain.woodland'
    on a unit that can be hit is the arrow's own red (aim). */
 export const PLAY_HUE = { reach: 'rgba(120,190,240,.20)', reachEdge: 'rgba(150,205,245,.55)', path: 'rgba(140,178,208,.96)',
   aim: 'rgba(222,52,46,.96)', aimHit: '#ff9d92', aimDmg: '#ff6a5c',
+  /* viewer.friend-line-green-heal-glows (engine DECISIONS.md 2026-10-05, Andrew: "They should be green."): the line and the
+     mark of an action that HELPS its target — a heal, a buff — where an attack's are the red above */
+  aid: 'rgba(84,204,104,.96)', aidHit: '#a9eeb0', aidDmg: '#7fe08c',
+  /* … and the glow on the hexes of an area that is healed: the heal's own colour (HEAL_HUE), see-through */
+  healArea: 'rgba(143,224,138,.42)',
   zoc: 'rgba(255,176,112,.50)', provoke: NOTE_HUE.aoo, ghost: 'rgba(191,242,255,.9)',
   threatMove: 'rgba(170,120,240,.24)', threatHit: 'rgba(235,80,80,.85)', loss: 'rgba(235,80,70,.8)', lethal: 'rgba(198,40,40,.95)',
   notch: 'rgba(255,255,255,.95)', skull: BLOOD_HUE, note: 'rgba(8,9,11,.82)' }

@@ -359,6 +359,28 @@ export function effectSentence(ef, sel, D, SN) {
   }
 }
 
+/* ── DOES THIS ACTION HELP ITS TARGET (viewer.friend-line-green-heal-glows, 2026-10-05) ───────────────────────────────────
+   Engine DECISIONS.md 2026-10-05 'the playtest post answered: … green for a friend, a glow for a heal …' (Andrew: "When you're
+   doing a power that is a buff or a heal, it should not be a red arrow" · "They should be green." · "When you're healing
+   someone, it shouldn't show a magic attack bolt flying at them."). Which actions help is read off the ENGINE's action row
+   (the dump's `actions`), never a list of names:
+     an attack or a burst                          never — it deals damage whoever stands there
+     a power whose Targeting row is itself         yes
+     … whose side is 'ally'                        yes   (a heal, a buff, Protection given, a status removed)
+     … whose side is 'enemy'                       no
+     … whose side is 'any'                         by the unit: one of the user's own side yes, one of the other no
+     a power that names no target                  no
+   null when there is no row to read (the caller then draws what it drew before). `actorSide`/`targetSide` are the
+   units' sides as the log gave them. */
+export function helpsTarget(row, actorSide, targetSide) {
+  if (!row) return null
+  if (row.attack || row.burst || !row.target) return false
+  const t = row.target
+  if (t.select === 'self' || t.side === 'ally') return true
+  if (t.side === 'any') return actorSide != null && actorSide === targetSide
+  return false
+}
+
 /* ── A TRIGGER'S TAG REQUIREMENT (viewer.bar-shows-tag-requirement, 2026-10-04) ──────────────────────────────────────────
    Engine DECISIONS.md 2026-10-04 'after the backlog run: … a trigger on the hero with a tag requirement …' (Andrew: "it only
    triggers when you're using something that has the tag melee"): a trigger may name one tag (`onlyWithTag` — the Burning

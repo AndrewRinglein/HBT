@@ -207,7 +207,8 @@ export function mountBattleViewer(root, data, opts = {}) {
     /* viewer.affliction-pop-up: the pump is held while the first-affliction pop-up stands (affliction.js) */
     hold: false, affliction: null,
   }
-  const ctx = () => ({ UD: V.data.UD, SN: V.data.SN, IC: V.data.ITEM_CLASSES })
+  /* ACT: the engine's action rows — viewer.friend-line-green-heal-glows reads whether a power helps its target */
+  const ctx = () => ({ UD: V.data.UD, SN: V.data.SN, IC: V.data.ITEM_CLASSES, ACT: V.data.ACT })
   /* the BEAT clock: wall time scaled by playback speed, so a row that lights
      for 1600 beat-ms lights for the same number of beats at ×⅓ and ×4. The fold
      stamps its `until`s from this, and the draw compares against it. */
