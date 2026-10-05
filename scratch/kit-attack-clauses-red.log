@@ -1,0 +1,201 @@
+
+ RUN  v4.1.11 C:/Users/aring/Desktop/HBT-worker-engine/engine
+
+ ❯ test/kit-attack-clauses.test.ts (7 tests | 7 failed) 11ms
+     × the Iron Mace's Crush: on hit the target loses 1 Armor for the rest of the Battle; the Swing takes none 5ms
+     × the Elfbow's Elf Shot: on hit the shooter gains 1 Precision, for the Battle, and it stacks 1ms
+     × the Obsidian Fang Dagger: on hit, 20%, the target loses 1 Strength - on the Fang and on the Gut 1ms
+     × the Daggers' Thrown Dagger: "on kill, gain 50 Surge" is a named line - no effect moves a unit's Surge amount 1ms
+     × the Throwing Knives' Fan and the Elfbow's Double Shot: an attack at several chosen targets lands on one, and the row says so wherever its words are "up to N enemies" 1ms
+     × over every weapon in a base hero's kit: each clause of its Codex row is on the engine's sheet for that attack, or a named line 1ms
+     × a named line says which mechanism is missing: none of a base-kit weapon's lines is the bare "trigger shape unparsed" 0ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 7 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/kit-attack-clauses.test.ts > the clauses that reach the engine > the Iron Mace's Crush: on hit the target loses 1 Armor for the rest of the Battle; the Swing takes none
+AssertionError: expected [] to deeply equal [ Array(1) ]
+
+- Expected
++ Received
+
+- [
+-   [
+-     "onHit",
+-     100,
+-     "target",
+-     {
+-       "kind": "statMod",
+-       "stat": "armor",
+-       "until": "battle",
+-       "value": -1,
+-     },
+-   ],
+- ]
++ []
+
+ ❯ test/kit-attack-clauses.test.ts:52:128
+     50|     const MACE = 'item.iron-mace', CRUSH = 'attack.iron-mace.crush'
+     51|     expect(codexAttack(CRUSH).triggers).toEqual([{ hook: 'onHit', effe…
+     52|     expect(ITEMS[MACE]!.triggers.filter((t) => t.onlyWithAttack === CR…
+       |                                                                                                                                ^
+     53|       ['onHit', 100, 'target', { kind: 'statMod', stat: 'armor', value…
+     54|     const ctx = field(MACE, 0), before = val(ctx, 1, 'armor')
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/7]⎯
+
+ FAIL  test/kit-attack-clauses.test.ts > the clauses that reach the engine > the Elfbow's Elf Shot: on hit the shooter gains 1 Precision, for the Battle, and it stacks
+AssertionError: expected [] to deeply equal [ [ 'onHit', 100, 'self', { …(4) } ] ]
+
+- Expected
++ Received
+
+- [
+-   [
+-     "onHit",
+-     100,
+-     "self",
+-     {
+-       "kind": "statMod",
+-       "stat": "precision",
+-       "until": "battle",
+-       "value": 1,
+-     },
+-   ],
+- ]
++ []
+
+ ❯ test/kit-attack-clauses.test.ts:67:126
+     65|     const BOW = 'item.elfbow', SHOT = 'attack.elfbow.elf-shot'
+     66|     expect(codexAttack(SHOT).triggers).toEqual([{ hook: 'onHit', chanc…
+     67|     expect(ITEMS[BOW]!.triggers.filter((t) => t.onlyWithAttack === SHO…
+       |                                                                                                                              ^
+     68|       ['onHit', 100, 'self', { kind: 'statMod', stat: 'precision', val…
+     69|     const ctx = field(BOW, 0, true), before = val(ctx, 0, 'precision')
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/7]⎯
+
+ FAIL  test/kit-attack-clauses.test.ts > the clauses that reach the engine > the Obsidian Fang Dagger: on hit, 20%, the target loses 1 Strength - on the Fang and on the Gut
+AssertionError: attack.obsidian-fang-dagger.fang: expected [] to deeply equal [ [ 'onHit', 20, 'target', { …(4) } ] ]
+
+- Expected
++ Received
+
+- [
+-   [
+-     "onHit",
+-     20,
+-     "target",
+-     {
+-       "kind": "statMod",
+-       "stat": "strength",
+-       "until": "battle",
+-       "value": -1,
+-     },
+-   ],
+- ]
++ []
+
+ ❯ test/kit-attack-clauses.test.ts:80:131
+     78|     for (const a of ITEMS[DAGGER]!.grants) {
+     79|       expect(codexAttack(a).triggers, a).toEqual([{ hook: 'onHit', cha…
+     80|       expect(ITEMS[DAGGER]!.triggers.filter((t) => t.onlyWithAttack ==…
+       |                                                                                                                                   ^
+     81|         ['onHit', 20, 'target', { kind: 'statMod', stat: 'strength', v…
+     82|       // a replicate on which the 20% fires, and one on which it does …
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/7]⎯
+
+ FAIL  test/kit-attack-clauses.test.ts > the clauses the engine cannot yet do are named, never dropped > the Daggers' Thrown Dagger: "on kill, gain 50 Surge" is a named line - no effect moves a unit's Surge amount
+AssertionError: expected 'trigger shape unparsed' to match /Surge/
+
+- Expected:
+/Surge/
+
++ Received:
+"trigger shape unparsed"
+
+ ❯ test/kit-attack-clauses.test.ts:104:29
+    102|     const named = gapsOf('item.daggers').filter((g) => g.what.includes…
+    103|     expect(named).toHaveLength(1)
+    104|     expect(named[0]!.needs).toMatch(/Surge/)
+       |                             ^
+    105|     expect(named[0]!.needs).not.toBe('trigger shape unparsed')   // it…
+    106|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/7]⎯
+
+ FAIL  test/kit-attack-clauses.test.ts > the clauses the engine cannot yet do are named, never dropped > the Throwing Knives' Fan and the Elfbow's Double Shot: an attack at several chosen targets lands on one, and the row says so wherever its words are "up to N enemies"
+AssertionError: attack.throwing-knives.fan: "up to 3 enemies within 3 hexes": expected +0 to be 1 // Object.is equality
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ test/kit-attack-clauses.test.ts:115:54
+    113|       const several = /^up to \d+ enemies/.test(row.targets)
+    114|       const named = gapsOf(item).filter((g) => g.what.includes(a) && g…
+    115|       expect(named.length, `${a}: "${row.targets}"`).toBe(several ? 1 …
+       |                                                      ^
+    116|       if (several) expect(named[0]!.needs).toMatch(/several chosen tar…
+    117|     }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/7]⎯
+
+ FAIL  test/kit-attack-clauses.test.ts > the clauses the engine cannot yet do are named, never dropped > over every weapon in a base hero's kit: each clause of its Codex row is on the engine's sheet for that attack, or a named line
+AssertionError: expected [ …(5) ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   "item.elfbow attack.elfbow.double-shot targets: up to 2 enemies within 4 hexes",
++   "item.greatsword attack.greatsword.great-cleave accuracy -5 on a burst",
++   "item.holy-texts attack.holy-texts.verse addsStat: \"spirit\"",
++   "item.iron-mace attack.iron-mace.crush addsTargetStatus: {\"status\":\"stun\",\"consumes\":false}",
++   "item.throwing-knives attack.throwing-knives.fan targets: up to 3 enemies within 3 hexes",
++ ]
+
+ ❯ test/kit-attack-clauses.test.ts:152:20
+    150|       }
+    151|     }
+    152|     expect(silent).toEqual([])
+       |                    ^
+    153|     expect(clauses).toBeGreaterThan(40)
+    154|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/7]⎯
+
+ FAIL  test/kit-attack-clauses.test.ts > the clauses the engine cannot yet do are named, never dropped > a named line says which mechanism is missing: none of a base-kit weapon's lines is the bare "trigger shape unparsed"
+AssertionError: expected [ …(5) ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   "item.daggers: attack.daggers.thrown-dagger onKill: \"gain 50 Surge\"",
++   "item.elfbow: attack.elfbow.elf-shot onHit: \"gain 1 Precision\"",
++   "item.iron-mace: attack.iron-mace.crush onHit: \"the target loses 1 Armor for the rest of the Battle\"",
++   "item.obsidian-fang-dagger: attack.obsidian-fang-dagger.fang onHit: \"target loses 1 Strength\"",
++   "item.obsidian-fang-dagger: attack.obsidian-fang-dagger.gut onHit: \"target loses 1 Strength\"",
++ ]
+
+ ❯ test/kit-attack-clauses.test.ts:158:18
+    156|   it('a named line says which mechanism is missing: none of a base-kit…
+    157|     const bare = KIT_WEAPONS.flatMap((item) => gapsOf(item).filter((g)…
+    158|     expect(bare).toEqual([])
+       |                  ^
+    159|   })
+    160| })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/7]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  7 failed (7)
+   Start at  18:44:18
+   Duration  885ms (transform 583ms, setup 0ms, import 750ms, tests 11ms, environment 0ms)
+

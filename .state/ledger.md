@@ -30637,3 +30637,94 @@ index ec53fe2..afaca92 100644
  })
 ```
 </details>
+
+## fix.kit-attack-clauses — LANDED `78309df` **NEEDS REVIEW**
+2026-10-05 02:23
+
+  PASS  dependencies landed
+  WARN  not already decided — 3 candidate ruling(s) — READ BEFORE ASKING: SWITCHES.md:2282 · DECISIONS.md:4873
+  PASS  typecheck
+  PASS  the item's own tests — test/battle-cursor.test.ts, test/items-per-unit.test.ts, test/kit-attack-clauses.test.ts
+  PASS  gate 1 — the id appears in a real battle — item.iron-mace: 1 log lines, 1 fired, 1 changed state
+  PASS  brought its own tests — test/battle-cursor.test.ts, test/items-per-unit.test.ts, test/fixtures/battle-cursor-kit-attack-clauses.json, test/kit-attack-clauses.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/battle-cursor.test.ts (-2) — will land FLAGGED for review
+  PASS  control battles unchanged
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — shape 'data' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without item.iron-mace — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/battle-cursor.test.ts b/test/battle-cursor.test.ts
+index 98e6d11..50641ae 100644
+--- a/test/battle-cursor.test.ts
++++ b/test/battle-cursor.test.ts
+@@ -408,4 +408,11 @@ const walkedUnitHasMovedGolden = JSON.parse(readFileSync(new URL('./fixtures/bat
+ // exactly the cases that field one of the two rows: progression-surge-0/1/2. A `changed` case is checked here and skips the older layers.
+ const unitTriggerWithTagGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-unit-trigger-with-tag.json', import.meta.url), 'utf8'))
++// fix.kit-attack-clauses (2026-10-04; DECISIONS.md 2026-10-04 'the weapon audit: the Armory Ledger was approved 2026-09-28 and almost
++// none of it is in the game': "the pack drops clauses from weapons the 24 base heroes carry"), Law 10: a weapon attack's rider that moves
++// a stat reaches the engine - the Iron Mace's Crush (on hit the target loses 1 Armor), the Elfbow's Elf Shot (on hit gain 1 Precision),
++// the Obsidian Fang's 20% Strength loss. A unit's trigger list is part of the state, and a Ranger whose every hit adds Precision fights
++// another fight, so each case that fields one of those weapons moves - the six opening battles (their first hero holds an Elfbow) among them.
++// Every case frozen here (tools/capture-kit-attack-clauses-cursor.mts). Moved: showcase.eve-24-a, showcase.eve-24-b, test.back-flip, test.caravan-aftermath, test.opening-bridge, test.opening-cathedral, test.opening-cavern-trail, test.opening-gates, test.opening-lumberjack, test.opening-orphanage, progression-surge-0, progression-surge-1, progression-surge-2. A `changed` case is checked here and skips the older layers.
++const kitAttackClausesGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-kit-attack-clauses.json', import.meta.url), 'utf8'))
+ const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
+ // Explicit rule migration, not regenerated historical hashes. These nine old
+@@ -545,5 +552,8 @@ describe('resumable battle cursor', () => {
+       const walkedUnitHasMovedExpected = walkedUnitHasMovedGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+       const unitTriggerWithTagExpected = unitTriggerWithTagGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+-      const unitTriggerWithTagMoved = unitTriggerWithTagExpected?.changed === true
++      const kitAttackClausesExpected = kitAttackClausesGolden.cases.find((row:{id:string})=>row.id===fixture.id)
++      const kitAttackClausesMoved = kitAttackClausesExpected?.changed === true
++      // was: const unitTriggerWithTagMoved = unitTriggerWithTagExpected?.changed === true — a case fix.kit-attack-clauses moved skips this layer too (fix.kit-attack-clauses 2026-10-04)
++      const unitTriggerWithTagMoved = unitTriggerWithTagExpected?.changed === true || kitAttackClausesMoved
+       // was: const walkedUnitHasMovedMoved = walkedUnitHasMovedExpected?.changed === true — a case capability.unit-trigger-with-tag moved skips this layer too (capability.unit-trigger-with-tag 2026-10-04)
+       const walkedUnitHasMovedMoved = walkedUnitHasMovedExpected?.changed === true || unitTriggerWithTagMoved
+@@ -681,5 +691,12 @@ describe('resumable battle cursor', () => {
+           }
+         } else result = battle.runBattle(ctx)
+-        if (unitTriggerWithTagExpected) {
++        if (kitAttackClausesExpected) {
++        expect(hash(ctx.events), 'full kit-attack-clauses events').toBe(kitAttackClausesExpected.events)
++        expect(hash(ctx.state), 'full kit-attack-clauses state').toBe(kitAttackClausesExpected.state)
++        expect(hash(ctx.rng.log), 'full kit-attack-clauses RNG').toBe(kitAttackClausesExpected.rng)
++        expect(result).toEqual(kitAttackClausesExpected.result)
++        }
++        // was: if (unitTriggerWithTagExpected) { — fix.kit-attack-clauses (2026-10-04): a case it moved is checked above instead
++        if (unitTriggerWithTagExpected && !kitAttackClausesMoved) {
+         expect(hash(ctx.events), 'full unit-trigger-with-tag events').toBe(unitTriggerWithTagExpected.events)
+         expect(hash(ctx.state), 'full unit-trigger-with-tag state').toBe(unitTriggerWithTagExpected.state)
+diff --git a/test/items-per-unit.test.ts b/test/items-per-unit.test.ts
+index 88a6af9..ee28075 100644
+--- a/test/items-per-unit.test.ts
++++ b/test/items-per-unit.test.ts
+@@ -123,7 +123,20 @@ describe('the invariant — no heroItems means the hero the converter used to fo
+       // it differ from the frozen oracle in maxHp alone, by exactly the 2 the vest used to take (below).
+       'hero.base.priest-robes': ['maxHp'],
++      // Law 10, 2026-10-04 — fix.kit-attack-clauses (DECISIONS.md 2026-10-04 'the weapon audit: ...': "the pack drops clauses from
++      // weapons the 24 base heroes carry"): the Iron Mace's Crush and the Elfbow's Elf Shot carry their Codex riders now (on hit
++      // the target loses 1 Armor; on hit gain 1 Precision), so the three rows that hold one of those weapons carry a trigger the
++      // frozen oracle never had - content moved, not the fold. Exactly those riders, held below.
++      // (was: no row for 'hero.base.priest-scantily', 'hero.base.ranger-ranger' or 'hero.base.ranger-scantily')
++      'hero.base.priest-scantily': ['triggers'],
++      'hero.base.ranger-ranger': ['triggers'],
++      'hero.base.ranger-scantily': ['triggers'],
+       'hero.base.rogue-raven': ['maxHp', 'attacks'],   // 'attacks': Law 10, 2026-10-04, the note above (was: ['maxHp'])
+     })
+     for (const id of ['hero.base.priest-robes', 'hero.base.rogue-raven']) expect(fieldedDef(id).maxHp, id).toBe((o[id]!['maxHp'] as number) + 2)
++    // fix.kit-attack-clauses (2026-10-04): the `triggers` that differ are exactly the weapon's stat rider, one more than the oracle's
++    for (const [id, rider] of [['hero.base.priest-scantily', 'trigger.iron-mace.crush.armor'], ['hero.base.ranger-ranger', 'trigger.elfbow.elf-shot.precision'], ['hero.base.ranger-scantily', 'trigger.elfbow.elf-shot.precision']] as const) {
++      const was = ((o[id]!['triggers'] as { id: string }[] | undefined) ?? []).map((t) => t.id)
++      expect((fieldedDef(id).triggers ?? []).map((t) => t.id).filter((t) => !was.includes(t)), id).toEqual([rider])
++    }
+     // content.longsword-loses-stab (2026-10-04): the Raven's `attacks` differ by exactly the attacks the pack no longer holds - the Longsword's Stab
+     expect(fieldedDef('hero.base.rogue-raven').attacks).toEqual((o['hero.base.rogue-raven']!['attacks'] as string[]).filter((a) => ATTACKS[a]))
+```
+</details>

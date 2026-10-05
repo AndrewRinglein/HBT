@@ -407,6 +407,13 @@ const walkedUnitHasMovedGolden = JSON.parse(readFileSync(new URL('./fixtures/bat
 // Every case frozen here (tools/capture-unit-trigger-with-tag-cursor.mts), the new fielding test.trigger-with-tag among them (`added`). Moved -
 // exactly the cases that field one of the two rows: progression-surge-0/1/2. A `changed` case is checked here and skips the older layers.
 const unitTriggerWithTagGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-unit-trigger-with-tag.json', import.meta.url), 'utf8'))
+// fix.kit-attack-clauses (2026-10-04; DECISIONS.md 2026-10-04 'the weapon audit: the Armory Ledger was approved 2026-09-28 and almost
+// none of it is in the game': "the pack drops clauses from weapons the 24 base heroes carry"), Law 10: a weapon attack's rider that moves
+// a stat reaches the engine - the Iron Mace's Crush (on hit the target loses 1 Armor), the Elfbow's Elf Shot (on hit gain 1 Precision),
+// the Obsidian Fang's 20% Strength loss. A unit's trigger list is part of the state, and a Ranger whose every hit adds Precision fights
+// another fight, so each case that fields one of those weapons moves - the six opening battles (their first hero holds an Elfbow) among them.
+// Every case frozen here (tools/capture-kit-attack-clauses-cursor.mts). Moved: showcase.eve-24-a, showcase.eve-24-b, test.back-flip, test.caravan-aftermath, test.opening-bridge, test.opening-cathedral, test.opening-cavern-trail, test.opening-gates, test.opening-lumberjack, test.opening-orphanage, progression-surge-0, progression-surge-1, progression-surge-2. A `changed` case is checked here and skips the older layers.
+const kitAttackClausesGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-kit-attack-clauses.json', import.meta.url), 'utf8'))
 const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
 // Explicit rule migration, not regenerated historical hashes. These nine old
 // cases contain Surge ledger/refresh changes or terminal markers corrected
@@ -544,7 +551,10 @@ describe('resumable battle cursor', () => {
       const enchantTriggersOwnWeaponExpected = enchantTriggersOwnWeaponGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const walkedUnitHasMovedExpected = walkedUnitHasMovedGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const unitTriggerWithTagExpected = unitTriggerWithTagGolden.cases.find((row:{id:string})=>row.id===fixture.id)
-      const unitTriggerWithTagMoved = unitTriggerWithTagExpected?.changed === true
+      const kitAttackClausesExpected = kitAttackClausesGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+      const kitAttackClausesMoved = kitAttackClausesExpected?.changed === true
+      // was: const unitTriggerWithTagMoved = unitTriggerWithTagExpected?.changed === true — a case fix.kit-attack-clauses moved skips this layer too (fix.kit-attack-clauses 2026-10-04)
+      const unitTriggerWithTagMoved = unitTriggerWithTagExpected?.changed === true || kitAttackClausesMoved
       // was: const walkedUnitHasMovedMoved = walkedUnitHasMovedExpected?.changed === true — a case capability.unit-trigger-with-tag moved skips this layer too (capability.unit-trigger-with-tag 2026-10-04)
       const walkedUnitHasMovedMoved = walkedUnitHasMovedExpected?.changed === true || unitTriggerWithTagMoved
       // was: const enchantTriggersOwnWeaponMoved = enchantTriggersOwnWeaponExpected?.changed === true — a case rule.walked-unit-has-moved moved skips this layer too (rule.walked-unit-has-moved 2026-10-04)
@@ -680,7 +690,14 @@ describe('resumable battle cursor', () => {
             battle.completeActionCycle(ctx)
           }
         } else result = battle.runBattle(ctx)
-        if (unitTriggerWithTagExpected) {
+        if (kitAttackClausesExpected) {
+        expect(hash(ctx.events), 'full kit-attack-clauses events').toBe(kitAttackClausesExpected.events)
+        expect(hash(ctx.state), 'full kit-attack-clauses state').toBe(kitAttackClausesExpected.state)
+        expect(hash(ctx.rng.log), 'full kit-attack-clauses RNG').toBe(kitAttackClausesExpected.rng)
+        expect(result).toEqual(kitAttackClausesExpected.result)
+        }
+        // was: if (unitTriggerWithTagExpected) { — fix.kit-attack-clauses (2026-10-04): a case it moved is checked above instead
+        if (unitTriggerWithTagExpected && !kitAttackClausesMoved) {
         expect(hash(ctx.events), 'full unit-trigger-with-tag events').toBe(unitTriggerWithTagExpected.events)
         expect(hash(ctx.state), 'full unit-trigger-with-tag state').toBe(unitTriggerWithTagExpected.state)
         expect(hash(ctx.rng.log), 'full unit-trigger-with-tag RNG').toBe(unitTriggerWithTagExpected.rng)

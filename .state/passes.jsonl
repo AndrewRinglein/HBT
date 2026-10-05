@@ -32,3 +32,4 @@
 {"suite":"control","stamp":"2ab8750409","pack":"214f308c46","golden":"a3cd140cc9","at":"2026-10-05T00:55:30.924Z","by":"gate rule.walked-unit-has-moved --land","in":"HBT-worker-engine","moved":null}
 {"suite":"control","stamp":"1ce370525e","pack":"8f02949b5a","golden":"a3cd140cc9","at":"2026-10-05T01:12:08.260Z","by":"gate capability.unit-trigger-with-tag --land","in":"HBT-worker-engine","moved":null}
 {"suite":"engine","stamp":"1ce370525e","with":{"engine":"1ce370525e","content":"8a10d58fcb","viewer":"7ed2c240e0","kingdom":"4148f6e283"},"at":"2026-10-05T01:21:14.385Z","by":"gate --shard (1 of 1)","in":"HBT-worker-engine","tests":2798}
+{"suite":"control","stamp":"443977171f","pack":"0b0b59f1cd","golden":"a3cd140cc9","at":"2026-10-05T02:23:31.221Z","by":"gate fix.kit-attack-clauses --land","in":"HBT-worker-engine","moved":null}

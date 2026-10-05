@@ -122,9 +122,22 @@ describe('the invariant — no heroItems means the hero the converter used to fo
       // DECISIONS.md 2026-09-28: "No health change."). Content moved, not the fold — the two rows that wear
       // it differ from the frozen oracle in maxHp alone, by exactly the 2 the vest used to take (below).
       'hero.base.priest-robes': ['maxHp'],
+      // Law 10, 2026-10-04 — fix.kit-attack-clauses (DECISIONS.md 2026-10-04 'the weapon audit: ...': "the pack drops clauses from
+      // weapons the 24 base heroes carry"): the Iron Mace's Crush and the Elfbow's Elf Shot carry their Codex riders now (on hit
+      // the target loses 1 Armor; on hit gain 1 Precision), so the three rows that hold one of those weapons carry a trigger the
+      // frozen oracle never had - content moved, not the fold. Exactly those riders, held below.
+      // (was: no row for 'hero.base.priest-scantily', 'hero.base.ranger-ranger' or 'hero.base.ranger-scantily')
+      'hero.base.priest-scantily': ['triggers'],
+      'hero.base.ranger-ranger': ['triggers'],
+      'hero.base.ranger-scantily': ['triggers'],
       'hero.base.rogue-raven': ['maxHp', 'attacks'],   // 'attacks': Law 10, 2026-10-04, the note above (was: ['maxHp'])
     })
     for (const id of ['hero.base.priest-robes', 'hero.base.rogue-raven']) expect(fieldedDef(id).maxHp, id).toBe((o[id]!['maxHp'] as number) + 2)
+    // fix.kit-attack-clauses (2026-10-04): the `triggers` that differ are exactly the weapon's stat rider, one more than the oracle's
+    for (const [id, rider] of [['hero.base.priest-scantily', 'trigger.iron-mace.crush.armor'], ['hero.base.ranger-ranger', 'trigger.elfbow.elf-shot.precision'], ['hero.base.ranger-scantily', 'trigger.elfbow.elf-shot.precision']] as const) {
+      const was = ((o[id]!['triggers'] as { id: string }[] | undefined) ?? []).map((t) => t.id)
+      expect((fieldedDef(id).triggers ?? []).map((t) => t.id).filter((t) => !was.includes(t)), id).toEqual([rider])
+    }
     // content.longsword-loses-stab (2026-10-04): the Raven's `attacks` differ by exactly the attacks the pack no longer holds - the Longsword's Stab
     expect(fieldedDef('hero.base.rogue-raven').attacks).toEqual((o['hero.base.rogue-raven']!['attacks'] as string[]).filter((a) => ATTACKS[a]))
     expect((o['hero.base.rogue-raven']!['attacks'] as string[]).filter((a) => !ATTACKS[a])).toEqual(['attack.longsword.stab'])
