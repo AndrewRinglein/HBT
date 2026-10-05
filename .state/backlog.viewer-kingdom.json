@@ -233,7 +233,9 @@
   "shape": "plumbing",
   "spec": "Found by the engine worker landing content.shields-reauthored (2026-10-05): the kingdom's stat-label table (kingdom/src/content/stat-labels.ts) has no word for several stats that item rows now carry, so the Equip screen and the item card show the raw field - a shield reads 'rangedblock'. Missing by the worker's list: rangedBlock, fireResist, poisonResist, coldResist, deathbedFighting, bleedOutTurns, swapCost. Give each its word from GLOSSARY.md (the naming authority - never invent one; 'Ranged Block' is the Armory Ledger's own word for the shields); a stat the GLOSSARY does not name is left raw and listed in the landing note for Andrew to name. Add a test that fails when any stat an item row in the game carries has no label, so the next new stat cannot show raw. Rebuild the pages.",
   "expect": "The Equip screen and the item card for a Tower Shield read 'Ranged Block', not 'rangedblock'; every stat carried by an item row in the game has a label or is on the landing note's list of stats the GLOSSARY does not name; the new test fails if a row gains an unlabelled stat.",
-  "note": "Filed by the home chat 2026-10-05 from the engine worker's report."
+  "note": "Filed by the home chat 2026-10-05 from the engine worker's report.",
+  "status": "done",
+  "sha": "7bf1556"
  },
  {
   "id": "viewer.bar-shows-tag-requirement",
