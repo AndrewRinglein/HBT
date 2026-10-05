@@ -95,4 +95,7 @@
 {"suite":"viewer","stamp":"c98162208c","failed":true,"at":"2026-10-05T11:24:19.706Z","by":"gate --part checks","in":"HBT-worker-content"}
 {"suite":"viewer","stamp":"2029f9d6db","failed":true,"at":"2026-10-05T12:14:22.940Z","by":"gate --part checks","in":"HBT-worker-content"}
 {"suite":"viewer","stamp":"2029f9d6db","with":{"engine":"c5f16f0991","content":"8de9847058","viewer":"2029f9d6db","kingdom":"ca884370ea"},"at":"2026-10-05T12:30:27.671Z","by":"gate (every part)","in":"HBT-worker-content"}
+{"suite":"viewer","stamp":"e2b42afbeb","failed":true,"at":"2026-10-05T13:16:02.063Z","by":"gate --part checks","in":"HBT-worker-equipment"}
+{"suite":"viewer","stamp":"e2b42afbeb","with":{"engine":"c5f16f0991","content":"8de9847058","viewer":"e2b42afbeb","kingdom":"ca884370ea"},"at":"2026-10-05T13:35:55.278Z","by":"gate (every part)","in":"HBT-worker-equipment"}
 {"suite":"viewer","stamp":"7ac0e6031b","with":{"engine":"6067b2a8be","content":"844a0069af","viewer":"7ac0e6031b","kingdom":"ca884370ea"},"at":"2026-10-05T13:08:42.222Z","by":"gate (every part)","in":"HBT-worker-engine"}
+{"suite":"viewer","stamp":"37ce4ba801","with":{"engine":"6067b2a8be","content":"844a0069af","viewer":"37ce4ba801","kingdom":"ca884370ea"},"at":"2026-10-05T13:50:03.097Z","by":"gate (every part)","in":"HBT-worker-equipment"}
