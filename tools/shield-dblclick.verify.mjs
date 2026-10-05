@@ -6,13 +6,17 @@
 // called by hand — over a local server, so the 3D board picks the hero under the pointer as it does for Andrew:
 //   1. the Iron Dwarf, begun first (viewer.turn-taking; was: proposed), double-clicks Cover on its bar;
 //   2. the Battle Chaplain, double-clicked on the board (switched to while the Dwarf has done nothing — viewer.turn-taking;
-//      was: clicked, only looked at, its bar shown), double-clicks Turn Aside;
-//   3. on a fresh battle, the Iron Dwarf clicks Stand Tall on its bar, then clicks itself on the board;
+//      was: clicked, only looked at, its bar shown), double-clicks the Round Shield's first power;
+//   3. on a fresh battle, the Iron Dwarf clicks the Tower Shield's second power on its bar, then clicks itself on the board;
+//   (Law 10, 2026-10-04 — content.shields-reauthored (engine item; engine DECISIONS.md 2026-09-28 'counterattack, special free attacks, the opening six, shields, custom weapons' and the Armory Ledger approved that day): the four powers were typed by id - the Tower's
+//   Cover and Stand Tall, the Round's Turn Aside and Bear Down - and the Ledger replaced them. They are the two shields' own
+//   powers as the engine's rows grant them, in the rows' order, read from the engine's dump of its item rows; every check unchanged.)
 //   4. the Battle Chaplain, double-clicked on the board (switched to, as in 2), clicks Brace on its bar, then clicks itself.
 // For each: did the engine use the power, what stamina it cost against the row's staminaCost, does the battle log on the
 // screen name it, and does the board show it (the hero's folded stat mods from the power, its figure's badge).
 //
 //   node tools/shield-dblclick.verify.mjs <page.html>   prints the record as JSON (engine test/fix-shield-power-double-click.test.ts)
+import {readFileSync} from 'node:fs'
 import {createRequire} from 'node:module'
 import {createServer} from 'node:net'
 import {spawn} from 'node:child_process'
@@ -80,12 +84,14 @@ try{
  /** each on a fresh battle, so none leans on what another left behind */
  async function fresh(how,type,power,act){const page=await open();await use(page,how,type,power,id=>act(page,id));await page.close()}
  // 1. the hero proposed first double-clicks a shield power on its bar
- await fresh('double-click on the bar, the hero proposed','hero.base.warrior-iron','power.tower-shield.cover',page=>row(page,'power.tower-shield.cover').dblclick())
+ const SHIELD=JSON.parse(readFileSync(new URL('../../viewer/generated/static.json',import.meta.url),'utf8')).items
+ const [towerFirst,towerSecond]=SHIELD['item.tower-shield'].abilities,[roundFirst,roundSecond]=SHIELD['item.round-shield'].abilities
+ await fresh('double-click on the bar, the hero proposed','hero.base.warrior-iron',towerFirst,page=>row(page,towerFirst).dblclick())
  // 2. another shield-holder, clicked on the board to look at it, double-clicks one of its own
- await fresh('double-click on the bar of the hero looked at','hero.base.priest-armored','power.round-shield.turn-aside',async(page,id)=>{await switchTo(page,id);await settle(page);await row(page,'power.round-shield.turn-aside').dblclick()})
+ await fresh('double-click on the bar of the hero looked at','hero.base.priest-armored',roundFirst,async(page,id)=>{await switchTo(page,id);await settle(page);await row(page,roundFirst).dblclick()})
  // 3. the power clicked on the bar, then the hero clicked on the board
- await fresh('click on the bar, then the hero','hero.base.warrior-iron','power.tower-shield.stand-tall',async(page,id)=>{await row(page,'power.tower-shield.stand-tall').click();await settle(page);await clickHero(page,id)})
+ await fresh('click on the bar, then the hero','hero.base.warrior-iron',towerSecond,async(page,id)=>{await row(page,towerSecond).click();await settle(page);await clickHero(page,id)})
  // 4. the same on the hero looked at
- await fresh('click on the bar of the hero looked at, then the hero','hero.base.priest-armored','power.round-shield.brace',async(page,id)=>{await switchTo(page,id);await settle(page);await row(page,'power.round-shield.brace').click();await settle(page);await clickHero(page,id)})
+ await fresh('click on the bar of the hero looked at, then the hero','hero.base.priest-armored',roundSecond,async(page,id)=>{await switchTo(page,id);await settle(page);await row(page,roundSecond).click();await settle(page);await clickHero(page,id)})
 }finally{await browser.close();server.stop()}
 process.stdout.write(JSON.stringify(record))

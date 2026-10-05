@@ -1,8 +1,8 @@
 // viewer.shield-guard-motion (engine DECISIONS.md 2026-10-01 'a shield power plays a raise-the-shield motion', Andrew: "When they
 // play shield power, they should raise the shield animation."). The BUILT sandbox plays the Orphanage on the board alone (?play=,
 // one shield-bearer fielded) and each of its shield's two powers is clicked on the action bar, one per Turn, as
-// tools/swap-shields.verify.mjs clicks them: the Lion of the Host (Kite Shield) Lock Shields and Raise Guard, the Battle Chaplain
-// (Round Shield) Turn Aside and Bear Down, the Iron Dwarf (Tower Shield) Cover and Stand Tall. The headless page has no WebGL, so
+// tools/swap-shields.verify.mjs clicks them: the Lion of the Host the Kite Shield's two powers, the Battle Chaplain the Round
+// Shield's two, the Iron Dwarf the Tower Shield's two (the powers are the engine's rows': the note below). The headless page has no WebGL, so
 // the hero's 3D body is stood up beside it from the viewer's own modules and the approved files (as the viewer's page tests stand
 // it: ../viewer/tools/side-facing.test.mjs) and handed to the page as its cast; the power's events are then played by the page's
 // own pump (the clock advanced, never skipped — a skip seeks and drops the cues), so the body plays what the page tells it.
@@ -46,6 +46,12 @@ async function battle(hero){
  V().cast=cast;cast.frame(0);await cast.settle();cast.frame(0)
  assert.ok(cast.body(me().id),`${hero} stands as its 3D body`)
  /** a shield power from the bar: its row clicked, then clicked again; the page plays the events; what the body was told to play */
+ /* Law 10, 2026-10-04 — content.shields-reauthored (engine item; engine DECISIONS.md 2026-09-28 'counterattack, special free attacks, the opening six, shields, custom weapons' and the Armory Ledger approved that day): the shields' powers were typed here by id (the Kite's
+   power.kite-shield.shield-wall and .raise-guard, the Round's .turn-aside and .brace, the Tower's .cover and .stand-tall) and the Ledger
+   replaced all six. A shield's powers are what the engine's row grants, in its order - read from the battle's own item rows. A power
+   aimed at one ally (the Kite's Cover Ally) is used by clicking its row and then the hero itself: the engine counts the one acting
+   among its own allies. Every check is unchanged. */
+ const powersOf=item=>[...ctx().items[item].abilities]
  async function usePower(id){
   const r=row(id),before=ctx().events.length,out={hero,id,onBar:!!r,used:false,name:null,motions:[],clips:[],hit:null}
   if(!r)return out
@@ -53,7 +59,9 @@ async function battle(hero){
   cast.frame(0);await cast.settle();cast.frame(0)
   const B=cast.body(me().id),told=[],own=B.play
   B.play=(k,o)=>{told.push(k);return own.call(B,k,o)}
-  row(id)?.handlers.click({});play()
+  if(ctx().actions[id].target?.select==='unit'){figure(me().id).handlers.click({detail:1});if(!ctx().events.slice(before).some(e=>e.type==='power.used'))figure(me().id).handlers.click({detail:1})}
+  else row(id)?.handlers.click({})
+  play()
   B.play=own
   const used=ctx().events.slice(before).find(e=>e.type==='power.used'&&e.actor===me().id&&e.causeId===id)
   out.used=!!used;out.name=used?.['name']??null;out.motions=told
@@ -62,13 +70,12 @@ async function battle(hero){
   const h=B.look.motions.hit;out.hit=h?{path:h.path,clip:h.clip,borrowed:!!h.borrowed}:null
   return out
  }
- return {begin,nextTurn,choose,usePower}
+ return {begin,nextTurn,choose,usePower,powersOf}
 }
 
 const record={powers:[]}
-for(const [hero,first,second] of [['hero.base.paladin-hunk','power.kite-shield.shield-wall','power.kite-shield.raise-guard'],
-  ['hero.base.priest-armored','power.round-shield.turn-aside','power.round-shield.brace'],['hero.base.warrior-iron','power.tower-shield.cover','power.tower-shield.stand-tall']]){
- const B=await battle(hero)
+for(const [hero,shield] of [['hero.base.paladin-hunk','item.kite-shield'],['hero.base.priest-armored','item.round-shield'],['hero.base.warrior-iron','item.tower-shield']]){
+ const B=await battle(hero),[first,second]=B.powersOf(shield)
  B.begin()
  record.powers.push(await B.usePower(first))
  B.nextTurn();B.choose()

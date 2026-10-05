@@ -4,9 +4,9 @@
 // (the hands to hold afterwards, its cost), the shield powers clicked on the bar, End activation in the corner.
 //   1. The Lion of the Host (Longsword + Kite Shield) swaps to the Longsword alone on Turn 1 — stamina drops by the
 //      swap's cost, the log shows the swap — and a second swap in that activation is refused on the bar; on Turn 2,
-//      the Kite Shield stowed, it swaps both back and uses Lock Shields from the bar, on Turn 3 Raise Guard.
-//   2. The Battle Chaplain (Round Shield) uses Turn Aside, then Bear Down; the Iron Dwarf (Tower Shield) Cover, then
-//      Stand Tall — each from the bar, one per Turn.
+//      the Kite Shield stowed, it swaps both back and uses the Kite Shield's first power from the bar, on Turn 3 its second.
+//   2. The Battle Chaplain (Round Shield) uses the Round Shield's first power, then its second; the Iron Dwarf (Tower Shield)
+//      the Tower's first, then its second — each from the bar, one per Turn. (The powers are the engine's rows': the note below.)
 // The battle log on the screen (the play chrome's #playLog) must name every power used and the swap.
 //
 //   node tools/swap-shields.verify.mjs <page.html>    prints the record as JSON (engine test/movement-swap-and-shields.test.ts)
@@ -57,12 +57,20 @@ function battle(hero){
  const choose=()=>{V().dom.rail.querySelectorAll('.railchip').find(c=>+c.dataset.i===me().id).handlers.dblclick({});settle();assert.ok(acting(),'the hero acts')}
  const begin=()=>{choose();figure(me().id).handlers.click({detail:1});settle();assert.ok(acting(),'clicking the hero begins its activation')}
  /** a shield power from the bar: its row clicked, then clicked again */
+ /* Law 10, 2026-10-04 — content.shields-reauthored (engine item; engine DECISIONS.md 2026-09-28 'counterattack, special free attacks, the opening six, shields, custom weapons' and the Armory Ledger approved that day): the shields' powers were typed here by id (the Kite's
+   power.kite-shield.shield-wall and .raise-guard, the Round's .turn-aside and .brace, the Tower's .cover and .stand-tall) and the Ledger
+   replaced all six. A shield's powers are what the engine's row grants, in its order - read from the battle's own item rows. A power
+   aimed at one ally (the Kite's Cover Ally) is used by clicking its row and then the hero itself: the engine counts the one acting
+   among its own allies. Every check is unchanged. */
+ const powersOf=item=>[...ctx().items[item].abilities]
  function usePower(id){
   const r=row(id),turn=ctx().state.turn,before=ctx().events.length
   const out={hero,id,turn,onBar:!!r,used:false,name:null,stamina:null,logNamed:false}
   if(!r)return out
   r.handlers.click({});settle();const note=V().play?.note??null
-  row(id)?.handlers.click({});settle()
+  if(ctx().actions[id].target?.select==='unit'){figure(me().id).handlers.click({detail:1});settle();if(!ctx().events.slice(before).some(e=>e.type==='power.used'))figure(me().id).handlers.click({detail:1})}
+  else row(id)?.handlers.click({})
+  settle()
   const used=ctx().events.slice(before).find(e=>e.type==='power.used'&&e.actor===me().id&&e.causeId===id)
   out.used=!!used;out.name=used?.['name']??null;out.note=note
   out.stamina=ctx().events.slice(before).find(e=>e.type==='stamina.spent'&&e.actor===me().id)?.['amount']??null
@@ -74,7 +82,7 @@ function battle(hero){
  const noSwapBefore=!swapStrip()
  settle()
  assert.ok(acting(),'the hero, leftmost in the top bar, is begun')
- return {w,V,ctx,settle,me,row,swapStrip,swapButtons,offered,arrange,log,acting,nextTurn,choose,begin,usePower,figure,noSwapBefore}
+ return {w,V,ctx,settle,me,row,swapStrip,swapButtons,offered,arrange,log,acting,nextTurn,choose,begin,usePower,powersOf,figure,noSwapBefore}
 }
 
 const record={swap:null,back:null,powers:[]}
@@ -96,7 +104,7 @@ const record={swap:null,back:null,powers:[]}
  assert.equal(B.arrange(['Longsword','Kite Shield']),false,'a second swap cannot be confirmed in the gear panel')
  const tookAgain=B.V().offerPlay({kind:'swap',index:0,unit:id})
  const swappedAgain=B.ctx().events.slice(n2).some(e=>e.type==='loadout.swapped')
- const shieldOnBar=!!B.row('power.kite-shield.shield-wall')
+ const shieldOnBar=B.powersOf('item.kite-shield').some(p=>!!B.row(p))
  record.swap={hero:'hero.base.paladin-hunk',noSwapWhileChoosing,handsBefore,offered,costText,staminaBefore:before,staminaAfter:after,
   event:swapped?{stamina:swapped['stamina'],handsAfter:swapped['handsAfter'].map(i=>i.itemId)}:null,handsAfter:B.me().loadout.hands.map(i=>i.itemId),
   stowed:B.me().loadout.stowed.map(i=>i.itemId),shieldPowersOnBarAfter:shieldOnBar,
@@ -109,12 +117,13 @@ const record={swap:null,back:null,powers:[]}
  if(both)B.arrange(['Longsword','Kite Shield']);B.settle()
  const back=B.ctx().events.slice(m).find(e=>e.type==='loadout.swapped')
  record.back={offered:both?true:false,stowedBefore:record.swap.stowed,handsAfter:B.me().loadout.hands.map(i=>i.itemId),staminaBefore:stam,staminaAfter:B.me().stamina,event:back?{stamina:back['stamina']}:null}
- record.powers.push(B.usePower('power.kite-shield.shield-wall'))
+ const [kiteFirst,kiteSecond]=B.powersOf('item.kite-shield')
+ record.powers.push(B.usePower(kiteFirst))
  B.nextTurn();B.begin()
- record.powers.push(B.usePower('power.kite-shield.raise-guard'))
+ record.powers.push(B.usePower(kiteSecond))
 }
-for(const [hero,first,second] of [['hero.base.priest-armored','power.round-shield.turn-aside','power.round-shield.brace'],['hero.base.warrior-iron','power.tower-shield.cover','power.tower-shield.stand-tall']]){
- const B=battle(hero)
+for(const [hero,shield] of [['hero.base.priest-armored','item.round-shield'],['hero.base.warrior-iron','item.tower-shield']]){
+ const B=battle(hero),[first,second]=B.powersOf(shield)
  B.begin()
  record.powers.push(B.usePower(first))
  B.nextTurn();B.choose()

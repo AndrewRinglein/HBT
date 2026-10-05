@@ -27,7 +27,11 @@ assert.deepEqual(handle.session.ctx.events.filter(e=>e.type==='activation.begin'
 // guards is unchanged: no made-up movement — the only actions offered are the shield's,
 // and the only target is the hero himself.
 {const opts=[...w.document.getElementById('action').children].map(o=>o.textContent),aims=[...w.document.getElementById('aim').children].map(o=>o.textContent)
- assert.ok(opts.length>0);for(const o of opts)assert.match(o,/^(Cover|Stand Tall) · /,'blocked first hero has no made-up movement')
+ /* Law 10, 2026-10-04 — content.shields-reauthored (engine item; engine DECISIONS.md 2026-09-28 'counterattack, special free attacks, the opening six, shields, custom weapons' and the Armory Ledger approved that day): this named the Tower Shield's two powers,
+    /^(Cover|Stand Tall) · /, which the Ledger replaced. The claim is unchanged and read from the engine: the only actions offered are
+    the names of the powers the Tower Shield's row grants. */
+ const towerPowers=handle.session.ctx.items['item.tower-shield'].abilities.map(p=>handle.session.ctx.actions[p].name);assert.equal(towerPowers.length,2)
+ assert.ok(opts.length>0);for(const o of opts)assert.ok(towerPowers.some(n=>o.startsWith(n+' · ')),'blocked first hero has no made-up movement: '+o)
  assert.equal(aims.length,1);assert.match(aims[0],/^Iron Dwarf A · hex /)}
 assert.equal(button('end').disabled,false)
 click('hero-remove');click('hero-remove');click('start');ready()

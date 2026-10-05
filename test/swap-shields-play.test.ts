@@ -61,9 +61,15 @@ describe('the swap on the board, through the play input', () => {
 })
 
 describe('a shield power from the bar: chosen, then chosen again', () => {
-  for (const [hero, power] of [['hero.base.paladin-hunk', 'power.kite-shield.shield-wall'], ['hero.base.priest-armored', 'power.round-shield.brace'], ['hero.base.warrior-iron', 'power.tower-shield.stand-tall']] as const) {
-    it(power, () => {
+  // Law 10, 2026-10-04 — content.shields-reauthored (engine item; engine DECISIONS.md 2026-09-28 'counterattack, special free attacks, the opening six, shields, custom weapons' and the Armory Ledger approved that day): the three powers were typed by id
+  // ('power.kite-shield.shield-wall', 'power.round-shield.brace', 'power.tower-shield.stand-tall') and the Ledger replaced them. The claim
+  // is of a shield power that goes nowhere but its holder's own hex - aimed at the holder, or centred on it (the Round's Lock Shields:
+  // kingdom SWITCHES playInputSelfCentredPower) - so each hero's is its shield's first such power, read from the engine's rows.
+  for (const [hero, shield] of [['hero.base.paladin-hunk', 'item.kite-shield'], ['hero.base.priest-armored', 'item.round-shield'], ['hero.base.warrior-iron', 'item.tower-shield']] as const) {
+    it(`${shield}: its power that goes nowhere but its holder's hex`, () => {
       const { s, P, id, me } = battle(hero)
+      const power = s.ctx.items[shield]!.abilities.find((p) => { const t = s.ctx.actions[p]!.target as { select?: string; origin?: string } | undefined; return t?.select === 'self' || (t?.select === 'area' && (t.origin ?? 'self') === 'self') })!
+      expect(power, shield).toBeDefined()
       P.input({ kind: 'choose', id }); P.input({ kind: 'unit', id, hex: me().hex })
       const n = s.ctx.events.length
       expect(P.input({ kind: 'slot', actionId: power, unit: id })).toBe(true)
@@ -86,7 +92,8 @@ describe('a shield power on the bar of a hero only looked at', () => {
     const s = createSandbox({ mapId: SANDBOX_DEFAULT.mapId, heroes: [...SANDBOX_DEFAULT.heroes], enemies: [], seed: 1, encounterId: 'encounter.opening.orphanage' })
     advanceSandbox(s)
     const P = createPlayInput(() => s, (c) => commandSandbox(s, c))
-    const chaplain = s.ctx.state.units.find((u) => u.typeId === 'hero.base.priest-armored')!, power = 'power.round-shield.turn-aside'
+    // Law 10, 2026-10-04 (the note above): the Round Shield's first power, read from the engine's row (was 'power.round-shield.turn-aside')
+    const chaplain = s.ctx.state.units.find((u) => u.typeId === 'hero.base.priest-armored')!, power = s.ctx.items['item.round-shield']!.abilities[0]!
     /* Law 10, viewer.turn-taking: proposal() is retired with playQueueProposal; upcoming() names who next() would begin */
     expect(P.upcoming()).not.toBe(chaplain.id)
     const stamina = chaplain.stamina, n = s.ctx.events.length

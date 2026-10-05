@@ -111,8 +111,12 @@ export function createPlayInput(session:()=>Sandbox|null,run:(command:BattleComm
   const row=(i:{instanceId:string;itemId:string},held:boolean):PlayCarried=>({instance:i.instanceId,item:i.itemId,name:s.ctx.items[i.itemId]?.name??i.itemId,held})
   return {cost:o.cost,choices:o.choices.map(x=>({label:x.label,hands:[...x.hands]})),why:o.choices.length?null:o.why,
    carried:[...L.hands.map(i=>row(i,true)),...L.stowed.map(i=>row(i,false))],refused:c.refused??=sandboxSwapRefusals(s)}}
- /** a power aimed at the one using it alone (Lock Shields, Raise Guard, Cover …: the row's target is `self`) */
- const selfOnly=(s:Sandbox,id:string)=>(s.ctx.actions[id]?.target as {select?:string}|undefined)?.select==='self'
+ /** a power that goes nowhere but its holder's own hex: aimed at the one using it alone (Raise Guard, Brace …: the row's target is
+     `self`), or centred on it (Lock Shields: the row's target is an area around the one acting - "you and every adjacent ally").
+     engine content.shields-reauthored (2026-10-04): the second shape joined the first, so the Round Shield's power fires from the
+     bar as the other shield powers do (kingdom SWITCHES playInputSelfCentredPower). Read from the engine's row, never a list. */
+ const selfOnly=(s:Sandbox,id:string)=>{const t=s.ctx.actions[id]?.target as {select?:string;origin?:string;side?:string}|undefined
+  return t?.select==='self'||(t?.select==='area'&&(t.origin??'self')==='self'&&t.side!=='enemy')}
  /** the human hero now acting, or null */
  const actorOf=(s:Sandbox)=>{const c=s.ctx.battleCursor;return !s.ctx.state.outcome&&c?.at==='acting'&&c.actor!=null&&controllerOf(s.ctx,c.actor,s.policy)==='human'?c.actor:null}
  /** a new activation forgets the last one's plan */
@@ -209,7 +213,10 @@ export function createPlayInput(session:()=>Sandbox|null,run:(command:BattleComm
    else if('centre' in r)out.push({hex:r.centre,key:'centre',value:r.centre,slot:r.slot??'primary'})
    else if('hex' in r)out.push({hex:r.hex,key:'hex',value:r.hex,slot:r.slot??'primary'})}
   // one use per hex: the primary slot first (a free attack in the movement slot is the engine's other listing)
-  const by=new Map<number,Use>();for(const u of out.sort((a,b)=>(a.slot==='primary'?0:1)-(b.slot==='primary'?0:1)))if(!by.has(u.hex))by.set(u.hex,u)
+  /* a power centred on its holder (Lock Shields) is listed by the engine against every unit - its aim is ignored, the area is the
+     holder's own - so its one use is on the holder, as a power aimed at the holder alone has (kingdom SWITCHES playInputSelfCentredPower) */
+  const mine=selfOnly(s,chosen)?out.filter(u=>u.key==='target'&&u.value===actor):out
+  const by=new Map<number,Use>();for(const u of mine.sort((a,b)=>(a.slot==='primary'?0:1)-(b.slot==='primary'?0:1)))if(!by.has(u.hex))by.set(u.hex,u)
   return [...by.values()]
  }
  /** the forecast on a use: hit chance and damage are preview()'s (from the ghost, previewFrom's); the notch is the target's HP less the HP each packet would take (SWITCHES playInputNotch) */
