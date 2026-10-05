@@ -17,6 +17,7 @@ import {NO_LOOK} from './stand-out.js'
 import transformationRegistry from '../../assets/characters/hero-transformations/activation-registry.json' with {type:'json'}
 import {transformationFor} from '../../assets/characters/hero-transformations/afflictions.mjs'
 import {createBodyAfflictions} from '../../assets/characters/hero-transformations/body-afflictions.mjs'
+import registeredEquipment from '../../assets/characters/equipment-v2/catalog.json' with {type:'json'}
 
 export const bundledModels = typeof __BUNDLED_MODELS__ === 'undefined' ? null : __BUNDLED_MODELS__
 const LOOPS = new Set(['idle', 'move', 'flight'])
@@ -38,6 +39,37 @@ export function modelBinding(typeId, pack = bundledModels) {
 }
 /** which of a type's looks a unit wears: the looks in turn, by the unit's id (viewer SWITCHES modelLooks) */
 export const lookFor = (b, unitId) => b.looks[((unitId % b.looks.length) + b.looks.length) % b.looks.length]
+
+/* The fold owns the held items, including swaps and seeks. A body template's old props are only the
+   baseline for callers without a folded kit; live units draw the exact registered item assets. */
+const equippedLooks = new WeakMap()
+export function equippedLook(binding, unit) {
+  const base = lookFor(binding, unit.id), equipment = binding.equipment
+  if (!equipment || !Array.isArray(unit.kit?.items)) return base
+  const items = Array.isArray(unit.hands) ? unit.hands.map(h => h.itemId) : unit.kit.items
+  const key = JSON.stringify([base.id, items])
+  let cache = equippedLooks.get(binding)
+  if (!cache) { cache = new Map(); equippedLooks.set(binding, cache) }
+  if (cache.has(key)) return cache.get(key)
+  const props = [], unheld = [], free = { R: true, L: true }
+  for (const item of items) {
+    const asset = (equipment.items || registeredEquipment.items)[item], legacy = equipment.legacy[item] || base.props.filter(p => p.item === item)
+    if (!asset && !legacy.length) { if (['weapon', 'shield'].includes(equipment.classes[item])) unheld.push(item); continue }
+    const model = asset ? equipment.classes[item] === 'shield' ? 'shield' : asset.family === 'bow' ? 'bow' : asset.family : legacy[0].model
+    const hands = asset?.pair || legacy.length === 2 ? ['R', 'L'] : [model === 'shield' || model === 'bow' ? 'L' : free.R ? 'R' : 'L']
+    if (hands.some(hand => !free[hand])) { unheld.push(item); continue }
+    for (const hand of hands) {
+      free[hand] = false
+      if (!asset) { props.push({ ...legacy.find(p => p.hand === hand) || legacy[0], item, hand }); continue }
+      const own = base.props.find(p => p.fit === 'body' && p.item === item && p.hand === hand)
+      props.push({ path: asset.path, sha256: asset.sha256, assetId: asset.assetId, item, hand, model,
+        fit: 'tiered', attachment: model === 'shield' ? 'shield' : model === 'bow' ? 'bow' : 'palm',
+        ...(own ? { socket: own.socket, grasp: own.grasp, reverse: true } : {}) })
+    }
+  }
+  const look = { ...base, id: base.id + ':equipment:' + JSON.stringify(items), props, unheld }
+  cache.set(key, look); return look
+}
 
 /* A GLB with its pictures taken out: a motion file keeps only its rig and its animations (a Zombie's clip file
    carries a whole textured body the page never shows); `meshes` keeps the bodies with flat colours, for a host
@@ -166,6 +198,38 @@ function fitProp(root, p, clips, pose, reference, i) {
   const source = p.node ? p.scene.getObjectByName(p.node) : p.scene
   if (!source) throw new Error(`${p.path} has no ${p.node} to hold`)
   const held = source.clone(true); held.traverse(o => { if (o.isMesh) { o.castShadow = false; o.frustumCulled = false } })
+  if (p.fit === 'tiered') {
+    if (p.attachment === 'bow' || p.attachment === 'shield') {
+      const clip = p.attachment === 'bow' ? clips.ranged || clips.attack || reference : clips.attack || reference
+      pose(clip, p.attachment === 'bow' ? clip.duration * .45 : 0)
+      const inverse = hand.getWorldQuaternion(new THREE.Quaternion()).invert()
+      if (p.attachment === 'shield') socket.quaternion.copy(inverse)
+      else {
+        const forward = hand.getWorldPosition(V()).sub(fore.getWorldPosition(V())).normalize()
+        let right = new THREE.Vector3(0, 1, 0).cross(forward)
+        if (right.lengthSq() < 1e-8) right.set(1, 0, 0)
+        right.normalize(); const up = forward.clone().cross(right).normalize()
+        socket.quaternion.copy(inverse.multiply(new THREE.Quaternion().setFromRotationMatrix(new THREE.Matrix4().makeBasis(right, up, forward))))
+      }
+      if (p.attachment === 'bow') {
+        // V2's bow lies in XY; the fitted forearm socket expects the old bow's YZ plane (string behind, -Z).
+        const orient = new THREE.Group(); orient.name = 'equipment-basis'; orient.rotation.y = -Math.PI / 2
+        orient.add(held); socket.add(orient)
+      } else socket.add(held)
+      return
+    }
+    if (p.socket) {
+      socket.position.fromArray(p.socket.translation); socket.quaternion.fromArray(p.socket.rotation); socket.scale.fromArray(p.socket.scale)
+    } else {
+      socket.position.x += (p.hand === 'R' ? -.0011 : .0006) / s; socket.position.y += (p.hand === 'R' ? -.0007 : -.003) / s
+      const index = bone('Index1'), pinky = bone('Pinky1')
+      if (!index || !pinky) throw new Error(`${p.path}: the rig's ${p.hand} hand has no fingers to face it by`)
+      socket.quaternion.setFromEuler(new THREE.Euler(0, local(index).sub(local(pinky)).z < 0 ? Math.PI : 0, Math.PI / 2))
+    }
+    // These files are already metric and grip-centred. Rotate their +Y shaft onto the palm socket's +Z.
+    const orient = new THREE.Group(); orient.name = 'equipment-basis'; orient.rotation.x = (p.reverse ? -1 : 1) * Math.PI / 2
+    orient.add(held); socket.add(orient); return
+  }
   if (p.fit === 'turned') { socket.rotation.z = Math.PI / 2; socket.add(held); return }
   if (p.fit === 'body') {
     const set = (o, t) => { o.position.fromArray(t.translation); o.quaternion.fromArray(t.rotation); o.scale.fromArray(t.scale) }
@@ -524,7 +588,7 @@ export function createCast(V, scene, toWorld, platform = {}) {
     }
     for (const u of Object.values(V.S.U)) {
       const binding = modelBinding(u.typeId, V.data.models); if (!binding) continue
-      const look = lookFor(binding, u.id), entry = want(look)
+      const look = equippedLook(binding, u), entry = want(look)
       if (entry.state !== 'ready') continue
       let body = bodies.get(u.id)
       /* viewer.plays-turned-units: a unit turned (or itself again) wears another look — the body of the old one goes */
@@ -584,7 +648,7 @@ export function createCast(V, scene, toWorld, platform = {}) {
   }
   /* viewer.bodies-before-board (engine DECISIONS.md 2026-09-30 "no 2D before the 3D bodies"): the looks of a unit with a
      body, asked for at once */
-  const lookOf = u => { const binding = u && modelBinding(u.typeId, V.data.models); return binding ? want(lookFor(binding, u.id)) : null }
+  const lookOf = u => { const binding = u && modelBinding(u.typeId, V.data.models); return binding ? want(equippedLook(binding, u)) : null }
   return {
     frame,
     get size() { return bodies.size },
