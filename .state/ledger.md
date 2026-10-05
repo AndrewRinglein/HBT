@@ -36341,6 +36341,36 @@ index efb9947..ff0fb0b 100644
   PASS  naming — no banned words invented
   PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
 
+## viewer.still-frame-draws-nothing — LANDED `4ad8f02`
+2026-10-05 17:15
+
+  PASS  dependencies landed
+  WARN  not already decided — 1 candidate ruling(s) — READ BEFORE ASKING: SWITCHES.md:1944
+  PASS  typecheck
+  PASS  the item's own tests — test/viewer.still-frame-draws-nothing.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — viewer/test/viewer.still-frame-draws-nothing.test.ts
+  PASS  existing tests untouched
+  SKIPPED  control battles unchanged — engine code 6067b2a8be and the content pack are the ones the control battles last passed on (2026-10-05 12:38, gate capability.damage-from-two-stats --land, in HBT-worker-engine) — not run
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+## viewer.view-stays-where-put — LANDED `8097122` **NEEDS REVIEW**
+2026-10-05 18:11
+
+  PASS  dependencies landed
+  WARN  not already decided — 2 candidate ruling(s) — READ BEFORE ASKING: ..\ATLAS-COMBAT-INTEGRATION.md:222 · DECISIONS.md:3734
+  PASS  typecheck
+  PASS  the item's own tests — test/viewer.see-through-only-when-moved.test.ts, test/viewer.view-stays-where-put.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — viewer/test/viewer.see-through-only-when-moved.test.ts, viewer/test/viewer.view-stays-where-put.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/viewer.see-through-only-when-moved.test.ts (-1) — will land FLAGGED for review
 ## viewer.screenshot-time-out-under-load — LANDED `7f511de` **NEEDS REVIEW**
 2026-10-05 16:23
 
@@ -36364,6 +36394,72 @@ index efb9947..ff0fb0b 100644
 <details><summary>Existing tests were edited — review this diff</summary>
 
 ```diff
+3e2684d
+
+diff --git a/test/viewer.see-through-only-when-moved.test.ts b/test/viewer.see-through-only-when-moved.test.ts
+index 9481bbf..0d8d35c 100644
+--- a/test/viewer.see-through-only-when-moved.test.ts
++++ b/test/viewer.see-through-only-when-moved.test.ts
+@@ -44,5 +44,12 @@ describe('viewer.see-through-only-when-moved', () => {
+       const a = r.still.withCheck.ms.median, b = r.still.withoutCheck.ms.median
+       expect(Math.abs(a - b), `${at}: a still frame with the check due ${a} ms, without ${b} ms`).toBeLessThanOrEqual(Math.max(4, .5 * Math.max(a, b)))
+-      expect(a, `${at}: and nowhere near the 54–90 ms it was`).toBeLessThan(45)
++      // LAW 10 — 2026-10-05 (found landing viewer.still-frame-draws-nothing): this read
++      //   expect(a, `${at}: and nowhere near the 54–90 ms it was`).toBeLessThan(45)
++      // — a number of milliseconds, which measures the machine as much as the page: beside three other real-browser tests in
++      // the gate's checks the Lumberjack House's still frame read 60.8 ms with the check NOT running (0 runs counted, and the
++      // frame without the check as slow). The claim is that the still frame no longer carries the check's cost, and it is
++      // held against that cost as measured in the same run, under the same load (one check the old way: every triangle of
++      // every tall piece): what the frame costs with the check due, over what it costs without, is a small part of it.
++      expect(a - b, `${at}: a still frame with the check due costs ${a} ms, without ${b} ms — the old check alone was ${r.seeThrough!.plainMs.median} ms`).toBeLessThan(Math.max(4, r.seeThrough!.plainMs.median / 2))
+       // while the view scrolls the check does run — the camera moves on every frame
+       expect(r.scrolling.withCheck.checks!, `${at}: while scrolling`).toBeGreaterThan(30)
+diff --git a/test/viewer.view-stays-where-put.test.ts b/test/viewer.view-stays-where-put.test.ts
+new file mode 100644
+index 0000000..22278f9
+--- /dev/null
++++ b/test/viewer.view-stays-where-put.test.ts
+@@ -0,0 +1,41 @@
++// viewer.view-stays-where-put (engine backlog; engine DECISIONS.md 2026-10-05 'the battle screen must feel smooth: … the view
++// goes back to the acting unit'). Andrew: "It's awkward to try to roll the map around … Things are not on the screen." Found
++// on the Bridge: after the player scrolls the view away from the acting unit, the next thing that draws the board again — a
++// notch of the wheel, a click on any unit or on its card, the 3D scene finishing its load — brought the view straight back
++// until the acting unit was 80 px inside it. Ruled 2026-10-01: "You can look at different parts of the map by just looking
++// around on the map". Expect: "On the built page's Bridge, scrolled a screen away from the acting hero: a wheel notch zooms
++// where the view is and the hero stays off the screen; clicking an enemy there shows its panel and the view does not move;
++// pointing at hexes and clicking one does not move it; ending the Activation centres on the next hero; an enemy's attack on
++// a hero off the screen brings both ends into view as now; a page test reads each."
++// The engine's side — nothing is asked of it: looking around is no command. The Bridge is the board the fault was measured
++// on (40 columns: wider than the battle area shows). The viewer's half (../viewer/tools/view-stays-where-put.test.mjs) drives
++// the page on the Bridge's recording as a player does — the pointer at the screen's edge, the wheel, clicks; the sandbox's
++// half (../kingdom/tools/view-stays-where-put.verify.mjs) plays the built BATTLE-SANDBOX.html and reads the engine's battle
++// before and after. Imports no page code.
++import { describe, it, expect } from 'vitest'
++import { execFileSync } from 'node:child_process'
++import { mkdirSync } from 'node:fs'
++import { createBattle } from '../../engine/src/core/setup.js'
++import { scenarioDef, scenarioOptions } from '../../engine/src/content/scenarios.js'
++
++describe('the view the player put somewhere stays there until the game has reason to move it', () => {
++  it('the engine: the Bridge is wider than a screen, and its heroes begin far from its enemies — a board the player scrolls', () => {
++    const ctx = createBattle(scenarioOptions(scenarioDef('test.opening-bridge'), 1)), g = ctx.geo
++    expect(g.board.width).toBeGreaterThanOrEqual(30)
++    const heroes = ctx.state.units.filter((u) => u.side === 'hero'), enemies = ctx.state.units.filter((u) => u.side === 'enemy')
++    expect(heroes.length).toBeGreaterThan(0); expect(enemies.length).toBeGreaterThan(0)
++    const spread = Math.max(...ctx.state.units.map((u) => g.colOf(u.hex))) - Math.min(...ctx.state.units.map((u) => g.colOf(u.hex)))
++    expect(spread, 'columns between the westmost and the eastmost unit at the opening').toBeGreaterThan(5)
++  })
++  it('the viewer page, the Bridge\'s recording: scrolled away it stays through a redraw, the scene\'s load, a look at another unit, a wheel notch, pointing and clicking; a new Activation, the player\'s own centre and Reset take it; an attack off the screen is brought into view', () => {
++    const out = execFileSync(process.execPath, ['--test', '--test-reporter=tap', 'tools/view-stays-where-put.test.mjs'], { cwd: '../viewer', encoding: 'utf8', maxBuffer: 1 << 24, env: { ...process.env, VIEWER_PAGE: process.env.VIEWER_PAGE ?? '' } })
++    expect(out).toMatch(/# pass 5/); expect(out).toMatch(/# fail 0/)
++  }, 170000)
++  it('the sandbox: the expect line, on the built BATTLE-SANDBOX.html (the Bridge) — and the engine\'s battle is untouched by looking', () => {
++    mkdirSync('../kingdom/scratch', { recursive: true })
++    execFileSync(process.execPath, ['tools/build-sandbox.mjs', 'scratch/view-stays-where-put.html'], { cwd: '../kingdom', stdio: 'pipe' })
++    const out = execFileSync(process.execPath, ['tools/view-stays-where-put.verify.mjs', 'scratch/view-stays-where-put.html'], { cwd: '../kingdom', encoding: 'utf8', maxBuffer: 1 << 26 })
++    expect(out).toMatch(/view-stays-where-put: .*passed/)
++    for (const n of [1, 2, 3, 4, 5, 6]) expect(out, `step ${n}`).toMatch(new RegExp(`^  ${n} `, 'm'))
++  }, 300000)
 diff --git a/test/battle-cursor.test.ts b/test/battle-cursor.test.ts
 index 2718b35..48b09da 100644
 --- a/test/battle-cursor.test.ts
@@ -36585,6 +36681,17 @@ index 0000000..a125e58
   PASS  brought its own tests — test/battle-cursor.test.ts, test/damage-from-two-stats.test.ts, test/kingdom-reads-engine.test.ts, test/fixtures/battle-cursor-set-bonus.json, test/set-bonus.test.ts
   WARN  existing tests untouched — DELETED LINES in test/battle-cursor.test.ts (-2), test/damage-from-two-stats.test.ts (-1), test/kingdom-reads-engine.test.ts (-3) — will land FLAGGED for review
   PASS  control battles unchanged
+## viewer.edge-scroll-at-screen-edges — LANDED `4c3e4cd`
+2026-10-05 19:09
+
+  PASS  dependencies landed
+  WARN  not already decided — 3 candidate ruling(s) — READ BEFORE ASKING: ..\ATLAS-COMBAT-INTEGRATION.md:222 · SWITCHES.md:1944
+  PASS  typecheck
+  PASS  the item's own tests — test/viewer.edge-scroll-at-screen-edges.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — viewer/test/viewer.edge-scroll-at-screen-edges.test.ts
+  PASS  existing tests untouched
+  SKIPPED  control battles unchanged — engine code f9fdfb5dde and the content pack are the ones the control battles last passed on (2026-10-05 17:45, gate capability.summons --land, in HBT-worker-engine) — not run
   PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
   PASS  hardcode scan — core knows mechanisms, never names
   PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
@@ -36593,6 +36700,40 @@ index 0000000..a125e58
   PASS  naming — new content ids use declared kinds
   PASS  naming — no banned words invented
   PASS  kill switch — the tests fail without the content — tests fail without item.chains-of-the-wrathful — they genuinely test it
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+## viewer.map-drag-and-keys — LANDED `6577f89` **NEEDS REVIEW**
+2026-10-05 20:39
+
+  PASS  dependencies landed
+  WARN  not already decided — 3 candidate ruling(s) — READ BEFORE ASKING: ..\ATLAS-COMBAT-INTEGRATION.md:222 · SWITCHES.md:1944
+  PASS  typecheck
+  PASS  the item's own tests — test/viewer.frame-cost-measured.test.ts, test/viewer.map-drag-and-keys.test.ts, test/viewer.scenery-shadow-drawn-once.test.ts, test/viewer.see-through-only-when-moved.test.ts, test/viewer.still-frame-draws-nothing.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — viewer/test/frame-cost-page.ts, viewer/test/viewer.frame-cost-measured.test.ts, viewer/test/viewer.map-drag-and-keys.test.ts, viewer/test/viewer.scenery-shadow-drawn-once.test.ts, viewer/test/viewer.see-through-only-when-moved.test.ts, viewer/test/viewer.still-frame-draws-nothing.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/viewer.frame-cost-measured.test.ts (-7), test/viewer.map-drag-and-keys.test.ts (-1), test/viewer.scenery-shadow-drawn-once.test.ts (-6), test/viewer.see-through-only-when-moved.test.ts (-6), test/viewer.still-frame-draws-nothing.test.ts (-6) — will land FLAGGED for review
+## kingdom.attack-one-armed-after-move — LANDED `642860b` **NEEDS REVIEW**
+2026-10-05 20:12
+
+  PASS  dependencies landed
+  WARN  not already decided — 1 candidate ruling(s) — READ BEFORE ASKING: SWITCHES.md:1932
+  PASS  typecheck
+  PASS  the item's own tests — test/attack-one-armed-after-move.test.ts, test/play-input-choose.test.ts, test/tutorial-orphanage-enemy-turn.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — kingdom/test/attack-one-armed-after-move.test.ts, kingdom/test/play-input-choose.test.ts, kingdom/test/tutorial-orphanage-enemy-turn.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/play-input-choose.test.ts (-2), test/tutorial-orphanage-enemy-turn.test.ts (-1) — will land FLAGGED for review
+  SKIPPED  control battles unchanged — engine code f9fdfb5dde and the content pack are the ones the control battles last passed on (2026-10-05 17:45, gate capability.summons --land, in HBT-worker-engine) — not run
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
 
 <details><summary>Existing tests were edited — review this diff</summary>
 
@@ -36693,6 +36834,540 @@ index 5ad2700..5fa7b0c 100644
   PASS  brought its own tests — test/battle-cursor.test.ts, test/fixtures/battle-cursor-raise-lower-magic.json, test/raise-lower-magic.test.ts
   WARN  existing tests untouched — DELETED LINES in test/battle-cursor.test.ts (-2) — will land FLAGGED for review
   PASS  control battles unchanged
+0cf51d8
+
+diff --git a/test/frame-cost-page.ts b/test/frame-cost-page.ts
+new file mode 100644
+index 0000000..4d1897e
+--- /dev/null
++++ b/test/frame-cost-page.ts
+@@ -0,0 +1,53 @@
++// ONE run of tools/frame-cost.mjs in real Chrome for every test file that reads it (2026-10-05, found landing
++// viewer.map-drag-and-keys: four test files each built a sandbox page of their own and each opened real Chrome on it — the
++// frame-cost tool's own test, the see-through check's, the kept shadow's and the still frame's — and the gate's checks run
++// its test files side by side, so four page builds and four browsers measured frame times at once: the Bridge's run passed
++// its 280 s limit twice running). The first file to ask builds one sandbox page from the sources and runs the tool once on
++// the battles any of them reads, 60 frames a number; the others wait for that run's result and read it. What each file
++// asserts of its rows is unchanged.
++// Not a test file. Used by test/viewer.frame-cost-measured.test.ts, test/viewer.see-through-only-when-moved.test.ts,
++// test/viewer.scenery-shadow-drawn-once.test.ts and test/viewer.still-frame-draws-nothing.test.ts.
++import { execFileSync } from 'node:child_process'
++import { mkdirSync, readFileSync, rmSync, statSync, writeFileSync } from 'node:fs'
++
++const DIR = '.build', OUT = `${DIR}/frame-cost-page.json`, LOCK = `${DIR}/frame-cost-page.lock`
++/** the page the run is made on: a sandbox built from these sources (the kingdom's committed page is rebuilt only after the viewer's gate) */
++export const FRAME_COST_PAGE = 'kingdom/scratch/frame-cost-page.html'
++/** the battles any of the files reads: two foliage scenes, the lightest scene, and the one whose fog and fires move */
++export const FRAME_COST_BATTLES = ['encounter.opening.orphanage', 'encounter.opening.lumberjack', 'encounter.opening.bridge', 'encounter.caravan-aftermath']
++/** how long a file may wait for the run (its own, or another file's): the limit to give a test or a beforeAll that asks */
++export const FRAME_COST_WAIT_MS = 1_500_000
++export type FrameCost<Row> = { page: string; window: { w: number; h: number }; frames: number; software: boolean; rows: Row[] }
++
++const sleep = (ms: number) => { Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, ms) }
++/* every file of one vitest run is a child of the same process: that is the run a result belongs to */
++const RUN = String(process.ppid)
++
++/** the tool's result on the page built from these sources — made once a run, whichever file asks first */
++export function frameCostOnThePage<Row>(): FrameCost<Row> {
++  mkdirSync(DIR, { recursive: true })
++  const have = (): FrameCost<Row> | null => { try { const j = JSON.parse(readFileSync(OUT, 'utf8')) as { run: string; at: number; result: FrameCost<Row> }
++    return j.run === RUN && Date.now() - j.at < 3_600_000 ? j.result : null } catch { return null } }
++  for (let waited = 0; waited < FRAME_COST_WAIT_MS - 60_000; waited += 2000) {
++    const got = have(); if (got) return got
++    let mine = false
++    try { mkdirSync(LOCK); mine = true } catch {
++      /* another file of this run is making it — or a run that died left its lock behind */
++      try { if (Date.now() - statSync(LOCK).mtimeMs > 25 * 60_000) rmSync(LOCK, { recursive: true, force: true }) } catch { /* gone already */ } }
++    if (!mine) { sleep(2000); continue }
++    try {
++      const again = have(); if (again) return again
++      mkdirSync('../kingdom/scratch', { recursive: true })
++      execFileSync(process.execPath, ['tools/build-sandbox.mjs', FRAME_COST_PAGE.replace(/^kingdom\//, '')], { cwd: '../kingdom', stdio: 'pipe' })
++      const out = execFileSync(process.execPath, ['tools/frame-cost.mjs', ...FRAME_COST_BATTLES, '--frames', '60', '--json', '--page', '../' + FRAME_COST_PAGE], { cwd: '../viewer', encoding: 'utf8', maxBuffer: 1 << 26, timeout: 1_200_000 })
++      const result = JSON.parse(out) as FrameCost<Row>
++      writeFileSync(OUT, JSON.stringify({ run: RUN, at: Date.now(), result }))
++      return result
++    } finally { rmSync(LOCK, { recursive: true, force: true }) }
++  }
++  throw new Error('frame-cost on the page: no result within ' + Math.round(FRAME_COST_WAIT_MS / 60_000) + ' minutes')
++}
++/** one battle's row of a result, by its encounter id */
++export function rowOf<Row extends { battle: string }>(got: FrameCost<Row>, battle: string): Row {
++  const r = got.rows.find((x) => x.battle === battle); if (!r) throw new Error('frame-cost on the page: no row for ' + battle); return r
++}
+diff --git a/test/viewer.frame-cost-measured.test.ts b/test/viewer.frame-cost-measured.test.ts
+index 629f490..e653976 100644
+--- a/test/viewer.frame-cost-measured.test.ts
++++ b/test/viewer.frame-cost-measured.test.ts
+@@ -8,5 +8,5 @@
+ // Imports no page code.
+ import { describe, it, expect } from 'vitest'
+-import { execFileSync } from 'node:child_process'
++import { frameCostOnThePage, rowOf, FRAME_COST_PAGE, FRAME_COST_WAIT_MS } from './frame-cost-page.js'
+ import { existsSync, readFileSync } from 'node:fs'
+ 
+@@ -24,11 +24,20 @@ describe('viewer.frame-cost-measured — the tool that says what a frame costs',
+   it('run on the Bridge it prints one row, and every column of it reads: draw calls and triangles by pass, script ms with the see-through check and without, still and scrolling, each over 30 frames or more', () => {
+     expect(existsSync(PAGE), 'the built page the tool opens').toBe(true)
+-    const out = execFileSync(process.execPath, ['tools/frame-cost.mjs', 'bridge', '--json'], { encoding: 'utf8', maxBuffer: 1 << 24, timeout: 280000 })
+-    const got = JSON.parse(out) as { page: string; window: { w: number; h: number }; frames: number; rows: Row[] }
+-    expect(got.page).toBe('kingdom/BATTLE-SANDBOX.html')
++    // LAW 10 — 2026-10-05 (found landing viewer.map-drag-and-keys; test/frame-cost-page.ts says why): this file ran the tool by
++    // itself —
++    //   const out = execFileSync(process.execPath, ['tools/frame-cost.mjs', 'bridge', '--json'], { …, timeout: 280000 })
++    //   expect(got.page).toBe('kingdom/BATTLE-SANDBOX.html')
++    //   expect(got.rows.map((r) => r.battle), 'the short name is its encounter').toEqual(['encounter.opening.bridge'])
++    //   const row = got.rows[0]!
++    // — as three other test files did, each on a page of its own, all at once in the gate's checks. The tool is now run ONCE
++    // a test run, on one sandbox page built from the sources, for every file that reads it; this file reads its rows of
++    // that result. Every assertion on those rows below stands as written.
++    // (the page is the one built from the sources, not the kingdom's committed one; the Bridge's row is one of the run's)
++    const got = frameCostOnThePage<Row>()
++    expect(got.page).toBe(FRAME_COST_PAGE)
+     expect(got.window).toEqual({ w: 1920, h: 1080 })
+     expect(got.frames).toBeGreaterThanOrEqual(30)
+-    expect(got.rows.map((r) => r.battle), 'the short name is its encounter').toEqual(['encounter.opening.bridge'])
+-    const row = got.rows[0]!
++    expect(got.rows.map((r) => r.battle), 'the short name is its encounter').toContain('encounter.opening.bridge')
++    const row = rowOf(got, 'encounter.opening.bridge')
+     expect(row.flat, row.note).toBeFalsy()
+     expect(row.pageErrors ?? [], 'no page error while it measured').toEqual([])
+@@ -58,4 +67,4 @@ describe('viewer.frame-cost-measured — the tool that says what a frame costs',
+     expect(row.scrolling.withoutCheck.draws.bodies).toBeGreaterThan(0)
+     expect(row.scrolling.withoutCheck.triangles.all).toBeGreaterThan(100000)
+-  }, 290000)
++  }, FRAME_COST_WAIT_MS)
+ })
+diff --git a/test/viewer.map-drag-and-keys.test.ts b/test/viewer.map-drag-and-keys.test.ts
+index 6e2ef7a..aed8900 100644
+--- a/test/viewer.map-drag-and-keys.test.ts
++++ b/test/viewer.map-drag-and-keys.test.ts
+@@ -17,5 +17,5 @@ describe('the map moves by dragging it and on W, A, S and D, beside the edge scr
+     const src = readFileSync('src/camera-policy.js', 'utf8')
+     const n = (name: string) => Number(src.match(new RegExp(name + ':\\s*([\\d.]+)'))?.[1])
+-    expect(n('DRAG_PX')).toBe(6); expect(n('TURN_MS')).toBe(300)
++    expect(n('MAP_DRAG_PX')).toBe(6); expect(n('TURN_MS')).toBe(300)
+     expect(n('EDGE_SCROLL_SPEED'), 'the keys move the map at the edge scroll\'s speed').toBe(700)
+   })
+diff --git a/test/viewer.scenery-shadow-drawn-once.test.ts b/test/viewer.scenery-shadow-drawn-once.test.ts
+index d55aa5b..a370bb7 100644
+--- a/test/viewer.scenery-shadow-drawn-once.test.ts
++++ b/test/viewer.scenery-shadow-drawn-once.test.ts
+@@ -12,5 +12,5 @@
+ import { describe, it, expect } from 'vitest'
+ import { execFileSync } from 'node:child_process'
+-import { mkdirSync } from 'node:fs'
++import { frameCostOnThePage, rowOf, FRAME_COST_WAIT_MS } from './frame-cost-page.js'
+ 
+ type Pass = { all: number; shadow: number; scene: number; bodies: number }
+@@ -26,8 +26,14 @@ describe('viewer.scenery-shadow-drawn-once', () => {
+ 
+   it('the built page, the Orphanage: the shadow pass draws only the bodies on a frame where a body animates and nothing on a still frame, where it drew 916; the picture is the same, pixel for pixel, as with the shadow whole', () => {
+-    mkdirSync('../kingdom/scratch', { recursive: true })
+-    execFileSync(process.execPath, ['tools/build-sandbox.mjs', 'scratch/scenery-shadow-drawn-once.html'], { cwd: '../kingdom', stdio: 'pipe' })
+-    const out = execFileSync(process.execPath, ['tools/frame-cost.mjs', 'orphanage', '--json', '--page', '../kingdom/scratch/scenery-shadow-drawn-once.html'], { cwd: '../viewer', encoding: 'utf8', maxBuffer: 1 << 24, timeout: 400000 })
+-    const r = (JSON.parse(out) as { rows: Row[] }).rows[0]!
++    // LAW 10 — 2026-10-05 (found landing viewer.map-drag-and-keys; test/frame-cost-page.ts says why): this file ran the tool by
++    // itself —
++    //   mkdirSync('../kingdom/scratch', { recursive: true })
++    //   execFileSync(process.execPath, ['tools/build-sandbox.mjs', 'scratch/scenery-shadow-drawn-once.html'], { cwd: '../kingdom', stdio: 'pipe' })
++    //   const out = execFileSync(process.execPath, ['tools/frame-cost.mjs', 'orphanage', '--json', '--page', …], { …, timeout: 400000 })
++    //   const r = (JSON.parse(out) as { rows: Row[] }).rows[0]!
++    // — as three other test files did, each on a page of its own, all at once in the gate's checks. The tool is now run ONCE
++    // a test run, on one sandbox page built from the sources, for every file that reads it; this file reads its rows of
++    // that result. Every assertion on those rows below stands as written.
++    const r = rowOf(frameCostOnThePage<Row>(), 'encounter.opening.orphanage')
+     expect(r.battle).toBe('encounter.opening.orphanage')
+     expect(r.flat, r.note).toBeFalsy(); expect(r.pageErrors ?? []).toEqual([])
+@@ -56,4 +62,4 @@ describe('viewer.scenery-shadow-drawn-once', () => {
+     expect(r.shadow!.differing, `pixels that differ at the worst view, of ${r.shadow!.pixels} (two frames drawn the same way: ${r.shadow!.sameWay})`).toBeLessThanOrEqual(Math.max(40, 3 * r.shadow!.sameWay))
+     expect(r.shadow!.same, 'and some views are the same in every pixel').toBeGreaterThan(0)
+-  }, 600000)
++  }, FRAME_COST_WAIT_MS)
+ })
+diff --git a/test/viewer.see-through-only-when-moved.test.ts b/test/viewer.see-through-only-when-moved.test.ts
+index 0d8d35c..53530b4 100644
+--- a/test/viewer.see-through-only-when-moved.test.ts
++++ b/test/viewer.see-through-only-when-moved.test.ts
+@@ -15,5 +15,5 @@
+ import { describe, it, expect } from 'vitest'
+ import { execFileSync } from 'node:child_process'
+-import { mkdirSync } from 'node:fs'
++import { frameCostOnThePage, rowOf, FRAME_COST_WAIT_MS } from './frame-cost-page.js'
+ 
+ type Ms = { median: number; min: number; max: number }
+@@ -29,8 +29,14 @@ describe('viewer.see-through-only-when-moved', () => {
+ 
+   it('the built page, the Orphanage and the Lumberjack House: no check over 60 still frames; a still frame costs the same with the check due as without; one check under 4 ms; the same pieces as every triangle finds, at every view of a round', () => {
+-    mkdirSync('../kingdom/scratch', { recursive: true })
+-    execFileSync(process.execPath, ['tools/build-sandbox.mjs', 'scratch/see-through-only-when-moved.html'], { cwd: '../kingdom', stdio: 'pipe' })
+-    const out = execFileSync(process.execPath, ['tools/frame-cost.mjs', 'orphanage', 'lumberjack', '--frames', '60', '--json', '--page', '../kingdom/scratch/see-through-only-when-moved.html'], { cwd: '../viewer', encoding: 'utf8', maxBuffer: 1 << 24, timeout: 560000 })
+-    const rows = (JSON.parse(out) as { rows: Row[] }).rows
++    // LAW 10 — 2026-10-05 (found landing viewer.map-drag-and-keys; test/frame-cost-page.ts says why): this file ran the tool by
++    // itself —
++    //   mkdirSync('../kingdom/scratch', { recursive: true })
++    //   execFileSync(process.execPath, ['tools/build-sandbox.mjs', 'scratch/see-through-only-when-moved.html'], { cwd: '../kingdom', stdio: 'pipe' })
++    //   const out = execFileSync(process.execPath, ['tools/frame-cost.mjs', 'orphanage', 'lumberjack', '--frames', '60', '--json', '--page', …], { …, timeout: 560000 })
++    //   const rows = (JSON.parse(out) as { rows: Row[] }).rows
++    // — as three other test files did, each on a page of its own, all at once in the gate's checks. The tool is now run ONCE
++    // a test run, on one sandbox page built from the sources, for every file that reads it; this file reads its rows of
++    // that result. Every assertion on those rows below stands as written.
++    const got = frameCostOnThePage<Row>(), rows = [rowOf(got, 'encounter.opening.orphanage'), rowOf(got, 'encounter.opening.lumberjack')]
+     expect(rows.map((r) => r.battle)).toEqual(['encounter.opening.orphanage', 'encounter.opening.lumberjack'])
+     for (const r of rows) {
+@@ -63,4 +69,4 @@ describe('viewer.see-through-only-when-moved', () => {
+       expect(r.seeThrough!.withSomethingHiding, `${at}: and many of those views have a piece in the way — the two are not agreeing about nothing`).toBeGreaterThanOrEqual(r.seeThrough!.views / 4)
+     }
+-  }, 780000)
++  }, FRAME_COST_WAIT_MS)
+ })
+diff --git a/test/viewer.still-frame-draws-nothing.test.ts b/test/viewer.still-frame-draws-nothing.test.ts
+index ed91e57..0e02fbe 100644
+--- a/test/viewer.still-frame-draws-nothing.test.ts
++++ b/test/viewer.still-frame-draws-nothing.test.ts
+@@ -18,5 +18,5 @@
+ import { describe, it, expect, beforeAll } from 'vitest'
+ import { execFileSync } from 'node:child_process'
+-import { mkdirSync } from 'node:fs'
++import { frameCostOnThePage, rowOf, FRAME_COST_WAIT_MS } from './frame-cost-page.js'
+ 
+ type Pass = { all: number; shadow: number; scene: number; bodies: number }
+@@ -35,12 +35,19 @@ describe('viewer.still-frame-draws-nothing', () => {
+     let orphanage: Row, caravan: Row
+     beforeAll(() => {
+-      mkdirSync('../kingdom/scratch', { recursive: true })
+-      execFileSync(process.execPath, ['tools/build-sandbox.mjs', 'scratch/still-frame-draws-nothing.html'], { cwd: '../kingdom', stdio: 'pipe' })
+-      const out = execFileSync(process.execPath, ['tools/frame-cost.mjs', 'orphanage', 'caravan-aftermath', '--json', '--page', '../kingdom/scratch/still-frame-draws-nothing.html'], { cwd: '../viewer', encoding: 'utf8', maxBuffer: 1 << 24, timeout: 560000 })
+-      const rows = (JSON.parse(out) as { rows: Row[] }).rows
++    // LAW 10 — 2026-10-05 (found landing viewer.map-drag-and-keys; test/frame-cost-page.ts says why): this file ran the tool by
++    // itself —
++    //   mkdirSync('../kingdom/scratch', { recursive: true })
++    //   execFileSync(process.execPath, ['tools/build-sandbox.mjs', 'scratch/still-frame-draws-nothing.html'], { cwd: '../kingdom', stdio: 'pipe' })
++    //   const out = execFileSync(process.execPath, ['tools/frame-cost.mjs', 'orphanage', 'caravan-aftermath', '--json', '--page', …], { …, timeout: 560000 })
++    //   const rows = (JSON.parse(out) as { rows: Row[] }).rows
++    //   expect(rows.map((r) => r.battle)).toEqual(['encounter.opening.orphanage', 'encounter.caravan-aftermath'])
++    // — as three other test files did, each on a page of its own, all at once in the gate's checks. The tool is now run ONCE
++    // a test run, on one sandbox page built from the sources, for every file that reads it; this file reads its rows of
++    // that result. Every assertion on those rows below stands as written.
++      const got = frameCostOnThePage<Row>(), rows = [rowOf(got, 'encounter.opening.orphanage'), rowOf(got, 'encounter.caravan-aftermath')]
+       expect(rows.map((r) => r.battle)).toEqual(['encounter.opening.orphanage', 'encounter.caravan-aftermath'])
+       for (const r of rows) { expect(r.flat, r.note).toBeFalsy(); expect(r.pageErrors ?? [], r.battle).toEqual([]) }
+       ;[orphanage, caravan] = rows as [Row, Row]
+-    }, 780000)
++    }, FRAME_COST_WAIT_MS)
+ 
+     it('the clock held and nothing live: a frame issues 0 draw calls — no scene pass, no shadow pass, no bodies\' canvas', () => {
+dd0d35e
+
+diff --git a/test/viewer.map-drag-and-keys.test.ts b/test/viewer.map-drag-and-keys.test.ts
+new file mode 100644
+index 0000000..6e2ef7a
+--- /dev/null
++++ b/test/viewer.map-drag-and-keys.test.ts
+@@ -0,0 +1,35 @@
++// viewer.map-drag-and-keys (engine backlog; ruled 2026-10-05, Andrew, engine DECISIONS.md 'the battle screen must feel smooth: …
++// the map drags and moves on W/A/S/D; …' — asked "Should the map also move by dragging it and by W/A/S/D, alongside edge
++// scroll (this overturns 'no grab-drag')?": "Yes"). Overturns 2026-10-01 'the XCOM-style camera' "no grab-drag": the edge scroll
++// stays, the drag and the keys are added. Expect: "On the Orphanage: a press dragged 300 px left moves the board 300 px left
++// under the pointer and it stays there on release; a click with 3 px of travel still selects its hex; a right press that
++// drags does not step the plan back and a right click still does; holding D scrolls right until the bound and W with D goes
++// diagonally; the left arrow turns a quarter in about 300 ms; a page test reads each; the tests that asserted 'no grab-drag'
++// are changed to assert these, citing the ruling."
++// The engine's side — nothing is asked of it: moving the map is no command, and a drag sends none. The viewer's half is
++// ../viewer/tools/map-drag-and-keys.test.mjs, on the page (VIEWER_PAGE) as the gate runs it. Imports no page code.
++import { describe, it, expect } from 'vitest'
++import { execFileSync } from 'node:child_process'
++import { readFileSync } from 'node:fs'
++
++describe('the map moves by dragging it and on W, A, S and D, beside the edge scroll', () => {
++  it('the numbers are the camera\'s policy: 6 px of travel makes a press a drag; a quarter turn takes 300 ms', () => {
++    const src = readFileSync('src/camera-policy.js', 'utf8')
++    const n = (name: string) => Number(src.match(new RegExp(name + ':\\s*([\\d.]+)'))?.[1])
++    expect(n('DRAG_PX')).toBe(6); expect(n('TURN_MS')).toBe(300)
++    expect(n('EDGE_SCROLL_SPEED'), 'the keys move the map at the edge scroll\'s speed').toBe(700)
++  })
++  it('the viewer page, the Orphanage: the drag, the click that travels less than 6 px, the right button, W A S D, the 300 ms quarter turn, the HUD line', () => {
++    const out = execFileSync(process.execPath, ['--test', '--test-reporter=tap', 'tools/map-drag-and-keys.test.mjs'], { cwd: '../viewer', encoding: 'utf8', maxBuffer: 1 << 24, env: { ...process.env, VIEWER_PAGE: process.env.VIEWER_PAGE ?? '' } })
++    expect(out).toMatch(/# pass 6/); expect(out).toMatch(/# fail 0/)
++  }, 170000)
++  it('the tests that asserted "no grab-drag" now assert the drag, each citing the ruling', () => {
++    // (tools/true-3d-camera.test.mjs names "no grab-drag" too, in a note: what it asserts — no drag tilts the camera or leaves
++    // Overhead, a click that ends a drag is no click — is still the rule and passes unchanged)
++    for (const f of ['tools/targeting.test.mjs', 'tools/painted-board.test.mjs']) {
++      const src = readFileSync(f, 'utf8')
++      expect(src, `${f}: its dated note`).toMatch(/2026-10-05, viewer\.map-drag-and-keys/)
++      expect(src, `${f}: the ruling's own word`).toMatch(/"Yes"/)
++    }
++  })
++})
+```
+</details>
+1b6b7d2
+
+diff --git a/test/attack-one-armed-after-move.test.ts b/test/attack-one-armed-after-move.test.ts
+new file mode 100644
+index 0000000..9c03d93
+--- /dev/null
++++ b/test/attack-one-armed-after-move.test.ts
+@@ -0,0 +1,200 @@
++// kingdom.attack-one-armed-after-move — ruled 2026-10-05 (Andrew, engine/DECISIONS.md 'the battle screen must feel smooth: …;
++// attack one is chosen after a move; …'): "I do think after you move, we should auto-select your basic attack or your attack
++// one. If you have a ranged weapon, it's still your attack one, so you don't have to select your attack to then start turning
++// on the map. Basically, you're changing A from basic attack one if you want to do anything other than that first thing."
++// (dictation: "turning on the map" is targeting on the map; "changing A from" is changing away from).
++//
++// Expect: "In the opening's battle 1 the Iron Dwarf, its walk ended next to a Zombie, shows Chop chosen on the bar with no click
++// on the bar; pointing at the Zombie shows the arrow and the forecast at once, and two clicks on it strike; a hero holding a
++// bow has its first bow attack chosen after its walk, the arrow drawn out to its range; clicking Heavy Chop changes the choice;
++// a right-click clears it and it stays cleared for that Activation; a civilian with no attack has nothing chosen; a play-input
++// test and a page test read each; the tutorial's page tests pass."
++//
++// The play input only: no engine change. Which attack is "attack one" is the engine's order (grantedActionIds: the first
++// attack the unit is granted, the one its bar lists first); whether it may be chosen is the engine's answer to an order with
++// it (validateBattleCommand: refused before the target is looked at — the unit cannot act, the action is not ready, its slot
++// is closed — and nothing is chosen; refused for the target alone, it is chosen and its arrow shows how far it reaches).
++import { describe, it, expect } from 'vitest'
++import { execFileSync } from 'node:child_process'
++import { createSandbox, advanceSandbox, commandSandbox, sandboxChoices, type Sandbox } from '../src/core/sandbox.js'
++import { createPlayInput } from '../src/ui/play-input.js'
++import { encounterDef, isMove, isAttack, grantedActionIds, actionReach, type BattleCommand } from '../src/engine.js'
++import { drainStamina } from '../../engine/src/core/mutate.js'
++
++const ORPHANAGE = 'encounter.opening.orphanage', DWARF = 'hero.base.warrior-iron', RANGER = 'hero.base.ranger-aggressive'
++type U = Sandbox['ctx']['state']['units'][number]
++function battle1(hero: string) {
++  const s = createSandbox({ mapId: encounterDef(ORPHANAGE).mapId!, heroes: [hero], enemies: [], seed: 1, encounterId: ORPHANAGE })
++  advanceSandbox(s)
++  const P = createPlayInput(() => s, (c: BattleCommand) => commandSandbox(s, c))
++  const me = () => s.ctx.state.units.find((x) => x.typeId === hero)!
++  const acting = () => (s.ctx.battleCursor?.at === 'acting' ? s.ctx.battleCursor.actor : null)
++  const begin = (u: U) => { if (acting() === u.id) return; P.input({ kind: 'choose', id: u.id }); expect(acting(), `${u.name}'s Activation`).toBe(u.id) }
++  const attacksOf = (u: U) => grantedActionIds(s.ctx, u).filter((id) => isAttack(s.ctx.actions[id]!))
++  const foes = () => s.ctx.state.units.filter((x) => x.side === 'enemy' && x.lifeState === 'standing')
++  const near = (hex: number) => Math.min(...foes().map((f) => s.ctx.geo.distance(hex, f.hex)))
++  /** walk the acting unit to `hex`: the click that plans, the click that walks (two clicks, the default) */
++  const walk = (hex: number) => { expect(P.input({ kind: 'hex', hex }), 'the hex is planned').toBe(true); expect(P.facts().ghost?.hex).toBe(hex); expect(P.input({ kind: 'hex', hex }), 'the walk is taken').toBe(true) }
++  /** the reach hex whose path's end has an enemy in reach of an attack (the engine's forecast: the path-end targets), or null */
++  const strikingHex = () => { for (const hex of P.facts().reach) { P.input({ kind: 'hex', hex }); const n = P.facts().targets.length; P.input({ kind: 'back' }); if (n) return hex } return null }
++  /** turn after turn the unit walks toward the enemy, until a walk of its own ends with an enemy in reach of an attack; returns that walk's hex — the walk is NOT yet made */
++  const closeIn = (u: () => U) => {
++    for (let turn = 0; turn < 10; turn++) {
++      if (s.ctx.state.outcome) throw new Error('the battle ended before a walk could end beside an enemy')
++      begin(u())
++      const hex = strikingHex(); if (hex !== null) return hex
++      const reach = P.facts().reach; expect(reach.length).toBeGreaterThan(0)
++      walk([...reach].sort((a, b) => near(a) - near(b) || a - b)[0]!)
++      if (acting() === u().id) P.input({ kind: 'end-activation' })
++      if (acting() !== null) P.input({ kind: 'end-activation' })
++      P.input({ kind: 'end-turn' })
++    }
++    throw new Error('no walk ended beside an enemy in ten turns')
++  }
++  /** the engine lists the unit's attack one against an enemy now (its validated choices) */
++  const inReach = (u: U) => sandboxChoices(s).some((c) => c.command.actor === u.id && c.command.actionId === attacksOf(u)[0] && 'target' in c.command && s.ctx.state.units[c.command.target]?.side !== u.side)
++  /** turn after turn the unit walks toward the enemy, until a walk of its own has been MADE that leaves it acting with an enemy in reach of its attack one */
++  const walkBeside = (u: () => U) => {
++    for (let turn = 0; turn < 12; turn++) {
++      if (s.ctx.state.outcome) throw new Error('the battle ended before a walk ended beside an enemy')
++      begin(u())
++      const reach = P.facts().reach; expect(reach.length).toBeGreaterThan(0)
++      walk(strikingHex() ?? [...reach].sort((a, b) => near(a) - near(b) || a - b)[0]!)
++      if (acting() === u().id && inReach(u())) return
++      if (acting() === u().id) P.input({ kind: 'end-activation' })
++      if (acting() !== null) P.input({ kind: 'end-activation' })
++      P.input({ kind: 'end-turn' })
++    }
++    throw new Error('no walk ended beside an enemy in twelve turns')
++  }
++  return { s, P, me, begin, walk, closeIn, walkBeside, attacksOf, foes, acting }
++}
++
++describe('kingdom.attack-one-armed-after-move — after a unit moves, its attack one is chosen by itself', () => {
++  it('battle 1: the Iron Dwarf, its walk ended next to a Zombie, has Chop chosen with no click on the bar; pointing at the Zombie shows the arrow and the forecast at once, and two clicks on it strike', () => {
++    const b = battle1(DWARF), { s, P } = b
++    b.walkBeside(b.me)
++    const dwarf = b.me(), [chop] = b.attacksOf(dwarf)
++    expect(s.ctx.actions[chop!]!.name).toBe('Chop')
++    expect(b.acting(), 'the engine waits for its next order').toBe(dwarf.id); expect(dwarf.moveUsed).toBe(true)
++    // no click on the bar: attack one is chosen
++    let f = P.facts()
++    expect(f.slot, 'Chop is chosen by itself').toBe(chop); expect(f.ghost).toBeNull(); expect(f.reach, 'no move is armed beside it').toEqual([]); expect(f.note ?? null, 'nothing is said about it').toBeNull()
++    const zombie = b.foes().find((z) => f.targets.includes(z.hex))!
++    expect(zombie, 'its legal targets light: the Zombie beside it').toBeTruthy()
++    // pointing at the Zombie: the arrow and the forecast at once
++    P.input({ kind: 'point', hex: zombie.hex }); f = P.facts()
++    expect(f.aim).toMatchObject({ from: dwarf.hex, to: zombie.hex, target: zombie.id, locked: false })
++    expect(typeof f.aim!.hit).toBe('number'); expect(typeof f.aim!.dmg).toBe('number')
++    // two clicks on it strike: the first locks the aim, the second confirms
++    const from = s.ctx.events.length
++    expect(P.input({ kind: 'unit', id: zombie.id, hex: zombie.hex })).toBe(true); expect(P.facts().aim?.locked).toBe(true); expect(s.ctx.events.length, 'the first click only locks').toBe(from)
++    expect(P.input({ kind: 'unit', id: zombie.id, hex: zombie.hex })).toBe(true)
++    const swing = s.ctx.events.slice(from).find((e) => e.type === 'attack.declared')!
++    expect(swing).toMatchObject({ actor: dwarf.id, target: zombie.id, attackId: chop })
++  })
++
++  it('a hero holding a bow has its first bow attack chosen after its walk, and the arrow is drawn out to its range and no farther', () => {
++    const b = battle1(RANGER), { s, P } = b, ranger = b.me(), [shot] = b.attacksOf(ranger)
++    expect((s.ctx.actions[shot!] as { attack?: { kind?: string } }).attack?.kind, 'attack one is the bow\'s').toBe('ranged')
++    b.begin(ranger)
++    const reach = P.facts().reach; expect(reach.length).toBeGreaterThan(0)
++    b.walk(reach[0]!)
++    expect(b.acting()).toBe(ranger.id)
++    expect(P.facts().slot, `${s.ctx.actions[shot!]!.name} is chosen by itself`).toBe(shot)
++    // the arrow follows the pointer out to the attack's reach: pointing far past it, the arrow stops at the engine's reach
++    const range = actionReach(s.ctx, ranger.id, shot!, ranger.hex)!, far = [...Array(s.ctx.geo.hexCount).keys()].sort((x, y) => s.ctx.geo.distance(ranger.hex, y) - s.ctx.geo.distance(ranger.hex, x))[0]!
++    expect(s.ctx.geo.distance(ranger.hex, far)).toBeGreaterThan(range)
++    P.input({ kind: 'point', hex: far }); const aim = P.facts().aim!
++    expect(aim.from).toBe(ranger.hex); expect(s.ctx.geo.distance(ranger.hex, aim.to), 'the arrow is as long as the bow reaches').toBe(range)
++  })
++
++  it('a click on another row changes the choice; a right-click takes it back, and it is not chosen again by itself in that Activation — but it is in the next', () => {
++    const b = battle1(DWARF), { s, P } = b, dwarf = b.me(), [chop, second] = b.attacksOf(dwarf)
++    b.begin(dwarf)
++    // a short walk — one hex of several — so the engine still offers the rest of it
++    const here = dwarf.hex, step = P.facts().reach.find((h) => s.ctx.geo.distance(here, h) === 1)!
++    expect(step).toBeDefined(); b.walk(step)
++    expect(P.facts().slot).toBe(chop)
++    // another row: the choice changes
++    expect(P.input({ kind: 'slot', actionId: second!, unit: dwarf.id })).toBe(true); expect(P.facts().slot, `${s.ctx.actions[second!]!.name} is chosen instead`).toBe(second)
++    // right-click: taken back
++    expect(P.input({ kind: 'back' })).toBe(true)
++    const after = P.facts().slot
++    expect(after === null || isMove(s.ctx.actions[after]!), 'no attack is chosen: what is armed, if anything, is the rest of the walk').toBe(true)
++    // the rest of the walk, where the engine still offers it: after that move it is NOT chosen again in this Activation
++    const more = P.facts().reach
++    if (more.length) { b.walk(more[0]!); if (b.acting() === dwarf.id) { const now = P.facts().slot; expect(now === null || isMove(s.ctx.actions[now]!), 'taken back, it stays back for this Activation').toBe(true) } }
++    // the next Activation of the same unit: chosen again after its move
++    if (b.acting() === dwarf.id) P.input({ kind: 'end-activation' })
++    if (b.acting() !== null) P.input({ kind: 'end-activation' })
++    P.input({ kind: 'end-turn' })
++    if (!s.ctx.state.outcome && b.me().lifeState === 'standing') { b.begin(b.me()); const r = P.facts().reach
++      if (r.length) { b.walk(r[0]!); if (b.acting() === dwarf.id) expect(P.facts().slot, 'a new Activation: chosen again after its move').toBe(chop) } }
++  })
++
++  it('changing away from attack one to move again: Move chosen on the bar is armed in its place; that second move is the unit\'s primary action, and whatever the engine then leaves it, attack one is never left chosen for an Activation that is over', () => {
++    const b = battle1(DWARF), { s, P } = b, dwarf = b.me(), [chop] = b.attacksOf(dwarf)
++    b.begin(dwarf)
++    const move = P.facts().slot!, step = P.facts().reach.find((h) => s.ctx.geo.distance(dwarf.hex, h) === 1)!
++    b.walk(step); expect(P.facts().slot).toBe(chop)
++    // the player changes away from attack one to walk on: Move on the bar, then the hex
++    expect(P.input({ kind: 'slot', actionId: move, unit: dwarf.id })).toBe(true)
++    expect(P.facts().slot, 'Move is armed in its place').toBe(move)
++    const more = P.facts().reach
++    expect(more.length, 'the engine offers the move again, as the unit\'s primary action').toBeGreaterThan(0)
++    b.walk(more[0]!)
++    /* the engine's own rule decides what follows (a primary action ends the Activation by itself): if the Dwarf still acts,
++       its attack one is chosen after this move too (kingdom SWITCHES attackOneAfterEachMove); if it does not, nothing of its is */
++    if (b.acting() === dwarf.id) expect(P.facts().slot, 'still acting: chosen after this move too').toBe(chop)
++    else { expect(dwarf.primaryUsed || dwarf.moveUsed).toBe(true); expect(P.facts().actor === dwarf.id && P.facts().slot === chop, 'the Activation is over: nothing of the Dwarf\'s is chosen').toBe(false) }
++  })
++
++  it('it is not chosen when the engine would refuse the attack for a reason other than reach — no Stamina for it — and then nothing is chosen, not a later attack', () => {
++    /* "its primary is spent": a primary action ends the Activation by itself (engine rule.primary-ends-activation), so no move
++       of the player's follows one and the input never stands there; the engine's refusal for it (action-slot-closed) is one of
++       the three the input reads as "not for reach" (the play input's own comment). What can be reached is no Stamina: */
++    // no Stamina for attack one: the engine's own drain, then the walk — nothing is chosen, though Punch costs nothing
++    { const b = battle1(DWARF), { s, P } = b, dwarf = b.me(), attacks = b.attacksOf(dwarf)
++      b.begin(dwarf)
++      const free = attacks.find((id) => s.ctx.actions[id]!.staminaCost === 0)
++      expect(s.ctx.actions[attacks[0]!]!.staminaCost, 'attack one costs Stamina').toBeGreaterThan(0); expect(free, 'a later attack costs none').toBeTruthy()
++      /* the walk itself may cost Stamina (the engine's charge for it — the choice's own cost): all but that is drained, by the
++         engine's own drain, so the walk is paid for and nothing is left for attack one */
++      const hex = P.facts().reach[0]!, cost = sandboxChoices(s).find((c) => c.command.actor === dwarf.id && 'destination' in c.command && c.command.destination === hex)!.cost
++      drainStamina(s.ctx, dwarf.id, dwarf.stamina - cost, 'kingdom.attack-one-armed-after-move')
++      expect(dwarf.stamina).toBe(cost)
++      expect(P.facts().reach, 'the walk can still be paid for').toContain(hex); b.walk(hex)
++      expect(dwarf.stamina, 'nothing is left for attack one').toBe(0)
++      if (b.acting() === dwarf.id) { const now = P.facts().slot; expect(now === null || isMove(s.ctx.actions[now]!), 'attack one cannot be paid for: nothing is chosen — not the later attack').toBe(true); expect(now).not.toBe(free) } }
++  })
++
++  it('a unit with no attack has nothing chosen after its walk', () => {
++    /* Every unit of the player's in the opening has an attack (the civilians carry a Dagger: Stab, and Punch), so no fielded
++       unit shows this. The state is MADE BY HAND here, and only here: a civilian's attacks are taken off the engine's list
++       of what it is granted, to hold that a unit with none has nothing chosen. */
++    const b = battle1(DWARF), { s, P } = b
++    const civilian = s.ctx.state.units.find((x) => x.side === 'hero' && x.typeId !== DWARF)!
++    expect(b.attacksOf(civilian).length, 'as fielded, the civilian has attacks').toBeGreaterThan(0)
++    civilian.actions = civilian.actions.filter((id) => !isAttack(s.ctx.actions[id]!))
++    b.begin(civilian)
++    if (b.attacksOf(civilian).length === 0) { const r = P.facts().reach; expect(r.length).toBeGreaterThan(0); b.walk(r[0]!)
++      if (b.acting() === civilian.id) { const now = P.facts().slot; expect(now === null || isMove(s.ctx.actions[now]!), 'no attack: nothing is chosen').toBe(true) } }
++    else expect.fail('the civilian still holds an attack: ' + b.attacksOf(civilian).join(', '))
++  })
++
++  it('an Activation still begins with the basic move armed, and a path planned still plans the attacks from its end — ruled 2026-10-03, unchanged', () => {
++    const b = battle1(DWARF), { s, P } = b
++    const hex = b.closeIn(b.me), dwarf = b.me()
++    expect(isMove(s.ctx.actions[P.facts().slot!]!)).toBe(true)
++    P.input({ kind: 'hex', hex })
++    const f = P.facts(); expect(f.ghost).toEqual({ unit: dwarf.id, hex }); expect(isMove(s.ctx.actions[f.slot!]!), 'the move is still the armed action while its path is shown').toBe(true)
++    expect(f.targets.length, 'whom it could strike from the path\'s end').toBeGreaterThan(0)
++  })
++
++  it('the page: on the built battle screen, battle 1, the Iron Dwarf\'s walk next to a Zombie leaves Chop chosen on the bar with no click on it; two clicks on the Zombie strike', () => {
++    const out = execFileSync(process.execPath, ['tools/attack-one-armed-after-move.verify.mjs', 'BATTLE-SANDBOX.html'], { cwd: '../kingdom', encoding: 'utf8', maxBuffer: 1 << 24 })
++    expect(out).toMatch(/attack-one-armed-after-move: .* passed/)
++    for (const line of out.split('\n').filter((l) => /^  /.test(l))) console.log(line)
++  }, 240000)
++})
+diff --git a/test/play-input-choose.test.ts b/test/play-input-choose.test.ts
+index 7b6df64..4dc0f93 100644
+--- a/test/play-input-choose.test.ts
++++ b/test/play-input-choose.test.ts
+@@ -30,5 +30,12 @@ describe('choosing what the hero does', () => {
+     expect(P.facts().slot).toBe(moveSlotFirst(s, h.id))
+   })
+-  it('no action chosen, no arrow: pointing anywhere draws none; once its movement is spent it still draws none', () => {
++  /* Law 10, 2026-10-05 — kingdom.attack-one-armed-after-move (engine DECISIONS.md 2026-10-05 'the battle screen must feel smooth: …;
++     attack one is chosen after a move; …', Andrew: "after you move, we should auto-select your basic attack or your attack one …
++     so you don't have to select your attack to then start turning on the map."). This test was
++       'no action chosen, no arrow: pointing anywhere draws none; once its movement is spent it still draws none'
++     and ended  expect(P.facts().reach).toEqual([]); expect(P.facts().aim).toBeNull()  after the walk. "No action chosen, no
++     arrow" (2026-10-01) stands and is held as it was, before the walk and again once the choice is taken back; what the ruling
++     changes is that after the walk an action IS chosen — the unit's attack one — so its arrow is drawn. */
++  it('no action chosen, no arrow: pointing anywhere draws none; once it has moved its attack one is chosen by itself, and with that taken back pointing draws none again', () => {
+     const { s, P, h } = acting(/warrior/)
+     const far = s.ctx.state.units.find((u) => u.side === 'enemy')!.hex
+@@ -39,5 +46,9 @@ describe('choosing what the hero does', () => {
+     expect(s.ctx.state.units[h.id]!.hex).toBe(step)
+     P.input({ kind: 'point', hex: far })
+-    expect(P.facts().reach).toEqual([]); expect(P.facts().aim).toBeNull()
++    const one = s.ctx.state.units[h.id]!.actions.find((id) => isAttack(s.ctx.actions[id]!))!
++    expect(P.facts().reach).toEqual([]); expect(P.facts().slot, 'attack one is chosen by itself').toBe(one); expect(P.facts().aim, 'so its arrow is drawn').not.toBeNull()
++    /* taken back (a right-click): no action chosen, no arrow */
++    expect(P.input({ kind: 'back' })).toBe(true); P.input({ kind: 'point', hex: far })
++    expect(P.facts().slot).toBeNull(); expect(P.facts().aim).toBeNull()
+   })
+   it('an attack chosen, the arrow reaches no further than its reach — the engine\'s — toward the pointer', () => {
+diff --git a/test/tutorial-orphanage-enemy-turn.test.ts b/test/tutorial-orphanage-enemy-turn.test.ts
+index 4fa3021..39d00ad 100644
+--- a/test/tutorial-orphanage-enemy-turn.test.ts
++++ b/test/tutorial-orphanage-enemy-turn.test.ts
+@@ -30,5 +30,9 @@ describe('kingdom.tutorial-orphanage-enemy-turn — attacks in reach, the enemy\
+     expect(row(ATTACK), ATTACK).toBeDefined(); expect(row(NUMBERS), NUMBERS).toBeDefined(); expect(row(PANEL), PANEL).toBeDefined(); expect(row(PHASES), PHASES).toBeDefined()
+     expect(row(ATTACK)).toMatchObject({ encounterId: ORPHANAGE, starts: 'attack-in-reach', ends: 'attacked', of: 'hero', point: { at: 'attack-slot' },
+-      words: ['An enemy is in range.', 'Choose an attack, then click the enemy to see your chance to hit and the damage.', 'Click it again to attack.'] })
++      /* Law 10, 2026-10-05 — kingdom.attack-one-armed-after-move (engine DECISIONS.md 2026-10-05 'the battle screen must feel smooth: …;
++         attack one is chosen after a move; …', Andrew: "after you move, we should auto-select your basic attack or your attack one"):
++         the row's words were ["An enemy is in range.", "Choose an attack, then click the enemy to see your chance to hit and the damage.", "Click it again to attack."] —
++         the player no longer has to choose an attack after a move, so the lesson says what happens now. Everything else of the row is held as it was. */
++      words: ['An enemy is in range.', 'After you move, your first attack is chosen for you: click the enemy to see your chance to hit and the damage.', 'Click it again to attack. To use another attack, click it on the bar first.'] })
+     expect(row(NUMBERS)).toMatchObject({ encounterId: ORPHANAGE, starts: 'event', event: { type: 'phase.begin', phase: 'enemy' }, ends: 'time', holds: true, look: 'enemy',
+       point: [{ at: 'enemy-move-number' }, { at: 'enemy-attack-number' }],
+```
+</details>
+
+## kingdom.move-click-setting — LANDED `ce70d89`
+2026-10-05 20:12
+
+  PASS  dependencies landed
+  WARN  not already decided — 2 candidate ruling(s) — READ BEFORE ASKING: SWITCHES.md:2402 · SWITCHES.md:2247
+  PASS  typecheck
+  PASS  the item's own tests — test/move-click-setting.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — kingdom/test/move-click-setting.test.ts
+  PASS  existing tests untouched
+  SKIPPED  control battles unchanged — engine code f9fdfb5dde and the content pack are the ones the control battles last passed on (2026-10-05 17:45, gate capability.summons --land, in HBT-worker-engine) — not run
   PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
   PASS  hardcode scan — core knows mechanisms, never names
   PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
@@ -36746,3 +37421,7 @@ index cafa136..3b81571 100644
          expect(hash(ctx.state), 'full set-bonus state').toBe(setBonusExpected.state)
 ```
 </details>
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
