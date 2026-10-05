@@ -7,7 +7,8 @@
 // state before and after the move, and reports what the engine does to the move".
 // The bar is read against the ENGINE's own state at each step — the unit's moveUsed and movePointsLeft, and whether the engine
 // would still take a use of each move action (the page's own play facts carry the answer; the engine's unit is read beside
-// it). Two heroes: the first walks ONE hex (its move begun, not walked out), the second walks as far as it can.
+// it). Two heroes: the first walks as far as it can, the second walks ONE hex (its move begun, not walked out) - swapped
+// 2026-10-04 with engine rule.walked-unit-has-moved (the Law 10 note at step 2).
 // Prints one line per step, the findings for Andrew, and `bar-moves-grey-when-done: … passed`.
 import assert from 'node:assert/strict'
 import {bootSlice} from './atlas-dom.mjs'
@@ -36,48 +37,50 @@ assert.deepEqual(greyed(),[]);assert.deepEqual(disabled(),[]);assert.deepEqual(V
 assert.ok(movesOf(a).length>=2,`${A.name} has its basic move and another movement power`)
 const [basicA,...othersA]=movesOf(a)
 say(`1 ${A.name} begins: ${rows().length} buttons, none greyed, none disabled (moves: ${movesOf(a).map(id=>ctx().actions[id].name).join(', ')})`)
-// 2. it walks ONE hex: its movement action is spent, its movement is not walked out — the engine still offers the rest
-const near=V().play.reach.find(x=>dist(A.hex,x)===1);assert.ok(near!==undefined,'a hex one step away')
-const budget=A.movePointsLeft
-walkTo(near)
-assert.equal(acting(),a,'still its Activation');assert.equal(A.moveUsed,true,'the engine: its movement action is spent');assert.ok(A.movePointsLeft>0&&A.movePointsLeft<budget,'and it has movement left')
-const restA=V().play.slot===basicA?V().play.reach.length:offered(basicA)
-assert.ok(restA>0,'the engine still offers the rest of the basic move')
-/* Law 10, 2026-10-04 — rule.walked-unit-has-moved (engine item; engine DECISIONS.md 2026-10-04 'after the backlog run: ... moves are refused once a unit has walked ...': asked "Once a unit has walked, should Leap and Side Roll grey out and be refused? Today the engine still accepts them." - "2 yes"): this step held what the engine did
-   before the ruling - "so the host names no move as done … and the bar greys nothing", because a Leap or a Side Roll was still taken after a
-   walk. The engine now takes no OTHER movement from a unit that has walked, so after one hex the hero's other movement powers are done and
-   greyed, and its basic move - the rest of the walk - is not.
-   was: assert.deepEqual(V().play.moveDone,[],'so the host names no move as done');assert.deepEqual(greyed(),[],'and the bar greys nothing') */
-assert.equal(A.walked,true,'the engine: it has walked')
-assert.ok(!V().play.moveDone.includes(basicA)&&!greyed().includes(basicA),'the basic move is not done: the rest of the walk is still offered')
-assert.deepEqual([...V().play.moveDone].sort(),[...othersA].sort(),'the host names every other movement of the hero as done');assert.deepEqual(greyed().slice().sort(),[...othersA].sort(),'and the bar greys exactly those')
-for(const id of othersA)assert.equal(offered(id),0,`${ctx().actions[id].name} is greyed and the engine takes no use of it`)
-say(`2 after a walk of one hex: the engine's unit has moveUsed=true and walked=true, ${A.movePointsLeft} of ${budget} movement left, and still takes ${ctx().actions[basicA].name} to ${restA} hexes (as its primary action) — not greyed; ${othersA.map(id=>ctx().actions[id].name).join(', ')} greyed: the engine takes no other movement after a walk`)
-V().dom.root.querySelector('#playEndAct').handlers.click({});settle()
-// 3. the next hero walks as far as it can: its basic move is done
-const b=acting(),B=unit(b);assert.notEqual(b,a)
-assert.deepEqual(greyed(),[],`${B.name} begins with nothing greyed`)
-const [basicB,...othersB]=movesOf(b)
-const far=[...V().play.reach].sort((x,y)=>dist(B.hex,y)-dist(B.hex,x)||x-y)[0],steps=dist(B.hex,far)
-walkTo(far)
-assert.equal(acting(),b,'still its Activation');assert.equal(B.hex,far)
-assert.deepEqual([B.moveUsed,B.movePointsLeft],[true,0],`the engine: ${B.name} walked ${steps} hexes and its movement is spent`)
-assert.ok(V().play.moveDone.includes(basicB),'the host names the basic move as done')
-assert.ok(greyed().includes(basicB),'and its button is slightly greyed')
-/* Law 10, 2026-10-04 — rule.walked-unit-has-moved (the note at step 2): "a movement power the engine still takes stays at full strength" held
-   Leap and Side Roll un-greyed after the whole walk. The engine takes none now: every move action of the hero is done.
-   was: const still=othersB.filter(id=>!V().play.moveDone.includes(id))
+/* Law 10, 2026-10-04 — rule.walked-unit-has-moved (engine item; engine DECISIONS.md 2026-10-04 'after the backlog run: ... moves are refused
+   once a unit has walked ...': asked "Once a unit has walked, should Leap and Side Roll grey out and be refused? Today the engine still
+   accepts them." - "2 yes"). Steps 2 and 3 held what the engine did BEFORE the ruling: after a walk of one hex "the host names no move as done
+   … and the bar greys nothing", and after the whole walk "Leap, Side Roll … stay at full strength because the engine still takes them". The
+   engine now takes no OTHER movement from a unit that has walked. The two readings are kept and their heroes swapped, for this reason: a
+   hero whose whole movement is walked out and who has nothing else left now ends its Activation by itself (viewer.auto-end-no-actions,
+   "No remaining actions possible") - there is no bar to read - so the whole walk is the FIRST hero's (it still has its shield's powers),
+   and the walk of one hex is the next hero's.
+   was (step 2, the first hero after one hex): assert.deepEqual(V().play.moveDone,[],'so the host names no move as done');assert.deepEqual(greyed(),[],'and the bar greys nothing')
+   was (step 3, the next hero after its whole movement): const still=othersB.filter(id=>!V().play.moveDone.includes(id))
         for(const id of still){assert.ok(!greyed().includes(id));assert.ok(offered(id)>0,`… is not greyed because the engine still takes it`)} */
-assert.ok(othersB.length>0,`${B.name} has another movement power`)
-assert.deepEqual([...V().play.moveDone].sort(),[...movesOf(b)].sort(),'the host names every move action as done: the basic move walked out, the others closed by the walk')
-const still=othersB.filter(id=>!V().play.moveDone.includes(id))
-assert.deepEqual(still,[],'no other movement power is still taken')
+// 2. it walks as far as it can: every move action is done — the basic move walked out, the others closed by the walk
+const far=[...V().play.reach].sort((x,y)=>dist(A.hex,y)-dist(A.hex,x)||x-y)[0],steps=dist(A.hex,far)
+walkTo(far)
+assert.equal(acting(),a,'still its Activation: it has powers left');assert.equal(A.hex,far)
+assert.deepEqual([A.moveUsed,A.movePointsLeft,A.walked],[true,0,true],`the engine: ${A.name} walked ${steps} hexes, its movement is spent and it has walked`)
+assert.ok(V().play.moveDone.includes(basicA),'the host names the basic move as done')
+assert.ok(greyed().includes(basicA),'and its button is slightly greyed')
+assert.deepEqual([...V().play.moveDone].sort(),[...movesOf(a)].sort(),'the host names every move action as done')
 for(const id of V().play.moveDone)assert.equal(offered(id),0,`${ctx().actions[id].name} is greyed and the engine takes no use of it`)
 assert.deepEqual(greyed().slice().sort(),[...V().play.moveDone].sort(),'the greyed buttons are exactly the moves the host names')
 // nothing else greys: every attack and power is at full strength, and nothing looks disabled
 for(const r of rows())if(!isMove(r.dataset.act))assert.ok(!has(r,'moveDone')&&!has(r,'cool'),`${r.dataset.act} is at full strength`)
 assert.deepEqual(disabled(),[],'no button wears the disabled look: the slight grey is its own')
-say(`3 after ${B.name} walks its whole movement (${steps} hexes): ${greyed().map(id=>ctx().actions[id].name).join(', ')} slightly greyed; ${still.map(id=>ctx().actions[id].name).join(', ')||'no other movement power'} still at full strength (the engine still takes ${still.length>1?'them':'it'}, as the primary action); attacks and powers untouched`)
+say(`2 after ${A.name} walks its whole movement (${steps} hexes): ${greyed().map(id=>ctx().actions[id].name).join(', ')} slightly greyed - the engine takes no movement from it now (walked=true); attacks and powers untouched`)
+V().dom.root.querySelector('#playEndAct').handlers.click({});settle()
+// 3. the next hero walks ONE hex: its movement action is spent, its movement is not walked out — the engine still offers the rest,
+//    and no other movement
+const b=acting(),B=unit(b);assert.notEqual(b,a)
+assert.deepEqual(greyed(),[],`${B.name} begins with nothing greyed`)
+const [basicB,...othersB]=movesOf(b)
+assert.ok(othersB.length>0,`${B.name} has its basic move and another movement power`)
+const near=V().play.reach.find(x=>dist(B.hex,x)===1);assert.ok(near!==undefined,'a hex one step away')
+const budget=B.movePointsLeft
+walkTo(near)
+assert.equal(acting(),b,'still its Activation');assert.equal(B.moveUsed,true,'the engine: its movement action is spent');assert.ok(B.movePointsLeft>0&&B.movePointsLeft<budget,'and it has movement left')
+assert.equal(B.walked,true,'the engine: it has walked')
+const restB=V().play.slot===basicB?V().play.reach.length:offered(basicB)
+assert.ok(restB>0,'the engine still offers the rest of the basic move')
+assert.ok(!V().play.moveDone.includes(basicB)&&!greyed().includes(basicB),'the basic move is not done: the rest of the walk is still offered')
+assert.deepEqual([...V().play.moveDone].sort(),[...othersB].sort(),'the host names every other movement of the hero as done');assert.deepEqual(greyed().slice().sort(),[...othersB].sort(),'and the bar greys exactly those')
+for(const id of othersB)assert.equal(offered(id),0,`${ctx().actions[id].name} is greyed and the engine takes no use of it`)
+for(const r of rows())if(!isMove(r.dataset.act))assert.ok(!has(r,'moveDone')&&!has(r,'cool'),`${r.dataset.act} is at full strength`)
+say(`3 after ${B.name} walks one hex: the engine's unit has moveUsed=true and walked=true, ${B.movePointsLeft} of ${budget} movement left, and still takes ${ctx().actions[basicB].name} to ${restB} hexes (as its primary action) — not greyed; ${othersB.map(id=>ctx().actions[id].name).join(', ')} greyed: the engine takes no other movement after a walk`)
 // 4. the grey leaves with the Activation: the next unit's bar is at full strength
 V().dom.root.querySelector('#playEndAct').handlers.click({});settle()
 assert.notEqual(acting(),b);assert.deepEqual(greyed(),[]);assert.deepEqual(V().play.moveDone,[])
