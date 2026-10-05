@@ -146,7 +146,10 @@ describe('kingdom.opening-recap-decisive — a victory in which a civilian was h
     expect(recap, 'no second reading of hurt in the screen').not.toMatch(/civilianLines\.length === 0|fates\.every\(/)
     const grade = src.slice(src.indexOf('export function outcomeOf'), src.indexOf('const TITLE'))
     expect(grade.match(/isUnhurt\(/g)?.length, 'the title\'s grade asks isUnhurt, once').toBe(1)
-  })
+  // 2026-10-04 (the engine worker, landing rule.walked-unit-has-moved): this test settles 54 Orphanages and had no time limit of its own, so it sat on
+  // vitest's 5 s default - measured alone at 4.4 to 5.2 s here, with and without the engine change, and over 5 s every time inside the
+  // suite (three runs). A time limit of its own; no assertion is changed (kingdom SWITCHES recapDecisiveTimeLimit).
+  }, 60000)
 
   it('the page: on the built BATTLE-SANDBOX.html a won Orphanage with nobody hurt reads DECISIVE VICTORY, and one won with a civilian dead does not', () => {
     const out = execFileSync(process.execPath, ['tools/opening-recap-decisive.verify.mjs', 'BATTLE-SANDBOX.html'], { cwd: '../kingdom', encoding: 'utf8', maxBuffer: 1 << 24 })
