@@ -85,5 +85,13 @@
   "spec": "Ruled 2026-10-03 (Andrew, engine/DECISIONS.md 'the post's twelve questions answered', 6: two shield reactions - the shield blocks the blow; the blow lands anyway). Today every hero body's `hit` reaction is the shield-block clip (shield_blockleft), shield or no shield. Find or fit a getting-hit reaction that is not a block for the hero bodies - the blow lands - from the project's packs first (PRODUCTION-START.md), shown to Andrew for approval. Record it so viewer.shield-block-and-hit can bind it: the block stays the shield's, the new reaction is everyone's.",
   "expect": "A review page shows the getting-hit reaction beside the shield block on a hero body with and without a shield for Andrew to approve by eye; the approval is recorded; hero bodies still lacking it are printed by name.",
   "note": "Filed by the kingdom chat from Andrew's ruling, 2026-10-03. Not one of the four he was asked about; from the same coverage list (ART-NOTES.md 2026-10-03)."
+ },
+ {
+  "id": "art.wolf-model",
+  "kind": "art",
+  "shape": "data",
+  "spec": "Filed 2026-10-05 by engine capability.summons (engine/DECISIONS.md 2026-10-04 'his 28 reward weapons read back ...': 'We need: summons'; the item's own words: 'if the Wolf has no model the viewer shows its stand-in and the art need is filed in the art queue by name'). The Staff of Summoning's Call the Wolf puts a Wolf (unit.wolf, content/gen/enemies-authored.json) on the board on the heroes' side. unit.wolf has no 3D model bound, so it stands as a 2D token (node viewer/tools/character-models.mjs --list does not list it). Start at assets/characters/PRODUCTION-START.md. The hounds' bodies are built on the wolf rig (assets/characters/wolf/hounds/bloodhound.glb, hellhound.glb) and are the candidate anatomy and motions: an idle, a move, an attack for each of Pounce and Nip (or one shared), a hit and a death. Its card art is the bestiary's (assets/cards/enemies/wolf.png).",
+  "expect": "unit.wolf is listed by viewer/tools/character-models.mjs with a model of its own, and a summoned Wolf stands, walks, attacks, is hit and dies as a 3D body in a battle; shown to Andrew for approval before it is bound.",
+  "note": "Filed by the engine worker 2026-10-05."
  }
 ]
