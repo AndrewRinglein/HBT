@@ -1609,7 +1609,7 @@ export function applyCam(V, opts = {}) {
   if (!fit && !view.home && camF.x != null) view.home = { x: camF.x, y: camF.y }     // the starting view Reset returns to
   view.noVoid = tactical && !fit                                                     // the glide's frames keep to the board too
   view.zoomAbout = anchored                                                         // (read by the wheel's ease, setPose)
-  setPose(V, { x: cx, y: cy / k, yaw, tilt, zoom: s, past: !!view.pastEdge || (held && beyond()) })
+  setPose(V, { x: cx, y: cy / k, yaw, tilt, zoom: s, past: !!view.pastEdge || (held && beyond()), wide: out && s < zfill * (1 - 1e-9) })
   syncCamBar(V)
   /* the HUD says only what the camera is doing (Law 5: the export's outcome,
      turn count and engine stamp are the harness's to print, and a replay must
@@ -1677,7 +1677,7 @@ function zoomFrame(V, A) {
   const g = A.about, r = a.zoom / zoom
   const mid = { ...b, x: g ? g.x + (a.x - g.x) * r : a.x + (b.x - a.x) * p, y: g ? g.y + (a.y - g.y) * r : a.y + (b.y - a.y) * p, yaw, tilt: a.tilt + (b.tilt - a.tilt) * p, zoom }
   A.shownAt = now; A.vShown = v
-  showPose(V, V.view.noVoid ? onBoard(V, mid, !a.past && !b.past, Math.min(a.zoom, b.zoom)) : mid)
+  showPose(V, V.view.noVoid ? onBoard(V, mid, !a.past && !b.past, a.wide || b.wide ? Math.min(a.zoom, b.zoom) : Infinity) : mid)
   V.camRaf = requestAnimationFrame(() => glideFrame(V))
 }
 function glideFrame(V) {
@@ -1688,7 +1688,7 @@ function glideFrame(V) {
   const turn = ((b.yaw - a.yaw) % 360 + 540) % 360 - 180                              // the short way round
   let yaw = a.yaw + turn * e; yaw = ((yaw + 180) % 360 + 360) % 360 - 180
   const mid = { x: a.x + (b.x - a.x) * e, y: a.y + (b.y - a.y) * e, yaw, tilt: a.tilt + (b.tilt - a.tilt) * e, zoom: a.zoom * Math.pow(b.zoom / a.zoom, e) }
-  showPose(V, t >= 1 ? b : V.view.noVoid ? onBoard(V, mid, !a.past && !b.past, Math.min(a.zoom, b.zoom)) : mid)
+  showPose(V, t >= 1 ? b : V.view.noVoid ? onBoard(V, mid, !a.past && !b.past, a.wide || b.wide ? Math.min(a.zoom, b.zoom) : Infinity) : mid)
   if (t < 1) V.camRaf = requestAnimationFrame(() => glideFrame(V)); else V.camAnim = null
 }
 /** the board's own box at a zoom (iso px): where the view's centre may stand so that the battle area shows only board. `fp` is
@@ -1714,8 +1714,9 @@ function ownBox(V, fp, zoom, fit, std) {
 function onBoard(V, pose, toBoard = false, least = Infinity) {
   const { W, H } = viewportOf(V), F = V.data.F, fp = groundFootprint(boardAffine(V), { ...pose, zoom: 1 }, { w: W, h: H })
   if (!fp) return pose
-  /* (viewer.zoom-stays: a glide to or from a view the wheel pulled back past the fill is not brought nearer than its own
-     two ends — `least`, the farther of them — on the way) */
+  /* (viewer.zoom-stays: a glide to or from a view the wheel pulled back past the fill — pose.wide — is not brought nearer
+     than its own two ends on the way: `least`, the farther of them. Every other glide's frames are brought as near as fills
+     the view, as they were: turned part-way between two quarters, the board fills the view only from nearer than either end.) */
   const zoom = Math.max(pose.zoom, Math.min(least, Math.max((fp.r - fp.l) / F.w, (fp.b - fp.t) / F.h)))
   /* viewer.camera-shows-edge-units: the frame is held to the same bound as every view — the board's own box at this frame's
      zoom and angle, grown as far as the outermost hexes need */
