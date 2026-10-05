@@ -63,7 +63,7 @@ export function drawHexTip(V) {
   const wrap = V.dom.stage.parentNode, hex = V.view.pointHex
   let tip = V.dom.hexTip
   if (hex == null || !wrap || !V.camera3d) { if (tip) tip.style.display = 'none'; return }
-  if (!tip) { tip = V.dom.hexTip = document.createElement('div'); tip.id = 'hexTip'; tip.setAttribute('role', 'tooltip'); wrap.appendChild(tip) }
+  if (!tip) { tip = V.dom.hexTip = document.createElement('div'); tip.id = 'hexTip'; tip.className = 'hbtNotice'; tip.setAttribute('role', 'tooltip'); wrap.appendChild(tip) }
   const T = hexTipOf(V.data, groundAt(V, hex)), key = hex + '|' + T.name + '|' + T.lines.join('|')
   if (tip.dataset.key !== key) {
     tip.dataset.key = key; tip.dataset.hex = String(hex)
