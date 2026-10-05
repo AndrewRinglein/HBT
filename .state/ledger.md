@@ -35224,3 +35224,125 @@ index 0000000..f8e67d2
   PASS  naming — new content ids use declared kinds
   PASS  naming — no banned words invented
   PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+## viewer.see-through-only-when-moved — LANDED `0e2acff` **NEEDS REVIEW**
+2026-10-05 12:19
+
+  PASS  dependencies landed
+  WARN  not already decided — 1 candidate ruling(s) — READ BEFORE ASKING: SWITCHES.md:1944
+  PASS  typecheck
+  PASS  the item's own tests — test/viewer.see-through-only-when-moved.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — viewer/test/viewer.see-through-only-when-moved.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/viewer.see-through-only-when-moved.test.ts (-3) — will land FLAGGED for review
+  SKIPPED  control battles unchanged — engine code f48a625458 and the content pack are the ones the control battles last passed on (2026-10-05 06:05, gate content.elfbow-double-shot-one-target --land, in HBT-worker-engine) — not run
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+ab21f8b
+
+diff --git a/test/viewer.see-through-only-when-moved.test.ts b/test/viewer.see-through-only-when-moved.test.ts
+index 3bd561e..9481bbf 100644
+--- a/test/viewer.see-through-only-when-moved.test.ts
++++ b/test/viewer.see-through-only-when-moved.test.ts
+@@ -9,8 +9,11 @@
+ // The sources' half — the runs counted frame by frame over 60 still frames, the structure against three's own raycast over
+ // 300 made scenes — is ../viewer/tools/see-through-only-when-moved.test.mjs (run here). The page's half is the frame-cost
+-// tool on the built page in real Chrome: the Orphanage and the Lumberjack House, their real scenes and bodies.
++// tool in real Chrome on a sandbox page built here from these sources (as test/viewer.no-hex-focus-border.test.ts builds its
++// own: the kingdom's committed page is rebuilt only after the viewer's gate): the Orphanage and the Lumberjack House, their
++// real scenes and bodies.
+ // Imports no page code.
+ import { describe, it, expect } from 'vitest'
+ import { execFileSync } from 'node:child_process'
++import { mkdirSync } from 'node:fs'
+ 
+ type Ms = { median: number; min: number; max: number }
+@@ -26,5 +29,7 @@ describe('viewer.see-through-only-when-moved', () => {
+ 
+   it('the built page, the Orphanage and the Lumberjack House: no check over 60 still frames; a still frame costs the same with the check due as without; one check under 4 ms; the same pieces as every triangle finds, at every view of a round', () => {
+-    const out = execFileSync(process.execPath, ['tools/frame-cost.mjs', 'orphanage', 'lumberjack', '--frames', '60', '--json'], { cwd: '../viewer', encoding: 'utf8', maxBuffer: 1 << 24, timeout: 560000 })
++    mkdirSync('../kingdom/scratch', { recursive: true })
++    execFileSync(process.execPath, ['tools/build-sandbox.mjs', 'scratch/see-through-only-when-moved.html'], { cwd: '../kingdom', stdio: 'pipe' })
++    const out = execFileSync(process.execPath, ['tools/frame-cost.mjs', 'orphanage', 'lumberjack', '--frames', '60', '--json', '--page', '../kingdom/scratch/see-through-only-when-moved.html'], { cwd: '../viewer', encoding: 'utf8', maxBuffer: 1 << 24, timeout: 560000 })
+     const rows = (JSON.parse(out) as { rows: Row[] }).rows
+     expect(rows.map((r) => r.battle)).toEqual(['encounter.opening.orphanage', 'encounter.opening.lumberjack'])
+@@ -51,4 +56,4 @@ describe('viewer.see-through-only-when-moved', () => {
+       expect(r.seeThrough!.withSomethingHiding, `${at}: and many of those views have a piece in the way — the two are not agreeing about nothing`).toBeGreaterThanOrEqual(r.seeThrough!.views / 4)
+     }
+-  }, 570000)
++  }, 780000)
+ })
+3a02560
+
+diff --git a/test/viewer.see-through-only-when-moved.test.ts b/test/viewer.see-through-only-when-moved.test.ts
+new file mode 100644
+index 0000000..3bd561e
+--- /dev/null
++++ b/test/viewer.see-through-only-when-moved.test.ts
+@@ -0,0 +1,54 @@
++// viewer.see-through-only-when-moved (engine backlog; engine DECISIONS.md 2026-10-05 'the battle screen must feel smooth: the
++// speed first; …' — Andrew: "I want this to feel smooth like a AAA game."). The rule that draws see-through whatever hides a
++// character (2026-10-01: "Anything blocking the view of a character is highly translucent" — kept exactly as it looks) was the
++// largest cost on the battle screen: about 100 ms a run on the Orphanage, every 120 ms for the whole battle whether or not
++// anything moved. Expect: "On the Orphanage with nothing moving, frame-cost's script ms with the see-through check and without
++// it read the same, and a test counting the check's runs over 60 still frames reads none after the first; while the view
++// scrolls one run is under 4 ms on every opening battle; a test holds a fixed camera and bodies on the Orphanage and on the
++// Lumberjack House and reads the same set of faded pieces before the change and after".
++// The sources' half — the runs counted frame by frame over 60 still frames, the structure against three's own raycast over
++// 300 made scenes — is ../viewer/tools/see-through-only-when-moved.test.mjs (run here). The page's half is the frame-cost
++// tool on the built page in real Chrome: the Orphanage and the Lumberjack House, their real scenes and bodies.
++// Imports no page code.
++import { describe, it, expect } from 'vitest'
++import { execFileSync } from 'node:child_process'
++
++type Ms = { median: number; min: number; max: number }
++type Measure = { frames: number; ms: Ms; checks?: number }
++type Row = { battle: string; flat?: boolean; note?: string; still: { withCheck: Measure; withoutCheck: Measure }; scrolling: { withCheck: Measure; withoutCheck: Measure }
++  seeThrough?: { views: number; same: number; withSomethingHiding: number; ms: { median: number; max: number }; plainMs: { median: number; max: number } }; pageErrors?: string[] }
++
++describe('viewer.see-through-only-when-moved', () => {
++  it('the sources: the check runs only when the camera or a standing body changed; the structure names the pieces three\'s raycast over every triangle names', () => {
++    const out = execFileSync(process.execPath, ['--test', '--test-reporter=tap', 'tools/see-through-only-when-moved.test.mjs'], { cwd: '../viewer', encoding: 'utf8', maxBuffer: 1 << 24, env: { ...process.env, VIEWER_PAGE: process.env.VIEWER_PAGE ?? '' } })
++    expect(out).toMatch(/# pass 6/); expect(out).toMatch(/# fail 0/)
++  }, 170000)
++
++  it('the built page, the Orphanage and the Lumberjack House: no check over 60 still frames; a still frame costs the same with the check due as without; one check under 4 ms; the same pieces as every triangle finds, at every view of a round', () => {
++    const out = execFileSync(process.execPath, ['tools/frame-cost.mjs', 'orphanage', 'lumberjack', '--frames', '60', '--json'], { cwd: '../viewer', encoding: 'utf8', maxBuffer: 1 << 24, timeout: 560000 })
++    const rows = (JSON.parse(out) as { rows: Row[] }).rows
++    expect(rows.map((r) => r.battle)).toEqual(['encounter.opening.orphanage', 'encounter.opening.lumberjack'])
++    for (const r of rows) {
++      const at = r.battle
++      expect(r.flat, `${at}: ${r.note}`).toBeFalsy(); expect(r.pageErrors ?? [], at).toEqual([])
++      // (1) nothing moving: the check does not run — 60 frames, each long enough after the last for it to fall due
++      expect(r.still.withCheck.frames, at).toBeGreaterThanOrEqual(60)
++      expect(r.still.withCheck.checks, `${at}: the check's runs over 60 still frames`).toBe(0)
++      expect(r.still.withoutCheck.checks, at).toBe(0)
++      // so a still frame costs the same whether or not the check was due (the same within the run-to-run spread of one frame)
++      const a = r.still.withCheck.ms.median, b = r.still.withoutCheck.ms.median
++      expect(Math.abs(a - b), `${at}: a still frame with the check due ${a} ms, without ${b} ms`).toBeLessThanOrEqual(Math.max(4, .5 * Math.max(a, b)))
++      expect(a, `${at}: and nowhere near the 54–90 ms it was`).toBeLessThan(45)
++      // while the view scrolls the check does run — the camera moves on every frame
++      expect(r.scrolling.withCheck.checks!, `${at}: while scrolling`).toBeGreaterThan(30)
++      // (2) one run costs under 4 ms
++      expect(r.seeThrough, `${at}: the page says what a check finds`).toBeTruthy()
++      expect(r.seeThrough!.ms.median, `${at}: one check, ms`).toBeLessThan(4)
++      // (3) what is drawn see-through is unchanged: at every view of the round — four quarters, scrolled at each — the pieces
++      // hiding a body are the pieces the rule as first written finds (every triangle of every tall piece)
++      expect(r.seeThrough!.views, at).toBeGreaterThanOrEqual(30)
++      expect(r.seeThrough!.same, `${at}: views where both name the same pieces`).toBe(r.seeThrough!.views)
++      expect(r.seeThrough!.withSomethingHiding, `${at}: and many of those views have a piece in the way — the two are not agreeing about nothing`).toBeGreaterThanOrEqual(r.seeThrough!.views / 4)
++    }
++  }, 570000)
++})
+```
+</details>
