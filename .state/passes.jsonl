@@ -50,3 +50,6 @@
 {"suite":"control","stamp":"5e86ba4301","pack":"e4b7af80a6","golden":"2a98bd088f","at":"2026-10-05T08:41:36.467Z","by":"gate content.orphanage-body-and-graves-cursed --land","in":"HBT-worker-engine","moved":null}
 {"suite":"engine","stamp":"49e52fef19","failed":true,"at":"2026-10-05T08:53:24.590Z","by":"gate --shard 1/1","in":"HBT-worker-engine"}
 {"suite":"control","stamp":"b31863a611","pack":"24ac096176","golden":"2a98bd088f","at":"2026-10-05T09:36:30.455Z","by":"gate capability.effect-lasts-activations --land","in":"HBT-worker-engine","moved":null}
+{"suite":"engine","stamp":"b31863a611","failed":true,"at":"2026-10-05T10:00:44.282Z","by":"gate --shard 1/1","in":"HBT-worker-engine"}
+{"suite":"engine","stamp":"c5f16f0991","failed":true,"at":"2026-10-05T10:29:21.364Z","by":"gate --shard 1/1","in":"HBT-worker-engine"}
+{"suite":"engine","stamp":"c5f16f0991","with":{"engine":"c5f16f0991","content":"8de9847058","viewer":"ffd21a0fb8","kingdom":"c5b9c50b79"},"at":"2026-10-05T10:35:45.560Z","by":"gate --shard (1 of 1)","in":"HBT-worker-engine","tests":2940}
