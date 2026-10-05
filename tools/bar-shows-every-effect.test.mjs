@@ -100,3 +100,20 @@ test('past the roster: every action row the engine has, and every trigger an ite
   assert.deepEqual(ridersOf(owner, { id: 'attack.a', attack: { kind: 'melee' } }, DD).map(t => t.id), ['x'], 'an attack carries the unscoped onHit, not the defender\'s onBlock')
   assert.deepEqual(triggersFor(owner, { id: 'attack.a', kind: 'melee', attack: { kind: 'melee' } }, DD, STATIC.statuses, () => ({ hue: '#fff' })).map(t => t.title), ['On hit: apply 1 Burn'])
 })
+
+/* capability.damage-from-two-stats (engine item, 2026-10-05; engine DECISIONS.md 2026-10-04 'his 28 reward weapons read back …':
+   "We do need that."; 'the Force Staff is Precision plus half Magic, as magic damage'): the bar's damage line says every term of
+   the sum, in the engine's own fields — never one stat alone. */
+test('an attack whose damage is a sum of terms says each on its line: the Force Blast, the Destroyer staffs, a stat of the attacker\'s own', () => {
+  const said = id => actionLines({ id, ...STATIC.actions[id] }, {}, D, STATIC.statuses).find(l => l.includes('Damage'))
+  assert.match(said('attack.force-staff.force-blast'), /Damage — \(PRE\w* \+ ½ party MAG\w*\)/)
+  assert.match(said('attack.staff-of-the-destroyer.ruin'), /\(PRE\w* \+ 2 × party MAG\w*\)/)
+  assert.match(said('attack.staff-of-the-ultimate-destroyer.annihilation'), /\(2 × PRE\w* \+ 2 × party MAG\w*\)/)
+  assert.match(said('attack.war-hammer.skullsplitter'), /\(STR\w* \+ ARM\w*/)
+  // an attack of one stat reads as it did
+  assert.match(said('attack.longsword.slash'), /\(STR\w* \+1\)/)
+  // every attack row the engine gives a second term is said so: no attack with terms shows a bare one-stat sum
+  let n = 0
+  for (const [id, a] of Object.entries(STATIC.actions)) { const p = a.attack; if (!p || !(p.addsStats?.length || p.statMult > 1)) continue; n++; assert.ok(/ \+ |× /.test(said(id).split('(')[1]), id + ': ' + said(id)) }
+  assert.ok(n > 15, n + ' attacks carry a second term')
+})
