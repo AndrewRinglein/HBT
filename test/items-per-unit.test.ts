@@ -72,7 +72,12 @@ describe('the invariant — no heroItems means the hero the converter used to fo
     // so both priests' `attacks` now differ from the pre-2026-09-02 oracle.
     // That is content moving, not the fold — the oracle is frozen on purpose.
     expect(differ).toEqual({
-      'hero.base.paladin-dark': ['crit'],
+      // Law 10, 2026-10-04 — content.greatsword-war-axe-reauthored (DECISIONS.md 2026-09-28 'counterattack, special free attacks, the opening six, shields, custom weapons' and the Armory Ledger approved that day): the Great Sword grants the
+      // Hew and the power Heavy Counterattack; its Great Cleave is gone, row and all. The two rows that hold a Great Sword field
+      // without the Great Cleave the frozen oracle folded - content moved, not the fold. Exactly that attack, held below.
+      // (was: 'hero.base.paladin-dark': ['crit'], and no row for 'hero.base.warrior-barbarian')
+      'hero.base.paladin-dark': ['attacks', 'crit'],
+      'hero.base.warrior-barbarian': ['attacks'],
       'hero.base.priest-armored': ['attacks'],
       // Law 10, 2026-10-04 — content.longsword-loses-stab (2026-10-04; DECISIONS.md 2026-10-04 'after the backlog run: ... the Longsword loses Stab ...', "3 yes"): the Longsword grants Slash alone,
       // so a row that holds one fields without the Stab the frozen oracle folded - content moved, not the fold. The oracle
@@ -141,6 +146,11 @@ describe('the invariant — no heroItems means the hero the converter used to fo
     // content.longsword-loses-stab (2026-10-04): the Raven's `attacks` differ by exactly the attacks the pack no longer holds - the Longsword's Stab
     expect(fieldedDef('hero.base.rogue-raven').attacks).toEqual((o['hero.base.rogue-raven']!['attacks'] as string[]).filter((a) => ATTACKS[a]))
     expect((o['hero.base.rogue-raven']!['attacks'] as string[]).filter((a) => !ATTACKS[a])).toEqual(['attack.longsword.stab'])
+    // content.greatsword-war-axe-reauthored (2026-10-04): the two Great Sword holders' `attacks` differ by exactly the Great Cleave
+    for (const id of ['hero.base.paladin-dark', 'hero.base.warrior-barbarian']) {
+      expect(fieldedDef(id).attacks, id).toEqual((o[id]!['attacks'] as string[]).filter((a) => ATTACKS[a]))
+      expect((o[id]!['attacks'] as string[]).filter((a) => !ATTACKS[a]), id).toEqual(['attack.greatsword.great-cleave'])
+    }
     expect(fieldedDef('hero.base.paladin-dark').crit).toBe((o['hero.base.paladin-dark']!['crit'] as number) - CRIT_BASE + ITEMS['item.rusted-plate']!.statModifiers.crit!)   // Law 10, fix.codex-numbers: the oracle's total, less the base (above)
     expect(fieldedDef('hero.base.priest-pauper').luck).toBe(ITEMS['item.nice-robes']!.statModifiers.luck)
     // fix.starting-kit-powers (2026-10-04): the `abilities` that differ are exactly the three powers, and nothing else

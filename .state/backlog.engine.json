@@ -5674,7 +5674,10 @@
   ],
   "spec": "Ruled 2026-09-28 (the Armory Ledger Andrew approved that day: C:/Users/aring/Desktop/Heroes of Blight and Tragic/CONTENT-DRAFTS/2026-09-28-armory-ledger/ledger-rows.json, keys greatsword, war-axe; engine DECISIONS.md 'counterattack, special free attacks, the opening six, shields, custom weapons') and never landed (the weapon audit, 2026-10-04): two weapons base heroes carry are still the old ones. Great Sword: +5 Block (the Ledger shows +5 with a flag; +10 was 2026-09-20 - take the Ledger's +5 and record it), basic attack Strength +2 at 1 Stamina, and the power Counterattack with +2 Strength until the end of your next turn at 2 Stamina (today Hew and Great Cleave). War Axe: basic attack Strength +1 at -10 Accuracy, 1 Stamina, on block the target loses 20 Block; Heavy chop Strength +3 at -15 Accuracy, 2 Stamina, on block the same (today Chop with no Accuracy penalty and Hack with Bleed). Author both exactly as the Ledger rows read, through the Codex and the content pipeline; keep each attack's existing id where the attack is the same thing renamed, and say which ids changed; derived rows (enchanted, masterwork and custom greatswords and war axes) follow their base. The Longsword's '+10 counterattack' while equipped and the Great Sword's are the free-attack Accuracy stat of capability.free-attack-accuracy - leave that clause as a named gap here. Tests, fixtures and the bar-audit roster that name Hew, Great Cleave or Hack are rewritten as the rule with dated Law 10 notes. Rebuild the Codex's outputs, the pack, the viewer's dumps and recordings and the kingdom pages; the control battles move (the Alpha Team) - say so.",
   "expect": "A hero holding the Great Sword has its basic attack (Strength +2, 1 Stamina) and Counterattack with +2 Strength, +5 Block; a hero holding the War Axe has the basic attack at -10 Accuracy and Heavy chop at -15, each stripping 20 Block on a block; the Codex, the published content and the pack agree; no test names an attack the rows no longer grant.",
-  "note": "Filed by the kingdom chat, 2026-10-04, from the weapon audit."
+  "note": "Filed by the kingdom chat, 2026-10-04, from the weapon audit.",
+  "changesBaseline": true,
+  "status": "done-needs-review",
+  "sha": "bed7d72"
  },
  {
   "id": "fix.enchant-stats-on-weapon",

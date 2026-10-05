@@ -31138,3 +31138,110 @@ index c107731..b015516 100644
      })
 ```
 </details>
+
+## content.greatsword-war-axe-reauthored — LANDED `bed7d72` **NEEDS REVIEW**
+2026-10-05 04:02
+
+  PASS  dependencies landed
+  WARN  not already decided — 4 candidate ruling(s) — READ BEFORE ASKING: SWITCHES.md:2325 · SWITCHES.md:2158
+  PASS  typecheck
+  PASS  the item's own tests — test/battle-cursor.test.ts, test/items-per-unit.test.ts, test/v2-shields.test.ts, test/greatsword-war-axe-reauthored.test.ts
+  PASS  gate 1 — the id appears in a real battle — item.greatsword: 2 log lines, 2 fired, 2 changed state
+  PASS  brought its own tests — test/battle-cursor.test.ts, test/items-per-unit.test.ts, test/v2-shields.test.ts, test/fixtures/battle-cursor-greatsword-war-axe-reauthored.json, test/greatsword-war-axe-reauthored.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/battle-cursor.test.ts (-2), test/items-per-unit.test.ts (-1), test/v2-shields.test.ts (-1) — will land FLAGGED for review
+  PASS  control battles unchanged — will re-bless at commit — this item DECLARED it changes the control battles: map.open b47d4e88->a2e08b0e, map.ridge aedb5e15->0315184b, map.flanks f4280019->0253d143, map.highlands b2c4e801->f5b4becb, map.field 89020cef->ab39f835, map.thicket 635b9d13->9aafd119, map.proving.open 224dddc0->a475f0c2, map.proving.ridge 9c6868e5->aeba1dbf, map.proving.ford 8c429500->b6a62b96, map.proving.copse f414f619->701389ef, map.proving.ruin ee1b9e85->af223623, map.courtyard 77eee01c->191bf406, map.floodplain fb76e4db->f127e5ad, test.map.embers 1a7d9f3c->bc438bce, test.map.showcase 0dfdd8db->d5f78e89, test.map.duel-8 eb1901c7->3c4defbd, test.map.dungeon-16x8 dd56c799->5107f8bb, test.map.horde-24 4762d3c9->08fc992f, test.map.journey-20x10 193fa9c4->aa1f0cde, test.map.authored-40x40 9feed079->9cd419f7, test.map.high-prop-single ad8efc30->d124d53e, test.map.high-prop-multi a2da545e->023f3ae8, test.map.well-shove 9931f8b5->0df694e7
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — shape 'data' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without item.greatsword — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/battle-cursor.test.ts b/test/battle-cursor.test.ts
+index e2941db..2b6533e 100644
+--- a/test/battle-cursor.test.ts
++++ b/test/battle-cursor.test.ts
+@@ -422,4 +422,11 @@ const kitAttackClausesGolden = JSON.parse(readFileSync(new URL('./fixtures/battl
+ // Every case frozen here (tools/capture-shields-reauthored-cursor.mts). Moved: showcase.alpha-team, showcase.assembled-party, showcase.eve-24-a, showcase.eve-24-b, showcase.gash-variant, showcase.horrors, showcase.item-powers, showcase.kiln, showcase.prologue-party, showcase.rime, showcase.supper, showcase.surrounded, showcase.waystation, test.caravan-aftermath, test.counterattack, test.fend, test.item-uses, test.opening-bridge, test.opening-cathedral, test.opening-cavern-trail, test.opening-gates. A `changed` case is checked here and skips the older layers.
+ const shieldsReauthoredGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-shields-reauthored.json', import.meta.url), 'utf8'))
++// content.greatsword-war-axe-reauthored (2026-10-04; DECISIONS.md 2026-09-28 'counterattack, special free attacks, the opening six, shields,
++// custom weapons' and the Armory Ledger approved that day), Law 10: the Great Sword is +5 Block with the Hew at 1 Stamina and the power
++// Heavy Counterattack (its Great Cleave is gone); the War Axe's Chop is -10 Accuracy and its second attack is Heavy Chop (Strength +3, -15
++// Accuracy, no Crit, no Bleed). A holder's attacks, costs and numbers are part of the state and of every roll it makes, so every case that
++// fields a Great Sword or a War Axe moves - the Alpha Team's among them.
++// Every case frozen here (tools/capture-greatsword-war-axe-reauthored-cursor.mts). Moved: showcase.alpha-team (text only), showcase.assembled-party, showcase.eve-24-a, showcase.eve-24-b (text only), showcase.gash-variant (text only), showcase.horrors, showcase.item-powers (text only), showcase.kiln, showcase.prologue-party, showcase.rime, showcase.supper, showcase.surrounded, showcase.waystation, test.back-flip (text only), test.counterattack (text only), test.fend, test.flaming-longsword (text only), test.flaming-war-axe, test.item-uses, test.opening-cathedral (text only), test.opening-cavern-trail (text only), test.opening-gates (text only), test.swap (text only), progression-surge-0, progression-surge-1, progression-surge-2. A `changed` case is checked here and skips the older layers.
++const greatswordWarAxeReauthoredGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-greatsword-war-axe-reauthored.json', import.meta.url), 'utf8'))
+ const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
+ // Explicit rule migration, not regenerated historical hashes. These nine old
+@@ -561,5 +568,8 @@ describe('resumable battle cursor', () => {
+       const kitAttackClausesExpected = kitAttackClausesGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+       const shieldsReauthoredExpected = shieldsReauthoredGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+-      const shieldsReauthoredMoved = shieldsReauthoredExpected?.changed === true
++      const greatswordWarAxeReauthoredExpected = greatswordWarAxeReauthoredGolden.cases.find((row:{id:string})=>row.id===fixture.id)
++      const greatswordWarAxeReauthoredMoved = greatswordWarAxeReauthoredExpected?.changed === true
++      // was: const shieldsReauthoredMoved = shieldsReauthoredExpected?.changed === true — a case content.greatsword-war-axe-reauthored moved skips this layer too (content.greatsword-war-axe-reauthored 2026-10-04)
++      const shieldsReauthoredMoved = shieldsReauthoredExpected?.changed === true || greatswordWarAxeReauthoredMoved
+       // was: const kitAttackClausesMoved = kitAttackClausesExpected?.changed === true — a case content.shields-reauthored moved skips this layer too (content.shields-reauthored 2026-10-04)
+       const kitAttackClausesMoved = kitAttackClausesExpected?.changed === true || shieldsReauthoredMoved
+@@ -701,5 +711,12 @@ describe('resumable battle cursor', () => {
+           }
+         } else result = battle.runBattle(ctx)
+-        if (shieldsReauthoredExpected) {
++        if (greatswordWarAxeReauthoredExpected) {
++        expect(hash(ctx.events), 'full greatsword-war-axe-reauthored events').toBe(greatswordWarAxeReauthoredExpected.events)
++        expect(hash(ctx.state), 'full greatsword-war-axe-reauthored state').toBe(greatswordWarAxeReauthoredExpected.state)
++        expect(hash(ctx.rng.log), 'full greatsword-war-axe-reauthored RNG').toBe(greatswordWarAxeReauthoredExpected.rng)
++        expect(result).toEqual(greatswordWarAxeReauthoredExpected.result)
++        }
++        // was: if (shieldsReauthoredExpected) { — content.greatsword-war-axe-reauthored (2026-10-04): a case it moved is checked above instead
++        if (shieldsReauthoredExpected && !greatswordWarAxeReauthoredMoved) {
+         expect(hash(ctx.events), 'full shields-reauthored events').toBe(shieldsReauthoredExpected.events)
+         expect(hash(ctx.state), 'full shields-reauthored state').toBe(shieldsReauthoredExpected.state)
+diff --git a/test/items-per-unit.test.ts b/test/items-per-unit.test.ts
+index ee28075..3a474b7 100644
+--- a/test/items-per-unit.test.ts
++++ b/test/items-per-unit.test.ts
+@@ -73,5 +73,10 @@ describe('the invariant — no heroItems means the hero the converter used to fo
+     // That is content moving, not the fold — the oracle is frozen on purpose.
+     expect(differ).toEqual({
+-      'hero.base.paladin-dark': ['crit'],
++      // Law 10, 2026-10-04 — content.greatsword-war-axe-reauthored (DECISIONS.md 2026-09-28 'counterattack, special free attacks, the opening six, shields, custom weapons' and the Armory Ledger approved that day): the Great Sword grants the
++      // Hew and the power Heavy Counterattack; its Great Cleave is gone, row and all. The two rows that hold a Great Sword field
++      // without the Great Cleave the frozen oracle folded - content moved, not the fold. Exactly that attack, held below.
++      // (was: 'hero.base.paladin-dark': ['crit'], and no row for 'hero.base.warrior-barbarian')
++      'hero.base.paladin-dark': ['attacks', 'crit'],
++      'hero.base.warrior-barbarian': ['attacks'],
+       'hero.base.priest-armored': ['attacks'],
+       // Law 10, 2026-10-04 — content.longsword-loses-stab (2026-10-04; DECISIONS.md 2026-10-04 'after the backlog run: ... the Longsword loses Stab ...', "3 yes"): the Longsword grants Slash alone,
+@@ -142,4 +147,9 @@ describe('the invariant — no heroItems means the hero the converter used to fo
+     expect(fieldedDef('hero.base.rogue-raven').attacks).toEqual((o['hero.base.rogue-raven']!['attacks'] as string[]).filter((a) => ATTACKS[a]))
+     expect((o['hero.base.rogue-raven']!['attacks'] as string[]).filter((a) => !ATTACKS[a])).toEqual(['attack.longsword.stab'])
++    // content.greatsword-war-axe-reauthored (2026-10-04): the two Great Sword holders' `attacks` differ by exactly the Great Cleave
++    for (const id of ['hero.base.paladin-dark', 'hero.base.warrior-barbarian']) {
++      expect(fieldedDef(id).attacks, id).toEqual((o[id]!['attacks'] as string[]).filter((a) => ATTACKS[a]))
++      expect((o[id]!['attacks'] as string[]).filter((a) => !ATTACKS[a]), id).toEqual(['attack.greatsword.great-cleave'])
++    }
+     expect(fieldedDef('hero.base.paladin-dark').crit).toBe((o['hero.base.paladin-dark']!['crit'] as number) - CRIT_BASE + ITEMS['item.rusted-plate']!.statModifiers.crit!)   // Law 10, fix.codex-numbers: the oracle's total, less the base (above)
+     expect(fieldedDef('hero.base.priest-pauper').luck).toBe(ITEMS['item.nice-robes']!.statModifiers.luck)
+diff --git a/test/v2-shields.test.ts b/test/v2-shields.test.ts
+index b015516..efb9947 100644
+--- a/test/v2-shields.test.ts
++++ b/test/v2-shields.test.ts
+@@ -115,5 +115,9 @@ describe('shield powers last until the end of the holder\'s next Activation', ()
+ describe('weapon Block and the axe', () => {
+   it('swords and daggers add Block only, never Ranged Block', () => {
+-    for (const [id, b] of [['item.longsword', 5], ['item.greatsword', 10], ['item.dagger', 5]] as const) {
++    // Law 10, 2026-10-04 — content.greatsword-war-axe-reauthored (DECISIONS.md 2026-09-28 'counterattack, special free attacks, the opening six, shields, custom weapons' and the Armory Ledger approved that day): this read
++    // ['item.greatsword', 10] — "swords +5 one-handed, +10 two-handed", 2026-09-20. The Ledger's Great Sword row reads "+5 Block" and
++    // flags it itself ("Two-handed swords were +10 Block on 2026-09-20; the dictation gives +5. Shown at +5."): the later word
++    // is the row's (SWITCHES.md greatswordBlockFive). The claim - Block only, never Ranged Block - is unchanged.
++    for (const [id, b] of [['item.longsword', 5], ['item.greatsword', 5], ['item.dagger', 5]] as const) {
+       expect(ITEMS[id]!.statModifiers.block, id).toBe(b)
+       expect(ITEMS[id]!.statModifiers.rangedBlock ?? 0, id).toBe(0)
+```
+</details>

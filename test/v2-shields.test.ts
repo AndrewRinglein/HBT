@@ -114,7 +114,11 @@ describe('shield powers last until the end of the holder\'s next Activation', ()
 
 describe('weapon Block and the axe', () => {
   it('swords and daggers add Block only, never Ranged Block', () => {
-    for (const [id, b] of [['item.longsword', 5], ['item.greatsword', 10], ['item.dagger', 5]] as const) {
+    // Law 10, 2026-10-04 — content.greatsword-war-axe-reauthored (DECISIONS.md 2026-09-28 'counterattack, special free attacks, the opening six, shields, custom weapons' and the Armory Ledger approved that day): this read
+    // ['item.greatsword', 10] — "swords +5 one-handed, +10 two-handed", 2026-09-20. The Ledger's Great Sword row reads "+5 Block" and
+    // flags it itself ("Two-handed swords were +10 Block on 2026-09-20; the dictation gives +5. Shown at +5."): the later word
+    // is the row's (SWITCHES.md greatswordBlockFive). The claim - Block only, never Ranged Block - is unchanged.
+    for (const [id, b] of [['item.longsword', 5], ['item.greatsword', 5], ['item.dagger', 5]] as const) {
       expect(ITEMS[id]!.statModifiers.block, id).toBe(b)
       expect(ITEMS[id]!.statModifiers.rangedBlock ?? 0, id).toBe(0)
     }

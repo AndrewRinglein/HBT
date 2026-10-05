@@ -421,6 +421,13 @@ const kitAttackClausesGolden = JSON.parse(readFileSync(new URL('./fixtures/battl
 // it is not about to attack, so every case that fields a shield moves - the standard battle's paladin among them.
 // Every case frozen here (tools/capture-shields-reauthored-cursor.mts). Moved: showcase.alpha-team, showcase.assembled-party, showcase.eve-24-a, showcase.eve-24-b, showcase.gash-variant, showcase.horrors, showcase.item-powers, showcase.kiln, showcase.prologue-party, showcase.rime, showcase.supper, showcase.surrounded, showcase.waystation, test.caravan-aftermath, test.counterattack, test.fend, test.item-uses, test.opening-bridge, test.opening-cathedral, test.opening-cavern-trail, test.opening-gates. A `changed` case is checked here and skips the older layers.
 const shieldsReauthoredGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-shields-reauthored.json', import.meta.url), 'utf8'))
+// content.greatsword-war-axe-reauthored (2026-10-04; DECISIONS.md 2026-09-28 'counterattack, special free attacks, the opening six, shields,
+// custom weapons' and the Armory Ledger approved that day), Law 10: the Great Sword is +5 Block with the Hew at 1 Stamina and the power
+// Heavy Counterattack (its Great Cleave is gone); the War Axe's Chop is -10 Accuracy and its second attack is Heavy Chop (Strength +3, -15
+// Accuracy, no Crit, no Bleed). A holder's attacks, costs and numbers are part of the state and of every roll it makes, so every case that
+// fields a Great Sword or a War Axe moves - the Alpha Team's among them.
+// Every case frozen here (tools/capture-greatsword-war-axe-reauthored-cursor.mts). Moved: showcase.alpha-team (text only), showcase.assembled-party, showcase.eve-24-a, showcase.eve-24-b (text only), showcase.gash-variant (text only), showcase.horrors, showcase.item-powers (text only), showcase.kiln, showcase.prologue-party, showcase.rime, showcase.supper, showcase.surrounded, showcase.waystation, test.back-flip (text only), test.counterattack (text only), test.fend, test.flaming-longsword (text only), test.flaming-war-axe, test.item-uses, test.opening-cathedral (text only), test.opening-cavern-trail (text only), test.opening-gates (text only), test.swap (text only), progression-surge-0, progression-surge-1, progression-surge-2. A `changed` case is checked here and skips the older layers.
+const greatswordWarAxeReauthoredGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-greatsword-war-axe-reauthored.json', import.meta.url), 'utf8'))
 const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
 // Explicit rule migration, not regenerated historical hashes. These nine old
 // cases contain Surge ledger/refresh changes or terminal markers corrected
@@ -560,7 +567,10 @@ describe('resumable battle cursor', () => {
       const unitTriggerWithTagExpected = unitTriggerWithTagGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const kitAttackClausesExpected = kitAttackClausesGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const shieldsReauthoredExpected = shieldsReauthoredGolden.cases.find((row:{id:string})=>row.id===fixture.id)
-      const shieldsReauthoredMoved = shieldsReauthoredExpected?.changed === true
+      const greatswordWarAxeReauthoredExpected = greatswordWarAxeReauthoredGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+      const greatswordWarAxeReauthoredMoved = greatswordWarAxeReauthoredExpected?.changed === true
+      // was: const shieldsReauthoredMoved = shieldsReauthoredExpected?.changed === true — a case content.greatsword-war-axe-reauthored moved skips this layer too (content.greatsword-war-axe-reauthored 2026-10-04)
+      const shieldsReauthoredMoved = shieldsReauthoredExpected?.changed === true || greatswordWarAxeReauthoredMoved
       // was: const kitAttackClausesMoved = kitAttackClausesExpected?.changed === true — a case content.shields-reauthored moved skips this layer too (content.shields-reauthored 2026-10-04)
       const kitAttackClausesMoved = kitAttackClausesExpected?.changed === true || shieldsReauthoredMoved
       // was: const unitTriggerWithTagMoved = unitTriggerWithTagExpected?.changed === true — a case fix.kit-attack-clauses moved skips this layer too (fix.kit-attack-clauses 2026-10-04)
@@ -700,7 +710,14 @@ describe('resumable battle cursor', () => {
             battle.completeActionCycle(ctx)
           }
         } else result = battle.runBattle(ctx)
-        if (shieldsReauthoredExpected) {
+        if (greatswordWarAxeReauthoredExpected) {
+        expect(hash(ctx.events), 'full greatsword-war-axe-reauthored events').toBe(greatswordWarAxeReauthoredExpected.events)
+        expect(hash(ctx.state), 'full greatsword-war-axe-reauthored state').toBe(greatswordWarAxeReauthoredExpected.state)
+        expect(hash(ctx.rng.log), 'full greatsword-war-axe-reauthored RNG').toBe(greatswordWarAxeReauthoredExpected.rng)
+        expect(result).toEqual(greatswordWarAxeReauthoredExpected.result)
+        }
+        // was: if (shieldsReauthoredExpected) { — content.greatsword-war-axe-reauthored (2026-10-04): a case it moved is checked above instead
+        if (shieldsReauthoredExpected && !greatswordWarAxeReauthoredMoved) {
         expect(hash(ctx.events), 'full shields-reauthored events').toBe(shieldsReauthoredExpected.events)
         expect(hash(ctx.state), 'full shields-reauthored state').toBe(shieldsReauthoredExpected.state)
         expect(hash(ctx.rng.log), 'full shields-reauthored RNG').toBe(shieldsReauthoredExpected.rng)

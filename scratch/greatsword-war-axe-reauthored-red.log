@@ -1,0 +1,431 @@
+
+ RUN  v4.1.11 C:/Users/aring/Desktop/HBT-worker-engine/engine
+
+ ❯ test/greatsword-war-axe-reauthored.test.ts (30 tests | 28 failed) 25ms
+     × +5 Block; one attack — Strength +2 for 1 Stamina — and the power Counterattack 4ms
+     × Counterattack: 2 Stamina, Counterattack and +2 Strength until the end of the next Turn 2ms
+     × a hero holding it: the one attack is his basic attack, the power is on his sheet, and nothing of the Great Cleave 3ms
+     × used in a battle: 2 Stamina spent, +2 Strength and Counterattack on him; an adjacent enemy that swings gets the basic attack back; both end with his next Turn 1ms
+     × no attack row of the pack is the Great Cleave or a copy of it; no item grants one and no unit fields with one 1ms
+     × item.greatsword.bloodletting follows its base: one attack — the Great Sword's, or its own copy of it — and the Counterattack 1ms
+     × item.greatsword.soul-reaper follows its base: one attack — the Great Sword's, or its own copy of it — and the Counterattack 0ms
+     × item.greatsword.sacrifice follows its base: one attack — the Great Sword's, or its own copy of it — and the Counterattack 0ms
+     × item.greatsword.demon-slayer follows its base: one attack — the Great Sword's, or its own copy of it — and the Counterattack 0ms
+     × item.greatsword.destroying follows its base: one attack — the Great Sword's, or its own copy of it — and the Counterattack 0ms
+     × item.greatsword.the-master follows its base: one attack — the Great Sword's, or its own copy of it — and the Counterattack 0ms
+     × item.greatsword.masterwork follows its base: one attack — the Great Sword's, or its own copy of it — and the Counterattack 0ms
+     × item.greatsword.heavy follows its base: one attack — the Great Sword's, or its own copy of it — and the Counterattack 0ms
+     × item.greatsword.keen follows its base: one attack — the Great Sword's, or its own copy of it — and the Counterattack 0ms
+     × item.greatsword.cruel follows its base: one attack — the Great Sword's, or its own copy of it — and the Counterattack 0ms
+     × the basic attack: Strength +1, −10 Accuracy, 1 Stamina; Heavy Chop: Strength +3, −15 Accuracy, 2 Stamina 1ms
+     × Heavy Chop is the Ledger's whole line: no Bleed and no Crit of its own — the row's only riders are the two on-block ones 0ms
+     × on a block, with either attack, the target loses 20 Block for the rest of the Battle 4ms
+     × item.war-axe.bloodletting follows its base: the two attacks, or its own copies of them, at the Ledger's numbers 1ms
+     × item.war-axe.ironbane follows its base: the two attacks, or its own copies of them, at the Ledger's numbers 0ms
+     × item.war-axe.bloodthirsty follows its base: the two attacks, or its own copies of them, at the Ledger's numbers 0ms
+     × item.war-axe.death follows its base: the two attacks, or its own copies of them, at the Ledger's numbers 0ms
+     × item.war-axe.taunting follows its base: the two attacks, or its own copies of them, at the Ledger's numbers 0ms
+     × item.war-axe.flaming follows its base: the two attacks, or its own copies of them, at the Ledger's numbers 0ms
+     × item.war-axe.masterwork follows its base: the two attacks, or its own copies of them, at the Ledger's numbers 0ms
+     × item.war-axe.heavy follows its base: the two attacks, or its own copies of them, at the Ledger's numbers 1ms
+     × item.war-axe.keen follows its base: the two attacks, or its own copies of them, at the Ledger's numbers 0ms
+     × item.war-axe.cruel follows its base: the two attacks, or its own copies of them, at the Ledger's numbers 0ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 28 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/greatsword-war-axe-reauthored.test.ts > the Great Sword, as the Ledger row reads > +5 Block; one attack — Strength +2 for 1 Stamina — and the power Counterattack
+AssertionError: expected 10 to be 5 // Object.is equality
+
+- Expected
++ Received
+
+- 5
++ 10
+
+ ❯ test/greatsword-war-axe-reauthored.test.ts:43:48
+     41|   it('+5 Block; one attack — Strength +2 for 1 Stamina — and the power…
+     42|     const bare = UNITS[BARBARIAN]!, w = applyItems(bare, [SWORD], ITEM…
+     43|     expect((w.block ?? 0) - (bare.block ?? 0)).toBe(5)
+       |                                                ^
+     44|     expect(ITEMS[SWORD]!.statModifiers).toEqual({ block: 5 })
+     45|     expect(ITEMS[SWORD]!.grants).toEqual([HEW])
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/28]⎯
+
+ FAIL  test/greatsword-war-axe-reauthored.test.ts > the Great Sword, as the Ledger row reads > Counterattack: 2 Stamina, Counterattack and +2 Strength until the end of the next Turn
+AssertionError: expected undefined to match object { staminaCost: 2, cooldown: +0, …(2) }
+
+- Expected:
+{
+  "cooldown": 0,
+  "effects": [
+    {
+      "kind": "statMod",
+      "stat": "counterattack",
+      "until": "endOfNextTurn",
+      "value": 1,
+      "who": "self",
+    },
+    {
+      "kind": "statMod",
+      "stat": "strength",
+      "until": "endOfNextTurn",
+      "value": 2,
+      "who": "self",
+    },
+  ],
+  "staminaCost": 2,
+  "target": {
+    "select": "self",
+  },
+}
+
++ Received:
+undefined
+
+ ❯ test/greatsword-war-axe-reauthored.test.ts:51:32
+     49|
+     50|   it('Counterattack: 2 Stamina, Counterattack and +2 Strength until th…
+     51|     expect(ABILITIES[COUNTER]).toMatchObject({
+       |                                ^
+     52|       staminaCost: 2, cooldown: 0, target: { select: 'self' },
+     53|       effects: [
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/28]⎯
+
+ FAIL  test/greatsword-war-axe-reauthored.test.ts > the Great Sword, as the Ledger row reads > a hero holding it: the one attack is his basic attack, the power is on his sheet, and nothing of the Great Cleave
+AssertionError: expected [] to include 'power.greatsword.counterattack'
+ ❯ test/greatsword-war-axe-reauthored.test.ts:64:32
+     62|     const { ctx, h } = rig(SWORD)
+     63|     expect(attackIdsOf(ctx, h)).toEqual([HEW, 'attack.punch'])
+     64|     expect(powerIdsOf(ctx, h)).toContain(COUNTER)
+       |                                ^
+     65|     expect(basicAttackOf(ctx, h)?.id).toBe(HEW)
+     66|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/28]⎯
+
+ FAIL  test/greatsword-war-axe-reauthored.test.ts > the Great Sword, as the Ledger row reads > used in a battle: 2 Stamina spent, +2 Strength and Counterattack on him; an adjacent enemy that swings gets the basic attack back; both end with his next Turn
+Error: unknown ability 'power.greatsword.counterattack' — abilities are an explicit registry, check content/index.ts
+ ❯ abilityDef src/core/ability.ts:27:17
+     25| export function abilityDef(ctx: Ctx, id: string): AbilityDef {
+     26|   const a = ctx.actions[id]
+     27|   if (!a) throw new Error(`unknown ability '${id}' — abilities are an …
+       |                 ^
+     28|   if (!isPower(a)) throw new Error(`'${id}' is not a power — it carrie…
+     29|   return a
+ ❯ usePower src/core/ability.ts:148:13
+ ❯ test/greatsword-war-axe-reauthored.test.ts:71:41
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/28]⎯
+
+ FAIL  test/greatsword-war-axe-reauthored.test.ts > the Great Sword, as the Ledger row reads > no attack row of the pack is the Great Cleave or a copy of it; no item grants one and no unit fields with one
+AssertionError: expected [ 'item.greatsword', …(10) ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   "item.greatsword",
++   "item.greatsword.bloodletting",
++   "item.greatsword.soul-reaper",
++   "item.greatsword.sacrifice",
++   "item.greatsword.demon-slayer",
++   "item.greatsword.destroying",
++   "item.greatsword.the-master",
++   "item.greatsword.masterwork",
++   "item.greatsword.heavy",
++   "item.greatsword.keen",
++   "item.greatsword.cruel",
++ ]
+
+ ❯ test/greatsword-war-axe-reauthored.test.ts:89:103
+     87|   it('no attack row of the pack is the Great Cleave or a copy of it; n…
+     88|     expect(Object.keys(ATTACKS).filter((id) => CLEAVE.test(id))).toEqu…
+     89|     expect(Object.values(ITEMS).filter((i) => i.grants.some((g) => CLE…
+       |                                                                                                       ^
+     90|     expect(Object.keys(UNITS).filter((id) => fieldedDef(id).attacks.so…
+     91|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/28]⎯
+
+ FAIL  test/greatsword-war-axe-reauthored.test.ts > the Great Sword, as the Ledger row reads > item.greatsword.bloodletting follows its base: one attack — the Great Sword's, or its own copy of it — and the Counterattack
+ FAIL  test/greatsword-war-axe-reauthored.test.ts > the Great Sword, as the Ledger row reads > item.greatsword.soul-reaper follows its base: one attack — the Great Sword's, or its own copy of it — and the Counterattack
+ FAIL  test/greatsword-war-axe-reauthored.test.ts > the Great Sword, as the Ledger row reads > item.greatsword.sacrifice follows its base: one attack — the Great Sword's, or its own copy of it — and the Counterattack
+ FAIL  test/greatsword-war-axe-reauthored.test.ts > the Great Sword, as the Ledger row reads > item.greatsword.demon-slayer follows its base: one attack — the Great Sword's, or its own copy of it — and the Counterattack
+ FAIL  test/greatsword-war-axe-reauthored.test.ts > the Great Sword, as the Ledger row reads > item.greatsword.destroying follows its base: one attack — the Great Sword's, or its own copy of it — and the Counterattack
+ FAIL  test/greatsword-war-axe-reauthored.test.ts > the Great Sword, as the Ledger row reads > item.greatsword.the-master follows its base: one attack — the Great Sword's, or its own copy of it — and the Counterattack
+ FAIL  test/greatsword-war-axe-reauthored.test.ts > the Great Sword, as the Ledger row reads > item.greatsword.masterwork follows its base: one attack — the Great Sword's, or its own copy of it — and the Counterattack
+AssertionError: expected [ 'attack.greatsword.hew', …(1) ] to have a length of 1 but got 2
+
+- Expected
++ Received
+
+- 1
++ 2
+
+ ❯ test/greatsword-war-axe-reauthored.test.ts:94:22
+     92|
+     93|   it.each(made(SWORD).map((i) => [i.id, i] as const))('%s follows its …
+     94|     expect(i.grants).toHaveLength(1)
+       |                      ^
+     95|     expect(i.grants[0] === HEW || i.grants[0]!.startsWith(HEW + '.')).…
+     96|     expect(ATTACKS[i.grants[0]!]).toMatchObject({ staminaCost: 1, atta…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/28]⎯
+
+ FAIL  test/greatsword-war-axe-reauthored.test.ts > the Great Sword, as the Ledger row reads > item.greatsword.heavy follows its base: one attack — the Great Sword's, or its own copy of it — and the Counterattack
+AssertionError: expected [ 'attack.greatsword.hew.heavy', …(1) ] to have a length of 1 but got 2
+
+- Expected
++ Received
+
+- 1
++ 2
+
+ ❯ test/greatsword-war-axe-reauthored.test.ts:94:22
+     92|
+     93|   it.each(made(SWORD).map((i) => [i.id, i] as const))('%s follows its …
+     94|     expect(i.grants).toHaveLength(1)
+       |                      ^
+     95|     expect(i.grants[0] === HEW || i.grants[0]!.startsWith(HEW + '.')).…
+     96|     expect(ATTACKS[i.grants[0]!]).toMatchObject({ staminaCost: 1, atta…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/28]⎯
+
+ FAIL  test/greatsword-war-axe-reauthored.test.ts > the Great Sword, as the Ledger row reads > item.greatsword.keen follows its base: one attack — the Great Sword's, or its own copy of it — and the Counterattack
+AssertionError: expected [ 'attack.greatsword.hew.keen', …(1) ] to have a length of 1 but got 2
+
+- Expected
++ Received
+
+- 1
++ 2
+
+ ❯ test/greatsword-war-axe-reauthored.test.ts:94:22
+     92|
+     93|   it.each(made(SWORD).map((i) => [i.id, i] as const))('%s follows its …
+     94|     expect(i.grants).toHaveLength(1)
+       |                      ^
+     95|     expect(i.grants[0] === HEW || i.grants[0]!.startsWith(HEW + '.')).…
+     96|     expect(ATTACKS[i.grants[0]!]).toMatchObject({ staminaCost: 1, atta…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/28]⎯
+
+ FAIL  test/greatsword-war-axe-reauthored.test.ts > the Great Sword, as the Ledger row reads > item.greatsword.cruel follows its base: one attack — the Great Sword's, or its own copy of it — and the Counterattack
+AssertionError: expected [ 'attack.greatsword.hew.cruel', …(1) ] to have a length of 1 but got 2
+
+- Expected
++ Received
+
+- 1
++ 2
+
+ ❯ test/greatsword-war-axe-reauthored.test.ts:94:22
+     92|
+     93|   it.each(made(SWORD).map((i) => [i.id, i] as const))('%s follows its …
+     94|     expect(i.grants).toHaveLength(1)
+       |                      ^
+     95|     expect(i.grants[0] === HEW || i.grants[0]!.startsWith(HEW + '.')).…
+     96|     expect(ATTACKS[i.grants[0]!]).toMatchObject({ staminaCost: 1, atta…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/28]⎯
+
+ FAIL  test/greatsword-war-axe-reauthored.test.ts > the War Axe, as the Ledger row reads > the basic attack: Strength +1, −10 Accuracy, 1 Stamina; Heavy Chop: Strength +3, −15 Accuracy, 2 Stamina
+AssertionError: expected { id: 'attack.war-axe.chop', …(7) } to match object { name: 'Chop', staminaCost: 1, …(1) }
+(8 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+    "attack": {
+-     "accuracy": -10,
+-     "damage": {
+-       "bonus": 1,
+-       "stat": "strength",
+-     },
+      "kind": "melee",
+    },
+    "name": "Chop",
+    "staminaCost": 1,
+  }
+
+ ❯ test/greatsword-war-axe-reauthored.test.ts:108:27
+    106|   it('the basic attack: Strength +1, −10 Accuracy, 1 Stamina; Heavy Ch…
+    107|     expect(ITEMS[AXE]!.grants).toEqual([CHOP, HEAVY])
+    108|     expect(ATTACKS[CHOP]).toMatchObject({ name: 'Chop', staminaCost: 1…
+       |                           ^
+    109|     expect(ATTACKS[HEAVY]).toMatchObject({ name: 'Heavy Chop', stamina…
+    110|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/28]⎯
+
+ FAIL  test/greatsword-war-axe-reauthored.test.ts > the War Axe, as the Ledger row reads > Heavy Chop is the Ledger's whole line: no Bleed and no Crit of its own — the row's only riders are the two on-block ones
+AssertionError: expected 5 to be +0 // Object.is equality
+
+- Expected
++ Received
+
+- 0
++ 5
+
+ ❯ test/greatsword-war-axe-reauthored.test.ts:113:47
+    111|
+    112|   it('Heavy Chop is the Ledger\'s whole line: no Bleed and no Crit of …
+    113|     expect(ATTACKS[HEAVY]!.attack!.crit ?? 0).toBe(0)
+       |                                               ^
+    114|     const riders = ITEMS[AXE]!.triggers.map((t) => [t.hook, t.onlyWith…
+    115|     expect(riders.filter(([hook]) => hook !== 'onBlock')).toEqual([])
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/28]⎯
+
+ FAIL  test/greatsword-war-axe-reauthored.test.ts > the War Axe, as the Ledger row reads > on a block, with either attack, the target loses 20 Block for the rest of the Battle
+AssertionError: attack.war-axe.chop was blocked: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ test/greatsword-war-axe-reauthored.test.ts:126:119
+    124|       const block = stat(ctx, z, 'block')
+    125|       beginActivation(ctx, h.id, 'test'); performAttack(ctx, h.id, z.i…
+    126|       expect(ctx.events.some((e) => e.type === 'attack.blocked' || e['…
+       |                                                                                                                       ^
+    127|       expect(stat(ctx, z, 'block'), attack).toBe(block - 20)
+    128|     }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/28]⎯
+
+ FAIL  test/greatsword-war-axe-reauthored.test.ts > the War Axe, as the Ledger row reads > item.war-axe.bloodletting follows its base: the two attacks, or its own copies of them, at the Ledger's numbers
+ FAIL  test/greatsword-war-axe-reauthored.test.ts > the War Axe, as the Ledger row reads > item.war-axe.ironbane follows its base: the two attacks, or its own copies of them, at the Ledger's numbers
+ FAIL  test/greatsword-war-axe-reauthored.test.ts > the War Axe, as the Ledger row reads > item.war-axe.bloodthirsty follows its base: the two attacks, or its own copies of them, at the Ledger's numbers
+ FAIL  test/greatsword-war-axe-reauthored.test.ts > the War Axe, as the Ledger row reads > item.war-axe.death follows its base: the two attacks, or its own copies of them, at the Ledger's numbers
+ FAIL  test/greatsword-war-axe-reauthored.test.ts > the War Axe, as the Ledger row reads > item.war-axe.taunting follows its base: the two attacks, or its own copies of them, at the Ledger's numbers
+ FAIL  test/greatsword-war-axe-reauthored.test.ts > the War Axe, as the Ledger row reads > item.war-axe.flaming follows its base: the two attacks, or its own copies of them, at the Ledger's numbers
+ FAIL  test/greatsword-war-axe-reauthored.test.ts > the War Axe, as the Ledger row reads > item.war-axe.masterwork follows its base: the two attacks, or its own copies of them, at the Ledger's numbers
+AssertionError: expected { id: 'attack.war-axe.chop', …(7) } to match object { staminaCost: 1, attack: { …(2) } }
+(10 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+    "attack": {
+-     "accuracy": -10,
+-     "damage": {
+      "bonus": 1,
+-     },
++     "damageType": "physical",
++     "kind": "melee",
++     "stat": "strength",
+    },
+    "staminaCost": 1,
+  }
+
+ ❯ test/greatsword-war-axe-reauthored.test.ts:135:35
+    133|     expect(i.grants[0] === CHOP || i.grants[0]!.startsWith(CHOP + '.')…
+    134|     expect(i.grants[1] === HEAVY || i.grants[1]!.startsWith(HEAVY + '.…
+    135|     expect(ATTACKS[i.grants[0]!]).toMatchObject({ staminaCost: 1, atta…
+       |                                   ^
+    136|     expect(ATTACKS[i.grants[1]!]).toMatchObject({ staminaCost: 2, atta…
+    137|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/28]⎯
+
+ FAIL  test/greatsword-war-axe-reauthored.test.ts > the War Axe, as the Ledger row reads > item.war-axe.heavy follows its base: the two attacks, or its own copies of them, at the Ledger's numbers
+AssertionError: expected { …(8) } to match object { staminaCost: 1, attack: { …(2) } }
+(10 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+    "attack": {
+-     "accuracy": -10,
+-     "damage": {
+-       "bonus": 1,
+-     },
++     "bonus": 2,
++     "damageType": "physical",
++     "kind": "melee",
++     "stat": "strength",
+    },
+    "staminaCost": 1,
+  }
+
+ ❯ test/greatsword-war-axe-reauthored.test.ts:135:35
+    133|     expect(i.grants[0] === CHOP || i.grants[0]!.startsWith(CHOP + '.')…
+    134|     expect(i.grants[1] === HEAVY || i.grants[1]!.startsWith(HEAVY + '.…
+    135|     expect(ATTACKS[i.grants[0]!]).toMatchObject({ staminaCost: 1, atta…
+       |                                   ^
+    136|     expect(ATTACKS[i.grants[1]!]).toMatchObject({ staminaCost: 2, atta…
+    137|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/28]⎯
+
+ FAIL  test/greatsword-war-axe-reauthored.test.ts > the War Axe, as the Ledger row reads > item.war-axe.keen follows its base: the two attacks, or its own copies of them, at the Ledger's numbers
+AssertionError: expected { Object (id, name, ...) } to match object { staminaCost: 1, attack: { …(2) } }
+(10 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+    "attack": {
+-     "accuracy": -10,
+-     "damage": {
+-       "bonus": 1,
+-     },
++     "accuracy": 6,
+    },
+    "staminaCost": 1,
+  }
+
+ ❯ test/greatsword-war-axe-reauthored.test.ts:135:35
+    133|     expect(i.grants[0] === CHOP || i.grants[0]!.startsWith(CHOP + '.')…
+    134|     expect(i.grants[1] === HEAVY || i.grants[1]!.startsWith(HEAVY + '.…
+    135|     expect(ATTACKS[i.grants[0]!]).toMatchObject({ staminaCost: 1, atta…
+       |                                   ^
+    136|     expect(ATTACKS[i.grants[1]!]).toMatchObject({ staminaCost: 2, atta…
+    137|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[15/28]⎯
+
+ FAIL  test/greatsword-war-axe-reauthored.test.ts > the War Axe, as the Ledger row reads > item.war-axe.cruel follows its base: the two attacks, or its own copies of them, at the Ledger's numbers
+AssertionError: expected { …(8) } to match object { staminaCost: 1, attack: { …(2) } }
+(11 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+    "attack": {
+-     "accuracy": -10,
+-     "damage": {
+-       "bonus": 1,
+-     },
++     "accuracy": 3,
+    },
+    "staminaCost": 1,
+  }
+
+ ❯ test/greatsword-war-axe-reauthored.test.ts:135:35
+    133|     expect(i.grants[0] === CHOP || i.grants[0]!.startsWith(CHOP + '.')…
+    134|     expect(i.grants[1] === HEAVY || i.grants[1]!.startsWith(HEAVY + '.…
+    135|     expect(ATTACKS[i.grants[0]!]).toMatchObject({ staminaCost: 1, atta…
+       |                                   ^
+    136|     expect(ATTACKS[i.grants[1]!]).toMatchObject({ staminaCost: 2, atta…
+    137|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[16/28]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  28 failed | 2 passed (30)
+   Start at  20:26:56
+   Duration  931ms (transform 599ms, setup 0ms, import 740ms, tests 25ms, environment 0ms)
+
