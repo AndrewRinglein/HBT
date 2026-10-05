@@ -102,6 +102,15 @@ export function createPlayInput(session:()=>Sandbox|null,run:(command:BattleComm
  /** viewer.switch-hero-asks: the question asked (who would be ended, who begun, the engine's sequence when it was asked — it
      does not outlive that), and, between the yes and the next begin, the unit the player asked for */
  let asking:{from:number;to:number;seq:number}|null=null,wanted:number|null=null
+ /** kingdom.attack-one-armed-after-move (engine DECISIONS.md 2026-10-05 'the battle screen must feel smooth: …; attack one is
+     chosen after a move; …', Andrew: "after you move, we should auto-select your basic attack or your attack one. If you have
+     a ranged weapon, it's still your attack one … Basically, you're changing [away] from basic attack one if you want to do
+     anything other than that first thing."): the Activation (sync's key) in which the player took the choice back — a
+     right-click, Esc. It is not chosen again by itself in that Activation; the next one starts afresh. */
+ let attackOneOff:string|null=null
+ /** the Activation in which attack one WAS chosen by itself: only a choice made that way is "taken back" by a right-click —
+     an action the player chose and dropped before moving takes nothing back */
+ let attackOneArmed:string|null=null
  const shown:Shown[]=[]
  // per engine sequence number: the validated choices, the ghost's forecast, each enemy's reach, the hatching
  let cacheSeq=-1,cache:{choices?:SandboxChoice[];swap?:SandboxSwapOffer;refused?:{hands:string[];why:string}[];forecast?:Map<string,Forecast>;threat?:Map<number,{move:number[];hit:number[]}>;zoc?:number[]}={}
@@ -127,7 +136,13 @@ export function createPlayInput(session:()=>Sandbox|null,run:(command:BattleComm
  /** the human hero now acting, or null */
  const actorOf=(s:Sandbox)=>{const c=s.ctx.battleCursor;return !s.ctx.state.outcome&&c?.at==='acting'&&c.actor!=null&&controllerOf(s.ctx,c.actor,s.policy)==='human'?c.actor:null}
  /** a new activation forgets the last one's plan */
+ /** the battle the plan belongs to: another battle (a replay after a loss, a save opened, the undo's restored copy) is another
+     engine context, and a plan — the chosen action above all — never carries over into it, even where its first Activation
+     has the same unit, Turn and count as the last battle's did (kingdom.attack-one-armed-after-move: the replayed Orphanage
+     began with the attack chosen at the end of the lost one, and no move armed) */
+ let battle:unknown=null
  const sync=(s:Sandbox|null)=>{
+  if(s&&s.ctx!==battle){battle=s.ctx;owner=null;attackOneOff=null;attackOneArmed=null}
   const a=s?actorOf(s):null,key=s&&a!=null?`${a}@${s.ctx.state.turn}:${s.ctx.events.filter(e=>e.type==='activation.begin').length}`:null
   if(key!==owner){owner=key;chosen=null;ghost=null;aim=null;if(a!==null)note=null}
   if(asking&&(!s||a!==asking.from||s.ctx.state.seq!==asking.seq))asking=null
@@ -256,6 +271,31 @@ export function createPlayInput(session:()=>Sandbox|null,run:(command:BattleComm
  const moveCommand=(s:Sandbox,actor:number,g:Ghost):BattleCommand=>({kind:'action',actor,actionId:g.actionId,slot:g.slot,destination:g.destination,expectedSeq:s.ctx.state.seq})
  const useCommand=(s:Sandbox,actor:number,u:Use):BattleCommand=>({kind:'action',actor,actionId:chosen!,slot:u.slot,expectedSeq:s.ctx.state.seq,...(u.key==='target'?{target:u.value}:u.key==='centre'?{centre:u.value}:{hex:u.value})} as BattleCommand)
  const done=()=>{chosen=null;ghost=null;aim=null}
+ /** kingdom.attack-one-armed-after-move: the unit's ATTACK ONE — the first attack the engine grants it, in the engine's own
+     order (grantedActionIds: the one its bar lists first, a melee weapon's or a bow's) — if the engine would take an order
+     with it now for any target at all, else null. Asked of the engine, not worked out: an order with that attack is
+     validated, and the engine answers BEFORE it looks at the target when the unit cannot act, the action is not ready (no
+     Stamina, a cooldown, no use left) or its slot is closed (the primary is spent). Those three mean "not for reach": nothing
+     is chosen — not a later attack either (kingdom SWITCHES attackOneNotALaterOne). Any refusal after them is about the
+     target (out of reach, a taunt): it is chosen all the same, and its arrow shows how far it reaches. */
+ const NOT_FOR_REACH=new Set(['actor-cannot-act','action-not-ready','action-slot-closed'])
+ const attackOneOf=(s:Sandbox,actor:number):string|null=>{
+  const u=s.ctx.state.units[actor]!,id=grantedActionIds(s.ctx,u).find(x=>{const a=s.ctx.actions[x];return !!a&&isAttack(a)})
+  if(id===undefined)return null
+  const r=validateBattleCommand(s.ctx,s.policy,{kind:'action',actor,actionId:id,target:actor,expectedSeq:s.ctx.state.seq} as BattleCommand)
+  return r.ok||!NOT_FOR_REACH.has(r.reason)?id:null
+ }
+ /** a move of the acting unit's has just been made and the engine waits for its next order: its attack one is chosen, exactly
+     as a click on that bar row chooses it — the row lit, its targets, the arrow out to its reach, the forecast on what is
+     pointed at — but nothing is said (a click with nothing in reach says so; after every walk it would be noise: kingdom
+     SWITCHES attackOneSaysNothing). After EVERY move of the Activation (the rest of a walk, a bonus move: attackOneAfterEachMove)
+     unless the player took it back in this Activation. Not when the Activation is over, or is another unit's. */
+ const armAttackOne=(actor:number)=>{
+  const s=session();if(!s||s.ctx.state.outcome||actorOf(s)!==actor)return
+  if(sync(s)!==actor||owner===attackOneOff)return
+  const id=attackOneOf(s,actor);if(id===null)return
+  chosen=id;ghost=null;aim=null;attackOneArmed=owner
+ }
  /** the hex the aim arrow reaches toward `at`: `at` itself when within the chosen action's reach (the engine's reachOf for an
      attack read from where the hero would stand — engine actionReach, fix.aim-reach — the row's range for anything else),
      else the hex within that reach nearest `at` (the farther of a tie, then the
@@ -455,7 +495,8 @@ export function createPlayInput(session:()=>Sandbox|null,run:(command:BattleComm
    // right-click steps back ONE stage: the aim, then the ghost, then the chosen action (UI-BUILD-NOTES §5)
    if(aim?.locked){aim=null;return true}
    if(ghost){ghost=null;return true}
-   if(chosen!==null){chosen=null;aim=null;return true}
+   /* kingdom.attack-one-armed-after-move: taken back, attack one is not chosen again by itself in this Activation */
+   if(chosen!==null){chosen=null;aim=null;if(attackOneArmed===owner)attackOneOff=owner;return true}
    return false}
   if(e.kind==='slot'){
    /* viewer.turn-taking: the bar is the activated hero's (viewer subject.js barUnitOf), so its order is that hero's. While the
@@ -479,7 +520,7 @@ export function createPlayInput(session:()=>Sandbox|null,run:(command:BattleComm
     /* a power that goes nowhere is used from the bar: chosen, it is planned on the hero's own hex at once; chosen again (or
        the hero clicked) it is used — engine DECISIONS.md 2026-10-01, Devotion: "I can't double-click on it or anything to
        make it trigger" (kingdom SWITCHES playInputStandStill) */
-    if(ghost&&ghost.actionId===e.actionId&&ghost.destination===s.ctx.state.units[actor]!.hex&&chosen===e.actionId){const r=run(moveCommand(s,actor,ghost));note=r.ok?null:said(s,r.reason,actor,null,e.actionId);done();return true}
+    if(ghost&&ghost.actionId===e.actionId&&ghost.destination===s.ctx.state.units[actor]!.hex&&chosen===e.actionId){const r=run(moveCommand(s,actor,ghost));note=r.ok?null:said(s,r.reason,actor,null,e.actionId);done();if(r.ok)armAttackOne(actor);return true}
     if(ghost&&ghost.actionId!==e.actionId)ghost=null;chosen=e.actionId;aim=null;unarmed=null
     const mv=moveOf(s,actor)
     if(!mv?.choices.length){chosen=null
@@ -492,7 +533,7 @@ export function createPlayInput(session:()=>Sandbox|null,run:(command:BattleComm
        below (kingdom SWITCHES standUpAloneIsOnePress; overturns standUpIsUsedLikeAMoveThatGoesNowhere of the same day) */
     if(standsUp(a)&&standsStill(s,actor,mv.choices)){const c=mv.choices[0]!
      const r=run(moveCommand(s,actor,{actionId:c.command.actionId,slot:c.command.slot??'movement',destination:(c.command as {destination:number}).destination} as Ghost))
-     note=r.ok?null:said(s,r.reason,actor,null,e.actionId);done();return true}
+     note=r.ok?null:said(s,r.reason,actor,null,e.actionId);done();if(r.ok)armAttackOne(actor);return true}
     if(standsStill(s,actor,mv.choices)){const c=mv.choices[0]!;ghost={actionId:c.command.actionId,slot:c.command.slot??'movement',destination:(c.command as {destination:number}).destination} as Ghost
      note=`${a.name}: click it again, or the hero, to use it.`;return true}
     note=null;return true}
@@ -530,7 +571,8 @@ export function createPlayInput(session:()=>Sandbox|null,run:(command:BattleComm
     /* kingdom.tutorial-free-attack-and-downed: a walk the engine forecasts a free attack on may be held this once by the host
        (its lesson is telling the player so): the path stays shown, and the next click on it walks */
     {const fc=forecastOf(s,actor,g);if(fc.ok&&fc.provokes.length&&undo?.holdWalk?.()){note=null;return true}}
-    const r=run(moveCommand(s,actor,g));note=r.ok?null:said(s,r.reason,actor,null,g.actionId);done();return true}
+    /* kingdom.attack-one-armed-after-move: the move made, the unit's attack one is chosen by itself */
+    const r=run(moveCommand(s,actor,g));note=r.ok?null:said(s,r.reason,actor,null,g.actionId);done();if(r.ok)armAttackOne(actor);return true}
    ghost=g;note=null;return true}
   if(chosen===null){
    /* nothing armed and no move left: the engine's reason a walk there is refused (its movement is spent) */

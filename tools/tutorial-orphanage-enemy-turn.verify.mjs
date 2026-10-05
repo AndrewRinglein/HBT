@@ -74,7 +74,10 @@ for(let t=0;t<6&&!attack&&!ctx().state.outcome;t++){
  turn0=ctx().state.turn;B.endTurn();B.settle('the next Turn');assert.notEqual(ctx().state.turn,turn0)
 }
 assert.ok(attack,'an enemy came into reach of the hero\'s attack')
-assert.deepEqual(lines(),['An enemy is in range.','Choose an attack, then click the enemy to see your chance to hit and the damage.','Click it again to attack.']);assert.deepEqual(lines(),[...ATTACK.words])
+/* Law 10, 2026-10-05 — kingdom.attack-one-armed-after-move (engine DECISIONS.md 2026-10-05 'the battle screen must feel smooth: …; attack one
+   is chosen after a move; …'): the words were ['An enemy is in range.','Choose an attack, then click the enemy to see your chance to hit and the
+   damage.','Click it again to attack.'] — after a move the first attack is chosen for the player now, and the lesson says so. */
+assert.deepEqual(lines(),['An enemy is in range.','After you move, your first attack is chosen for you: click the enemy to see your chance to hit and the damage.','Click it again to attack. To use another attack, click it on the bar first.']);assert.deepEqual(lines(),[...ATTACK.words])
 assert.ok(ctx().actions[attack].attack,'the arrow is on an attack\'s slot: '+attack);assert.equal(ptrs().find(p=>p.target==='action:'+attack).el,B.barRow(attack),'that slot on the bar')
 const hero=B.actor(),declared=()=>ctx().events.filter(e=>e.type==='attack.declared'&&e.actor===hero.id&&!e.free).length,before=declared()
 flush(O().notice.ms+300);assert.equal(lines(),null,'the words go after their time');assert.equal(h.lesson,ATTACK.id,'the arrow stays until the attack is made')
