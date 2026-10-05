@@ -1,6 +1,6 @@
 /* ── the log: one sentence per event — pure text ──────────────────────────
    A development affordance, not a game surface (ruled 9.6). */
-import { sgn, freeAttackOf } from './actions.js'
+import { sgn, freeAttackOf, FREE_ATTACK } from './actions.js'
 import { fallWord } from './fold.js'
 import { shownName } from './names.js'
 const escape = value => String(value).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))
@@ -54,6 +54,21 @@ export function buildLog(events, SN, turns, D = {}) {
   const b = (cls, t) => ({ cls, t })
   /* R4 (2026-09-23): what a stopped push struck — the engine's collidedWith, blocker, collisionValue, remaining */
   const collided = e => e.collidedWith ? ` <span class="sq">· struck ${escape(e.collidedWith)}${e.blocker != null ? ' ' + escape(NAMES[e.blocker] ?? e.blocker) : ''} · collision ${e.collisionValue} · ${e.remaining} remaining</span>` : ''
+  /* viewer.lost-counterattack-line (2026-10-05; engine rule.counterattack-replaced-and-lost — DECISIONS.md 2026-09-28: "A new
+     counterattack replaces the old one. Knocked down, knocked back or moved by an enemy's power: it is lost."): a special free
+     attack that is TAKEN — not run out — says so. The engine's line carries which one went (`lost`) and why (`reason`:
+     replaced, knocked-down, knocked-back), and both are said in the engine's own words, worked out nowhere: the kind by the
+     page's one table of free attacks, the reason with its hyphens as spaces — so a reason the engine adds later is still
+     said. A loss is one line per modifier that went: the kind's own "up" stat says the loss; what went with it (its
+     Accuracy, and on a replacement the older power's other modifiers) says "ends with it". A kind the table does not hold
+     has no stat the page knows as its own, so every line of it says the loss and names the stat that went. */
+  const taken = e => {
+    const row = FREE_ATTACK[e.lost], kind = escape(row ? row.word.toLowerCase() : lastWords(e.lost).toLowerCase()), what = `${escape(e.stat)} ${sgn(e.value)}`
+    const src = `<span class="sq">· ${row ? '' : what + ' · '}${escape(e.source)}</span>`, name = escape(nmAt(e))
+    if (row && e.stat !== row.stat) return `&nbsp;&nbsp;&nbsp;&nbsp;${name} — ${what} ends with it <span class="sq">· ${escape(e.source)}</span>`
+    return e.reason === 'replaced' ? `&nbsp;&nbsp;&nbsp;&nbsp;<b>${name}</b>'s ${kind} is replaced by a newer one ${src}`
+      : `&nbsp;&nbsp;&nbsp;&nbsp;<b>${name}</b> loses its ${kind} — ${escape(String(e.reason ?? 'no reason given').replace(/-/g, ' '))} ${src}`
+  }
   const sentence = e => {
     switch (e.type) {
       case 'turn.begin': return b('turn', `— Turn ${e.turn} —`)   // e.turn is already 1-based
@@ -109,7 +124,8 @@ export function buildLog(events, SN, turns, D = {}) {
       case 'staminaMax.lost': return b('status', `&nbsp;&nbsp;&nbsp;&nbsp;${nmAt(e)} loses ${e.amount} max stamina`)
       case 'stamina.gained': return b('status', `&nbsp;&nbsp;&nbsp;&nbsp;${nmAt(e)} regains ${e.amount} stamina`)
       case 'statmod.added': return b('status', `&nbsp;&nbsp;&nbsp;&nbsp;${nmAt(e)} — ${e.stat} ${sgn(e.value)} <span class="sq">· ${e.source}</span>`)
-      case 'statmod.expired': return b('status', `&nbsp;&nbsp;&nbsp;&nbsp;${nmAt(e)} — ${e.stat} ${sgn(e.value)} ends <span class="sq">· ${e.source}</span>`)
+      case 'statmod.expired': return e.lost !== undefined || e.reason !== undefined ? b('status', taken(e))
+        : b('status', `&nbsp;&nbsp;&nbsp;&nbsp;${nmAt(e)} — ${e.stat} ${sgn(e.value)} ends <span class="sq">· ${e.source}</span>`)
       case 'ai.denied': return b('', `&nbsp;&nbsp;&nbsp;&nbsp;wanted <span class="sq">${e.wanted}</span>, took <span class="sq">${e.took}</span> — ${e.reason}`)
       case 'ai.tookHighGround': return b('', `&nbsp;&nbsp;&nbsp;&nbsp;takes the high ground`)
       case 'power.hit': return b('dmg', `&nbsp;&nbsp;&nbsp;&nbsp;strikes <b>${nmT(e)}</b>`)
