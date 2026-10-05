@@ -142,11 +142,6 @@
    "needs": "area attack shape"
   },
   {
-   "unit": "item.greatsword",
-   "what": "counterattackAccuracy: 10",
-   "needs": "Accuracy on the holder's counterattack while the weapon is held — engine capability.free-attack-accuracy"
-  },
-  {
    "unit": "item.iron-mace",
    "what": "attack.iron-mace.crush addsTargetStatus: {\"status\":\"stun\",\"consumes\":false}",
    "needs": "damage that adds the target's own status — engine capability.damage-adds-target-status"
@@ -680,11 +675,6 @@
    "unit": "item.elfbow",
    "what": "attack.elfbow.double-shot targets 'up to 2 enemies within 4 hexes' — lands SINGLE-TARGET",
    "needs": "an attack at several chosen targets — engine capability.attack-several-targets"
-  },
-  {
-   "unit": "item.longsword",
-   "what": "counterattackAccuracy: 10",
-   "needs": "Accuracy on the holder's counterattack while the weapon is held — engine capability.free-attack-accuracy"
   },
   {
    "unit": "item.earth-staff",

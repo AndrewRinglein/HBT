@@ -159,6 +159,7 @@ What a rule may DO.
 | `toughness` | 7 |
 | `fireResist` | 3 |
 | `poisonResist` | 3 |
+| `counterattackAccuracy` | 2 |
 | `corruption` | 2 |
 | `surge` | 2 |
 | `staminaRegen` | 1 |

@@ -2573,6 +2573,14 @@
    ]
   },
   {
+   "name": "counterattackAccuracy",
+   "uses": 2,
+   "ids": [
+    "item.greatsword",
+    "item.longsword"
+   ]
+  },
+  {
    "name": "corruption",
    "uses": 2,
    "ids": [
