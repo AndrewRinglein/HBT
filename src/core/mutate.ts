@@ -5,6 +5,7 @@
 import type { AiModeChange, Ctx, EncounterAiRule, Event, LifeState, Prop, Side, Unit, UnitMods } from './types.js'
 import type { HexId } from './hex.js'
 import { effective, isStatName } from './stats.js'
+import { SPECIAL_FREE_ATTACKS, type FreeAttackKind } from './special-free-attacks.js'
 import { LAYER } from '../content/terrain.js'
 
 /**
@@ -116,6 +117,9 @@ export function knockUnit(ctx: Ctx, id: number, to: HexId, by: number, causeId: 
   // struck (collidedWith, blocker, collisionValue, remaining) — the damage it
   // costs the mover is its own damage.applied event, the next line.
   emit(ctx, 'knocked', causeId, { actor: by, target: id, from, to, ...(travel ? { asked: travel.asked, hexes: travel.taken, ...(travel.stoppedBy ? { stoppedBy: travel.stoppedBy } : {}) } : {}), ...(collision ?? {}) })
+  // rule.counterattack-replaced-and-lost: "knocked back or moved by an enemy's power: it is lost" — this is the one
+  // mutator that puts a unit on another hex by anything but its own movement. A push that moved it nowhere lost nothing.
+  if (to !== from) loseFreeAttacks(ctx, id, 'knocked-back', causeId)
 }
 
 /**
@@ -292,6 +296,31 @@ export function badgeFlags(ctx: Ctx, u: Unit): { bleedsOut: boolean; wounded: bo
   let bleedsOut = false, wounded = false
   for (const id of u.badges) { const f = ctx.badges[id]?.flags; if (f?.bleedsOut) bleedsOut = true; if (f?.wounded) wounded = true }
   return { bleedsOut, wounded }
+}
+
+/**
+ * rule.counterattack-replaced-and-lost (2026-10-04; DECISIONS.md 2026-09-28, the Armory Ledger's rules: "A new counterattack
+ * replaces the old one. Knocked down, knocked back or moved by an enemy's power: it is lost."). A special free attack a unit
+ * has UP is the stored modifiers on that kind's stat and on its Accuracy stat — what a power put on it; a number on the
+ * unit's own row or gear is not a modifier and is not touched. This takes them off, one `statmod.expired` line each, saying
+ * why (`reason`) and which special free attack went (`lost`). With `riders` (a replacement) every other modifier the older
+ * grant put on — the same source and the same lifetime as its "up" modifier — goes with it, so the newer power's numbers
+ * are never a sum with the older one's. A unit with none up writes nothing.
+ */
+export type FreeAttackLoss = 'replaced' | 'knocked-down' | 'knocked-back'
+export function loseFreeAttack(ctx: Ctx, id: number, kind: FreeAttackKind, reason: FreeAttackLoss, causeId: string, riders = false): void {
+  const u = unit(ctx, id)
+  const { up, accuracy } = SPECIAL_FREE_ATTACKS[kind]
+  const ups = u.mods.filter((m) => m.stat === up)
+  if (!ups.length) return
+  const sameGrant = (m: import('./stats.js').StatMod) => ups.some((o) => o.source === m.source && o.expiresAtTurn === m.expiresAtTurn && o.expiresAfterActivation === m.expiresAfterActivation)
+  const gone = u.mods.filter((m) => m.stat === up || m.stat === accuracy || (riders && sameGrant(m)))
+  u.mods = u.mods.filter((m) => !gone.includes(m))
+  for (const m of gone) emit(ctx, 'statmod.expired', causeId, { actor: id, stat: m.stat, op: m.op, value: m.value, source: m.source, reason, lost: kind })
+}
+/** Every special free attack the unit has up, in the table's order. */
+export function loseFreeAttacks(ctx: Ctx, id: number, reason: FreeAttackLoss, causeId: string): void {
+  for (const kind of Object.keys(SPECIAL_FREE_ATTACKS) as FreeAttackKind[]) loseFreeAttack(ctx, id, kind, reason, causeId)
 }
 
 export function addStatMod(ctx: Ctx, id: number, mod: import('./stats.js').StatMod, causeId: string): void {

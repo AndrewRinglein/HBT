@@ -10,7 +10,7 @@
 
 import { flatDamage } from './mitigation.js'
 import type { Ctx, DamageType, Side, Unit } from './types.js'
-import { applyDamage, applyHealing, emit, reduceStatus, removeStatus, setLifeState, unit } from './mutate.js'
+import { applyDamage, applyHealing, emit, loseFreeAttacks, reduceStatus, removeStatus, setLifeState, unit } from './mutate.js'
 import { effective } from './stats.js'
 
 /**
@@ -248,7 +248,11 @@ export function applyStatus(ctx: Ctx, unitId: number, id: string, value: number,
   }
   emit(ctx, 'status.applied', causeId, { target: unitId, statusId: id, amount: value, before, after, ...(by !== undefined ? { by } : {}) })
   // v2.prone: the moment a unit goes down is its own line for the viewer (Law 3)
-  if (def.prone && before <= 0 && after > 0) emit(ctx, 'unit.proned', causeId, { target: unitId, statusId: id, hex: u.hex })
+  if (def.prone && before <= 0 && after > 0) {
+    emit(ctx, 'unit.proned', causeId, { target: unitId, statusId: id, hex: u.hex })
+    // rule.counterattack-replaced-and-lost: "Knocked down … it is lost."
+    loseFreeAttacks(ctx, unitId, 'knocked-down', causeId)
+  }
 }
 
 // reduceStatus / removeStatus moved into mutate.ts (fix.bleed-magnitude,

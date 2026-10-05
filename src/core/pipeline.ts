@@ -12,6 +12,7 @@ import { fireTriggers, HOOKS } from './trigger.js'
 import { applyStatus, decayOnKill, incomingAbsorb, incomingPhysicalBonus, outgoingBonus, outgoingPenalty, proneRulesOf, spendAbsorb, untargetableBy } from './status.js'
 import { rollCritEffect } from './crit.js'
 import { effective, stat } from './stats.js'
+import { SPECIAL_FREE_ATTACKS } from './special-free-attacks.js'
 import { accelerateBleedOut, applyAttackPackets, breakStatuses, damageProp, emit, unit, recordBlock } from './mutate.js'
 import { propsTouching } from './props.js'
 import { actionReady, isAttack, spendAction , resolveActionSlot } from './action.js'
@@ -499,11 +500,9 @@ export const FREE_ATTACK_CAUSE = 'rule.free-attack'
  * stat that says so (above 0), the stat added to that swing's Accuracy, and the cause its lines name. The attack of
  * opportunity is the third special free attack; every unit with a zone of control makes it, so it has no row here.
  */
-export type FreeAttackKind = 'counterattack' | 'fend'
-export const FREE_ATTACK_STATS: Readonly<Record<FreeAttackKind, { readonly up: import('./stats.js').StatName; readonly accuracy: import('./stats.js').StatName; readonly cause: string }>> = {
-  counterattack: { up: 'counterattack', accuracy: 'counterattackAccuracy', cause: 'rule.counterattack' },
-  fend: { up: 'fend', accuracy: 'fendAccuracy', cause: 'rule.fend' },
-}
+export type FreeAttackKind = import('./special-free-attacks.js').FreeAttackKind
+/** special-free-attacks.ts SPECIAL_FREE_ATTACKS — one table (it moved there so the mutators can read it: rule.counterattack-replaced-and-lost). */
+export const FREE_ATTACK_STATS = SPECIAL_FREE_ATTACKS
 
 export function canAttack(ctx: Ctx, attackerId: number, targetId: number, attackId: string, mode?: AttackMode): boolean {
   const at = unit(ctx, attackerId)
@@ -604,7 +603,7 @@ export function preview(ctx: Ctx, attackerId: number, targetId: number, attackId
     kdbChanceOnHit:kdbOf(hit),kdbChanceOnCrit:kdbOf(critical),kdbChanceOnCritChart:kdbOf(chart),
     // v2.thorns: the true damage each connecting hit costs the attacker (melee only;
     // its own Protection may absorb some). The number reflectThorns reads (Law 1).
-    thornsOnHit:thornsOnHit(ctx,tg,a),
+    thornsOnHit:thornsOnHit(ctx,tg,a,at),
   }
 }
 
@@ -922,6 +921,9 @@ function resolveHitOn(
   const tg = unit(ctx, targetId)
   const fc = { ownerId: attackerId, targetId, causeId: a.id, ordinal: ord }
 
+  // rule.counterattack-replaced-and-lost (2026-10-04): Thorns answers an ADJACENT melee attacker — read where the two stand
+  // as the hit lands, before anything the hit does can move either of them (the number the preview gave: Law 1).
+  const thorns = thornsOnHit(ctx, tg, a, at)
   const expected = opts.expected ?? preview(ctx, attackerId, targetId, a.id).damageOnHit
   const critical=opts.critical??heads>0
   const dmg = planAttackDamage(ctx,at,tg,a,heads,critical)
@@ -966,7 +968,7 @@ function resolveHitOn(
   if (tg.hp === 0 && applied > 0) { fireTriggers(ctx, 'onKill', fc); decayOnKill(ctx, attackerId, a.id) }   // Karma: -1 on a kill
   // v2.thorns (COMBAT-V2 §9.4): a connecting MELEE hit on a thorned unit — armor-
   // zero included, so it is not gated on `applied` — costs the attacker N true.
-  reflectThorns(ctx, attackerId, targetId, a)
+  reflectThorns(ctx, attackerId, targetId, a, thorns)
 
   // The legacy `applies` rider — a hardcoded 100% onHit trigger with no chance and
   // no hook. Kept working until its content moves to a real trigger, then deleted.

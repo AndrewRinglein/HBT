@@ -11,7 +11,8 @@
 // lists now, and Block's Protection is its row's status.apply.
 
 import type { AbilityDef, Ctx, Unit } from './types.js'
-import { breakStatuses, corpsesNear, emit, unit } from './mutate.js'
+import { breakStatuses, corpsesNear, emit, loseFreeAttack, unit } from './mutate.js'
+import { freeAttackKindOf } from './special-free-attacks.js'
 import { actionReady, isPower, spendAction , resolveActionSlot } from './action.js'
 export { readyOn, isReady } from './action.js'
 import { resolveTargets, hasAnyTarget } from './target.js'
@@ -182,6 +183,14 @@ function performEffects(ctx: Ctx, userId: number, targetId: number, a: AbilityDe
     actor: userId, target: targetId, abilityId: a.id, name: a.name,
     distance: ctx.geo.distance(u.hex, unit(ctx, targetId).hex), targets, ...(a.free ? { free: true } : {}),
   })
+  // rule.counterattack-replaced-and-lost (2026-10-04; "A new counterattack replaces the old one"): a power that grants a
+  // special free attack first takes away the one its receiver has up — before any of this power's own effects, so the
+  // order of its effect list does not matter and nothing it is about to place is taken for the older one's.
+  for (const e of a.effects!) {
+    const kind = e.kind === 'statMod' && e.value > 0 ? freeAttackKindOf(e.stat) : undefined
+    if (!kind) continue
+    for (const id of e.who === 'self' ? [userId] : targets) if (unit(ctx, id).lifeState === 'standing') loseFreeAttack(ctx, id, kind, 'replaced', a.id, true)
+  }
   let total = 0
   for (const e of a.effects!) {
     // `who: 'self'` and the kinds that are only ever the one acting's own (a move's riders, on a power too)

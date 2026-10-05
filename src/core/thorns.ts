@@ -33,9 +33,14 @@ export function thornsOf(ctx: Ctx, u: Unit): number {
   return Math.max(0, effective(ctx, u, 'thorns').value)
 }
 
-/** The Thorns a hit with this attack would reflect onto its attacker: melee only. */
-export function thornsOnHit(ctx: Ctx, target: Unit, a: AttackDef): number {
-  return a.attack.kind === 'melee' ? thornsOf(ctx, target) : 0
+/**
+ * The Thorns a hit with this attack would reflect onto its attacker: a melee attack, made from the next hex.
+ * rule.counterattack-replaced-and-lost (2026-10-04; DECISIONS.md 2026-09-28, the Armory Ledger's rules: Thorns needs a hit
+ * from an ADJACENT melee attacker): a melee attack with reach, made from two hexes away, is out of the spikes' reach. Read
+ * where the two stand now — the preview's number and, taken as the hit lands, the one reflectThorns deals (Law 1).
+ */
+export function thornsOnHit(ctx: Ctx, target: Unit, a: AttackDef, attacker: Unit): number {
+  return a.attack.kind === 'melee' && ctx.geo.distance(attacker.hex, target.hex) <= 1 ? thornsOf(ctx, target) : 0
 }
 
 /**
@@ -45,9 +50,8 @@ export function thornsOnHit(ctx: Ctx, target: Unit, a: AttackDef): number {
  * reflects (SWITCHES.md thornsOnKillingBlow); an attacker already down takes
  * nothing.
  */
-export function reflectThorns(ctx: Ctx, attackerId: number, targetId: number, a: AttackDef): void {
-  const tg = unit(ctx, targetId)
-  const n = thornsOnHit(ctx, tg, a)
+export function reflectThorns(ctx: Ctx, attackerId: number, targetId: number, a: AttackDef, n: number): void {
+  // `n` is thornsOnHit as the hit landed (pipeline.ts resolveHitOn): what the hit then did — a knockback — cannot change it
   if (n <= 0) return
   const at = unit(ctx, attackerId)
   if (at.lifeState !== 'standing' || at.hp <= 0) return
