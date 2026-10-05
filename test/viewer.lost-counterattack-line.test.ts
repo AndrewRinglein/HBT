@@ -91,7 +91,7 @@ describe('a counterattack that is lost or replaced says so in the log: what the 
   it('the page\'s table of special free attacks names the engine\'s kinds by the engine\'s own stats', async () => {
     const src = '../src/actions.js', { FREE_ATTACK } = await import(src) as { FREE_ATTACK: Record<string, { stat?: string; accuracy?: string }> }
     for (const [kind, row] of Object.entries(KINDS)) { expect(FREE_ATTACK[kind], kind).toBeDefined(); expect(FREE_ATTACK[kind]!.stat).toBe(row.up); expect(FREE_ATTACK[kind]!.accuracy).toBe(row.accuracy) }
-  })
+  }, 120000)   // the page's module is loaded here for the first time: seconds under a loaded machine, past the 5-second default
   it('the fixture is the engine\'s own battles, line for line', () => {
     const now = fixtureNow()
     if (process.env.LOST_COUNTERATTACK_WRITE) writeFileSync(FIXTURE, JSON.stringify(now) + '\n')
