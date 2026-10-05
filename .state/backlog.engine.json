@@ -5848,7 +5848,16 @@
   "shape": "modifier",
   "spec": "Ruled 2026-10-04 (Andrew, engine/DECISIONS.md 'his 28 reward weapons read back: ... the mechanics his own items need are wanted'): 'we need to lower and raise magic.' His Staff of the Magi is in the game with Vortex: '... Using it lowers the party's Magic by 1 AND the enemy side's Power by 1 for the rest of the Battle', and the item review of 2026-10-04 reads that clause as not acting. Run `node tools/decided.mjs \"party Magic\"` and `\"Power\"` first and read GLOSSARY.md for both words; confirm what the engine can change in a battle today. Wanted, with no content name in core: an effect can raise or lower a side's party stat - the heroes' Magic or Spirit, the enemy side's Power - by an amount, for the rest of the Battle or for a number of Turns, never below 0; everything that reads the stat (damage, healing, Protection given, a half-stat status) reads the changed value from then on; the change is an event the viewer shows (the party's stat line changes and a line says why). Then Vortex's clause acts. If capability.effect-lasts-activations has landed, use its duration field rather than a second one.",
   "expect": "After one Vortex the party's Magic is 1 lower and the enemy side's Power 1 lower for the rest of the Battle; a second Vortex deals Magic x 3 on the lowered Magic; a test row raises Magic by 2 for two Turns and it returns after; Magic never goes below 0; a Battle in which nothing changes a party stat is event for event what it was.",
-  "note": "Filed by the home chat 2026-10-04."
+  "note": "Filed by the home chat 2026-10-04.",
+  "probeIds": [
+   "power.staff-of-the-magi.vortex"
+  ],
+  "variants": [
+   "power.staff-of-the-magi.vortex",
+   "power.test-mage.swell"
+  ],
+  "status": "done-needs-review",
+  "sha": "7474b7c"
  },
  {
   "id": "capability.his-weapons-small-clauses",

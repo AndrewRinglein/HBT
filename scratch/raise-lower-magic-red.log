@@ -1,0 +1,116 @@
+
+ RUN  v4.1.11 C:/Users/aring/Desktop/HBT-worker-engine/engine
+
+ ❯ test/raise-lower-magic.test.ts (7 tests | 7 failed) 9ms
+     × Vortex is a burst of Magic x 3 as magic damage on a hex within 5 and every hex beside it, and using it lowers the party's Magic by 1 and the enemy side's Power by 1 for the rest of the Battle 4ms
+     × after one Vortex the party's Magic is 1 lower and the enemy side's Power 1 lower, for the rest of the Battle; one line each says so and why 2ms
+     × everything that reads the stat reads the changed value: a second Vortex deals Magic x 3 on the lowered Magic; a value that scales on the party's Magic and one that scales on Power are smaller too 1ms
+     × never below 0: a party with no Magic left loses none, and an enemy side with no Power loses none - no line for a change of nothing 0ms
+     × the test row raises the party's Magic by 2 for two Turns - this one and the next - and it returns after, with a line that says so 0ms
+     × a battle with a change standing saves and restores; a battle in which nothing changes a party stat carries no such state and says no such line 0ms
+     × the mage uses Vortex, and from then on the party's Magic is lower: the log says it once for each use 0ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 7 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/raise-lower-magic.test.ts > the rows > Vortex is a burst of Magic x 3 as magic damage on a hex within 5 and every hex beside it, and using it lowers the party's Magic by 1 and the enemy side's Power by 1 for the rest of the Battle
+AssertionError: expected undefined to be defined
+ ❯ test/raise-lower-magic.test.ts:36:15
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/7]⎯
+
+ FAIL  test/raise-lower-magic.test.ts > Vortex > after one Vortex the party's Magic is 1 lower and the enemy side's Power 1 lower, for the rest of the Battle; one line each says so and why
+TypeError: Cannot read properties of undefined (reading 'replicate')
+ ❯ scenarioOptions src/content/scenarios.ts:911:71
+    909|  * battles gave the party: levels and items, fielded instead of the bu…
+    910|  */
+    911| export function scenarioOptions(s: ScenarioDef, replicate: number = s.…
+       |                                                                       ^
+    912|   // fix.opening-levels: a carry (the kingdom's run through the openin…
+    913|   if (carry && !s.openingPosition) throw new Error(`scenario '${s.id}'…
+ ❯ fielding test/raise-lower-magic.test.ts:23:37
+ ❯ atMage test/raise-lower-magic.test.ts:25:15
+ ❯ test/raise-lower-magic.test.ts:49:27
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/7]⎯
+
+ FAIL  test/raise-lower-magic.test.ts > Vortex > everything that reads the stat reads the changed value: a second Vortex deals Magic x 3 on the lowered Magic; a value that scales on the party's Magic and one that scales on Power are smaller too
+TypeError: Cannot read properties of undefined (reading 'replicate')
+ ❯ scenarioOptions src/content/scenarios.ts:911:71
+    909|  * battles gave the party: levels and items, fielded instead of the bu…
+    910|  */
+    911| export function scenarioOptions(s: ScenarioDef, replicate: number = s.…
+       |                                                                       ^
+    912|   // fix.opening-levels: a carry (the kingdom's run through the openin…
+    913|   if (carry && !s.openingPosition) throw new Error(`scenario '${s.id}'…
+ ❯ fielding test/raise-lower-magic.test.ts:23:37
+ ❯ atMage test/raise-lower-magic.test.ts:25:15
+ ❯ test/raise-lower-magic.test.ts:70:27
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/7]⎯
+
+ FAIL  test/raise-lower-magic.test.ts > Vortex > never below 0: a party with no Magic left loses none, and an enemy side with no Power loses none - no line for a change of nothing
+TypeError: Cannot read properties of undefined (reading 'replicate')
+ ❯ scenarioOptions src/content/scenarios.ts:911:71
+    909|  * battles gave the party: levels and items, fielded instead of the bu…
+    910|  */
+    911| export function scenarioOptions(s: ScenarioDef, replicate: number = s.…
+       |                                                                       ^
+    912|   // fix.opening-levels: a carry (the kingdom's run through the openin…
+    913|   if (carry && !s.openingPosition) throw new Error(`scenario '${s.id}'…
+ ❯ fielding test/raise-lower-magic.test.ts:23:37
+ ❯ atMage test/raise-lower-magic.test.ts:25:15
+ ❯ test/raise-lower-magic.test.ts:88:27
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/7]⎯
+
+ FAIL  test/raise-lower-magic.test.ts > raised for a number of Turns > the test row raises the party's Magic by 2 for two Turns - this one and the next - and it returns after, with a line that says so
+TypeError: Cannot read properties of undefined (reading 'replicate')
+ ❯ scenarioOptions src/content/scenarios.ts:911:71
+    909|  * battles gave the party: levels and items, fielded instead of the bu…
+    910|  */
+    911| export function scenarioOptions(s: ScenarioDef, replicate: number = s.…
+       |                                                                       ^
+    912|   // fix.opening-levels: a carry (the kingdom's run through the openin…
+    913|   if (carry && !s.openingPosition) throw new Error(`scenario '${s.id}'…
+ ❯ fielding test/raise-lower-magic.test.ts:23:37
+ ❯ atMage test/raise-lower-magic.test.ts:25:15
+ ❯ test/raise-lower-magic.test.ts:105:27
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/7]⎯
+
+ FAIL  test/raise-lower-magic.test.ts > raised for a number of Turns > a battle with a change standing saves and restores; a battle in which nothing changes a party stat carries no such state and says no such line
+TypeError: Cannot read properties of undefined (reading 'replicate')
+ ❯ scenarioOptions src/content/scenarios.ts:911:71
+    909|  * battles gave the party: levels and items, fielded instead of the bu…
+    910|  */
+    911| export function scenarioOptions(s: ScenarioDef, replicate: number = s.…
+       |                                                                       ^
+    912|   // fix.opening-levels: a carry (the kingdom's run through the openin…
+    913|   if (carry && !s.openingPosition) throw new Error(`scenario '${s.id}'…
+ ❯ fielding test/raise-lower-magic.test.ts:23:37
+ ❯ atMage test/raise-lower-magic.test.ts:25:15
+ ❯ test/raise-lower-magic.test.ts:118:27
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/7]⎯
+
+ FAIL  test/raise-lower-magic.test.ts > in a real battle, fought by the computer > the mage uses Vortex, and from then on the party's Magic is lower: the log says it once for each use
+TypeError: Cannot read properties of undefined (reading 'replicate')
+ ❯ scenarioOptions src/content/scenarios.ts:911:71
+    909|  * battles gave the party: levels and items, fielded instead of the bu…
+    910|  */
+    911| export function scenarioOptions(s: ScenarioDef, replicate: number = s.…
+       |                                                                       ^
+    912|   // fix.opening-levels: a carry (the kingdom's run through the openin…
+    913|   if (carry && !s.openingPosition) throw new Error(`scenario '${s.id}'…
+ ❯ fielding test/raise-lower-magic.test.ts:23:37
+ ❯ test/raise-lower-magic.test.ts:131:17
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/7]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  7 failed (7)
+   Start at  13:21:57
+   Duration  1.19s (transform 829ms, setup 0ms, import 1.05s, tests 9ms, environment 0ms)
+

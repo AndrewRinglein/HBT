@@ -36681,3 +36681,68 @@ index 5ad2700..5fa7b0c 100644
      const ctx = createBattle({ scenarioId: 'probe.mods', replicate: 1, heroes: ['hero.base.priest-armored'], heroItems: [items], heroMods: [heroMods], enemies: ['unit.zombie'], enemyCount: 1, mapId: 'map.open' })
 ```
 </details>
+
+## capability.raise-lower-magic — LANDED `7474b7c` **NEEDS REVIEW**
+2026-10-05 22:52
+
+  PASS  dependencies landed
+  WARN  not already decided — 2 candidate ruling(s) — READ BEFORE ASKING: SWITCHES.md:2282 · COMBAT-SEQUENCE.md:484
+  PASS  typecheck
+  PASS  the item's own tests — test/battle-cursor.test.ts, test/raise-lower-magic.test.ts
+  PASS  gate 1 — the id appears in a real battle — power.staff-of-the-magi.vortex: 22 log lines, 22 fired, 13 changed state
+  PASS  brought its own tests — test/battle-cursor.test.ts, test/fixtures/battle-cursor-raise-lower-magic.json, test/raise-lower-magic.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/battle-cursor.test.ts (-2) — will land FLAGGED for review
+  PASS  control battles unchanged
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — power.staff-of-the-magi.vortex live · power.test-mage.swell live
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without power.staff-of-the-magi.vortex — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/battle-cursor.test.ts b/test/battle-cursor.test.ts
+index cafa136..3b81571 100644
+--- a/test/battle-cursor.test.ts
++++ b/test/battle-cursor.test.ts
+@@ -499,4 +499,10 @@ const summonsGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-
+ // Every case frozen here (tools/capture-set-bonus-cursor.mts). Moved: test.perfect-sight. A `changed` case is checked here and skips the older layers.
+ const setBonusGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-set-bonus.json', import.meta.url), 'utf8'))
++// capability.raise-lower-magic (2026-10-05; DECISIONS.md 2026-10-04 'his 28 reward weapons read back …': "we need to lower and raise
++// magic"), Law 10: an effect can raise or lower a side's party stat - the heroes' Magic or Spirit, the enemy side's Power - for the
++// rest of the Battle or for Turns, never below 0, and everything that reads the stat reads the changed value. No case that was
++// fought before moves (nothing in them changed a party stat); test.vortex is ADDED: the Staff of the Magi's Vortex live in a real battle.
++// Every case frozen here (tools/capture-raise-lower-magic-cursor.mts). Moved: test.set-bonus. A `changed` case is checked here and skips the older layers.
++const raiseLowerMagicGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-raise-lower-magic.json', import.meta.url), 'utf8'))
+ const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
+ // Explicit rule migration, not regenerated historical hashes. These nine old
+@@ -649,5 +655,8 @@ describe('resumable battle cursor', () => {
+       const summonsExpected = summonsGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+       const setBonusExpected = setBonusGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+-      const setBonusMoved = setBonusExpected?.changed === true
++      const raiseLowerMagicExpected = raiseLowerMagicGolden.cases.find((row:{id:string})=>row.id===fixture.id)
++      const raiseLowerMagicMoved = raiseLowerMagicExpected?.changed === true
++      // was: const setBonusMoved = setBonusExpected?.changed === true — a case capability.raise-lower-magic moved skips this layer too (capability.raise-lower-magic 2026-10-04)
++      const setBonusMoved = setBonusExpected?.changed === true || raiseLowerMagicMoved
+       // was: const summonsMoved = summonsExpected?.changed === true — a case capability.set-bonus moved skips this layer too (capability.set-bonus 2026-10-04)
+       const summonsMoved = summonsExpected?.changed === true || setBonusMoved
+@@ -811,5 +820,12 @@ describe('resumable battle cursor', () => {
+           }
+         } else result = battle.runBattle(ctx)
+-        if (setBonusExpected) {
++        if (raiseLowerMagicExpected) {
++        expect(hash(ctx.events), 'full raise-lower-magic events').toBe(raiseLowerMagicExpected.events)
++        expect(hash(ctx.state), 'full raise-lower-magic state').toBe(raiseLowerMagicExpected.state)
++        expect(hash(ctx.rng.log), 'full raise-lower-magic RNG').toBe(raiseLowerMagicExpected.rng)
++        expect(result).toEqual(raiseLowerMagicExpected.result)
++        }
++        // was: if (setBonusExpected) { — capability.raise-lower-magic (2026-10-04): a case it moved is checked above instead
++        if (setBonusExpected && !raiseLowerMagicMoved) {
+         expect(hash(ctx.events), 'full set-bonus events').toBe(setBonusExpected.events)
+         expect(hash(ctx.state), 'full set-bonus state').toBe(setBonusExpected.state)
+```
+</details>
