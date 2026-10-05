@@ -51,3 +51,4 @@
 {"suite":"kingdom","stamp":"6a27d9b71b","with":{"engine":"96341738c6","content":"bf5c5d7f55","viewer":"66bb6d0ff4","kingdom":"6a27d9b71b"},"at":"2026-10-05T00:34:04.548Z","by":"gate --shard (4 of 4)","in":"HBT-worker-kingdom"}
 {"suite":"kingdom","stamp":"cdb5a7a8c1","with":{"engine":"96341738c6","content":"bf5c5d7f55","viewer":"66bb6d0ff4","kingdom":"cdb5a7a8c1"},"at":"2026-10-05T00:47:07.164Z","by":"gate --shard (4 of 4)","in":"HBT-worker-kingdom"}
 {"suite":"kingdom","stamp":"8a365cd796","with":{"engine":"96341738c6","content":"bf5c5d7f55","viewer":"66bb6d0ff4","kingdom":"8a365cd796"},"at":"2026-10-05T01:08:56.578Z","by":"gate --shard (4 of 4)","in":"HBT-worker-kingdom"}
+{"suite":"kingdom","stamp":"4148f6e283","with":{"engine":"1ce370525e","content":"8a10d58fcb","viewer":"7ed2c240e0","kingdom":"4148f6e283"},"at":"2026-10-05T01:16:45.574Z","by":"suites --run --full","in":"HBT-worker-engine"}
