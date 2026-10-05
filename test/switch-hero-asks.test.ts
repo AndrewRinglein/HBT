@@ -9,6 +9,7 @@
 // acting and select-activation for the one asked for. A unit that has done nothing is switched away from freely, as before.
 // Every legality is the engine's (validateBattleCommand, heroesYetToAct, the unit's own facts).
 import { describe, it, expect } from 'vitest'
+import { shownName } from '../../viewer/src/names.js'
 import { createSandbox, advanceSandbox, commandSandbox, saveSandbox, restoreSandbox, type Sandbox } from '../src/core/sandbox.js'
 import { SANDBOX_DEFAULT } from '../src/content/sandbox.js'
 import { createPlayInput } from '../src/ui/play-input.js'
@@ -69,7 +70,10 @@ describe('switching heroes asks first', () => {
     // no partial Activations: a double-click back on the first is refused in one plain line, and nothing is asked
     expect(P.input({ kind: 'choose', id: x })).toBe(false)
     expect(P.facts().ask ?? null).toBeNull()
-    expect(P.facts().note).toBe(`${box.s.ctx.state.units[x]!.name} has already acted this Phase.`); expect(P.facts().note!).not.toMatch(RAW)
+    /* Law 10, 2026-10-05 - viewer.unit-names-no-letters-or-numbers (engine DECISIONS.md 2026-10-05 'no unit is shown with a number or a
+       letter', Andrew: "it shouldn't be Soldier A or Lumberjack 1"): the note was held to the engine's marked name (`unit.name`). The
+       claim is unchanged - the plain line names the unit - and the name is the engine's less its mark (viewer src/names.js shownName). */
+    expect(P.facts().note).toBe(`${shownName(box.s.ctx.state.units[x]!.name)} has already acted this Phase.`); expect(P.facts().note!).not.toMatch(RAW)
   })
   it('a unit that has done nothing is switched away from freely, with no question (turn-taking point 4)', () => {
     const { box, P } = start(); P.next()
@@ -103,10 +107,16 @@ describe('switching heroes asks first', () => {
     const x = box.s.ctx.battleCursor!.actor!
     walk(P)
     expect(P.input({ kind: 'choose', id: first })).toBe(false)
-    expect(P.facts().ask ?? null).toBeNull(); expect(P.facts().note).toBe(`${box.s.ctx.state.units[first]!.name} has already acted this Phase.`)
+    /* Law 10, 2026-10-05 - viewer.unit-names-no-letters-or-numbers (engine DECISIONS.md 2026-10-05 'no unit is shown with a number or a
+       letter', Andrew: "it shouldn't be Soldier A or Lumberjack 1"): the note was held to the engine's marked name (`unit.name`). The
+       claim is unchanged - the plain line names the unit - and the name is the engine's less its mark (viewer src/names.js shownName). */
+    expect(P.facts().ask ?? null).toBeNull(); expect(P.facts().note).toBe(`${shownName(box.s.ctx.state.units[first]!.name)} has already acted this Phase.`)
     const enemy = box.s.ctx.state.units.find((u) => u.side === 'enemy')!
     expect(P.input({ kind: 'choose', id: enemy.id })).toBe(false)
-    expect(P.facts().ask ?? null).toBeNull(); expect(P.facts().note).toBe(`${enemy.name} is not yours to command.`)
+    /* Law 10, 2026-10-05 - viewer.unit-names-no-letters-or-numbers (engine DECISIONS.md 2026-10-05 'no unit is shown with a number or a
+       letter', Andrew: "it shouldn't be Soldier A or Lumberjack 1"): the note was held to the engine's marked name (`unit.name`). The
+       claim is unchanged - the plain line names the unit - and the name is the engine's less its mark (viewer src/names.js shownName). */
+    expect(P.facts().ask ?? null).toBeNull(); expect(P.facts().note).toBe(`${shownName(enemy.name)} is not yours to command.`)
     expect(acting(box.s)).toEqual(['acting', x])
   })
   it('the question does not outlive what it was asked about: any other order drops it; a stale answer does nothing', () => {
