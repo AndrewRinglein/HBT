@@ -8,7 +8,9 @@
   ],
   "spec": "Ruled 2026-10-04 (Andrew, engine/DECISIONS.md 'rewards: one of his bases carrying one of his attributes is his; the Flaming Longsword stays battle 2's reward'): asked 'should a row made of one of your bases carrying one of your attributes count as yours' - '1 yes'. kingdom.rewards-only-authored landed with the kingdom switch rewards.derivedRowsOffered off, which left a reward pool of 8 rows (five tier-3 weapons, three tier-1 trinkets) and no armor. Turn the switch on as the ruled side: the reward draw also deals a row whose base is on the checked-in list (kingdom/src/content/authored-items.ts) and whose attribute is on it - by the worker's count 41 rows more (22 weapons, 19 armor), a pool of 49 with armor in it. The switch stays a switch; kingdom/SWITCHES.md says which side is ruled and quotes him. A row whose base or whose attribute is not on the list is still not dealt. The Flaming Longsword stays the Lumberjack House's named reward ('2 yes') - note it in SWITCHES rewardsNamedOffList as ruled, no code. Tests that pinned the pool of 8 or the classes left empty by it are rewritten as the rule now stands, each with a dated note (Law 10); never loosen an assertion. Rebuild the pages.",
   "expect": "Across 200 seeded reward draws every card is a row on the list or a row whose base and attribute are both on it; armor is dealt; no row with a base or an attribute off the list is dealt; no draw throws; the pool's size is the worker's counted number (49 expected - say the number found); the Lumberjack House still offers the Flaming Longsword.",
-  "note": "Filed by the home chat 2026-10-04."
+  "note": "Filed by the home chat 2026-10-04.",
+  "status": "done-needs-review",
+  "sha": "0858548"
  },
  {
   "id": "kingdom.rewards-only-authored",
