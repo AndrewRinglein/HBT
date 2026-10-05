@@ -10,7 +10,7 @@ import { terrainIdOf } from '../content/maps.js'
 import { advanceBleedOuts, checkVictory, settle } from './settle.js'
 import { advanceBand, fireSchedule, landFalls, markFalls, startOfTurn } from './encounter.js'
 import { heroesLight } from './vision.js'
-import { isBlocked, tickUnitStatuses } from './status.js'
+import { isBlocked, tickUnitStatuses, countDownByActivation } from './status.js'
 import { HOOKS, fireTriggers } from './trigger.js'
 import { groundAtActivationEnd } from './ground.js'
 import type { BattleCursor, Ctx, EndOfPhaseRung, Side } from './types.js'
@@ -52,6 +52,9 @@ export function endOfActivation(ctx: Ctx, unitId: number): void {
   const u = ctx.state.units[unitId]!
   if (u.lifeState !== 'standing') return
   if (ctx.state.outcome) return   // fix.post-end-ladder: nothing after battle.end
+  // capability.effect-lasts-activations (2026-10-05): this Activation is over — the statuses counted by Activations lose one,
+  // first of the rungs, so "until the end of your third Activation" ends exactly here
+  countDownByActivation(ctx, unitId)
   const t = ctx.state.terrain[u.hex] ?? 0
   // Rung 1 — the ground (strips, applies, the painted layer, the hazard), through its one owner
   // (core/ground.ts; fix.ground-one-funnel 2026-09-28). The ground rungs' last line is lava's

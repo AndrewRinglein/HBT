@@ -11092,6 +11092,46 @@ export const UNIT_PACK = {
         }
       ]
     },
+    "power.fire-gauntlet.stoke": {
+      "id": "power.fire-gauntlet.stoke",
+      "name": "Stoke",
+      "free": false,
+      "staminaCost": 1,
+      "cooldown": 0,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [
+        {
+          "kind": "status.apply",
+          "statusId": "status.fire-gauntlet.stoke",
+          "value": 3,
+          "who": "self"
+        }
+      ]
+    },
+    "power.staff-of-the-ultimate-destroyer.perfect-sight": {
+      "id": "power.staff-of-the-ultimate-destroyer.perfect-sight",
+      "name": "Perfect Sight",
+      "free": false,
+      "staminaCost": 2,
+      "cooldown": 0,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [
+        {
+          "kind": "status.apply",
+          "statusId": "status.staff-of-the-ultimate-destroyer.perfect-sight",
+          "value": 3,
+          "who": "self"
+        }
+      ]
+    },
     "power.knight-shield.guard": {
       "id": "power.knight-shield.guard",
       "name": "Guard",
@@ -11670,6 +11710,26 @@ export const UNIT_PACK = {
           "value": -5,
           "until": "battle",
           "who": "self"
+        }
+      ]
+    },
+    "power.poison-coating.use": {
+      "id": "power.poison-coating.use",
+      "name": "Poison Coating",
+      "free": false,
+      "staminaCost": 1,
+      "cooldown": 0,
+      "uses": 1,
+      "range": 1,
+      "target": {
+        "select": "unit",
+        "side": "ally"
+      },
+      "effects": [
+        {
+          "kind": "status.apply",
+          "statusId": "status.poison-coating",
+          "value": 1
         }
       ]
     },
@@ -14187,6 +14247,73 @@ export const UNIT_PACK = {
       "breaksOnAttack": true,
       "breaksOnPower": true,
       "breaksOnReveal": true
+    },
+    "status.fire-gauntlet.stoke": {
+      "id": "status.fire-gauntlet.stoke",
+      "name": "Stoke",
+      "shape": "counter",
+      "family": "duration",
+      "stacking": "highest",
+      "decayPerPhase": 0,
+      "countsDown": "activation",
+      "lends": {
+        "triggers": [
+          {
+            "id": "trigger.fire-gauntlet.stoke.burn",
+            "hook": "onHit",
+            "chance": 100,
+            "select": "target",
+            "effect": {
+              "kind": "status.apply",
+              "statusId": "status.burn",
+              "value": {
+                "scale": "partyMagic",
+                "div": 2,
+                "round": "nearest"
+              }
+            },
+            "source": "status.fire-gauntlet.stoke"
+          }
+        ]
+      }
+    },
+    "status.staff-of-the-ultimate-destroyer.perfect-sight": {
+      "id": "status.staff-of-the-ultimate-destroyer.perfect-sight",
+      "name": "Perfect Sight",
+      "shape": "counter",
+      "family": "duration",
+      "stacking": "highest",
+      "decayPerPhase": 0,
+      "countsDown": "activation",
+      "lends": {
+        "doubles": [
+          "precision"
+        ]
+      }
+    },
+    "status.poison-coating": {
+      "id": "status.poison-coating",
+      "name": "Poison Coating",
+      "shape": "counter",
+      "family": "duration",
+      "stacking": "highest",
+      "decayPerPhase": 0,
+      "lends": {
+        "triggers": [
+          {
+            "id": "trigger.poison-coating.poison",
+            "hook": "onHit",
+            "chance": 60,
+            "select": "target",
+            "effect": {
+              "kind": "status.apply",
+              "statusId": "status.poison",
+              "value": 1
+            },
+            "source": "status.poison-coating"
+          }
+        ]
+      }
     }
   },
   "moves": {
@@ -17419,10 +17546,27 @@ export const UNIT_PACK = {
       "grants": [
         "attack.fire-gauntlet.fire-punch"
       ],
-      "abilities": [],
-      "triggers": [],
-      "gaps": [
-        "grants power.fire-gauntlet.stoke — item power — shape unparsed"
+      "abilities": [
+        "power.fire-gauntlet.stoke"
+      ],
+      "triggers": [
+        {
+          "id": "trigger.fire-gauntlet.fire-punch.burn",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.burn",
+            "value": {
+              "scale": "partyMagic",
+              "div": 2,
+              "round": "nearest"
+            }
+          },
+          "source": "item.fire-gauntlet",
+          "onlyWithAttack": "attack.fire-gauntlet.fire-punch"
+        }
       ]
     },
     "item.staff-of-summoning": {
@@ -17502,11 +17646,10 @@ export const UNIT_PACK = {
       "grants": [
         "attack.staff-of-the-ultimate-destroyer.annihilation"
       ],
-      "abilities": [],
-      "triggers": [],
-      "gaps": [
-        "grants power.staff-of-the-ultimate-destroyer.perfect-sight — item power — shape unparsed"
-      ]
+      "abilities": [
+        "power.staff-of-the-ultimate-destroyer.perfect-sight"
+      ],
+      "triggers": []
     },
     "item.chains-of-the-wrathful": {
       "id": "item.chains-of-the-wrathful",
@@ -18407,12 +18550,10 @@ export const UNIT_PACK = {
       "slots": 1,
       "statModifiers": {},
       "grants": [],
-      "abilities": [],
-      "triggers": [],
-      "gaps": [
-        "active: Once per Battle, 1 Stamina: for the rest of the Ba — an ability with charges/targets — capability.consumables",
-        "uses: 1 — no active compiled to carry the charge — charges spent in battle — capability.consumables"
-      ]
+      "abilities": [
+        "power.poison-coating.use"
+      ],
+      "triggers": []
     },
     "item.winter-cloak": {
       "id": "item.winter-cloak",
@@ -23018,6 +23159,33 @@ export const UNIT_PACK = {
         "breaksOnAttack": true,
         "breaksOnReveal": true,
         "stacking": "add"
+      },
+      "test.status.whetted": {
+        "id": "test.status.whetted",
+        "name": "Whetted (testing)",
+        "shape": "counter",
+        "family": "duration",
+        "decayPerPhase": 0,
+        "countsDown": "attack",
+        "countsAttackTag": "blade",
+        "lends": {
+          "triggers": [
+            {
+              "id": "test.whetted.weak",
+              "hook": "onHit",
+              "chance": 100,
+              "select": "target",
+              "effect": {
+                "kind": "status.apply",
+                "statusId": "status.weak",
+                "value": 2
+              },
+              "source": "test.status.whetted",
+              "onlyWithTag": "blade"
+            }
+          ]
+        },
+        "stacking": "highest"
       }
     },
     "badges": {
