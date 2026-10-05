@@ -17,7 +17,7 @@ import {El} from '../../viewer/tools/fakedom.mjs'
 
 export const TAKERS=['class.warrior','class.paladin']
 const esbuild=createRequire(import.meta.url)('../../engine/node_modules/esbuild')
-const built=esbuild.buildSync({stdin:{contents:`export {createSandbox,saveSandbox,sandboxResult,advanceSandbox,sandboxActivationChoices,commandSandbox,playerPolicy} from './src/core/sandbox.ts';export {runBattle,createBattle,BADGES,draftScoreOf} from './src/engine.ts';export * as HEROES from './src/content/heroes.ts';export * as OPENING from './src/core/opening.ts';export * as SEAM from './src/core/seam.ts';export * as PREP from './src/core/prep.ts';export * as REWARDS from './src/core/rewards.ts';export * as REWARD_ROWS from './src/content/encounter-rewards.ts';export * as STANDARD from './src/content/class-standard.ts';export * as STAT_WORDS from './src/content/stat-labels.ts';export * as REWARD_POOL from './src/content/rewards.ts';export * as AUTHORED from './src/content/authored-items.ts';export * as ITEMS from './src/content/items.ts';export * as PROGRESS from './src/content/progress.ts';export {WOUND_UNAVAILABLE} from './src/content/wounds.ts';export * as RUN from './src/ui/opening-run.ts';export * as PROLOGUE from './src/content/prologue.ts';export * as MUTATE from './src/core/mutate.ts';export * as CONQUEST from './src/content/conquest.ts';export * as LESSONS from './src/content/lessons.ts';export {encounterDef} from './src/engine.ts'`,resolveDir:process.cwd(),loader:'ts'},bundle:true,platform:'node',format:'esm',write:false,logLevel:'silent'})
+const built=esbuild.buildSync({stdin:{contents:`export {createSandbox,saveSandbox,sandboxResult,advanceSandbox,sandboxActivationChoices,commandSandbox,playerPolicy} from './src/core/sandbox.ts';export {runBattle,createBattle,BADGES,draftScoreOf,UNITS,RULE_BADGES} from './src/engine.ts';export * as HEROES from './src/content/heroes.ts';export * as OPENING from './src/core/opening.ts';export * as SEAM from './src/core/seam.ts';export * as PREP from './src/core/prep.ts';export * as REWARDS from './src/core/rewards.ts';export * as REWARD_ROWS from './src/content/encounter-rewards.ts';export * as STAT_WORDS from './src/content/stat-labels.ts';export * as REWARD_POOL from './src/content/rewards.ts';export * as AUTHORED from './src/content/authored-items.ts';export * as ITEMS from './src/content/items.ts';export * as PROGRESS from './src/content/progress.ts';export {WOUND_UNAVAILABLE} from './src/content/wounds.ts';export * as RUN from './src/ui/opening-run.ts';export * as PROLOGUE from './src/content/prologue.ts';export * as MUTATE from './src/core/mutate.ts';export * as CONQUEST from './src/content/conquest.ts';export * as LESSONS from './src/content/lessons.ts';export {encounterDef} from './src/engine.ts'`,resolveDir:process.cwd(),loader:'ts'},bundle:true,platform:'node',format:'esm',write:false,logLevel:'silent'})
 const E=await import('data:text/javascript;base64,'+Buffer.from(built.outputFiles[0].text).toString('base64'))
 /* kingdom.opening-starts-in-battle (engine DECISIONS.md 2026-10-04 'the opening's tutorial: the first hero's class line, no map
    before battle 1, …': "We don't start by showing you going to the orphanage on the map … We're just going straight into
@@ -72,7 +72,7 @@ const DESCRIPTION=Object.fromEntries(CODEX.heroes.heroes.map(h=>[h.id,h.backstor
    first draft's cards held to what the hero joins with */
 const lineRows=rows=>Object.fromEntries(rows.filter(r=>typeof r.playerLine==='string').map(r=>[r.id,r.playerLine]))
 export const CLASS_LINE=lineRows(CODEX.classes),BADGE_LINE=lineRows(CODEX.badges),STAT_LINE=lineRows(CODEX.stats)
-export const LINES_SEEN={classLine:0,joins:0,badgeLines:0,own:0,ownLines:0,standard:0,gifts:0}
+export const LINES_SEEN={classLine:0,joins:0,badgeLines:0,own:0,ownLines:0,none:0,given:0,gifts:0,giftHeadings:0}
 /* kingdom.opening-draft-class-message (engine DECISIONS.md 2026-10-04 'the opening's tutorial: …': "The second time you are
    drafting a hero, there should be a message that says, "Until you get additional upgrades you may only deploy one hero
    of each class.""): the sources' rows of what a draft says above its offers (content/prologue.ts DRAFT_MESSAGES) — what
@@ -378,7 +378,7 @@ export function openingPage(page,search,store){
             assert.doesNotMatch(o.textContent,/\d/,who+': stat-less — no number at all')
             for(const name of BADGE_NAMES)assert.ok(!o.textContent.replace(<its name>,'').includes(name),…) */
     const gifts=byId('campaign').querySelectorAll('.firstGifts')
-    assert.equal(gifts.length,1,label+': what the first hero is given is said once, for the pick')
+    assert.equal(gifts.length,1,label+': one line said once, for the pick')
     {const html=byId('campaign').innerHTML;assert.ok(html.indexOf('class="firstGifts"')<html.indexOf('data-act="draft"'),label+': above the three cards')}
     assert.equal(o.querySelectorAll('.joins').length+o.querySelectorAll('[data-joins]').length,0,who+': none of it is listed under the card')
     const joined=E.OPENING.draftedHeroOf(camp(),id).drafted,said=gifts[0].querySelectorAll('[data-joins]').map(li=>({of:li.dataset.joins.split(' '),words:li.textContent}))
@@ -387,32 +387,64 @@ export function openingPage(page,search,store){
     {const what=o.querySelectorAll('.whatitis'),name=CODEX.classes.find(c=>c.id===ownClass).name.toLowerCase()
      assert.equal(what.length,1,who+': one line of what it is');assert.equal(what[0].dataset.what,ownClass,who+': its own class')
      assert.equal(what[0].textContent,`${/^[aeiou]/.test(name)?'An':'A'} ${name}.`,who+': "A <class>."')}
-    /* (2) its OWN differences from the standard hero of its class — the sources' reading of this hero's row (content/class-
-       standard.ts), stat by stat and badge by badge, and nothing else; a positive before a negative; a hero equal to the
-       standard says so in a line */
-    {const row=E.HEROES.HERO_POOL.find(h=>h.id===id),own=E.STANDARD.ownDifferencesOf(row),standard=E.STANDARD.classStandardOf(own.classId)
-     const lines=o.querySelectorAll('[data-own]').filter(li=>li.dataset.own!=='same').map(li=>({of:li.dataset.own,words:li.textContent,pos:li.className.split(/\s+/).includes('pos')}))
-     assert.deepEqual(lines.filter(x=>x.of.startsWith('stat:')).map(x=>x.of.slice(5)).sort(),own.stats.map(d=>d.stat).sort(),who+': exactly its own stats that are not the standard\'s')
-     for(const d of own.stats){const mine=lines.find(x=>x.of==='stat:'+d.stat)
-      assert.notEqual(d.amount,0,`${who}: ${d.stat} equals the standard and is not listed`)
-      assert.equal(mine.words,`${d.amount>0?'+':''}${d.amount} ${E.STAT_WORDS.statLabelOf(d.stat)}`,`${who}: ${d.stat} against the standard's ${standard[d.stat]}`);assert.equal(mine.pos,d.amount>0,`${who}: ${mine.words} on the right side`)}
-     assert.deepEqual(lines.filter(x=>x.of.startsWith('badge:')).map(x=>x.of.slice(6)).sort(),[...own.badges].sort(),who+': exactly its own badges')
-     assert.match(lines.map(x=>x.pos?'p':'n').join(''),/^p*n*$/,who+': positives, then negatives')
-     const same=o.querySelectorAll('.own').filter(n=>n.dataset.own==='same')
-     assert.equal(same.length,lines.length?0:1,who+(lines.length?': it differs, and does not say it is the standard':': equal to the standard in everything — it says so in a line'))
-     LINES_SEEN.own++;LINES_SEEN.ownLines+=lines.length;if(!lines.length)LINES_SEEN.standard++}
-    /* (3) what the first hero is given, said once above the cards: one plain line for each badge (the content's words for
-       it — Leadership is "Born leader"), the Health the first hero's rule gives ("Tougher than most"), and each point it
-       rolled; every thing once, no line twice; never a stat table — the same for each of the three */
-    for(const b of joined.badges){const mine=said.filter(x=>x.of.includes('badge:'+b));assert.equal(mine.length,1,`${who}: one plain line for ${b}`);assert.ok(BADGE_LINE[b],`${who}: the content holds plain words for ${b}`);assert.equal(mine[0].words,BADGE_LINE[b],`${who}: ${b} in the content's plain words`);LINES_SEEN.badgeLines++}
-    assert.equal(said.filter(x=>x.of.some(k=>k.startsWith('badge:'))).length,joined.badges.length,who+': one line per badge it joins with, no more')
-    assert.equal(said[0].words,BADGE_LINE[FIRST_HERO.badges[0]],who+': Leadership first');assert.equal(said[0].words,'Born leader')
-    assert.deepEqual(said.filter(x=>x.of.includes('health')).map(x=>x.words),[STAT_LINE.health],who+': the Health, as words');assert.equal(STAT_LINE.health,'Tougher than most')
-    for(const r of joined.rolls)assert.deepEqual(said.filter(x=>x.of.includes('point:'+r.stat)).map(x=>x.words),[STAT_LINE[r.stat]],`${who}: its rolled point of ${r.stat}, as words`)
-    assert.deepEqual(said.flatMap(x=>x.of).sort(),[...joined.badges.map(b=>'badge:'+b),'health',...joined.rolls.map(r=>'point:'+r.stat)].sort(),who+': every thing it joins with is said, each once')
-    assert.equal(new Set(said.map(x=>x.words)).size,said.length,who+': no line twice')
+    /* Law 10, 2026-10-05, the same day (kingdom.first-hero-card-only-what-is-modified; engine DECISIONS.md 2026-10-05 'seven
+       answers: the first hero's card shows only what is modified; …' — Andrew, told that the card compares each hero with the
+       value most of its class's four base heroes have: "No, it's just the things that get modified: the extra stats and the
+       badges."). Block (2) held each card to "its OWN differences from the standard hero of its class" (the sources'
+       class-standard.ts), and block (3) held the line above the cards to EVERY thing the hero joins with. The standard is not
+       what he meant and is gone; and whether a thing is said once for the pick or on the hero's own card follows how the first
+       hero is rolled. As the rule now stands:
+       (2) the card lists only what is MODIFIED on that hero — what its own draft gave it that the pick's line does not say,
+           each stat change as its amount and the stat's word, each badge by name with its meaning, positives first; and the
+           badges its own row carries (never the engine's rule badges) — or one plain line that nothing is;
+       (3) the pick's line says things every one of the three was given, in the content's plain words, Leadership first, no
+           line twice; and every thing this hero's draft gave it is said exactly once — on its card or for the pick.
+       Law 10, 2026-10-05, the same day again (kingdom.first-hero-each-rolls-own-gifts; engine DECISIONS.md 'gifts: the word;
+       each first-hero choice rolls its own; …' — Andrew: "Yeah, they each roll their own gifts. … the random modifiers that
+       are applied to a hero are called gifts. That includes the random badges and random stats."; 'Leadership is given to
+       every first hero, not rolled': "Every first hero choice gets leadership. They don't roll it, they just get it."). (2)
+       and (3) left WHICH things are the pick's to whatever the three happened to be given alike ("mine": what the pick's line
+       does not say) — written while the three shared one roll. Each of the three now rolls its own, so as the rule stands:
+       the pick's line says exactly what the first hero's RULE gives without a roll — its badges (Leadership) and its Health —
+       and nothing rolled; "mine" is the hero's GIFTS, what the dice decided (its random badges, its random stat changes), and
+       they stand on its own card under the small heading "Gifts", positives first. Its row's own badges are listed apart
+       from them, as they are not rolled. Everything else below stands as written. */
+    {const row=E.HEROES.HERO_POOL.find(h=>h.id===id),pickKeys=said.flatMap(x=>x.of)
+     const given=[...joined.badges.map(b=>({key:'badge:'+b,badge:b})),{key:'health',stat:'health',amount:FIRST_HERO.health},...joined.rolls.map(r=>({key:'point:'+r.stat,stat:r.stat,amount:r.amount}))]
+     const byRule=g=>g.badge?FIRST_HERO.badges.includes(g.badge):g.key==='health'
+     assert.deepEqual(pickKeys,[...FIRST_HERO.badges.map(b=>'badge:'+b),'health'],who+': the pick\'s line says what the rule gives every first hero — Leadership and the Health — and nothing rolled')
+     const mine=given.filter(g=>!byRule(g))
+     {const block=o.querySelectorAll('.gifts');assert.equal(block.length,mine.length?1:0,who+': its gifts under one heading')
+      if(mine.length){const h=block[0].querySelectorAll('.gifts-h');assert.equal(h.length,1,who+': the heading');assert.equal(h[0].textContent,'Gifts',who+': his word')
+       const under=block[0].querySelectorAll('[data-own]').map(li=>({of:li.dataset.own,pos:li.className.split(/\s+/).includes('pos')}))
+       assert.deepEqual(under.map(x=>x.of).sort(),mine.map(g=>g.key).sort(),who+': under "Gifts", its own gifts and nothing else')
+       assert.match(under.map(x=>x.pos?'p':'n').join(''),/^p*n*$/,who+': its gifts, positives then negatives')
+       LINES_SEEN.gifts+=mine.length;LINES_SEEN.giftHeadings++}}
+     const rule=Object.values(E.RULE_BADGES),rowBadges=[...new Set([...(E.UNITS[row.unitType].badges??[]),...row.badges])].filter(b=>!rule.includes(b)&&!mine.some(g=>g.badge===b))
+     const lines=o.querySelectorAll('[data-own]').filter(li=>li.dataset.own!=='none').map(li=>({of:li.dataset.own,words:li.textContent,named:li.querySelectorAll('b').map(b=>b.textContent),pos:li.className.split(/\s+/).includes('pos')}))
+     assert.deepEqual(lines.map(x=>x.of).sort(),[...mine.map(g=>g.key),...rowBadges.map(b=>'badge:'+b)].sort(),who+': exactly what is modified on this hero, and nothing else')
+     for(const g of mine){const said=lines.find(x=>x.of===g.key)
+      /* (the line is the badge's name in bold, then its meaning; the page tool's DOM gives an element's own words before its
+          children's, so the name is read from the bold and the meaning as the rest — first exercised on the page by
+          kingdom.first-hero-each-rolls-own-gifts, 2026-10-05: until each hero rolled its own, no card of the page's run held a badge) */
+      if(g.badge){const name=E.BADGES[g.badge].name;assert.deepEqual(said.named,[name],`${who}: ${g.badge} by name`);assert.ok(said.words.replace(name,'').trim().length>3,`${who}: ${g.badge} with its meaning`);assert.equal(said.pos,!FLAWED_BADGES.includes(g.badge),`${who}: ${g.badge} on the right side`);LINES_SEEN.badgeLines++}
+      else{assert.equal(said.words,`${g.amount>0?'+':''}${g.amount} ${E.STAT_WORDS.statLabelOf(PARTY.crucible.statOf[g.stat]??g.stat)}`,`${who}: its ${g.stat}, as its amount and the stat's word`);assert.equal(said.pos,g.amount>0)}}
+     /* (Law 10, 2026-10-05, kingdom.first-hero-each-rolls-own-gifts: this held ALL the card's lines to positives-then-negatives as
+        one list; the row's own badges and the gifts are two lists now, each held so — the gifts above, the row's here) */
+     assert.match(lines.filter(x=>!mine.some(g=>g.key===x.of)).map(x=>x.pos?'p':'n').join(''),/^p*n*$/,who+': its row\'s badges, positives then negatives')
+     const none=o.querySelectorAll('.own').filter(n=>n.dataset.own==='none')
+     assert.equal(none.length,lines.length?0:1,who+(lines.length?': it lists what is modified, and does not say nothing is':': nothing of its own — it says so in one plain line'))
+     if(!lines.length)assert.equal(none[0].textContent,'No extra stats and no badges of its own.')
+     assert.equal(o.querySelectorAll('[data-against]').length,0,who+': nothing is worked out against its class')
+     LINES_SEEN.own++;LINES_SEEN.ownLines+=lines.length;if(!lines.length)LINES_SEEN.none++
+     /* (3) the pick's line */
+     for(const x of said)for(const key of x.of){const g=given.find(y=>y.key===key);assert.ok(g,`${who}: ${key} is said for the pick, so this hero was given it`)
+      assert.equal(x.words,g.badge?BADGE_LINE[g.badge]:STAT_LINE[g.stat],`${who}: ${key} in the content's plain words`);if(g.badge)LINES_SEEN.badgeLines++}
+     if(said.length){assert.equal(said[0].words,BADGE_LINE[FIRST_HERO.badges[0]],who+': Leadership first');assert.equal(said[0].words,'Born leader')}
+     assert.deepEqual([...pickKeys,...lines.map(x=>x.of).filter(k=>given.some(g=>g.key===k))].sort(),given.map(g=>g.key).sort(),who+': every thing its draft gave it is said, each once — on its card or for the pick')
+     assert.equal(new Set(said.map(x=>x.words)).size,said.length,who+': no line twice')}
     assert.equal(o.querySelectorAll('.stats').length+o.querySelectorAll('.stRow').length+o.querySelectorAll('.badge').length,0,who+': no stat table and no badge block')
-    LINES_SEEN.joins++;LINES_SEEN.gifts=said.length
+    LINES_SEEN.joins++;LINES_SEEN.given=said.length
     /* Law 10, 2026-10-04 (kingdom.opening-first-hero-class-line): the comment below read "chosen from three by description
        only — no stats, no badges, no kit" (2026-10-03 "no stats or badges shown, just a description"). The ruling of
        2026-10-04 replaces it only as far as the plain lines go, so every assertion below STANDS as written: the card
@@ -432,6 +464,8 @@ export function openingPage(page,search,store){
    /* a later draft: the hero as the sources' rule rolls it on this run's own stream, shown — its stats are the numbers the
       battle would field, and they differ from its row by exactly its rolled modifiers */
    assert.ok(o.dataset.stats!==undefined&&o.dataset.badges!==undefined&&o.dataset.rolls!==undefined,who+' is shown with its stats, its rolled points and its badges')
+   /* kingdom.first-hero-each-rolls-own-gifts (2026-10-05; GLOSSARY.md: Gift): what the Crucible rolled stands under "Gifts" */
+   {const h=o.querySelectorAll('.gifts-h');assert.equal(h.length,1,who+': its rolled points and badges under one heading');assert.equal(h[0].textContent,'Gifts',who+': his word');LINES_SEEN.giftHeadings++}
    assert.equal(o.querySelectorAll('.joins').length,0,who+': the plain lines are the first draft\'s alone — a later draft shows the numbers')
    const want=E.OPENING.draftedHeroOf(camp(),id),d=want.drafted
    assert.equal(o.dataset.badges,d.badges.join(','),who+': its rolled badges');assert.equal(o.dataset.rolls,d.rolls.map(r=>r.stat+':'+r.amount).join(','),who+': its rolled points')

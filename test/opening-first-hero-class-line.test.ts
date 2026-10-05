@@ -155,7 +155,17 @@ describe('kingdom.opening-first-hero-class-line — the first draft says what th
   // every thing once, no line twice), are read from the ONE line above the three cards, and no card carries any of them; the
   // class word is the card's one line of what it is ("A ranger."); and the card shows no number and names no badge BUT its own
   // differences from its class's standard. The class line, its place, no stat table, no kit: as they were.
-  it('each offer of the first draft: the class line of its own class under the line of what it is; what the first hero joins with is said once above the cards, one plain line for each thing — no stat table, and on the card no number and no badge named but its own differences', () => {
+  //
+  // Law 10, 2026-10-05, the same day again (kingdom.first-hero-each-rolls-own-gifts; engine/DECISIONS.md 'gifts: the word; each
+  // first-hero choice rolls its own; …' — Andrew: "Yeah, they each roll their own gifts. … the random modifiers that are applied
+  // to a hero are called gifts. That includes the random badges and random stats."; 'Leadership is given to every first hero, not
+  // rolled': "Every first hero choice gets leadership. They don't roll it, they just get it."). Block (2) held the ONE line above
+  // the cards to every thing the hero joins with — each of its badges, the Health, each rolled point — which was true while the
+  // three shared one roll. Each of the three now rolls its own, so as the rule stands: the line above the cards holds what the
+  // RULE gives every first hero without a roll (its badges — Leadership, first — and the Health), in the content's plain words,
+  // one line each, and nothing rolled; what the hero ROLLED — its gifts — is on its own card (under "Gifts": held by
+  // test/first-hero-each-rolls-own-gifts.test.ts) and on no other line; and every thing it joins with is still said exactly once.
+  it('each offer of the first draft: the class line of its own class under the line of what it is; what the rule gives every first hero is said once above the cards, one plain line for each thing, and what the hero rolled is on its own card — no stat table, and on the card no number and no badge named but its own', () => {
     const badgeNames = [...FIRST.badges, ...FAVOURABLE, ...FLAWED].map((id) => BADGES[id]!.name)
     for (const seed of SEEDS) {
       const ctx = atFirstDraft(seed), c = ctx.campaign, html = draftScreen(c), offers = offersOn(html)
@@ -174,22 +184,29 @@ describe('kingdom.opening-first-hero-class-line — the first draft says what th
         expect(html.match(/<p class="firstGifts"/g)?.length, `${who}: one line for the pick`).toBe(1)
         expect(html.indexOf('<p class="firstGifts"'), 'above the three cards').toBeLessThan(html.indexOf('data-act="draft"'))
         expect(o.html, `${who}: none of it under the card`).not.toMatch(/data-joins=|<ul class="joins">/)
+        const ownKeys = [...o.html.matchAll(/<li class="(?:pos|neg)" data-own="([^"]+)"/g)].map((m) => m[1]!)
         for (const b of d.badges) {
           const mine = joins.filter((j) => j.of.includes('badge:' + b))
+          if (!FIRST.badges.includes(b)) { // rolled: a gift — on its own card, not said for the pick
+            expect(mine.length, `${who}: ${b} was rolled, so it is not said for the pick`).toBe(0)
+            expect(ownKeys.filter((k) => k === 'badge:' + b).length, `${who}: ${b} on its own card, once`).toBe(1)
+            continue
+          }
           expect(mine.length, `${who}: one plain line for ${b}`).toBe(1)
           expect(mine[0]!.words, `${who}: ${b} in the content's plain words`).toBe(CODEX.badges.find((x) => x.id === b)!.playerLine)
         }
-        expect(joins.filter((j) => j.of.some((k) => k.startsWith('badge:'))).length, `${who}: one line per badge, no more`).toBe(d.badges.length)
+        expect(joins.filter((j) => j.of.some((k) => k.startsWith('badge:'))).length, `${who}: one line per badge the rule gives, no more`).toBe(FIRST.badges.length)
         expect(d.badges[0]).toBe(FIRST.badges[0])
         expect(joins[0]!.words, `${who}: Leadership first — "Born leader"`).toBe('Born leader')
         const health = joins.filter((j) => j.of.includes('health'))
         expect(health.map((j) => j.words), `${who}: the +${FIRST.health} Health, as words`).toEqual(['Tougher than most'])
-        for (const r of d.rolls) {
-          const mine = joins.filter((j) => j.of.includes('point:' + r.stat))
-          expect(mine.map((j) => j.words), `${who}: its rolled point of ${r.stat}, as words`).toEqual([CODEX.stats.find((s) => s.id === r.stat)!.playerLine])
+        for (const r of d.rolls) { // rolled: a gift — on its own card, not said for the pick
+          expect(joins.filter((j) => j.of.includes('point:' + r.stat)).length, `${who}: its rolled point of ${r.stat} is not said for the pick`).toBe(0)
+          expect(ownKeys.filter((k) => k === 'point:' + r.stat).length, `${who}: its rolled point of ${r.stat} on its own card, once`).toBe(1)
         }
-        // every thing is said once, and two things with the same words share one line
-        expect(joins.flatMap((j) => j.of).sort(), `${who}: every thing it joins with, each once`).toEqual([...d.badges.map((b) => 'badge:' + b), 'health', ...d.rolls.map((r) => 'point:' + r.stat)].sort())
+        // every thing is said once — for the pick or on its own card — and two things with the same words share one line
+        const all = [...d.badges.map((b) => 'badge:' + b), 'health', ...d.rolls.map((r) => 'point:' + r.stat)]
+        expect([...joins.flatMap((j) => j.of), ...ownKeys.filter((k) => all.includes(k))].sort(), `${who}: every thing it joins with, each once`).toEqual([...all].sort())
         expect(new Set(joins.map((j) => j.words)).size, `${who}: no line twice`).toBe(joins.length)
         // never as a stat table — and still no number, no badge by name, no kit (2026-10-03, as far as it stands)
         expect(o.html).not.toMatch(/class="stats"|class="stRow"|data-stats=|data-badges=|data-rolls=|class="badge /)
@@ -234,6 +251,8 @@ describe('kingdom.opening-first-hero-class-line — the first draft says what th
   it('the page: every draft card of a three-battle sitting carries its class line, and the first draft says once, above its cards, what the first hero joins with in plain words', () => {
     const out = execFileSync(process.execPath, ['tools/opening-loop-three.verify.mjs', 'BATTLE-SANDBOX.html'], { cwd: '../kingdom', encoding: 'utf8', maxBuffer: 1 << 24 })
     expect(out).toMatch(/every draft card showed the class line of its own class \(9 cards\); /)
-    expect(out).toMatch(/what the first hero is given was said once, above the three \(\d+ plain lines — one per badge, the Health as "Tougher than most", each rolled point — no stat table\)/)
+    // (Law 10, 2026-10-05, kingdom.first-hero-card-only-what-is-modified: the sentence named "what the first hero is given" — all of it;
+    // what is said for the pick is what every one of the three is given, however the first hero is rolled)
+    expect(out).toMatch(/what every one of the three is given was said once, above the three \(\d+ plain lines, "Born leader" first — no stat table\)/)
   }, 600000)
 })

@@ -59,6 +59,9 @@ export type { FieldOptions } from '../../engine/src/core/setup.js'
 export type { UnitMods, ItemDef } from '../../engine/src/core/types.js'
 export { SPECIALTIES, ITEMS, ACTIONS, XP_BY_TIER } from '../../engine/src/content/index.js'
 export { SPECIALTY_LEVEL, HANDS, HELD_CLASSES, handsOf, splitHandsOf, usesPerBattleOf } from '../../engine/src/core/items.js'
+// kingdom.swap-cost-reads-as-stamina (2026-10-05): what a foldable stat holds with nothing folded onto it (a swap costs 1
+// Stamina) — the screens say what a swap costs with a row's change, and read the base here, never from a number of their own
+export { FOLD_BASE } from '../../engine/src/core/items.js'
 export { fnv1a } from '../../engine/src/core/rng.js'
 // Human sandbox host: public lifecycle/commands and read-only previews only.
 // The passive viewer's separate door remains metadata-only.
@@ -72,9 +75,16 @@ export { isAttack, isMove, isBurst, staminaCostOf } from '../../engine/src/core/
 // host listed and took a unit's STORED list, so a knocked-down unit's Stand Up was never offered to the engine and its button
 // did nothing. What a unit may use is the engine's answer, not the host's.
 export { grantedActionIds } from '../../engine/src/core/action.js'
+// Widened 2026-10-05 (kingdom.stand-up-one-press): standsUp — is this movement the stand (its effects stand the unit up)?
+// Read-only, pure. The play input uses a stand on one press; which move is the stand is the engine's answer, never an id.
+export { standsUp } from '../../engine/src/core/action.js'
 // Widened 2026-10-04 (viewer.move-cost-on-grid): stepCost — the engine's own charge for one step onto a hex, read-only, so
 // the battle screen's movement grid shows the engine's number on a tile and adds nothing up.
 export { movementOptions, stepCost } from '../../engine/src/core/movement.js'
+// Widened 2026-10-05 (viewer.move-cost-on-hex): passableFor — the engine's own answer to "may this unit enter this hex from
+// that one" (the board, its props and its structures), read-only, so the battle screen can put an X on a hex beside the
+// movement grid that the unit cannot enter at all, without a rule of its own.
+export { passableFor } from '../../engine/src/core/structure.js'
 export { preview } from '../../engine/src/core/pipeline.js'
 export { burstCentres, previewBurst } from '../../engine/src/core/burst.js'
 export { previewPower } from '../../engine/src/core/ability.js'

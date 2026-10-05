@@ -5,7 +5,8 @@
 //
 // On the BUILT battle screen, the page PLAY.html opens for battle 2 (BATTLE-SANDBOX.html?play=encounter.opening.lumberjack):
 // a hero of the party is knocked down as its Activation stands begun, and the Lumberjack's Wife is knocked down before hers
-// begins; each presses the Stand Up button on the bar — the way a move that goes nowhere is used: pressed, then pressed again. The engine logs the stand, the
+// begins; each presses the Stand Up button on the bar — ONCE (kingdom.stand-up-one-press, ruled 2026-10-05: "stand up one
+// press."). The engine logs the stand, the
 // prone status is gone, her move is spent and her other actions are still on the bar; then the same for a hero.
 //
 // The knockdown is the status the engine's own knockdown roll applies (kdb.ts kdbDownStatus), put on by the engine's own
@@ -56,16 +57,16 @@ function standsByTheButton(id,label){
  const button=row(stand)
  assert.ok(button,`${label}: the Stand Up button is on ${u().name}'s bar (the bar: ${rows().map(r=>ctx().actions[r.dataset.act]?.name??r.dataset.act).join(', ')})`)
  const before={stood:stoodBy().length,stamina:u().stamina,hex:u().hex,seq:ctx().state.seq}
- // the press
+ /* Law 10, 2026-10-05 (kingdom.stand-up-one-press; engine DECISIONS.md 2026-10-05 'seven answers: …; Stand Up is one press; …' —
+    Andrew: "stand up one press."): here the first press was held to PLAN the stand ("Stand Up: click it again, or the hero, to
+    use it.", a ghost on the unit's hex) and a second press to use it — kingdom SWITCHES standUpIsUsedLikeAMoveThatGoesNowhere,
+    overturned. As the rule now stands: the press, once, and the unit is standing.
+    was: if(afterOne.prone){assert.equal(afterOne.note,'Stand Up: click it again, or the hero, to use it.');assert.deepEqual(afterOne.ghost,{unit:id,hex:before.hex},…);row(stand).handlers.click({});settle()} */
+ // the press — one
  button.handlers.click({});settle()
- const afterOne={prone:isProne(id,prone),seq:ctx().state.seq,note:V().play?.note??null,ghost:V().play?.ghost??null}
- if(afterOne.prone){
-  // a move that goes nowhere is planned on the unit's own hex, and the screen says how to use it; the next press uses it
-  assert.notEqual(afterOne.note,null,`${label}: the press on Stand Up is answered — the screen says something`)
-  assert.equal(afterOne.note,'Stand Up: click it again, or the hero, to use it.')
-  assert.deepEqual(afterOne.ghost,{unit:id,hex:before.hex},`${label}: Stand Up is planned on ${u().name}'s own hex`)
-  row(stand).handlers.click({});settle()
- }
+ const afterOne={prone:isProne(id,prone),note:V().play?.note??null,ghost:V().play?.ghost??null}
+ assert.equal(afterOne.prone,false,`${label}: ${u().name} is standing after ONE press of Stand Up`)
+ assert.equal(afterOne.ghost,null,`${label}: nothing is planned on its hex`);assert.doesNotMatch(afterOne.note??'',/click it again/,`${label}: no second press is asked for`)
  assert.deepEqual(stoodBy().slice(before.stood),[id],`${label}: the engine logs the stand`)
  assert.equal(isProne(id,prone),false,`${label}: the prone status is gone`)
  assert.equal(u().hex,before.hex,`${label}: where it was`)
@@ -76,8 +77,8 @@ function standsByTheButton(id,label){
  assert.ok(!(h.viewer.state.U[id].st?.[prone]>0),`${label}: the battle screen shows ${u().name} standing`)
  if(acting()===id)assert.equal(row(stand),undefined,`${label}: Stand Up is off the bar once stood`)
  const left=acting()===id?rows().map(r=>ctx().actions[r.dataset.act]?.name??r.dataset.act):null
- say(`${label}: ${u().name} knocked down; Stand Up pressed${afterOne.prone?' twice (the first press plans it: "'+afterOne.note+'")':''} — the engine logged the stand, prone gone, move spent, ${ctx().actions[stand].staminaCost} Stamina; ${left?'still acting, the bar: '+left.join(', '):'nothing left it could do: its Activation ended by itself'}`)
- return {pressedTwice:afterOne.prone}
+ say(`${label}: ${u().name} knocked down; Stand Up pressed once — the engine logged the stand, prone gone, move spent, ${ctx().actions[stand].staminaCost} Stamina; ${left?'still acting, the bar: '+left.join(', '):'nothing left it could do: its Activation ended by itself'}`)
+ return {presses:1}
 }
 
 settle()
@@ -89,4 +90,4 @@ standsByTheButton(first,'battle 2, a hero ('+unit(first).name+')')
 // the Lumberjack's Wife: knocked down before her Activation begins, as in play; the Activations before hers are ended
 assert.ok(V().play.endTurn===null||V().play.endTurn.yetToAct.includes(wife.id)||acting()===wife.id,'she has yet to act this Hero Phase')
 standsByTheButton(wife.id,'battle 2, the Lumberjack\'s Wife')
-console.log(`stand-up: on the built sandbox (${LUMBERJACK}), a knocked-down Lumberjack's Wife and a knocked-down hero each stood by the Stand Up button on the bar — the engine logged each stand, the prone status went, the move was spent and the primary action kept — passed`)
+console.log(`stand-up: on the built sandbox (${LUMBERJACK}), a knocked-down Lumberjack's Wife and a knocked-down hero each stood on ONE press of the Stand Up button on the bar — the engine logged each stand, the prone status went, the move was spent and the primary action kept — passed`)
