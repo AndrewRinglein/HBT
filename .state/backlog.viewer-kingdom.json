@@ -178,7 +178,9 @@
   "kind": "viewer",
   "shape": "plumbing",
   "spec": "Ruled 2026-10-05 (Andrew, engine/DECISIONS.md 'the battle screen must feel smooth'; asked 'Should clicking an ability stop re-centring the view on your hero?' - '3 yes'). Overturns 2026-10-01 'Clicking an ability re-centers on the acting unit' (viewer SWITCHES xcomCentre, marked overturned). src/actionbar.js calls centreOn(V, unit) on every click of a bar row; it no longer does - the view stays where the player has it, so a player who scrolled to look at a target and then picks the attack still sees the target. So that there is still a way back: a click on the acting unit's portrait (lower left) centres the view on it, and a click on a unit's card in the top bar centres the view on that unit as well as showing its panel as now - the chat's defaults, recorded in viewer SWITCHES, said to Andrew the same day. A new Activation still centres on the unit that begins (2026-10-01, kept).",
-  "expect": "On the built page's Bridge, scrolled a screen away from the acting hero: clicking Chop on the bar chooses Chop and the view does not move; clicking the portrait brings the hero to the middle; clicking an enemy's card in the top bar brings that enemy to the middle and shows its panel; ending the Activation centres on the next hero as now; a page test reads each; the test that asserted the re-centring is changed, citing the ruling."
+  "expect": "On the built page's Bridge, scrolled a screen away from the acting hero: clicking Chop on the bar chooses Chop and the view does not move; clicking the portrait brings the hero to the middle; clicking an enemy's card in the top bar brings that enemy to the middle and shows its panel; ending the Activation centres on the next hero as now; a page test reads each; the test that asserted the re-centring is changed, citing the ruling.",
+  "status": "done",
+  "sha": "c577fd7"
  },
  {
   "id": "kingdom.attack-one-armed-after-move",
