@@ -36,7 +36,7 @@
 // draw), the input sends the engine's own end-cycle, the command End activation sends, and the host puts the notice on the
 // screen. A unit that has not acted, or that can still do anything, is left alone (kingdom SWITCHES autoEnd*).
 import {sandboxChoices,sandboxActivationChoices,sandboxSwapChoices,sandboxSwapRefusals,type Sandbox,type SandboxChoice,type SandboxSwapOffer} from '../core/sandbox.js'
-import {controllerOf,validateBattleCommand,forecastFrom,previewFrom,preview,threatOf,zocHoldersAt,heroesYetToAct,isAttack,isMove,isBurst,actionReach,stepCost,passableFor,grantedActionIds,standsUp} from '../engine.js'
+import {controllerOf,validateBattleCommand,forecastFrom,previewFrom,preview,threatOf,zocHoldersAt,heroesYetToAct,isAttack,isMove,isBurst,actionReach,stepCost,passableFor,grantedActionIds,standsUp,actionReady} from '../engine.js'
 import {refusalLine,switchLine,type SwitchRefusal} from './refusals.js'
 import {shownName} from '../../../viewer/src/names.js'
 import type {BattleCommand,Forecast} from '../engine.js'
@@ -44,7 +44,7 @@ import type {BattleCommand,Forecast} from '../engine.js'
 export type PlayEvent={kind:'hex';hex:number}|{kind:'point';hex:number|null}|{kind:'unit';id:number;hex:number}|{kind:'choose';id:number}|{kind:'back'}|{kind:'slot';actionId:string;unit:number|null}|{kind:'end-turn'}|{kind:'end-activation'}|{kind:'swap';index:number;unit:number|null}|{kind:'answer';yes:boolean}
 export type PlayAim={from:number;to:number;target:number|null;hit:number|null;dmg:number|null;hpAfter:number|null;lethal:boolean;locked:boolean}
 /** What the viewer draws (viewer src/play.js validates the same shape). Hexes ascending unless named a walk. */
-export type PlayFacts={actor:number|null;slot:string|null;reach:number[];zoc:number[];path:number[];provokes:number[];ghost:{unit:number;hex:number}|null;threat:{unit:number;move:number[];hit:number[]}|null;targets:number[];aim:PlayAim|null;note:string|null;swap?:PlaySwap|null;ask?:PlayAsk|null;moveDone?:string[];reachCost?:PlayCost[];reachBorder?:PlayBorder[]}
+export type PlayFacts={actor:number|null;slot:string|null;reach:number[];zoc:number[];path:number[];provokes:number[];ghost:{unit:number;hex:number}|null;threat:{unit:number;move:number[];hit:number[]}|null;targets:number[];aim:PlayAim|null;note:string|null;swap?:PlaySwap|null;ask?:PlayAsk|null;moveDone?:string[];standFirst?:string[];reachCost?:PlayCost[];reachBorder?:PlayBorder[]}
 /** viewer.move-cost-on-grid (engine DECISIONS.md 2026-10-03 '... movement costs on the grid ...', Andrew: "tiles that require
     extra movement points should have that movement cost, I think, maybe on them in gray"): what entering one hex of the reach
     costs the acting unit — the engine's stepCost for the last step of the engine's own walk to it (viewer src/play.js's
@@ -297,6 +297,20 @@ export function createPlayInput(session:()=>Sandbox|null,run:(command:BattleComm
   const offered=new Set(choicesOf(s).map(c=>c.command.actionId))
   return u.actions.filter(id=>{const a=s.ctx.actions[id];return !!a&&isMove(a)&&!isAttack(a)&&!offered.has(id)})
  }
+ /** viewer.prone-turn-only-stand-up (engine DECISIONS.md 2026-10-05 'playtest post: …', Andrew: "if you are downed, when it's
+     that character's next turn, everything needs to be grayed out except 'stand up'."): the acting unit's actions that WAIT ON
+     ITS STAND — read from the engine, never ruled here. The unit is down when the engine grants it a stand (grantedActionIds
+     holds a movement that standsUp: the prone status's own action); what waits is every other action it is granted that the
+     engine's one limits check (actionReady) refuses. Today that is its other movements — the engine still takes a downed
+     unit's attacks and powers (engine SWITCHES proneNoCrawl), so those stay lit: the engine's to change, and this follows it
+     the day it does (kingdom SWITCHES proneBarReadsTheEngine). A unit that is standing names none. */
+ const standOf=(s:Sandbox,actor:number):string|null=>{const u=s.ctx.state.units[actor]!
+  return grantedActionIds(s.ctx,u).find(id=>{const a=s.ctx.actions[id];return !!a&&standsUp(a)})??null}
+ const standFirstOf=(s:Sandbox,actor:number):string[]=>{
+  if(standOf(s,actor)===null)return []
+  const u=s.ctx.state.units[actor]!
+  return grantedActionIds(s.ctx,u).filter(id=>{const a=s.ctx.actions[id];return !!a&&!standsUp(a)&&!actionReady(s.ctx,u,a)})
+ }
  function facts():PlayFacts{
   const s=session(),empty:PlayFacts={actor:null,slot:null,reach:[],zoc:[],path:[],provokes:[],ghost:null,threat:null,targets:[],aim:null,note}
   if(!s||s.ctx.state.outcome)return {...empty,note:null}
@@ -304,7 +318,7 @@ export function createPlayInput(session:()=>Sandbox|null,run:(command:BattleComm
   const threat=chosen===null&&point!==null?threatAt(s,point):null
   if(actor===null)return {...empty,threat}
   const here=s.ctx.state.units[actor]!.hex
-  const f:PlayFacts={...empty,actor,threat,slot:chosen,ghost:ghost?{unit:actor,hex:ghost.destination}:null,swap:swapFact(s),moveDone:moveDoneOf(s,actor),...(asking?{ask:{kind:'switch' as const,from:asking.from,to:asking.to}}:{})}
+  const f:PlayFacts={...empty,actor,threat,slot:chosen,ghost:ghost?{unit:actor,hex:ghost.destination}:null,swap:swapFact(s),moveDone:moveDoneOf(s,actor),standFirst:standFirstOf(s,actor),...(asking?{ask:{kind:'switch' as const,from:asking.from,to:asking.to}}:{})}
   const mv=moveOf(s,actor)
   if(mv){f.slot=mv.actionId
    f.reach=asc(mv.choices.map(c=>(c.command as {destination:number}).destination))
@@ -457,6 +471,10 @@ export function createPlayInput(session:()=>Sandbox|null,run:(command:BattleComm
       unit's stored list, which never holds a status's action, so the press on Stand Up was dropped here without a word. */
    if(!grantedActionIds(s.ctx,u).includes(e.actionId)||!s.ctx.actions[e.actionId])return false
    const a=s.ctx.actions[e.actionId]!
+   /* viewer.prone-turn-only-stand-up: an action that waits on the unit's stand (standFirstOf — the engine's refusal) is not
+      chosen; the press is answered in one line that says what to do, by the stand's own name, and the screen is left as the
+      Activation began (the stand armed, as the engine's only movement) */
+   if(standFirstOf(s,actor).includes(e.actionId)){chosen=null;aim=null;ghost=null;note=`Knocked down: ${s.ctx.actions[standOf(s,actor)!]!.name} first.`;return true}
    if(isMove(a)){
     /* a power that goes nowhere is used from the bar: chosen, it is planned on the hero's own hex at once; chosen again (or
        the hero clicked) it is used — engine DECISIONS.md 2026-10-01, Devotion: "I can't double-click on it or anything to
