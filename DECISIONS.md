@@ -4975,3 +4975,14 @@ Ruled:
 
 - **The Force Staff's Force Blast deals Precision plus half the party's Magic, as magic damage** - the line in the game today is right as written ("pre" is Precision - typed short). It is one of the rows `capability.damage-from-two-stats` must make act.
 - **The seven items of the entry above stay where they were placed** - behind the engine items already queued (the starting weapons among them), ahead of the deferred item content.
+
+## 2026-10-04 — rewards: one of his bases carrying one of his attributes is his; the Flaming Longsword stays battle 2's reward
+
+Andrew, in the kingdom chat, told that `kingdom.rewards-only-authored` left a reward pool of 8 items (five tier-3 weapons, three tier-1 trinkets; no armor, relic, bloodrune or idol), and answering two questions (1 should a row made of one of your bases carrying one of your attributes count as yours - the pool goes from 8 to 49 and armor comes back; 2 does the Flaming Longsword stay as battle 2's reward, its attribute his and its base, the Long Sword, a chat's row in the game):
+
+“1 yes 2 yes”
+
+Ruled:
+
+- **A row made of one of his bases carrying one of his attributes is his**, and the reward draw deals it. The kingdom switch `rewards.derivedRowsOffered` goes on. Filed: `kingdom.rewards-derived-rows-offered`.
+- **The Flaming Longsword stays the Lumberjack House's reward** (opening battle 2), though the Long Sword it is made from is not on his list.
