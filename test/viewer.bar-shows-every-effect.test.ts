@@ -65,7 +65,9 @@ describe('every action on the bar shows everything it does', () => {
   })
   it('the viewer page: the audit finds no action without a button and nothing an action does left unsaid; the Stab reads "gain 1 Protection"', () => {
     const out = execFileSync(process.execPath, ['--test', '--test-reporter=tap', 'tools/bar-shows-every-effect.test.mjs'], { cwd: '../viewer', encoding: 'utf8', maxBuffer: 1 << 24, env: { ...process.env, VIEWER_PAGE: process.env.VIEWER_PAGE ?? '' } })
-    expect(out).toMatch(/# pass 4/); expect(out).toMatch(/# fail 0/)
+    // 2026-10-05, capability.damage-from-two-stats (engine item): this read `expect(out).toMatch(/# pass 4/)` - the tool's four
+    // tests. It has a fifth now (a damage line says every term of its sum); all five must pass, none fail.
+    expect(out).toMatch(/# pass 5/); expect(out).toMatch(/# fail 0/)
   }, 170000)
   it('the sandbox: the expect line, read against the engine\'s own units on the built BATTLE-SANDBOX.html (the Orphanage)', () => {
     mkdirSync('../kingdom/scratch', { recursive: true })

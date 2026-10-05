@@ -145,6 +145,10 @@ export function dmgOf(a, u, D) {
   // A scalar base is not the total of a multi-packet attack. Wait for the
   // engine's observed damageOnHit; authored packet rows remain visible below.
   if (p.secondaryDamage?.length) return null
+  /* capability.damage-from-two-stats (engine item, 2026-10-05): an attack whose damage is a sum of terms — its own stat counted
+     more than once, or other stats added, the party's Magic among them — has no number this fallback can make from one unit's
+     sheet. It waits for the engine's, as a multi-packet attack does; the line below says the terms meanwhile. */
+  if (p.statMult > 1 || p.addsStats?.length) return null
   const statv = p.stat != null ? ((D.UD || {})[u && u.typeId] || {})[p.stat] : undefined
   // viewer.live-stat-mods: the sheet's stat plus the unit's live modifiers to it (an item's, a Leap's)
   if (statv != null) return { n: Math.max(0, statv + modOf(u, p.stat) + (p.bonus || 0)), live: false }
@@ -422,7 +426,12 @@ export function actionLines(a, u, D, SN) {
   lines.push(lim.join(' · '))
   if (p) {
     const base = ((D.UD || {})[u && u.typeId] || {}).accuracy, dm = dmgOf(a, u, D)
-    lines.push(`Accuracy ${base == null ? '—' : base}${p.accuracy ? ' · ACC ' + sgn(p.accuracy) + ' with this attack' : ''} · Range ${a.range} · Damage ${dm ? dm.n : '—'} (${statWord(p.stat)}${p.bonus ? ' ' + sgn(p.bonus) : ''}${p.powerScale != null ? ' + Power × ' + p.powerScale : ''})`)
+    /* capability.damage-from-two-stats (engine item, 2026-10-05; engine DECISIONS.md 2026-10-04 'his 28 reward weapons read back …':
+       "We do need that."): the sum as the row writes it — the attack's own stat (twice, when the row says so), then each added
+       term in the engine's own fields: "+ ½ party MAGIC", "+ 2 × party MAGIC", "+ ARMOR". Magic and Spirit are the party's. */
+    const termWord = t => ` + ${t.div === 2 ? '½ ' : t.mult > 1 ? t.mult + ' × ' : ''}${t.stat === 'magic' || t.stat === 'spirit' ? 'party ' : ''}${statWord(t.stat)}`
+    const sum = `${p.statMult > 1 ? p.statMult + ' × ' : ''}${statWord(p.stat)}${(p.addsStats || []).map(termWord).join('')}`
+    lines.push(`Accuracy ${base == null ? '—' : base}${p.accuracy ? ' · ACC ' + sgn(p.accuracy) + ' with this attack' : ''} · Range ${a.range} · Damage ${dm ? dm.n : '—'} (${sum}${p.bonus ? ' ' + sgn(p.bonus) : ''}${p.powerScale != null ? ' + Power × ' + p.powerScale : ''})`)
     const more = []
     if (p.crit) more.push('crit ' + sgn(p.crit))
     if (p.hits > 1) more.push(p.hits + ' hits')

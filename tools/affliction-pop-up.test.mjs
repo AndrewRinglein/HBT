@@ -14,6 +14,12 @@ import { execFileSync } from 'node:child_process'
 import { makeWindow } from './fakedom.mjs'
 const PAGE = process.env.VIEWER_PAGE || 'BATTLE-VIEWER.html'
 
+/* Law 10, 2026-10-05 — engine capability.damage-from-two-stats (engine DECISIONS.md 2026-10-04 'his 28 reward weapons read back …':
+   of damage from two stats added, "We do need that."): the three tests below read exportOf('showcase.prologue-party') - the
+   library battle in which, on its own seed, a zombie afflicted a hero. The Priest's Holy Texts deals its written second term
+   now (Precision plus the party's Spirit) and in that battle no hero is afflicted any more. The scene is found by its KIND - a
+   library battle that, on its own seed, afflicts a hero: showcase.waystation today (the only one). Every check is unchanged. */
+const SCENE = 'showcase.waystation'
 /** a battle the engine fights now: its own export tool, as tools/direct-map.test.mjs asks it */
 const exportOf = (scenario, seed) => JSON.parse(execFileSync(process.execPath, ['node_modules/tsx/dist/cli.mjs', 'tools/export-battle.mts', '--scenario', scenario, ...(seed == null ? [] : ['--seed', String(seed)])], { cwd: '../engine', encoding: 'utf8', maxBuffer: 1 << 27 }))
 
@@ -44,7 +50,7 @@ const gainOf = battle => { const i = battle.events.findIndex(e => e.type === 'ba
 function playTo(t, i) { t.v.seek(i); t.v.play(); for (let n = 0; n < 400 && !pop(t.V) && t.v.cursor < t.v.events.length; n++) t.w._flush(250) }
 
 test('a hero first afflicted: the battle holds on the pop-up — its card before and after, the three explanations — and goes on when it is closed', () => {
-  const battle = exportOf('showcase.prologue-party'), { i, e } = gainOf(battle), t = boot(battle), { v, V, w, L } = t
+  const battle = exportOf(SCENE), { i, e } = gainOf(battle), t = boot(battle), { v, V, w, L } = t
   const hero = battle.events.find(x => x.type === 'unit.enter' && x.actor === e.actor)
   assert.equal(hero.side, 'hero'); assert.equal(e.badgeId, 'badge.rotting-flesh')
   playTo(t, i)
@@ -142,7 +148,7 @@ test('Vampirism and Possession read their own 0-Health rules off the event: a Va
 })
 
 test('a scrub draws no pop-up and is never held; a hand step shows it and the next step goes on; an enemy\'s gain is not a hero\'s', () => {
-  const battle = exportOf('showcase.prologue-party'), { i } = gainOf(battle), t = boot(battle), { v, V, w } = t
+  const battle = exportOf(SCENE), { i } = gainOf(battle), t = boot(battle), { v, V, w } = t
   v.seek(battle.events.length); assert.equal(pop(V), null, 'a seek past the gain plays no cue')
   v.seek(i); v.step(); assert.ok(pop(V), 'a hand step over the gain shows it'); assert.equal(v.cursor, i + 1)
   v.step(); assert.equal(v.cursor > i + 1, true, 'the next hand step is never held'); assert.equal(pop(V), null, 'and the pop-up is gone')
@@ -157,7 +163,7 @@ test('a scrub draws no pop-up and is never held; a hand step shows it and the ne
 })
 
 test('the art: every after card the manifest names is inlined; heroes with none are listed, not faked', () => {
-  const { v, L } = boot(exportOf('showcase.prologue-party')), art = L.art
+  const { v, L } = boot(exportOf(SCENE)), art = L.art
   const afflictions = Object.values(L.static.badges).filter(b => b.atZero).map(b => b.id).sort()
   assert.deepEqual(afflictions, ['badge.lycanthropy', 'badge.possession', 'badge.rotting-flesh', 'badge.vampirism'], 'the engine\'s four afflictions (badges with a 0-Health rule)')
   let cards = 0
