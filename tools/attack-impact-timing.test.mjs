@@ -239,8 +239,16 @@ test('a priest\'s cast leaves at the release of the cast: the bolt gathers befor
      — battle 2's recording, whose party of three held the priest. By the ruling battle 2 fields two heroes and the priest
      is not one of them. The scene is the first of this file's recordings, in their order, that holds a priest's cast
      that hits (found by kind, not by name: the Cathedral today). Every check below is unchanged. */
-  const scene = PAINTED.map(b => ({ battle: b, a: findAttack(b.events, { type: 'hero.base.priest-armored', kind: 'ranged', result: 'hit' }) })).find(s => s.a)
-  assert.ok(scene, 'an opening recording has a priest\'s cast that hits')
+  /* Law 10, 2026-10-05 — engine capability.damage-from-two-stats (engine DECISIONS.md 2026-10-04 'his 28 reward weapons read
+     back …': of damage from two stats added, "We do need that."): this read
+       const scene = PAINTED.map(b => ({ battle: b, a: findAttack(b.events, { type: 'hero.base.priest-armored', kind: 'ranged', result: 'hit' }) })).find(s => s.a)
+     - a cast that hits and leaves its target standing. The Holy Texts deals its written second term now (Precision plus the
+     party's Spirit, true damage) and in these recordings every cast of his that hits kills. The scene is still the first
+     recording that holds a priest's cast that hits: one whose target stands if there is one, else one whose target falls -
+     its fall is its reaction, and starts when the bolt lands (the kill's own test below). Every check below is unchanged. */
+  const castOf = falls => PAINTED.map(b => ({ battle: b, a: findAttack(b.events, { type: 'hero.base.priest-armored', kind: 'ranged', result: 'hit', falls }) })).find(s => s.a)
+  const scene = castOf(null) ?? castOf('dead')
+  assert.ok(scene,'an opening recording has a priest\'s cast that hits')
   const a = scene.a
   assert.equal(a.e.damageType, 'true')
   const { seen, rec, look, v } = await watch(scene.battle, a), F = FLIGHTS.holy

@@ -58,6 +58,14 @@ export function drawBar(V) {
   const nameCount = {}
   for (const a of all) if (a) nameCount[a.name || a.id] = (nameCount[a.name || a.id] || 0) + 1
   const weaponOf = id => { const p = String(id).split('.'); return p.length > 2 ? p[1] : '' }
+  /* viewer.prone-turn-only-stand-up (engine DECISIONS.md 2026-10-05 'playtest post: …', Andrew: "if you are downed, when it's
+     that character's next turn, everything needs to be grayed out except 'stand up'."): the rows that wait on the unit's
+     stand are the HOST'S word (play facts' standFirst — the engine's limits check, asked by the host), for the unit acting
+     only. The stand itself — the action a status the unit holds grants (the dump's statusRows; actions.js actionsOf put it on
+     the bar) — is never greyed, whatever a host names: it is the way up. Nothing about being down is worked out here. */
+  const stands = new Set(Object.keys((u && u.st) || {}).filter(sid => u.st[sid] > 0).map(sid => ((D.STATUS_ROWS || {})[sid] || {}).standAction).filter(Boolean))
+  const waiting = !!V.play && !!u && V.play.actor === u.id ? V.play.standFirst.filter(id => !stands.has(id)) : []
+  const standName = (all.find(a => stands.has(a.id)) || {}).name
   const base = (UD[u?.typeId] || {}).accuracy      // EXEMPTION base-accuracy: the sheet's base, not the live total
   const now = V.clock()
   let html = ''
@@ -103,9 +111,11 @@ export function drawBar(V) {
        else greys'): a MOVE row the host says is done for this Activation is slightly greyed — the host's word (play facts'
        moveDone, from the engine), for the unit acting only, and never an attack or a power. A row the engine refuses (on
        cooldown) keeps the disabled look instead: the two are told apart at a glance (styles.css .moveDone, .cool) */
-    const moveDone = !cool && a.kind === 'move' && !!V.play && V.play.actor === u.id && V.play.moveDone.includes(a.id)
+    const standFirst = waiting.includes(a.id)
+    const moveDone = !cool && !standFirst && a.kind === 'move' && !!V.play && V.play.actor === u.id && V.play.moveDone.includes(a.id)
     const whole = actionLines(a, u, D, SN).join('\n') + (moveDone ? '\nThis move is done for this Activation.' : '')
-    html += `<div class="acRow${firing ? ' firing' : ''}${cool ? ' cool' : ''}${moveDone ? ' moveDone' : ''}${chosen ? ' playChosen' : ''}" data-act="${escape(a.id)}" title="${escape(whole)}" style="border-left-color:${accent}">
+      + (standFirst ? '\nKnocked down: ' + (standName || 'stand up') + ' first.' : '')
+    html += `<div class="acRow${firing ? ' firing' : ''}${cool ? ' cool' : ''}${moveDone ? ' moveDone' : ''}${standFirst ? ' standFirst' : ''}${chosen && !standFirst ? ' playChosen' : ''}" data-act="${escape(a.id)}"${standFirst ? ' aria-disabled="true"' : ''} title="${escape(whole)}" style="border-left-color:${accent}">
       <div class="acMain">
         <div class="acL1">${icoHTML(a)}
           <span class="acName">${escape(a.name || a.id)}${dupe ? `<span class="acFrom">${dupe}</span>` : ''}</span>
