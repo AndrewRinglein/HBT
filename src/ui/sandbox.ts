@@ -5,7 +5,7 @@ import {createBattleSurface} from './battle-surface.js'
 import {burstForecast} from './burst-forecast.js'
 import {sandboxTargetingOf} from './sandbox-targeting.js'
 import {controllerOf,validateBattleCommand,type BattleCommand} from '../engine.js'
-import {createPlayInput,NO_ACTIONS_LEFT,type PlayEvent} from './play-input.js'
+import {type MoveClick,createPlayInput,NO_ACTIONS_LEFT,type PlayEvent} from './play-input.js'
 import {refusalLine} from './refusals.js'
 import {shownName} from '../../../viewer/src/names.js'
 import {ABBOTOWN_MAP} from '../content/conquest.js'
@@ -62,7 +62,20 @@ const play=createPlayInput(()=>session,runPlay,{
   if(back.ctx.events.length!==m.events)throw Error('The restored battle does not hold the events saved with it')
   session=atlas&&!back.atlasScene?{...back,atlasScene:atlas}:back
   surface.viewer.rewind(m.events);return true},
+},{
+ /* kingdom.move-click-setting (engine DECISIONS.md 2026-10-05 '… one click or two to move is a setting', Andrew: "let's have a setting
+    where it can be either way, so I can just play with it either way."): the setting is kept in the browser under one key, so
+    it is the same in the next battle and on the page reopened; where the browser keeps nothing (a private window) it lasts
+    the page. Two clicks unless it says one. */
+ moveClick:()=>moveClickKept(),
+ setMoveClick:(clicks)=>{moveClickHere=clicks;try{runStore()?.setItem(MOVE_CLICK_KEY,clicks)}catch{/* kept for this page only */}},
 })
+const MOVE_CLICK_KEY='hbt-move-click'
+let moveClickHere:MoveClick|null=null
+function moveClickKept():MoveClick{
+ if(moveClickHere)return moveClickHere
+ try{return runStore()?.getItem(MOVE_CLICK_KEY)==='one'?'one':'two'}catch{return 'two'}
+}
 /** kingdom.tutorial-orphanage-first-move (engine DECISIONS.md 2026-10-04 'the opening's tutorial: …, the Orphanage's lessons, …'):
     the opening's lessons, shown over the battle screen by one runner (ui/lessons.ts) from the rows of content/lessons.ts.
     This page is the runner's host: it answers what stands on the board (the engine's state), what the unit acting can
@@ -503,6 +516,9 @@ function install(next:Sandbox){
   selectedAim=JSON.stringify(choice.command);controls();return true
  },onPlay:(e:PlayEvent)=>{
   if(epoch!==generation||!session||busy||fault||session.ctx.state.outcome)return false
+  /* kingdom.move-click-setting: the setting changed on the battle screen's own control — no order, so no lesson is clicked past
+     and nothing is begun or ended; the facts are handed again so the control says the new way */
+  if(e.kind==='move-click'){const took=play.input(e);if(took)refreshPlay();return took}
   /* kingdom.tutorial-orphanage-first-move: while a lesson's row waits the player cannot act — a click moves on to the next row */
   if(lessons.waiting()){if(e.kind!=='point')lessons.click();return false}
   let took=false

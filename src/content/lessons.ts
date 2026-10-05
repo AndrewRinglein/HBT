@@ -124,8 +124,11 @@ export const LESSONS: readonly LessonRow[] = [
   //    describe the phases. At the end of the enemy phase, reinforcements and battle changes can occur. That notification should
   //    pop up before we start showing the extra zombie added." ──
   // (a) the first time an enemy is in reach of one of the hero's attacks, from where he stands or from the end of the path planned
+  // kingdom.attack-one-armed-after-move (2026-10-05; engine DECISIONS.md 'the battle screen must feel smooth: …; attack one is chosen
+  //    after a move; …'): the second line said "Choose an attack, then click the enemy …" — after a move the first attack is now
+  //    chosen for the player, so the words say that, and say how to use another (kingdom SWITCHES attackOneLessonWords)
   { id: 'lesson.orphanage.attack', encounterId: ORPHANAGE, starts: 'attack-in-reach', ends: 'attacked', of: 'hero',
-    words: ['An enemy is in range.', 'Choose an attack, then click the enemy to see your chance to hit and the damage.', 'Click it again to attack.'],
+    words: ['An enemy is in range.', 'After you move, your first attack is chosen for you: click the enemy to see your chance to hit and the damage.', 'Click it again to attack. To use another attack, click it on the bar first.'],
     point: { at: 'attack-slot' } },
   // (b) as the first Enemy Phase begins, before the Zombie acts: the battle waits for the notice's time
   { id: 'lesson.orphanage.enemy-numbers', encounterId: ORPHANAGE, starts: 'event', event: { type: 'phase.begin', phase: 'enemy' }, ends: 'time', holds: true,

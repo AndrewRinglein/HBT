@@ -41,10 +41,22 @@ import {refusalLine,switchLine,type SwitchRefusal} from './refusals.js'
 import {shownName} from '../../../viewer/src/names.js'
 import type {BattleCommand,Forecast} from '../engine.js'
 
-export type PlayEvent={kind:'hex';hex:number}|{kind:'point';hex:number|null}|{kind:'unit';id:number;hex:number}|{kind:'choose';id:number}|{kind:'back'}|{kind:'slot';actionId:string;unit:number|null}|{kind:'end-turn'}|{kind:'end-activation'}|{kind:'swap';index:number;unit:number|null}|{kind:'answer';yes:boolean}
+export type PlayEvent={kind:'hex';hex:number}|{kind:'point';hex:number|null}|{kind:'unit';id:number;hex:number}|{kind:'choose';id:number}|{kind:'back'}|{kind:'slot';actionId:string;unit:number|null}|{kind:'end-turn'}|{kind:'end-activation'}|{kind:'swap';index:number;unit:number|null}|{kind:'answer';yes:boolean}|{kind:'move-click';clicks:MoveClick}
+/** kingdom.move-click-setting (engine DECISIONS.md 2026-10-05 'the battle screen must feel smooth: …; one click or two to move is a
+    setting', Andrew: "let's have a setting where it can be either way, so I can just play with it either way."): how a move
+    is made. 'two' — the default and the way of 2026-10-03: a click on a hex in reach shows the path and the ghost, a second
+    click on it walks. 'one' — a single click on a hex in reach walks there at once, except a walk the engine forecasts a
+    free attack on, which still stops for a second click on the same hex so that none is taken by a slip. Attacks are the
+    same either way. The setting is the HOST's: it hands the input how to read it and how to keep it (the page: the
+    browser's storage); the input says it in its facts — the viewer draws its control from that and offers the change back
+    ({kind:'move-click', clicks}) — and decides nothing about where it is kept. */
+export type MoveClick='one'|'two'
+export type PlaySettings={moveClick():MoveClick;setMoveClick(clicks:MoveClick):void}
+/** the one line said when, at one click, a walk is stopped for its second click (kingdom SWITCHES moveClickFreeAttackStop) */
+export const FREE_ATTACK_STOP='This path draws a free attack: click the hex again to walk it.'
 export type PlayAim={from:number;to:number;target:number|null;hit:number|null;dmg:number|null;hpAfter:number|null;lethal:boolean;locked:boolean}
 /** What the viewer draws (viewer src/play.js validates the same shape). Hexes ascending unless named a walk. */
-export type PlayFacts={actor:number|null;slot:string|null;reach:number[];zoc:number[];path:number[];provokes:number[];ghost:{unit:number;hex:number}|null;threat:{unit:number;move:number[];hit:number[]}|null;targets:number[];aim:PlayAim|null;note:string|null;swap?:PlaySwap|null;ask?:PlayAsk|null;moveDone?:string[];standFirst?:string[];reachCost?:PlayCost[];reachBorder?:PlayBorder[]}
+export type PlayFacts={actor:number|null;slot:string|null;reach:number[];zoc:number[];path:number[];provokes:number[];ghost:{unit:number;hex:number}|null;threat:{unit:number;move:number[];hit:number[]}|null;targets:number[];aim:PlayAim|null;note:string|null;swap?:PlaySwap|null;ask?:PlayAsk|null;moveDone?:string[];standFirst?:string[];reachCost?:PlayCost[];reachBorder?:PlayBorder[];moveClick?:MoveClick}
 /** viewer.move-cost-on-grid (engine DECISIONS.md 2026-10-03 '... movement costs on the grid ...', Andrew: "tiles that require
     extra movement points should have that movement cost, I think, maybe on them in gray"): what entering one hex of the reach
     costs the acting unit — the engine's stepCost for the last step of the engine's own walk to it (viewer src/play.js's
@@ -86,7 +98,10 @@ const asc=(a:Iterable<number>)=>[...new Set(a)].sort((x,y)=>x-y)
     the battle (and the board) back as it was then. Without it a begun hero cannot be switched away from. */
 /** (kingdom.tutorial-free-attack-and-downed: holdWalk — the host may hold, once, a walk that would draw a free attack) */
 export type PlayUndo={save():unknown;restore(saved:unknown):boolean;holdWalk?:()=>boolean}
-export function createPlayInput(session:()=>Sandbox|null,run:(command:BattleCommand)=>CommandResult,undo:PlayUndo|null=null){
+export function createPlayInput(session:()=>Sandbox|null,run:(command:BattleCommand)=>CommandResult,undo:PlayUndo|null=null,settings:PlaySettings|null=null){
+ /** kingdom.move-click-setting: the host's setting, read whenever it is asked for (it may change in the middle of a battle); a
+     host that hands none has the two clicks of before and no fact */
+ const moveClick=():MoveClick|null=>settings?(settings.moveClick()==='one'?'one':'two'):null
  let chosen:string|null=null,ghost:Ghost|null=null,aim:{hex:number;locked:boolean}|null=null,point:number|null=null,note:string|null=null
  let owner:string|null=null
  /** the Activation this input began: who, the engine's sequence right after (nothing done since while it is unchanged), the
@@ -102,6 +117,15 @@ export function createPlayInput(session:()=>Sandbox|null,run:(command:BattleComm
  /** viewer.switch-hero-asks: the question asked (who would be ended, who begun, the engine's sequence when it was asked — it
      does not outlive that), and, between the yes and the next begin, the unit the player asked for */
  let asking:{from:number;to:number;seq:number}|null=null,wanted:number|null=null
+ /** kingdom.attack-one-armed-after-move (engine DECISIONS.md 2026-10-05 'the battle screen must feel smooth: …; attack one is
+     chosen after a move; …', Andrew: "after you move, we should auto-select your basic attack or your attack one. If you have
+     a ranged weapon, it's still your attack one … Basically, you're changing [away] from basic attack one if you want to do
+     anything other than that first thing."): the Activation (sync's key) in which the player took the choice back — a
+     right-click, Esc. It is not chosen again by itself in that Activation; the next one starts afresh. */
+ let attackOneOff:string|null=null
+ /** the Activation in which attack one WAS chosen by itself: only a choice made that way is "taken back" by a right-click —
+     an action the player chose and dropped before moving takes nothing back */
+ let attackOneArmed:string|null=null
  const shown:Shown[]=[]
  // per engine sequence number: the validated choices, the ghost's forecast, each enemy's reach, the hatching
  let cacheSeq=-1,cache:{choices?:SandboxChoice[];swap?:SandboxSwapOffer;refused?:{hands:string[];why:string}[];forecast?:Map<string,Forecast>;threat?:Map<number,{move:number[];hit:number[]}>;zoc?:number[]}={}
@@ -127,7 +151,13 @@ export function createPlayInput(session:()=>Sandbox|null,run:(command:BattleComm
  /** the human hero now acting, or null */
  const actorOf=(s:Sandbox)=>{const c=s.ctx.battleCursor;return !s.ctx.state.outcome&&c?.at==='acting'&&c.actor!=null&&controllerOf(s.ctx,c.actor,s.policy)==='human'?c.actor:null}
  /** a new activation forgets the last one's plan */
+ /** the battle the plan belongs to: another battle (a replay after a loss, a save opened, the undo's restored copy) is another
+     engine context, and a plan — the chosen action above all — never carries over into it, even where its first Activation
+     has the same unit, Turn and count as the last battle's did (kingdom.attack-one-armed-after-move: the replayed Orphanage
+     began with the attack chosen at the end of the lost one, and no move armed) */
+ let battle:unknown=null
  const sync=(s:Sandbox|null)=>{
+  if(s&&s.ctx!==battle){battle=s.ctx;owner=null;attackOneOff=null;attackOneArmed=null}
   const a=s?actorOf(s):null,key=s&&a!=null?`${a}@${s.ctx.state.turn}:${s.ctx.events.filter(e=>e.type==='activation.begin').length}`:null
   if(key!==owner){owner=key;chosen=null;ghost=null;aim=null;if(a!==null)note=null}
   if(asking&&(!s||a!==asking.from||s.ctx.state.seq!==asking.seq))asking=null
@@ -256,6 +286,31 @@ export function createPlayInput(session:()=>Sandbox|null,run:(command:BattleComm
  const moveCommand=(s:Sandbox,actor:number,g:Ghost):BattleCommand=>({kind:'action',actor,actionId:g.actionId,slot:g.slot,destination:g.destination,expectedSeq:s.ctx.state.seq})
  const useCommand=(s:Sandbox,actor:number,u:Use):BattleCommand=>({kind:'action',actor,actionId:chosen!,slot:u.slot,expectedSeq:s.ctx.state.seq,...(u.key==='target'?{target:u.value}:u.key==='centre'?{centre:u.value}:{hex:u.value})} as BattleCommand)
  const done=()=>{chosen=null;ghost=null;aim=null}
+ /** kingdom.attack-one-armed-after-move: the unit's ATTACK ONE — the first attack the engine grants it, in the engine's own
+     order (grantedActionIds: the one its bar lists first, a melee weapon's or a bow's) — if the engine would take an order
+     with it now for any target at all, else null. Asked of the engine, not worked out: an order with that attack is
+     validated, and the engine answers BEFORE it looks at the target when the unit cannot act, the action is not ready (no
+     Stamina, a cooldown, no use left) or its slot is closed (the primary is spent). Those three mean "not for reach": nothing
+     is chosen — not a later attack either (kingdom SWITCHES attackOneNotALaterOne). Any refusal after them is about the
+     target (out of reach, a taunt): it is chosen all the same, and its arrow shows how far it reaches. */
+ const NOT_FOR_REACH=new Set(['actor-cannot-act','action-not-ready','action-slot-closed'])
+ const attackOneOf=(s:Sandbox,actor:number):string|null=>{
+  const u=s.ctx.state.units[actor]!,id=grantedActionIds(s.ctx,u).find(x=>{const a=s.ctx.actions[x];return !!a&&isAttack(a)})
+  if(id===undefined)return null
+  const r=validateBattleCommand(s.ctx,s.policy,{kind:'action',actor,actionId:id,target:actor,expectedSeq:s.ctx.state.seq} as BattleCommand)
+  return r.ok||!NOT_FOR_REACH.has(r.reason)?id:null
+ }
+ /** a move of the acting unit's has just been made and the engine waits for its next order: its attack one is chosen, exactly
+     as a click on that bar row chooses it — the row lit, its targets, the arrow out to its reach, the forecast on what is
+     pointed at — but nothing is said (a click with nothing in reach says so; after every walk it would be noise: kingdom
+     SWITCHES attackOneSaysNothing). After EVERY move of the Activation (the rest of a walk, a bonus move: attackOneAfterEachMove)
+     unless the player took it back in this Activation. Not when the Activation is over, or is another unit's. */
+ const armAttackOne=(actor:number)=>{
+  const s=session();if(!s||s.ctx.state.outcome||actorOf(s)!==actor)return
+  if(sync(s)!==actor||owner===attackOneOff)return
+  const id=attackOneOf(s,actor);if(id===null)return
+  chosen=id;ghost=null;aim=null;attackOneArmed=owner
+ }
  /** the hex the aim arrow reaches toward `at`: `at` itself when within the chosen action's reach (the engine's reachOf for an
      attack read from where the hero would stand — engine actionReach, fix.aim-reach — the row's range for anything else),
      else the hex within that reach nearest `at` (the farther of a tie, then the
@@ -312,7 +367,8 @@ export function createPlayInput(session:()=>Sandbox|null,run:(command:BattleComm
   return grantedActionIds(s.ctx,u).filter(id=>{const a=s.ctx.actions[id];return !!a&&!standsUp(a)&&!actionReady(s.ctx,u,a)})
  }
  function facts():PlayFacts{
-  const s=session(),empty:PlayFacts={actor:null,slot:null,reach:[],zoc:[],path:[],provokes:[],ghost:null,threat:null,targets:[],aim:null,note}
+  const mc=moveClick()
+  const s=session(),empty:PlayFacts={actor:null,slot:null,reach:[],zoc:[],path:[],provokes:[],ghost:null,threat:null,targets:[],aim:null,note,...(mc?{moveClick:mc}:{})}
   if(!s||s.ctx.state.outcome)return {...empty,note:null}
   const actor=sync(s)
   const threat=chosen===null&&point!==null?threatAt(s,point):null
@@ -413,6 +469,10 @@ export function createPlayInput(session:()=>Sandbox|null,run:(command:BattleComm
     if(now&&!now.ctx.state.outcome&&now.ctx.battleCursor?.at==='selecting'){const q=queueOf(now)
      if(q.includes(a.to))begin(now,a.to,q);else note=switchLine(whyNot(now,a.to,null))}}
    return true}
+  /* kingdom.move-click-setting: the change the viewer's control offers back — kept by the host, read again at the next click.
+     It is no order: nothing in the battle or in the plan changes, and a question that stands is left standing. */
+  if(e.kind==='move-click'){if(!settings||(e.clicks!=='one'&&e.clicks!=='two'))return false
+   settings.setMoveClick(e.clicks);return true}
   if(e.kind!=='point')asking=null
   /* viewer.turn-taking: a double-click on a hero (its card or its body). While the engine waits for a choice, it begins that
      hero. While another acts: a switch only while the one acting has done nothing since it was begun (the engine's sequence
@@ -455,7 +515,8 @@ export function createPlayInput(session:()=>Sandbox|null,run:(command:BattleComm
    // right-click steps back ONE stage: the aim, then the ghost, then the chosen action (UI-BUILD-NOTES §5)
    if(aim?.locked){aim=null;return true}
    if(ghost){ghost=null;return true}
-   if(chosen!==null){chosen=null;aim=null;return true}
+   /* kingdom.attack-one-armed-after-move: taken back, attack one is not chosen again by itself in this Activation */
+   if(chosen!==null){chosen=null;aim=null;if(attackOneArmed===owner)attackOneOff=owner;return true}
    return false}
   if(e.kind==='slot'){
    /* viewer.turn-taking: the bar is the activated hero's (viewer subject.js barUnitOf), so its order is that hero's. While the
@@ -479,7 +540,7 @@ export function createPlayInput(session:()=>Sandbox|null,run:(command:BattleComm
     /* a power that goes nowhere is used from the bar: chosen, it is planned on the hero's own hex at once; chosen again (or
        the hero clicked) it is used — engine DECISIONS.md 2026-10-01, Devotion: "I can't double-click on it or anything to
        make it trigger" (kingdom SWITCHES playInputStandStill) */
-    if(ghost&&ghost.actionId===e.actionId&&ghost.destination===s.ctx.state.units[actor]!.hex&&chosen===e.actionId){const r=run(moveCommand(s,actor,ghost));note=r.ok?null:said(s,r.reason,actor,null,e.actionId);done();return true}
+    if(ghost&&ghost.actionId===e.actionId&&ghost.destination===s.ctx.state.units[actor]!.hex&&chosen===e.actionId){const r=run(moveCommand(s,actor,ghost));note=r.ok?null:said(s,r.reason,actor,null,e.actionId);done();if(r.ok)armAttackOne(actor);return true}
     if(ghost&&ghost.actionId!==e.actionId)ghost=null;chosen=e.actionId;aim=null;unarmed=null
     const mv=moveOf(s,actor)
     if(!mv?.choices.length){chosen=null
@@ -492,7 +553,7 @@ export function createPlayInput(session:()=>Sandbox|null,run:(command:BattleComm
        below (kingdom SWITCHES standUpAloneIsOnePress; overturns standUpIsUsedLikeAMoveThatGoesNowhere of the same day) */
     if(standsUp(a)&&standsStill(s,actor,mv.choices)){const c=mv.choices[0]!
      const r=run(moveCommand(s,actor,{actionId:c.command.actionId,slot:c.command.slot??'movement',destination:(c.command as {destination:number}).destination} as Ghost))
-     note=r.ok?null:said(s,r.reason,actor,null,e.actionId);done();return true}
+     note=r.ok?null:said(s,r.reason,actor,null,e.actionId);done();if(r.ok)armAttackOne(actor);return true}
     if(standsStill(s,actor,mv.choices)){const c=mv.choices[0]!;ghost={actionId:c.command.actionId,slot:c.command.slot??'movement',destination:(c.command as {destination:number}).destination} as Ghost
      note=`${a.name}: click it again, or the hero, to use it.`;return true}
     note=null;return true}
@@ -530,7 +591,15 @@ export function createPlayInput(session:()=>Sandbox|null,run:(command:BattleComm
     /* kingdom.tutorial-free-attack-and-downed: a walk the engine forecasts a free attack on may be held this once by the host
        (its lesson is telling the player so): the path stays shown, and the next click on it walks */
     {const fc=forecastOf(s,actor,g);if(fc.ok&&fc.provokes.length&&undo?.holdWalk?.()){note=null;return true}}
-    const r=run(moveCommand(s,actor,g));note=r.ok?null:said(s,r.reason,actor,null,g.actionId);done();return true}
+    /* kingdom.attack-one-armed-after-move: the move made, the unit's attack one is chosen by itself */
+    const r=run(moveCommand(s,actor,g));note=r.ok?null:said(s,r.reason,actor,null,g.actionId);done();if(r.ok)armAttackOne(actor);return true}
+   /* kingdom.move-click-setting: at ONE click the first click on a hex in reach walks there at once — unless the engine forecasts
+      a free attack on that walk: then it is only planned, as at two clicks (the path stays, the hexes it provokes on are
+      marked by the facts' provokes) and one line says why; the next click on the same hex is the walk, above. A move that
+      goes nowhere is used from the bar and from the unit, never from a hex, and is not this (how 'hex' only). */
+   if(how==='hex'&&moveClick()==='one'){const fc=forecastOf(s,actor,g)
+    if(fc.ok&&fc.provokes.length){ghost=g;note=FREE_ATTACK_STOP;return true}
+    const r=run(moveCommand(s,actor,g));note=r.ok?null:said(s,r.reason,actor,null,g.actionId);done();if(r.ok)armAttackOne(actor);return true}
    ghost=g;note=null;return true}
   if(chosen===null){
    /* nothing armed and no move left: the engine's reason a walk there is refused (its movement is spent) */

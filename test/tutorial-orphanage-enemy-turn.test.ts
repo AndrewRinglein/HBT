@@ -29,7 +29,11 @@ describe('kingdom.tutorial-orphanage-enemy-turn — attacks in reach, the enemy\
   it('the four rows are in the lesson table: their words, their targets, what starts and ends each', () => {
     expect(row(ATTACK), ATTACK).toBeDefined(); expect(row(NUMBERS), NUMBERS).toBeDefined(); expect(row(PANEL), PANEL).toBeDefined(); expect(row(PHASES), PHASES).toBeDefined()
     expect(row(ATTACK)).toMatchObject({ encounterId: ORPHANAGE, starts: 'attack-in-reach', ends: 'attacked', of: 'hero', point: { at: 'attack-slot' },
-      words: ['An enemy is in range.', 'Choose an attack, then click the enemy to see your chance to hit and the damage.', 'Click it again to attack.'] })
+      /* Law 10, 2026-10-05 — kingdom.attack-one-armed-after-move (engine DECISIONS.md 2026-10-05 'the battle screen must feel smooth: …;
+         attack one is chosen after a move; …', Andrew: "after you move, we should auto-select your basic attack or your attack one"):
+         the row's words were ["An enemy is in range.", "Choose an attack, then click the enemy to see your chance to hit and the damage.", "Click it again to attack."] —
+         the player no longer has to choose an attack after a move, so the lesson says what happens now. Everything else of the row is held as it was. */
+      words: ['An enemy is in range.', 'After you move, your first attack is chosen for you: click the enemy to see your chance to hit and the damage.', 'Click it again to attack. To use another attack, click it on the bar first.'] })
     expect(row(NUMBERS)).toMatchObject({ encounterId: ORPHANAGE, starts: 'event', event: { type: 'phase.begin', phase: 'enemy' }, ends: 'time', holds: true, look: 'enemy',
       point: [{ at: 'enemy-move-number' }, { at: 'enemy-attack-number' }],
       words: ['This is the enemy movement and this is their most common attack value.', 'Click on enemies to learn more about them.'] })
