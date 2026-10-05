@@ -597,6 +597,19 @@ export function createCast(V, scene, toWorld, platform = {}) {
     /** how tall a unit's body stands, in board px (viewer.under-unit: the acting arrow and the body effects ride its head) */
     heightPx: id => { const B = bodies.get(id); return B ? B.standingHeight() * PX_PER_M : null },
     body: id => bodies.get(id) || null,
+    /** viewer.shots-fly-straight: where what the unit's body holds is now, in the scene (the first model fitted to a hand —
+        a bow, a thrown weapon: fitProp's own socket on the hand bone) — where its shot leaves from. Null: no body, or it holds
+        nothing (the shot then leaves from the unit's chest). */
+    heldAt(id) {
+      const B = bodies.get(id); if (!B || !B.stage.visible) return null
+      /* what it shoots or throws with: the first held model that is not a shield (the pack's own word for each: look.props[i].model) */
+      const props = B.look.props || [], want = props.findIndex(p => p.model !== 'shield'), i = want >= 0 ? want : props.length ? 0 : -1
+      if (i < 0) return null
+      let socket = null; B.stage.traverse(o => { if (!socket && typeof o.name === 'string' && o.name.startsWith('held:' + i + ':')) socket = o })
+      if (!socket) return null
+      B.stage.updateMatrixWorld(true)
+      return new THREE.Vector3().setFromMatrixPosition(socket.matrixWorld)
+    },
     /** viewer.xcom-camera: where each standing body is to be seen — its chest and its head, in the scene — and its feet */
     aims() {
       const out = []

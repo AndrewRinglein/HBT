@@ -414,9 +414,25 @@ function anchorOf(V, id) {
 }
 const TIER = n => n == null ? 'med' : n <= 3 ? 'low' : n <= 6 ? 'med' : n <= 10 ? 'high' : 'super'
 const DTYPE = { physical: 'phys', magic: 'mag', 'true': 'true' }
+/* viewer.shots-fly-straight (engine DECISIONS.md 2026-10-05, Andrew: "a straight line from where the bow is pointed"; the item:
+   "from where it leaves the attacker (the bow's or the hand's place on the model where the body gives one, else the unit's
+   chest height)"): where a shot leaves a unit — what its 3D body holds (the cast's heldAt: the held model's own place in the
+   scene, wherever the motion has it now), seen through the board's camera and put in the canvas's own px, as the unit's
+   anchor with that height named (sy). Null when the unit has no body, its body holds nothing, or the board has no 3D camera:
+   the shot then leaves from the chest of the unit's anchor, as it did. Nothing is measured off a picture. */
+export function releaseOf(V, id) {
+  const held = V.cast?.heldAt?.(id), camera = V.camera3d, canvas = V.dom?.canvas
+  if (!held || !camera || !canvas) return null
+  const A = anchorOf(V, id), vp = camera.userData?.viewport; if (!A || !vp) return null
+  const n = held.clone().project(camera)
+  if (!(Number.isFinite(n.x) && Number.isFinite(n.y)) || n.z > 1) return null
+  /* the wrap's px -> the canvas's (the screen may be shown scaled to fit: the anchors are read off the scaled page) */
+  const r = canvas.getBoundingClientRect(), kx = r.width / (canvas.clientWidth || r.width || 1), ky = r.height / (canvas.clientHeight || r.height || 1)
+  return { x: (n.x + 1) / 2 * vp.w * kx, y: A.y, h: A.h, sy: (1 - n.y) / 2 * vp.h * ky }
+}
 export function fxAttack(V, kind, dt, aId, tId, dmg, crit = false) {
   const FX = V.fx.FX; if (!FX) return
-  const A = anchorOf(V, aId), T = anchorOf(V, tId); if (!A || !T) return
+  const A = (kind === 'melee' ? null : releaseOf(V, aId)) || anchorOf(V, aId), T = anchorOf(V, tId); if (!A || !T) return
   const tier = crit ? 'super' : TIER(dmg)          // rung 2: a crit renders at the super tier regardless of damage
   /* viewer.hit-slash: a blow launches nothing of its own — its mark is the slash across the target, drawn when the attack's
      damage lands (fxSlash). It was playMeleeAttack here: a 320 ms run-in for a sprite lunge nobody plays, then the slash —
