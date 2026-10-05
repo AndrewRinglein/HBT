@@ -1,0 +1,200 @@
+
+ RUN  v4.1.11 C:/Users/aring/Desktop/HBT-worker-engine/engine
+
+ ❯ test/damage-from-two-stats.test.ts (11 tests | 9 failed) 19ms
+     × Force Blast: Precision, plus half the party's Magic; Unbinding the same; Ruin and Sundering Precision plus twice Magic; Annihilation twice Precision plus twice Magic 6ms
+     × the Force Staff's own words say half, as ruled: "pre+ 1/2 magic, as magic damage" 1ms
+     × every Codex attack that names a second term carries it in the pack, and no gap line says "damage from two stats" of an attack 1ms
+     × Force Blast deals Precision plus half the party's Magic, the half rounded nearest with 0.5 up — and the half is the PARTY's, not his own 4ms
+     × an odd Magic rounds its half up: 3 gives 2, 5 gives 3, 4 gives 2 1ms
+     × Unbinding is the same sum; Ruin and Sundering are Precision plus twice Magic; Annihilation is twice Precision plus twice Magic 1ms
+     × raising the party's Magic by 1 raises each by its multiple — and it need not be the attacker's own Magic that rises 1ms
+     × raising his Precision by 1 raises Annihilation by 2 and the others by 1 1ms
+     × a stat that is not the party's is the attacker's own: the War Hammer's Skullsplitter adds his Armor 0ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 9 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/damage-from-two-stats.test.ts > the rows: each attack says its terms > Force Blast: Precision, plus half the party's Magic; Unbinding the same; Ruin and Sundering Precision plus twice Magic; Annihilation twice Precision plus twice Magic
+AssertionError: expected [ 'precision', 1, [] ] to deeply equal [ 'precision', 1, [ { …(3) } ] ]
+
+- Expected
++ Received
+
+  [
+    "precision",
+    1,
+-   [
+-     {
+-       "div": 2,
+-       "mult": 1,
+-       "stat": "magic",
+-     },
+-   ],
++   [],
+  ]
+
+ ❯ test/damage-from-two-stats.test.ts:44:26
+     42|   it('Force Blast: Precision, plus half the party\'s Magic; Unbinding …
+     43|     const terms = (id: string) => [ATTACKS[id]!.attack!.stat, ATTACKS[…
+     44|     expect(terms(FORCE)).toEqual(['precision', 1, [{ stat: 'magic', mu…
+       |                          ^
+     45|     expect(terms(UNBINDING)).toEqual(['precision', 1, [{ stat: 'magic'…
+     46|     expect(terms(RUIN)).toEqual(['precision', 1, [{ stat: 'magic', mul…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/9]⎯
+
+ FAIL  test/damage-from-two-stats.test.ts > the rows: each attack says its terms > the Force Staff's own words say half, as ruled: "pre+ 1/2 magic, as magic damage"
+AssertionError: expected 'Damage equals your Precision plus the…' to be 'Damage equals your Precision plus hal…' // Object.is equality
+
+Expected: "Damage equals your Precision plus half the party's Magic."
+Received: "Damage equals your Precision plus the party's Magic."
+
+ ❯ test/damage-from-two-stats.test.ts:53:68
+     51|
+     52|   it('the Force Staff\'s own words say half, as ruled: "pre+ 1/2 magic…
+     53|     expect(CODEX.attacks.find((a) => a.id === FORCE)!.description).toB…
+       |                                                                    ^
+     54|   })
+     55|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/9]⎯
+
+ FAIL  test/damage-from-two-stats.test.ts > the rows: each attack says its terms > every Codex attack that names a second term carries it in the pack, and no gap line says "damage from two stats" of an attack
+AssertionError: attack.war-hammer.skullsplitter: expected [] to deeply equal [ { stat: 'armor', mult: 1 } ]
+
+- Expected
++ Received
+
+- [
+-   {
+-     "mult": 1,
+-     "stat": "armor",
+-   },
+- ]
++ []
+
+ ❯ test/damage-from-two-stats.test.ts:63:39
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/9]⎯
+
+ FAIL  test/damage-from-two-stats.test.ts > the damage is the sum, dealt as one damage of the attack's type > Force Blast deals Precision plus half the party's Magic, the half rounded nearest with 0.5 up — and the half is the PARTY's, not his own
+AssertionError: expected 3 to be 6 // Object.is equality
+
+- Expected
++ Received
+
+- 6
++ 3
+
+ ❯ test/damage-from-two-stats.test.ts:76:21
+     74|     expect(magic).toBeGreaterThan(stat(ctx, h, 'magic'))
+     75|     const d = source(ctx, h, z, FORCE)
+     76|     expect(d.value).toBe(pre + half(magic))
+       |                     ^
+     77|     expect(added(d.ledger)).toEqual([['party.magic', half(magic)]])
+     78|     expect(preview(ctx, h.id, z.id, FORCE).damageOnHit).toBe(d.value)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/9]⎯
+
+ FAIL  test/damage-from-two-stats.test.ts > the damage is the sum, dealt as one damage of the attack's type > an odd Magic rounds its half up: 3 gives 2, 5 gives 3, 4 gives 2
+AssertionError: Magic 3: expected +0 to be 2 // Object.is equality
+
+- Expected
++ Received
+
+- 2
++ 0
+
+ ❯ test/damage-from-two-stats.test.ts:86:88
+     84|       for (const u of ctx.state.units) if (u.side === 'hero') u.magic …
+     85|       h.magic = m
+     86|       expect(source(ctx, h, z, FORCE).value - stat(ctx, h, 'precision'…
+       |                                                                                        ^
+     87|     }
+     88|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/9]⎯
+
+ FAIL  test/damage-from-two-stats.test.ts > the damage is the sum, dealt as one damage of the attack's type > Unbinding is the same sum; Ruin and Sundering are Precision plus twice Magic; Annihilation is twice Precision plus twice Magic
+AssertionError: attack.staff-of-summoning.unbinding: expected 3 to be 6 // Object.is equality
+
+- Expected
++ Received
+
+- 6
++ 3
+
+ ❯ test/damage-from-two-stats.test.ts:95:55
+     93|       const pre = stat(ctx, h, 'precision'), magic = partySum(ctx, h.s…
+     94|       const flat = ATTACKS[attack]!.attack!.bonus
+     95|       expect(source(ctx, h, z, attack).value, attack).toBe(flat + pre …
+       |                                                       ^
+     96|     }
+     97|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/9]⎯
+
+ FAIL  test/damage-from-two-stats.test.ts > the damage is the sum, dealt as one damage of the attack's type > raising the party's Magic by 1 raises each by its multiple — and it need not be the attacker's own Magic that rises
+AssertionError: attack.staff-of-the-destroyer.ruin: expected +0 to be 4 // Object.is equality
+
+- Expected
++ Received
+
+- 4
++ 0
+
+ ❯ test/damage-from-two-stats.test.ts:104:64
+    102|       const before = source(ctx, h, z, attack).value
+    103|       ctx.state.units[1]!.magic += 2   // the OTHER mage's
+    104|       expect(source(ctx, h, z, attack).value - before, attack).toBe(pe…
+       |                                                                ^
+    105|     }
+    106|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/9]⎯
+
+ FAIL  test/damage-from-two-stats.test.ts > the damage is the sum, dealt as one damage of the attack's type > raising his Precision by 1 raises Annihilation by 2 and the others by 1
+AssertionError: attack.staff-of-the-ultimate-destroyer.annihilation: expected 1 to be 2 // Object.is equality
+
+- Expected
++ Received
+
+- 2
++ 1
+
+ ❯ test/damage-from-two-stats.test.ts:113:64
+    111|       const before = source(ctx, h, z, attack).value
+    112|       h.mods.push({ stat: 'precision', op: 'add', value: 1, source: 't…
+    113|       expect(source(ctx, h, z, attack).value - before, attack).toBe(pe…
+       |                                                                ^
+    114|     }
+    115|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/9]⎯
+
+ FAIL  test/damage-from-two-stats.test.ts > the damage is the sum, dealt as one damage of the attack's type > a stat that is not the party's is the attacker's own: the War Hammer's Skullsplitter adds his Armor
+AssertionError: expected undefined to deeply equal [ { stat: 'armor', mult: 1 } ]
+
+- Expected:
+[
+  {
+    "mult": 1,
+    "stat": "armor",
+  },
+]
+
++ Received:
+undefined
+
+ ❯ test/damage-from-two-stats.test.ts:126:47
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/9]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  9 failed | 2 passed (11)
+   Start at  03:57:28
+   Duration  1.06s (transform 684ms, setup 0ms, import 850ms, tests 19ms, environment 0ms)
+

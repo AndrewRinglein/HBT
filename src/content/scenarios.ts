@@ -114,6 +114,13 @@ const RAW_SCENARIOS: Readonly<Record<string, ScenarioDef>> = {
     id: 'test.perfect-sight', note: 'TEST: a mage holding the Staff of the Ultimate Destroyer (Perfect Sight: Precision doubled until the end of his third Activation from then) against two zombies. No campaign claim.',
     mapId: 'map.open', heroes: ['hero.base.mage-fire'], heroHexes: [85], heroItems: [['item.staff-of-the-ultimate-destroyer']], enemies: ['unit.zombie', 'unit.zombie'], enemyHexes: [91, 107], replicate: 0,
   },
+  // capability.damage-from-two-stats (2026-10-05; Andrew 2026-10-04, DECISIONS.md 'the Force Staff is Precision plus half
+  // Magic, as magic damage': "pre+ 1/2 magic, as magic damage"): the Force Staff's Force Blast live in a real battle - two
+  // mages, one holding it, so the party's Magic is more than the shooter's own. A fielding, not a balance claim.
+  'test.force-blast': {
+    id: 'test.force-blast', note: 'TEST: two mages, one holding the Force Staff (Force Blast: Precision plus half the Magic of the party, as magic damage), against two zombies. No campaign claim.',
+    mapId: 'map.open', heroes: ['hero.base.mage-fire', 'hero.base.mage-thinking'], heroHexes: [85, 101], heroItems: [['item.force-staff'], ['item.frost-staff']], enemies: ['unit.zombie', 'unit.zombie'], enemyHexes: [91, 107], replicate: 0,
+  },
   // content.afflictions-revised (2026-09-29, Andrew, DECISIONS.md 'the four afflictions'): "when the
   // affliction of Vampirism happens, it grants both Cold Heart and Vampirism." A real battle in which a
   // Vampire's bite afflicts — replicate 7 is the first whose 20% roll succeeds (found, not tuned).

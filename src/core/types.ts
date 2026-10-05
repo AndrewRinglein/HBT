@@ -534,6 +534,15 @@ export type AttackProfile = {
   readonly hits?: number
   /** capability.power-pool: the share of the enemy side's Power this attack adds — 1, 0.5, 0.334 — at DMG.POWER. */
   readonly powerScale?: number
+  /**
+   * capability.damage-from-two-stats (2026-10-05; DECISIONS.md 2026-10-04 'his 28 reward weapons read back …': of damage from
+   * two stats added, "We do need that."). An attack's damage is a SUM OF TERMS: its flat `bonus`, its own `stat` counted
+   * `statMult` times ("twice your Precision"; absent = once), and each of `addsStats` — a stat times `mult` over `div` (a
+   * half: mult 1, div 2), rounded nearest with 0.5 up (the half-stat ruling). Magic and Spirit are the PARTY's — the side's
+   * total — every other stat the attacker's own. One damage of the attack's type; each added term its own ledger row.
+   */
+  readonly statMult?: number
+  readonly addsStats?: readonly { readonly stat: import('./stats.js').StatName; readonly mult: number; readonly div?: number }[]
   /** The attack's own Accuracy modifier at ACC.SITUATIONAL (700). Punch's −5. Absent = 0. */
   readonly accuracy?: number
   /** How many CRITICALS one critting hit resolves — station.crit-count. Absent = 1. */

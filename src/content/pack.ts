@@ -275,6 +275,9 @@ export type PackAttackRow = {
   readonly applies?: { readonly statusId: string; readonly value: number };
   readonly crit?: number; readonly hits?: number; readonly cooldown?: number; readonly warmup?: number
   readonly powerScale?: number; readonly accuracy?: number; readonly critCount?: number; readonly uses?: number; readonly free?: boolean
+  /** capability.damage-from-two-stats (2026-10-05): the attack's own stat counted N times, and the stats added to it (AttackProfile). */
+  readonly statMult?: number
+  readonly addsStats?: readonly { readonly stat: import('../core/stats.js').StatName; readonly mult: number; readonly div?: number }[]
   /**
    * capability.charge (2026-09-27): the Codex move row's `hexes` — the attack is
    * a CHARGE, walking at most this many movement points to its target first.
@@ -296,7 +299,15 @@ export function liftAttack(r: PackAttackRow): AttackDef {
   validateActionMetadata(r)
   validateBurstAction(r as unknown as ActionDef)
   if(!isDamageType(r.damageType))throw Error(`unit pack: invalid damage type on '${r.id}'`)
-  const { id, name, kind, damageType, bonus, stat, reach, staminaCost, applies, crit, hits, cooldown, warmup, powerScale, accuracy, critCount, uses, free, hexes } = r
+  const { id, name, kind, damageType, bonus, stat, reach, staminaCost, applies, crit, hits, cooldown, warmup, powerScale, accuracy, critCount, uses, free, hexes, statMult, addsStats } = r
+  // capability.damage-from-two-stats: whole multiples, a divisor of 1 or 2, a stat the engine resolves — or the pack is refused
+  if (statMult !== undefined && (!Number.isSafeInteger(statMult) || statMult < 2)) throw new Error(`unit pack: attack '${id}' has statMult '${String(statMult)}' — a whole number of at least 2, or absent`)
+  if (addsStats !== undefined) {
+    if (!Array.isArray(addsStats) || !addsStats.length) throw new Error(`unit pack: attack '${id}' has addsStats that is not a list of terms`)
+    for (const t of addsStats) {
+      if (!isStatName(String(t.stat)) || !Number.isSafeInteger(t.mult) || t.mult < 1 || (t.div !== undefined && t.div !== 2) || Object.keys(t).some((k) => !['stat', 'mult', 'div'].includes(k))) throw new Error(`unit pack: attack '${id}' adds a term that is not { stat, mult[, div: 2] }`)
+    }
+  }
   if (hexes !== undefined && (!Number.isSafeInteger(hexes) || hexes < 1)) throw new Error(`unit pack: charge '${id}' has hexes '${String(hexes)}' — a whole number of at least 1`)
   // capability.unit-trigger-with-tag: tags are plain words, a list or absent — never a guessed shape
   if (r.tags !== undefined && (!Array.isArray(r.tags) || r.tags.some((t) => typeof t !== 'string' || !/^[a-z0-9][a-z0-9-]*$/.test(t)))) throw new Error(`unit pack: attack '${id}' carries tags that are not a list of plain words — regenerate the pack`)
@@ -309,6 +320,7 @@ export function liftAttack(r: PackAttackRow): AttackDef {
       kind, damageType, bonus, stat, ...attackPacketFields(r),
       ...(applies ? { applies } : {}), ...(crit !== undefined ? { crit } : {}), ...(hits !== undefined ? { hits } : {}),
       ...(powerScale !== undefined ? { powerScale } : {}), ...(accuracy !== undefined ? { accuracy } : {}), ...(critCount !== undefined ? { critCount } : {}),
+      ...(statMult !== undefined ? { statMult } : {}), ...(addsStats !== undefined ? { addsStats } : {}),
     },
   }
 }

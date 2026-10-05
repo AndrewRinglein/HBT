@@ -35483,6 +35483,25 @@ index 0000000..f8e67d2
   PASS  the item's own tests — test/viewer.frame-cost-measured.test.ts
   PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
   PASS  brought its own tests — viewer/test/viewer.frame-cost-measured.test.ts
+## capability.damage-from-two-stats — LANDED `278e0d4` **NEEDS REVIEW**
+2026-10-05 12:38
+
+  PASS  dependencies landed
+  WARN  not already decided — 3 candidate ruling(s) — READ BEFORE ASKING: COMBAT-SEQUENCE.md:484 · SWITCHES.md:2463
+  PASS  typecheck
+  PASS  the item's own tests — test/battle-cursor.test.ts, test/caravan-aftermath.test.ts, test/kit-attack-clauses.test.ts, test/damage-from-two-stats.test.ts
+  PASS  gate 1 — the id appears in a real battle — attack.force-staff.force-blast: 19 log lines, 19 fired, 7 changed state
+  PASS  brought its own tests — test/battle-cursor.test.ts, test/caravan-aftermath.test.ts, test/kit-attack-clauses.test.ts, test/damage-from-two-stats.test.ts, test/fixtures/battle-cursor-damage-from-two-stats.json
+  WARN  existing tests untouched — DELETED LINES in test/battle-cursor.test.ts (-2), test/caravan-aftermath.test.ts (-1), test/kit-attack-clauses.test.ts (-1) — will land FLAGGED for review
+## viewer.plates-banners-tooltip-gold-look — LANDED `dd6fd44`
+2026-10-05 10:54
+
+  PASS  dependencies landed
+  WARN  not already decided — 2 candidate ruling(s) — READ BEFORE ASKING: SWITCHES.md:2188 · SWITCHES.md:2262
+  PASS  typecheck
+  PASS  the item's own tests — test/viewer.plates-banners-tooltip-gold-look.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — viewer/test/viewer.plates-banners-tooltip-gold-look.test.ts
   PASS  existing tests untouched
   SKIPPED  control battles unchanged — engine code f48a625458 and the content pack are the ones the control battles last passed on (2026-10-05 06:05, gate content.elfbow-double-shot-one-target --land, in HBT-worker-engine) — not run
   PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
@@ -35504,6 +35523,16 @@ index 0000000..f8e67d2
   PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
   PASS  brought its own tests — viewer/test/viewer.see-through-only-when-moved.test.ts
   WARN  existing tests untouched — DELETED LINES in test/viewer.see-through-only-when-moved.test.ts (-3) — will land FLAGGED for review
+## viewer.bodies-life-size — LANDED `e29f661`
+2026-10-05 10:54
+
+  PASS  dependencies landed
+  PASS  not already decided — no existing ruling matches
+  PASS  typecheck
+  PASS  the item's own tests — test/viewer.bodies-life-size.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — viewer/test/viewer.bodies-life-size.test.ts
+  PASS  existing tests untouched
   SKIPPED  control battles unchanged — engine code f48a625458 and the content pack are the ones the control battles last passed on (2026-10-05 06:05, gate content.elfbow-double-shot-one-target --land, in HBT-worker-engine) — not run
   PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
   PASS  hardcode scan — core knows mechanisms, never names
@@ -35615,3 +35644,277 @@ index 0000000..3bd561e
 +})
 ```
 </details>
+## viewer.lost-counterattack-line — LANDED `89064fe` **NEEDS REVIEW**
+2026-10-05 12:39
+
+  PASS  dependencies landed
+  WARN  not already decided — 4 candidate ruling(s) — READ BEFORE ASKING: SWITCHES.md:1944 · SWITCHES.md:2247
+  PASS  typecheck
+  PASS  the item's own tests — test/viewer.lost-counterattack-line.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — viewer/test/viewer.lost-counterattack-line.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/viewer.lost-counterattack-line.test.ts (-1) — will land FLAGGED for review
+  PASS  control battles unchanged
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — attack.force-staff.force-blast live · attack.staff-of-the-ultimate-destroyer.annihilation live
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without attack.force-staff.force-blast — they genuinely test it
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/battle-cursor.test.ts b/test/battle-cursor.test.ts
+index 4575a20..f58f1a0 100644
+--- a/test/battle-cursor.test.ts
++++ b/test/battle-cursor.test.ts
+@@ -471,4 +471,12 @@ const lumberjackGravesCursedGolden = JSON.parse(readFileSync(new URL('./fixtures
+ // Every case frozen here (tools/capture-effect-lasts-activations-cursor.mts). Moved: none. A `changed` case is checked here and skips the older layers.
+ const effectLastsActivationsGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-effect-lasts-activations.json', import.meta.url), 'utf8'))
++// capability.damage-from-two-stats (2026-10-05; DECISIONS.md 2026-10-04 'his 28 reward weapons read back …': of damage from two stats
++// added, "We do need that."; 'the Force Staff is Precision plus half Magic, as magic damage'), Law 10: an attack's damage is a sum of
++// terms - its own stat, counted as often as its row says, plus each added stat (the party's Magic or Spirit, or a stat of the
++// attacker's own) times its multiple - where the row's second term was dropped. Every case that fields an attack with a second term
++// moves (the Holy Texts' Verse adds the party's Spirit; the Ancient Tome, the War Hammer's Skullsplitter and the rest), and
++// test.force-blast is ADDED: the Force Staff's Force Blast live in a real battle.
++// Every case frozen here (tools/capture-damage-from-two-stats-cursor.mts). Moved: showcase.eve-24-b (text only), showcase.horrors, showcase.kiln (text only), showcase.prologue-party, showcase.rime (text only), showcase.supper, showcase.surrounded, showcase.waystation, test.caravan-aftermath, test.item-uses, test.opening-bridge (text only), test.opening-cathedral, test.opening-cavern-trail (text only), test.opening-gates, test.perfect-sight (text only), progression-surge-0, progression-surge-1, progression-surge-2. A `changed` case is checked here and skips the older layers.
++const damageFromTwoStatsGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-damage-from-two-stats.json', import.meta.url), 'utf8'))
+ const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
+ // Explicit rule migration, not regenerated historical hashes. These nine old
+@@ -617,5 +625,8 @@ describe('resumable battle cursor', () => {
+       const lumberjackGravesCursedExpected = lumberjackGravesCursedGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+       const effectLastsActivationsExpected = effectLastsActivationsGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+-      const effectLastsActivationsMoved = effectLastsActivationsExpected?.changed === true
++      const damageFromTwoStatsExpected = damageFromTwoStatsGolden.cases.find((row:{id:string})=>row.id===fixture.id)
++      const damageFromTwoStatsMoved = damageFromTwoStatsExpected?.changed === true
++      // was: const effectLastsActivationsMoved = effectLastsActivationsExpected?.changed === true — a case capability.damage-from-two-stats moved skips this layer too (capability.damage-from-two-stats 2026-10-04)
++      const effectLastsActivationsMoved = effectLastsActivationsExpected?.changed === true || damageFromTwoStatsMoved
+       // was: const lumberjackGravesCursedMoved = lumberjackGravesCursedExpected?.changed === true — a case capability.effect-lasts-activations moved skips this layer too (capability.effect-lasts-activations 2026-10-04)
+       const lumberjackGravesCursedMoved = lumberjackGravesCursedExpected?.changed === true || effectLastsActivationsMoved
+@@ -771,5 +782,12 @@ describe('resumable battle cursor', () => {
+           }
+         } else result = battle.runBattle(ctx)
+-        if (effectLastsActivationsExpected) {
++        if (damageFromTwoStatsExpected) {
++        expect(hash(ctx.events), 'full damage-from-two-stats events').toBe(damageFromTwoStatsExpected.events)
++        expect(hash(ctx.state), 'full damage-from-two-stats state').toBe(damageFromTwoStatsExpected.state)
++        expect(hash(ctx.rng.log), 'full damage-from-two-stats RNG').toBe(damageFromTwoStatsExpected.rng)
++        expect(result).toEqual(damageFromTwoStatsExpected.result)
++        }
++        // was: if (effectLastsActivationsExpected) { — capability.damage-from-two-stats (2026-10-04): a case it moved is checked above instead
++        if (effectLastsActivationsExpected && !damageFromTwoStatsMoved) {
+         expect(hash(ctx.events), 'full effect-lasts-activations events').toBe(effectLastsActivationsExpected.events)
+         expect(hash(ctx.state), 'full effect-lasts-activations state').toBe(effectLastsActivationsExpected.state)
+diff --git a/test/caravan-aftermath.test.ts b/test/caravan-aftermath.test.ts
+index 6873afa..d61c4e7 100644
+--- a/test/caravan-aftermath.test.ts
++++ b/test/caravan-aftermath.test.ts
+@@ -50,4 +50,5 @@ describe('encounter.caravan-aftermath', () => {
+   it('runs deterministically on its map', () => deterministic(S))
+   it('reaches a win or a loss on every seed tried — never the turn cap — and both the hounds and the Imps attack', () => {
++    const everAttacked = new Set<string>()
+     for (const r of SEEDS) {
+       const ctx = openingBattle(S, r)
+@@ -55,7 +56,17 @@ describe('encounter.caravan-aftermath', () => {
+       for (const type of ['unit.bloodhound', 'unit.imp']) {
+         const ids = new Set(ctx.state.units.filter((u) => u.typeId === type).map((u) => u.id))
+-        expect(ctx.events.some((e) => e.type === 'attack.declared' && ids.has(e.actor!)), `replicate ${r}: no ${type} attacked`).toBe(true)
++        // Law 10, 2026-10-05 — capability.damage-from-two-stats (DECISIONS.md 2026-10-04 'his 28 reward weapons read back …': of damage from two stats added, "We do need that."): this read
++        //   expect(ctx.events.some((e) => e.type === 'attack.declared' && ids.has(e.actor!)), `replicate ${r}: no ${type} attacked`).toBe(true)
++        // - on every seed, each kind attacks. The party's staffs and books deal their second term now (the Force Staff its half
++        // Magic, the Holy Texts its Spirit), and on one seed both Bloodhounds are killed before either has swung. What the line
++        // holds is that the fight is a fight: a kind attacks, unless every unit of it was killed before it could - a hound left
++        // alive that never attacks still fails. And over the seeds tried each kind does attack.
++        const attacked = ctx.events.some((e) => e.type === 'attack.declared' && ids.has(e.actor!))
++        const allKilled = ctx.state.units.filter((u) => u.typeId === type).every((u) => u.lifeState === 'dead')
++        expect(attacked || allKilled, `replicate ${r}: a living ${type} never attacked`).toBe(true)
++        if (attacked) everAttacked.add(type)
+       }
+     }
++    expect([...everAttacked].sort(), 'over the seeds tried, both the hounds and the Imps attack').toEqual(['unit.bloodhound', 'unit.imp'])
+   })
+   it('nobody ever stands on a wreck', () => {
+diff --git a/test/kit-attack-clauses.test.ts b/test/kit-attack-clauses.test.ts
+index a4bb3f0..95fc83f 100644
+--- a/test/kit-attack-clauses.test.ts
++++ b/test/kit-attack-clauses.test.ts
+@@ -143,9 +143,20 @@ describe('the clauses the engine cannot yet do are named, never dropped', () =>
+         if (!burst && (row.accuracy ?? 0) !== 0) { clauses++; if (ACTIONS[id]?.attack?.accuracy !== row.accuracy) silent.push(`${item} ${id} accuracy ${row.accuracy}`) }
+         // damage read from a second quantity (the target's status, another stat): the engine has no such term yet - named
+-        for (const k of ['addsTargetStatus', 'addsStat', 'halfStatBonus', 'doubleStatBonus', 'doubleStat', 'accuracyVs']) {
++        // Law 10, 2026-10-05 — capability.damage-from-two-stats (DECISIONS.md 2026-10-04 'his 28 reward weapons read back …': of damage from two stats added, "We do need that."): this loop read
++        //   for (const k of ['addsTargetStatus', 'addsStat', 'halfStatBonus', 'doubleStatBonus', 'doubleStat', 'accuracyVs'])
++        // and held each as a NAMED line - "the engine has no such term yet". It has the second-stat terms now: the four fields are on
++        // the engine's sheet for the attack (its sum of terms), held exactly below; on a burst, whose damage is its packets', they
++        // are still a named line. The target's own status and Accuracy against one kind of enemy are named as before.
++        for (const k of ['addsTargetStatus', 'accuracyVs']) {
+           if (row[k] === undefined) continue
+           clauses++
+           if (!isNamed(id, k)) silent.push(`${item} ${id} ${k}: ${JSON.stringify(row[k])}`)
+         }
++        const terms = [...(row['addsStat'] ? [{ stat: row['addsStat'], mult: 1 }] : []), ...(row['halfStatBonus'] ? [{ stat: row['halfStatBonus'], mult: 1, div: 2 }] : []), ...(row['doubleStatBonus'] ? [{ stat: row['doubleStatBonus'], mult: 2 }] : [])]
++        if (terms.length || row['doubleStat']) {
++          clauses++
++          if (burst) { for (const k of ['addsStat', 'halfStatBonus', 'doubleStatBonus', 'doubleStat']) if (row[k] !== undefined && !isNamed(id, k)) silent.push(`${item} ${id} ${k} on a burst`) }
++          else if (JSON.stringify(ACTIONS[id]?.attack?.addsStats ?? []) !== JSON.stringify(terms) || (ACTIONS[id]?.attack?.statMult ?? 1) !== (row['doubleStat'] ? 2 : 1)) silent.push(`${item} ${id} its second term is not on the engine's sheet`)
++        }
+       }
+     }
+```
+</details>
+eee5704
+
+diff --git a/test/viewer.lost-counterattack-line.test.ts b/test/viewer.lost-counterattack-line.test.ts
+index c7e414f..4261cad 100644
+--- a/test/viewer.lost-counterattack-line.test.ts
++++ b/test/viewer.lost-counterattack-line.test.ts
+@@ -92,5 +92,5 @@ describe('a counterattack that is lost or replaced says so in the log: what the
+     const src = '../src/actions.js', { FREE_ATTACK } = await import(src) as { FREE_ATTACK: Record<string, { stat?: string; accuracy?: string }> }
+     for (const [kind, row] of Object.entries(KINDS)) { expect(FREE_ATTACK[kind], kind).toBeDefined(); expect(FREE_ATTACK[kind]!.stat).toBe(row.up); expect(FREE_ATTACK[kind]!.accuracy).toBe(row.accuracy) }
+-  })
++  }, 120000)   // the page's module is loaded here for the first time: seconds under a loaded machine, past the 5-second default
+   it('the fixture is the engine\'s own battles, line for line', () => {
+     const now = fixtureNow()
+8f89924
+
+diff --git a/test/viewer.lost-counterattack-line.test.ts b/test/viewer.lost-counterattack-line.test.ts
+new file mode 100644
+index 0000000..c7e414f
+--- /dev/null
++++ b/test/viewer.lost-counterattack-line.test.ts
+@@ -0,0 +1,106 @@
++// viewer.lost-counterattack-line (engine backlog; found by the engine worker landing rule.counterattack-replaced-and-lost,
++// 2026-10-05 — ruled 2026-10-04, engine DECISIONS.md 'after the backlog run: …': a counterattack used again replaces the old
++// one, and being knocked down or knocked to another hex loses it; viewer SWITCHES.md counterattackLostLine: "the log could say
++// 'loses its Counterattack — knocked back' from those two fields").
++// Display only: no engine change. This file holds what the log's sentence stands on — the engine's own lines: every modifier a
++// loss takes off is one `statmod.expired` that says why (`reason`: replaced, knocked-down, knocked-back) and which special
++// free attack went (`lost`); the first line of a loss is the kind's own "up" stat, the rest went with it (its Accuracy, and on
++// a replacement the older power's riders); a knockdown's follows the line that put the unit down, a knockback's the line that
++// moved it, a replacement's the newer power's own `power.used`; one that only runs out carries neither field — and makes the
++// fixture the page test reads: tools/fixtures/lost-counterattack.json, the engine's own fielded opening battles, each on the
++// lowest replicate (0 upward, 16 at most) whose battle holds a line of that reason, cut at the end of the Activation the loss
++// fell in. Read for the KIND of line, never for who wins.
++// The viewer's half is ../viewer/tools/lost-counterattack-line.test.mjs.
++//
++//   LOST_COUNTERATTACK_WRITE=1 npm test -- viewer.lost-counterattack-line     rewrites the fixture from the engine
++import { describe, it, expect } from 'vitest'
++import { execFileSync } from 'node:child_process'
++import { readFileSync, writeFileSync } from 'node:fs'
++import { createBattle } from '../../engine/src/core/setup.js'
++import { runBattle } from '../../engine/src/core/battle.js'
++import { SCENARIOS, scenarioOptions } from '../../engine/src/content/scenarios.js'
++import { SPECIAL_FREE_ATTACKS } from '../../engine/src/core/special-free-attacks.js'
++
++const FIXTURE = 'tools/fixtures/lost-counterattack.json'
++const plain = <T>(x: T): T => JSON.parse(JSON.stringify(x))
++type E = { type: string; actor?: number; target?: number; causeId?: string; abilityId?: string; stat?: string; value?: number; source?: string; reason?: string; lost?: string }
++const KINDS = SPECIAL_FREE_ATTACKS as Record<string, { up: string; accuracy: string }>
++const REASONS = ['replaced', 'knocked-down', 'knocked-back']
++/** the cases the item's expect names: a hero holding a counterattack is knocked down; is knocked to another hex; uses the power
++ *  again; and a replacement that takes the older power's other modifier with it (the Great Sword's +2 Strength) */
++const CASES = {
++  knockedDown: { scenario: 'test.opening-gates', reason: 'knocked-down', rider: false },
++  knockedBack: { scenario: 'test.opening-gates', reason: 'knocked-back', rider: false },
++  replaced: { scenario: 'test.opening-orphanage', reason: 'replaced', rider: false },
++  replacedWithRider: { scenario: 'test.opening-lumberjack', reason: 'replaced', rider: true },
++} as const
++type Case = keyof typeof CASES
++const isRider = (e: E) => e.stat !== KINDS[e.lost!]!.up && e.stat !== KINDS[e.lost!]!.accuracy
++const firstLoss = (c: Case, EV: readonly E[]) => EV.findIndex((e, i) => e.type === 'statmod.expired' && e.reason === CASES[c].reason && e.stat === KINDS[e.lost!]!.up
++  && (!CASES[c].rider || lossFrom(EV, i).some(isRider)))
++/** the lines of one loss: the run of `statmod.expired` lines from `i` that name the same unit, kind and reason */
++function lossFrom(EV: readonly E[], i: number): E[] { const a = EV[i]!, out: E[] = []
++  for (let k = i; k < EV.length && EV[k]!.type === 'statmod.expired' && EV[k]!.actor === a.actor && EV[k]!.lost === a.lost && EV[k]!.reason === a.reason; k++) out.push(EV[k]!)
++  return out }
++const PLAYED: Partial<Record<Case, { replicate: number; EV: E[]; mapId: string; at: number }>> = {}
++function played(c: Case) {
++  if (PLAYED[c]) return PLAYED[c]!
++  for (let r = 0; r < 16; r++) {
++    const ctx = createBattle(scenarioOptions(SCENARIOS[CASES[c].scenario]!, r)); runBattle(ctx)
++    const EV = ctx.events as unknown as E[], at = firstLoss(c, EV)
++    if (at >= 0) return (PLAYED[c] = { replicate: r, EV, mapId: ctx.state.mapId, at })
++  }
++  throw new Error(`${CASES[c].scenario}: no replicate 0-15 holds a counterattack that ends as ${CASES[c].reason}${CASES[c].rider ? ' with a rider' : ''}`)
++}
++/** the battle up to the end of the Activation the loss fell in */
++function cut(c: Case) { const p = played(c), end = p.EV.findIndex((e, i) => i > p.at && e.type === 'activation.end'); return p.EV.slice(0, end < 0 ? p.EV.length : end + 1) }
++function fixtureNow() {
++  const out: Record<string, unknown> = { _about: 'GENERATED by test/viewer.lost-counterattack-line.test.ts (LOST_COUNTERATTACK_WRITE=1) from the engine — never hand-edit. The engine\'s own fielded opening battles (createBattle of each scenario, on the lowest replicate whose battle holds a counterattack that ends for that reason — the seed says which), each cut at the end of the Activation the loss fell in; `at` is the first line of the loss.' }
++  for (const c of Object.keys(CASES) as Case[]) { const p = played(c); out[c] = { seed: { mapId: p.mapId, replicate: p.replicate, scenarioId: CASES[c].scenario }, reason: CASES[c].reason, at: p.at, events: plain(cut(c)) } }
++  return out
++}
++const page = (file: string) => execFileSync(process.execPath, ['--test', '--test-reporter=tap', file], { cwd: '../viewer', encoding: 'utf8', maxBuffer: 1 << 26, env: { ...process.env, VIEWER_PAGE: process.env.VIEWER_PAGE ?? '' } })
++
++describe('a counterattack that is lost or replaced says so in the log: what the engine\'s lines say', () => {
++  it('every modifier a loss takes off is one line that says why and which special free attack went; the first line of a loss is the kind\'s own stat, and what follows went with it', () => {
++    for (const c of Object.keys(CASES) as Case[]) {
++      const { EV } = played(c), lost = EV.map((e, i) => ({ e, i })).filter((x) => x.e.type === 'statmod.expired' && (x.e.lost !== undefined || x.e.reason !== undefined))
++      expect(lost.length, c).toBeGreaterThan(0)
++      for (const { e, i } of lost) {
++        expect(REASONS, `${c} line ${i}`).toContain(e.reason); expect(KINDS[e.lost!], `${c} line ${i}: ${e.lost}`).toBeDefined()
++        const prev = EV[i - 1]!, opens = !(prev.type === 'statmod.expired' && prev.actor === e.actor && prev.lost === e.lost && prev.reason === e.reason)
++        if (opens) expect(e.stat, `${c} line ${i}: the loss opens on the kind's own stat`).toBe(KINDS[e.lost!]!.up)
++        else expect(e.stat, `${c} line ${i}: only the first line is the kind's own stat`).not.toBe(KINDS[e.lost!]!.up)
++      }
++    }
++  }, 120000)
++  it('a knockdown\'s follows the line that put the unit down; a knockback\'s the line that moved it; a replacement\'s the newer power\'s own use', () => {
++    const before = (c: Case) => { const p = played(c); return { e: p.EV[p.at]!, prev: p.EV[p.at - 1]! } }
++    const down = before('knockedDown'); expect(down.prev.type).toBe('unit.proned'); expect(down.prev.target).toBe(down.e.actor); expect(down.e.reason).toBe('knocked-down')
++    const back = before('knockedBack'); expect(back.prev.type).toBe('knocked'); expect(back.prev.target).toBe(back.e.actor); expect(back.e.reason).toBe('knocked-back')
++    for (const c of ['replaced', 'replacedWithRider'] as const) { const r = before(c)
++      expect(r.prev.type).toBe('power.used'); expect(r.prev.actor).toBe(r.e.actor); expect(r.e.causeId, 'the cause is the newer power').toBe(r.prev.abilityId); expect(r.e.reason).toBe('replaced') }
++    const rider = played('replacedWithRider'); expect(lossFrom(rider.EV, rider.at).filter(isRider).length, 'the older power\'s other modifier goes with it').toBeGreaterThan(0)
++  }, 120000)
++  it('one that only runs out carries neither field (the engine\'s fielding test.counterattack, the fixture of viewer.free-attack-kind-words)', () => {
++    const kept = JSON.parse(readFileSync('tools/fixtures/free-attack-kinds.json', 'utf8')).counterattack.events as E[]
++    const out = kept.filter((e) => e.type === 'statmod.expired' && e.stat === 'counterattack')
++    expect(out.length).toBeGreaterThan(0)
++    for (const e of out) { expect(e.reason).toBeUndefined(); expect(e.lost).toBeUndefined() }
++  })
++  it('the page\'s table of special free attacks names the engine\'s kinds by the engine\'s own stats', async () => {
++    const src = '../src/actions.js', { FREE_ATTACK } = await import(src) as { FREE_ATTACK: Record<string, { stat?: string; accuracy?: string }> }
++    for (const [kind, row] of Object.entries(KINDS)) { expect(FREE_ATTACK[kind], kind).toBeDefined(); expect(FREE_ATTACK[kind]!.stat).toBe(row.up); expect(FREE_ATTACK[kind]!.accuracy).toBe(row.accuracy) }
++  })
++  it('the fixture is the engine\'s own battles, line for line', () => {
++    const now = fixtureNow()
++    if (process.env.LOST_COUNTERATTACK_WRITE) writeFileSync(FIXTURE, JSON.stringify(now) + '\n')
++    const kept = JSON.parse(readFileSync(FIXTURE, 'utf8'))
++    for (const c of Object.keys(CASES)) { expect(kept[c].seed, c).toEqual((now[c] as { seed: unknown }).seed); expect(kept[c].at, c).toBe((now[c] as { at: number }).at); expect(kept[c].events, c).toEqual((now[c] as { events: unknown }).events) }
++  }, 120000)
++  it('the viewer page: the log says a counterattack is lost and what did it, or that a newer one replaced it; one that runs out, and a battle with none, read as before', () => {
++    const out = page('tools/lost-counterattack-line.test.mjs')
++    expect(out).toMatch(/# pass 7/); expect(out).toMatch(/# fail 0/)
++    for (const line of out.split('\n').filter((l) => /^# \\?# /.test(l))) console.log(line.replace(/^# \\?# /, '  '))
++  }, 600000)
++})
+```
+</details>
+
+## viewer.prone-turn-only-stand-up — LANDED `2dd731d`
+2026-10-05 12:40
+
+  PASS  dependencies landed
+  WARN  not already decided — 1 candidate ruling(s) — READ BEFORE ASKING: DECISIONS.md:4731
+  PASS  typecheck
+  PASS  the item's own tests — test/viewer.prone-turn-only-stand-up.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — viewer/test/viewer.prone-turn-only-stand-up.test.ts
+  PASS  existing tests untouched
+  SKIPPED  control battles unchanged — engine code c5f16f0991 and the content pack are the ones the control battles last passed on (2026-10-05 12:39, gate viewer.lost-counterattack-line --land, in HBT-worker-content) — not run
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable

@@ -470,6 +470,14 @@ const lumberjackGravesCursedGolden = JSON.parse(readFileSync(new URL('./fixtures
 // status is live in a real battle. They are ADDED cases; no case that existed moves.
 // Every case frozen here (tools/capture-effect-lasts-activations-cursor.mts). Moved: none. A `changed` case is checked here and skips the older layers.
 const effectLastsActivationsGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-effect-lasts-activations.json', import.meta.url), 'utf8'))
+// capability.damage-from-two-stats (2026-10-05; DECISIONS.md 2026-10-04 'his 28 reward weapons read back …': of damage from two stats
+// added, "We do need that."; 'the Force Staff is Precision plus half Magic, as magic damage'), Law 10: an attack's damage is a sum of
+// terms - its own stat, counted as often as its row says, plus each added stat (the party's Magic or Spirit, or a stat of the
+// attacker's own) times its multiple - where the row's second term was dropped. Every case that fields an attack with a second term
+// moves (the Holy Texts' Verse adds the party's Spirit; the Ancient Tome, the War Hammer's Skullsplitter and the rest), and
+// test.force-blast is ADDED: the Force Staff's Force Blast live in a real battle.
+// Every case frozen here (tools/capture-damage-from-two-stats-cursor.mts). Moved: showcase.eve-24-b (text only), showcase.horrors, showcase.kiln (text only), showcase.prologue-party, showcase.rime (text only), showcase.supper, showcase.surrounded, showcase.waystation, test.caravan-aftermath, test.item-uses, test.opening-bridge (text only), test.opening-cathedral, test.opening-cavern-trail (text only), test.opening-gates, test.perfect-sight (text only), progression-surge-0, progression-surge-1, progression-surge-2. A `changed` case is checked here and skips the older layers.
+const damageFromTwoStatsGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-damage-from-two-stats.json', import.meta.url), 'utf8'))
 const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
 // Explicit rule migration, not regenerated historical hashes. These nine old
 // cases contain Surge ledger/refresh changes or terminal markers corrected
@@ -616,7 +624,10 @@ describe('resumable battle cursor', () => {
       const computerReachesClassPowerExpected = computerReachesClassPowerGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const lumberjackGravesCursedExpected = lumberjackGravesCursedGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const effectLastsActivationsExpected = effectLastsActivationsGolden.cases.find((row:{id:string})=>row.id===fixture.id)
-      const effectLastsActivationsMoved = effectLastsActivationsExpected?.changed === true
+      const damageFromTwoStatsExpected = damageFromTwoStatsGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+      const damageFromTwoStatsMoved = damageFromTwoStatsExpected?.changed === true
+      // was: const effectLastsActivationsMoved = effectLastsActivationsExpected?.changed === true — a case capability.damage-from-two-stats moved skips this layer too (capability.damage-from-two-stats 2026-10-04)
+      const effectLastsActivationsMoved = effectLastsActivationsExpected?.changed === true || damageFromTwoStatsMoved
       // was: const lumberjackGravesCursedMoved = lumberjackGravesCursedExpected?.changed === true — a case capability.effect-lasts-activations moved skips this layer too (capability.effect-lasts-activations 2026-10-04)
       const lumberjackGravesCursedMoved = lumberjackGravesCursedExpected?.changed === true || effectLastsActivationsMoved
       // was: const computerReachesClassPowerMoved = computerReachesClassPowerExpected?.changed === true — a case content.orphanage-body-and-graves-cursed moved skips this layer too (content.orphanage-body-and-graves-cursed 2026-10-04)
@@ -770,7 +781,14 @@ describe('resumable battle cursor', () => {
             battle.completeActionCycle(ctx)
           }
         } else result = battle.runBattle(ctx)
-        if (effectLastsActivationsExpected) {
+        if (damageFromTwoStatsExpected) {
+        expect(hash(ctx.events), 'full damage-from-two-stats events').toBe(damageFromTwoStatsExpected.events)
+        expect(hash(ctx.state), 'full damage-from-two-stats state').toBe(damageFromTwoStatsExpected.state)
+        expect(hash(ctx.rng.log), 'full damage-from-two-stats RNG').toBe(damageFromTwoStatsExpected.rng)
+        expect(result).toEqual(damageFromTwoStatsExpected.result)
+        }
+        // was: if (effectLastsActivationsExpected) { — capability.damage-from-two-stats (2026-10-04): a case it moved is checked above instead
+        if (effectLastsActivationsExpected && !damageFromTwoStatsMoved) {
         expect(hash(ctx.events), 'full effect-lasts-activations events').toBe(effectLastsActivationsExpected.events)
         expect(hash(ctx.state), 'full effect-lasts-activations state').toBe(effectLastsActivationsExpected.state)
         expect(hash(ctx.rng.log), 'full effect-lasts-activations RNG').toBe(effectLastsActivationsExpected.rng)

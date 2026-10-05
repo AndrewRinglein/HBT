@@ -49,14 +49,25 @@ describe('encounter.caravan-aftermath', () => {
   })
   it('runs deterministically on its map', () => deterministic(S))
   it('reaches a win or a loss on every seed tried — never the turn cap — and both the hounds and the Imps attack', () => {
+    const everAttacked = new Set<string>()
     for (const r of SEEDS) {
       const ctx = openingBattle(S, r)
       expect(['heroClear', 'wipe'], `replicate ${r}: ${ctx.state.outcome} on Turn ${ctx.state.turn}`).toContain(ctx.state.outcome)
       for (const type of ['unit.bloodhound', 'unit.imp']) {
         const ids = new Set(ctx.state.units.filter((u) => u.typeId === type).map((u) => u.id))
-        expect(ctx.events.some((e) => e.type === 'attack.declared' && ids.has(e.actor!)), `replicate ${r}: no ${type} attacked`).toBe(true)
+        // Law 10, 2026-10-05 — capability.damage-from-two-stats (DECISIONS.md 2026-10-04 'his 28 reward weapons read back …': of damage from two stats added, "We do need that."): this read
+        //   expect(ctx.events.some((e) => e.type === 'attack.declared' && ids.has(e.actor!)), `replicate ${r}: no ${type} attacked`).toBe(true)
+        // - on every seed, each kind attacks. The party's staffs and books deal their second term now (the Force Staff its half
+        // Magic, the Holy Texts its Spirit), and on one seed both Bloodhounds are killed before either has swung. What the line
+        // holds is that the fight is a fight: a kind attacks, unless every unit of it was killed before it could - a hound left
+        // alive that never attacks still fails. And over the seeds tried each kind does attack.
+        const attacked = ctx.events.some((e) => e.type === 'attack.declared' && ids.has(e.actor!))
+        const allKilled = ctx.state.units.filter((u) => u.typeId === type).every((u) => u.lifeState === 'dead')
+        expect(attacked || allKilled, `replicate ${r}: a living ${type} never attacked`).toBe(true)
+        if (attacked) everAttacked.add(type)
       }
     }
+    expect([...everAttacked].sort(), 'over the seeds tried, both the hounds and the Imps attack').toEqual(['unit.bloodhound', 'unit.imp'])
   })
   it('nobody ever stands on a wreck', () => {
     for (const r of SEEDS.slice(0, 3)) {
