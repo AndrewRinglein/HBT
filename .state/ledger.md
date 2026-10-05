@@ -29568,3 +29568,69 @@ index cfdde37..9d5f57b 100644
   PASS  naming — new content ids use declared kinds
   PASS  naming — no banned words invented
   PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+## rule.walked-unit-has-moved — LANDED `1d7c843` **NEEDS REVIEW**
+2026-10-05 00:55
+
+  PASS  dependencies landed
+  WARN  not already decided — 2 candidate ruling(s) — READ BEFORE ASKING: SWITCHES.md:2241 · SWITCHES.md:2247
+  PASS  typecheck
+  PASS  the item's own tests — test/battle-cursor.test.ts, test/walked-unit-has-moved.test.ts
+  PASS  gate 1 — the id appears in a real battle — power.leap: 6 log lines, 6 fired, 2 changed state
+  PASS  brought its own tests — test/battle-cursor.test.ts, test/fixtures/battle-cursor-walked-unit-has-moved.json, test/walked-unit-has-moved.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/battle-cursor.test.ts (-2) — will land FLAGGED for review
+  PASS  control battles unchanged
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — power.leap live · power.side-roll live
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without power.leap — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/battle-cursor.test.ts b/test/battle-cursor.test.ts
+index 3ee84a0..69abb9c 100644
+--- a/test/battle-cursor.test.ts
++++ b/test/battle-cursor.test.ts
+@@ -395,4 +395,11 @@ const longswordLosesStabGolden = JSON.parse(readFileSync(new URL('./fixtures/bat
+ // trigger: progression-surge-0/1/2. A `changed` case is checked here and skips the older layers.
+ const enchantTriggersOwnWeaponGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-enchant-triggers-own-weapon.json', import.meta.url), 'utf8'))
++// rule.walked-unit-has-moved (2026-10-04; DECISIONS.md 2026-10-04 'after the backlog run: ... moves are refused once a unit has walked ...': "2 yes"),
++// Law 10: a unit that has entered a hex with its walk carries `walked` until its Activation ends or a Surge reopens it, and takes no other
++// movement meanwhile. The computer never walked and then used another movement, so no fight moves - not an event, a roll or a result.
++// Every case frozen here (tools/capture-walked-unit-has-moved-cursor.mts). Moved - in the STATE only (stateOnly in the fixture) - the 27
++// cases whose battle ends inside an Activation whose unit had walked: that unit still holds the fact. A `changed` case is checked here and
++// skips the older layers.
++const walkedUnitHasMovedGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-walked-unit-has-moved.json', import.meta.url), 'utf8'))
+ const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
+ // Explicit rule migration, not regenerated historical hashes. These nine old
+@@ -530,5 +537,8 @@ describe('resumable battle cursor', () => {
+       const longswordLosesStabExpected = longswordLosesStabGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+       const enchantTriggersOwnWeaponExpected = enchantTriggersOwnWeaponGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+-      const enchantTriggersOwnWeaponMoved = enchantTriggersOwnWeaponExpected?.changed === true
++      const walkedUnitHasMovedExpected = walkedUnitHasMovedGolden.cases.find((row:{id:string})=>row.id===fixture.id)
++      const walkedUnitHasMovedMoved = walkedUnitHasMovedExpected?.changed === true
++      // was: const enchantTriggersOwnWeaponMoved = enchantTriggersOwnWeaponExpected?.changed === true — a case rule.walked-unit-has-moved moved skips this layer too (rule.walked-unit-has-moved 2026-10-04)
++      const enchantTriggersOwnWeaponMoved = enchantTriggersOwnWeaponExpected?.changed === true || walkedUnitHasMovedMoved
+       // was: const longswordLosesStabMoved = longswordLosesStabExpected?.changed === true — a case fix.enchant-triggers-own-weapon moved skips this layer too (fix.enchant-triggers-own-weapon 2026-10-04)
+       const longswordLosesStabMoved = longswordLosesStabExpected?.changed === true || enchantTriggersOwnWeaponMoved
+@@ -662,5 +672,12 @@ describe('resumable battle cursor', () => {
+           }
+         } else result = battle.runBattle(ctx)
+-        if (enchantTriggersOwnWeaponExpected) {
++        if (walkedUnitHasMovedExpected) {
++        expect(hash(ctx.events), 'full walked-unit-has-moved events').toBe(walkedUnitHasMovedExpected.events)
++        expect(hash(ctx.state), 'full walked-unit-has-moved state').toBe(walkedUnitHasMovedExpected.state)
++        expect(hash(ctx.rng.log), 'full walked-unit-has-moved RNG').toBe(walkedUnitHasMovedExpected.rng)
++        expect(result).toEqual(walkedUnitHasMovedExpected.result)
++        }
++        // was: if (enchantTriggersOwnWeaponExpected) { — rule.walked-unit-has-moved (2026-10-04): a case it moved is checked above instead
++        if (enchantTriggersOwnWeaponExpected && !walkedUnitHasMovedMoved) {
+         expect(hash(ctx.events), 'full enchant-triggers-own-weapon events').toBe(enchantTriggersOwnWeaponExpected.events)
+         expect(hash(ctx.state), 'full enchant-triggers-own-weapon state').toBe(enchantTriggersOwnWeaponExpected.state)
+```
+</details>

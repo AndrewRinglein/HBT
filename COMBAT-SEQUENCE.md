@@ -203,6 +203,19 @@ when the claim that they already did turned out to be true of this ladder only.
 
 Repeat per hex. Vision and stealth recalculate after **every** step, after everything else in that step. Reveal auras (e.g. *reveal all stealth within 4*) are evaluated here too.
 
+**A unit that has walked has moved** (rule.walked-unit-has-moved, 2026-10-04; DECISIONS.md 2026-10-04 "after the backlog run: …
+moves are refused once a unit has walked …": asked "Once a unit has walked, should Leap and Side Roll grey out and be
+refused?" — "2 yes"; with 2026-10-03 "Just gray the moves out after a move is done"). **Built: yes.** A unit's *walk* is its
+first path-shaped movement, in its own order (`action.ts walkOf`). The step that enters a hex with it (rung 3) marks the
+unit `walked`, and from then until that action cycle is over **no other movement is accepted from it** — a Leap, a Side
+Roll, a Sidestep, a Back Flip, a Charging Run, a flight, a zero-hex move — refused by the one movement legality
+(`movement.ts movementReason`) with `movement-slot-closed`, the refusal a spent movement slot gives. **The walk itself is
+not closed:** the rest of a walk cut short may still be walked (as the primary action, as before). A movement used
+*before* any walk marks nothing and closes nothing: what follows it is the action-slot rule's, unchanged. A walk that
+enters no hex (stopped on its first step by an attack of opportunity) is no walk. The fact is cleared at the start of an
+Activation, at its end, and by a Surge ("go again from movement"). A charge is one of the unit's attacks and is not a
+movement here.
+
 ### Primary action
 
 Attack or class power.

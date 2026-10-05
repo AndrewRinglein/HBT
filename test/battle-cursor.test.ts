@@ -394,6 +394,13 @@ const longswordLosesStabGolden = JSON.parse(readFileSync(new URL('./fixtures/bat
 // (tools/capture-enchant-triggers-own-weapon-cursor.mts). Moved - exactly the cases that field a tier-3 weapon whose attribute brings a
 // trigger: progression-surge-0/1/2. A `changed` case is checked here and skips the older layers.
 const enchantTriggersOwnWeaponGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-enchant-triggers-own-weapon.json', import.meta.url), 'utf8'))
+// rule.walked-unit-has-moved (2026-10-04; DECISIONS.md 2026-10-04 'after the backlog run: ... moves are refused once a unit has walked ...': "2 yes"),
+// Law 10: a unit that has entered a hex with its walk carries `walked` until its Activation ends or a Surge reopens it, and takes no other
+// movement meanwhile. The computer never walked and then used another movement, so no fight moves - not an event, a roll or a result.
+// Every case frozen here (tools/capture-walked-unit-has-moved-cursor.mts). Moved - in the STATE only (stateOnly in the fixture) - the 27
+// cases whose battle ends inside an Activation whose unit had walked: that unit still holds the fact. A `changed` case is checked here and
+// skips the older layers.
+const walkedUnitHasMovedGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-walked-unit-has-moved.json', import.meta.url), 'utf8'))
 const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
 // Explicit rule migration, not regenerated historical hashes. These nine old
 // cases contain Surge ledger/refresh changes or terminal markers corrected
@@ -529,7 +536,10 @@ describe('resumable battle cursor', () => {
       const combineFreeAttackExpected = combineFreeAttackGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const longswordLosesStabExpected = longswordLosesStabGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const enchantTriggersOwnWeaponExpected = enchantTriggersOwnWeaponGolden.cases.find((row:{id:string})=>row.id===fixture.id)
-      const enchantTriggersOwnWeaponMoved = enchantTriggersOwnWeaponExpected?.changed === true
+      const walkedUnitHasMovedExpected = walkedUnitHasMovedGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+      const walkedUnitHasMovedMoved = walkedUnitHasMovedExpected?.changed === true
+      // was: const enchantTriggersOwnWeaponMoved = enchantTriggersOwnWeaponExpected?.changed === true — a case rule.walked-unit-has-moved moved skips this layer too (rule.walked-unit-has-moved 2026-10-04)
+      const enchantTriggersOwnWeaponMoved = enchantTriggersOwnWeaponExpected?.changed === true || walkedUnitHasMovedMoved
       // was: const longswordLosesStabMoved = longswordLosesStabExpected?.changed === true — a case fix.enchant-triggers-own-weapon moved skips this layer too (fix.enchant-triggers-own-weapon 2026-10-04)
       const longswordLosesStabMoved = longswordLosesStabExpected?.changed === true || enchantTriggersOwnWeaponMoved
       // was: const combineFreeAttackMoved = combineFreeAttackExpected?.changed === true — a case content.longsword-loses-stab moved skips this layer too (content.longsword-loses-stab 2026-10-04)
@@ -661,7 +671,14 @@ describe('resumable battle cursor', () => {
             battle.completeActionCycle(ctx)
           }
         } else result = battle.runBattle(ctx)
-        if (enchantTriggersOwnWeaponExpected) {
+        if (walkedUnitHasMovedExpected) {
+        expect(hash(ctx.events), 'full walked-unit-has-moved events').toBe(walkedUnitHasMovedExpected.events)
+        expect(hash(ctx.state), 'full walked-unit-has-moved state').toBe(walkedUnitHasMovedExpected.state)
+        expect(hash(ctx.rng.log), 'full walked-unit-has-moved RNG').toBe(walkedUnitHasMovedExpected.rng)
+        expect(result).toEqual(walkedUnitHasMovedExpected.result)
+        }
+        // was: if (enchantTriggersOwnWeaponExpected) { — rule.walked-unit-has-moved (2026-10-04): a case it moved is checked above instead
+        if (enchantTriggersOwnWeaponExpected && !walkedUnitHasMovedMoved) {
         expect(hash(ctx.events), 'full enchant-triggers-own-weapon events').toBe(enchantTriggersOwnWeaponExpected.events)
         expect(hash(ctx.state), 'full enchant-triggers-own-weapon state').toBe(enchantTriggersOwnWeaponExpected.state)
         expect(hash(ctx.rng.log), 'full enchant-triggers-own-weapon RNG').toBe(enchantTriggersOwnWeaponExpected.rng)

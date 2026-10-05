@@ -1,0 +1,110 @@
+
+ RUN  v4.1.11 C:/Users/aring/Desktop/HBT-worker-engine/engine
+
+ ❯ test/walked-unit-has-moved.test.ts (12 tests | 8 failed) 12026ms
+     × Leap: usable before the hero walks; refused with the engine's reason after it has walked one hex; off the action list 14ms
+     × Side Roll: usable before the hero walks; refused with the engine's reason after it has walked one hex; off the action list 3ms
+     × Sidestep: usable before the hero walks; refused with the engine's reason after it has walked one hex; off the action list 3ms
+     × Back Flip: usable before the hero walks; refused with the engine's reason after it has walked one hex; off the action list 3ms
+     × Charging Run: usable before the hero walks; refused with the engine's reason after it has walked one hex; off the action list 3ms
+     × every base hero: each movement it has besides its walk is offered before the walk and refused after it 2ms
+     × the unit carries the fact for that action cycle only: a new Activation and a Surge both reopen its movements 1ms
+     × the host's command is refused with the same reason, and nothing is spent 3ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 8 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/walked-unit-has-moved.test.ts > once a unit has walked, no other movement is accepted from it > Leap: usable before the hero walks; refused with the engine's reason after it has walked one hex; off the action list
+ FAIL  test/walked-unit-has-moved.test.ts > once a unit has walked, no other movement is accepted from it > Side Roll: usable before the hero walks; refused with the engine's reason after it has walked one hex; off the action list
+ FAIL  test/walked-unit-has-moved.test.ts > once a unit has walked, no other movement is accepted from it > Sidestep: usable before the hero walks; refused with the engine's reason after it has walked one hex; off the action list
+ FAIL  test/walked-unit-has-moved.test.ts > once a unit has walked, no other movement is accepted from it > Back Flip: usable before the hero walks; refused with the engine's reason after it has walked one hex; off the action list
+ FAIL  test/walked-unit-has-moved.test.ts > once a unit has walked, no other movement is accepted from it > Charging Run: usable before the hero walks; refused with the engine's reason after it has walked one hex; off the action list
+AssertionError: expected { ok: true } to deeply equal { ok: false, …(1) }
+
+- Expected
++ Received
+
+  {
+-   "ok": false,
+-   "reason": "movement-slot-closed",
++   "ok": true,
+  }
+
+ ❯ test/walked-unit-has-moved.test.ts:70:82
+     68|     const aim = aimAt(ctx, u, a.move!.shape === 'sidestep' ? (a.move!.…
+     69|     const before = ctx.events.length, at = u.hex, stamina = u.stamina
+     70|     expect(validateAction(ctx, { actor: 0, actionId: power, destinatio…
+       |                                                                                  ^
+     71|     expect(executeAction(ctx, { actor: 0, actionId: power, destination…
+     72|     // a refusal emits nothing, spends nothing and moves nobody
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/8]⎯
+
+ FAIL  test/walked-unit-has-moved.test.ts > once a unit has walked, no other movement is accepted from it > every base hero: each movement it has besides its walk is offered before the walk and refused after it
+AssertionError: hero.base.warrior-iron power.leap after: expected { ok: true } to deeply equal { ok: false, …(1) }
+
+- Expected
++ Received
+
+  {
+-   "ok": false,
+-   "reason": "movement-slot-closed",
++   "ok": true,
+  }
+
+ ❯ test/walked-unit-has-moved.test.ts:88:179
+     86|         const { ctx, u } = rig(hero)
+     87|         walkOneHex(ctx, u)
+     88|         expect(validateAction(ctx, { actor: 0, actionId: m.id, destina…
+       |                                                                                                                                                                                   ^
+     89|         expect(listed(ctx, m.id), `${hero} ${m.id} listed after`).toBe…
+     90|         checked++
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/8]⎯
+
+ FAIL  test/walked-unit-has-moved.test.ts > once a unit has walked, no other movement is accepted from it > the unit carries the fact for that action cycle only: a new Activation and a Surge both reopen its movements
+AssertionError: expected undefined to be true // Object.is equality
+
+- Expected:
+true
+
++ Received:
+undefined
+
+ ❯ test/walked-unit-has-moved.test.ts:131:50
+    129|     const a = rig(WARRIOR)
+    130|     walkOneHex(a.ctx, a.u)
+    131|     expect((a.u as { walked?: boolean }).walked).toBe(true)
+       |                                                  ^
+    132|     expect(destinations(a.ctx, 'power.leap')).toEqual([])
+    133|     beginActivation(a.ctx, 0, 'test'); a.u.stamina = 20
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/8]⎯
+
+ FAIL  test/walked-unit-has-moved.test.ts > once a unit has walked, no other movement is accepted from it > the host's command is refused with the same reason, and nothing is spent
+AssertionError: expected { ok: true } to deeply equal { ok: false, …(1) }
+
+- Expected
++ Received
+
+  {
+-   "ok": false,
+-   "reason": "movement-slot-closed",
++   "ok": true,
+  }
+
+ ❯ test/walked-unit-has-moved.test.ts:158:89
+    156|     expect(ctx.battleCursor).toMatchObject({ at: 'acting', actor: 0 })…
+    157|     const seq = ctx.state.seq
+    158|     expect(validateBattleCommand(ctx, policy, command('power.leap', ai…
+       |                                                                                         ^
+    159|     expect(executeBattleCommand(ctx, policy, command('power.leap', aim…
+    160|     expect(ctx.state.seq).toBe(seq)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/8]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  8 failed | 4 passed (12)
+   Start at  16:59:41
+   Duration  13.08s (transform 681ms, setup 0ms, import 911ms, tests 12.03s, environment 0ms)
+
