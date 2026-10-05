@@ -134,6 +134,10 @@
    "label": "TEST · KDB fires: knocked back (seed 7)"
   },
   {
+   "file": "test.call-the-wolf-s1.json",
+   "label": "TEST · Call the Wolf: a summoned ally, and it leaves at the end (seed 1)"
+  },
+  {
    "file": "test.knockback-well.json",
    "label": "TEST · knockback collisions: boulder and well (consumed)"
   },

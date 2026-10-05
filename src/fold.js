@@ -707,6 +707,17 @@ export function fold(S, e, ctx, now = 0) {
         cue('rise', { id: e.raised, hex: e.hex })
         cue('float', { hex: e.hex, kind: 'raised', text: 'RISES', big: true }) }
       break
+    /* capability.summons (engine item, 2026-10-05): a power placed a unit on a hex — its unit.enter came just before (the
+       arrival, drawn as every arrival is); this says whose power it was. At the battle's end each summoned unit still
+       standing leaves (unit.dismissed), before the end is told. */
+    case 'unit.summoned':
+      if (U[e.summoned]) { U[e.summoned].summonedBy = e.actor
+        cue('float', { hex: e.hex, kind: 'raised', text: 'SUMMONED', big: true }) }
+      break
+    case 'unit.dismissed':
+      if (U[e.actor]) { U[e.actor].dismissed = true
+        cue('float', { hex: U[e.actor].hex, kind: 'note', text: 'LEAVES', small: true }) }
+      break
     case 'corpse.eaten':
       /* the ghoul feeds; heal.applied + statmod.added + maxHp.gained follow */
       if (U[e.actor]) cue('float', { hex: U[e.actor].hex, kind: 'eaten', text: 'FEEDS', small: true })
@@ -842,6 +853,8 @@ export const FOLDED_TYPES = ['burst.declared', 'burst.shielded', 'burst.struck',
   'corpse.created', 'corpse.removed', 'unit.raised', 'corpse.eaten', 'unit.obliterated',
   /* viewer.plays-turned-units (2026-10-04) */
   'unit.transformed', 'unit.reverted',
+  /* capability.summons (engine item, 2026-10-05) */
+  'unit.summoned', 'unit.dismissed',
   'deathbed.stood', 'deathbed.fell', 'deathbed.none', 'hp.reset',
   'unit.badged', 'unit.modified', 'badge.gained', 'badge.held', 'power.exhausted', 'charge.spent', 'maxstamina.gained',
   'surge.checked', 'surge.hit', 'power.gained',

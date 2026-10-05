@@ -135,6 +135,8 @@ ARTMAP = {
  'unit.hellhound':   {'token':'hellhound_256.png','card':'card-hellhound','src':'HELL:assets/hex-tokens/hellhound_256.png','cardsrc':'assets/bestiary/eve/hellhound.png','height':1.1},
  'unit.zombie-hound':{'token':'zombie-hound_256.png','card':'card-zombie-hound','src':'battle-tokens/units/zombie-hound_256.png','cardsrc':'assets/bestiary/hobat/zombie-hound.png','height':1.0},
  'unit.werewolf':    {'token':'werewolf_256.png','card':'card-werewolf','src':'battle-tokens/units/werewolf_256.png','cardsrc':'assets/bestiary/eve/werewolf.png','height':1.85},
+ # capability.summons (engine item, 2026-10-05): the Wolf the Staff of Summoning calls - its own cutout and its own bestiary painting
+ 'unit.wolf':        {'token':'wolf_256.png','card':'card-wolf','src':'battle-tokens/units/wolf_256.png','cardsrc':'assets/bestiary/eve/wolf.png','height':1.0},
  'spirit-snake':     {'ph':'Spirit Snake','card':'card-spiritsnake','cardsrc':'HELL:assets/cards/heroes/fixed/spirit-snake/1.png','height':1.0},
  'green-drake':      {'token':'bone-dragon_256.png','card':'card-greendrake','src':'battle-tokens/units/bone-dragon_256.png','cardsrc':'crucible/art/variants/green-drake-level1.png','height':2.1},
  'shadow-hound-puppy':{'token':'wolf_256.png','card':'card-desertwolf','src':'battle-tokens/units/wolf_256.png','cardsrc':'assets/bestiary/shadows/desert-wolf.png','height':0.8},

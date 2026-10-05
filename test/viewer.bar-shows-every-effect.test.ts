@@ -67,7 +67,8 @@ describe('every action on the bar shows everything it does', () => {
     const out = execFileSync(process.execPath, ['--test', '--test-reporter=tap', 'tools/bar-shows-every-effect.test.mjs'], { cwd: '../viewer', encoding: 'utf8', maxBuffer: 1 << 24, env: { ...process.env, VIEWER_PAGE: process.env.VIEWER_PAGE ?? '' } })
     // 2026-10-05, capability.damage-from-two-stats (engine item): this read `expect(out).toMatch(/# pass 4/)` - the tool's four
     // tests. It has a fifth now (a damage line says every term of its sum); all five must pass, none fail.
-    expect(out).toMatch(/# pass 5/); expect(out).toMatch(/# fail 0/)
+    // 2026-10-05, capability.summons (engine item): a sixth test (a summon is said on the bar); this read /# pass 5/.
+    expect(out).toMatch(/# pass 6/); expect(out).toMatch(/# fail 0/)
   }, 170000)
   it('the sandbox: the expect line, read against the engine\'s own units on the built BATTLE-SANDBOX.html (the Orphanage)', () => {
     mkdirSync('../kingdom/scratch', { recursive: true })

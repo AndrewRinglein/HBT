@@ -64,6 +64,11 @@ test('which actions help is the engine\'s action row: an attack never, a power a
     else if (a.burst) { assert.equal(foe, false, id); seen.burst++ }
     else if (!a.target) { assert.equal(own, false, id + ': a row that names no target helps nobody'); seen.none++ }
     else if (a.target.select === 'self') { assert.equal(own, true, id); seen.self++ }
+    /* Law 10, 2026-10-05 - engine capability.summons (engine DECISIONS.md 2026-10-04 'his 28 reward weapons read back …': "We need:
+       summons"): the last branch below held every row whose side is 'any' to "helps a unit of its own side, not one of the
+       other". A power may be aimed at an EMPTY HEX now (the row's target select 'hex', its side 'any' because a hex has none):
+       nobody is aimed at, so nothing is flown at anyone, whoever's side is asked of. Every other 'any' row is held as it was. */
+    else if (a.target.select === 'hex') { assert.equal(own, true, id + ': aimed at an empty hex - nothing flies'); assert.equal(foe, true, id + ': aimed at an empty hex - nothing flies'); seen.hex = (seen.hex ?? 0) + 1 }
     else if (a.target.side === 'ally') { assert.equal(own, true, id); assert.equal(foe, true, id + ': the row says ally'); seen.ally++ }
     else if (a.target.side === 'enemy') { assert.equal(own, false, id); assert.equal(foe, false, id); seen.enemy++ }
     else { assert.equal(a.target.side, 'any', id); assert.equal(own, true, id + ': for either side - a unit of its own side'); assert.equal(foe, false, id + ': for either side - a unit of the other'); seen.any++ }

@@ -1051,6 +1051,12 @@
    "card": null,
    "aspect": 0.3945,
    "height": 1.5
+  },
+  "unit.wolf": {
+   "token": "wolf_256.png",
+   "card": "card-wolf.jpg",
+   "aspect": 0.8633,
+   "height": 1.0
   }
  },
  "noAfterArt": {

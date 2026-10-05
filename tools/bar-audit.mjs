@@ -45,6 +45,8 @@ const SELF = { anyOf: ['self', 'gain', 'regain', 'lose', 'stand'] }      // on i
 function targetNeeds(t) {
   if (!t || typeof t !== 'object') return t === 'self' ? [SELF] : []
   if (t.select === 'self') return [SELF]
+  /* capability.summons (engine item, 2026-10-05): a power aimed at an empty hex - no unit and no side to say, the hex and that it is empty */
+  if (t.select === 'hex') return [word('empty'), word('hex')]
   const out = [word(SIDE_WORDS[t.side] ?? t.side)]
   for (const tag of t.requireTags ?? []) out.push(word(tag))
   if (t.select === 'area') { out.push(word('every')); if (t.radius != null) out.push(num(t.radius)); if (t.excludeSelf) out.push(word('other')); if (t.origin === 'target') out.push(word('of the target')) }
@@ -70,6 +72,8 @@ function effectNeeds(e, S) {
   if (e.kind === 'heal') out.push(word('heal'))
   if (e.kind === 'stamina.gain' || e.kind === 'stamina.drain') out.push(word('stamina'))
   if (e.kind === 'power.gain') out.push(word('power'))
+  /* capability.summons (engine item, 2026-10-05): what is summoned, by the engine row's own name */
+  if (e.kind === 'summon') out.push(word('summon'), word(((S && S.units && S.units[e.unit]) || {}).name ?? e.unit))
   if (e.who === 'self') out.push(SELF)
   return out
 }
