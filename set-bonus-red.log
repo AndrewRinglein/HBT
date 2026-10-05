@@ -1,0 +1,57 @@
+✖ a set block reaches the engine's item row with the set tags its members bear; "for every … you carry" counts the carrier (1.442ms)
+✖ a set row that disagrees with its own sentence, pays no engine stat, or names no tag of the Codex fails the build (294.1445ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 0
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 744.2746
+
+✖ failing tests:
+
+test at test\trigger-ids.test.mjs:465:1
+✖ a set block reaches the engine's item row with the set tags its members bear; "for every … you carry" counts the carrier (1.442ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + undefined
+  - {
+  -   each: {
+  -     precision: 1
+  -   },
+  -   tag: 'chain',
+  -   withItself: true
+  - }
+  
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-engine/content/test/trigger-ids.test.mjs:467:9)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.start (node:internal/test_runner/test:1003:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:358:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: { tag: 'chain', each: { precision: 1 }, withItself: true },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at test\trigger-ids.test.mjs:477:1
+✖ a set row that disagrees with its own sentence, pays no engine stat, or names no tag of the Codex fails the build (294.1445ms)
+  AssertionError [ERR_ASSERTION]: Expected "actual" to be strictly unequal to: 0
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-engine/content/test/trigger-ids.test.mjs:480:9)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+      at Test.postRun (node:internal/test_runner/test:1235:19)
+      at Test.run (node:internal/test_runner/test:1163:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:358:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 0,
+    operator: 'notStrictEqual',
+    diff: 'simple'
+  }

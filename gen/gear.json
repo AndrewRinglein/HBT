@@ -338,7 +338,9 @@
    "grants": [],
    "equipCost": {},
    "persists": true,
-   "tags": [],
+   "tags": [
+    "ring"
+   ],
    "stamina": 2,
    "cooldown": 4,
    "warmup": 0,
@@ -346,7 +348,7 @@
    "targets": "self",
    "description": "Free. This is not movement and cannot be interrupted.",
    "intent": "Four hexes of nothing at all, which is the only real answer to being surrounded.",
-   "source": "Hell-TCG name reused (item, Blink Ring — 'grants Blink class power' rebuilt as the trinket's own activated teleport now that there are hexes) | 2026-08-17: CUT. ally-reactive hooks, guarding, Consequence-Stack interference and non-knockback forced movement all removed by ruling. | 2026-08-20: reworded the opening. \"Free\" here means it does not consume your primary action — it never meant costless, and on an item that also charges stamina the old wording read as though it did. | 2026-08-20: standardised to \"Free.\" A trinket that does not use your action is a power and appears in the power list, so it uses the same word powers use. The stamina cost is a field, not prose."
+   "source": "Hell-TCG name reused (item, Blink Ring — 'grants Blink class power' rebuilt as the trinket's own activated teleport now that there are hexes) | 2026-08-17: CUT. ally-reactive hooks, guarding, Consequence-Stack interference and non-knockback forced movement all removed by ruling. | 2026-08-20: reworded the opening. \"Free\" here means it does not consume your primary action — it never meant costless, and on an item that also charges stamina the old wording read as though it did. | 2026-08-20: standardised to \"Free.\" A trinket that does not use your action is a power and appears in the power list, so it uses the same word powers use. The stamina cost is a field, not prose. | 2026-10-05 engine capability.set-bonus: tagged 'ring' — a ring by its own name; the Staff of the Magi's set counts rings and no row bore the tag."
   },
   {
    "id": "item.holy-chalice",
@@ -1435,9 +1437,11 @@
    "grants": [],
    "equipCost": {},
    "persists": true,
-   "tags": [],
+   "tags": [
+    "book"
+   ],
    "intent": "Read at your own risk: Magic is a party-wide sum and a starting party has about two, so one point is a real quarter of everything the casters do.",
-   "source": "Hell-TCG name reused (common artifact, Tome of Forgotten Whispers — the wisdom stat is Kingdom-tier; rebuilt onto party-wide Magic)"
+   "source": "Hell-TCG name reused (common artifact, Tome of Forgotten Whispers — the wisdom stat is Kingdom-tier; rebuilt onto party-wide Magic) | 2026-10-05 engine capability.set-bonus: tagged 'book' — a tome is a book (GEAR-DESIGN 12c: `book` replaces `tome`); the Book of Karma's set counts books."
   },
   {
    "id": "item.quartermasters-manifest",
@@ -2769,9 +2773,11 @@
     "faith": 1
    },
    "persists": false,
-   "tags": [],
+   "tags": [
+    "ring"
+   ],
    "intent": "One Faith buys a bubble sized by how much faith is in the party, and buys it again next Battle or not at all.",
-   "source": "Hell-TCG name reused (item, Ring of Divine Protection — the flat stat block replaced by the one effect an idol should be allowed to have) | 2026-08-20: nothing counts occurrences — no \"first time\", no Nth hit, no per-Turn or per-Battle tally. \"left at 1 Health\" was a damage floor, and \"the first time each Battle\" was an occurrence count. Both cut. A Protection bubble at battle start does the same job with mechanics that exist."
+   "source": "Hell-TCG name reused (item, Ring of Divine Protection — the flat stat block replaced by the one effect an idol should be allowed to have) | 2026-08-20: nothing counts occurrences — no \"first time\", no Nth hit, no per-Turn or per-Battle tally. \"left at 1 Health\" was a damage floor, and \"the first time each Battle\" was an occurrence count. Both cut. A Protection bubble at battle start does the same job with mechanics that exist. | 2026-10-05 engine capability.set-bonus: tagged 'ring' — a ring by its own name; the Staff of the Magi's set counts rings and no row bore the tag."
   },
   {
    "id": "item.kals-mercy",

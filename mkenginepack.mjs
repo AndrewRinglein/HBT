@@ -1979,11 +1979,53 @@ function compileItems() {
       ...(it.classRestriction ? { classRestriction: it.classRestriction } : {}),
       statModifiers, grants, abilities, triggers: distinctTriggerIds(it.id, triggers),
       ...(vsTarget.length ? { vsTarget } : {}),
+      ...setFieldsOf(it, grants),   // engine capability.set-bonus (2026-10-05)
       ...(gapsHere.length ? { gaps: gapsHere } : {}),
     };
   }
   return out;
 }
+// ── SETS (engine capability.set-bonus, 2026-10-05) ───────────────────────────
+// GEAR-DESIGN.md §5 (resolved 2026-09-03): a set is a TAG and the bonus a `setBonus` block on the item that cares. Engine
+// DECISIONS.md 2026-10-04 'his 28 reward weapons read back …': "We need: … set bonus". The block reaches the engine's item
+// row as written — its stat words as the engine's stats (STAT_OF), `attackDamage` as this weapon's own damage — with the
+// set tags the row bears (`setTags`: its tags that some row's block names; the engine counts members by them). The row's own
+// sentence and its field must say the same thing: "for every … you carry / are wearing" is `withItself` (every member
+// carried, the carrier too when it bears the tag); "per other" is not. A row that disagrees with itself FAILS THE BUILD.
+function setFieldsOf(it, grants) {
+  const setTags = (it.tags || []).filter((t) => SET_TAGS.has(t));
+  const sb = it.setBonus;
+  if (!sb) return setTags.length ? { setTags } : {};
+  const bad = (why) => { throw new Error(`mkenginepack: ${it.id} setBonus ${why}`); };
+  if (typeof sb.tag !== 'string' || !(D.tags || []).some((t) => t.id === 'tag.' + sb.tag)) bad(`names the tag '${sb.tag}', which is no tag of the Codex`);
+  for (const k of Object.keys(sb)) if (!['tag', 'each', 'withItself', 'at', 'once'].includes(k)) bad(`carries '${k}'`);
+  const payload = (o, what) => {
+    if (!o || typeof o !== 'object' || !Object.keys(o).length) bad(`${what} pays nothing`);
+    const out = {};
+    for (const [word, n] of Object.entries(o)) {
+      if (!Number.isSafeInteger(n) || n === 0) bad(`${what} '${word}' is '${n}' — a whole number`);
+      if (word === 'attackDamage') { if (!grants.length) bad('pays damage on its own attacks and grants none'); out.attackDamage = n; continue; }
+      const stat = statOf(word);
+      if (!stat) bad(`${what} pays '${word}', which is no stat the engine has`);
+      out[stat] = n;
+    }
+    return out;
+  };
+  const every = / for every /i.test(it.setBonusText ?? ''), other = /\bper other\b|\beach other\b/i.test(it.setBonusText ?? '');
+  let block;
+  if (sb.each !== undefined) {
+    if (sb.at !== undefined || sb.once !== undefined) bad('is both an each block and an at-count block');
+    if (sb.withItself !== undefined && sb.withItself !== true) bad('withItself is true or absent');
+    if (every && !sb.withItself) bad(`says "${it.setBonusText}" and does not count the carrier (withItself)`);
+    if (other && sb.withItself) bad(`says "${it.setBonusText}" and counts the carrier (withItself)`);
+    block = { tag: sb.tag, each: payload(sb.each, 'each'), ...(sb.withItself ? { withItself: true } : {}) };
+  } else {
+    if (!Number.isSafeInteger(sb.at) || sb.at < 1 || sb.withItself !== undefined) bad('an at-count block needs a whole at and once{}');
+    block = { tag: sb.tag, at: sb.at, once: payload(sb.once, 'once') };
+  }
+  return { ...(setTags.length ? { setTags } : {}), setBonus: block };
+}
+const SET_TAGS = new Set((D.items || []).map((i) => i.setBonus?.tag).filter((t) => typeof t === 'string'));
 const items = compileItems();
 
 // ── CLASS POWERS, LEVELS, SPECIALTIES, ENCHANTED ROWS (2026-09-03) ───────────

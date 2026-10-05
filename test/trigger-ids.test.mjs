@@ -458,3 +458,28 @@ test('a summon names exactly one unit row of the pack, and Accuracy against a ki
  const undead=candidate(edit=>edit('gen/settled-items.json',data=>{data.attacks.find(a=>a.id==='attack.staff-of-summoning.unbinding').accuracyVs={Undead:10}}));
  assert.equal(undead.status,0,undead.stderr);assert.deepEqual(undead.pack.authoredAttacks['attack.staff-of-summoning.unbinding'].accuracyVs,{undead:10});
 });
+
+// engine capability.set-bonus (2026-10-05; engine DECISIONS.md 2026-10-04 'his 28 reward weapons read back …': "We need: … set
+// bonus"; GEAR-DESIGN.md §5: a set is a tag and the bonus a block on the item that cares): the block and the set tags reach the
+// engine's item rows as written; a row whose sentence and field disagree, or that pays a stat the engine has none for, fails.
+test('a set block reaches the engine\'s item row with the set tags its members bear; "for every … you carry" counts the carrier',()=>{
+ const I=live.pack.items;
+ assert.deepEqual(I['item.chains-of-the-wrathful'].setBonus,{tag:'chain',each:{precision:1},withItself:true});
+ assert.deepEqual(I['item.staff-of-the-magi'].setBonus,{tag:'ring',each:{magic:1},withItself:true});
+ assert.deepEqual(I['item.staff-of-the-destroyer'].setBonus,{tag:'destroyer',each:{attackDamage:1},withItself:true});
+ assert.deepEqual(I['item.book-of-karma'].setBonus,{tag:'book',each:{resist:1},withItself:true});
+ assert.deepEqual(I['item.chains-of-the-wrathful'].setTags,['chain']);assert.equal(I['item.staff-of-the-magi'].setTags,undefined);
+ for(const [id,tag] of [['item.blink-ring','ring'],['item.ring-of-divine-protection','ring'],['item.tome-of-forgotten-whispers','book'],['item.chains-of-the-damned','chain'],['item.chains-of-the-faithful','chain'],['item.ancient-tome','book']])assert.ok((I[id].setTags??[]).includes(tag),id+' bears '+tag);
+ assert.equal(I['item.longsword'].setTags,undefined);assert.equal(I['item.longsword'].setBonus,undefined);
+ // a tier-2 row the Forge makes of a member is a member too
+ const made=Object.values(live.pack.derivedItems).find(r=>r.id.startsWith('item.ancient-tome.'));assert.ok(made);assert.deepEqual(made.setTags,['book']);
+});
+test('a set row that disagrees with its own sentence, pays no engine stat, or names no tag of the Codex fails the build',()=>{
+ const row=data=>data.items.find(i=>i.id==='item.chains-of-the-wrathful');
+ const other=candidate(edit=>edit('gen/settled-items.json',data=>{delete row(data).setBonus.withItself}));
+ assert.notEqual(other.status,0);assert.match(other.stdout+other.stderr,/chains-of-the-wrathful setBonus says "\+1 Precision for every CHAIN item you carry\." and does not count the carrier/);
+ const stat=candidate(edit=>edit('gen/settled-items.json',data=>{row(data).setBonus.each={nerve:1}}));
+ assert.notEqual(stat.status,0);assert.match(stat.stdout+stat.stderr,/setBonus each pays 'nerve'/);
+ const tag=candidate(edit=>edit('gen/settled-items.json',data=>{row(data).setBonus.tag='gryphon'}));
+ assert.notEqual(tag.status,0);assert.match(tag.stdout+tag.stderr,/names the tag 'gryphon'/);
+});

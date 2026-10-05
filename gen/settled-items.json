@@ -783,7 +783,8 @@
     "tag": "ring",
     "each": {
      "magic": 1
-    }
+    },
+    "withItself": true
    },
    "setBonusText": "+1 Magic for every RING you are wearing."
   },
@@ -812,7 +813,8 @@
     "tag": "destroyer",
     "each": {
      "attackDamage": 1
-    }
+    },
+    "withItself": true
    },
    "setBonusText": "+1 damage for every DESTROYER item you carry."
   },
@@ -841,7 +843,8 @@
     "tag": "destroyer",
     "each": {
      "attackDamage": 1
-    }
+    },
+    "withItself": true
    },
    "setBonusText": "+1 damage for every DESTROYER item you carry."
   },
@@ -869,7 +872,8 @@
     "tag": "chain",
     "each": {
      "precision": 1
-    }
+    },
+    "withItself": true
    },
    "setBonusText": "+1 Precision for every CHAIN item you carry."
   },
@@ -916,7 +920,8 @@
     "tag": "book",
     "each": {
      "resist": 1
-    }
+    },
+    "withItself": true
    },
    "setBonusText": "+1 Resist for every BOOK you carry."
   },

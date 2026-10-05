@@ -283,10 +283,16 @@ for(const a of D.attacks){ const r=a.range;
     const grp=(D.tags.find(x=>x.id==='tag.'+t)||{}).group;
     if(grp!=='form') continue;                                     // only form tags must earn their keep
     const readByRule=new RegExp('\\b'+t+' attacks?\\b','i').test(body);
-    if(!readByRule && !enchTags.has(t)) add('form-tag-nothing-reads',t,'no rule says "'+t+' attacks" and no enchantment applies to it');
+    // engine capability.set-bonus (2026-10-05): a set block reads its tag — "+1 Magic for every RING you are wearing" is a
+    // rule that counts the rows bearing `ring` (GEAR-DESIGN §5: a set is a tag plus a block on the item that cares).
+    const readBySet=D.items.some(i=>i.setBonus&&i.setBonus.tag===t);
+    if(!readByRule && !enchTags.has(t) && !readBySet) add('form-tag-nothing-reads',t,'no rule says "'+t+' attacks", no enchantment applies to it and no set counts it');
     // R56 every weapon form takes at least one enchantment, or that form's weapons are the
     // only ones in the game that cannot be upgraded — an invisible penalty nobody authored.
-    if(!enchTags.has(t)) add('weapon-form-takes-no-enchantment',t,'no enchant lists this form in appliesToTags'); } }
+    // (engine capability.set-bonus, 2026-10-05: the rule is of WEAPON forms — a form no weapon and no attack bears, the
+    // rings' on a trinket and an idol, is not one. Until then every form tag in use was a weapon's.)
+    const weaponForm=D.items.some(i=>i.itemClass==='weapon'&&(i.tags||[]).includes(t))||D.attacks.some(a=>(a.tags||[]).includes(t));
+    if(weaponForm && !enchTags.has(t)) add('weapon-form-takes-no-enchantment',t,'no enchant lists this form in appliesToTags'); } }
 
 // R57-R60 the TEST BESTIARY must stay obviously, deletably test.
 //   Ruled 2026-08-20: "clearly designated as tests so they can be thrown away later,

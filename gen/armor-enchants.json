@@ -931,7 +931,8 @@
    "classRestriction": null,
    "tags": [
     "armor",
-    "heavy"
+    "heavy",
+    "chain"
    ],
    "grants": [],
    "statModifiers": {
@@ -944,7 +945,7 @@
    },
    "triggers": [],
    "intent": "Six Health and two Armor bolted onto someone who can barely walk. There is nothing clever here and that is the point.",
-   "source": "Hell-TCG name reused (Chains of the Damned — rebuilt as the cursed heavy) | 2026-08-17 quality pass: the armour said 'nothing gets past' and did nothing about it. A zone-of-control aura added, which is the system the name has always been describing. | 2026-08-17: every unit has Sidestep, so a zone of control cannot pin anything — it taxes the SECOND hex of a withdrawal, not the first. Reworded to say what it actually does. | 2026-08-20: the zone-of-control aura is cut — extra Movement cost to leave a hex and a provoked attack on the way out is a subsystem, not a trigger. The armour is its stat line, which is already a big one."
+   "source": "Hell-TCG name reused (Chains of the Damned — rebuilt as the cursed heavy) | 2026-08-17 quality pass: the armour said 'nothing gets past' and did nothing about it. A zone-of-control aura added, which is the system the name has always been describing. | 2026-08-17: every unit has Sidestep, so a zone of control cannot pin anything — it taxes the SECOND hex of a withdrawal, not the first. Reworded to say what it actually does. | 2026-08-20: the zone-of-control aura is cut — extra Movement cost to leave a hex and a provoked attack on the way out is a subsystem, not a trigger. The armour is its stat line, which is already a big one. | 2026-10-05 engine capability.set-bonus: tagged 'chain' — chains by its own name, as the Chains of the Faithful already are; the Chains of the Wrathful's set counts chain items."
   },
   {
    "id": "item.storm-bastion",
