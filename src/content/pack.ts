@@ -3,7 +3,7 @@
 // clearly differentiated text. We're not hardcoding." The pack file itself is
 // GENERATED (content/mkenginepack.mjs) and never hand-edited; this loader
 // validates it LOUDLY at import time (Law 9) and hands back plain UnitDefs.
-import { validateBurstAction } from '../core/burst-profile.js'
+import { sideStatChange, validateBurstAction } from '../core/burst-profile.js'
 import { isDamageType } from '../core/types.js'
 import { attackPacketFields } from '../core/attack-profile.js'
 import { UNIT_PACK } from './generated/pack.js'
@@ -139,6 +139,7 @@ export function packAbilities(): Readonly<Record<string, AbilityDef>> {
     if (!a.effects && !a.burst) throw new Error(`unit pack: power '${k}' carries no effects list — regenerate the pack`)
     for (const e of a.effects ?? []) if (!EFFECT_KINDS.includes(e.kind)) throw new Error(`unit pack: power '${k}' has an effect of kind '${String((e as { kind: string }).kind)}'`)
     validateHexPower(a, `unit pack: power '${k}'`)
+    for (const e of a.effects ?? []) if (e.kind === 'side.stat') sideStatChange(e, `unit pack: power '${k}'`)   // capability.raise-lower-magic
   }
   return raw
 }
@@ -508,6 +509,7 @@ export function packClassPowers(): Readonly<Record<string, AbilityDef>> {
     if (!Array.isArray(a.effects)) throw new Error(`class powers: '${k}' carries no effects list — regenerate the pack`)
     for (const e of a.effects) if (!EFFECT_KINDS.includes(e.kind)) throw new Error(`class powers: '${k}' has an effect of kind '${String((e as { kind: string }).kind)}'`)
     validateHexPower(a, `class powers: '${k}'`)
+    for (const e of a.effects) if (e.kind === 'side.stat') sideStatChange(e, `class powers: '${k}'`)   // capability.raise-lower-magic
     if (!a.target) throw new Error(`class powers: '${k}' has no targeting`)
     if (a.effects.length === 0 && !(a.gaps && a.gaps.length)) throw new Error(`class powers: '${k}' compiled nothing and names no gap — the converter must say why`)
   }

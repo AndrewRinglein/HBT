@@ -12396,6 +12396,44 @@ export const UNIT_PACK = {
       },
       "source": "item",
       "free": false
+    },
+    "power.staff-of-the-magi.vortex": {
+      "id": "power.staff-of-the-magi.vortex",
+      "name": "Vortex",
+      "staminaCost": 3,
+      "cooldown": 0,
+      "range": 5,
+      "burst": {
+        "shape": {
+          "kind": "radius",
+          "radius": 1
+        },
+        "side": "any",
+        "packets": [
+          {
+            "id": "base",
+            "damageType": "magic",
+            "amount": 0,
+            "stat": "magic",
+            "statMult": 3
+          }
+        ],
+        "sideStats": [
+          {
+            "stat": "magic",
+            "side": "own",
+            "value": -1,
+            "until": "battle"
+          },
+          {
+            "stat": "power",
+            "value": -1,
+            "until": "battle"
+          }
+        ]
+      },
+      "source": "item",
+      "free": false
     }
   },
   "prologueParty": [
@@ -18031,7 +18069,9 @@ export const UNIT_PACK = {
       "classRestriction": "class.mage",
       "statModifiers": {},
       "grants": [],
-      "abilities": [],
+      "abilities": [
+        "power.staff-of-the-magi.vortex"
+      ],
       "triggers": [],
       "setBonus": {
         "tag": "ring",
@@ -18041,8 +18081,7 @@ export const UNIT_PACK = {
         "withItself": true
       },
       "gaps": [
-        "grants power.staff-of-the-magi.power-ward — item power — shape unparsed",
-        "grants power.staff-of-the-magi.vortex — item power — shape unparsed"
+        "grants power.staff-of-the-magi.power-ward — item power — shape unparsed"
       ]
     },
     "item.staff-of-the-destroyer": {
@@ -23545,6 +23584,26 @@ export const UNIT_PACK = {
             "who": "self"
           }
         ]
+      },
+      "power.test-mage.swell": {
+        "id": "power.test-mage.swell",
+        "name": "Swell (TEST)",
+        "range": 0,
+        "target": {
+          "select": "self",
+          "side": "any"
+        },
+        "effects": [
+          {
+            "kind": "side.stat",
+            "stat": "magic",
+            "side": "own",
+            "value": 2,
+            "until": "endOfNextTurn"
+          }
+        ],
+        "staminaCost": 1,
+        "cooldown": 6
       }
     },
     "statuses": {

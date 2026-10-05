@@ -13,7 +13,7 @@ import { applyStatus, decayOnKill, incomingAbsorb, incomingPhysicalBonus, outgoi
 import { rollCritEffect } from './crit.js'
 import { effective, stat } from './stats.js'
 import { SPECIAL_FREE_ATTACKS } from './special-free-attacks.js'
-import { accelerateBleedOut, applyAttackPackets, breakStatuses, damageProp, emit, unit, recordBlock } from './mutate.js'
+import { accelerateBleedOut, applyAttackPackets, breakStatuses, damageProp, emit, powerOf, unit, recordBlock } from './mutate.js'
 import { propsTouching } from './props.js'
 import { actionReady, isAttack, spendAction, resolveActionSlot , carriesTag } from './action.js'
 import { settle } from './settle.js'
@@ -300,7 +300,7 @@ export function resolveSourceDamage(ctx: Ctx, attacker: Unit, a: DamageSource, o
   // POWER (225): the enemy side's pool, by this attack's share — capability.
   // power-pool (2026-09-03). Nearest, 0.5 up (Law 7). Zero pool, zero row.
   if (a.powerScale && rulesSideOf(ctx, attacker) === 'enemy') {   // proving.mirror-row-rules: the pool is a RULE of the enemy side
-    const share = powerShare(ctx.state.power ?? 0, a.powerScale)
+    const share = powerShare(powerOf(ctx), a.powerScale)   // capability.raise-lower-magic: the pool as it stands
     if (share) v = step(ledger, DMG.POWER, 'POWER', 'power', v, v + share)
   }
   // SOURCE_STATUS (250): what the attacker's statuses do to the number — Weak
