@@ -264,3 +264,26 @@ test('a weapon attack\'s own cooldown reaches the pack: the Knight Shield\'s Shi
  assert.equal(A['attack.longsword.slash'].cooldown,undefined);
  assert.deepEqual(live.pack.items['item.knight-shield'].triggers.map(t=>[t.id,t.hook,t.chance,t.onlyWithAttack,t.effect]),[['trigger.knight-shield.shield-slam.stun','onHit',70,'attack.knight-shield.shield-slam',{kind:'status.apply',statusId:'status.stun',value:1}]]);
 });
+
+// engine content.greatsword-war-axe-reauthored (2026-10-04; the Armory Ledger, approved for now 2026-09-28): the Great Sword's
+// power — "Counterattack and +2 Strength until the end of your next turn. 2 Stamina" — is the Counterattack sentence with one
+// more clause, a stat gained for the same lifetime; and the War Axe's two attacks carry the Ledger's Accuracy.
+test('the Great Sword\'s Counterattack: the free attack up and +2 Strength, both until the end of the next Turn; a stat the engine has no name for compiles nothing',()=>{
+ const A=live.pack.authoredAbilities['power.greatsword.counterattack'];
+ assert.deepEqual([A.staminaCost,A.target,A.effects],[2,{select:'self',side:'any'},[{kind:'statMod',stat:'counterattack',value:1,until:'endOfNextTurn',who:'self'},{kind:'statMod',stat:'strength',value:2,until:'endOfNextTurn',who:'self'}]]);
+ assert.deepEqual(live.pack.items['item.greatsword'].abilities,['power.greatsword.counterattack']);assert.deepEqual(live.pack.items['item.greatsword'].grants,['attack.greatsword.hew']);
+ assert.deepEqual(live.pack.items['item.greatsword'].statModifiers,{block:5});
+ // the Longsword's sentence is read as it was
+ assert.deepEqual(live.pack.authoredAbilities['power.longsword.counterattack'].effects.map(e=>[e.stat,e.value]),[['counterattack',1],['counterattackAccuracy',10]]);
+ const odd=candidate(edit=>edit('gen/settled-items.json',data=>{data.powers.find(p=>p.id==='power.greatsword.counterattack').description='Gain Counterattack and +2 Nerve until the end of your next Turn.'}));
+ assert.equal(odd.status,0,odd.stderr);
+ assert.equal(odd.pack.authoredAbilities['power.greatsword.counterattack'],undefined);
+});
+test('the War Axe\'s attacks at the Ledger\'s numbers: the basic attack −10 Accuracy, Heavy Chop Strength +3 at −15, and the on-block rider on each and on nothing else',()=>{
+ const A=live.pack.authoredAttacks,of=id=>[A[id].name,A[id].staminaCost,A[id].attack.accuracy,A[id].attack.damage.bonus];
+ assert.deepEqual(of('attack.war-axe.chop'),['Chop',1,-10,1]);assert.deepEqual(of('attack.war-axe.hack'),['Heavy Chop',2,-15,3]);
+ assert.deepEqual(of('attack.greatsword.hew'),['Hew',1,0,2]);assert.equal(A['attack.greatsword.great-cleave'],undefined);
+ const T=live.pack.items['item.war-axe'].triggers;
+ assert.ok(T.length>0&&T.every(t=>t.hook==='onBlock'),'no rider but the on-block ones (the Hack\'s Bleed is gone)');
+ assert.deepEqual([...new Set(T.map(t=>t.onlyWithAttack))].sort(),['attack.war-axe.chop','attack.war-axe.hack']);
+});

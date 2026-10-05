@@ -1185,10 +1185,18 @@ function compiledPowerOf(p, unitId) {
   // attacks …'): "Gain Counterattack[ with +N Accuracy] until the end of your next Turn." / "Gain Fend[ …]" — the stat
   // the engine reads as that special free attack being up, and its own Accuracy stat, as two self statMods with the
   // existing end-of-next-Turn lifetime. No new effect and no new duration.
-  if ((m = desc.match(/^Gain (Counterattack|Fend)(?: with \+(\d+) Accuracy)? until the end of your next Turn\.$/)) && tgt === 'self') {
+  // engine content.greatsword-war-axe-reauthored (2026-10-04; the Armory Ledger's Great Sword: "Counterattack and +2 Strength
+  // until the end of your next turn"): one more clause, " and +N <Stat>" — a stat gained for the same lifetime, as a third
+  // self statMod. A stat word the engine cannot modify compiles nothing (the power stays a named gap), never a guess.
+  if ((m = desc.match(/^Gain (Counterattack|Fend)(?: with \+(\d+) Accuracy)?(?: and \+(\d+) ([A-Z][A-Za-z]*(?: [A-Z][a-z]+)?))? until the end of your next Turn\.$/)) && tgt === 'self') {
     const stat = m[1] === 'Counterattack' ? 'counterattack' : 'fend';
     const effects = [{ kind: 'statMod', stat, value: 1, until: 'endOfNextTurn', who: 'self' }];
     if (m[2]) effects.push({ kind: 'statMod', stat: stat + 'Accuracy', value: +m[2], until: 'endOfNextTurn', who: 'self' });
+    if (m[3]) {
+      const also = modStatOf(m[4]);
+      if (!also) return null;
+      effects.push({ kind: 'statMod', stat: also, value: +m[3], until: 'endOfNextTurn', who: 'self' });
+    }
     return { ...base, range: 0, target: { select: 'self', side: 'any' }, effects };
   }
   return null;
@@ -1780,6 +1788,10 @@ function compileItems() {
     // trigger did not compile (or disagrees with) stays a gap, never a second grant.
     if (row.thorns !== undefined && row.thorns !== statModifiers.thorns) g(`thorns: ${JSON.stringify(row.thorns)}`, 'item field: thorns');
     for (const k of ['airwalk', 'immunity', 'natural']) if (row[k] !== undefined) g(`${k}: ${JSON.stringify(row[k]).slice(0, 40)}`, `item field: ${k}`);
+    // engine content.greatsword-war-axe-reauthored (2026-10-04): the Armory Ledger's swords read "+10 counterattack" while
+    // equipped — "'+10 counterattack' on a weapon is +10 Accuracy on your counterattacks". The row says it in its own field,
+    // and no item row carries that stat yet: named, never dropped, until engine capability.free-attack-accuracy.
+    if (row.counterattackAccuracy !== undefined) g(`counterattackAccuracy: ${JSON.stringify(row.counterattackAccuracy)}`, 'Accuracy on the holder\'s counterattack while the weapon is held — engine capability.free-attack-accuracy');
     // station.vs-target: the slayer field is data — on a HELD item (weapon, shield) its rules
     // reach the attacks it grants; on a WORN item (the bloodrunes) every damage the hero deals.
     // fix.vs-target-worn-and-flat (engine, 2026-09-25): "Bloodrune Slayer bonus happens" (Andrew,

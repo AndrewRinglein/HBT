@@ -14,14 +14,15 @@
    ],
    "grants": [
     "attack.greatsword.hew",
-    "attack.greatsword.great-cleave"
+    "power.greatsword.counterattack"
    ],
    "statModifiers": {
-    "block": 10
+    "block": 5
    },
    "triggers": [],
-   "intent": "Too much sword for one hand and too much sword for one enemy — you pick which of those problems to have.",
-   "source": "named in the design with no attacks written; authored here | 2026-09-23 V2 R1: +10 Block (swords +5 one-handed, +10 two-handed; knives and daggers +5; Block only) — V2-SHIELDS-AND-WEAPONS-2026-09-20.md, ruled 2026-09-20"
+   "intent": "Too much sword for one hand: one heavy swing, and a heavier answer for whoever swings back.",
+   "source": "named in the design with no attacks written; authored here | 2026-09-23 V2 R1: +10 Block (swords +5 one-handed, +10 two-handed; knives and daggers +5; Block only) — V2-SHIELDS-AND-WEAPONS-2026-09-20.md, ruled 2026-09-20 | 2026-10-04 (engine item content.greatsword-war-axe-reauthored; engine/DECISIONS.md 2026-09-28 ‘counterattack, special free attacks, the opening six, shields, custom weapons’ and the Armory Ledger approved that day, CONTENT-DRAFTS/2026-09-28-armory-ledger/ledger-rows.json, key greatsword): \"+5 Block · +10 counterattack\"; Basic attack \"Strength +2, 1 Stamina\"; the power Counterattack, \"Counterattack and +2 Strength until the end of your next turn. 2 Stamina\" (was Hew at 2 Stamina, Great Cleave, +10 Block). The Ledger flags the Block itself: \"Two-handed swords were +10 Block on 2026-09-20; the dictation gives +5. Shown at +5.\" — +5 it is (engine SWITCHES.md greatswordBlockFive). The Great Cleave is gone, row and all — nothing else granted it. \"+10 counterattack\" is the row's counterattackAccuracy field: Accuracy on the holder's counterattack while the sword is held, a named gap until engine capability.free-attack-accuracy. The intent line was ‘… too much sword for one enemy — you pick which of those problems to have’, which named the Great Cleave.",
+   "counterattackAccuracy": 10
   },
   {
    "id": "item.war-axe",
@@ -48,8 +49,8 @@
      "attack": "own"
     }
    ],
-   "intent": "The axe is the sword's worse-tempered cousin: it trades the sure hit for the wound that keeps working.",
-   "source": "new (axe identity: crit and Bleed where the sword takes Accuracy) | 2026-09-23 V2 R1: axes cut through shields — on block, the blocking target loses 20 Block and 20 Ranged Block for the rest of the Battle, floored at 0; fires on any block (open item 4 default) — V2-SHIELDS-AND-WEAPONS-2026-09-20.md, ruled 2026-09-20 | 2026-10-04 (engine fix.trigger-ids-and-scopes; engine SWITCHES.md itemTriggerOwnAttacks): the row's trigger says attack: own — the axe's on-block is the axe's own attacks' (V2-SHIELDS-AND-WEAPONS-2026-09-20.md: \"If an axe attacks something with a shield and block is triggered, on block that target loses 20 block because the axe cuts through shields\") — it rode a Punch made by the axe's holder. One compiled trigger per attack the row grants, each scoped to it."
+   "intent": "The axe is the sword’s worse-tempered cousin: it trades the sure hit for the heavy one, and it goes through shields.",
+   "source": "new (axe identity: crit and Bleed where the sword takes Accuracy) | 2026-09-23 V2 R1: axes cut through shields — on block, the blocking target loses 20 Block and 20 Ranged Block for the rest of the Battle, floored at 0; fires on any block (open item 4 default) — V2-SHIELDS-AND-WEAPONS-2026-09-20.md, ruled 2026-09-20 | 2026-10-04 (engine fix.trigger-ids-and-scopes; engine SWITCHES.md itemTriggerOwnAttacks): the row's trigger says attack: own — the axe's on-block is the axe's own attacks' (V2-SHIELDS-AND-WEAPONS-2026-09-20.md: \"If an axe attacks something with a shield and block is triggered, on block that target loses 20 block because the axe cuts through shields\") — it rode a Punch made by the axe's holder. One compiled trigger per attack the row grants, each scoped to it. | 2026-10-04 (engine item content.greatsword-war-axe-reauthored; engine/DECISIONS.md 2026-09-28 ‘counterattack, special free attacks, the opening six, shields, custom weapons’ and the Armory Ledger approved that day, CONTENT-DRAFTS/2026-09-28-armory-ledger/ledger-rows.json, key war-axe): Basic attack \"Strength +1, −10 Accuracy, 1 Stamina. On block: the target loses 20 Block\"; Heavy chop \"Strength +3, −15 Accuracy, 2 Stamina. On block: the target loses 20 Block\" (was Chop with no Accuracy penalty; Hack at Strength +2, −5 Accuracy, Crit 5, 2 Bleed). The on-block rider is the row’s own trigger, unchanged (the Ledger’s ‘was’ line reads it \"on block −20 Block\" as well). The intent line was ‘… trades the sure hit for the wound that keeps working’, which named the Hack’s Bleed."
   },
   {
    "id": "item.iron-mace",
@@ -1479,59 +1480,6 @@
    "range": "melee",
    "stat": "strength",
    "damage": 2,
-   "stamina": 2,
-   "accuracy": 0,
-   "crit": 0,
-   "hits": 1,
-   "targets": "one enemy in melee reach",
-   "damageType": "physical",
-   "tags": [
-    "melee"
-   ],
-   "triggers": [],
-   "slayer": null,
-   "source": "2026-08-27 review: crit +2 removed."
-  },
-  {
-   "id": "attack.greatsword.great-cleave",
-   "name": "Great Cleave",
-   "range": "melee",
-   "stat": "strength",
-   "damage": 1,
-   "stamina": 3,
-   "accuracy": -5,
-   "crit": 0,
-   "hits": 1,
-   "targets": "an adjacent hex and the two hexes adjacent to both you and it",
-   "damageType": "physical",
-   "tags": [
-    "melee"
-   ],
-   "triggers": [],
-   "slayer": null,
-   "description": "A hex-targeted burst affecting all units in the authored three-hex arc, dealing Strength + 1 physical damage. Standard V2 burst shielding and attenuation apply. It is not an attack.",
-   "source": " | 2026-08-20: \"every enemy adjacent to you\" was the wrong shape. You name a hex and it hits that hex plus left and right — three attacks, same shape as attack.halberd.cleave. | V2 migration 2026-09-16 (provisional): preserve authored shape, costs, range and magnitude; explicit all-units burst, no attack hooks or rolls. Earlier description: Three hexes in one swing: the hex you name and the one either side of it. Each is resolved as its own attack, so each rolls, and each can crit.",
-   "burst": {
-    "shape": {
-     "kind": "arc"
-    },
-    "side": "any",
-    "packets": [
-     {
-      "id": "base",
-      "damageType": "physical",
-      "amount": 1,
-      "stat": "strength"
-     }
-    ]
-   }
-  },
-  {
-   "id": "attack.war-axe.chop",
-   "name": "Chop",
-   "range": "melee",
-   "stat": "strength",
-   "damage": 1,
    "stamina": 1,
    "accuracy": 0,
    "crit": 0,
@@ -1542,30 +1490,46 @@
     "melee"
    ],
    "triggers": [],
-   "slayer": null
+   "slayer": null,
+   "source": "2026-08-27 review: crit +2 removed. | 2026-10-04 (engine item content.greatsword-war-axe-reauthored; engine/DECISIONS.md 2026-09-28 ‘counterattack, special free attacks, the opening six, shields, custom weapons’ and the Armory Ledger approved that day, CONTENT-DRAFTS/2026-09-28-armory-ledger/ledger-rows.json, key greatsword): the Great Sword’s basic attack, \"Strength +2, 1 Stamina\" — the Hew at 1 Stamina (was 2). Its id and its name are kept: it is the same attack."
   },
   {
-   "id": "attack.war-axe.hack",
-   "name": "Hack",
+   "id": "attack.war-axe.chop",
+   "name": "Chop",
    "range": "melee",
    "stat": "strength",
-   "damage": 2,
-   "stamina": 2,
-   "accuracy": -5,
-   "crit": 5,
+   "damage": 1,
+   "stamina": 1,
+   "accuracy": -10,
+   "crit": 0,
    "hits": 1,
    "targets": "one enemy in melee reach",
    "damageType": "physical",
    "tags": [
     "melee"
    ],
-   "triggers": [
-    {
-     "hook": "onHit",
-     "effect": "apply 2 Bleed"
-    }
+   "triggers": [],
+   "slayer": null,
+   "source": "2026-10-04 (engine item content.greatsword-war-axe-reauthored; engine/DECISIONS.md 2026-09-28 ‘counterattack, special free attacks, the opening six, shields, custom weapons’ and the Armory Ledger approved that day, CONTENT-DRAFTS/2026-09-28-armory-ledger/ledger-rows.json, key war-axe): the War Axe’s basic attack, \"Strength +1, −10 Accuracy, 1 Stamina\" (was Accuracy 0)."
+  },
+  {
+   "id": "attack.war-axe.hack",
+   "name": "Heavy Chop",
+   "range": "melee",
+   "stat": "strength",
+   "damage": 3,
+   "stamina": 2,
+   "accuracy": -15,
+   "crit": 0,
+   "hits": 1,
+   "targets": "one enemy in melee reach",
+   "damageType": "physical",
+   "tags": [
+    "melee"
    ],
-   "slayer": null
+   "triggers": [],
+   "slayer": null,
+   "source": "2026-10-04 (engine item content.greatsword-war-axe-reauthored; engine/DECISIONS.md 2026-09-28 ‘counterattack, special free attacks, the opening six, shields, custom weapons’ and the Armory Ledger approved that day, CONTENT-DRAFTS/2026-09-28-armory-ledger/ledger-rows.json, key war-axe): \"Heavy chop — Strength +3, −15 Accuracy, 2 Stamina. On block: the target loses 20 Block\" — the War Axe’s second attack, renamed from Hack (Strength +2, −5 Accuracy, Crit 5, onHit apply 2 Bleed); the Crit and the Bleed are not in the Ledger’s line and are gone. Its id is kept: it is the same attack renamed."
   },
   {
    "id": "attack.iron-mace.swing",
