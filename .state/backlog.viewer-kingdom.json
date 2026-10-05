@@ -107,7 +107,9 @@
   "shape": "plumbing",
   "spec": "Reported 2026-10-05 (Andrew, engine/DECISIONS.md 'playtest post, two more reports'): 'The lumberjack wife in battle 2, in the top card, just has LW and not her art, when there clearly is her art.' In the opening's battle 2 (encounter.opening.lumberjack) the top bar's card for the Lumberjack's Wife shows her initials where every other unit shows its card art, though her art exists (it shows elsewhere - find where: the draft, the victory screen, kingdom/generated/art/index.json). Find why the top bar does not find it - an id that differs between the unit row and the art index, a civilian left out of the list the battle is handed, the art present in the main folder but not linked into the page - and fix it at its home. Then check every unit the six opening battles field, hero, civilian and enemy: any other card that falls back to initials while art for it exists is fixed the same way, and any unit with no art at all is listed in the report (that is an art need, not this fault). Rebuild the pages.",
   "expect": "In the opening's battle 2 the Lumberjack's Wife's top card shows her art; a test walks every unit of the six opening battles and fails if a unit whose art is in the index shows initials; the report names the cause and lists the units that truly have no art.",
-  "note": "Filed by the home chat 2026-10-05."
+  "note": "Filed by the home chat 2026-10-05.",
+  "status": "done",
+  "sha": "8e3b499"
  },
  {
   "id": "fix.stand-up-does-nothing",
