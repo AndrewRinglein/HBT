@@ -92,16 +92,6 @@
    "needs": "trigger-effect: statMod before damage"
   },
   {
-   "unit": "hero.base.priest-pauper",
-   "what": "attack.holy-texts.verse addsStat: \"spirit\"",
-   "needs": "damage from two stats — engine capability.damage-from-two-stats"
-  },
-  {
-   "unit": "hero.base.priest-armored",
-   "what": "attack.holy-texts.verse addsStat: \"spirit\"",
-   "needs": "damage from two stats — engine capability.damage-from-two-stats"
-  },
-  {
    "unit": "hero.base.priest-robes",
    "what": "item.peddlers-vest statModifier 'itemSlots' 1",
    "needs": "stat: itemSlots (no UnitDef field)"
@@ -135,11 +125,6 @@
    "unit": "item.iron-mace",
    "what": "attack.iron-mace.crush addsTargetStatus: {\"status\":\"stun\",\"consumes\":false}",
    "needs": "damage that adds the target's own status — engine capability.damage-adds-target-status"
-  },
-  {
-   "unit": "item.war-hammer",
-   "what": "attack.war-hammer.skullsplitter addsStat: \"armor\"",
-   "needs": "damage from two stats — engine capability.damage-from-two-stats"
   },
   {
    "unit": "item.war-hammer",
@@ -192,11 +177,6 @@
    "needs": "an attack at several chosen targets — engine capability.attack-several-targets"
   },
   {
-   "unit": "item.duel-runeblades",
-   "what": "attack.duel-runeblades.rune-cross addsStat: \"magic\"",
-   "needs": "damage from two stats — engine capability.damage-from-two-stats"
-  },
-  {
    "unit": "item.crippling-whip",
    "what": "attack.crippling-whip.hamstring onHit: \"apply 2 Weak and the target gains 1 Slow\"",
    "needs": "trigger shape unparsed"
@@ -207,29 +187,14 @@
    "needs": "damage that adds the target's own status — engine capability.damage-adds-target-status"
   },
   {
-   "unit": "item.grappling-harpoon",
-   "what": "attack.grappling-harpoon.hurl addsStat: \"strength\"",
-   "needs": "damage from two stats — engine capability.damage-from-two-stats"
-  },
-  {
    "unit": "item.apprentice-wand",
    "what": "attack.apprentice-wand.surge addsTargetStatus: {\"status\":\"burn\",\"consumes\":false}",
    "needs": "damage that adds the target's own status — engine capability.damage-adds-target-status"
   },
   {
    "unit": "item.ancient-tome",
-   "what": "attack.ancient-tome.read-the-page halfStatBonus: \"magic\"",
-   "needs": "damage from two stats — engine capability.damage-from-two-stats"
-  },
-  {
-   "unit": "item.ancient-tome",
    "what": "attack.ancient-tome.long-passage targets 'one enemy within 4 hexes and every enemy adjacent to it' — lands SINGLE-TARGET",
    "needs": "area attack shape"
-  },
-  {
-   "unit": "item.holy-texts",
-   "what": "attack.holy-texts.verse addsStat: \"spirit\"",
-   "needs": "damage from two stats — engine capability.damage-from-two-stats"
   },
   {
    "unit": "item.sword-of-the-fallen",
@@ -248,11 +213,6 @@
   },
   {
    "unit": "item.hammer-of-justice",
-   "what": "attack.hammer-of-justice.sentence addsStat: \"spirit\"",
-   "needs": "damage from two stats — engine capability.damage-from-two-stats"
-  },
-  {
-   "unit": "item.hammer-of-justice",
    "what": "onHit: the target loses 1 Armor for the rest of the Battl",
    "needs": "trigger shape unparsed"
   },
@@ -260,11 +220,6 @@
    "unit": "item.holy-shield",
    "what": "attack.holy-shield.aegis-slam onHit: \"push the target 1 hex and it gains 1 Slow\"",
    "needs": "trigger shape unparsed"
-  },
-  {
-   "unit": "item.holy-shield",
-   "what": "attack.holy-shield.aegis-slam addsStat: \"armor\"",
-   "needs": "damage from two stats — engine capability.damage-from-two-stats"
   },
   {
    "unit": "item.holy-shield",
@@ -318,38 +273,13 @@
   },
   {
    "unit": "item.stormforged-blade",
-   "what": "attack.stormforged-blade.thunder-strike addsStat: \"resist\"",
-   "needs": "damage from two stats — engine capability.damage-from-two-stats"
-  },
-  {
-   "unit": "item.stormforged-blade",
    "what": "onCrit: deal 3 magic damage to every enemy adjacent to the",
    "needs": "trigger shape unparsed"
   },
   {
    "unit": "item.book-of-exorcisms",
-   "what": "attack.book-of-exorcisms.reading halfStatBonus: \"spirit\"",
-   "needs": "damage from two stats — engine capability.damage-from-two-stats"
-  },
-  {
-   "unit": "item.book-of-exorcisms",
    "what": "attack.book-of-exorcisms.rite-of-expulsion targets 'one enemy within 3 hexes and every enemy adjacent ' — lands SINGLE-TARGET",
    "needs": "area attack shape"
-  },
-  {
-   "unit": "item.book-of-exorcisms",
-   "what": "attack.book-of-exorcisms.rite-of-expulsion addsStat: \"resist\"",
-   "needs": "damage from two stats — engine capability.damage-from-two-stats"
-  },
-  {
-   "unit": "item.book-of-exorcisms",
-   "what": "attack.book-of-exorcisms.rite-of-expulsion halfStatBonus: \"spirit\"",
-   "needs": "damage from two stats — engine capability.damage-from-two-stats"
-  },
-  {
-   "unit": "item.cursed-sand-blade",
-   "what": "attack.cursed-sand-blade.the-cursed-swing addsStat: \"magic\"",
-   "needs": "damage from two stats — engine capability.damage-from-two-stats"
   },
   {
    "unit": "item.cursed-sand-blade",
@@ -428,11 +358,6 @@
   },
   {
    "unit": "item.demonic-shiv",
-   "what": "attack.demonic-shiv.the-devils-favour addsStat: \"precision\"",
-   "needs": "damage from two stats — engine capability.damage-from-two-stats"
-  },
-  {
-   "unit": "item.demonic-shiv",
    "what": "onKill: deal 5 true damage to up to two enemies within 4 h",
    "needs": "trigger shape unparsed"
   },
@@ -448,28 +373,13 @@
   },
   {
    "unit": "item.scepter-of-salvation",
-   "what": "attack.scepter-of-salvation.rebuke halfStatBonus: \"spirit\"",
-   "needs": "damage from two stats — engine capability.damage-from-two-stats"
-  },
-  {
-   "unit": "item.scepter-of-salvation",
    "what": "grants power.scepter-of-salvation.salvation",
    "needs": "item power — shape unparsed"
   },
   {
    "unit": "item.tomb-sentinels-blade",
-   "what": "attack.tomb-sentinels-blade.grave-warden addsStat: \"armor\"",
-   "needs": "damage from two stats — engine capability.damage-from-two-stats"
-  },
-  {
-   "unit": "item.tomb-sentinels-blade",
    "what": "onKill: gain +1 Armor for the rest of the Battle, stacking",
    "needs": "trigger shape unparsed"
-  },
-  {
-   "unit": "item.siege-crossbow",
-   "what": "attack.siege-crossbow.siege-shot addsStat: \"strength\"",
-   "needs": "damage from two stats — engine capability.damage-from-two-stats"
   },
   {
    "unit": "item.siege-crossbow",
@@ -667,11 +577,6 @@
    "needs": "item power — shape unparsed"
   },
   {
-   "unit": "item.force-staff",
-   "what": "attack.force-staff.force-blast halfStatBonus: \"magic\"",
-   "needs": "damage from two stats — engine capability.damage-from-two-stats"
-  },
-  {
    "unit": "item.priest-chain",
    "what": "grants power.priest-chain.benediction",
    "needs": "item power — shape unparsed"
@@ -680,11 +585,6 @@
    "unit": "item.staff-of-summoning",
    "what": "grants power.staff-of-summoning.call-the-wolf",
    "needs": "item power — shape unparsed"
-  },
-  {
-   "unit": "item.staff-of-summoning",
-   "what": "attack.staff-of-summoning.unbinding halfStatBonus: \"magic\"",
-   "needs": "damage from two stats — engine capability.damage-from-two-stats"
   },
   {
    "unit": "item.staff-of-summoning",
@@ -708,28 +608,8 @@
   },
   {
    "unit": "item.staff-of-the-destroyer",
-   "what": "attack.staff-of-the-destroyer.ruin doubleStatBonus: \"magic\"",
-   "needs": "damage from two stats — engine capability.damage-from-two-stats"
-  },
-  {
-   "unit": "item.staff-of-the-destroyer",
    "what": "attack.staff-of-the-destroyer.sundering onKill: \"the corpse is destroyed\"",
    "needs": "trigger shape unparsed"
-  },
-  {
-   "unit": "item.staff-of-the-destroyer",
-   "what": "attack.staff-of-the-destroyer.sundering doubleStatBonus: \"magic\"",
-   "needs": "damage from two stats — engine capability.damage-from-two-stats"
-  },
-  {
-   "unit": "item.staff-of-the-ultimate-destroyer",
-   "what": "attack.staff-of-the-ultimate-destroyer.annihilation doubleStatBonus: \"magic\"",
-   "needs": "damage from two stats — engine capability.damage-from-two-stats"
-  },
-  {
-   "unit": "item.staff-of-the-ultimate-destroyer",
-   "what": "attack.staff-of-the-ultimate-destroyer.annihilation doubleStat: true",
-   "needs": "damage from two stats — engine capability.damage-from-two-stats"
   },
   {
    "unit": "item.chains-of-the-wrathful",
