@@ -37,7 +37,10 @@ say('2 the top bar: '+kids.join(' '))
 // clicking a zombie shows it in the right panel while the bar and card stay the hero's
 const zombie=ctx().state.units.find(u=>u.side==='enemy'&&u.lifeState==='standing'),bar0=V().dom.actionbar.innerHTML
 V().layers.UEL.get(zombie.id).img.handlers.click({detail:1});settle()
-assert.equal(V().view.inspectId,zombie.id);assert.ok(V().dom.panel.innerHTML.includes(zombie.name),'the zombie in the right panel')
+/* Law 10, 2026-10-05 - viewer.unit-names-no-letters-or-numbers (engine DECISIONS.md 2026-10-05 'no unit is shown with a number or a
+   letter', Andrew: "it shouldn't be Soldier A or Lumberjack 1"): the panel was asked for the engine's marked name (`includes(zombie.name)`). The claim is unchanged; the name the screen shows is the
+   engine's less its mark, read through the one function the screen itself uses (viewer src/names.js shownName). */
+assert.equal(V().view.inspectId,zombie.id);assert.equal(V().dom.panel.querySelector('.pName').textContent,shownName(zombie.name),'the zombie in the right panel')
 assert.equal(V().dom.actionbar.innerHTML,bar0,'the bar stays the hero\'s');assert.equal(card(),cardOf(first),'the card stays the hero\'s')
 assert.equal(ctx().battleCursor.actor,first);assert.deepEqual(lit(),[first])
 say(`3 ${zombie.name} clicked: in the panel; the bar and card stay ${me().name}'s`)

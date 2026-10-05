@@ -5,6 +5,7 @@
 // ruled words and names them; "Keep playing" ends nothing; "End Turn" ends the Player Phase (engine end-player-phase) and
 // the Enemy Phase plays out, beat by beat, while End Turn is off; 2x doubles the playback; the log grows as it plays.
 import assert from 'node:assert/strict'
+import {shownName} from '../../viewer/src/names.js'
 import {bootSlice} from './atlas-dom.mjs'
 const {w,root,click}=bootSlice(process.argv[2]??'BATTLE-SANDBOX.html'),handle=w.__sandbox
 const select=(id,value)=>{const el=w.document.getElementById(id);el.value=value;el.handlers.change()}
@@ -40,7 +41,10 @@ const before=ctx().events.length
 press('playEndTurn')
 assert.ok(shown('playAsk'),'the pop-up shows');assert.equal($('playAskText').textContent,ASK)
 // Law 10, viewer.turn-taking: heroes[1] is acting (begun), so the pop-up names those after it — was: heroes.slice(1)
-for(const h of heroes.slice(2))assert.ok($('playAskWho').textContent.includes(h.name),'it names '+h.name)
+/* Law 10, 2026-10-05 - viewer.unit-names-no-letters-or-numbers (engine DECISIONS.md 2026-10-05 'no unit is shown with a number or a
+   letter', Andrew: "it shouldn't be Soldier A or Lumberjack 1"): the End Turn question was asked for the engine's marked names (`includes(h.name)`). The claim is unchanged; the name the screen shows is the
+   engine's less its mark, read through the one function the screen itself uses (viewer src/names.js shownName). */
+for(const h of heroes.slice(2))assert.ok($('playAskWho').textContent.includes(shownName(h.name)),'it names '+shownName(h.name))
 assert.equal(ctx().events.length,before,'nothing happens until it is answered')
 press('playAskNo');assert.ok(!shown('playAsk'));assert.equal(ctx().events.length,before,'Keep playing ends nothing')
 // 2x
