@@ -5049,3 +5049,48 @@ Andrew, in the kingdom chat, still playing:
 “None of the player units or enemy units should have numbers or letters. It's super dumb. It's okay to track them that way, but it shouldn't be Soldier A or Lumberjack 1 or Pyrowitch A. Why have an A or a 1 or an A? It's fine for the zombies just to be zombie, zombie, zombie, zombie.”
 
 Ruled: **a unit's shown name never carries a number or a letter that tells it from another of its kind** - on the board, the top cards, the panels, the log, the notices and the screens between battles. The game may still track them that way underneath. Four zombies read Zombie, Zombie, Zombie, Zombie. Filed: `viewer.unit-names-no-letters-or-numbers`.
+
+## 2026-10-05 — the battle screen must feel smooth: the speed first; the map drags and moves on W/A/S/D; the zoom stays; an ability click no longer re-centres; attack one is chosen after a move; one click or two to move is a setting
+
+Andrew, in the root chat:
+
+“The game still feels clutzy. It's awkward to try to roll the map around. It just feels fucking clutzy. I don't know what to do about it.   Can you do some research and try to come back with any answers?  It just feels awkward to click on things, double-click them, and scroll the screen around. Things are not on the screen. Doesn't feel good.”
+
+And while the chat was looking:
+
+“I want this to feel smooth like a AAA game. I want you to keep looking at this until you figure it out.”
+
+What the chat found, playing the built page (`kingdom/BATTLE-SANDBOX.html?play=…`, a 1920×1080 window, on his RTX 5070) and timing the game's own work for one frame (viewer `src/terrain3d.js` `frame()`):
+
+| Battle | One frame | Draw calls a frame | Triangles a frame |
+|---|---|---|---|
+| Orphanage | 124–138 ms | 2,408 | 7.2 million |
+| Lumberjack House | 66–76 ms | 1,944 | 8.5 million |
+| Cathedral | 46–76 ms | 491 | 11.7 million |
+| Bridge | 7–13 ms | 284 | 2.6 million |
+
+- **The speed.** 7 to 20 frames a second where 60 is smooth; the Bridge alone is smooth. About 100 ms of the Orphanage's frame is the see-through check (what hides a character is drawn translucent), which runs every 120 ms whether or not anything moved; with it skipped the frame is about 20 ms. The rest is the scene drawn three times on every frame, moving or not: the shadow map (916 calls), the scene (995), and the bodies' canvas (497, of which 461 are the scenery's depth again). Cavern Trail and the Caravan Aftermath were not measured.
+- **The view goes back to the acting unit.** Scrolled away from it on the Bridge, one notch of the wheel, or one click on any unit's card, brought the view straight back until the acting hero was 80 px inside it. On the Bridge's opening view 4 of the 7 units are off the screen; on the Orphanage's, 129 of the 280 hexes are whole in view. The board is 1448×716 of the 1920×1080 screen — half of it.
+- **Scrolling.** Pointing at an edge is the only way to move the map. Three of the four scroll bands are the board's own edges, in the middle of the screen where it meets the hero bar, the panel and the ability bar, 36 px deep. At the Orphanage's frame rate the scroll covers about 210 px a second of the 700 it is set to.
+- **The wheel** snaps back after 0.6 s, zooms about the view's centre, and each notch restarts the 1.1 s glide from rest.
+- **Clicks.** A press that travels 4 px between down and up is thrown away with nothing happening, left from when a drag moved the map. Clicking an ability re-centres on the acting unit. A move is two clicks; an attack is three.
+- XCOM 2 on PC, which the 2026-10-01 camera was modelled on from memory, also moves the map on W/A/S/D.
+
+The chat said the speed fixes, the lost clicks, the scroll bands and the restarting glide "change nothing you ruled; I will file them as viewer items unless you say otherwise", and asked four things: 1. should the map also move by dragging it and by W/A/S/D, alongside edge scroll (this overturns "no grab-drag"); 2. should the wheel zoom stay where you leave it, far enough out to see the whole board (this overturns "snaps back"); 3. should clicking an ability stop re-centring the view on your hero; 4. should a move be one click on the hex, with the path shown as you point, instead of click and click again.
+
+Answered:
+
+“Yes, 2 yes, 3 yes.   I don't think 4 is the problem.   I do think after you move, we should auto-select your basic attack or your attack one. If you have a ranged weapon, it's still your attack one, so you don't have to select your attack to then start turning on the map. Basically, you're changing A from basic attack one if you want to do anything other than that first thing.   Actually, I guess for number 4, let's have a setting where it can be either way, so I can just play with it either way.   On a bunch of different visual elements, let's cue all of this up.”
+
+Ruled:
+
+- **The map also moves by dragging it and on W/A/S/D**, alongside the edge scroll. Overturns 2026-10-01 'the XCOM-style camera' — "no grab-drag". The arrow keys still turn a quarter.
+- **The wheel's zoom stays where it is left, far enough out to see the whole board.** Overturns 2026-10-01 "snaps back to standard when you stop". At the widest zoom the whole board shows, so 2026-10-03's 'the camera never shows white space' gives way there by as much as showing the whole board takes and no more — the chat's reading of his yes to "far enough out to see the whole board"; one line to change.
+- **Clicking an ability no longer re-centres the view on the acting unit.** Overturns 2026-10-01 "Clicking an ability re-centers on the acting unit". A new Activation still centres on the unit that begins.
+- **After a unit moves, its attack one is chosen by itself** — the first attack on its bar, a ranged weapon's too — so pointing at the map aims at once; the bar is clicked only to do something other than that first attack. (Dictation: "turning on the map" is read as targeting on the map; "changing A from" as changing away from.) 2026-10-03's 'a hero starts its Activation with its basic move armed' stands.
+- **One click or two to move is a setting**, so he can play it either way; two clicks stays the default. "I don't think 4 is the problem."
+- **All of it is queued** ("cue" is "queue"), the speed fixes with it.
+
+The chat's own defaults, said to him the same day and his to change in a line: with the ability click no longer centring, a click on the acting unit's portrait, or on any unit's card in the top bar, centres the view on that unit; the eleven items go first in the viewer-and-kingdom queue, the speed items at the head, because every playtest is felt through the frame rate.
+
+Filed, first in the viewer-and-kingdom queue, in this order: `viewer.frame-cost-measured` (a tool that prints these numbers), `viewer.see-through-only-when-moved`, `viewer.scenery-shadow-drawn-once`, `viewer.scene-drawn-in-few-calls`, `viewer.view-stays-where-put`, `viewer.edge-scroll-at-screen-edges`, `viewer.map-drag-and-keys`, `viewer.zoom-stays`, `viewer.ability-click-keeps-view`, `kingdom.attack-one-armed-after-move`, `kingdom.move-click-setting`.
