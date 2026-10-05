@@ -395,3 +395,26 @@ test('the timed lines are exact: other words compile no status and stay a named 
  assert.equal(odd.pack.statuses['status.fire-gauntlet.stoke'],undefined);
  assert.ok(odd.pack.items['item.fire-gauntlet'].gaps.some(g=>g.includes('power.fire-gauntlet.stoke')));
 });
+
+// engine capability.damage-from-two-stats (2026-10-05; engine DECISIONS.md 2026-10-04 'his 28 reward weapons read back …': "We do need
+// that."; 'the Force Staff is Precision plus half Magic, as magic damage'): the four fields an attack row says a second term in
+// reach the pack as the engine's sum of terms; on a burst they stay a named gap.
+test('an attack row\'s second term reaches the pack: addsStat once, halfStatBonus over 2, doubleStatBonus twice, doubleStat the own stat twice',()=>{
+ const A=live.pack.authoredAttacks,terms=id=>[A[id].stat,A[id].statMult??1,A[id].addsStats??[]];
+ assert.deepEqual(terms('attack.force-staff.force-blast'),['precision',1,[{stat:'magic',mult:1,div:2}]]);
+ assert.deepEqual(terms('attack.staff-of-summoning.unbinding'),['precision',1,[{stat:'magic',mult:1,div:2}]]);
+ assert.deepEqual(terms('attack.staff-of-the-destroyer.ruin'),['precision',1,[{stat:'magic',mult:2}]]);
+ assert.deepEqual(terms('attack.staff-of-the-ultimate-destroyer.annihilation'),['precision',2,[{stat:'magic',mult:2}]]);
+ assert.deepEqual(terms('attack.war-hammer.skullsplitter')[2],[{stat:'armor',mult:1}]);
+ assert.deepEqual(terms('attack.longsword.slash'),['strength',1,[]]);
+ // a Forge copy keeps its original's terms
+ const copy=Object.keys(A).find(id=>id.startsWith('attack.war-hammer.skullsplitter.'));assert.ok(copy);assert.deepEqual(A[copy].addsStats,[{stat:'armor',mult:1}]);
+ assert.equal(JSON.parse(fs.readFileSync(path.join(source,'gen/settled-items.json'),'utf8')).attacks.find(a=>a.id==='attack.force-staff.force-blast').description,"Damage equals your Precision plus half the party's Magic.");
+});
+test('a second term names a stat the engine resolves, or the build fails; on a burst it is a named gap, not a number',()=>{
+ const bad=candidate(edit=>edit('gen/settled-items.json',data=>{data.attacks.find(a=>a.id==='attack.force-staff.force-blast').halfStatBonus='nerve'}));
+ assert.notEqual(bad.status,0);assert.match(bad.stdout+bad.stderr,/attack\.force-staff\.force-blast adds 'nerve' to its damage/);
+ const burst=candidate(edit=>edit('gen/settled-items.json',data=>{data.attacks.find(a=>a.id==='attack.halberd.cleave').addsStat='armor'}));
+ assert.equal(burst.status,0,burst.stderr);
+ assert.equal(burst.pack.authoredBursts['attack.halberd.cleave'].addsStats,undefined);
+});

@@ -1541,9 +1541,9 @@
    ],
    "triggers": [],
    "slayer": null,
-   "description": "Damage equals your Precision plus the party's Magic.",
+   "description": "Damage equals your Precision plus half the party's Magic.",
    "intent": "Deliberately the only tier-1 weapon with one attack; the double scaling is what it bought.",
-   "source": "settled content | RE-RULED 2026-09-02, verbatim: 'Change it to precision +1/2, magic, and stamina 1.' So: precision plus HALF the attacker's Magic, magic damage, one stamina — was precision+0 for two stamina, the worst damage-per-stamina in tier 1. Uses the same halfStatBonus field as the Ancient Tome's Read the Page (2026-08-27); the half rounds nearest, 0.5 up, per the standing rounding ruling, and the field is a named engine gap on both attacks.",
+   "source": "settled content | RE-RULED 2026-09-02, verbatim: 'Change it to precision +1/2, magic, and stamina 1.' So: precision plus HALF the attacker's Magic, magic damage, one stamina — was precision+0 for two stamina, the worst damage-per-stamina in tier 1. Uses the same halfStatBonus field as the Ancient Tome's Read the Page (2026-08-27); the half rounds nearest, 0.5 up, per the standing rounding ruling, and the field is a named engine gap on both attacks. | 2026-10-05 (engine item capability.damage-from-two-stats; engine/DECISIONS.md 2026-10-04 ‘the Force Staff is Precision plus half Magic, as magic damage’): \"pre+ 1/2 magic, as magic damage\". The row's field already said half (halfStatBonus: magic) and the card read it so; its sentence said ‘plus the party's Magic’ and says half now. The damage is its field's, which acts from this item on.",
    "halfStatBonus": "magic"
   },
   {

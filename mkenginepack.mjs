@@ -998,11 +998,20 @@ const allHeroes = [];
 // anything that is not exactly "apply <N> <KnownStatus>" is a named gap. Also
 // names the drops a settled attack row can carry: a crit field (no AttackDef
 // slot) and an area/arc targets clause (the engine attacks one target).
+// engine capability.damage-from-two-stats (2026-10-05; engine DECISIONS.md 2026-10-04 'his 28 reward weapons read back …': of
+// damage from two stats added, "We do need that."; 'the Force Staff is Precision plus half Magic, as magic damage'): the four
+// fields an attack row says a second term in reach the engine as its sum of terms — `addsStat` (that stat, once),
+// `halfStatBonus` (half of it; the engine rounds nearest, 0.5 up), `doubleStatBonus` (twice it), `doubleStat` (the attack's
+// own stat, twice). On a BURST they are still a named gap: a burst's damage is its packets', not an attack's.
+const TWO_STAT_FIELDS = ['addsStat', 'halfStatBonus', 'doubleStatBonus', 'doubleStat'];
+function twoStatTerms(a) {
+  if (burstOf(a)) return {};
+  const term = (word, mult, div) => { const stat = statOf(word); if (!stat || !RESOLVABLE_STATS.has(stat)) throw new Error(`mkenginepack: ${a.id} adds '${word}' to its damage, which is no stat the engine resolves`); return { stat, mult, ...(div ? { div } : {}) }; };
+  const terms = [...(a.addsStat ? [term(a.addsStat, 1)] : []), ...(a.halfStatBonus ? [term(a.halfStatBonus, 1, 2)] : []), ...(a.doubleStatBonus ? [term(a.doubleStatBonus, 2)] : [])];
+  if (a.doubleStat !== undefined && a.doubleStat !== true) throw new Error(`mkenginepack: ${a.id} doubleStat is true or absent`);
+  return { ...(a.doubleStat ? { statMult: 2 } : {}), ...(terms.length ? { addsStats: terms } : {}) };
+}
 const DROPPED_ATTACK_FIELDS = [
-  ['addsStat', 'damage from two stats — engine capability.damage-from-two-stats'],
-  ['halfStatBonus', 'damage from two stats — engine capability.damage-from-two-stats'],
-  ['doubleStatBonus', 'damage from two stats — engine capability.damage-from-two-stats'],
-  ['doubleStat', 'damage from two stats — engine capability.damage-from-two-stats'],
   ['addsTargetStatus', "damage that adds the target's own status — engine capability.damage-adds-target-status"],
   ['accuracyVs', 'Accuracy against one kind of enemy — engine capability.summons'],
 ];
@@ -1087,6 +1096,7 @@ function settledAttackExtras(a, unitId) {
   // … and the damage terms the one damage function does not have: a second stat, the target's own status, Accuracy
   // against one kind of enemy. Each is a filed engine capability; until it lands the row deals its first stat alone.
   for (const [field, needs] of DROPPED_ATTACK_FIELDS) if (a[field] !== undefined) gap(unitId, `${a.id} ${field}: ${JSON.stringify(a[field])}`, needs);
+  if (burstOf(a)) for (const field of TWO_STAT_FIELDS) if (a[field] !== undefined) gap(unitId, `${a.id} ${field}: ${JSON.stringify(a[field])}`, 'damage from two stats on a burst — a burst\'s damage is its packets\' (V2 bursts)');
   return out;
 }
 
@@ -1314,6 +1324,7 @@ for (const id of PARTY) {
         ...(a.accuracy ? { accuracy: a.accuracy } : {}),   // station.accuracy-field, 2026-09-03
         ...(a.hits > 1 ? { hits: a.hits } : {}),   // attack.multihit, 2026-09-03
     ...(a.cooldown ? { cooldown: a.cooldown } : {}),   // engine content.shields-reauthored (2026-10-04): the row's own cooldown — it was dropped, silently, on every weapon attack
+    ...twoStatTerms(a),   // engine capability.damage-from-two-stats (2026-10-05)
       };
       attackIds.push(a.id);
       kitTriggers.push(...settledAttackExtras(a, id));
@@ -1414,6 +1425,7 @@ const alphaTeam = [];
         ...(a.accuracy ? { accuracy: a.accuracy } : {}),   // station.accuracy-field, 2026-09-03
         ...(a.hits > 1 ? { hits: a.hits } : {}),   // attack.multihit, 2026-09-03
     ...(a.cooldown ? { cooldown: a.cooldown } : {}),   // engine content.shields-reauthored (2026-10-04): the row's own cooldown — it was dropped, silently, on every weapon attack
+    ...twoStatTerms(a),   // engine capability.damage-from-two-stats (2026-10-05)
       };
       attackIds.push(a.id);
       const extras = settledAttackExtras(a, id);
@@ -1522,6 +1534,7 @@ for (const id of CIVILIANS) {
         ...(a.accuracy ? { accuracy: a.accuracy } : {}),   // station.accuracy-field, 2026-09-03
         ...(a.hits > 1 ? { hits: a.hits } : {}),   // attack.multihit, 2026-09-03
     ...(a.cooldown ? { cooldown: a.cooldown } : {}),   // engine content.shields-reauthored (2026-10-04): the row's own cooldown — it was dropped, silently, on every weapon attack
+    ...twoStatTerms(a),   // engine capability.damage-from-two-stats (2026-10-05)
       };
       attackIds.push(a.id);
       civTriggers.push(...settledAttackExtras(a, id));
@@ -1661,6 +1674,7 @@ function takeItemAttack(a) {
     ...(a.accuracy ? { accuracy: a.accuracy } : {}),   // station.accuracy-field, 2026-09-03
     ...(a.hits > 1 ? { hits: a.hits } : {}),   // attack.multihit, 2026-09-03
     ...(a.cooldown ? { cooldown: a.cooldown } : {}),   // engine content.shields-reauthored (2026-10-04): the row's own cooldown — it was dropped, silently, on every weapon attack
+    ...twoStatTerms(a),   // engine capability.damage-from-two-stats (2026-10-05)
   };
 }
 // ── ITEM ACTIVES (capability.charges, 2026-09-03) ───────────────────────────
@@ -2338,7 +2352,7 @@ function testAbilities() {
   return out;
 }
 const UNIT_FIELDS = new Set(['typeId', 'name', 'side', 'levelTable', 'badges', 'maxHp', 'armor', 'resist', 'fireResist', 'poisonResist', 'shadowResist', 'coldResist', 'block', 'rangedBlock', 'accuracy', 'dodge', 'strength', 'precision', 'magic', 'spirit', 'crit', 'luck', 'toughness', 'surge', 'vision', 'bleedOutTurns', 'deathbedFighting', 'tier', 'auras', 'role', 'movement', 'reach', 'maxStamina', 'staminaRegen', 'ai', 'aiChanges', 'attacks', 'abilities', 'moves', 'tags', 'triggers', 'badges']);   // aiChanges: ai.mode-change (engine, 2026-09-26)
-const ATTACK_FIELDS = new Set(['id', 'name', 'slot', 'kind', 'damageType', 'bonus', 'stat', 'reach', 'staminaCost', 'crit', 'critCount', 'burst', 'cooldown', 'warmup', 'uses', 'free', 'accuracy', 'hits', 'secondaryDamage', 'armorPenetration', 'impact', 'destroy', 'tags']);   // tags: engine capability.unit-trigger-with-tag (2026-10-04) — a delta keeps its real attack's; a test row may state its own
+const ATTACK_FIELDS = new Set(['id', 'name', 'slot', 'kind', 'damageType', 'bonus', 'stat', 'reach', 'staminaCost', 'crit', 'critCount', 'burst', 'cooldown', 'warmup', 'uses', 'free', 'accuracy', 'hits', 'secondaryDamage', 'armorPenetration', 'impact', 'destroy', 'tags', 'statMult', 'addsStats']);   // tags: engine capability.unit-trigger-with-tag (2026-10-04) — a delta keeps its real attack's; a test row may state its own
 // a delta may start from any packed row — the real families AND the test
 // cohort (test-gash-zombie is the cohort's zombie plus one rider)
 const realUnits = new Map([...alphaTeam, ...prologueParty, ...authoredEnemies, ...heroes, ...enemies].map((u) => [u.typeId, u]));
