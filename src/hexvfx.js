@@ -245,23 +245,27 @@ export function playMeleeImpact(fx, unit, type = 'phys', tier = 'med') {
 }
 
 // ============================================================
-// PROJECTILES — arc through the air between two units
+// PROJECTILES — straight through the air between two units
 // ============================================================
 
-/** Shared flight driver: chest-to-chest arc with an air-height arc. */
+/** Shared flight driver: one straight line from where the shot leaves the attacker to the target's body.
+    viewer.shots-fly-straight (engine DECISIONS.md 2026-10-05 'the playtest post answered: … everything flies straight …',
+    Andrew: "Arrows fly in an overhead arc to hit an enemy. They should be a straight line from where the bow is pointed." ·
+    thrown weapons: "No, everything should go straight"): every projectile goes through here, and this lifted each over an arc
+    (never less than 50 px, more with distance — the `arcMul` each flight still names and nothing reads). It leaves from the
+    place its anchor names (`from.sy`: what the attacker's body holds — board.js releaseOf) or, with none, from the unit's
+    chest; it points the way it flies the whole way. The times are unchanged (FLIGHTS below): it is at the target when its
+    flight ends, so the hit, the reaction and the slash land as they did (viewer.attack-impact-timing). */
 function flight(fx, from, to, dur, windup, arcMul, drawCore, sortY) {
-    const sx = from.x, sy = bodyY(from);
+    const sx = from.x, sy = from.sy ?? bodyY(from);
     const ex = to.x, ey = bodyY(to);
-    const arcH = Math.max(50, Math.hypot(ex - sx, ey - sy) * arcMul);
+    const ang = Math.atan2(ey - sy, ex - sx);
     return fx.add(dur, (ctx, w, h, t, ms, P, dt) => {
         ctx.globalCompositeOperation = 'lighter';
         if (t < windup) { drawCore(ctx, sx, sy, null, t / windup, true, P, dt, ms); return; }
         const raw = (t - windup) / (1 - windup);
         const ft = easeInCubic(raw) * 0.35 + raw * 0.65;
-        const x = lerp(sx, ex, ft), y = lerp(sy, ey, ft) - Math.sin(ft * Math.PI) * arcH;
-        const nt = Math.min(ft + 0.02, 1);
-        const ny = lerp(sy, ey, nt) - Math.sin(nt * Math.PI) * arcH;
-        const ang = Math.atan2(ny - y, lerp(sx, ex, nt) - x);
+        const x = lerp(sx, ex, ft), y = lerp(sy, ey, ft);
         drawCore(ctx, x, y, ang, ft, false, P, dt, ms);
         ctx.globalCompositeOperation = 'source-over';
     }, sortY ?? to.y);

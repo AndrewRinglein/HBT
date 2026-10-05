@@ -42,7 +42,14 @@ const ENDING_KEYS = ['endTurn', 'endActivation']
    [{hex, cost}], the host's word from the engine's own movement rule (the step onto that hex at the end of the engine's walk
    to it), for hexes of the reach, each once. The board writes the number on the tiles that cost more than one and adds
    nothing up; absent or empty: no numbers. */
-const OPTIONAL_KEYS = [...ENDING_KEYS, 'swap', 'ask', 'moveDone', 'reachCost']
+/* viewer.move-cost-on-hex (engine DECISIONS.md 2026-10-05 'playtest post: …', Andrew: "if there are squares in your movement area
+   that cost 2 or can't be walked through, that number needs to be on the square."; 'seven answers: … an X on a hex that cannot
+   be walked …', asked "is an X right for a hex you can't walk through": "6, yes"): the hexes BORDERING the movement area,
+   optional too — reachBorder [{hex, cost}], the host's word from the engine for THIS unit: what the step onto that hex would
+   cost it, or null for a hex it cannot enter at all (impassable ground, a blocking prop). Hexes outside the reach, each once.
+   The board writes the number where it is more than one and an X where it is null, and adds nothing up; absent or empty:
+   no marks (a flier's area carries none). */
+const OPTIONAL_KEYS = [...ENDING_KEYS, 'swap', 'ask', 'moveDone', 'reachCost', 'reachBorder']
 const AIM_KEYS = ['from', 'to', 'target', 'hit', 'dmg', 'hpAfter', 'lethal', 'locked']
 export function playFacts(value, positions) {
   const fail = why => { throw new Error('invalid play facts: ' + why) }
@@ -116,6 +123,14 @@ export function playFacts(value, positions) {
       if (int(c.cost, at + '.cost') < 0) fail(at + '.cost is negative')
       return { hex: c.hex, cost: c.cost } })
     if (new Set(reachCost.map(c => c.hex)).size !== reachCost.length) fail('reachCost repeats a hex') }
-  return { endTurn, endActivation: v.endActivation === true, swap, ask, moveDone, reachCost, actor: intOrNull(v.actor, 'actor'), slot: v.slot, reach, zoc: hexes(v.zoc, 'zoc'),
+  let reachBorder = []
+  if (v.reachBorder != null) {
+    if (!Array.isArray(v.reachBorder)) fail('reachBorder is not an array')
+    reachBorder = v.reachBorder.map((c, i) => { const at = 'reachBorder[' + i + ']'; object(c, ['hex', 'cost'], at)
+      if (reach.includes(hex(c.hex, at + '.hex'))) fail(at + '.hex is a hex of the reach')
+      if (c.cost !== null && int(c.cost, at + '.cost') < 0) fail(at + '.cost is negative')
+      return { hex: c.hex, cost: c.cost } })
+    if (new Set(reachBorder.map(c => c.hex)).size !== reachBorder.length) fail('reachBorder repeats a hex') }
+  return { endTurn, endActivation: v.endActivation === true, swap, ask, moveDone, reachCost, reachBorder, actor: intOrNull(v.actor, 'actor'), slot: v.slot, reach, zoc: hexes(v.zoc, 'zoc'),
     path: hexes(v.path, 'path', false), provokes: hexes(v.provokes, 'provokes'), ghost, threat, targets: hexes(v.targets, 'targets'), aim, note: v.note }
 }
