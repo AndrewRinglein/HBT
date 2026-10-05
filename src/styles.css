@@ -78,14 +78,15 @@ html,body{margin:0;background:#08090b;color:var(--ink);
 .lay.dark{mix-blend-mode:normal}
 .lay.aura{pointer-events:none}
 .corpse{position:absolute;width:0;height:0;transform-style:preserve-3d;pointer-events:none}
+/* viewer.plates-banners-tooltip-gold-look (engine DECISIONS.md 2026-10-05 'gifts: the word; … the plates, banners, tooltip
+   and pop-up take the gold look' — asked whether the Deathbed and injury plates, the phase and wave banners, the hex tooltip and
+   the affliction pop-up should take the notices' look too, Andrew: "One, yes."): a banner is the notices' one
+   lettering (.hbtNotice — gold, outlined, nothing behind it), in its own place and for its own time; every kind of banner the
+   same gold (the words say which it is) */
 .banner{position:absolute;left:50%;top:18px;transform:translate(-50%,0);z-index:52;pointer-events:none;
-  padding:9px 22px;background:rgba(8,9,11,.82);border:1px solid #3a3323;border-radius:3px;text-align:center;
-  box-shadow:0 10px 28px rgba(0,0,0,.6)}
-.banner b{display:block;font-family:Spectral,serif;font-size:22px;font-weight:600;color:#e8e5dc;letter-spacing:.3px}
-.banner span{display:block;font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;color:#8b8778;margin-top:2px}
-.banner.wave b,.banner.night b{color:#e2a8ff}
-.banner.band b{color:#ff9d3c}
-.banner.fall b{color:#ff9d3c}
+  padding:9px 22px;text-align:center}
+.banner b{display:block;font-family:Spectral,serif;font-size:22px;font-weight:700;letter-spacing:.3px}
+.banner span{display:block;font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;margin-top:2px}
 /* viewer.area-fall-warning: a hex marked to be struck — hatched in the hue of what will land, pulsing; an area's centre ringed */
 .fallMark{position:absolute;pointer-events:none;clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%);
   background:repeating-linear-gradient(-45deg,color-mix(in srgb,var(--fall) 62%,transparent) 0 7px,color-mix(in srgb,var(--fall) 20%,transparent) 7px 16px);
@@ -93,25 +94,21 @@ html,body{margin:0;background:#08090b;color:var(--ink);
 .fallMark.fallCentre{background:radial-gradient(ellipse at 50% 50%,transparent 0 34%,color-mix(in srgb,var(--fall) 85%,transparent) 36% 44%,transparent 46%),
   repeating-linear-gradient(-45deg,color-mix(in srgb,var(--fall) 62%,transparent) 0 7px,color-mix(in srgb,var(--fall) 20%,transparent) 7px 16px)}
 @keyframes fallPulse{0%,100%{opacity:.5}50%{opacity:.95}}
-.banner.won b{color:var(--gold)}
-.banner.lost b{color:#ff8f8f}
-.banner.phase b{color:var(--gold)}
 /* DEATHBED FIGHTING — the modal (Angela 2026-09-03 evening) */
 .dbModal{position:absolute;inset:0;z-index:60;pointer-events:none;display:flex;align-items:center;justify-content:center}
 .dbVeil{position:absolute;inset:0;background:rgba(4,4,6,.62)}
-.dbPlate{position:relative;min-width:420px;padding:26px 44px;text-align:center;background:#14120e;border:2px solid #6b5a33;border-radius:4px;
-  box-shadow:0 18px 48px rgba(0,0,0,.8),inset 0 0 0 1px #2a251d}
+/* viewer.plates-banners-tooltip-gold-look (engine DECISIONS.md 2026-10-05 'gifts: the word; … the plates, banners, tooltip
+   and pop-up take the gold look' — asked whether the Deathbed and injury plates, the phase and wave banners, the hex tooltip and
+   the affliction pop-up should take the notices' look too, Andrew: "One, yes."): the plate's words are the notices'
+   lettering with no box behind them, over the dimmed screen that holds the game (.dbVeil — behind the whole board, as the
+   questions' is); "fights on" and "falls" are said by the words, not by a colour */
+.dbPlate{position:relative;min-width:420px;padding:26px 44px;text-align:center}
 .dbPlate span{display:block}
-.dbHead{font-size:13px;letter-spacing:.22em;text-transform:uppercase;font-weight:700;color:#cbc3ae}
-.dbSub{font-family:Spectral,serif;font-size:30px;font-weight:600;color:#e8e5dc;margin-top:6px}
-.dbBold{font-family:Spectral,serif;font-size:40px;font-weight:600;margin-top:6px;letter-spacing:.2px}
-.dbName{font-size:14px;color:#8b8778;margin-top:10px}
-.dbRoll{font-size:16px;color:#a9a394;margin-top:4px}
-.dbRoll b{color:#e8e5dc}
-.dbHead.gold,.dbBold.gold{color:var(--gold);text-shadow:0 0 18px rgba(224,185,94,.45)}
-.dbHead.red,.dbBold.red{color:#ff8f8f}
-.dbPlate.stood{border-color:var(--gold)}
-.dbPlate.fell,.dbPlate.exhausted{border-color:#7a2c2c}
+.dbHead{font-size:13px;letter-spacing:.22em;text-transform:uppercase;font-weight:700}
+.dbSub{font-family:Spectral,serif;font-size:30px;font-weight:700;margin-top:6px}
+.dbBold{font-family:Spectral,serif;font-size:40px;font-weight:700;margin-top:6px;letter-spacing:.2px}
+.dbName{font-size:14px;margin-top:10px}
+.dbRoll{font-size:16px;margin-top:4px}
 /* THE DEATHBED SKULL (Angela 2026-09-04): very small, red, in the overhead
    status row — never the health bar's bone-white projection skull (§3.1) */
 .badge.dbSkull{display:flex;align-items:center;justify-content:center;width:15px;height:19px;
@@ -561,10 +558,13 @@ html,body{margin:0;background:#08090b;color:var(--ink);
 
 /* ── the injury plate (emphasis ladder rung 3, 2026-09-02) — lands on the token,
    holds, flies to the panel. The one thing that moves between board and panel. */
-.injPlate{position:absolute;padding:6px 10px;border-radius:3px;background:#1d100e;border:1px solid #ffb0a4;
-  box-shadow:0 0 18px rgba(255,120,100,.45),0 4px 12px rgba(0,0,0,.8);color:#ffb0a4;text-align:center;
-  font:700 15px/1.2 'Barlow Semi Condensed',sans-serif;letter-spacing:.03em;white-space:nowrap;pointer-events:none}
-.injPlate b{color:#ffcf6a;margin-right:4px}
+/* viewer.plates-banners-tooltip-gold-look (engine DECISIONS.md 2026-10-05 'gifts: the word; … the plates, banners, tooltip
+   and pop-up take the gold look' — asked whether the Deathbed and injury plates, the phase and wave banners, the hex tooltip and
+   the affliction pop-up should take the notices' look too, Andrew: "One, yes."): the injury's name in the notices'
+   lettering, no plate behind it, where it lands and flies as before */
+.injPlate{position:absolute;padding:6px 10px;text-align:center;
+  font-family:'Barlow Semi Condensed',sans-serif;font-size:17px;line-height:1.2;letter-spacing:.03em;white-space:nowrap;pointer-events:none}
+.injPlate b{margin-right:4px}
 
 /* Terrain canvas shares the board's unscaled layout viewport. CSS stage
    projection is mirrored by its camera; outer page-fit scales both once. */
@@ -640,10 +640,14 @@ html,body{margin:0;background:#08090b;color:var(--ink);
 .playCostNear{position:absolute;pointer-events:none;font-size:19px;font-weight:700;line-height:1;color:#b4b1a8;text-shadow:0 1px 2px rgba(0,0,0,.85),0 0 4px rgba(0,0,0,.6);opacity:.92}
 .playBlocked{position:absolute;pointer-events:none;font-size:24px;font-weight:700;line-height:1;color:#b4b1a8;text-shadow:0 1px 2px rgba(0,0,0,.85),0 0 4px rgba(0,0,0,.6);opacity:.92}
 /* viewer.hex-tooltip: the tooltip just below the hex pointed at — the ground's name and a line for each special thing */
+/* viewer.plates-banners-tooltip-gold-look (engine DECISIONS.md 2026-10-05 'gifts: the word; … the plates, banners, tooltip
+   and pop-up take the gold look' — asked whether the Deathbed and injury plates, the phase and wave banners, the hex tooltip and
+   the affliction pop-up should take the notices' look too, Andrew: "One, yes."): the tooltip's words in the notices'
+   lettering, no box, at the hex pointed at as before; a little larger, since nothing is behind them now */
 #hexTip{position:absolute;z-index:48;transform:translateX(-50%);pointer-events:none;display:flex;flex-direction:column;align-items:center;gap:1px;
-  padding:4px 10px 5px;border:1px solid #4a4335;border-radius:3px;background:rgba(12,13,16,.9);box-shadow:0 2px 10px rgba(0,0,0,.55);white-space:nowrap;text-align:center}
-#hexTip .hexTipName{font-size:13px;font-weight:700;letter-spacing:.02em;color:#f0e6cf}
-#hexTip .hexTipLine{font-size:12px;color:#c9c2b2}
+  padding:4px 10px 5px;white-space:nowrap;text-align:center}
+#hexTip .hexTipName{font-size:15px;font-weight:700;letter-spacing:.02em}
+#hexTip .hexTipLine{font-size:13px}
 /* ── THE NOTICES (viewer.notices-gold-low-no-backdrop, 2026-10-05) ───────────────────────────────────────────────────────
    Engine DECISIONS.md 2026-10-05 'the playtest post answered: every notice gold and low …' (Andrew: "The notifications are in a
    very awkward spot. The fact that they have a backdrop makes them take up a lot more space. I was imagining this as gold and
@@ -733,29 +737,36 @@ html,body{margin:0;background:#08090b;color:var(--ink);
    the board, the bar and the panel — until Continue; the two cards side by side, the three explanations to their right
    (viewer SWITCHES afflictionLook). The modifier colours are theme.js's, set on the rows. */
 #afflPop{position:absolute;inset:0;z-index:210;display:flex;align-items:center;justify-content:center;background:rgba(4,4,6,.74)}
-#afflBox{width:1180px;max-width:94%;max-height:94%;overflow:auto;box-sizing:border-box;padding:24px 30px 22px;background:#15120d;border:1px solid var(--brass);border-radius:3px;
-  box-shadow:0 24px 60px rgba(0,0,0,.8),0 0 0 1px #000;color:var(--ink);font:500 17px/1.42 "Barlow Semi Condensed",ui-sans-serif,system-ui,sans-serif;text-align:left}
-#afflHead{font-size:13px;letter-spacing:.22em;text-transform:uppercase;font-weight:700;color:#cbc3ae}
-#afflTitle{margin:2px 0 16px;font-family:Spectral,serif;font-size:34px;line-height:1.15;font-weight:600;color:var(--gold)}
+/* viewer.plates-banners-tooltip-gold-look (engine DECISIONS.md 2026-10-05 'gifts: the word; … the plates, banners, tooltip
+   and pop-up take the gold look' — asked whether the Deathbed and injury plates, the phase and wave banners, the hex tooltip and
+   the affliction pop-up should take the notices' look too, Andrew: "One, yes."): the pop-up's words are the notices'
+   lettering with no box behind them, over the dimmed screen that holds the game (#afflPop); its two cards keep their frames
+   and its Continue button is a button still; a raised or lowered stat keeps the stat block's green or red, outlined */
+#afflBox{width:1180px;max-width:94%;max-height:94%;overflow:auto;box-sizing:border-box;padding:24px 30px 22px;
+  font-family:"Barlow Semi Condensed",ui-sans-serif,system-ui,sans-serif;font-size:18px;line-height:1.42;text-align:left}
+#afflHead{font-size:13px;letter-spacing:.22em;text-transform:uppercase;font-weight:700}
+#afflTitle{margin:2px 0 16px;font-family:Spectral,serif;font-size:34px;line-height:1.15;font-weight:700}
 #afflBody{display:flex;gap:30px;align-items:flex-start}
 #afflCards{display:flex;gap:12px;align-items:center;flex:0 0 auto}
 .afflCard{width:256px}
 .afflArt{width:256px;height:384px;box-sizing:border-box;border:1px solid #4a3a1c;border-radius:3px;background:#0b0c0e;overflow:hidden;display:flex;align-items:center;justify-content:center}
 .afflArt img{width:100%;height:100%;object-fit:cover;object-position:center top;display:block}
-.afflNoArt{display:block;padding:0 22px;text-align:center;color:var(--dim);font-size:15px;line-height:1.4}
-.afflCap{margin-top:7px;text-align:center;font-size:12px;letter-spacing:.2em;text-transform:uppercase;font-weight:700;color:#cbc3ae}
-.afflArrow{font-size:30px;line-height:1;color:var(--brass);margin-bottom:24px}
+.afflNoArt{display:block;padding:0 22px;text-align:center;font-size:15px;line-height:1.4}
+.afflCap{margin-top:7px;text-align:center;font-size:12px;letter-spacing:.2em;text-transform:uppercase;font-weight:700}
+.afflArrow{font-size:30px;line-height:1;margin-bottom:24px}
 #afflText{flex:1 1 auto;min-width:0}
 .afflSec{margin:0 0 16px}
-.afflH{margin:0 0 6px;padding-bottom:4px;border-bottom:1px solid var(--border);font-size:13px;letter-spacing:.2em;text-transform:uppercase;font-weight:700;color:var(--brass)}
-.afflRow{display:flex;flex-wrap:wrap;gap:6px 8px}
-.afflStat{padding:3px 9px;border:1px solid var(--border);border-radius:2px;background:#191713;font-weight:700;white-space:nowrap}
+.afflH{margin:0 0 6px;padding-bottom:4px;font-size:13px;letter-spacing:.2em;text-transform:uppercase;font-weight:700}
+.afflRow{display:flex;flex-wrap:wrap;gap:6px 14px}
+.afflStat{padding:3px 0;font-weight:700;white-space:nowrap}
 #afflText ul{margin:0 0 4px;padding:0 0 0 20px}
 #afflText li{margin:0 0 2px}
 #afflText p{margin:0 0 6px}
-.afflSub{margin:6px 0 3px;color:#b9b09a;font-size:15px}
-.afflNone{color:var(--dim)}
+.afflSub{margin:6px 0 3px;font-size:15px}
+.afflNone{font-weight:600}
 #afflFoot{display:flex;justify-content:flex-end;margin-top:6px}
+/* its Continue is a button, not a notice: its own lettering, no outline */
+#afflFoot .pcBtn{text-shadow:none;letter-spacing:.1em}
 
 /* ── THE HOST'S LESSONS (viewer.tutorial-overlays, 2026-10-04; engine DECISIONS.md 2026-10-04 'the opening's tutorial …') ──
    the notice: "a notification message across the center that is gold and easy to see"; it takes a click (to clear it sooner),
