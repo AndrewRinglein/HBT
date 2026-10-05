@@ -32522,3 +32522,439 @@ index 0000000..5f3e3f1
 +})
 ```
 </details>
+
+## kingdom.first-hero-card-only-what-is-modified — LANDED `8435aca` **NEEDS REVIEW**
+2026-10-05 10:20
+
+  PASS  dependencies landed
+  WARN  not already decided — 1 candidate ruling(s) — READ BEFORE ASKING: ..\GLOSSARY.md:416
+  PASS  typecheck
+  PASS  the item's own tests — test/first-hero-card-only-what-is-modified.test.ts, test/first-hero-own-positives-negatives.test.ts, test/opening-first-hero-class-line.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — kingdom/test/first-hero-card-only-what-is-modified.test.ts, kingdom/test/first-hero-own-positives-negatives.test.ts, kingdom/test/opening-first-hero-class-line.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/first-hero-own-positives-negatives.test.ts (-137), test/opening-first-hero-class-line.test.ts (-1) — will land FLAGGED for review
+  SKIPPED  control battles unchanged — engine code f48a625458 and the content pack are the ones the control battles last passed on (2026-10-05 06:05, gate content.elfbow-double-shot-one-target --land, in HBT-worker-engine) — not run
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+3fd2ba7
+
+diff --git a/test/first-hero-card-only-what-is-modified.test.ts b/test/first-hero-card-only-what-is-modified.test.ts
+new file mode 100644
+index 0000000..587ae96
+--- /dev/null
++++ b/test/first-hero-card-only-what-is-modified.test.ts
+@@ -0,0 +1,150 @@
++// kingdom.first-hero-card-only-what-is-modified — ruled 2026-10-05 (Andrew, engine/DECISIONS.md 'seven answers: the first
++// hero's card shows only what is modified; origin badges go on the heroes; …': told that the first-hero card compares each
++// hero, stat by stat, with the value most of its class's four base heroes have, and asked whether that is the comparison he
++// wants — "No, it's just the things that get modified: the extra stats and the badges.").
++//
++// Expect: "A first-hero card shows its art, 'A ranger.', and only the extra stats and badges that hero itself carries; no line
++// on any card comes from comparing the hero with other heroes of its class (the test fails if the majority standard is
++// consulted); a hero with no modification reads one plain line; the gifts line shows once for the pick; when a hero's row
++// carries an origin badge the card shows it with its meaning."
++//
++// What is modified on a hero is (1) what its draft gave it — the record the run keeps on the hero (Hero.drafted: its badges,
++// its stat changes) — and (2) the origin badges its own row carries, read from the row and never from a list in the kingdom
++// (none is on a row until content.hero-origin-badges). The majority-of-four "standard" of kingdom.first-hero-own-positives-
++// negatives is gone (kingdom SWITCHES.md firstHeroStandard, overturned). These hold whichever way the first hero's draft is
++// rolled — one roll for the pick, or one for each of the three (kingdom.first-hero-each-rolls-own-gifts): what is said once
++// for the pick is never on a card, and everything the hero's draft gave it is said exactly once.
++import { describe, it, expect } from 'vitest'
++import { execFileSync } from 'node:child_process'
++import { readFileSync, readdirSync, existsSync } from 'node:fs'
++import { makeNewCampaign, performAdvanceOpening, listDraftOffers, draftedHeroOf } from '../src/core/opening.js'
++import { makeCtx, type Ctx } from '../src/core/mutate.js'
++import { joinsWithOf } from '../src/core/draft-modifiers.js'
++import { HERO_POOL } from '../src/content/heroes.js'
++import { CLASSES } from '../src/content/classes.js'
++import { CRUCIBLE, FIRST_HERO, crucibleStatOf } from '../src/content/crucible.js'
++import { BADGE_LINES } from '../src/content/generated/progress.js'
++import { statLabelOf } from '../src/content/stat-labels.js'
++import { draftScreen } from '../src/ui/draft.js'
++import { BADGES, RULE_BADGES, UNITS } from '../src/engine.js'
++
++const SEEDS = [1, 2, 3, 5, 8, 11, 13, 15, 21, 34, 42, 55]
++const text = (html: string) => html.replace(/<[^>]*>/g, ' ').replace(/&amp;/g, '&').replace(/\s+/g, ' ').trim()
++function offersOn(html: string): { id: string; html: string }[] {
++  const starts = [...html.matchAll(/<div class="opt[^"]*" data-act="draft" data-id="([^"]+)"/g)]
++  return starts.map((m, i) => ({ id: m[1]!, html: html.slice(m.index!, i + 1 < starts.length ? starts[i + 1]!.index! : html.length) }))
++}
++/** the lines a card lists as the hero's own: which thing each is said of, its side, its words */
++const ownOn = (html: string) => [...html.matchAll(/<li class="(pos|neg)" data-own="([^"]+)"[^>]*>(.*?)<\/li>/g)].map((m) => ({ side: m[1]!, of: m[2]!, words: text(m[3]!) }))
++/** the things said once for the pick, above the cards: which thing(s) each line is said of */
++const pickLineOn = (html: string) => { const block = html.match(/<p class="firstGifts"[^>]*>([\s\S]*?)<\/p>/); return block ? [...block[1]!.matchAll(/<span data-joins="([^"]+)">([^<]*)<\/span>/g)].flatMap((m) => m[1]!.split(' ')) : [] }
++function atFirstDraft(seed: number, offer?: readonly string[]): Ctx {
++  const ctx = makeCtx(makeNewCampaign(seed)); performAdvanceOpening(ctx, 'test')
++  if (offer) ctx.campaign.cursor.draftOffer = [...offer]
++  return ctx
++}
++/** What the hero's draft gave it, each thing by the draft's own key (joinsWithOf: badge:<id>, health, point:<stat>), as the card would word it. */
++function draftedThings(ctx: Ctx, heroId: string): Record<string, { side: string; words?: string }> {
++  const out: Record<string, { side: string; words?: string }> = {}
++  for (const j of joinsWithOf(draftedHeroOf(ctx.campaign, heroId).drafted!, FIRST_HERO.healthSource)) {
++    if (j.badge) out[j.key] = { side: CRUCIBLE.flawed.some((b) => b.id === j.badge) ? 'neg' : 'pos' }
++    else out[j.key] = { side: j.amount! > 0 ? 'pos' : 'neg', words: `${j.amount! > 0 ? '+' : ''}${j.amount} ${statLabelOf(crucibleStatOf(j.stat!))}` }
++  }
++  return out
++}
++const keyOnCard = (joinKey: string) => joinKey
++
++describe('kingdom.first-hero-card-only-what-is-modified — no standard hero', () => {
++  it('the majority-of-four standard is gone: no source file holds it, names it or reads it', () => {
++    expect(existsSync('src/content/class-standard.ts'), 'src/content/class-standard.ts').toBe(false)
++    const files = (dir: string): string[] => readdirSync(dir, { withFileTypes: true }).flatMap((d) => (d.isDirectory() ? files(`${dir}/${d.name}`) : d.name.endsWith('.ts') ? [`${dir}/${d.name}`] : []))
++    // (a comment may still say what was removed; what must not be there is the thing itself: its import, or a call of it)
++    const naming = files('src').filter((f) => /from '[^']*class-standard|classStandardOf\(|ownDifferencesOf\(|classHeroesOf\(/.test(readFileSync(f, 'utf8')))
++    expect(naming, 'source files that still consult a class standard').toEqual([])
++  })
++
++  it('no line on a card comes from comparing the hero with the others of its class: heroes the old standard set apart list no such stat', () => {
++    // the Hunter read "+1 Precision, +1 Reach" and the Iron Dwarf "+2 Health" against their classes' majority — neither is a modification
++    const three = ['hero.base.ranger-aggressive', 'hero.base.warrior-iron', 'hero.base.priest-pauper']
++    for (const seed of [3, 11]) {
++      const ctx = atFirstDraft(seed, three), cards = offersOn(draftScreen(ctx.campaign))
++      expect(cards.map((c) => c.id)).toEqual(three)
++      for (const c of cards) {
++        expect(c.html, `${c.id}: nothing "against" a class`).not.toMatch(/data-against=|standard/)
++        const drafted = draftedThings(ctx, c.id)
++        for (const x of ownOn(c.html)) expect(Object.keys(drafted), `${c.id}: "${x.words}" is a thing its own draft gave it`).toContain(x.of)
++      }
++    }
++  })
++})
++
++describe('kingdom.first-hero-card-only-what-is-modified — the card', () => {
++  it('each card: its art, "A ranger.", and only what is modified on that hero — what its draft gave it and is not said once for the pick, and its row\'s own badges', () => {
++    for (const seed of SEEDS) {
++      const ctx = atFirstDraft(seed), c = ctx.campaign, html = draftScreen(c), cards = offersOn(html), pick = pickLineOn(html).map(keyOnCard)
++      expect(cards.length).toBe(3)
++      for (const card of cards) {
++        const who = `seed ${seed}: ${card.id}`, row = listDraftOffers(c).find((h) => h.id === card.id)!
++        expect(card.html, `${who}: its card art`).toMatch(/^<div class="opt[^>]*><div class="art">/)
++        const className = CLASSES.find((k) => k.id === row.classes[0])!.name.toLowerCase()
++        expect(card.html, `${who}: one line of what it is`).toContain(`<small class="whatitis" data-what="${row.classes[0]}">${/^[aeiou]/.test(className) ? 'An' : 'A'} ${className}.</small>`)
++        const drafted = draftedThings(ctx, card.id), own = ownOn(card.html)
++        // nothing on the card but what its own draft gave it (no row carries an origin badge today)
++        for (const x of own) {
++          expect(Object.keys(drafted), `${who}: "${x.words}" (${x.of}) is its own`).toContain(x.of)
++          expect(x.side, `${who}: ${x.of}`).toBe(drafted[x.of]!.side)
++          if (drafted[x.of]!.words) expect(x.words, `${who}: ${x.of}`).toBe(drafted[x.of]!.words)
++          expect(pick, `${who}: ${x.of} is on the card, so it is not said again for the pick`).not.toContain(x.of)
++        }
++        // and everything its draft gave it is said exactly once — on its card, or once for the pick
++        expect([...own.map((x) => x.of), ...pick.filter((k) => k in drafted)].sort(), `${who}: every thing its draft gave it, each once`).toEqual(Object.keys(drafted).sort())
++        // positives before negatives
++        expect(own.map((x) => x.side).join(' ')).toMatch(/^(pos ?)*(neg ?)*$/)
++        // a hero with nothing of its own says so in one plain line, and lists nothing
++        const none = card.html.match(/<p class="own same" data-own="none">([^<]*)<\/p>/)
++        if (own.length === 0) expect(none?.[1], `${who}: says nothing is modified`).toBe('No extra stats and no badges of its own.')
++        else expect(none, `${who}: lists what is modified, so does not say nothing is`).toBeNull()
++      }
++    }
++  })
++
++  it('what is said for the pick is said once, above the three cards, and is on no card', () => {
++    for (const seed of SEEDS) {
++      const html = draftScreen(atFirstDraft(seed).campaign)
++      expect(html.match(/class="firstGifts"/g)?.length, `seed ${seed}: one line for the pick`).toBe(1)
++      expect(html.indexOf('class="firstGifts"')).toBeLessThan(html.indexOf('data-act="draft"'))
++      for (const card of offersOn(html)) expect(card.html, `seed ${seed}: ${card.id}`).not.toMatch(/data-joins=|class="joins"/)
++    }
++  })
++
++  it('a badge the hero\'s own row carries is shown on its card with its meaning — a good one with the positives, a flaw with the negatives; the badge every hero carries is not', () => {
++    const GOOD = 'badge.mystic', FLAW = CRUCIBLE.flawed.find((b) => BADGES[b.id])!.id
++    const ctx = atFirstDraft(11), c = ctx.campaign, offered = listDraftOffers(c)[0]!
++    const row = HERO_POOL.find((h) => h.id === offered.id)! as unknown as { badges: string[] }
++    // every hero's engine row carries the engine's own rule badge (a hero is a hero) — that is not an origin badge
++    expect(((UNITS[offered.unitType] as unknown as { badges?: string[] }).badges ?? [])).toContain(RULE_BADGES.hero)
++    const before = ownOn(offersOn(draftScreen(c)).find((x) => x.id === offered.id)!.html)
++    expect(before.some((x) => x.of === `badge:${RULE_BADGES.hero}`), 'the rule badge is not listed').toBe(false)
++    const was = [...row.badges]
++    try {
++      row.badges.push(FLAW, GOOD)   // as content.hero-origin-badges will put them on the row
++      const card = offersOn(draftScreen(c)).find((x) => x.id === offered.id)!, own = ownOn(card.html)
++      const good = own.find((x) => x.of === `badge:${GOOD}`)!, flaw = own.find((x) => x.of === `badge:${FLAW}`)!
++      expect(good, 'the good badge is on the card').toBeTruthy(); expect(flaw, 'the flaw is on the card').toBeTruthy()
++      expect([good.side, flaw.side]).toEqual(['pos', 'neg'])
++      expect(good.words, 'its name and its one-line meaning — the content\'s words').toBe(`${BADGES[GOOD]!.name} ${BADGE_LINES[GOOD]}`)
++      expect(flaw.words.startsWith(`${BADGES[FLAW]!.name} `) && flaw.words.length > BADGES[FLAW]!.name!.length + 1, `the flaw's name and meaning: "${flaw.words}"`).toBe(true)
++      expect(own.findIndex((x) => x.of === `badge:${GOOD}`)).toBeLessThan(own.findIndex((x) => x.of === `badge:${FLAW}`))
++      expect(card.html).not.toMatch(/data-own="none"/)
++      // the other two cards are untouched by it
++      for (const other of offersOn(draftScreen(c)).filter((x) => x.id !== offered.id)) expect(ownOn(other.html).some((x) => x.of === `badge:${GOOD}` || x.of === `badge:${FLAW}`)).toBe(false)
++    } finally { row.badges.length = 0; row.badges.push(...was) }
++    expect(ownOn(offersOn(draftScreen(c)).find((x) => x.id === offered.id)!.html)).toEqual(before)
++  })
++
++  it('the page: a new run\'s first draft shows each card\'s own modifications and nothing worked out against its class', () => {
++    const out = execFileSync(process.execPath, ['tools/opening-loop-three.verify.mjs', 'BATTLE-SANDBOX.html'], { cwd: '../kingdom', encoding: 'utf8', maxBuffer: 1 << 24 })
++    expect(out).toMatch(/the first draft's three cards each said what it is in one line and listed only what is modified on that hero \([^)]*\)/)
++    expect(out).not.toMatch(/standard hero/)
++  }, 600000)
++})
+diff --git a/test/first-hero-own-positives-negatives.test.ts b/test/first-hero-own-positives-negatives.test.ts
+index 269353c..0cdc833 100644
+--- a/test/first-hero-own-positives-negatives.test.ts
++++ b/test/first-hero-own-positives-negatives.test.ts
+@@ -6,13 +6,23 @@
+ // to what you have there, but just about the positives and negatives it has, stats, and badges.").
+ //
+-// Expect: "On a new run each of the three first-hero cards shows its art, a one-line 'what it is', and only its own differences
+-// from its class's standard hero - a test builds the three cards and fails if any line on a card belongs to another hero or if
+-// a stat equal to the standard is listed; two different heroes show two different lists; the report names the cause of the
+-// six-positives fault."
++// The fault: each card listed what the FIRST HERO is given — Leadership, a positive badge, +2 Health, a stat point — the same
++// lines under each of the three, none of them told apart as that hero's own.
+ //
+-// The fault: each card listed what the FIRST HERO is given — Leadership, a positive badge, +2 Health, a stat point — which is
+-// rolled once for the pick and is the same whichever of the three is taken. So every card showed the same five or six lines,
+-// and none of them was that hero's. Those gifts are now said once, for the pick, above the three cards; under each card are
+-// its own differences from the standard hero of its class (src/content/class-standard.ts).
++// LAW 10 — REWRITTEN 2026-10-05, the same day, by kingdom.first-hero-card-only-what-is-modified (engine/DECISIONS.md 2026-10-05
++// 'seven answers: the first hero's card shows only what is modified; …' — Andrew, told that the card compares each hero, stat
++// by stat, with the value most of its class's four base heroes have, and asked whether that is the comparison he wants: "No,
++// it's just the things that get modified: the extra stats and the badges."). This file held, as this item first landed it:
++//   · "the standard hero of a class" — stat by stat, the value most of the class's base heroes have, a tie to the lower
++//     (src/content/class-standard.ts classStandardOf), and a hero's "own differences" from it (ownDifferencesOf);
++//   · each card listing exactly those differences ("+1 Precision" for the Hunter, "+2 Health" for the Iron Dwarf), three
++//     heroes that differ showing three different lists, and a hero equal to the standard saying "The same as a standard
++//     paladin in everything.";
++//   · what the first hero is given as one roll, the same for each of the three, all of it said once above the cards.
++// The first two pinned a comparison he did not mean, and are gone with the standard itself. The third is not this file's to
++// pin any more: whether a thing is said once for the pick or on a hero's own card follows how the first hero is rolled
++// (kingdom.first-hero-each-rolls-own-gifts). What a card lists now — only what is modified on that hero — is held by
++// test/first-hero-card-only-what-is-modified.test.ts. What still stands of this item, and is held here as it was: each card
++// says in one line what the hero is; the line said once for the pick is above the three cards, in the content's plain words,
++// Leadership first, and says nothing that any of the three was not given; and the later drafts are as they were.
+ import { describe, it, expect } from 'vitest'
+ import { execFileSync } from 'node:child_process'
+@@ -20,31 +30,11 @@ import { makeNewCampaign, performAdvanceOpening, performDraft, performOpeningStr
+ import { makeCtx, setCursor, type Ctx } from '../src/core/mutate.js'
+ import { joinsWithOf } from '../src/core/draft-modifiers.js'
+-import { HERO_POOL, type HeroRow } from '../src/content/heroes.js'
+ import { CLASSES } from '../src/content/classes.js'
+ import { FIRST_HERO, badgeLineOf, statLineOf } from '../src/content/crucible.js'
+-import { STAT_LABEL } from '../src/content/stat-labels.js'
+ import { ABBOTOWN_MAP } from '../src/content/conquest.js'
+-import { classStandardOf, ownDifferencesOf } from '../src/content/class-standard.js'
+ import { draftScreen } from '../src/ui/draft.js'
+-import { UNITS, encounterDef } from '../src/engine.js'
++import { encounterDef } from '../src/engine.js'
+ 
+ const SEEDS = [1, 2, 3, 5, 8, 11, 13, 15, 21, 34, 42, 55]
+-const HERO_CLASSES = CLASSES.filter((c) => c.group === 'hero').map((c) => c.id)
+-const text = (html: string) => html.replace(/<[^>]*>/g, ' ').replace(/&amp;/g, '&').replace(/\s+/g, ' ').trim()
+-const sign = (n: number) => `${n > 0 ? '+' : ''}${n}`
+-
+-// ── the standard, worked out here from the engine's rows and the pool — not through the code under test ──
+-const unit = (h: HeroRow) => UNITS[h.unitType] as unknown as Record<string, unknown>
+-const value = (h: HeroRow, stat: string): number => (stat === 'itemSlots' ? h.itemSlots : typeof unit(h)[stat] === 'number' ? (unit(h)[stat] as number) : 0)
+-const ofClass = (classId: string) => HERO_POOL.filter((h) => h.classes.includes(classId))
+-const statsOfClass = (classId: string) => [...new Set(['itemSlots', ...ofClass(classId).flatMap((h) => Object.entries(unit(h)).filter(([, v]) => typeof v === 'number').map(([k]) => k))])]
+-function standardOf(classId: string, stat: string): number {
+-  const values = ofClass(classId).map((h) => value(h, stat)), times = (v: number) => values.filter((x) => x === v).length
+-  const most = Math.max(...values.map(times))
+-  return Math.min(...values.filter((v) => times(v) === most))
+-}
+-/** A hero's own differences, as the card's words: "+1 Precision", "-1 Health" — keyed by stat. */
+-const differencesOf = (h: HeroRow): Record<string, number> =>
+-  Object.fromEntries(statsOfClass(h.classes[0]!).map((s): [string, number] => [s, value(h, s) - standardOf(h.classes[0]!, s)]).filter(([, n]) => n !== 0))
+ 
+ // ── the screen ──
+@@ -53,10 +43,7 @@ function offersOn(html: string): { id: string; html: string }[] {
+   return starts.map((m, i) => ({ id: m[1]!, html: html.slice(m.index!, i + 1 < starts.length ? starts[i + 1]!.index! : html.length) }))
+ }
+-const ownOn = (html: string) => [...html.matchAll(/<li class="(pos|neg)" data-own="([^"]+)"[^>]*>(.*?)<\/li>/g)].map((m) => ({ side: m[1]!, of: m[2]!, words: text(m[3]!) }))
+-const giftsOn = (html: string) => { const block = html.match(/<p class="firstGifts"[^>]*>(.*?)<\/p>/s); return block ? [...block[1]!.matchAll(/<span data-joins="([^"]+)">([^<]*)<\/span>/g)].map((m) => ({ of: m[1]!.split(' '), words: m[2]! })) : null }
+-function atFirstDraft(seed: number, offer?: readonly string[]): Ctx {
+-  const ctx = makeCtx(makeNewCampaign(seed)); performAdvanceOpening(ctx, 'test')
+-  if (offer) ctx.campaign.cursor.draftOffer = [...offer]
+-  return ctx
++const pickLineOn = (html: string) => { const block = html.match(/<p class="firstGifts"[^>]*>(.*?)<\/p>/s); return block ? [...block[1]!.matchAll(/<span data-joins="([^"]+)">([^<]*)<\/span>/g)].map((m) => ({ of: m[1]!.split(' '), words: m[2]! })) : null }
++function atFirstDraft(seed: number): Ctx {
++  const ctx = makeCtx(makeNewCampaign(seed)); performAdvanceOpening(ctx, 'test'); return ctx
+ }
+ function atSecondDraft(seed: number): Ctx {
+@@ -71,34 +58,6 @@ function atSecondDraft(seed: number): Ctx {
+ }
+ 
+-describe('kingdom.first-hero-own-positives-negatives — the standard hero of a class', () => {
+-  it('stat by stat, the standard is the value most of the class\'s base heroes have; a tie goes to the lower', () => {
+-    expect(HERO_CLASSES.length).toBe(6)
+-    for (const classId of HERO_CLASSES) {
+-      expect(ofClass(classId).length, `${classId} has base heroes`).toBeGreaterThan(1)
+-      const standard = classStandardOf(classId)
+-      expect(Object.keys(standard).sort(), `${classId}: every stat its heroes carry`).toEqual(statsOfClass(classId).sort())
+-      for (const stat of statsOfClass(classId)) expect(standard[stat], `${classId} ${stat} (${ofClass(classId).map((h) => value(h, stat)).join(', ')})`).toBe(standardOf(classId, stat))
+-    }
+-  })
+-
+-  it('a hero\'s own differences are its stats above and below that standard — never one equal to it — and the badges only it carries', () => {
+-    let differing = 0, same = 0
+-    for (const h of HERO_POOL) {
+-      const own = ownDifferencesOf(h)
+-      expect(own.classId).toBe(h.classes[0])
+-      expect(Object.fromEntries(own.stats.map((d) => [d.stat, d.amount])), h.id).toEqual(differencesOf(h))
+-      for (const d of own.stats) expect(d.amount, `${h.id} ${d.stat}: a stat equal to the standard is not a difference`).not.toBe(0)
+-      // a badge every hero of the class carries is the standard's too, and is not this hero's own
+-      const everyones = ofClass(h.classes[0]!).map((x) => (unit(x)['badges'] as string[] | undefined) ?? [])
+-      for (const b of own.badges) expect(everyones.every((list) => list.includes(b)), `${h.id}: ${b} is not carried by every ${h.classes[0]}`).toBe(false)
+-      if (own.stats.length || own.badges.length) differing++; else same++
+-    }
+-    expect(differing).toBeGreaterThan(0); expect(same, 'some base hero IS its class\'s standard').toBeGreaterThan(0)
+-  })
+-})
+-
+ describe('kingdom.first-hero-own-positives-negatives — the three cards of the first draft', () => {
+-  it('each card: its art, one line of what it is, then only its own differences from its class\'s standard — positives, then negatives', () => {
+-    let positives = 0, negatives = 0
++  it('each card: its art, then one line of what it is — its class in plain words', () => {
+     for (const seed of SEEDS) {
+       const ctx = atFirstDraft(seed), c = ctx.campaign, offers = offersOn(draftScreen(c))
+@@ -107,87 +66,31 @@ describe('kingdom.first-hero-own-positives-negatives — the three cards of the
+       for (const o of offers) {
+         const who = `seed ${seed}: ${o.id}`, row = listDraftOffers(c).find((h) => h.id === o.id)!
+-        // the card art's place, first on the card
+         expect(o.html, `${who}: its card art`).toMatch(/^<div class="opt[^>]*><div class="art">/)
+-        // one line of what it is: its class in plain words
+         const what = [...o.html.matchAll(/<small class="whatitis" data-what="([^"]+)">([^<]*)<\/small>/g)]
+         expect(what.length, `${who}: one line of what it is`).toBe(1)
+         const className = CLASSES.find((k) => k.id === row.classes[0])!.name.toLowerCase()
+         expect([what[0]![1], what[0]![2]], who).toEqual([row.classes[0], `${/^[aeiou]/.test(className) ? 'An' : 'A'} ${className}.`])
+-        // its own differences, and nothing else
+-        const want = differencesOf(row), own = ownOn(o.html)
+-        expect(own.filter((x) => x.of.startsWith('stat:')).map((x) => x.of.slice(5)).sort(), `${who}: exactly its own stats that differ from a standard ${className}`).toEqual(Object.keys(want).sort())
+-        for (const x of own.filter((y) => y.of.startsWith('stat:'))) {
+-          const stat = x.of.slice(5), amount = want[stat]!
+-          expect(amount, `${who}: ${stat} equals the standard and must not be listed`).not.toBe(0)
+-          expect(x.words, `${who}: ${stat}`).toBe(`${sign(amount)} ${STAT_LABEL[stat] ?? stat}`)
+-          expect(x.side, `${who}: ${x.words} is a ${amount > 0 ? 'positive' : 'negative'}`).toBe(amount > 0 ? 'pos' : 'neg')
+-          if (amount > 0) positives++; else negatives++
+-        }
+-        expect(own.filter((x) => x.of.startsWith('badge:')).map((x) => x.of.slice(6)).sort(), `${who}: exactly its own badges`).toEqual([...ownDifferencesOf(row).badges].sort())
+-        // positives stand before negatives
+-        expect(own.map((x) => x.side).join(' '), `${who}: positives, then negatives`).toMatch(/^(pos ?)*(neg ?)*$/)
+-        // a hero equal to the standard in everything says so, in a line — and lists nothing
+-        const sameLine = o.html.match(/<p class="own same" data-own="same">([^<]*)<\/p>/)
+-        if (own.length === 0) expect(sameLine?.[1], `${who}: says it is the standard`).toBe(`The same as a standard ${className} in everything.`)
+-        else expect(sameLine, `${who}: differs, so does not say it is the standard`).toBeNull()
+-        // no line of what the FIRST HERO is given is under a card: those are nobody's own
+-        expect(o.html, `${who}: the first hero's gifts are not listed under a card`).not.toMatch(/data-joins=|class="joins"/)
+-        for (const j of joinsWithOf(draftedHeroOf(c, o.id).drafted!, FIRST_HERO.healthSource)) {
+-          const words = j.badge ? badgeLineOf(j.badge) : statLineOf(j.stat!)
+-          expect(text(o.html).includes(words), `${who}: "${words}" is the pick's, not this card's`).toBe(false)
+-        }
+       }
+     }
+-    expect(positives, 'the seeds show positives').toBeGreaterThan(0); expect(negatives, 'and negatives').toBeGreaterThan(0)
+   })
+ 
+-  it('no line on a card belongs to another hero: three heroes that differ show three different lists', () => {
+-    // three heroes of three classes, each with differences of its own, put on the offer
+-    const pick = (classId: string, of: (d: Record<string, number>) => boolean) => HERO_POOL.find((h) => h.classes[0] === classId && of(differencesOf(h)))!
+-    const some = (d: Record<string, number>) => Object.keys(d).length > 0
+-    const three = [pick('class.ranger', some), pick('class.warrior', some), pick('class.priest', (d) => Object.values(d).some((n) => n < 0))]
+-    expect(three.every(Boolean)).toBe(true)
+-    const ctx = atFirstDraft(11, three.map((h) => h.id)), offers = offersOn(draftScreen(ctx.campaign))
+-    const lists = offers.map((o) => ownOn(o.html).map((x) => `${x.of}=${x.words}`).join('; '))
+-    expect(new Set(lists).size, `three different lists: ${lists.join(' | ')}`).toBe(3)
+-    for (const [i, o] of offers.entries()) {
+-      const mine = differencesOf(three[i]!)
+-      for (const x of ownOn(o.html)) expect(x.words, `${o.id}: "${x.words}" is its own`).toBe(`${sign(mine[x.of.slice(5)]!)} ${STAT_LABEL[x.of.slice(5)] ?? x.of.slice(5)}`)
+-    }
+-    // and across the seeds: whenever two offered heroes differ from their standards differently, their cards differ
++  it('what is said once for the pick is above the three cards, in the content\'s plain words, Leadership first — and says nothing any of the three was not given', () => {
+     for (const seed of SEEDS) {
+-      const c = atFirstDraft(seed).campaign, cards = offersOn(draftScreen(c))
+-      for (const a of cards) for (const b of cards) {
+-        if (a.id >= b.id) continue
+-        const A = listDraftOffers(c).find((h) => h.id === a.id)!, B = listDraftOffers(c).find((h) => h.id === b.id)!
+-        const differ = JSON.stringify(Object.entries(differencesOf(A)).sort()) !== JSON.stringify(Object.entries(differencesOf(B)).sort())
+-        expect(JSON.stringify(ownOn(a.html)) !== JSON.stringify(ownOn(b.html)), `seed ${seed}: ${a.id} and ${b.id}`).toBe(differ)
+-      }
+-    }
+-  })
+-
+-  it('a hero that is its class\'s standard in everything says so in one line', () => {
+-    const standard = HERO_POOL.find((h) => Object.keys(differencesOf(h)).length === 0 && ownDifferencesOf(h).badges.length === 0)!
+-    expect(standard, 'a base hero that is the standard').toBeTruthy()
+-    const others = HERO_POOL.filter((h) => h.classes[0] !== standard.classes[0]).slice(0, 2)
+-    const o = offersOn(draftScreen(atFirstDraft(5, [standard.id, ...others.map((h) => h.id)]).campaign)).find((x) => x.id === standard.id)!
+-    const className = CLASSES.find((k) => k.id === standard.classes[0])!.name.toLowerCase()
+-    expect(text(o.html)).toContain(`The same as a standard ${className} in everything.`)
+-    expect(ownOn(o.html)).toEqual([])
+-  })
+-
+-  it('what the first hero is given — whichever of the three it is — is said once, for the pick, above the three cards', () => {
+-    for (const seed of SEEDS) {
+-      const c = atFirstDraft(seed).campaign, html = draftScreen(c), gifts = giftsOn(html)
+-      expect(gifts, `seed ${seed}: one line for the pick`).not.toBeNull()
++      const c = atFirstDraft(seed).campaign, html = draftScreen(c), pick = pickLineOn(html)
++      expect(pick, `seed ${seed}: one line for the pick`).not.toBeNull()
+       expect(html.match(/class="firstGifts"/g)!.length).toBe(1)
+       expect(html.indexOf('class="firstGifts"'), 'above the three cards').toBeLessThan(html.indexOf('data-act="draft"'))
+-      // the same things for all three, each said once, in the content's plain words — Leadership first
+       const per = listDraftOffers(c).map((h) => joinsWithOf(draftedHeroOf(c, h.id).drafted!, FIRST_HERO.healthSource))
+-      for (const other of per) expect(other.map((j) => j.key), `seed ${seed}: the gifts are the pick's — the same for each of the three`).toEqual(per[0]!.map((j) => j.key))
+-      expect(gifts!.flatMap((g) => g.of).sort()).toEqual(per[0]!.map((j) => j.key).sort())
+-      for (const j of per[0]!) expect(gifts!.filter((g) => g.of.includes(j.key)).map((g) => g.words), `seed ${seed}: ${j.key}`).toEqual([j.badge ? badgeLineOf(j.badge) : statLineOf(j.stat!)])
+-      expect(new Set(gifts!.map((g) => g.words)).size, 'no line twice').toBe(gifts!.length)
+-      expect(gifts![0]!.words).toBe('Born leader')
++      for (const line of pick!) for (const key of line.of) {
++        for (const given of per) {
++          const j = given.find((x) => x.key === key)
++          expect(j, `seed ${seed}: ${key} is said for the pick, so each of the three was given it`).toBeTruthy()
++          expect(line.words, `seed ${seed}: ${key} in the content's plain words`).toBe(j!.badge ? badgeLineOf(j!.badge) : statLineOf(j!.stat!))
++        }
++      }
++      expect(new Set(pick!.map((g) => g.words)).size, 'no line twice').toBe(pick!.length)
++      expect(pick![0]!.words).toBe('Born leader')
++      // no card repeats a thing said for the pick
++      for (const o of offersOn(html)) expect(o.html, `seed ${seed}: ${o.id}`).not.toMatch(/data-joins=|class="joins"/)
+     }
+   })
+@@ -198,5 +101,5 @@ describe('kingdom.first-hero-own-positives-negatives — the three cards of the
+       expect(offers.length).toBe(3)
+       expect(html).not.toMatch(/class="firstGifts"|class="whatitis"|data-own=/)
+-      for (const o of offers) expect(o.html).toMatch(/data-stats="[^"]+" *>|data-stats="/)
++      for (const o of offers) expect(o.html).toMatch(/data-stats="/)
+       // the later drafts never shared the fault: each offer shows its own rolled modifiers
+       const rolled = offers.map((o) => { const d = draftedHeroOf(c, o.id).drafted!; return JSON.stringify([d.badges, d.rolls]) })
+@@ -206,7 +109,8 @@ describe('kingdom.first-hero-own-positives-negatives — the three cards of the
+   })
+ 
+-  it('the page: a new run\'s first draft shows each card\'s own differences and the pick\'s gifts once', () => {
++  it('the page: a new run\'s first draft shows each card\'s one line of what it is, and the pick\'s line once above the three', () => {
+     const out = execFileSync(process.execPath, ['tools/opening-loop-three.verify.mjs', 'BATTLE-SANDBOX.html'], { cwd: '../kingdom', encoding: 'utf8', maxBuffer: 1 << 24 })
+-    expect(out).toMatch(/the first draft's three cards each said what it is in one line and listed only its own differences from its class's standard hero \([^)]*\); what the first hero is given was said once, above the three \([^)]*\)/)
++    expect(out).toMatch(/the first draft's three cards each said what it is in one line/)
++    expect(out).toMatch(/said once, above the three \([^)]*\)/)
+   }, 600000)
+ })
+diff --git a/test/opening-first-hero-class-line.test.ts b/test/opening-first-hero-class-line.test.ts
+index 00d3be4..368e3e6 100644
+--- a/test/opening-first-hero-class-line.test.ts
++++ b/test/opening-first-hero-class-line.test.ts
+@@ -235,5 +235,7 @@ describe('kingdom.opening-first-hero-class-line — the first draft says what th
+     const out = execFileSync(process.execPath, ['tools/opening-loop-three.verify.mjs', 'BATTLE-SANDBOX.html'], { cwd: '../kingdom', encoding: 'utf8', maxBuffer: 1 << 24 })
+     expect(out).toMatch(/every draft card showed the class line of its own class \(9 cards\); /)
+-    expect(out).toMatch(/what the first hero is given was said once, above the three \(\d+ plain lines — one per badge, the Health as "Tougher than most", each rolled point — no stat table\)/)
++    // (Law 10, 2026-10-05, kingdom.first-hero-card-only-what-is-modified: the sentence named "what the first hero is given" — all of it;
++    // what is said for the pick is what every one of the three is given, however the first hero is rolled)
++    expect(out).toMatch(/what every one of the three is given was said once, above the three \(\d+ plain lines, "Born leader" first — no stat table\)/)
+   }, 600000)
+ })
+```
+</details>
