@@ -270,8 +270,10 @@ export function createPlayInput(session:()=>Sandbox|null,run:(command:BattleComm
      are DONE for this Activation — read from the engine's own state, never guessed: its unit has moved (the engine's
      `moveUsed`: its movement action is spent) and the engine lists no further use of that action (no destination among the
      choices validateBattleCommand takes, in either slot). So the basic move greys once its movement is walked out; a move the
-     engine still offers — the rest of a walk cut short, a Leap or a Side Roll taken as the primary action — stays at full
-     strength; and before the unit has moved nothing is done, whatever the engine refuses (kingdom SWITCHES moveDoneFact). */
+     engine still offers — the rest of a walk cut short — stays at full strength; and before the unit has moved nothing is done,
+     whatever the engine refuses (kingdom SWITCHES moveDoneFact). Since engine rule.walked-unit-has-moved (ruled 2026-10-04) the
+     engine takes no OTHER movement from a unit that has walked, so a Leap or a Side Roll is named here as soon as the hero has
+     walked a hex — by the same reading, with no rule of this file's own (kingdom SWITCHES moveDoneAfterAWalk). */
  const moveDoneOf=(s:Sandbox,actor:number):string[]=>{
   const u=s.ctx.state.units[actor]!
   if(!u.moveUsed)return []

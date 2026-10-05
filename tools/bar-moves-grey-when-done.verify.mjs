@@ -43,8 +43,16 @@ walkTo(near)
 assert.equal(acting(),a,'still its Activation');assert.equal(A.moveUsed,true,'the engine: its movement action is spent');assert.ok(A.movePointsLeft>0&&A.movePointsLeft<budget,'and it has movement left')
 const restA=V().play.slot===basicA?V().play.reach.length:offered(basicA)
 assert.ok(restA>0,'the engine still offers the rest of the basic move')
-assert.deepEqual(V().play.moveDone,[],'so the host names no move as done');assert.deepEqual(greyed(),[],'and the bar greys nothing')
-say(`2 after a walk of one hex: the engine's unit has moveUsed=true, ${A.movePointsLeft} of ${budget} movement left, and still takes ${ctx().actions[basicA].name} to ${restA} hexes (as its primary action) — not greyed`)
+/* Law 10, 2026-10-04 — rule.walked-unit-has-moved (engine item; engine DECISIONS.md 2026-10-04 'after the backlog run: ... moves are refused once a unit has walked ...': asked "Once a unit has walked, should Leap and Side Roll grey out and be refused? Today the engine still accepts them." - "2 yes"): this step held what the engine did
+   before the ruling - "so the host names no move as done … and the bar greys nothing", because a Leap or a Side Roll was still taken after a
+   walk. The engine now takes no OTHER movement from a unit that has walked, so after one hex the hero's other movement powers are done and
+   greyed, and its basic move - the rest of the walk - is not.
+   was: assert.deepEqual(V().play.moveDone,[],'so the host names no move as done');assert.deepEqual(greyed(),[],'and the bar greys nothing') */
+assert.equal(A.walked,true,'the engine: it has walked')
+assert.ok(!V().play.moveDone.includes(basicA)&&!greyed().includes(basicA),'the basic move is not done: the rest of the walk is still offered')
+assert.deepEqual([...V().play.moveDone].sort(),[...othersA].sort(),'the host names every other movement of the hero as done');assert.deepEqual(greyed().slice().sort(),[...othersA].sort(),'and the bar greys exactly those')
+for(const id of othersA)assert.equal(offered(id),0,`${ctx().actions[id].name} is greyed and the engine takes no use of it`)
+say(`2 after a walk of one hex: the engine's unit has moveUsed=true and walked=true, ${A.movePointsLeft} of ${budget} movement left, and still takes ${ctx().actions[basicA].name} to ${restA} hexes (as its primary action) — not greyed; ${othersA.map(id=>ctx().actions[id].name).join(', ')} greyed: the engine takes no other movement after a walk`)
 V().dom.root.querySelector('#playEndAct').handlers.click({});settle()
 // 3. the next hero walks as far as it can: its basic move is done
 const b=acting(),B=unit(b);assert.notEqual(b,a)
@@ -56,8 +64,14 @@ assert.equal(acting(),b,'still its Activation');assert.equal(B.hex,far)
 assert.deepEqual([B.moveUsed,B.movePointsLeft],[true,0],`the engine: ${B.name} walked ${steps} hexes and its movement is spent`)
 assert.ok(V().play.moveDone.includes(basicB),'the host names the basic move as done')
 assert.ok(greyed().includes(basicB),'and its button is slightly greyed')
+/* Law 10, 2026-10-04 — rule.walked-unit-has-moved (the note at step 2): "a movement power the engine still takes stays at full strength" held
+   Leap and Side Roll un-greyed after the whole walk. The engine takes none now: every move action of the hero is done.
+   was: const still=othersB.filter(id=>!V().play.moveDone.includes(id))
+        for(const id of still){assert.ok(!greyed().includes(id));assert.ok(offered(id)>0,`… is not greyed because the engine still takes it`)} */
+assert.ok(othersB.length>0,`${B.name} has another movement power`)
+assert.deepEqual([...V().play.moveDone].sort(),[...movesOf(b)].sort(),'the host names every move action as done: the basic move walked out, the others closed by the walk')
 const still=othersB.filter(id=>!V().play.moveDone.includes(id))
-for(const id of still){assert.ok(!greyed().includes(id));assert.ok(offered(id)>0,`${ctx().actions[id].name} is not greyed because the engine still takes it`)}
+assert.deepEqual(still,[],'no other movement power is still taken')
 for(const id of V().play.moveDone)assert.equal(offered(id),0,`${ctx().actions[id].name} is greyed and the engine takes no use of it`)
 assert.deepEqual(greyed().slice().sort(),[...V().play.moveDone].sort(),'the greyed buttons are exactly the moves the host names')
 // nothing else greys: every attack and power is at full strength, and nothing looks disabled
@@ -68,5 +82,5 @@ say(`3 after ${B.name} walks its whole movement (${steps} hexes): ${greyed().map
 V().dom.root.querySelector('#playEndAct').handlers.click({});settle()
 assert.notEqual(acting(),b);assert.deepEqual(greyed(),[]);assert.deepEqual(V().play.moveDone,[])
 say(`4 ${unit(acting()).name} begins: nothing greyed`)
-console.log('  FOUND for Andrew: (a) a paid attack or power made first ends the Activation at once (engine rule.primary-ends-activation), so the move is lost with it and there is no bar left to grey; (b) after a walk cut short the engine still offers the rest of the basic move — as the primary action — so it is not greyed; (c) after the whole movement is walked the basic move greys, but Leap, Side Roll and the other movement powers stay at full strength because the engine still takes them as the primary action.')
+console.log('  FOUND for Andrew: (a) a paid attack or power made first ends the Activation at once (engine rule.primary-ends-activation), so the move is lost with it and there is no bar left to grey; (b) after a walk cut short the engine still offers the rest of the basic move — as the primary action — so it is not greyed; (c) [ruled 2026-10-04, engine rule.walked-unit-has-moved] once a hero has walked - one hex or its whole movement - Leap, Side Roll and its other movement powers are refused by the engine and greyed; a movement power used BEFORE any walk is unchanged.')
 console.log('bar-moves-grey-when-done: the Orphanage on the built sandbox, the expect line passed')

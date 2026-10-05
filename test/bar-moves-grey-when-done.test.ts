@@ -31,15 +31,21 @@ describe('the host says which move actions are done', () => {
     expect(P.facts().moveDone).toEqual([])
     expect(movesOf(box.s).length).toBeGreaterThan(1)
   })
-  it('after a walk of one hex the engine still takes the rest of the basic move: it is not done', () => {
-    const { box, P } = start(), u = me(box.s), [basic] = movesOf(box.s), g = box.s.ctx.geo
+  // Law 10, 2026-10-04 — rule.walked-unit-has-moved (engine item; engine DECISIONS.md 2026-10-04 'after the backlog run: ... moves are refused once a unit has walked ...': asked "Once a unit has walked, should Leap and Side Roll grey out and be refused? Today the engine still accepts them." - "2 yes"): the last line here held what
+  // the engine did before the ruling (`expect(P.facts().moveDone).toEqual([])` - a Leap or a Side Roll was still taken after a walk). The
+  // engine now takes no OTHER movement from a unit that has walked: the basic move is still not done, and every other movement is.
+  it('after a walk of one hex the engine still takes the rest of the basic move: it is not done - and every other movement of the hero is', () => {
+    const { box, P } = start(), u = me(box.s), [basic, ...rest] = movesOf(box.s), g = box.s.ctx.geo
     const near = P.facts().reach.find((x) => g.distance(u.hex, x) === 1)!
     walk(P, near)
     expect(u).toMatchObject({ hex: near, moveUsed: true }); expect(u.movePointsLeft).toBeGreaterThan(0)
     expect(offered(box.s).has(basic!)).toBe(true)
-    expect(P.facts().moveDone).toEqual([])
+    expect(P.facts().moveDone).not.toContain(basic)
+    expect(rest.length).toBeGreaterThan(0)
+    for (const id of rest) expect(offered(box.s).has(id), `${id} is no longer offered`).toBe(false)
+    expect([...P.facts().moveDone!].sort()).toEqual([...rest].sort())
   })
-  it('after its whole movement the basic move is done; a movement power the engine still takes is not; attacks and powers are never named', () => {
+  it('after its whole movement the basic move is done, and so is every other movement; attacks and powers are never named', () => {
     const { box, P } = start(), u = me(box.s), moves = movesOf(box.s), [basic] = moves, g = box.s.ctx.geo
     const far = [...P.facts().reach].sort((x, y) => g.distance(u.hex, y) - g.distance(u.hex, x) || x - y)[0]!
     walk(P, far)
@@ -47,7 +53,10 @@ describe('the host says which move actions are done', () => {
     const done = P.facts().moveDone!, still = offered(box.s)
     expect(done).toContain(basic)
     expect([...done].sort()).toEqual(moves.filter((id) => !still.has(id)).sort())      // exactly the moves the engine takes no use of
-    expect(moves.some((id) => still.has(id)), 'another movement power is still taken (as the primary action)').toBe(true)
+    // Law 10, 2026-10-04 — rule.walked-unit-has-moved (the note above): no other movement power is taken after a walk, so every move is done
+    // (was: expect(moves.some((id) => still.has(id)), 'another movement power is still taken (as the primary action)').toBe(true))
+    expect(moves.filter((id) => still.has(id)), 'no movement is still taken after the whole walk').toEqual([])
+    expect([...done].sort()).toEqual([...moves].sort())
     for (const id of done) expect(isMove(box.s.ctx.actions[id]!) && !isAttack(box.s.ctx.actions[id]!)).toBe(true)
     // the next unit begins with nothing done
     P.input({ kind: 'end-activation' }); P.next()
