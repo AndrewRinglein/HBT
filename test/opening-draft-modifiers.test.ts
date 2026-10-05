@@ -14,7 +14,8 @@
 // rule (engine/src/content/opening-party.ts) and exports the two functions that roll a given hero; the run's draft CALLS
 // them through src/engine.ts on the run's own stream, and src/core/draft-modifiers.ts rolls nothing itself (kingdom
 // SWITCHES.md openingDraftRuleKingdomSide, answered). The first test here holds that: the kingdom's draft is the engine's
-// function — and a run shows what it showed before the procedure moved (test/fixtures/opening-draft-one-rule.json).
+// function — and a run shows what it showed before the procedure moved (test/fixtures/opening-draft-one-rule.json), as far
+// as the ruling of 2026-10-05 leaves it (each first hero rolls its own gifts: the Law 10 note at that test).
 // The page half is tools/opening-run-six.verify.mjs (test/opening-run-six.test.ts), on the built BATTLE-SANDBOX.html.
 import { describe, it, expect } from 'vitest'
 import { readFileSync } from 'node:fs'
@@ -125,16 +126,48 @@ describe('kingdom.opening-draft-modifiers — the first hero by description, lat
     expect(src).toMatch(/firstHeroDraftOf\(/); expect(src).toMatch(/draftHandOf\(/)
   })
 
-  it('a run shows what it showed before the procedure moved: the same first-hero bonuses and the same later-draft offers for the same run seed (seed 11 is the page test\'s)', () => {
-    const frozen = JSON.parse(readFileSync('test/fixtures/opening-draft-one-rule.json', 'utf8')) as { runs: { seed: number; first: unknown[]; second: unknown[] }[] }
-    expect(frozen.runs.map((r) => r.seed)).toEqual(SEEDS)
+  // LAW 10 — 2026-10-05, kingdom.first-hero-each-rolls-own-gifts (engine/DECISIONS.md 'gifts: the word; each first-hero choice
+  // rolls its own; …' — Andrew, asked whether each of the three first-hero choices should roll its own gifts instead of one
+  // roll shared by all three: "Yeah, they each roll their own gifts."). This test read 'a run shows what it showed before the
+  // procedure moved: the same first-hero bonuses and the same later-draft offers for the same run seed', and held every offered
+  // hero at the first draft and at the draft after it, whole, to the file frozen before fix.opening-draft-one-rule
+  // (test/fixtures/opening-draft-one-rule.json) — in which the three first heroes carry ONE roll, the same badges and points
+  // under each. That is what the ruling ends, so the file is stale for the first hero's rolled things, and for a later hero's
+  // badges where the first hero now carries a different badge (a later hero's first badge is unlike every badge the party
+  // carries). As the rule now stands, in two halves:
+  //   · everything the ruling did NOT change is still held to the file frozen then, untouched: the same three heroes offered at
+  //     each draft, what the rule gives every first hero without a roll (Leadership first, the +2 Health), each first hero's
+  //     item slots but for a rolled one, and the later draft's rolled stat points;
+  //   · what a run shows from this item on is held, whole, to the file frozen on the tree it landed on
+  //     (test/fixtures/opening-draft-each-rolls-own.json, the same capture: tools/capture-opening-draft-one-rule.mts) — so a
+  //     run's draft cannot move again unseen.
+  it('a run shows what it showed before, as far as the ruling of 2026-10-05 leaves it — the same heroes offered, the same givens, the same later-draft points — and, whole, what was frozen when each first hero began to roll its own gifts (seed 11 is the page test\'s)', () => {
+    type Offer = { id: string; badges: string[]; itemSlots: number; drafted: Drafted }
+    const fileOf = (name: string) => JSON.parse(readFileSync(`test/fixtures/${name}.json`, 'utf8')) as { runs: { seed: number; first: Offer[]; second: Offer[] }[] }
+    const before = fileOf('opening-draft-one-rule'), frozen = fileOf('opening-draft-each-rolls-own')
+    expect(before.runs.map((r) => r.seed)).toEqual(SEEDS); expect(frozen.runs.map((r) => r.seed)).toEqual(SEEDS)
     const handOf = (ctx: Ctx) => listDraftOffers(ctx.campaign).map((row) => { const h = draftedHeroOf(ctx.campaign, row.id); return { id: row.id, badges: h.badges, itemSlots: h.itemSlots, drafted: h.drafted } })
-    for (const run of frozen.runs) {
-      const first = atFirstDraft(run.seed)
-      expect(JSON.parse(JSON.stringify(handOf(first))), `seed ${run.seed}: the three first heroes as each would join`).toEqual(run.first)
-      const second = atSecondDraft(run.seed)
-      expect(JSON.parse(JSON.stringify(handOf(second))), `seed ${run.seed}: the draft after it`).toEqual(run.second)
+    const ruleHealth = (o: Offer) => o.drafted.mods.filter((m) => m.source === FIRST.healthSource)
+    for (const [n, run] of frozen.runs.entries()) {
+      const was = before.runs[n]!
+      const first = JSON.parse(JSON.stringify(handOf(atFirstDraft(run.seed)))) as Offer[]
+      const second = JSON.parse(JSON.stringify(handOf(atSecondDraft(run.seed)))) as Offer[]
+      // whole, as frozen under the rule that now stands
+      expect(first, `seed ${run.seed}: the three first heroes as each would join`).toEqual(run.first)
+      expect(second, `seed ${run.seed}: the draft after it`).toEqual(run.second)
+      // and, of the file frozen before the procedure moved, everything the ruling left alone
+      expect(first.map((o) => o.id), `seed ${run.seed}: the same three first heroes offered`).toEqual(was.first.map((o) => o.id))
+      expect(second.map((o) => o.id), `seed ${run.seed}: the same three offered after it`).toEqual(was.second.map((o) => o.id))
+      for (const [k, o] of first.entries()) {
+        expect(o.drafted.badges.slice(0, FIRST.badges.length), `seed ${run.seed}: ${o.id}: the rule's badges, first`).toEqual(was.first[k]!.drafted.badges.slice(0, FIRST.badges.length))
+        expect(ruleHealth(o), `seed ${run.seed}: ${o.id}: the rule's Health`).toEqual(ruleHealth(was.first[k]!))
+      }
+      expect(second.map((o) => o.drafted.rolls), `seed ${run.seed}: the later draft's rolled points`).toEqual(was.second.map((o) => o.drafted.rolls))
+      // the file frozen before held ONE roll under all three; each of the three now carries its own
+      expect(new Set(was.first.map((o) => JSON.stringify([o.drafted.badges, o.drafted.rolls]))).size, `seed ${run.seed}: before, one roll for the three`).toBe(1)
     }
+    // over the eight seeds the three are not one roll any more (each seed's three are told apart in test/first-hero-each-rolls-own-gifts.test.ts)
+    expect(frozen.runs.filter((r) => new Set(r.first.map((o) => JSON.stringify([o.drafted.badges, o.drafted.rolls]))).size > 1).length).toBe(SEEDS.length)
   })
 
   it('the first hero gets Leadership, a positive badge (25%: another), +2 Health, a Crucible stat point (30%: another) — whichever of the three is taken', () => {
