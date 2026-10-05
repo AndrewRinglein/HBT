@@ -177,8 +177,8 @@ export function createDriver(V,onFailure,platform={}){
    if(look.shadows&&renderer.shadowMap){
     if(keeper===undefined){keeper=keptShadow(renderer,scene,()=>scene.getObjectByName('characters'))
      /* read by the tests and tools/frame-cost.mjs: how often the scenery's shadow was drawn, and the shadow asked for whole
-        ('full' — as first written, the reference the kept one is held to) */
-     V.sceneryShadow=keeper?{get takes(){return keeper.takes},get mode(){return keeper.mode},set mode(v){keeper.mode=v;bodiesMoved=true;dirty=true}}:null}
+        (as first written, the reference the kept one is held to) */
+     V.sceneryShadow=keeper?{get takes(){return keeper.takes},get whole(){return keeper.whole},set whole(v){keeper.whole=v;bodiesMoved=true;dirty=true}}:null}
     if(keeper?.keeps()){
      /* the scenery's shadow, alone, into the keeping: one pass more, once (and again only if the sun or the scenery changed) */
      if(!keeper.valid()){const still=keeper.take();drawScene();if(keeper.taken(still))bodiesMoved=true}

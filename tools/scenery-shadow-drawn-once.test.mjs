@@ -106,10 +106,10 @@ test('the scenery\'s shadow is drawn again only if the sun or the scenery change
   assert.equal(V.sceneryShadow.takes, 2)
   assert.deepEqual(passes(frame(16)), ['body-a body-b']); assert.equal(V.sceneryShadow.takes, 2)
   /* the shadow whole on every drawn frame — the reference the tool compares the kept one with */
-  V.sceneryShadow.mode = 'full'
+  V.sceneryShadow.whole = true
   assert.deepEqual(casting(), ['body-a', 'body-b', 'house', 'tree'], 'everything casts again')
   for (const ms of [16, 0, 16]) { const f = frame(ms); assert.deepEqual(passes(f), ['body-a body-b house tree'], 'one pass, everything in it, every drawn frame'); assert.deepEqual(f.filter(e => e.copy), []) }
-  V.sceneryShadow.mode = 'kept'
+  V.sceneryShadow.whole = false
   assert.deepEqual(passes(frame(0)), ['house tree', 'body-a body-b'], 'kept again: taken afresh'); assert.equal(V.sceneryShadow.takes, 3)
   driver.dispose()
 })

@@ -37,7 +37,7 @@
 // viewer.scenery-shadow-drawn-once (2026-10-05) added two more, for the sun's shadow: the draw calls of a frame with the clock
 // HELD (stepped by nothing, so no body animates — "a still frame": the shadow pass should draw nothing in it); and, over a
 // round of views, the same frame drawn both ways — the scenery's shadow kept and the bodies' drawn over it, then the shadow
-// asked for whole as it was first written (src/terrain3d.js V.sceneryShadow.mode = 'full') — and both canvases' pixels
+// asked for whole as it was first written (src/terrain3d.js V.sceneryShadow.whole = true) — and both canvases' pixels
 // compared, every one (a page built before that item has no such switch and the column reads —). The frame is also drawn twice
 // the SAME way, and that count is printed beside the other: what differs between two frames drawn the same way is not the
 // shadow's doing. The scene's blended pieces (leaves and the like) are left out of the picture for the comparison — they
@@ -127,8 +127,8 @@ function shadowBothWays(){
  try{
   S.tick(0);first=read()
   S.tick(0);kept=read()
-  k.mode='full';S.tick(0);full=read()
-  k.mode='kept';S.tick(0)
+  k.whole=true;S.tick(0);full=read()
+  k.whole=false;S.tick(0)
  }finally{for(const m of blended)m.colorWrite=true}
  S.tick(0)
  let pixels=0,drawn=0;for(const a of kept){pixels+=a.length/4;drawn+=drawnOf(a)}

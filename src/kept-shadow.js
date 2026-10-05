@@ -24,7 +24,7 @@ export function keptShadow(renderer,scene,charactersOf){
  const sm=renderer.shadowMap
  if(!sm||typeof renderer.getContext!=='function'||typeof renderer.getRenderTarget!=='function'||typeof renderer.setRenderTarget!=='function'||typeof renderer.clear!=='function'||!renderer.properties)return null
  const gl=renderer.getContext();if(!gl||typeof gl.blitFramebuffer!=='function')return null
- let keep=null,keptFrom=null,keptKey='',quiet=[],hooked=null,mode='kept',takes=0,lights=null
+ let keep=null,keptFrom=null,keptKey='',quiet=[],hooked=null,whole=false,takes=0,lights=null
  const fbOf=target=>renderer.properties.get(target).__webglFramebuffer
  const under=(o,g)=>{for(let n=o;n;n=n.parent)if(n===g)return true;return false}
  /** the one light whose shadow can be kept: the scene's only shadow-casting light, and a directional one */
@@ -45,7 +45,7 @@ export function keptShadow(renderer,scene,charactersOf){
  const unhook=()=>{if(hooked){renderer.clear=hooked;hooked=null}}
  const api={
   /** is the scenery's shadow to be kept on this frame? (one sun, and the host has not asked for the shadow whole) */
-  keeps(){return mode==='kept'&&!!sun()},
+  keeps(){return !whole&&!!sun()},
   /** is the kept shadow still the scenery's, under this sun? */
   valid(){const s=sun();return !!s&&!!keep&&!!s.shadow.map&&s.shadow.map===keptFrom&&sunKeyOf(s)===keptKey},
   /** before the pass that draws the scenery's shadow alone: every piece casts, no body does. Returns what to hand `taken`. */
@@ -81,8 +81,8 @@ export function keptShadow(renderer,scene,charactersOf){
   done(){unhook()},
   /** the scenery or the sun changed: its shadow is drawn again at the next frame */
   invalidate(){keptFrom=null;lights=null},
-  /** 'kept' (the default) or 'full': the shadow whole on every drawn frame, as it was first written — the reference the tool holds the kept one to */
-  get mode(){return mode},set mode(v){mode=v==='full'?'full':'kept';if(mode==='full'){wake();unhook();keptFrom=null}},
+  /** asked for WHOLE (false by default): the shadow drawn whole on every drawn frame, as it was first written — the reference the tool holds the kept one to */
+  get whole(){return whole},set whole(v){whole=!!v;if(whole){wake();unhook();keptFrom=null}},
   /** how often the scenery's shadow has been drawn */
   get takes(){return takes},
   dispose(){wake();unhook();keep?.depthTexture?.dispose();keep?.dispose();keep=null;keptFrom=null},
