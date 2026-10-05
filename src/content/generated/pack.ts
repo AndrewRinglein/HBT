@@ -12348,7 +12348,9 @@ export const UNIT_PACK = {
         "item.rusted-plate"
       ],
       "badges": [
-        "badge.hero"
+        "badge.hero",
+        "badge.vengeful",
+        "badge.undead-slayer"
       ]
     },
     {
@@ -12389,7 +12391,9 @@ export const UNIT_PACK = {
         "item.basic-armor"
       ],
       "badges": [
-        "badge.hero"
+        "badge.hero",
+        "badge.quick",
+        "badge.undead-slayer"
       ]
     },
     {
@@ -12430,7 +12434,8 @@ export const UNIT_PACK = {
         "item.ragged-hides"
       ],
       "badges": [
-        "badge.hero"
+        "badge.hero",
+        "badge.undead-slayer"
       ]
     },
     {
@@ -12472,7 +12477,9 @@ export const UNIT_PACK = {
         "item.destroyed-mail"
       ],
       "badges": [
-        "badge.hero"
+        "badge.hero",
+        "badge.brave",
+        "badge.undead-slayer"
       ]
     },
     {
@@ -12512,7 +12519,10 @@ export const UNIT_PACK = {
         "item.flowing-cloak"
       ],
       "badges": [
-        "badge.hero"
+        "badge.hero",
+        "badge.cultist",
+        "badge.elf",
+        "badge.mystic"
       ]
     },
     {
@@ -12552,7 +12562,10 @@ export const UNIT_PACK = {
         "item.flowing-cloak"
       ],
       "badges": [
-        "badge.hero"
+        "badge.hero",
+        "badge.agile",
+        "badge.elf",
+        "badge.forester"
       ]
     },
     {
@@ -12592,7 +12605,11 @@ export const UNIT_PACK = {
         "item.pilgrims-habit"
       ],
       "badges": [
-        "badge.hero"
+        "badge.hero",
+        "badge.beautiful",
+        "badge.frail",
+        "badge.fey",
+        "badge.forester"
       ]
     },
     {
@@ -12632,7 +12649,8 @@ export const UNIT_PACK = {
         "item.thick-hide"
       ],
       "badges": [
-        "badge.hero"
+        "badge.hero",
+        "badge.vengeful"
       ]
     },
     {
@@ -12673,7 +12691,9 @@ export const UNIT_PACK = {
         "item.war-axe"
       ],
       "badges": [
-        "badge.hero"
+        "badge.hero",
+        "badge.stalwart",
+        "badge.dwarf"
       ]
     },
     {
@@ -12712,7 +12732,10 @@ export const UNIT_PACK = {
         "item.ragged-hides"
       ],
       "badges": [
-        "badge.hero"
+        "badge.hero",
+        "badge.unwavering",
+        "badge.dwarf",
+        "badge.brawler"
       ]
     },
     {
@@ -12752,7 +12775,10 @@ export const UNIT_PACK = {
         "item.thick-hide"
       ],
       "badges": [
-        "badge.hero"
+        "badge.hero",
+        "badge.huge",
+        "badge.dwarf",
+        "badge.climber"
       ]
     },
     {
@@ -12792,7 +12818,8 @@ export const UNIT_PACK = {
         "item.basic-armor"
       ],
       "badges": [
-        "badge.hero"
+        "badge.hero",
+        "badge.brave"
       ]
     },
     {
@@ -12832,7 +12859,8 @@ export const UNIT_PACK = {
         "item.watchmans-coat"
       ],
       "badges": [
-        "badge.hero"
+        "badge.hero",
+        "badge.quick-learner"
       ]
     },
     {
@@ -12872,7 +12900,8 @@ export const UNIT_PACK = {
         "item.tanners-apron"
       ],
       "badges": [
-        "badge.hero"
+        "badge.hero",
+        "badge.frail"
       ]
     },
     {
@@ -12952,7 +12981,8 @@ export const UNIT_PACK = {
         "item.nice-robes"
       ],
       "badges": [
-        "badge.hero"
+        "badge.hero",
+        "badge.lithe"
       ]
     },
     {
@@ -12992,7 +13022,8 @@ export const UNIT_PACK = {
         "item.nice-robes"
       ],
       "badges": [
-        "badge.hero"
+        "badge.hero",
+        "badge.faithful"
       ]
     },
     {
@@ -13073,7 +13104,8 @@ export const UNIT_PACK = {
         "item.peddlers-vest"
       ],
       "badges": [
-        "badge.hero"
+        "badge.hero",
+        "badge.wise"
       ]
     },
     {
@@ -13156,7 +13188,8 @@ export const UNIT_PACK = {
         "item.peddlers-vest"
       ],
       "badges": [
-        "badge.hero"
+        "badge.hero",
+        "badge.lithe"
       ]
     },
     {
@@ -13197,7 +13230,9 @@ export const UNIT_PACK = {
         "item.flowing-cloak"
       ],
       "badges": [
-        "badge.hero"
+        "badge.hero",
+        "badge.ignorant",
+        "badge.retaliating"
       ]
     },
     {
@@ -13238,7 +13273,8 @@ export const UNIT_PACK = {
         "item.basic-armor"
       ],
       "badges": [
-        "badge.hero"
+        "badge.hero",
+        "badge.lucky"
       ]
     },
     {
@@ -13279,7 +13315,8 @@ export const UNIT_PACK = {
         "item.watchmans-coat"
       ],
       "badges": [
-        "badge.hero"
+        "badge.hero",
+        "badge.vengeful"
       ]
     },
     {
