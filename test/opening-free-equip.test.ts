@@ -19,14 +19,20 @@ import * as SHOP from '../src/core/shop.js'
 import { canEquip, whyNotEquip, performEquip, performUnequip } from '../src/core/shop.js'
 import { createSandbox } from '../src/core/sandbox.js'
 import * as EQUIP_ROWS from '../src/content/equip.js'
-import { itemOf } from '../src/content/items.js'
-import { REWARDS } from '../src/content/rewards.js'
+import { ITEMS, itemOf } from '../src/content/items.js'
+import { REWARDS, REWARD_ODDS } from '../src/content/rewards.js'
 import { ABBOTOWN_MAP } from '../src/content/conquest.js'
 import { equipPage } from '../src/ui/equip.js'
 import { encounterDef } from '../src/engine.js'
 
 const costOf = SHOP.equipCostOf as unknown as (...a: unknown[]) => Record<string, number>
-const pool = (cls: string) => REWARDS.filter((r) => itemOf(r.id).itemClass === cls).map((r) => r.id)
+// Law 10, 2026-10-04 (kingdom.rewards-only-authored; engine/DECISIONS.md 2026-10-04, Andrew: "One yes. Stop appearing as battle
+// rewards."). These were read from the reward POOL (REWARDS), which held every idol and bloodrune of the odds table's tier. The
+// pool now deals only the rows Andrew authored, and no idol or bloodrune in the game is his, so the pool has none and reading
+// it would hold the rule below on no item at all. The rule — in the opening an idol or a bloodrune costs nothing to equip —
+// stands (2026-10-03, "4 free") and is held on the same rows as before, read from the items: the idols and bloodrunes of the
+// odds table's tier. The page half (the last test) is rewritten for the same reason, there.
+const pool = (cls: string) => ITEMS.filter((r) => r.itemClass === cls && r.waystationBand === null && REWARD_ODDS.some((o) => o.itemClass === cls && o.tier === r.tier)).map((r) => r.id)
 const IDOLS = pool('idol'), RUNES = pool('bloodrune')
 
 /** A new run with its first hero drafted, the Orphanage fielded, standing at Equip — nothing in the purse, as the opening leaves it. */
@@ -42,7 +48,7 @@ function atEquip(seed = 11): { ctx: Ctx; hero: string } {
 const purseOf = (ctx: Ctx) => JSON.stringify(ctx.campaign.purse)
 
 describe('kingdom.opening-free-equip — idols and bloodrunes equip free during the opening', () => {
-  it('the opening\'s reward pool holds idols and bloodrunes that cost faith or mana to equip — and at the first Equip the purse is empty', () => {
+  it('the idols and bloodrunes of the reward odds\' tier cost faith or mana to equip — and at the first Equip the purse is empty', () => {
     expect(IDOLS.length).toBeGreaterThan(0); expect(RUNES.length).toBeGreaterThan(0)
     for (const id of IDOLS) expect(itemOf(id).equipCost, `${id}'s row costs faith`).toEqual({ 'currency.faith': 1 })
     for (const id of RUNES) expect(itemOf(id).equipCost, `${id}'s row costs mana`).toEqual({ 'currency.mana': 3 })
@@ -120,8 +126,17 @@ describe('kingdom.opening-free-equip — idols and bloodrunes equip free during 
     expect(later).not.toContain('free to equip')
   })
 
-  it('the page: an idol or a bloodrune kept as a battle reward is put on a hero at Equip free — nothing taken from the purse — and fielded', () => {
+  // Law 10, 2026-10-04 (kingdom.rewards-only-authored; engine/DECISIONS.md 2026-10-04, Andrew: "One yes. Stop appearing as battle
+  // rewards."). This held that the page's run (seed 11) keeps an idol or a bloodrune as a battle reward and wears it free. The
+  // reward pool now deals only the rows Andrew authored and no idol or bloodrune is his, so no run is offered one: the old line
+  // pinned a set-aside item as a dealt card. As the rule now stands, the page's run says the pool holds none and keeps none —
+  // and, whenever the list gives the pool one and a run is offered it, the old sentence, word for word (the tool still asserts
+  // every step of it where it happens). The rule is held above on the screens' own HTML and the one equip path.
+  it('the page: no idol or bloodrune is in the reward pool, so none is kept as a battle reward — one that is, is put on a hero at Equip free and fielded', () => {
     const six = execFileSync(process.execPath, ['tools/opening-run-six.verify.mjs', 'BATTLE-SANDBOX.html'], { cwd: '../kingdom', encoding: 'utf8', maxBuffer: 1 << 24 })
-    expect(six).toMatch(/an? (idol|bloodrune) kept as a battle reward \([^)]+\) went onto [^;]+ at Equip free — shown as free to equip, nothing taken from the purse — and was fielded in the next battle/)
+    const inPool = REWARDS.some((r) => IDOLS.includes(r.id) || RUNES.includes(r.id))
+    if (inPool) expect(six).toMatch(/(an? (idol|bloodrune) kept as a battle reward \([^)]+\) went onto [^;]+ at Equip free — shown as free to equip, nothing taken from the purse — and was fielded in the next battle|no idol or bloodrune was offered before the last battle)/)
+    else expect(six).toContain('no idol or bloodrune is in the reward pool (none is on the list of the items Andrew authored), so none was kept as a battle reward')
+    expect(six).toMatch(/every reward screen showed only items on that list or the battle's own named reward \(\d+ listed cards; named: item\.longsword\.flaming\)/)
   }, 1800000)
 })

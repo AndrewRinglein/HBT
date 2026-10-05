@@ -41,6 +41,12 @@ export const SWITCHES = {
   sanctuaryLostDefenceSupplies: 5,
   /** rewards.includeWaystation — may the reward draw deal a row the Waystation sells (a one-use potion, a torch)? The odds name classes and tiers, not shops; unsaid. */
   rewardsIncludeWaystation: false,
+  /** rewards.hellTcgRowsOffered — may the reward draw deal the rows the item review could not class as Andrew's or a chat's (six from Hell-TCG unchanged, three relics with no known author — src/content/authored-items.ts AUTHORSHIP_UNDECIDED)? Off until he says (kingdom.rewards-only-authored, 2026-10-04). */
+  rewardsHellTcgRowsOffered: false,
+  /** rewards.derivedRowsOffered — may the reward draw deal a row that is not itself on his list but is MADE of rows that are: a listed base carrying a listed attribute (a tier-3 Forge row), or a listed base's masterwork? Off: only an id on the list is dealt (kingdom.rewards-only-authored, 2026-10-04). */
+  rewardsDerivedRowsOffered: false,
+  /** rewards.emptyClass — a class of the odds table with no row left to deal: 'spread' rolls the card among the classes that have one, their weights kept in proportion; 'left-out' rolls the whole table and deals no card when it lands on an empty class (kingdom.rewards-only-authored, 2026-10-04). */
+  rewardsEmptyClass: 'spread' as 'spread' | 'left-out',
   /** levelup.specialtyRequired — "specialization once at level 2" (GEAR-DESIGN.md §7): must the first level-up NAME a specialty, or is the offer declinable (a level taken without one passes it up for good)? Unsaid. */
   levelUpSpecialtyRequired: false,
 } as const

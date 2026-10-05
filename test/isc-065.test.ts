@@ -9,25 +9,39 @@ import { applyBattleResult, performExitBattle } from '../src/core/reckoning.js'
 import { listRewardOffers, performTakeReward, resolveRewardDraw } from '../src/core/rewards.js'
 import { spendUse } from '../src/core/waystation.js'
 import { REWARDS, REWARD_ODDS, REWARD_DRAW, rewardOf } from '../src/content/rewards.js'
-import { itemOf } from '../src/content/items.js'
+import { ITEMS, itemOf } from '../src/content/items.js'
+import { AUTHORED_ITEMS } from '../src/content/authored-items.js'
 
 const RULED: Record<string, number> = { weapon: 25, armor: 25, trinket: 20, idol: 10, bloodrune: 10, relic: 10 }
 const TIER: Record<string, number> = { weapon: 3, armor: 3, trinket: 1, idol: 1, bloodrune: 1, relic: 1 }
+// Law 10, 2026-10-04 (kingdom.rewards-only-authored; engine/DECISIONS.md 2026-10-04, Andrew: "I guess we could just ignore all
+// the items not authored by me to start with." — "One yes. Stop appearing as battle rewards."). The first two tests below held
+// the pool as EVERY row of the odds table's classes at their tiers (more than 100 rows, a row in every class) and the draw as
+// the six classes at 25/25/20/10/10/10. Both pinned set-aside rows as dealt cards, so both are stale by that ruling and are
+// rewritten as the rule now stands: the pool is those rows that are on his list (src/content/authored-items.ts), a class has
+// a row exactly when the list gives it one, and a class with none is not rolled — its share of the odds goes to the classes
+// that have a row, in proportion (kingdom SWITCHES.md rewards.emptyClass). The table itself, the tiers, the three distinct
+// cards and the 2-point tolerance are as they were.
+const LISTED = new Set(AUTHORED_ITEMS.map((r) => r.id))
+/** The classes of the odds table the list gives a row to — read from the items and the list, not from the pool. */
+const WITH_A_ROW = Object.keys(RULED).filter((cls) => ITEMS.some((r) => r.itemClass === cls && r.tier === TIER[cls] && r.waystationBand === null && LISTED.has(r.id)))
 
 describe('ISC-065 — the tiered draw', () => {
-  it('the odds table is the ruled one and the pool is shaped by it: tier-3 weapons and armor, tier-1 everything else', () => {
+  it('the odds table is the ruled one and the pool is shaped by it: tier-3 weapons and armor, tier-1 everything else — of the rows Andrew authored', () => {
     expect(Object.fromEntries(REWARD_ODDS.map((o) => [o.itemClass, o.pct]))).toEqual(RULED)
     expect(Object.fromEntries(REWARD_ODDS.map((o) => [o.itemClass, o.tier]))).toEqual(TIER)
     expect(REWARD_ODDS.reduce((s, o) => s + o.pct, 0)).toBe(100)
-    expect(REWARDS.length).toBeGreaterThan(100)                       // the codex's rows, not a hand list
+    expect(REWARDS.length).toBeGreaterThan(REWARD_DRAW)                // more rows than one draw deals
     for (const r of REWARDS) {
-      const row = itemOf(r.id)
+      const row = itemOf(r.id)                                        // the codex's rows, not a hand list: every pool row is an item row
       expect(TIER[row.itemClass]).toBeDefined()
       expect(row.tier).toBe(TIER[row.itemClass])
+      expect(LISTED.has(r.id), `${r.id} is on the list`).toBe(true)
     }
-    for (const cls of Object.keys(RULED)) expect(REWARDS.some((r) => itemOf(r.id).itemClass === cls)).toBe(true)
+    expect(WITH_A_ROW.length).toBeGreaterThan(0)
+    for (const cls of Object.keys(RULED)) expect(REWARDS.some((r) => itemOf(r.id).itemClass === cls), `${cls} has a row in the pool exactly when the list gives it one`).toBe(WITH_A_ROW.includes(cls))
   })
-  it('over 4000 draws the classes fall at the ruled odds within 2 points, and every drawn row is at its class tier', () => {
+  it('over 4000 draws the classes that have a row fall at the ruled odds, the empty classes\' share spread in proportion, within 2 points; a class with no row is never dealt; every drawn row is at its class tier', () => {
     const ctx = loadFixture()
     const seen: Record<string, number> = {}
     let cards = 0
@@ -42,9 +56,11 @@ describe('ISC-065 — the tiered draw', () => {
         cards++
       }
     }
+    const share = WITH_A_ROW.reduce((s, cls) => s + RULED[cls]!, 0)
     for (const [cls, pct] of Object.entries(RULED)) {
       const got = (100 * (seen[cls] ?? 0)) / cards
-      expect(Math.abs(got - pct)).toBeLessThanOrEqual(2)
+      if (!WITH_A_ROW.includes(cls)) { expect(seen[cls] ?? 0, `${cls} has no row and is never dealt`).toBe(0); continue }
+      expect(Math.abs(got - (100 * pct) / share), `${cls}: ${got.toFixed(1)}% of the cards, ruled ${pct} of the ${share} left`).toBeLessThanOrEqual(2)
     }
   })
   it('keyed by the Engagement: the same battle always draws the same three', () => {
