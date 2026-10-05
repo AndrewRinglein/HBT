@@ -1,5 +1,5 @@
 // Standalone host adapter. All choices and resolution belong to the engine.
-import {encounterDef,createBattle,advanceBattle,completeActionCycle,runActivation,activationChoices,controllerOf,validateBattleCommand,executeBattleCommand,isAttack,isMove,isBurst,burstCentres,previewBurst,preview,previewPower,saveBattle,restoreBattle,movementOptions,staminaCostOf,swapCostOf,propAttackHexes,grantedActionIds} from '../engine.js'
+import {encounterDef,createBattle,powerHexesOf,advanceBattle,completeActionCycle,runActivation,activationChoices,controllerOf,validateBattleCommand,executeBattleCommand,isAttack,isMove,isBurst,burstCentres,previewBurst,preview,previewPower,saveBattle,restoreBattle,movementOptions,staminaCostOf,swapCostOf,propAttackHexes,grantedActionIds} from '../engine.js'
 import type {Ctx,BattleOptions,BattleCommand,ControlPolicy} from '../engine.js'
 import {SANDBOX_HEROES,SANDBOX_ENEMIES,SANDBOX_ENCOUNTERS} from '../content/sandbox.js'
 import {atlasFieldingOf,type AtlasBinding} from '../content/atlas.js'
@@ -100,7 +100,9 @@ export function sandboxChoices(s:Sandbox):SandboxChoice[]{
   for(const slot of ['movement','primary'] as const){
    const aims=isMove(a)?movementOptions(ctx,actor,id,slot).map(p=>({destination:p.destination,path:p.path})):isBurst(a)?burstCentres(ctx,actor,id,slot).map(centre=>({centre,path:[]})):[...ctx.state.units.map(t=>({target:t.id,path:[]})),
      // V2 R7 (engine v2.prop-attack): an attack with Destroy may also be aimed at a prop's hex; the engine lists and validates them
-     ...(isAttack(a)?propAttackHexes(ctx,actor,id,slot).map(hex=>({hex,path:[]})):[])]
+     ...(isAttack(a)?propAttackHexes(ctx,actor,id,slot).map(hex=>({hex,path:[]})):[]),
+     // capability.summons (engine item, 2026-10-05): a power aimed at an empty hex (Call the Wolf) - the engine lists its hexes and validates each
+     ...(a.target?.select==='hex'?powerHexesOf(ctx,actor,id).map(hex=>({hex,path:[]})):[])]
    for(const aim of aims){const {path,...target}=aim,command:ActionCommand={kind:'action',actor,actionId:id,slot,expectedSeq:ctx.state.seq,...target}
     if(!validateBattleCommand(ctx,s.policy,command).ok)continue
     out.push({name:a.name,cost:staminaCostOf(u,a),command,path,preview:'target' in command?(isAttack(a)?preview(ctx,actor,command.target,id):previewPower(ctx,actor,command.target,id)):null})

@@ -92,6 +92,8 @@ export { passableFor } from '../../engine/src/core/structure.js'
 export { preview } from '../../engine/src/core/pipeline.js'
 export { burstCentres, previewBurst } from '../../engine/src/core/burst.js'
 export { previewPower } from '../../engine/src/core/ability.js'
+// capability.summons (engine item, 2026-10-05): the hexes a power aimed at an empty hex may be used on now - the engine's own list
+export { powerHexesOf } from '../../engine/src/core/ability.js'
 export { saveBattle, restoreBattle } from '../../engine/src/core/snapshot.js'
 // Widened 2026-09-24 for the sandbox Swap (V2 R6, engine v2.loadout-swap dd78ff1): the swap's
 // stamina cost, read-only. Legality is validateBattleCommand's (canSwap inside it); performSwap
