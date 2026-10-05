@@ -4964,3 +4964,14 @@ Ruled:
 - **The Elfbow shoots one target.** Double Shot's 'Targets: up to 2 enemies within 4 hexes' is wrong; both hits are on the one target ("Elfpo" is the Elfbow - dictation). Filed: `content.elfbow-double-shot-one-target`.
 - **The mechanics his own items name are wanted, not struck:** summons; the set bonus; an effect that lasts a number of Activations (his 'time' and 'number of activations for a duration' - the Fire Gauntlet's Stoke, the Ultimate Destroyer's Perfect Sight, the Flaming power's next two attacks); lowering and raising Magic in a battle (the Staff of the Magi's Vortex; the enemy's Power with it); damage from two stats added, Precision and Magic among them ("We do need that"); and "everything else in here" - Accuracy against one kind of enemy, removing a status by a stat's amount, destroying the corpse on a kill, damage from a doubled stat. Each is filed as an engine capability item, after the engine items already queued and ahead of the deferred item content (the chat's placing - he said they are needed, not when).
 - **Not ruled - the Force Staff's own line.** "It's precision +1 magic, and it does magic damage. So it's not unless you're calling precision and magic two stats." The Force Staff in the game today reads 'Precision + half the party's Magic, as magic damage'. Whether he means the Force Staff is Precision +1 dealt as magic damage (like the Fire, Frost and Earth staffs) or that Precision plus Magic is what it does, is asked back the same day; no item changes the Force Staff until he answers.
+
+## 2026-10-04 — the Force Staff is Precision plus half Magic, as magic damage; the needed mechanics stay behind the starting-weapon work
+
+Andrew, in the kingdom chat, answering the two questions left by the entry above (1 is the Force Staff's Force Blast Precision +1 dealt as magic damage, or Precision plus half the party's Magic as it reads in the game today; 2 do the seven mechanics go ahead of the starting-weapon work already queued, or stay behind it as placed):
+
+“pre+ 1/2 magic, as magic damage, stay behind”
+
+Ruled:
+
+- **The Force Staff's Force Blast deals Precision plus half the party's Magic, as magic damage** - the line in the game today is right as written ("pre" is Precision - typed short). It is one of the rows `capability.damage-from-two-stats` must make act.
+- **The seven items of the entry above stay where they were placed** - behind the engine items already queued (the starting weapons among them), ahead of the deferred item content.
