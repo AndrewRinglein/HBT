@@ -38,6 +38,7 @@
 import {sandboxChoices,sandboxActivationChoices,sandboxSwapChoices,sandboxSwapRefusals,type Sandbox,type SandboxChoice,type SandboxSwapOffer} from '../core/sandbox.js'
 import {controllerOf,validateBattleCommand,forecastFrom,previewFrom,preview,threatOf,zocHoldersAt,heroesYetToAct,isAttack,isMove,isBurst,actionReach,stepCost,grantedActionIds} from '../engine.js'
 import {refusalLine,switchLine,type SwitchRefusal} from './refusals.js'
+import {shownName} from '../../../viewer/src/names.js'
 import type {BattleCommand,Forecast} from '../engine.js'
 
 export type PlayEvent={kind:'hex';hex:number}|{kind:'point';hex:number|null}|{kind:'unit';id:number;hex:number}|{kind:'choose';id:number}|{kind:'back'}|{kind:'slot';actionId:string;unit:number|null}|{kind:'end-turn'}|{kind:'end-activation'}|{kind:'swap';index:number;unit:number|null}|{kind:'answer';yes:boolean}
@@ -134,7 +135,10 @@ export function createPlayInput(session:()=>Sandbox|null,run:(command:BattleComm
   const s=session();if(!s||s.ctx.state.outcome||s.ctx.battleCursor?.at!=='selecting')return null
   return queueOf(s)[0]??null
  }
- const nameOf=(s:Sandbox,id:number|null|undefined)=>id==null?null:s.ctx.state.units[id]?.name??null
+ /* viewer.unit-names-no-letters-or-numbers (engine DECISIONS.md 2026-10-05 'no unit is shown with a number or a letter'): a note
+    names a unit as the board does - the engine's name, less its mark (the viewer's one function, src/names.js shownName) */
+ const shownOf=(u:{name:string}|undefined)=>u?shownName(u.name):null
+ const nameOf=(s:Sandbox,id:number|null|undefined)=>id==null?null:shownOf(s.ctx.state.units[id])
  /** begin a hero: the battle saved first (the undo), then the engine's select-activation; its refusal said in a plain line */
  const begin=(s:Sandbox,id:number,queue:number[],bare=false)=>{const uid=s.ctx.state.units[id]?.uid;if(uid===undefined)return false
   const saved=undo?undo.save():null
@@ -175,12 +179,12 @@ export function createPlayInput(session:()=>Sandbox|null,run:(command:BattleComm
  /** why another hero may not be switched to now (the engine said activation-not-selectable): not the player's, has acted
      or is down — read from the engine's own queue and unit facts — else the one acting must finish (no partial Activations) */
  function whyNot(s:Sandbox,id:number,actor:number|null):SwitchRefusal{
-  const u=s.ctx.state.units[id]!,target=u.name
+  const u=s.ctx.state.units[id]!,target=shownName(u.name)
   if(u.side!=='hero'||controllerOf(s.ctx,id,s.policy)!=='human')return {kind:'not-yours',target}
   if(u.lifeState!=='standing')return {kind:'down',target}
   if(!heroesYetToAct(s.ctx,s.policy).includes(u.uid)||actor===null)return {kind:'acted',target}
   const a=s.ctx.state.units[actor]!
-  return {kind:'busy',actor:a.name,did:a.moveUsed?'moved':a.primaryUsed||(begun?.actor===actor&&s.ctx.state.seq!==begun.seq)?'acted':'begun'}
+  return {kind:'busy',actor:shownName(a.name),did:a.moveUsed?'moved':a.primaryUsed||(begun?.actor===actor&&s.ctx.state.seq!==begun.seq)?'acted':'begun'}
  }
  /** the move the hero plans with: the chosen move, movement slot first, else primary; with nothing chosen, its first move
      with a legal destination IN THE MOVEMENT SLOT — a move spent as the primary is chosen on the bar (SWITCHES playInputDefaultMove) */
@@ -394,7 +398,7 @@ export function createPlayInput(session:()=>Sandbox|null,run:(command:BattleComm
    if(v.ok)return begin(s,e.id,queueOf(s))
    const b=begun,fresh=!!b&&b.actor===actor&&b.seq===s.ctx.state.seq
    if(fresh&&undo&&b!.saved!==null&&b!.queue.includes(e.id)){
-    if(!undo.restore(b!.saved)){note=switchLine({kind:'busy',actor:s.ctx.state.units[actor]!.name,did:'begun'});return false}
+    if(!undo.restore(b!.saved)){note=switchLine({kind:'busy',actor:shownName(s.ctx.state.units[actor]!.name),did:'begun'});return false}
     begun=null;owner=null;cacheSeq=-1;done()
     const back=session()!;sync(back)
     return begin(back,e.id,queueOf(back))}

@@ -6,6 +6,7 @@
 // only while the current one has done nothing; every refusal is one plain line, never a raw code; when an Activation ends the
 // next un-acted hero, left to right, begins. Every legality is the engine's (validateBattleCommand, its choices, previewFrom).
 import { describe, it, expect } from 'vitest'
+import { shownName } from '../../viewer/src/names.js'
 import { createSandbox, advanceSandbox, commandSandbox, sandboxActivationChoices, saveSandbox, restoreSandbox, type Sandbox } from '../src/core/sandbox.js'
 import { SANDBOX_DEFAULT } from '../src/content/sandbox.js'
 import { createPlayInput } from '../src/ui/play-input.js'
@@ -111,7 +112,10 @@ describe('the battle screen\'s turn-taking', () => {
     expect(note).toMatch(/cannot reach that hex/); expect(note).not.toMatch(RAW)
     const zombie = box.s.ctx.state.units.find((u) => u.side === 'enemy')!
     expect(P.input({ kind: 'choose', id: zombie.id })).toBe(false)
-    expect(P.facts().note).toBe(`${zombie.name} is not yours to command.`)
+    /* Law 10, 2026-10-05 - viewer.unit-names-no-letters-or-numbers (engine DECISIONS.md 2026-10-05 'no unit is shown with a number or a
+       letter', Andrew: "it shouldn't be Soldier A or Lumberjack 1"): the note was held to the engine's marked name (`unit.name`). The
+       claim is unchanged - the plain line names the unit - and the name is the engine's less its mark (viewer src/names.js shownName). */
+    expect(P.facts().note).toBe(`${shownName(zombie.name)} is not yours to command.`)
   })
   it('when an Activation ends the next un-acted hero, left to right, begins; the acted one cannot be chosen again', () => {
     const { box, P } = start(); P.next()
@@ -123,7 +127,10 @@ describe('the battle screen\'s turn-taking', () => {
     expect(P.next()).toBe(true)
     expect(box.s.ctx.battleCursor?.actor, 'the leftmost hero yet to act').toBe(q[0])
     expect(P.input({ kind: 'choose', id: first })).toBe(false)
-    expect(P.facts().note).toBe(`${box.s.ctx.state.units[first]!.name} has already acted this Phase.`)
+    /* Law 10, 2026-10-05 - viewer.unit-names-no-letters-or-numbers (engine DECISIONS.md 2026-10-05 'no unit is shown with a number or a
+       letter', Andrew: "it shouldn't be Soldier A or Lumberjack 1"): the note was held to the engine's marked name (`unit.name`). The
+       claim is unchanged - the plain line names the unit - and the name is the engine's less its mark (viewer src/names.js shownName). */
+    expect(P.facts().note).toBe(`${shownName(box.s.ctx.state.units[first]!.name)} has already acted this Phase.`)
   })
   it('after the Enemy Phase the Hero Phase begins its first un-acted hero again', () => {
     const { box, P } = start(); P.next()

@@ -9,6 +9,7 @@
 // Prints one line per check and `bubble-click-reveals: … passed`.
 import assert from 'node:assert/strict'
 import {bootSlice} from './atlas-dom.mjs'
+import {shownName} from '../../viewer/src/names.js'
 const {w}=bootSlice(process.argv[2]??'BATTLE-SANDBOX.html',{search:'?play=encounter.opening.orphanage'}),h=w.__sandbox
 const V=()=>h.viewer._V,ctx=()=>h.session.ctx,unit=id=>ctx().state.units[id]
 const say=(...a)=>console.log('  '+a.join(' '))
@@ -44,7 +45,10 @@ assert.notEqual(V().view.inspectId,id);assert.notEqual(V().revealPan(before,u.he
 say(`1 ${u.name} (hex ${u.hex}) is off the screen: a bubble stands for it`)
 // 2. the click: the unit looked at, the panel its own
 b.handlers.click({stopPropagation(){}});settle()
-assert.equal(V().view.inspectId,id);assert.ok(V().dom.panel.innerHTML.includes(u.name),'the panel shows it')
+/* Law 10, 2026-10-05 - viewer.unit-names-no-letters-or-numbers (engine DECISIONS.md 2026-10-05 'no unit is shown with a number or a
+   letter', Andrew: "it shouldn't be Soldier A or Lumberjack 1"): the panel was asked for the engine's marked name (`includes(u.name)`); it is asked for the unit by its panel's own name line. The claim is unchanged; the name the screen shows is the
+   engine's less its mark, read through the one function the screen itself uses (viewer src/names.js shownName). */
+assert.equal(V().view.inspectId,id);assert.equal(V().dom.panel.querySelector('.pName').textContent,shownName(u.name),'the panel shows it')
 // 3. nothing sent: the engine's battle is where it was
 assert.deepEqual([ctx().state.seq,ctx().events.length,ctx().battleCursor.actor,V().play.actor,V().play.slot],[seq,events,actor,actor,slot],'no command, no Activation changed, the same action armed')
 say(`2 clicked: ${u.name} is the unit the panel shows; the engine's battle is untouched (sequence ${seq}, ${unit(actor).name} still acting)`)

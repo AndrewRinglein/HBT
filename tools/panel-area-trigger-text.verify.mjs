@@ -7,6 +7,7 @@
 // engine's Targeting row (ctx.units' own triggers) must be said in words. Prints one line per battle and
 // `panel-area-trigger-text: … passed`.
 import assert from 'node:assert/strict'
+import {shownName} from '../../viewer/src/names.js'
 import {bootSlice} from './atlas-dom.mjs'
 const PAGE=process.argv[2]??'BATTLE-SANDBOX.html'
 const say=(...a)=>console.log('  '+a.join(' '))
@@ -26,7 +27,10 @@ for(const name of ['orphanage','lumberjack','bridge','cavern-trail','gates','cat
  for(const u of units){
   V().layers.UEL.get(u.id).img.handlers.click({detail:1});settle();assert.equal(V().view.inspectId,u.id,`${u.name} is the unit looked at`)
   const panel=V().dom.panel.innerHTML,bar=V().dom.actionbar.innerHTML
-  assert.ok(panel.includes(u.name));assert.ok(!panel.includes('[object Object]'),`${name}: ${u.name}'s panel prints an object as a string: ${text(panel).match(/.{0,50}\[object Object\].{0,20}/)}`)
+  /* Law 10, 2026-10-05 - viewer.unit-names-no-letters-or-numbers (engine DECISIONS.md 2026-10-05 'no unit is shown with a number or a
+     letter', Andrew: "it shouldn't be Soldier A or Lumberjack 1"): the panel was asked for the engine's marked name (`panel.includes(u.name)`). The claim is unchanged; the name the screen shows is the
+     engine's less its mark, read through the one function the screen itself uses (viewer src/names.js shownName). */
+  assert.ok(panel.includes(shownName(u.name)));assert.ok(!panel.includes('[object Object]'),`${name}: ${u.name}'s panel prints an object as a string: ${text(panel).match(/.{0,50}\[object Object\].{0,20}/)}`)
   assert.ok(!bar.includes('[object Object]'),`${name}: the action bar prints an object as a string while ${u.name} is looked at`)
   // the engine's own rows for this unit: a trigger aimed by a Targeting row is said in words
   const area=(u.triggers??[]).filter(t=>typeof t.select==='object')
