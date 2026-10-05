@@ -35513,3 +35513,156 @@ index 0000000..f8e67d2
   PASS  naming — new content ids use declared kinds
   PASS  naming — no banned words invented
   PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+## viewer.lost-counterattack-line — LANDED `89064fe` **NEEDS REVIEW**
+2026-10-05 12:39
+
+  PASS  dependencies landed
+  WARN  not already decided — 4 candidate ruling(s) — READ BEFORE ASKING: SWITCHES.md:1944 · SWITCHES.md:2247
+  PASS  typecheck
+  PASS  the item's own tests — test/viewer.lost-counterattack-line.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — viewer/test/viewer.lost-counterattack-line.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/viewer.lost-counterattack-line.test.ts (-1) — will land FLAGGED for review
+  PASS  control battles unchanged
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+eee5704
+
+diff --git a/test/viewer.lost-counterattack-line.test.ts b/test/viewer.lost-counterattack-line.test.ts
+index c7e414f..4261cad 100644
+--- a/test/viewer.lost-counterattack-line.test.ts
++++ b/test/viewer.lost-counterattack-line.test.ts
+@@ -92,5 +92,5 @@ describe('a counterattack that is lost or replaced says so in the log: what the
+     const src = '../src/actions.js', { FREE_ATTACK } = await import(src) as { FREE_ATTACK: Record<string, { stat?: string; accuracy?: string }> }
+     for (const [kind, row] of Object.entries(KINDS)) { expect(FREE_ATTACK[kind], kind).toBeDefined(); expect(FREE_ATTACK[kind]!.stat).toBe(row.up); expect(FREE_ATTACK[kind]!.accuracy).toBe(row.accuracy) }
+-  })
++  }, 120000)   // the page's module is loaded here for the first time: seconds under a loaded machine, past the 5-second default
+   it('the fixture is the engine\'s own battles, line for line', () => {
+     const now = fixtureNow()
+8f89924
+
+diff --git a/test/viewer.lost-counterattack-line.test.ts b/test/viewer.lost-counterattack-line.test.ts
+new file mode 100644
+index 0000000..c7e414f
+--- /dev/null
++++ b/test/viewer.lost-counterattack-line.test.ts
+@@ -0,0 +1,106 @@
++// viewer.lost-counterattack-line (engine backlog; found by the engine worker landing rule.counterattack-replaced-and-lost,
++// 2026-10-05 — ruled 2026-10-04, engine DECISIONS.md 'after the backlog run: …': a counterattack used again replaces the old
++// one, and being knocked down or knocked to another hex loses it; viewer SWITCHES.md counterattackLostLine: "the log could say
++// 'loses its Counterattack — knocked back' from those two fields").
++// Display only: no engine change. This file holds what the log's sentence stands on — the engine's own lines: every modifier a
++// loss takes off is one `statmod.expired` that says why (`reason`: replaced, knocked-down, knocked-back) and which special
++// free attack went (`lost`); the first line of a loss is the kind's own "up" stat, the rest went with it (its Accuracy, and on
++// a replacement the older power's riders); a knockdown's follows the line that put the unit down, a knockback's the line that
++// moved it, a replacement's the newer power's own `power.used`; one that only runs out carries neither field — and makes the
++// fixture the page test reads: tools/fixtures/lost-counterattack.json, the engine's own fielded opening battles, each on the
++// lowest replicate (0 upward, 16 at most) whose battle holds a line of that reason, cut at the end of the Activation the loss
++// fell in. Read for the KIND of line, never for who wins.
++// The viewer's half is ../viewer/tools/lost-counterattack-line.test.mjs.
++//
++//   LOST_COUNTERATTACK_WRITE=1 npm test -- viewer.lost-counterattack-line     rewrites the fixture from the engine
++import { describe, it, expect } from 'vitest'
++import { execFileSync } from 'node:child_process'
++import { readFileSync, writeFileSync } from 'node:fs'
++import { createBattle } from '../../engine/src/core/setup.js'
++import { runBattle } from '../../engine/src/core/battle.js'
++import { SCENARIOS, scenarioOptions } from '../../engine/src/content/scenarios.js'
++import { SPECIAL_FREE_ATTACKS } from '../../engine/src/core/special-free-attacks.js'
++
++const FIXTURE = 'tools/fixtures/lost-counterattack.json'
++const plain = <T>(x: T): T => JSON.parse(JSON.stringify(x))
++type E = { type: string; actor?: number; target?: number; causeId?: string; abilityId?: string; stat?: string; value?: number; source?: string; reason?: string; lost?: string }
++const KINDS = SPECIAL_FREE_ATTACKS as Record<string, { up: string; accuracy: string }>
++const REASONS = ['replaced', 'knocked-down', 'knocked-back']
++/** the cases the item's expect names: a hero holding a counterattack is knocked down; is knocked to another hex; uses the power
++ *  again; and a replacement that takes the older power's other modifier with it (the Great Sword's +2 Strength) */
++const CASES = {
++  knockedDown: { scenario: 'test.opening-gates', reason: 'knocked-down', rider: false },
++  knockedBack: { scenario: 'test.opening-gates', reason: 'knocked-back', rider: false },
++  replaced: { scenario: 'test.opening-orphanage', reason: 'replaced', rider: false },
++  replacedWithRider: { scenario: 'test.opening-lumberjack', reason: 'replaced', rider: true },
++} as const
++type Case = keyof typeof CASES
++const isRider = (e: E) => e.stat !== KINDS[e.lost!]!.up && e.stat !== KINDS[e.lost!]!.accuracy
++const firstLoss = (c: Case, EV: readonly E[]) => EV.findIndex((e, i) => e.type === 'statmod.expired' && e.reason === CASES[c].reason && e.stat === KINDS[e.lost!]!.up
++  && (!CASES[c].rider || lossFrom(EV, i).some(isRider)))
++/** the lines of one loss: the run of `statmod.expired` lines from `i` that name the same unit, kind and reason */
++function lossFrom(EV: readonly E[], i: number): E[] { const a = EV[i]!, out: E[] = []
++  for (let k = i; k < EV.length && EV[k]!.type === 'statmod.expired' && EV[k]!.actor === a.actor && EV[k]!.lost === a.lost && EV[k]!.reason === a.reason; k++) out.push(EV[k]!)
++  return out }
++const PLAYED: Partial<Record<Case, { replicate: number; EV: E[]; mapId: string; at: number }>> = {}
++function played(c: Case) {
++  if (PLAYED[c]) return PLAYED[c]!
++  for (let r = 0; r < 16; r++) {
++    const ctx = createBattle(scenarioOptions(SCENARIOS[CASES[c].scenario]!, r)); runBattle(ctx)
++    const EV = ctx.events as unknown as E[], at = firstLoss(c, EV)
++    if (at >= 0) return (PLAYED[c] = { replicate: r, EV, mapId: ctx.state.mapId, at })
++  }
++  throw new Error(`${CASES[c].scenario}: no replicate 0-15 holds a counterattack that ends as ${CASES[c].reason}${CASES[c].rider ? ' with a rider' : ''}`)
++}
++/** the battle up to the end of the Activation the loss fell in */
++function cut(c: Case) { const p = played(c), end = p.EV.findIndex((e, i) => i > p.at && e.type === 'activation.end'); return p.EV.slice(0, end < 0 ? p.EV.length : end + 1) }
++function fixtureNow() {
++  const out: Record<string, unknown> = { _about: 'GENERATED by test/viewer.lost-counterattack-line.test.ts (LOST_COUNTERATTACK_WRITE=1) from the engine — never hand-edit. The engine\'s own fielded opening battles (createBattle of each scenario, on the lowest replicate whose battle holds a counterattack that ends for that reason — the seed says which), each cut at the end of the Activation the loss fell in; `at` is the first line of the loss.' }
++  for (const c of Object.keys(CASES) as Case[]) { const p = played(c); out[c] = { seed: { mapId: p.mapId, replicate: p.replicate, scenarioId: CASES[c].scenario }, reason: CASES[c].reason, at: p.at, events: plain(cut(c)) } }
++  return out
++}
++const page = (file: string) => execFileSync(process.execPath, ['--test', '--test-reporter=tap', file], { cwd: '../viewer', encoding: 'utf8', maxBuffer: 1 << 26, env: { ...process.env, VIEWER_PAGE: process.env.VIEWER_PAGE ?? '' } })
++
++describe('a counterattack that is lost or replaced says so in the log: what the engine\'s lines say', () => {
++  it('every modifier a loss takes off is one line that says why and which special free attack went; the first line of a loss is the kind\'s own stat, and what follows went with it', () => {
++    for (const c of Object.keys(CASES) as Case[]) {
++      const { EV } = played(c), lost = EV.map((e, i) => ({ e, i })).filter((x) => x.e.type === 'statmod.expired' && (x.e.lost !== undefined || x.e.reason !== undefined))
++      expect(lost.length, c).toBeGreaterThan(0)
++      for (const { e, i } of lost) {
++        expect(REASONS, `${c} line ${i}`).toContain(e.reason); expect(KINDS[e.lost!], `${c} line ${i}: ${e.lost}`).toBeDefined()
++        const prev = EV[i - 1]!, opens = !(prev.type === 'statmod.expired' && prev.actor === e.actor && prev.lost === e.lost && prev.reason === e.reason)
++        if (opens) expect(e.stat, `${c} line ${i}: the loss opens on the kind's own stat`).toBe(KINDS[e.lost!]!.up)
++        else expect(e.stat, `${c} line ${i}: only the first line is the kind's own stat`).not.toBe(KINDS[e.lost!]!.up)
++      }
++    }
++  }, 120000)
++  it('a knockdown\'s follows the line that put the unit down; a knockback\'s the line that moved it; a replacement\'s the newer power\'s own use', () => {
++    const before = (c: Case) => { const p = played(c); return { e: p.EV[p.at]!, prev: p.EV[p.at - 1]! } }
++    const down = before('knockedDown'); expect(down.prev.type).toBe('unit.proned'); expect(down.prev.target).toBe(down.e.actor); expect(down.e.reason).toBe('knocked-down')
++    const back = before('knockedBack'); expect(back.prev.type).toBe('knocked'); expect(back.prev.target).toBe(back.e.actor); expect(back.e.reason).toBe('knocked-back')
++    for (const c of ['replaced', 'replacedWithRider'] as const) { const r = before(c)
++      expect(r.prev.type).toBe('power.used'); expect(r.prev.actor).toBe(r.e.actor); expect(r.e.causeId, 'the cause is the newer power').toBe(r.prev.abilityId); expect(r.e.reason).toBe('replaced') }
++    const rider = played('replacedWithRider'); expect(lossFrom(rider.EV, rider.at).filter(isRider).length, 'the older power\'s other modifier goes with it').toBeGreaterThan(0)
++  }, 120000)
++  it('one that only runs out carries neither field (the engine\'s fielding test.counterattack, the fixture of viewer.free-attack-kind-words)', () => {
++    const kept = JSON.parse(readFileSync('tools/fixtures/free-attack-kinds.json', 'utf8')).counterattack.events as E[]
++    const out = kept.filter((e) => e.type === 'statmod.expired' && e.stat === 'counterattack')
++    expect(out.length).toBeGreaterThan(0)
++    for (const e of out) { expect(e.reason).toBeUndefined(); expect(e.lost).toBeUndefined() }
++  })
++  it('the page\'s table of special free attacks names the engine\'s kinds by the engine\'s own stats', async () => {
++    const src = '../src/actions.js', { FREE_ATTACK } = await import(src) as { FREE_ATTACK: Record<string, { stat?: string; accuracy?: string }> }
++    for (const [kind, row] of Object.entries(KINDS)) { expect(FREE_ATTACK[kind], kind).toBeDefined(); expect(FREE_ATTACK[kind]!.stat).toBe(row.up); expect(FREE_ATTACK[kind]!.accuracy).toBe(row.accuracy) }
++  })
++  it('the fixture is the engine\'s own battles, line for line', () => {
++    const now = fixtureNow()
++    if (process.env.LOST_COUNTERATTACK_WRITE) writeFileSync(FIXTURE, JSON.stringify(now) + '\n')
++    const kept = JSON.parse(readFileSync(FIXTURE, 'utf8'))
++    for (const c of Object.keys(CASES)) { expect(kept[c].seed, c).toEqual((now[c] as { seed: unknown }).seed); expect(kept[c].at, c).toBe((now[c] as { at: number }).at); expect(kept[c].events, c).toEqual((now[c] as { events: unknown }).events) }
++  }, 120000)
++  it('the viewer page: the log says a counterattack is lost and what did it, or that a newer one replaced it; one that runs out, and a battle with none, read as before', () => {
++    const out = page('tools/lost-counterattack-line.test.mjs')
++    expect(out).toMatch(/# pass 7/); expect(out).toMatch(/# fail 0/)
++    for (const line of out.split('\n').filter((l) => /^# \\?# /.test(l))) console.log(line.replace(/^# \\?# /, '  '))
++  }, 600000)
++})
+```
+</details>

@@ -53,3 +53,4 @@
 {"suite":"engine","stamp":"b31863a611","failed":true,"at":"2026-10-05T10:00:44.282Z","by":"gate --shard 1/1","in":"HBT-worker-engine"}
 {"suite":"engine","stamp":"c5f16f0991","failed":true,"at":"2026-10-05T10:29:21.364Z","by":"gate --shard 1/1","in":"HBT-worker-engine"}
 {"suite":"engine","stamp":"c5f16f0991","with":{"engine":"c5f16f0991","content":"8de9847058","viewer":"ffd21a0fb8","kingdom":"c5b9c50b79"},"at":"2026-10-05T10:35:45.560Z","by":"gate --shard (1 of 1)","in":"HBT-worker-engine","tests":2940}
+{"suite":"control","stamp":"c5f16f0991","pack":"24ac096176","golden":"2a98bd088f","at":"2026-10-05T12:39:42.265Z","by":"gate viewer.lost-counterattack-line --land","in":"HBT-worker-content","moved":null}
