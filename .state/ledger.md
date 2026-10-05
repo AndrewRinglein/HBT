@@ -37265,3 +37265,86 @@ index 4fa3021..39d00ad 100644
   PASS  naming — new content ids use declared kinds
   PASS  naming — no banned words invented
   PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+## viewer.zoom-stays — LANDED `13a0872` **NEEDS REVIEW**
+2026-10-05 22:50
+
+  PASS  dependencies landed
+  WARN  not already decided — 4 candidate ruling(s) — READ BEFORE ASKING: ..\ATLAS-COMBAT-INTEGRATION.md:222 · DECISIONS.md:5088
+  PASS  typecheck
+  PASS  the item's own tests — test/viewer.zoom-stays.test.ts, test/xcom-camera-tuning.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — viewer/test/viewer.zoom-stays.test.ts, viewer/test/xcom-camera-tuning.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/xcom-camera-tuning.test.ts (-1) — will land FLAGGED for review
+  SKIPPED  control battles unchanged — engine code f9fdfb5dde and the content pack are the ones the control battles last passed on (2026-10-05 17:45, gate capability.summons --land, in HBT-worker-engine) — not run
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+b222c06
+
+diff --git a/test/viewer.zoom-stays.test.ts b/test/viewer.zoom-stays.test.ts
+new file mode 100644
+index 0000000..1e29ef0
+--- /dev/null
++++ b/test/viewer.zoom-stays.test.ts
+@@ -0,0 +1,36 @@
++// viewer.zoom-stays (engine backlog; ruled 2026-10-05, Andrew, engine DECISIONS.md 'the battle screen must feel smooth: …' — asked
++// "Should the wheel zoom stay where you leave it, far enough out to see the whole board (this overturns 'snaps back')?":
++// "2 yes"). Overturns 2026-10-01 "The mouse wheel zooms a limited amount and snaps back to standard when you stop" and, at the
++// widest zoom only, 2026-10-03 "the camera never shows white space", by as much as showing the whole board takes and no more.
++// Expect: "On the Orphanage at 1920x1080: three notches out and the view is still there ten seconds later; at the farthest
++// notch all 280 hexes are whole in the battle area; zooming in with the pointer on a hex keeps that hex under the pointer
++// within a few px at every step; ten notches in one second end at their zoom within 200 ms of the last; a new battle opens at
++// the standard zoom; the page tests that asserted the spring back and the fill floor are changed to assert these, citing the
++// ruling."
++// The engine's side — nothing is asked of it: the zoom is no command. The viewer's half is ../viewer/tools/zoom-stays.test.mjs,
++// on the page (VIEWER_PAGE) as the gate runs it. Imports no page code.
++import { describe, it, expect } from 'vitest'
++import { execFileSync } from 'node:child_process'
++import { readFileSync } from 'node:fs'
++
++describe('the wheel\'s zoom stays where it is left, out to the whole board', () => {
++  it('the numbers are the camera\'s policy: the nearest is 1.8 of the standard as before; a notch eases over 120 ms; the far factor and the rest timer are gone', () => {
++    const src = readFileSync('src/camera-policy.js', 'utf8')
++    const n = (name: string) => Number(src.match(new RegExp('\\n\\s*' + name + ':\\s*([\\d.]+)'))?.[1])
++    expect(n('ZOOM_NEAR')).toBe(1.8); expect(n('ZOOM_EASE_MS')).toBe(120)
++    expect(n('ZOOM_FAR'), 'no farthest factor: the far end is the whole board\'s fit').toBeNaN()
++    expect(n('ZOOM_REST_MS'), 'no rest timer: the zoom stays').toBeNaN()
++    expect(readFileSync('src/board.js', 'utf8'), 'no timer springs the zoom back').not.toMatch(/zoomRest/)
++  })
++  it('the viewer page, the Orphanage: it stays ten seconds on; the whole board at the farthest notch; about the pointer; the 120 ms ease that keeps its speed; a new battle at the standard zoom; the wheel\'s button; the HUD line', () => {
++    const out = execFileSync(process.execPath, ['--test', '--test-reporter=tap', 'tools/zoom-stays.test.mjs'], { cwd: '../viewer', encoding: 'utf8', maxBuffer: 1 << 24, env: { ...process.env, VIEWER_PAGE: process.env.VIEWER_PAGE ?? '' } })
++    expect(out).toMatch(/# pass 7/); expect(out).toMatch(/# fail 0/)
++  }, 170000)
++  it('the tests that asserted the spring back and the fill floor now assert the zoom that stays, each citing the ruling', () => {
++    for (const f of ['tools/xcom-camera.test.mjs', 'tools/camera-no-void.test.mjs', 'tools/characters-stand-out.test.mjs', 'tools/view-stays-where-put.test.mjs', '../kingdom/tools/view-stays-where-put.verify.mjs']) {
++      const src = readFileSync(f, 'utf8')
++      expect(src, `${f}: its dated note`).toMatch(/Law 10, 2026-10-05 \(viewer\.zoom-stays/)
++      expect(src, `${f}: the ruling's own word`).toMatch(/"2 yes"/)
++    }
++  })
++})
+diff --git a/test/xcom-camera-tuning.test.ts b/test/xcom-camera-tuning.test.ts
+index 620e879..0bc871b 100644
+--- a/test/xcom-camera-tuning.test.ts
++++ b/test/xcom-camera-tuning.test.ts
+@@ -18,5 +18,7 @@ describe('the XCOM camera, tuned', () => {
+     expect([m?.width ?? m?.board?.width, m?.height ?? m?.board?.height]).toEqual([20, 14])
+   })
+-  it('the viewer page: the wheel goes further and springs back; every edge scrolls; the pan stops at the board\'s edge', () => {
++  /* (viewer.zoom-stays, 2026-10-05: this read "the wheel goes further and springs back" — the zoom now stays where it is left,
++     engine DECISIONS.md 'the battle screen must feel smooth: …'; the page's own test is rewritten, tools/xcom-camera.test.mjs) */
++  it('the viewer page: the wheel goes further and stays where it is left; every edge scrolls; the pan stops at the board\'s edge', () => {
+     expect(run('tools/xcom-camera.test.mjs')).toMatch(/# fail 0/)
+     expect(run('tools/true-3d-camera.test.mjs')).toMatch(/# fail 0/)
+```
+</details>
