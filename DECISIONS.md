@@ -5041,3 +5041,11 @@ Ruled:
 - **The first hero's card:** one line saying what it is ("a ranger"), then its own positives and negatives against a standard hero of that type - stats and badges - and nobody else's. This replaces 2026-10-03's "no stats or badges shown, just a description".
 - **The priest's damage** was at the Lumberjack House (battle 2), and the priest was not next to the skeleton archer. Being traced.
 - **Not answered - the hex you cannot walk through.** His sentence breaks off: "If you can't walk through an index". The chat reads it as "an X" on that hex (said to him the same day; one line to change).
+
+## 2026-10-05 — no unit is shown with a number or a letter
+
+Andrew, in the kingdom chat, still playing:
+
+“None of the player units or enemy units should have numbers or letters. It's super dumb. It's okay to track them that way, but it shouldn't be Soldier A or Lumberjack 1 or Pyrowitch A. Why have an A or a 1 or an A? It's fine for the zombies just to be zombie, zombie, zombie, zombie.”
+
+Ruled: **a unit's shown name never carries a number or a letter that tells it from another of its kind** - on the board, the top cards, the panels, the log, the notices and the screens between battles. The game may still track them that way underneath. Four zombies read Zombie, Zombie, Zombie, Zombie. Filed: `viewer.unit-names-no-letters-or-numbers`.
