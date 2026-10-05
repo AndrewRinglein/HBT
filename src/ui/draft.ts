@@ -32,6 +32,22 @@
 // classLineNoNumbers). 2026-10-03's "no stats or badges shown, just a description" is replaced only as far as these
 // plain lines go: the later drafts' stat block still does not show on the first draft.
 //
+// kingdom.first-hero-own-positives-negatives (2026-10-05, Andrew, engine/DECISIONS.md 'playtest post: …, the first hero's
+// positives': "I weirdly got a list of like six positive things for each person. It seemed like maybe all of the positives
+// for all of them were showing under each of them, as opposed to just the one that related to that hero." — and 'the playtest
+// post answered: …': "It should show its positives and negatives compared to a standard hero of that type. It should say one
+// line about what it is, like a ranger, and then it should do something similar to what you have there, but just about the
+// positives and negatives it has, stats, and badges."). THE FAULT: the plain lines under each card of the first draft were
+// what the FIRST HERO is given (Leadership, a positive badge, +2 Health, a stat point) — rolled once for the pick, the same
+// whichever of the three is taken — so all three cards listed the same five or six lines and none was that hero's own. NOW,
+// on the first draft: each card says in one line what the hero is ("A ranger." — its class's name, the content's row), then
+// ITS OWN differences from the standard hero of its class (content/class-standard.ts): each stat above the standard a
+// positive ("+1 Precision"), each below a negative ("-1 Health"), its own badges with what each does — positives first — or,
+// when it differs in nothing, one line saying so. What the first hero is given is said ONCE, for the pick, in one line above
+// the three cards (kingdom SWITCHES.md firstHeroGiftsOnce). This replaces 2026-10-03's "no stats or badges shown, just a
+// description" and 2026-10-04's "never a number" for the first draft's cards; the class's sentence and the codex's
+// description stay (SWITCHES.md firstHeroCardKeeps). The later drafts never had the fault and are not changed.
+//
 // kingdom.opening-draft-class-message (2026-10-04, Andrew, engine/DECISIONS.md 'the opening's tutorial: the first hero's class line, no map before battle 1, …':
 // "The second time you are drafting a hero, there should be a message …" — his sentence is the content's row,
 // content/prologue.ts DRAFT_MESSAGES, and is not repeated here): a draft whose content row gives it words (core/opening.ts draftMessageOf —
@@ -42,7 +58,9 @@ import { listDraftOffers, draftsOwedOf, draftedCountOf, draftedHeroOf, draftMess
 import { fieldedPreviewOf } from '../core/seam.js'
 import { UNKITTED_HEROES, heroDescriptionOf, type HeroRow, type UnkittedHero } from '../content/heroes.js'
 import { CRUCIBLE, FIRST_HERO, crucibleBadgeOf, crucibleStatOf, badgeLineOf, statLineOf } from '../content/crucible.js'
-import { classLineOf } from '../content/classes.js'
+import { CLASSES, classLineOf } from '../content/classes.js'
+import { ownDifferencesOf } from '../content/class-standard.js'
+import { BADGE_LINES } from '../content/generated/progress.js'
 import { joinsWithOf } from '../core/draft-modifiers.js'
 import { statLabelOf } from '../content/stat-labels.js'
 import { BADGES, type UnitDef } from '../engine.js'
@@ -73,24 +91,57 @@ function classLine(h: HeroRow): string {
   return line ? `<p class="classline" data-class-line="${esc(h.classes.find((c) => classLineOf([c]) === line)!)}">${esc(line)}</p>` : ''
 }
 
+/** One plain line of what a first hero joins with, and the thing(s) it is said of (two things with the same words share a line). */
+type JoinLine = { words: string; of: string[] }
 /** What this hero joins with, in plain words: one line for each thing, in the record's order; things with the same words share a line. */
-function joinsList(joined: Hero): string {
-  const lines: { words: string; of: string[] }[] = []
+function joinLinesOf(joined: Hero): JoinLine[] {
+  const lines: JoinLine[] = []
   for (const j of joinsWithOf(joined.drafted!, FIRST_HERO.healthSource)) {
     const words = j.badge ? badgeLineOf(j.badge) : statLineOf(j.stat!)
     const same = lines.find((l) => l.words === words)
     if (same) same.of.push(j.key); else lines.push({ words, of: [j.key] })
   }
-  return lines.length ? `<ul class="joins">${lines.map((l) => `<li data-joins="${esc(l.of.join(' '))}">${esc(l.words)}</li>`).join('')}</ul>` : ''
+  return lines
+}
+const sameLine = (a: JoinLine, b: JoinLine) => a.words === b.words && a.of.join(' ') === b.of.join(' ')
+
+/** The hero's class as the content names it, in plain words: "A ranger." — the first of its classes that has a row. */
+function whatItIs(h: HeroRow): string {
+  const row = CLASSES.find((c) => h.classes.includes(c.id))
+  if (!row) return `<small>${esc(classesOf(h))}</small>`
+  const name = row.name.toLowerCase()
+  return `<small class="whatitis" data-what="${esc(row.id)}">${/^[aeiou]/.test(name) ? 'An' : 'A'} ${esc(name)}.</small>`
+}
+
+/** What one of the hero's own badges does, in the content's plain words — else the stats the battle fields for it. */
+const ownBadgeWords = (id: string): string => BADGE_LINES[id] ?? badgeWordsOf(id)
+
+/**
+ * The hero's OWN positives and negatives against the standard hero of its class: each stat above it, each of its own badges
+ * that is not a flaw, then each stat below it and each flawed badge. A hero that differs in nothing says so in one line.
+ */
+function ownList(h: HeroRow): string {
+  const own = ownDifferencesOf(h)
+  const className = (CLASSES.find((c) => c.id === own.classId)?.name ?? own.classId.replace('class.', '')).toLowerCase()
+  if (!own.stats.length && !own.badges.length) return `<p class="own same" data-own="same">The same as a standard ${esc(className)} in everything.</p>`
+  const flawed = (b: string) => CRUCIBLE.flawed.some((x) => x.id === b)
+  const stat = (d: { stat: string; amount: number }) => `<li class="${d.amount > 0 ? 'pos' : 'neg'}" data-own="stat:${esc(d.stat)}" data-amount="${d.amount}">${sign(d.amount)} ${esc(statLabelOf(d.stat))}</li>`
+  const badge = (b: string) => `<li class="${flawed(b) ? 'neg' : 'pos'}" data-own="badge:${esc(b)}"><b>${esc(BADGES[b]?.name ?? b)}</b> ${esc(ownBadgeWords(b))}</li>`
+  return `<ul class="own" data-against="${esc(own.classId)}">${[
+    ...own.stats.filter((d) => d.amount > 0).map(stat), ...own.badges.filter((b) => !flawed(b)).map(badge),
+    ...own.stats.filter((d) => d.amount < 0).map(stat), ...own.badges.filter(flawed).map(badge),
+  ].join('')}</ul>`
 }
 
 /**
- * One offer of the first draft: who the hero is — its card art, name, class, the class's sentence, what it joins with in
- * plain words (`joined`: the hero as it would join), and the codex's description. No number, no badge by name, no kit.
+ * One offer of the first draft: its card art, name, one line of what it is, the class's sentence, ITS OWN differences from
+ * the standard hero of its class, and the codex's description. `extra`: anything this hero alone would be given as the first
+ * hero — none while the first hero's rule gives all three the same (the pick's line above the cards says those). No kit.
  */
-function firstOffer(h: HeroRow, joined: Hero): string {
+function firstOffer(h: HeroRow, extra: readonly JoinLine[]): string {
   const d = heroDescriptionOf(h.id)
-  return `<div class="opt" data-act="draft" data-id="${esc(h.id)}" data-classes="${esc(h.classes.join(','))}">${cardArt(h.id)}<b>${esc(h.name)}</b><small>${esc(classesOf(h))}</small>${classLine(h)}${joinsList(joined)}${d ? `<p class="who">${esc(d.description)}</p>${d.quote ? `<p class="quote">“${esc(d.quote)}”</p>` : ''}` : ''}</div>`
+  const mine = extra.length ? `<ul class="joins">${extra.map((l) => `<li data-joins="${esc(l.of.join(' '))}">${esc(l.words)}</li>`).join('')}</ul>` : ''
+  return `<div class="opt" data-act="draft" data-id="${esc(h.id)}" data-classes="${esc(h.classes.join(','))}">${cardArt(h.id)}<b>${esc(h.name)}</b>${whatItIs(h)}${classLine(h)}${ownList(h)}${mine}${d ? `<p class="who">${esc(d.description)}</p>${d.quote ? `<p class="quote">“${esc(d.quote)}”</p>` : ''}` : ''}</div>`
 }
 
 /** What a badge does, in words: the stats the battle fields for it (the engine's row), and the item slots the campaign gives or takes. */
@@ -137,9 +188,14 @@ export function draftScreen(c: CampaignState, leftOut: readonly UnkittedHero[] =
   const owed = draftsOwedOf(c) > 1 ? ` ${draftsOwedOf(c)} to draft before the next battle.` : ''
   const said = draftMessageOf(c)
   const notice = said ? `\n    <p class="draftNotice" data-draft-notice="${said.draft}" role="note">${esc(said.text)}</p>` : ''
+  // kingdom.first-hero-own-positives-negatives: what the first hero is given is the PICK's — the lines every one of the three
+  // would join with are said once, above the cards; a line only one of them would get stays under that one
+  const joins = first ? offers.map((h) => joinLinesOf(draftedHeroOf(c, h.id))) : []
+  const shared = first && joins.length ? joins[0]!.filter((l) => joins.every((other) => other.some((x) => sameLine(x, l)))) : []
+  const gifts = shared.length ? `\n    <p class="firstGifts" data-first-gifts="${shared.length}">Whoever you choose leads the party and also gets: ${shared.map((l) => `<span data-joins="${esc(l.of.join(' '))}">${esc(l.words)}</span>`).join(' · ')}.</p>` : ''
   return `<h2>The draft — ${first ? 'your first hero' : `hero ${draftedCountOf(c) + 1} of six`}</h2>
     <p class="meta">${first
-      ? 'Three come to the fire. You see who they are and what each brings — never their numbers. Choose the one who will lead.'
-      : 'Three come to the fire, each as the Crucible made them: their numbers, the points they rolled against their kind, and their badges. Take the one you want.'}${owed}</p>${notice}
-    <div class="card"><div class="pick${first ? '' : ' draft-rolled'}">${offers.map((h) => (first ? firstOffer(h, draftedHeroOf(c, h.id)) : rolledOffer(h, draftedHeroOf(c, h.id)))).join('')}</div></div>${leftOut.length ? `<p class="meta">Not at the fire — no kit in the content: ${leftOut.map((h) => `<span data-unkitted="${esc(h.id)}">${esc(h.name)}</span>`).join(', ')}.</p>` : ''}`
+      ? 'Three come to the fire. Each card says what the hero is and how it differs from a standard hero of its kind. Choose the one who will lead.'
+      : 'Three come to the fire, each as the Crucible made them: their numbers, the points they rolled against their kind, and their badges. Take the one you want.'}${owed}</p>${notice}${gifts}
+    <div class="card"><div class="pick${first ? '' : ' draft-rolled'}">${offers.map((h, i) => (first ? firstOffer(h, joins[i]!.filter((l) => !shared.some((x) => sameLine(x, l)))) : rolledOffer(h, draftedHeroOf(c, h.id)))).join('')}</div></div>${leftOut.length ? `<p class="meta">Not at the fire — no kit in the content: ${leftOut.map((h) => `<span data-unkitted="${esc(h.id)}">${esc(h.name)}</span>`).join(', ')}.</p>` : ''}`
 }

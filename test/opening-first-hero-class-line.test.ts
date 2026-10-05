@@ -51,8 +51,10 @@ function offersOn(html: string): { id: string; classes: string[]; html: string }
   const starts = [...html.matchAll(/<div class="opt[^"]*" data-act="draft" data-id="([^"]+)" data-classes="([^"]*)"/g)]
   return starts.map((m, i) => ({ id: m[1]!, classes: m[2]!.split(','), html: html.slice(m.index!, i + 1 < starts.length ? starts[i + 1]!.index! : html.length) }))
 }
-/** the plain lines an offer shows: what each says, and which thing(s) it is said of */
-const joinsOn = (html: string) => [...html.matchAll(/<li data-joins="([^"]+)">([^<]*)<\/li>/g)].map((m) => ({ of: m[1]!.split(' '), words: m[2]! }))
+/** the plain lines of what the first hero joins with — said once, for the pick, above the three cards: what each says, and which thing(s) it is said of */
+const joinsOn = (html: string) => { const block = html.match(/<p class="firstGifts"[^>]*>([\s\S]*?)<\/p>/); return block ? [...block[1]!.matchAll(/<span data-joins="([^"]+)">([^<]*)<\/span>/g)].map((m) => ({ of: m[1]!.split(' '), words: m[2]! })) : [] }
+/** a card without its own differences from its class's standard (kingdom.first-hero-own-positives-negatives) */
+const apartFromOwn = (html: string) => html.replace(/<ul class="own"[^>]*>[\s\S]*?<\/ul>|<p class="own same"[^>]*>[\s\S]*?<\/p>/g, ' ')
 const classLineOn = (html: string) => html.match(/<p class="classline" data-class-line="([^"]+)">([^<]*)<\/p>/)
 function atFirstDraft(seed: number): Ctx {
   const ctx = makeCtx(makeNewCampaign(seed)); performAdvanceOpening(ctx, 'test'); return ctx
@@ -142,7 +144,18 @@ describe('kingdom.opening-first-hero-class-line — the first draft says what th
     expect(() => W.statLineOf!('no-such-stat')).toThrow(/no plain words/)
   })
 
-  it('each offer of the first draft: the class line of its own class under the class word, then one plain line for each thing it joins with — no stat table, no number, no badge named', () => {
+  // Law 10, 2026-10-05 (kingdom.first-hero-own-positives-negatives; engine/DECISIONS.md 2026-10-05 'the playtest post
+  // answered: …, the first hero's own positives and negatives' — Andrew: "It should show its positives and negatives compared to a
+  // standard hero of that type. It should say one line about what it is, like a ranger, and then … just about the positives and
+  // negatives it has, stats, and badges." — "This replaces 2026-10-03's 'no stats or badges shown, just a description'".) This test
+  // held, under EACH card of the first draft, one plain line for each thing the hero joins with, and the card as showing "no
+  // number at all" and "no badge by name". Those plain lines are what the FIRST HERO is given — the same for all three, which is
+  // the fault he reported ("a list of like six positive things for each person") — so the test pinned it. As the rule now stands:
+  // the very same lines, held as hard (one per badge in the content's words, Leadership first, the Health, each rolled point,
+  // every thing once, no line twice), are read from the ONE line above the three cards, and no card carries any of them; the
+  // class word is the card's one line of what it is ("A ranger."); and the card shows no number and names no badge BUT its own
+  // differences from its class's standard. The class line, its place, no stat table, no kit: as they were.
+  it('each offer of the first draft: the class line of its own class under the line of what it is; what the first hero joins with is said once above the cards, one plain line for each thing — no stat table, and on the card no number and no badge named but its own differences', () => {
     const badgeNames = [...FIRST.badges, ...FAVOURABLE, ...FLAWED].map((id) => BADGES[id]!.name)
     for (const seed of SEEDS) {
       const ctx = atFirstDraft(seed), c = ctx.campaign, html = draftScreen(c), offers = offersOn(html)
@@ -153,11 +166,14 @@ describe('kingdom.opening-first-hero-class-line — the first draft says what th
         const cl = classLineOn(o.html)
         expect(cl, `${who}: a class line`).not.toBeNull()
         expect([cl![1], cl![2]], `${who}: the line of its own class, the content's row`).toEqual([o.classes[0], lineOfClass(o.classes[0]!)!.replace(/&/g, '&amp;')])
-        expect(o.html.indexOf('<small>'), `${who}: under the class word`).toBeLessThan(cl!.index!)
+        expect(o.html.indexOf('<small class="whatitis"'), `${who}: the line of what it is`).toBeGreaterThan(-1)
+        expect(o.html.indexOf('<small class="whatitis"'), `${who}: under the class word`).toBeLessThan(cl!.index!)
         expect(cl!.index!, `${who}: above the description`).toBeLessThan(o.html.indexOf('<p class="who">'))
-        // (2) what THIS hero joins with, in plain words
-        const d = draftedHeroOf(c, o.id).drafted!, joins = joinsOn(o.html)
-        expect(o.html, `${who}: a list of what it joins with`).toMatch(/<ul class="joins">/)
+        // (2) what the first hero joins with, in plain words — said once, above the cards, and under no card
+        const d = draftedHeroOf(c, o.id).drafted!, joins = joinsOn(html)
+        expect(html.match(/<p class="firstGifts"/g)?.length, `${who}: one line for the pick`).toBe(1)
+        expect(html.indexOf('<p class="firstGifts"'), 'above the three cards').toBeLessThan(html.indexOf('data-act="draft"'))
+        expect(o.html, `${who}: none of it under the card`).not.toMatch(/data-joins=|<ul class="joins">/)
         for (const b of d.badges) {
           const mine = joins.filter((j) => j.of.includes('badge:' + b))
           expect(mine.length, `${who}: one plain line for ${b}`).toBe(1)
@@ -177,10 +193,10 @@ describe('kingdom.opening-first-hero-class-line — the first draft says what th
         expect(new Set(joins.map((j) => j.words)).size, `${who}: no line twice`).toBe(joins.length)
         // never as a stat table — and still no number, no badge by name, no kit (2026-10-03, as far as it stands)
         expect(o.html).not.toMatch(/class="stats"|class="stRow"|data-stats=|data-badges=|data-rolls=|class="badge /)
-        const said = text(o.html)
-        expect(said, `${who}: no number at all`).not.toMatch(/\d/)
-        expect(said, `${who}: no kit`).not.toMatch(/carries/i)
-        for (const name of badgeNames) expect(said.replace(row.name, '').includes(name), `${who}: no badge by name (${name})`).toBe(false)
+        const said = text(apartFromOwn(o.html))
+        expect(said, `${who}: no number but its own differences`).not.toMatch(/\d/)
+        expect(text(o.html), `${who}: no kit`).not.toMatch(/carries/i)
+        for (const name of badgeNames) expect(said.replace(row.name, '').includes(name), `${who}: no badge by name (${name}) but its own`).toBe(false)
       }
     }
   })
@@ -207,13 +223,17 @@ describe('kingdom.opening-first-hero-class-line — the first draft says what th
         expect(o.html.indexOf('<small>')).toBeLessThan(cl!.index!)
         expect(cl!.index!, 'above the stat block').toBeLessThan(o.html.indexOf('<div class="stats">'))
         expect(o.html).toMatch(/data-stats="/)
-        expect(o.html, 'the plain lines are the first draft\'s alone').not.toMatch(/<ul class="joins">/)
+        expect(o.html, 'the plain lines are the first draft\'s alone').not.toMatch(/<ul class="joins">|data-joins=/)
+        expect(draftScreen(c), 'and so is the pick\'s line').not.toMatch(/class="firstGifts"/)
       }
     }
   })
 
-  it('the page: every draft card of a three-battle sitting carries its class line, and the first draft\'s cards say what the hero joins with in plain words', () => {
+  // Law 10, 2026-10-05 (kingdom.first-hero-own-positives-negatives, as noted above): the page's sentence read "the first draft's
+  // three cards said what the hero joins with in plain words (…)" — under each card. It is said once above the three now.
+  it('the page: every draft card of a three-battle sitting carries its class line, and the first draft says once, above its cards, what the first hero joins with in plain words', () => {
     const out = execFileSync(process.execPath, ['tools/opening-loop-three.verify.mjs', 'BATTLE-SANDBOX.html'], { cwd: '../kingdom', encoding: 'utf8', maxBuffer: 1 << 24 })
-    expect(out).toMatch(/every draft card showed the class line of its own class \(9 cards\); the first draft's three cards said what the hero joins with in plain words \(one line per badge, the Health as "Tougher than most", no stat table\)/)
+    expect(out).toMatch(/every draft card showed the class line of its own class \(9 cards\); /)
+    expect(out).toMatch(/what the first hero is given was said once, above the three \(\d+ plain lines — one per badge, the Health as "Tougher than most", each rolled point — no stat table\)/)
   }, 600000)
 })

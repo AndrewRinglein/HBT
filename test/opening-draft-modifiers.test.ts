@@ -69,12 +69,14 @@ function movedBy(d: Drafted): Record<string, number> {
   return out
 }
 /** Each offer on the draft screen: its attributes and its words, tags stripped. */
-function offersOn(html: string): { id: string; attrs: Record<string, string>; text: string }[] {
+function offersOn(html: string): { id: string; attrs: Record<string, string>; text: string; apart: string }[] {
   return html.split(/<div class="opt(?: rolled)?"/).slice(1).map((chunk) => {
     const tag = chunk.slice(0, chunk.indexOf('>'))
     const attrs = Object.fromEntries([...tag.matchAll(/data-([\w-]+)="([^"]*)"/g)].map((m) => [m[1]!, m[2]!]))
     const body = chunk.slice(chunk.indexOf('>') + 1).split('<p class="meta">Not at the fire')[0]!
-    return { id: attrs['id']!, attrs, text: body.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim() }
+    const words = (x: string) => x.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim()
+    // `apart`: the card's words without its own differences from its class's standard (kingdom.first-hero-own-positives-negatives)
+    return { id: attrs['id']!, attrs, text: words(body), apart: words(body.replace(/<ul class="own"[^>]*>[\s\S]*?<\/ul>|<p class="own same"[^>]*>[\s\S]*?<\/p>/g, ' ')) }
   })
 }
 
@@ -332,7 +334,16 @@ describe('kingdom.opening-draft-modifiers — the first hero by description, lat
     expect(fielded(row)['maxHp']).toBe(fieldedPreviewOf(blank).now.maxHp)
   })
 
-  it('the first draft is shown by description only — no number, no badge, no kit; a later draft shows the stats, the points and the badges', () => {
+  // Law 10, 2026-10-05 (kingdom.first-hero-own-positives-negatives; engine/DECISIONS.md 2026-10-05 'the playtest post
+  // answered: …, the first hero's own positives and negatives' — Andrew: "It should show its positives and negatives compared to a
+  // standard hero of that type. It should say one line about what it is, like a ranger, and then … just about the positives and
+  // negatives it has, stats, and badges." — "This replaces 2026-10-03's 'no stats or badges shown, just a description'".) This test
+  // held the first draft as "shown by description only — no number, no badge" on the whole card. A first-hero card now lists ITS
+  // OWN differences from its class's standard hero, which are numbers (and its own badges by name), so those two lines pinned
+  // the replaced ruling and are rewritten as the rule now stands: no number and no badge on the card BUT its own differences
+  // (held, card by card, by test/first-hero-own-positives-negatives.test.ts). Named, described, no kit, and nothing carried as
+  // data: as they were.
+  it('the first draft shows who each hero is — no number and no badge but its own differences from its class\'s standard, no kit; a later draft shows the stats, the points and the badges', () => {
     const codex = JSON.parse(readFileSync('../content/hbt-content.json', 'utf8')) as { heroes: { heroes: { id: string; backstory?: string }[] } }
     const backstoryOf = (id: string) => codex.heroes.heroes.find((h) => h.id === id)!.backstory!
     const badgeNames = [LEADERSHIP, ...FAVOURABLE, ...FLAWED].map((b) => BADGES[b]!.name!)
@@ -345,9 +356,9 @@ describe('kingdom.opening-draft-modifiers — the first hero by description, lat
         const row = heroRowOf(o.id)
         expect(o.text, `seed ${seed}: ${o.id} is named`).toContain(row.name)
         expect(o.text, `seed ${seed}: ${o.id} is described`).toContain(backstoryOf(o.id))
-        expect(o.text, `seed ${seed}: ${o.id} — no number at all`).not.toMatch(/\d/)
+        expect(o.apart, `seed ${seed}: ${o.id} — no number but its own differences`).not.toMatch(/\d/)
         // (a hero may be NAMED as a badge is — the Hunter — so its own name is set aside first)
-        for (const name of badgeNames) expect(o.text.replace(row.name, '').includes(name), `seed ${seed}: ${o.id} — no badge (${name})`).toBe(false)
+        for (const name of badgeNames) expect(o.apart.replace(row.name, '').includes(name), `seed ${seed}: ${o.id} — no badge (${name}) but its own`).toBe(false)
         expect(o.text, `seed ${seed}: ${o.id} — no kit line`).not.toMatch(/carries/i)
         expect(Object.keys(o.attrs).sort(), `seed ${seed}: ${o.id} carries nothing but who it is`).toEqual(['act', 'classes', 'id'])
       }

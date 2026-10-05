@@ -25,6 +25,7 @@ import {performEquip,performUnequip} from '../core/shop.js'
 import {sandboxResult} from '../core/sandbox.js'
 import {encounterDef} from '../engine.js'
 import {equipPage} from './equip.js'
+import {lookingAfter,isClickAway} from './item-card.js'
 import {draftScreen} from './draft.js'
 import {deployPage} from './deploy.js'
 import {recapScreen,mountRecap,rewardsScreen,mountRewards,carrierChoice,whoseOf,levelUpScreen,mountLevelUp,toggleMute,type LastBattle,type Cleanup} from './after.js'
@@ -211,7 +212,9 @@ function runFooter(){
     encounter's battle fielded with the campaign's own Hero rows, then the one writer, the recap, the rewards and the
     level-ups (the copied Hell-TCG screens, ui/after.ts), and the map again. A lost battle is offered again with the same
     party, wounds kept. Every step is a perform* call; the page decides nothing. kingdom SWITCHES.md opening* */
-type Sitting={ctx:Ctx;lastBattle:LastBattle|null;levelHero:string|null;picked:string|null;giving:string|null;mounted:Cleanup|null}
+/* look (kingdom.equip-item-card): an item looked at where it lies — a view choice, as picked is */
+type Sitting={ctx:Ctx;lastBattle:LastBattle|null;levelHero:string|null;picked:string|null;look:string|null;giving:string|null;mounted:Cleanup|null}
+const looked=(s:Sitting,e:Parameters<typeof lookingAfter>[1])=>{const n=lookingAfter({picked:s.picked,look:s.look},e);s.picked=n.picked;s.look=n.look}
 let sitting:Sitting|null=null,campaignOpen=false
 const sitCause='sitting'
 /** kingdom.opening-run-six (engine DECISIONS.md 2026-10-01 'one continuous run through the first six battles, saved'): the
@@ -303,10 +306,12 @@ function campaignAct(act:string,el:HTMLElement){
  if(act==='draft'){performDraft(ctx,id!,sitCause);if(draftsOwedOf(ctx.campaign)>0)performAdvanceOpening(ctx,sitCause);else if(toBattle(nextSection(mapOrder,taken)!))return;drawCampaign()}
  else if(act==='deploy'){performDeploy(ctx,id!,sitCause);drawCampaign()}
  else if(act==='undeploy'){performUndeploy(ctx,id!,sitCause);drawCampaign()}
- else if(act==='pick'){s.picked=s.picked===id?null:id!;drawCampaign()}
- else if(act==='drop'){performEquip(ctx,id!,el.dataset.item!,sitCause,el.dataset.displace);s.picked=null;drawCampaign()}
- else if(act==='unequip'){performUnequip(ctx,id!,el.dataset.item!,sitCause);drawCampaign()}
- else if(act==='advance'){performAdvancePrep(ctx,sitCause);if(ctx.campaign.cursor.step==='battle')startCampaignBattle();else drawCampaign()}
+ /* kingdom.equip-item-card: the item clicked is the one looked at — its card opens at the right (ui/item-card.ts lookingAfter) */
+ else if(act==='pick'){looked(s,{kind:'pick',id:id!});drawCampaign()}
+ else if(act==='look'){looked(s,{kind:'look',id:id!});drawCampaign()}
+ else if(act==='drop'){performEquip(ctx,id!,el.dataset.item!,sitCause,el.dataset.displace);looked(s,{kind:'done'});drawCampaign()}
+ else if(act==='unequip'){performUnequip(ctx,id!,el.dataset.item!,sitCause);looked(s,{kind:'done'});drawCampaign()}
+ else if(act==='advance'){looked(s,{kind:'done'});performAdvancePrep(ctx,sitCause);if(ctx.campaign.cursor.step==='battle')startCampaignBattle();else drawCampaign()}
  else if(act==='exit'){if(c.cursor.step==='reckoning')performExitBattle(ctx,sitCause);else if(c.cursor.step==='levelUp')performLeaveLevelUp(ctx,sitCause);else return;onward()}
  else if(act==='level-hero'){s.levelHero=id!;drawCampaign()}
  else if(act==='give'){const item=s.giving;if(!item)throw Error('No reward is waiting for its carrier')
@@ -348,7 +353,7 @@ function drawCampaign(){
   mount=hx=>mountLevelUp(hx,choice=>{try{performLevelUp(s.ctx,who,sitCause,choice);persist()}catch(e){error=(e as Error).message}},()=>{s.levelHero=null;drawCampaign()})}
  else if(c.cursor.step==='draft')html=`<div class="sliceView">${draftScreen(c)}</div>`
  else if(c.cursor.step==='prep'&&c.cursor.prepStep==='deploy'){const e=c.cursor.engagement!;html=`<div class="sliceView">${deployPage(c,{engagementId:sectionOf(e.id)?.name??e.id})}</div>`}
- else if(c.cursor.step==='prep'&&c.cursor.prepStep==='equip'){const e=c.cursor.engagement!;html=`<div class="sliceView">${equipPage(c,e.deployed,{where:'prep',picked:s.picked,engagementId:sectionOf(e.id)?.name??e.id,canAdvance:true})}</div>`}
+ else if(c.cursor.step==='prep'&&c.cursor.prepStep==='equip'){const e=c.cursor.engagement!;html=`<div class="sliceView">${equipPage(c,e.deployed,{where:'prep',picked:s.picked,look:s.look,engagementId:sectionOf(e.id)?.name??e.id,canAdvance:true})}</div>`}
  else if(c.cursor.step==='reckoning'){html=recapScreen(c,s.ctx.events,s.lastBattle);mount=hx=>mountRecap(hx,()=>act(()=>campaignAct('exit',hx)))}
  else if(c.cursor.step==='rewards'||c.cursor.step==='levelUp'){html=rewardsScreen(c,s.ctx.events,s.lastBattle)+(s.giving?giveChoice(s.giving):'');mount=hx=>mountRewards(hx,id=>act(()=>takeReward(id)))}
  else if(c.cursor.step==='open'&&s.giving)html=`<div class="sliceView waitingOffer" data-waiting="${escape(s.giving)}"><h2>The ${escape(itemName(s.giving))} has waited in the stash</h2><p class="meta">It is for ${escape(whoseOf(s.giving))}. One is with you now, with a hand free for it.</p></div>`+giveChoice(s.giving)
@@ -387,6 +392,9 @@ root.innerHTML=`<section id="conquest" hidden></section><section id="campaign" h
 const q=<T extends HTMLElement>(id:string)=>document.getElementById(id) as T
 const options=(rows:readonly {id:string;name:string}[],selected:string)=>rows.map(r=>`<option value="${escape(r.id)}"${r.id===selected?' selected':''}>${escape(r.name)}</option>`).join('')
 const attached=(host:HTMLElement,el:HTMLElement)=>root.contains(host)&&host.contains(el)
+/* kingdom.equip-item-card: a click AWAY on the sitting's screen — on no control, no item, not on the card — closes the card and
+   puts the item in hand down. Bound once to the screen's section, which every draw keeps. */
+q('campaign').addEventListener('click',(ev:Event)=>{const s=sitting;if(!s||(s.picked===null&&s.look===null)||!isClickAway(ev))return;looked(s,{kind:'away'});drawCampaign()})
 function changeListener(host:HTMLElement,el:HTMLSelectElement|HTMLInputElement|null,fn:()=>void,phase?:'acting'|'selecting'){
  if(!el)return
  el.addEventListener('change',()=>{if(!attached(host,el)||el.hasAttribute('disabled')||(phase&&(busy||!!fault||session?.ctx.battleCursor?.at!==phase)))return;fn()})
@@ -560,7 +568,7 @@ bind(q('transfer'));bind(q('battleNav'));setup();controls()
   if(kept.why)runNote=`The saved run could not be read (${kept.why}); a new run is started.`
   {const ff=fontFaces();if(ff){const st=document.createElement('style');st.textContent=ff;document.head.appendChild(st)}}
   if(kept.run){
-   sitting={ctx:makeCtx(kept.run.campaign),lastBattle:kept.run.lastBattle,levelHero:null,picked:null,giving:null,mounted:null}
+   sitting={ctx:makeCtx(kept.run.campaign),lastBattle:kept.run.lastBattle,levelHero:null,picked:null,look:null,giving:null,mounted:null}
    taken=mapOrder.slice(0,openingBattlesWonOf(kept.run.campaign))
    const step=kept.run.campaign.cursor.step
    if(step==='battle'){mapOpen=false;startCampaignBattle()}
@@ -573,7 +581,7 @@ bind(q('transfer'));bind(q('battleNav'));setup();controls()
    else{mapOpen=false;campaignOpen=true;controls();drawCampaign()}
   }else{
    taken=mapOrder.filter(id=>(params.get('taken')??'').split(',').includes(id));seededMap=taken.length>0
-   sitting={ctx:makeCtx(makeNewCampaign(Number.isSafeInteger(seed)&&seed>=0?seed:Math.floor(Math.random()*1e9))),lastBattle:null,levelHero:null,picked:null,giving:null,mounted:null}
+   sitting={ctx:makeCtx(makeNewCampaign(Number.isSafeInteger(seed)&&seed>=0?seed:Math.floor(Math.random()*1e9))),lastBattle:null,levelHero:null,picked:null,look:null,giving:null,mounted:null}
    /* kingdom.opening-starts-in-battle: a new run opens on the first draft — no map before battle 1 */
    if(straightIn())openStraight(()=>beginSection(nextSection(mapOrder,taken)!))
    else{drawMap();controls()}}}}

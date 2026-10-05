@@ -297,3 +297,25 @@
 .hx .lu-decline{position:absolute;bottom:40px;right:40px;font-family:'Cinzel',serif;font-size:13px;color:rgba(212,175,55,.6);background:none;border:1px solid rgba(212,175,55,.3);border-radius:6px;padding:8px 14px;cursor:pointer;z-index:60}
 .hx #particle-canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:1}
 .hx .hint{position:absolute;bottom:100px;left:0;right:0;text-align:center;font-size:13px;color:rgba(212,175,55,.4);font-style:italic}
+
+/* kingdom.equip-item-card (2026-10-05, Andrew: "… they pop up somewhere on the screen, to the right or somewhere, as a card
+   with a description."): an item's card, at the right of the screen — Equip's and the reward screen's (ui/item-card.ts
+   itemCardHtml). Its own colours, so it reads the same over the Equip screen and over the rewards ceremony. */
+.itemcard{position:fixed;right:18px;top:76px;z-index:600;width:310px;max-width:calc(100vw - 36px);max-height:calc(100vh - 100px);overflow-y:auto;box-sizing:border-box;
+  padding:12px 14px 14px;background:#14110d;color:#e9e1cf;border:1px solid #6b5a3e;border-radius:6px;box-shadow:0 10px 34px rgba(0,0,0,.65);
+  font:13.5px/1.45 "Palatino Linotype",Georgia,serif;text-align:left}
+.itemcard p{margin:4px 0 0}
+.itemcard .ic-art{width:150px;aspect-ratio:2/3;margin:0 auto 10px;border:1px solid #6b5a3e;border-radius:4px;overflow:hidden;background:#1c1917;display:flex;align-items:center;justify-content:center;color:#7d7362;font-size:12px}
+.itemcard .ic-art img{display:block;width:100%;height:100%;object-fit:cover}
+.itemcard .ic-name{font:700 18px/1.25 Cinzel,"Palatino Linotype",Georgia,serif;color:#e8c36a}
+.itemcard .ic-kind{margin-top:2px;font-size:12px;letter-spacing:.03em;color:#a89c85}
+.itemcard .ic-line{margin-top:8px;font-style:italic;color:#cfc5ae}
+.itemcard .ic-gives{margin:10px 0 0;padding:0;list-style:none;display:flex;flex-wrap:wrap;gap:4px 12px;font-weight:700}
+.itemcard .ic-gives .pos{color:#8fc27c} .itemcard .ic-gives .neg{color:#d2695c}
+.itemcard .ic-own,.itemcard .ic-attribute,.itemcard .ic-grant{margin-top:10px;padding-top:8px;border-top:1px solid #3a3226}
+.itemcard .ic-attribute b,.itemcard .ic-grant b{display:block;color:#f3ead6;font-size:14.5px}
+.itemcard .ic-grant p:first-of-type{color:#a89c85;font-size:12.5px}
+.itemcard .ic-grant[data-kind="power"] b::after{content:" · power";font-weight:400;font-size:12px;color:#a89c85}
+.itemcard .ic-grant[data-kind="attack"] b::after{content:" · attack";font-weight:400;font-size:12px;color:#a89c85}
+/* on Equip the stash and the heroes keep clear of it on a wide screen */
+@media (min-width:1200px){.equip-page:has(.itemcard) .equip{margin-right:330px}}

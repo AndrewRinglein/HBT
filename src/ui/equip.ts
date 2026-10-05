@@ -7,6 +7,15 @@
 // show as items go on and refund while the screen is open; leaving lists the
 // set bonuses. Shared by prep's Equip step and the roster's Fit-gear session.
 //
+// kingdom.equip-item-card (2026-10-05, Andrew, engine/DECISIONS.md 'playtest post: notices, target lines, item cards, …':
+// "When you're selecting items in the equipment phase, you need to be able to look at your items somehow. You need to be able
+// to click on them, and then they pop up somewhere on the screen, to the right or somewhere, as a card with a description."):
+// the item looked at — the stash item in hand, or an item clicked where a hero wears it (`look`) — shows its card at the right
+// of the screen (ui/item-card.ts itemCardHtml over content/item-card.ts itemCardOf). Clicking a stash item already took it in
+// hand and never equipped it (equipping is the click on a slot, or the drag) — so the card opens on that same click, and a worn
+// item, which a click did nothing to, opens its card when nothing is in hand (data-act="look"; kingdom SWITCHES.md
+// itemCardOpensOnTheClick). Looking is a view's choice like the picked item: no Campaign fact.
+//
 // Renders from read-models (loadoutOf, heroModsOf, canEquip/whyNotEquip) and
 // acts through slice.ts's wiring (data-act equip / unequip). No state of its
 // own but the picked item, which is a view choice, not a Campaign fact.
@@ -20,6 +29,8 @@ import { fieldedPreviewOf } from '../core/seam.js'
 import type { UnitDef } from '../engine.js'
 import { portraitIdOf, portraitOf, itemArtOf } from './art.js'
 import { statLabelOf } from '../content/stat-labels.js'
+import { itemCardOf } from '../content/item-card.js'
+import { itemCardHtml } from './item-card.js'
 
 const esc = (s: string) => s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]!))
 
@@ -113,7 +124,18 @@ export function displaceFor(c: CampaignState, heroId: string, itemId: string, sl
   return same.find((d) => canEquip(c, heroId, itemId, d))
 }
 
-export type EquipScreenOptions = { where: 'prep' | 'roster'; picked: string | null }
+/** `look`: an item looked at where it lies (a worn item clicked) — its card shows; the picked item is looked at too. */
+export type EquipScreenOptions = { where: 'prep' | 'roster'; picked: string | null; look?: string | null }
+
+/** The card of the item looked at on Equip — the one in hand, else the one clicked where it is worn — or nothing. */
+function lookedAtCard(c: CampaignState, o: EquipScreenOptions): string {
+  const picked = o.picked && c.stash.includes(o.picked) ? o.picked : null
+  const id = picked ?? o.look ?? null
+  if (!id) return ''
+  let card
+  try { card = itemCardOf(id) } catch { return '' }   // an id that is no item (a stale view choice) shows no card
+  return itemCardHtml(card, itemArtOf(id))
+}
 
 /**
  * The Equip screen, whole — ruled 2026-09-04 (Angela): "we need an equip screen. It's
@@ -135,6 +157,7 @@ export function equipPage(c: CampaignState, heroIds: readonly string[], o: Equip
       <button class="primary" data-act="${prep ? 'advance' : 'close-equip'}"${prep && o.canAdvance === false ? ' disabled' : ''}>${prep ? 'To the battle →' : 'Done — keep it'}</button>
     </div>
     ${heroIds.length ? equipScreen(c, heroIds, o) : '<div class="card"><p class="meta">nobody to equip — deploy someone first</p></div>'}
+    ${heroIds.length ? lookedAtCard(c, o) : ''}
   </div>`
 }
 
@@ -145,7 +168,7 @@ export function equipScreen(c: CampaignState, heroIds: readonly string[], o: Equ
   const paid = c.cursor.equipSession?.paid ?? []
   return `<div class="equip">
     <div class="heroes">${heroes}</div>
-    <p class="meta">${picked ? `<b>${esc(itemOf(picked).name)}</b> in hand — click a slot to put it on (a full slot swaps; the old item goes back to the stash), or drag it there. Click it again to put it down.` : 'Click an item below, then a slot — or drag it onto the slot. × takes an item off, into the stash.'}${o.where === 'roster' ? ' Idols are fitted at prep only.' : ''}</p>
+    <p class="meta">${picked ? `<b>${esc(itemOf(picked).name)}</b> in hand — click a slot to put it on (a full slot swaps; the old item goes back to the stash), or drag it there. Click it again to put it down.` : 'Click an item to look at it — its card opens at the right. Click an item below, then a slot, to put it on — or drag it onto the slot. × takes an item off, into the stash.'}${o.where === 'roster' ? ' Idols are fitted at prep only.' : ''}</p>
     ${stash}
     ${paid.length ? `<p class="meta">Paid this session — refunded if it comes off before you leave: ${paid.map((p) => `${esc(itemOf(p.itemId).name)} on ${esc(c.roster[p.heroId]?.name ?? p.heroId)} (${esc(fmtCost(p.cost))})`).join(' · ')}</p>` : ''}
     ${setSummary(c, heroIds)}
@@ -168,7 +191,8 @@ function heroCard(c: CampaignState, heroId: string, picked: string | null): stri
     const drop = picked ? displaceFor(c, heroId, picked, key) : undefined
     const ok = picked ? canEquip(c, heroId, picked, drop) : false
     const why = picked && !ok ? whyNotEquip(c, heroId, picked, drop) ?? '' : ''
-    const attrs = `data-slot="${esc(key)}" data-hero="${esc(heroId)}"${drop ? ` data-displace="${esc(drop)}"` : ''}${picked ? ` data-act="drop" data-item="${esc(picked)}" data-id="${esc(heroId)}"` : ''}`
+    // kingdom.equip-item-card: with nothing in hand, a slot that holds an item opens that item's card (data-act="look")
+    const attrs = `data-slot="${esc(key)}" data-hero="${esc(heroId)}"${drop ? ` data-displace="${esc(drop)}"` : ''}${picked ? ` data-act="drop" data-item="${esc(picked)}" data-id="${esc(heroId)}"` : id ? ` data-act="look" data-id="${esc(id)}"` : ''}`
     // kingdom.opening-reward-card-art: the item a slot holds shows its card art beside its name (data-holds says which)
     return `<div class="slot${id ? ' full' : ''}${picked ? (ok ? ' can' : ' cant') : ''}" ${attrs}${id ? ` data-holds="${esc(id)}"` : ''} title="${esc(why || (drop ? `swap out ${itemOf(drop).name}` : label))}">
       <span class="k">${esc(label)}${note ? ` <i>${esc(note)}</i>` : ''}</span>
@@ -200,7 +224,7 @@ function stashSections(c: CampaignState, heroIds: readonly string[], picked: str
       const fits = heroIds.filter((h) => canEquip(c, h, id) || c.roster[h]!.equipped.some((d) => canEquip(c, h, id, d)))
       return `<div class="item${picked === id ? ' picked' : ''}${fits.length ? '' : ' nofit'}" draggable="true" data-act="pick" data-id="${esc(id)}" title="${esc(fits.length ? `fits ${fits.map((h) => c.roster[h]!.name).join(', ')}` : heroIds.map((h) => whyNotEquip(c, h, id) ?? '').filter(Boolean)[0] ?? 'nobody can wear it')}">
         ${itemArt(id)}<b>${esc(row.name)}</b>
-        <small>${esc([`tier ${row.tier}`, row.itemClass === 'weapon' ? (isShield(row) ? 'shield' : `${Math.max(1, row.hands)}-hand`) : null, row.classRestriction ? row.classRestriction.replace('class.', '') + ' only' : null, row.uses ? `${row.uses} use` : null, cost ? `${cost} to equip` : free ? 'free to equip' : null, Object.entries(row.statModifiers).map(([k, n]) => `${sign(n)} ${k}`).join(' ') || null, row.setBonus ? `${row.setBonus.tag} set` : null, row.sets.length && !row.setBonus ? row.sets.join('/') + ' set' : null].filter(Boolean).join(' · '))}</small>
+        <small>${esc([`tier ${row.tier}`, row.itemClass === 'weapon' ? (isShield(row) ? 'shield' : `${Math.max(1, row.hands)}-hand`) : null, row.classRestriction ? row.classRestriction.replace('class.', '') + ' only' : null, row.uses ? `${row.uses} use` : null, cost ? `${cost} to equip` : free ? 'free to equip' : null, Object.entries(row.statModifiers).map(([k, n]) => `${sign(n)} ${statLabelOf(k).toLowerCase()}`).join(' ') || null, row.setBonus ? `${row.setBonus.tag} set` : null, row.sets.length && !row.setBonus ? row.sets.join('/') + ' set' : null].filter(Boolean).join(' · '))}</small>
       </div>`
     }).join('')}</div></div>`
   })

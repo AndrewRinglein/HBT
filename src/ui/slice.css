@@ -58,6 +58,15 @@ td.n{text-align:right;font-variant-numeric:tabular-nums}
 .pick .opt .classline{margin:6px 0 0;font-size:13px;line-height:1.4;color:var(--ink)}
 .pick .opt .joins{margin:8px 0 0;padding:0;list-style:none;font-size:13px;line-height:1.5;color:var(--good)}
 .pick .opt .joins li::before{content:'+ ';color:var(--faint)}
+/* kingdom.first-hero-own-positives-negatives: one line of what the hero is; its own differences from its class's standard —
+   a positive green, a negative red; and, above the three cards, what the first hero is given whichever is chosen */
+.pick .opt .whatitis{display:block;font-size:13px;color:var(--ink)}
+.pick .opt .own{margin:8px 0 0;padding:0;list-style:none;font-size:13.5px;line-height:1.55}
+.pick .opt .own .pos{color:var(--good)} .pick .opt .own .neg{color:var(--bad)}
+.pick .opt .own li b{font-weight:700}
+.pick .opt .own.same{color:var(--faint);font-style:italic}
+.firstGifts{margin:8px 0 12px;font-size:13.5px;line-height:1.5;color:var(--ink)}
+.firstGifts span{color:var(--good)}
 .pick .opt .who{margin:8px 0 0;font-size:13px;line-height:1.45;color:var(--ink)}
 .pick .opt .quote{margin:6px 0 0;font-size:12.5px;font-style:italic;color:var(--faint)}
 .pick.draft-rolled .opt{min-width:260px}
