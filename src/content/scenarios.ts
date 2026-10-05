@@ -128,6 +128,12 @@ const RAW_SCENARIOS: Readonly<Record<string, ScenarioDef>> = {
     id: 'test.vortex', note: 'TEST: a mage holding the Staff of the Magi (Vortex: Magic x 3 to every unit in the blast; using it lowers the Magic of the party by 1 and the Power of the enemy side by 1 for the rest of the Battle) and a second mage, against four zombies. No campaign claim.',
     mapId: 'map.open', heroes: ['hero.base.mage-fire', 'hero.base.mage-thinking'], heroHexes: [85, 101], heroItems: [['item.staff-of-the-magi'], ['item.frost-staff']], enemies: ['unit.zombie', 'unit.zombie', 'unit.zombie', 'unit.zombie'], enemyHexes: [89, 90, 105, 106], replicate: 0,
   },
+  // … and its second instance, pure data: a test mage whose one power raises the Magic of its own side by 2 for two Turns, the
+  // zombie too far to reach on the first Turn, so the computer uses it first.
+  'test.swell': {
+    id: 'test.swell', note: 'TEST: a mage whose power Swell raises the Magic of its side by 2 for two Turns, against one zombie too far to reach on Turn 1. No campaign claim.',
+    mapId: 'map.open', heroes: ['test-swell-mage'], heroHexes: [80], enemies: ['test-zombie'], enemyHexes: [95], replicate: 0,
+  },
   // capability.set-bonus (2026-10-05; DECISIONS.md 2026-10-04 'his 28 reward weapons read back …': "We need: … set bonus"): four of
   // his set rows live in a real battle - a priest with the Chains of the Wrathful and the Chains of the Faithful (two chain items),
   // a mage with the Staff of the Magi and two rings, a mage holding the Staff of the Destroyer with the Ultimate Destroyer

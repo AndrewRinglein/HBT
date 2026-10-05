@@ -23201,6 +23201,68 @@ export const UNIT_PACK = {
           }
         ],
         "typeId": "test-raiser"
+      },
+      {
+        "typeId": "test-swell-mage",
+        "name": "Swell Mage (TEST)",
+        "side": "hero",
+        "maxHp": 6,
+        "armor": 0,
+        "resist": 0,
+        "accuracy": 75,
+        "dodge": 0,
+        "toughness": 2,
+        "strength": 0,
+        "precision": 3,
+        "magic": 2,
+        "spirit": 0,
+        "role": "ranged",
+        "movement": 5,
+        "reach": 3,
+        "maxStamina": 5,
+        "staminaRegen": 1,
+        "ai": "ranged-kite",
+        "attacks": [
+          "attack.test-mage.staff",
+          "attack.test-mage.strike"
+        ],
+        "abilities": [
+          "power.test-mage.swell"
+        ],
+        "tags": [
+          "hero",
+          "class.mage"
+        ],
+        "moves": [
+          "power.move",
+          "power.focus"
+        ],
+        "triggers": [
+          {
+            "id": "test.mage.dampen",
+            "hook": "onHit",
+            "chance": 20,
+            "select": "target",
+            "effect": {
+              "kind": "status.apply",
+              "statusId": "test.status.enfeeble",
+              "value": 1
+            },
+            "source": "unit.test-swell-mage"
+          },
+          {
+            "id": "test.mage.arcane-ward",
+            "hook": "onTakingDamage",
+            "chance": 100,
+            "select": "self",
+            "effect": {
+              "kind": "status.apply",
+              "statusId": "status.protection",
+              "value": 3
+            },
+            "source": "unit.test-swell-mage"
+          }
+        ]
       }
     ],
     "attacks": {
