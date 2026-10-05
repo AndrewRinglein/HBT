@@ -48634,7 +48634,18 @@ export const UNIT_PACK = {
           },
           "range": 2
         }
-      }
+      },
+      "paint": [
+        {
+          "layer": "layer.weak",
+          "hexes": [
+            119,
+            131,
+            139,
+            159
+          ]
+        }
+      ]
     },
     "encounter.opening.bridge": {
       "id": "encounter.opening.bridge",
