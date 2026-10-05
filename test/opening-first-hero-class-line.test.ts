@@ -54,7 +54,9 @@ function offersOn(html: string): { id: string; classes: string[]; html: string }
 /** the plain lines of what the first hero joins with — said once, for the pick, above the three cards: what each says, and which thing(s) it is said of */
 const joinsOn = (html: string) => { const block = html.match(/<p class="firstGifts"[^>]*>([\s\S]*?)<\/p>/); return block ? [...block[1]!.matchAll(/<span data-joins="([^"]+)">([^<]*)<\/span>/g)].map((m) => ({ of: m[1]!.split(' '), words: m[2]! })) : [] }
 /** a card without its own differences from its class's standard (kingdom.first-hero-own-positives-negatives) */
-const apartFromOwn = (html: string) => html.replace(/<ul class="own"[^>]*>[\s\S]*?<\/ul>|<p class="own same"[^>]*>[\s\S]*?<\/p>/g, ' ')
+// Law 10, 2026-10-05 — content.hero-origin-badges (engine item; engine/DECISIONS.md 2026-10-05 'seven answers: … origin badges go on the heroes …': "3, yes."): the pattern read /<ul class="own"[^>]*>…/ - the gifts' list. A hero's own differences are also
+// the badges its ROW carries now (the card's `<ul class="own origin">`, src/ui/draft.ts ownList); both lists are set aside.
+const apartFromOwn = (html: string) => html.replace(/<ul class="own(?: origin)?"[^>]*>[\s\S]*?<\/ul>|<p class="own same"[^>]*>[\s\S]*?<\/p>/g, ' ')
 const classLineOn = (html: string) => html.match(/<p class="classline" data-class-line="([^"]+)">([^<]*)<\/p>/)
 function atFirstDraft(seed: number): Ctx {
   const ctx = makeCtx(makeNewCampaign(seed)); performAdvanceOpening(ctx, 'test'); return ctx

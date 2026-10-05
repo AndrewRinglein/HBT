@@ -1,0 +1,46 @@
+
+ RUN  v4.1.11 C:/Users/aring/Desktop/HBT-worker-engine/kingdom
+
+ ❯ test/hero-origin-badges-draft-floor.test.ts (2 tests | 2 failed) 11ms
+     × the draft's base for a row gives the row's number, and - as fielded - the engine's preview of that row 5ms
+     × the Forest Fey, offered with a Health loss, loses 1 and not 2, and the engine fields her 5ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/hero-origin-badges-draft-floor.test.ts > a drafted hero can always be fielded: a rolled loss is held at its floor against the hero as fielded > the draft's base for a row gives the row's number, and - as fielded - the engine's preview of that row
+TypeError: base.fielded is not a function
+ ❯ test/hero-origin-badges-draft-floor.test.ts:21:17
+     19|     const row = heroRowOf(FEY), base = draftBaseOf(row), bare = fielde…
+     20|     expect(base('health')).toBe(6)
+     21|     expect(base.fielded!('health')).toBe(bare.maxHp)
+       |                 ^
+     22|     expect(bare.maxHp).toBe(2)
+     23|     expect(base.fielded!('itemSlots')).toBe(row.itemSlots)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  test/hero-origin-badges-draft-floor.test.ts > a drafted hero can always be fielded: a rolled loss is held at its floor against the hero as fielded > the Forest Fey, offered with a Health loss, loses 1 and not 2, and the engine fields her
+AssertionError: seed 33: expected -2 to be -1 // Object.is equality
+
+- Expected
++ Received
+
+- -1
++ -2
+
+ ❯ test/hero-origin-badges-draft-floor.test.ts:34:43
+     32|       if (!lost) continue
+     33|       seen++
+     34|       expect(lost.amount, `seed ${seed}`).toBe(-1)
+       |                                           ^
+     35|       const hero = { ...row, badges: [...row.badges, ...d.badges], dra…
+     36|       expect(fieldedPreviewOf(hero).now.maxHp, `seed ${seed}`).toBeGre…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed (2)
+   Start at  07:05:05
+   Duration  4.17s (transform 2.95s, setup 0ms, import 4.04s, tests 11ms, environment 0ms)
+
