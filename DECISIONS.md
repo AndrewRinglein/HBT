@@ -5003,3 +5003,94 @@ Ruled:
 - **His 22 items with a dead line stay in rewards** as they are; the line begins to act when its feature lands.
 - **The six Hell-TCG items are his** - the chat's reading of "1. Yes" and "So all of these are in", said to him the same day. Filed: `kingdom.rewards-hell-tcg-rows-his`. The three relics with no known author (Tracker's Eyeglass, Censer of the High Choir, Gravedigger's Lantern) were not asked about and stay off.
 - **Not ruled, the chat's placing:** the mechanics that only his DRAFTED rows use (the sweep, the Strength requirement, ignoring Block, a class limit on a series, extra damage and Crit on special free attacks, and a dozen single-row ones) stay with the deferred item content, since no item in the game needs them yet.
+
+## 2026-10-05 — playtest post: notices, target lines, item cards, arrows, move costs on hexes, knocked down, bodies, cursed ground, the first hero's positives
+
+Andrew, in the kingdom chat, after playing; dictated in one post and ended "what questions do you have?". His words, whole:
+
+“The notifications are in a very awkward spot. The fact that they have a backdrop makes them take up a lot more space. I was imagining this as gold and bright text with no backdrop. Also, let's drop it lower down on the screen so it's right above the bottom of the screen.   When you're doing a power that is a buff or a heal, it should not be a red arrow for your vine or target.   When you're healing someone, it shouldn't show a magic attack bolt flying at them.   When you're selecting items in the equipment phase, you need to be able to look at your items somehow. You need to be able to click on them, and then they pop up somewhere on the screen, to the right or somewhere, as a card with a description.   We also need to be able to do something similar. When you're focusing on a character, you need to be able to look at their items when you're in battle.  Something seems wrong with the skeleton archer or with the priest. The priest was attacking the skeleton archer, and it was taking damage. I don't know why that was.   Arrows fly in an overhead arc to hit an enemy. They should be a straight line from where the bow is pointed.   The skeleton archers do not have a bow in hand.   When you are in the movement phase, if there are squares in your movement area that cost 2 or can't be walked through, that number needs to be on the square.   When you are knocked down, we need to use the downed image, which is the same as the dead, like you're lying on the ground. We need to knock down when you're prone.  Because it's not dead. It's the same as if you were knocked down on your back.   Then, if you are downed, when it's that character's next turn, everything needs to be grayed out except "stand up".   The bodies on the terrain are smaller than they should be. They should be larger.  In the Orphanage, both the body and the graves are supposed to be cursed ground, and they're not.   After you've moved, all the move actions are supposed to be grayed out. This lets you know that you can't do them anymore.   Okay, can you ask me any questions about anything unclear, and divide these up into the areas they need changes? I don't know what's up with the priest having taken damage for attacking the skeletal archer.  Oh, also, all of the attributes. When I was drafting my first hero, I weirdly got a list of like six positive things for each person. It seemed like maybe all of the positives for all of them were showing under each of them, as opposed to just the one that related to that hero. Okay, what questions do you have?”
+
+Not yet filed: the chat answered with the post sorted by package and its questions the same day; the items are filed on his answers ("vine" is read as "line" - dictation).
+
+## 2026-10-05 — playtest post, two more reports: the Lumberjack's Wife's top card has no art; Stand Up does nothing
+
+Andrew, in the kingdom chat, minutes after the post above, still playing:
+
+“The lumberjack wife in battle 2, in the top card, just has LW and not her art, when there clearly is her art.”
+
+“The stand-up button doesn't seem to work. When the lumberjack wife has been knocked down, I cannot seem to stand up with her.”
+
+Both are faults, not rulings. Filed at once: `fix.stand-up-does-nothing` (a knocked-down unit that cannot stand cannot be played). The card art joins the items filed on his answers to the post above.
+
+## 2026-10-05 — the playtest post answered: every notice gold and low, green for a friend, a glow for a heal, everything flies straight, knockdown is prone, Stand Up takes the move, the first hero's own positives and negatives
+
+Andrew, in the kingdom chat, answering the eleven questions on the post above (1 does the gold, no-backdrop, bottom-of-screen style apply to every notice or only some; 2 for a buff or heal, another colour for the line to the target, or no line; 3 what a heal shows instead of the bolt; 4 do thrown weapons keep their arc; 5 what shows on a hex you cannot walk through; 6 is knocked down the same state as prone; 7 what Stand Up costs; 8 how much larger the bodies; 9 what cursed ground does; 10 the first hero - its own positives or none, given the earlier 'description only'; 11 which battle, and was the priest next to the skeleton archer):
+
+“I don't like the way it is for anything.   They should be two. They should be green.   3. It should show a glow on the healed ally only, or on the area if an area is healed.   No, everything should go straight for 4.   If you can't walk through an index   knockdown is prone. That's what I'm talking about. She failed a knockdown roll, and it didn't change the way she looked.   Stand-up is a special move that is only available if you were prone, and yes, it takes your move.   The body should be the size of living units lying down, yes. 9. It is already written down somewhere that you should take it from. It's a cursed round.  10. It should show its positives and negatives compared to a standard hero of that type. It should say one line about what it is, like a ranger, and then it should do something similar to what you have there, but just about the positives and negatives it has, stats, and badges.  10. It was the lumberjack house. They were not next to the skeleton archer when they attacked.”
+
+Ruled:
+
+- **Every notice** takes the new look - gold, bright text, no backdrop, just above the bottom of the screen ("I don't like the way it is for anything").
+- **A buff's or a heal's line to its target is green**, never red.
+- **A heal shows a glow** on the healed ally only, or on the area if an area is healed - no bolt.
+- **Everything that flies goes straight** - arrows, bolts and thrown weapons alike.
+- **Knockdown is prone**, one state: the unit lies on the ground as the dead do. Reported with it: the Lumberjack's Wife "failed a knockdown roll, and it didn't change the way she looked."
+- **Stand Up is a special move, offered only to a prone unit, and it takes the unit's move.**
+- **A body on the ground is the size of a living unit lying down.**
+- **Cursed ground is what the documents already say it is** ("It's a cursed round" is "cursed ground" - dictation); the Orphanage's body and graves are that ground.
+- **The first hero's card:** one line saying what it is ("a ranger"), then its own positives and negatives against a standard hero of that type - stats and badges - and nobody else's. This replaces 2026-10-03's "no stats or badges shown, just a description".
+- **The priest's damage** was at the Lumberjack House (battle 2), and the priest was not next to the skeleton archer. Being traced.
+- **Not answered - the hex you cannot walk through.** His sentence breaks off: "If you can't walk through an index". The chat reads it as "an X" on that hex (said to him the same day; one line to change).
+
+## 2026-10-05 — no unit is shown with a number or a letter
+
+Andrew, in the kingdom chat, still playing:
+
+“None of the player units or enemy units should have numbers or letters. It's super dumb. It's okay to track them that way, but it shouldn't be Soldier A or Lumberjack 1 or Pyrowitch A. Why have an A or a 1 or an A? It's fine for the zombies just to be zombie, zombie, zombie, zombie.”
+
+Ruled: **a unit's shown name never carries a number or a letter that tells it from another of its kind** - on the board, the top cards, the panels, the log, the notices and the screens between battles. The game may still track them that way underneath. Four zombies read Zombie, Zombie, Zombie, Zombie. Filed: `viewer.unit-names-no-letters-or-numbers`.
+
+## 2026-10-05 — the battle screen must feel smooth: the speed first; the map drags and moves on W/A/S/D; the zoom stays; an ability click no longer re-centres; attack one is chosen after a move; one click or two to move is a setting
+
+Andrew, in the root chat:
+
+“The game still feels clutzy. It's awkward to try to roll the map around. It just feels fucking clutzy. I don't know what to do about it.   Can you do some research and try to come back with any answers?  It just feels awkward to click on things, double-click them, and scroll the screen around. Things are not on the screen. Doesn't feel good.”
+
+And while the chat was looking:
+
+“I want this to feel smooth like a AAA game. I want you to keep looking at this until you figure it out.”
+
+What the chat found, playing the built page (`kingdom/BATTLE-SANDBOX.html?play=…`, a 1920×1080 window, on his RTX 5070) and timing the game's own work for one frame (viewer `src/terrain3d.js` `frame()`):
+
+| Battle | One frame | Draw calls a frame | Triangles a frame |
+|---|---|---|---|
+| Orphanage | 124–138 ms | 2,408 | 7.2 million |
+| Lumberjack House | 66–76 ms | 1,944 | 8.5 million |
+| Cathedral | 46–76 ms | 491 | 11.7 million |
+| Bridge | 7–13 ms | 284 | 2.6 million |
+
+- **The speed.** 7 to 20 frames a second where 60 is smooth; the Bridge alone is smooth. About 100 ms of the Orphanage's frame is the see-through check (what hides a character is drawn translucent), which runs every 120 ms whether or not anything moved; with it skipped the frame is about 20 ms. The rest is the scene drawn three times on every frame, moving or not: the shadow map (916 calls), the scene (995), and the bodies' canvas (497, of which 461 are the scenery's depth again). Cavern Trail and the Caravan Aftermath were not measured.
+- **The view goes back to the acting unit.** Scrolled away from it on the Bridge, one notch of the wheel, or one click on any unit's card, brought the view straight back until the acting hero was 80 px inside it. On the Bridge's opening view 4 of the 7 units are off the screen; on the Orphanage's, 129 of the 280 hexes are whole in view. The board is 1448×716 of the 1920×1080 screen — half of it.
+- **Scrolling.** Pointing at an edge is the only way to move the map. Three of the four scroll bands are the board's own edges, in the middle of the screen where it meets the hero bar, the panel and the ability bar, 36 px deep. At the Orphanage's frame rate the scroll covers about 210 px a second of the 700 it is set to.
+- **The wheel** snaps back after 0.6 s, zooms about the view's centre, and each notch restarts the 1.1 s glide from rest.
+- **Clicks.** A press that travels 4 px between down and up is thrown away with nothing happening, left from when a drag moved the map. Clicking an ability re-centres on the acting unit. A move is two clicks; an attack is three.
+- XCOM 2 on PC, which the 2026-10-01 camera was modelled on from memory, also moves the map on W/A/S/D.
+
+The chat said the speed fixes, the lost clicks, the scroll bands and the restarting glide "change nothing you ruled; I will file them as viewer items unless you say otherwise", and asked four things: 1. should the map also move by dragging it and by W/A/S/D, alongside edge scroll (this overturns "no grab-drag"); 2. should the wheel zoom stay where you leave it, far enough out to see the whole board (this overturns "snaps back"); 3. should clicking an ability stop re-centring the view on your hero; 4. should a move be one click on the hex, with the path shown as you point, instead of click and click again.
+
+Answered:
+
+“Yes, 2 yes, 3 yes.   I don't think 4 is the problem.   I do think after you move, we should auto-select your basic attack or your attack one. If you have a ranged weapon, it's still your attack one, so you don't have to select your attack to then start turning on the map. Basically, you're changing A from basic attack one if you want to do anything other than that first thing.   Actually, I guess for number 4, let's have a setting where it can be either way, so I can just play with it either way.   On a bunch of different visual elements, let's cue all of this up.”
+
+Ruled:
+
+- **The map also moves by dragging it and on W/A/S/D**, alongside the edge scroll. Overturns 2026-10-01 'the XCOM-style camera' — "no grab-drag". The arrow keys still turn a quarter.
+- **The wheel's zoom stays where it is left, far enough out to see the whole board.** Overturns 2026-10-01 "snaps back to standard when you stop". At the widest zoom the whole board shows, so 2026-10-03's 'the camera never shows white space' gives way there by as much as showing the whole board takes and no more — the chat's reading of his yes to "far enough out to see the whole board"; one line to change.
+- **Clicking an ability no longer re-centres the view on the acting unit.** Overturns 2026-10-01 "Clicking an ability re-centers on the acting unit". A new Activation still centres on the unit that begins.
+- **After a unit moves, its attack one is chosen by itself** — the first attack on its bar, a ranged weapon's too — so pointing at the map aims at once; the bar is clicked only to do something other than that first attack. (Dictation: "turning on the map" is read as targeting on the map; "changing A from" as changing away from.) 2026-10-03's 'a hero starts its Activation with its basic move armed' stands.
+- **One click or two to move is a setting**, so he can play it either way; two clicks stays the default. "I don't think 4 is the problem."
+- **All of it is queued** ("cue" is "queue"), the speed fixes with it.
+
+The chat's own defaults, said to him the same day and his to change in a line: with the ability click no longer centring, a click on the acting unit's portrait, or on any unit's card in the top bar, centres the view on that unit; the eleven items go first in the viewer-and-kingdom queue, the speed items at the head, because every playtest is felt through the frame rate.
+
+Filed, first in the viewer-and-kingdom queue, in this order: `viewer.frame-cost-measured` (a tool that prints these numbers), `viewer.see-through-only-when-moved`, `viewer.scenery-shadow-drawn-once`, `viewer.scene-drawn-in-few-calls`, `viewer.view-stays-where-put`, `viewer.edge-scroll-at-screen-edges`, `viewer.map-drag-and-keys`, `viewer.zoom-stays`, `viewer.ability-click-keeps-view`, `kingdom.attack-one-armed-after-move`, `kingdom.move-click-setting`.
