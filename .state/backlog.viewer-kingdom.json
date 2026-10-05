@@ -5,7 +5,9 @@
   "shape": "plumbing",
   "spec": "Found by the engine worker landing capability.effect-lasts-activations (2026-10-05; ruled 2026-10-04, engine/DECISIONS.md 'his 28 reward weapons read back ...': an effect that lasts a number of Activations). The three timed effects it wired - the Fire Gauntlet's Stoke, the Staff of the Ultimate Destroyer's Perfect Sight and Poison Coating - show on the unit as statuses with their count (engine SWITCHES lentEffectIsAStatus, lentStatusIds; viewer SWITCHES lentStatusShownAsAStatus), but they have no colour or glyph of their own: each wears the viewer's fallback, a green dot in Poison's hue, so a hero under Stoke reads as poisoned. Wanted: each timed-effect status has its own mark in the viewer's status table, by the rule the table already uses for a status that gives rather than harms (a buff's frame, not an affliction's), with a glyph from the icon set already shipped (a flame for the one that adds Burn to hits, an eye for doubled Precision, a vial or drop for the coating) - never Poison's dot; its name and what it does show in the panel and the tooltip in the row's own words with the count left. A timed effect added later with no mark of its own falls back to a neutral buff mark, not to Poison's, and the checks list it so it is not missed. No new art is made here: if no shipped glyph fits one of them, it takes the neutral buff mark and the need is named in the report.",
   "expect": "A hero who has used Stoke shows a flame-marked buff with 3, then 2, then 1, and never Poison's dot; Perfect Sight and Poison Coating each show their own mark and count; the panel and tooltip name each and say what it does; a status with no mark in the table shows the neutral buff mark and is listed by the checks.",
-  "note": "Filed by the home chat 2026-10-05 from the engine worker's report. Not art-dependent."
+  "note": "Filed by the home chat 2026-10-05 from the engine worker's report. Not art-dependent.",
+  "status": "done",
+  "sha": "384842a"
  },
  {
   "id": "kingdom.first-hero-each-rolls-own-gifts",
