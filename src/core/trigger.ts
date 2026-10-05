@@ -29,6 +29,7 @@ import type { Ctx, Effect, StatModUntil, Unit } from './types.js'
 import type { Targeting } from './target.js'
 import { resolveTargets, validateTargeting } from './target.js'
 import { roll100 } from './rng.js'
+import { carriesTag } from './action.js'
 import { addStatMod, applyDamage, applyHealing, breakStatuses, corpsesNear, drainStamina, emit, gainMaxHp, gainPower, gainStamina, grantBadge, loseMaxHp, loseMaxStamina, reduceStatus, removeCorpse, standUp, unit } from './mutate.js'
 import { paintRadius } from './vision.js'
 import { layerOfId } from '../content/maps.js'
@@ -162,6 +163,14 @@ export type Trigger = {
    */
   readonly onlyWithAttack?: string
   /**
+   * A TAG REQUIREMENT — capability.unit-trigger-with-tag (2026-10-04; DECISIONS.md 'after the backlog run: … a trigger on the
+   * hero with a tag requirement …': "you can add burn to melee attacks on a hero, and then it only triggers when you're using
+   * something that has the tag melee"). When set, the trigger fires only when the firing context's cause is an action that
+   * carries this tag (action.ts carriesTag) — read beside `onlyWithAttack`, and joined with it when both are set. For a
+   * trigger that belongs to the unit (a badge's, a worn item's, the row's own). Absent = every attack, exactly as before.
+   */
+  readonly onlyWithTag?: string
+  /**
    * onBlock only (V2 shields, 2026-09-23): which side of the block the owner must
    * be on. The hook fires once for the defender and once for the attacker; an
    * axe's "on block" is the ATTACKER's (V2-SHIELDS-AND-WEAPONS-2026-09-20.md).
@@ -197,6 +206,11 @@ export function validateTrigger(t: Trigger): void {
   if (t.onlyWithAttack !== undefined && !/^(attack|move)\.[a-z0-9][a-z0-9.-]*$/.test(t.onlyWithAttack)) {
     throw new Error(`${where}: onlyWithAttack must name an attack id, got '${t.onlyWithAttack}'`)
   }
+  // capability.unit-trigger-with-tag: a tag is one plain word of the vocabulary's shape; WHICH words exist is content's,
+  // and the pack build refuses one its vocabulary does not hold
+  if (t.onlyWithTag !== undefined && (typeof t.onlyWithTag !== 'string' || !/^[a-z0-9][a-z0-9-]*$/.test(t.onlyWithTag))) {
+    throw new Error(`${where}: onlyWithTag must name a tag, got '${String(t.onlyWithTag)}'`)
+  }
   if (typeof t.select === 'string') {
     if (!SELECTORS.includes(t.select)) throw new Error(`${where}: unknown selector '${t.select}'`)
   } else {
@@ -212,7 +226,7 @@ export function validateTrigger(t: Trigger): void {
     throw new Error(`${where}: hook '${t.hook}' has no target, so select:'target' can never resolve`)
   }
   if (t.effect.kind === 'burstScale' && t.select !== 'self') throw Error(`${where}: burst scaling requires onBurst/self and percent 0..100`)
-  if (t.hook === 'onBurst' && t.onlyWithAttack !== undefined) throw Error(`${where}: onBurst cannot be attack-scoped`)
+  if (t.hook === 'onBurst' && (t.onlyWithAttack !== undefined || t.onlyWithTag !== undefined)) throw Error(`${where}: onBurst cannot be attack-scoped`)
   if (t.role !== undefined && (t.hook !== 'onBlock' || !['defender', 'attacker'].includes(t.role))) throw Error(`${where}: role is 'defender' or 'attacker', on onBlock only`)
   validateEffect(t.effect, where)
   if (t.effect.kind === 'burstScale' && t.hook !== 'onBurst') throw Error(`${where}: burst scaling requires onBurst/self and percent 0..100`)
@@ -392,6 +406,9 @@ export function fireTriggers(ctx: Ctx, hook: Hook, fc: FireContext): BurstAdjust
     // trigger on a cause that is not an attack (a status tick, a terrain
     // event) never fires — the scope is a claim about attacks.
     .filter((x) => !x.t.onlyWithAttack || x.t.onlyWithAttack === fc.causeId)
+    // The tag requirement (capability.unit-trigger-with-tag), read in the same place: the cause must be an action that
+    // carries the tag. Like the scope above it is a claim about attacks — on a cause that is no action it never fires.
+    .filter((x) => x.t.onlyWithTag === undefined || carriesTag(ctx.actions[fc.causeId], x.t.onlyWithTag))
     // onBlock's two contexts carry keyRole 0 (defender) and 1 (attacker).
     .filter((x) => x.t.role === undefined || fc.keyRole === (x.t.role === 'attacker' ? 1 : 0))
     .sort((a, b) => (a.t.source < b.t.source ? -1 : a.t.source > b.t.source ? 1

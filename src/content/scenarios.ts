@@ -203,6 +203,15 @@ const RAW_SCENARIOS: Readonly<Record<string, ScenarioDef>> = {
     mapId: 'map.open', heroes: ['hero.fixed.lumberjack-and-wife', 'hero.fixed.lumberjacks-wife'], heroHexes: [85, 101],
     enemies: ['unit.soldier', 'unit.soldier'], enemyHexes: [89, 105], replicate: 0,
   },
+  // capability.unit-trigger-with-tag (2026-10-04, Andrew, DECISIONS.md 'after the backlog run: ... a trigger on the hero with a
+  // tag requirement ...'): three triggers that belong to their unit and name a tag requirement, each fielded in a real battle —
+  // a badge's (the test badge: Burn on a melee hit), a worn Bloodrune's (the Burning Touch: melee) and a held weapon's row
+  // (Pharaoh's Gauntlets: brawl). The first warrior keeps his own kit; the second holds the gauntlets and wears the rune.
+  'test.trigger-with-tag': {
+    id: 'test.trigger-with-tag', note: 'TEST: a warrior wearing test.badge.melee-burn, and a warrior holding the Gauntlets of the Pharaoh and wearing the Burning Touch, against three zombies. No campaign claim.',
+    mapId: 'map.open', heroes: ['test-warrior', 'test-warrior'], heroHexes: [85, 100], heroItems: [undefined, ['item.pharaohs-gauntlets', 'item.rune-burning-touch']],
+    heroBadges: [['test.badge.melee-burn'], undefined], enemies: ['test-zombie', 'test-zombie', 'test-zombie'], enemyHexes: [86, 101, 116], replicate: 0,
+  },
   // content.flaming-longsword (2026-09-28): the Flaming series' tier 3 on two bases, each live in a
   // real battle — the Flaming Longsword (the battle-2 reward) and the Flaming War Axe.
   'test.flaming-longsword': {

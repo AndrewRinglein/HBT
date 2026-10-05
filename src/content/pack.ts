@@ -252,6 +252,8 @@ export type PackAttackRow = {
   /** v2.kdb: Impact (COMBAT-V2 §9.1), carried through attackPacketFields. */
   readonly impact?: number
   readonly slot?: ActionDef['slot']
+  /** capability.unit-trigger-with-tag (2026-10-04): the attack's tags, as the pack compiler wrote them (its own Codex tags and its weapon's). */
+  readonly tags?: readonly string[]
   readonly id: string; readonly name: string; readonly kind: 'melee' | 'ranged'; readonly damageType: import('../core/types.js').DamageType
   readonly bonus: number; readonly stat: 'strength' | 'precision' | 'magic' | 'spirit'; readonly reach: number; readonly staminaCost: number
   readonly applies?: { readonly statusId: string; readonly value: number };
@@ -280,8 +282,11 @@ export function liftAttack(r: PackAttackRow): AttackDef {
   if(!isDamageType(r.damageType))throw Error(`unit pack: invalid damage type on '${r.id}'`)
   const { id, name, kind, damageType, bonus, stat, reach, staminaCost, applies, crit, hits, cooldown, warmup, powerScale, accuracy, critCount, uses, free, hexes } = r
   if (hexes !== undefined && (!Number.isSafeInteger(hexes) || hexes < 1)) throw new Error(`unit pack: charge '${id}' has hexes '${String(hexes)}' — a whole number of at least 1`)
+  // capability.unit-trigger-with-tag: tags are plain words, a list or absent — never a guessed shape
+  if (r.tags !== undefined && (!Array.isArray(r.tags) || r.tags.some((t) => typeof t !== 'string' || !/^[a-z0-9][a-z0-9-]*$/.test(t)))) throw new Error(`unit pack: attack '${id}' carries tags that are not a list of plain words — regenerate the pack`)
   return {
     id, name, source: 'weapon', staminaCost, cooldown: cooldown ?? 0, range: reach, ...(r.slot !== undefined ? { slot: r.slot } : {}),
+    ...(r.tags !== undefined ? { tags: r.tags } : {}),
     ...(warmup !== undefined ? { warmup } : {}), ...(uses !== undefined ? { uses } : {}), ...(free !== undefined ? { free } : {}),
     ...(hexes !== undefined ? { move: { shape: 'path' as const, budgetMod: 0, hexes } } : {}),   // capability.charge: walk, then this attack
     attack: {

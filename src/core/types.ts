@@ -353,6 +353,12 @@ export type ActionDef = {
   readonly target?: import('./target.js').Targeting
   /** Hex-targeted travel/spread. Exclusive with attack and movement profiles. */
   readonly burst?: BurstProfile
+  /**
+   * capability.unit-trigger-with-tag (2026-10-04): the tags this action carries — for an attack, its own Codex tags (how it
+   * is made and with what) joined by the pack compiler with its weapon's. Read through `carriesTag` (action.ts) and nowhere
+   * else. Absent = the row states none, and an attack then carries its kind.
+   */
+  readonly tags?: readonly string[]
   // ── what it does — any combination ──
   /** Rolls to hit and runs the one damage function. Present = this action is an attack. */
   readonly attack?: AttackProfile

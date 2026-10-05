@@ -83,6 +83,18 @@ export function movesOf(ctx: Ctx, u: Unit): MoveDef[] {
   return out
 }
 /**
+ * WHAT "CARRIES THE TAG" MEANS — capability.unit-trigger-with-tag (ruled 2026-10-04, DECISIONS.md 'after the backlog run: … a
+ * trigger on the hero with a tag requirement …': "it only triggers when you're using something that has the tag melee").
+ * One meaning, here: an action carries a tag when the tag is in its row's `tags`; a row that states no tags and is an attack
+ * carries its kind — the bestiary's claw is a melee attack. Where the row states tags they are the whole answer (the Codex's
+ * words, not the engine's reach arithmetic). No row, no tag. Pure.
+ */
+export function carriesTag(a: ActionDef | undefined, tag: string): boolean {
+  if (!a) return false
+  if (a.tags !== undefined) return a.tags.includes(tag)
+  return a.attack !== undefined && a.attack.kind === tag
+}
+/**
  * THE UNIT'S WALK — its first path-shaped movement, in its own order (rule.walked-unit-has-moved, 2026-10-04): the basic
  * move of a unit that has one. A unit granted no path-shaped movement (a flier) has no walk. Whether it can pay for it
  * now is not asked here.

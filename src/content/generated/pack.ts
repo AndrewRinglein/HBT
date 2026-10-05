@@ -3459,7 +3459,12 @@ export const UNIT_PACK = {
       "bonus": 2,
       "stat": "strength",
       "reach": 1,
-      "staminaCost": 2
+      "staminaCost": 2,
+      "tags": [
+        "2-hander",
+        "blade",
+        "melee"
+      ]
     },
     "attack.punch": {
       "id": "attack.punch",
@@ -3471,7 +3476,11 @@ export const UNIT_PACK = {
       "reach": 1,
       "staminaCost": 0,
       "crit": -5,
-      "accuracy": -5
+      "accuracy": -5,
+      "tags": [
+        "brawl",
+        "melee"
+      ]
     },
     "attack.longsword.slash": {
       "id": "attack.longsword.slash",
@@ -3481,7 +3490,11 @@ export const UNIT_PACK = {
       "bonus": 1,
       "stat": "strength",
       "reach": 1,
-      "staminaCost": 1
+      "staminaCost": 1,
+      "tags": [
+        "blade",
+        "melee"
+      ]
     },
     "attack.elfbow.elf-shot": {
       "id": "attack.elfbow.elf-shot",
@@ -3492,7 +3505,11 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 6,
       "staminaCost": 1,
-      "accuracy": 15
+      "accuracy": 15,
+      "tags": [
+        "bow",
+        "ranged"
+      ]
     },
     "attack.elfbow.double-shot": {
       "id": "attack.elfbow.double-shot",
@@ -3504,7 +3521,11 @@ export const UNIT_PACK = {
       "reach": 4,
       "staminaCost": 2,
       "accuracy": -5,
-      "hits": 2
+      "hits": 2,
+      "tags": [
+        "bow",
+        "ranged"
+      ]
     },
     "attack.shortbow.short-shot": {
       "id": "attack.shortbow.short-shot",
@@ -3515,7 +3536,11 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 5,
       "staminaCost": 1,
-      "accuracy": 5
+      "accuracy": 5,
+      "tags": [
+        "bow",
+        "ranged"
+      ]
     },
     "attack.shortbow.quick-shot": {
       "id": "attack.shortbow.quick-shot",
@@ -3526,7 +3551,11 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 4,
       "staminaCost": 0,
-      "crit": 5
+      "crit": 5,
+      "tags": [
+        "bow",
+        "ranged"
+      ]
     },
     "attack.longbow.shot": {
       "id": "attack.longbow.shot",
@@ -3536,7 +3565,11 @@ export const UNIT_PACK = {
       "bonus": 1,
       "stat": "precision",
       "reach": 6,
-      "staminaCost": 1
+      "staminaCost": 1,
+      "tags": [
+        "bow",
+        "ranged"
+      ]
     },
     "attack.longbow.long-shot": {
       "id": "attack.longbow.long-shot",
@@ -3547,7 +3580,11 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 7,
       "staminaCost": 2,
-      "accuracy": 10
+      "accuracy": 10,
+      "tags": [
+        "bow",
+        "ranged"
+      ]
     },
     "attack.war-axe.chop": {
       "id": "attack.war-axe.chop",
@@ -3557,7 +3594,11 @@ export const UNIT_PACK = {
       "bonus": 1,
       "stat": "strength",
       "reach": 1,
-      "staminaCost": 1
+      "staminaCost": 1,
+      "tags": [
+        "axe",
+        "melee"
+      ]
     },
     "attack.war-axe.hack": {
       "id": "attack.war-axe.hack",
@@ -3569,7 +3610,11 @@ export const UNIT_PACK = {
       "reach": 1,
       "staminaCost": 2,
       "crit": 5,
-      "accuracy": -5
+      "accuracy": -5,
+      "tags": [
+        "axe",
+        "melee"
+      ]
     },
     "attack.halberd.hack": {
       "id": "attack.halberd.hack",
@@ -3579,7 +3624,12 @@ export const UNIT_PACK = {
       "bonus": 2,
       "stat": "strength",
       "reach": 1,
-      "staminaCost": 1
+      "staminaCost": 1,
+      "tags": [
+        "exotic",
+        "melee",
+        "polearm"
+      ]
     },
     "attack.frost-staff.frost-blast": {
       "id": "attack.frost-staff.frost-blast",
@@ -3589,7 +3639,11 @@ export const UNIT_PACK = {
       "bonus": 1,
       "stat": "precision",
       "reach": 4,
-      "staminaCost": 1
+      "staminaCost": 1,
+      "tags": [
+        "ranged",
+        "staff"
+      ]
     },
     "attack.fire-staff.fire-blast": {
       "id": "attack.fire-staff.fire-blast",
@@ -3599,7 +3653,11 @@ export const UNIT_PACK = {
       "bonus": 1,
       "stat": "precision",
       "reach": 4,
-      "staminaCost": 1
+      "staminaCost": 1,
+      "tags": [
+        "ranged",
+        "staff"
+      ]
     },
     "attack.holy-texts.verse": {
       "id": "attack.holy-texts.verse",
@@ -3609,7 +3667,11 @@ export const UNIT_PACK = {
       "bonus": 0,
       "stat": "precision",
       "reach": 4,
-      "staminaCost": 1
+      "staminaCost": 1,
+      "tags": [
+        "holy",
+        "ranged"
+      ]
     },
     "attack.holy-symbol.wrath": {
       "id": "attack.holy-symbol.wrath",
@@ -3620,7 +3682,11 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 5,
       "staminaCost": 1,
-      "accuracy": 5
+      "accuracy": 5,
+      "tags": [
+        "holy",
+        "ranged"
+      ]
     },
     "attack.iron-mace.swing": {
       "impact": 2,
@@ -3631,7 +3697,11 @@ export const UNIT_PACK = {
       "bonus": 1,
       "stat": "strength",
       "reach": 1,
-      "staminaCost": 1
+      "staminaCost": 1,
+      "tags": [
+        "hammer",
+        "melee"
+      ]
     },
     "attack.iron-mace.crush": {
       "impact": 2,
@@ -3642,7 +3712,11 @@ export const UNIT_PACK = {
       "bonus": 1,
       "stat": "strength",
       "reach": 1,
-      "staminaCost": 2
+      "staminaCost": 2,
+      "tags": [
+        "hammer",
+        "melee"
+      ]
     },
     "attack.hand-crossbow.snapshot": {
       "id": "attack.hand-crossbow.snapshot",
@@ -3653,7 +3727,11 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 5,
       "staminaCost": 1,
-      "accuracy": 5
+      "accuracy": 5,
+      "tags": [
+        "crossbow",
+        "ranged"
+      ]
     },
     "attack.hand-crossbow.loaded-bolt": {
       "id": "attack.hand-crossbow.loaded-bolt",
@@ -3664,7 +3742,11 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 5,
       "staminaCost": 2,
-      "crit": 3
+      "crit": 3,
+      "tags": [
+        "crossbow",
+        "ranged"
+      ]
     },
     "attack.obsidian-fang-dagger.fang": {
       "id": "attack.obsidian-fang-dagger.fang",
@@ -3675,7 +3757,11 @@ export const UNIT_PACK = {
       "stat": "strength",
       "reach": 1,
       "staminaCost": 1,
-      "accuracy": 5
+      "accuracy": 5,
+      "tags": [
+        "dagger",
+        "melee"
+      ]
     },
     "attack.obsidian-fang-dagger.gut": {
       "id": "attack.obsidian-fang-dagger.gut",
@@ -3687,7 +3773,11 @@ export const UNIT_PACK = {
       "reach": 1,
       "staminaCost": 2,
       "crit": 10,
-      "accuracy": 5
+      "accuracy": 5,
+      "tags": [
+        "dagger",
+        "melee"
+      ]
     },
     "attack.throwing-knives.flick": {
       "id": "attack.throwing-knives.flick",
@@ -3698,7 +3788,11 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 4,
       "staminaCost": 0,
-      "accuracy": 5
+      "accuracy": 5,
+      "tags": [
+        "ranged",
+        "thrown"
+      ]
     },
     "attack.throwing-knives.fan": {
       "id": "attack.throwing-knives.fan",
@@ -3710,7 +3804,11 @@ export const UNIT_PACK = {
       "reach": 3,
       "staminaCost": 2,
       "accuracy": -5,
-      "hits": 2
+      "hits": 2,
+      "tags": [
+        "ranged",
+        "thrown"
+      ]
     },
     "attack.daggers.stab": {
       "id": "attack.daggers.stab",
@@ -3721,7 +3819,11 @@ export const UNIT_PACK = {
       "stat": "strength",
       "reach": 1,
       "staminaCost": 0,
-      "crit": 15
+      "crit": 15,
+      "tags": [
+        "dagger",
+        "melee"
+      ]
     },
     "attack.daggers.thrown-dagger": {
       "id": "attack.daggers.thrown-dagger",
@@ -3731,7 +3833,11 @@ export const UNIT_PACK = {
       "bonus": 1,
       "stat": "precision",
       "reach": 4,
-      "staminaCost": 1
+      "staminaCost": 1,
+      "tags": [
+        "dagger",
+        "ranged"
+      ]
     },
     "attack.javelin.throw": {
       "id": "attack.javelin.throw",
@@ -3742,7 +3848,12 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 4,
       "staminaCost": 1,
-      "accuracy": -10
+      "accuracy": -10,
+      "tags": [
+        "ranged",
+        "spear",
+        "thrown"
+      ]
     },
     "attack.javelin.stab": {
       "id": "attack.javelin.stab",
@@ -3753,7 +3864,12 @@ export const UNIT_PACK = {
       "stat": "strength",
       "reach": 1,
       "staminaCost": 0,
-      "crit": 6
+      "crit": 6,
+      "tags": [
+        "melee",
+        "spear",
+        "thrown"
+      ]
     },
     "attack.dagger.stab": {
       "id": "attack.dagger.stab",
@@ -3764,7 +3880,11 @@ export const UNIT_PACK = {
       "stat": "strength",
       "reach": 1,
       "staminaCost": 0,
-      "crit": 5
+      "crit": 5,
+      "tags": [
+        "dagger",
+        "melee"
+      ]
     },
     "attack.lightning-staff.bolt": {
       "id": "attack.lightning-staff.bolt",
@@ -3775,7 +3895,11 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 5,
       "staminaCost": 2,
-      "accuracy": -20
+      "accuracy": -20,
+      "tags": [
+        "ranged",
+        "staff"
+      ]
     },
     "attack.lumberjack-axe.chop": {
       "id": "attack.lumberjack-axe.chop",
@@ -3785,7 +3909,11 @@ export const UNIT_PACK = {
       "bonus": 1,
       "stat": "strength",
       "reach": 1,
-      "staminaCost": 1
+      "staminaCost": 1,
+      "tags": [
+        "axe",
+        "melee"
+      ]
     },
     "attack.lumberjack-axe.cleave": {
       "id": "attack.lumberjack-axe.cleave",
@@ -3796,7 +3924,12 @@ export const UNIT_PACK = {
       "stat": "strength",
       "reach": 1,
       "staminaCost": 2,
-      "crit": 20
+      "crit": 20,
+      "tags": [
+        "area",
+        "axe",
+        "melee"
+      ]
     },
     "attack.pitchfork.jab": {
       "id": "attack.pitchfork.jab",
@@ -3807,7 +3940,11 @@ export const UNIT_PACK = {
       "stat": "strength",
       "reach": 1,
       "staminaCost": 1,
-      "accuracy": -5
+      "accuracy": -5,
+      "tags": [
+        "melee",
+        "spear"
+      ]
     },
     "attack.pile-of-rocks.throw": {
       "id": "attack.pile-of-rocks.throw",
@@ -3818,7 +3955,11 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 3,
       "staminaCost": 0,
-      "accuracy": 10
+      "accuracy": 10,
+      "tags": [
+        "ranged",
+        "thrown"
+      ]
     },
     "attack.war-hammer.smash": {
       "impact": 2,
@@ -3830,7 +3971,12 @@ export const UNIT_PACK = {
       "stat": "strength",
       "reach": 1,
       "staminaCost": 2,
-      "accuracy": -5
+      "accuracy": -5,
+      "tags": [
+        "2-hander",
+        "hammer",
+        "melee"
+      ]
     },
     "attack.war-hammer.skullsplitter": {
       "impact": 2,
@@ -3843,7 +3989,12 @@ export const UNIT_PACK = {
       "reach": 1,
       "staminaCost": 3,
       "crit": 3,
-      "accuracy": -10
+      "accuracy": -10,
+      "tags": [
+        "2-hander",
+        "hammer",
+        "melee"
+      ]
     },
     "attack.hunting-spear.thrust": {
       "id": "attack.hunting-spear.thrust",
@@ -3854,7 +4005,12 @@ export const UNIT_PACK = {
       "stat": "strength",
       "reach": 1,
       "staminaCost": 1,
-      "accuracy": 5
+      "accuracy": 5,
+      "tags": [
+        "melee",
+        "spear",
+        "thrown"
+      ]
     },
     "attack.hunting-spear.hurl": {
       "id": "attack.hunting-spear.hurl",
@@ -3864,7 +4020,12 @@ export const UNIT_PACK = {
       "bonus": 1,
       "stat": "precision",
       "reach": 4,
-      "staminaCost": 2
+      "staminaCost": 2,
+      "tags": [
+        "ranged",
+        "spear",
+        "thrown"
+      ]
     },
     "attack.glaive.sweep": {
       "id": "attack.glaive.sweep",
@@ -3875,7 +4036,12 @@ export const UNIT_PACK = {
       "stat": "strength",
       "reach": 1,
       "staminaCost": 2,
-      "accuracy": -5
+      "accuracy": -5,
+      "tags": [
+        "2-hander",
+        "melee",
+        "polearm"
+      ]
     },
     "attack.glaive.impale": {
       "id": "attack.glaive.impale",
@@ -3887,7 +4053,12 @@ export const UNIT_PACK = {
       "reach": 1,
       "staminaCost": 2,
       "crit": 3,
-      "accuracy": 5
+      "accuracy": 5,
+      "tags": [
+        "2-hander",
+        "melee",
+        "polearm"
+      ]
     },
     "attack.crossbow.bolt": {
       "id": "attack.crossbow.bolt",
@@ -3898,7 +4069,11 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 8,
       "staminaCost": 2,
-      "accuracy": 5
+      "accuracy": 5,
+      "tags": [
+        "crossbow",
+        "ranged"
+      ]
     },
     "attack.crossbow.punch-through": {
       "id": "attack.crossbow.punch-through",
@@ -3909,7 +4084,11 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 8,
       "staminaCost": 3,
-      "crit": 3
+      "crit": 3,
+      "tags": [
+        "crossbow",
+        "ranged"
+      ]
     },
     "attack.rapier.thrust": {
       "id": "attack.rapier.thrust",
@@ -3921,7 +4100,11 @@ export const UNIT_PACK = {
       "reach": 1,
       "staminaCost": 1,
       "crit": 3,
-      "accuracy": 10
+      "accuracy": 10,
+      "tags": [
+        "exotic",
+        "melee"
+      ]
     },
     "attack.rapier.pierce": {
       "id": "attack.rapier.pierce",
@@ -3933,7 +4116,11 @@ export const UNIT_PACK = {
       "reach": 1,
       "staminaCost": 2,
       "crit": 5,
-      "accuracy": 5
+      "accuracy": 5,
+      "tags": [
+        "exotic",
+        "melee"
+      ]
     },
     "attack.raiders-cutlass.slash": {
       "id": "attack.raiders-cutlass.slash",
@@ -3943,7 +4130,11 @@ export const UNIT_PACK = {
       "bonus": 1,
       "stat": "strength",
       "reach": 1,
-      "staminaCost": 1
+      "staminaCost": 1,
+      "tags": [
+        "blade",
+        "melee"
+      ]
     },
     "attack.raiders-cutlass.boarding-swing": {
       "id": "attack.raiders-cutlass.boarding-swing",
@@ -3955,7 +4146,11 @@ export const UNIT_PACK = {
       "reach": 1,
       "staminaCost": 2,
       "crit": 3,
-      "accuracy": -5
+      "accuracy": -5,
+      "tags": [
+        "blade",
+        "melee"
+      ]
     },
     "attack.poison-stars.star": {
       "id": "attack.poison-stars.star",
@@ -3965,7 +4160,11 @@ export const UNIT_PACK = {
       "bonus": 1,
       "stat": "precision",
       "reach": 4,
-      "staminaCost": 1
+      "staminaCost": 1,
+      "tags": [
+        "ranged",
+        "thrown"
+      ]
     },
     "attack.poison-stars.venom-spread": {
       "id": "attack.poison-stars.venom-spread",
@@ -3977,7 +4176,11 @@ export const UNIT_PACK = {
       "reach": 4,
       "staminaCost": 2,
       "accuracy": -5,
-      "hits": 2
+      "hits": 2,
+      "tags": [
+        "ranged",
+        "thrown"
+      ]
     },
     "attack.duel-runeblades.twin-cut": {
       "id": "attack.duel-runeblades.twin-cut",
@@ -3988,7 +4191,11 @@ export const UNIT_PACK = {
       "stat": "strength",
       "reach": 1,
       "staminaCost": 2,
-      "hits": 2
+      "hits": 2,
+      "tags": [
+        "blade",
+        "melee"
+      ]
     },
     "attack.duel-runeblades.rune-cross": {
       "id": "attack.duel-runeblades.rune-cross",
@@ -4000,7 +4207,11 @@ export const UNIT_PACK = {
       "reach": 1,
       "staminaCost": 2,
       "crit": 3,
-      "accuracy": 5
+      "accuracy": 5,
+      "tags": [
+        "blade",
+        "melee"
+      ]
     },
     "attack.shepherds-sling.stone": {
       "id": "attack.shepherds-sling.stone",
@@ -4010,7 +4221,11 @@ export const UNIT_PACK = {
       "bonus": 1,
       "stat": "precision",
       "reach": 5,
-      "staminaCost": 1
+      "staminaCost": 1,
+      "tags": [
+        "ranged",
+        "sling"
+      ]
     },
     "attack.shepherds-sling.whirl": {
       "id": "attack.shepherds-sling.whirl",
@@ -4022,7 +4237,11 @@ export const UNIT_PACK = {
       "reach": 7,
       "staminaCost": 2,
       "crit": 3,
-      "accuracy": -5
+      "accuracy": -5,
+      "tags": [
+        "ranged",
+        "sling"
+      ]
     },
     "attack.crippling-whip.lash": {
       "id": "attack.crippling-whip.lash",
@@ -4032,7 +4251,11 @@ export const UNIT_PACK = {
       "bonus": 0,
       "stat": "strength",
       "reach": 1,
-      "staminaCost": 1
+      "staminaCost": 1,
+      "tags": [
+        "exotic",
+        "melee"
+      ]
     },
     "attack.crippling-whip.hamstring": {
       "id": "attack.crippling-whip.hamstring",
@@ -4043,7 +4266,11 @@ export const UNIT_PACK = {
       "stat": "strength",
       "reach": 1,
       "staminaCost": 2,
-      "accuracy": -5
+      "accuracy": -5,
+      "tags": [
+        "exotic",
+        "melee"
+      ]
     },
     "attack.iron-claws.rake": {
       "id": "attack.iron-claws.rake",
@@ -4055,7 +4282,11 @@ export const UNIT_PACK = {
       "reach": 1,
       "staminaCost": 2,
       "accuracy": 5,
-      "hits": 2
+      "hits": 2,
+      "tags": [
+        "claw",
+        "melee"
+      ]
     },
     "attack.iron-claws.eviscerate": {
       "id": "attack.iron-claws.eviscerate",
@@ -4066,7 +4297,11 @@ export const UNIT_PACK = {
       "stat": "strength",
       "reach": 1,
       "staminaCost": 2,
-      "crit": 5
+      "crit": 5,
+      "tags": [
+        "claw",
+        "melee"
+      ]
     },
     "attack.grappling-harpoon.brace": {
       "id": "attack.grappling-harpoon.brace",
@@ -4077,7 +4312,12 @@ export const UNIT_PACK = {
       "stat": "strength",
       "reach": 1,
       "staminaCost": 1,
-      "accuracy": 5
+      "accuracy": 5,
+      "tags": [
+        "melee",
+        "spear",
+        "thrown"
+      ]
     },
     "attack.grappling-harpoon.hurl": {
       "id": "attack.grappling-harpoon.hurl",
@@ -4087,7 +4327,12 @@ export const UNIT_PACK = {
       "bonus": 0,
       "stat": "precision",
       "reach": 4,
-      "staminaCost": 2
+      "staminaCost": 2,
+      "tags": [
+        "ranged",
+        "spear",
+        "thrown"
+      ]
     },
     "attack.apprentice-wand.spark": {
       "id": "attack.apprentice-wand.spark",
@@ -4098,7 +4343,12 @@ export const UNIT_PACK = {
       "stat": "magic",
       "reach": 5,
       "staminaCost": 0,
-      "accuracy": 5
+      "accuracy": 5,
+      "tags": [
+        "magic",
+        "ranged",
+        "wand"
+      ]
     },
     "attack.apprentice-wand.surge": {
       "id": "attack.apprentice-wand.surge",
@@ -4109,7 +4359,12 @@ export const UNIT_PACK = {
       "stat": "magic",
       "reach": 5,
       "staminaCost": 2,
-      "crit": 3
+      "crit": 3,
+      "tags": [
+        "magic",
+        "ranged",
+        "wand"
+      ]
     },
     "attack.ancient-tome.read-the-page": {
       "id": "attack.ancient-tome.read-the-page",
@@ -4119,7 +4374,12 @@ export const UNIT_PACK = {
       "bonus": 0,
       "stat": "precision",
       "reach": 4,
-      "staminaCost": 1
+      "staminaCost": 1,
+      "tags": [
+        "book",
+        "magic",
+        "ranged"
+      ]
     },
     "attack.ancient-tome.long-passage": {
       "id": "attack.ancient-tome.long-passage",
@@ -4130,7 +4390,12 @@ export const UNIT_PACK = {
       "stat": "magic",
       "reach": 4,
       "staminaCost": 2,
-      "accuracy": -5
+      "accuracy": -5,
+      "tags": [
+        "book",
+        "magic",
+        "ranged"
+      ]
     },
     "attack.bane-blade.strike": {
       "id": "attack.bane-blade.strike",
@@ -4141,7 +4406,11 @@ export const UNIT_PACK = {
       "stat": "strength",
       "reach": 1,
       "staminaCost": 1,
-      "accuracy": 5
+      "accuracy": 5,
+      "tags": [
+        "blade",
+        "melee"
+      ]
     },
     "attack.bane-blade.banishing-blow": {
       "secondaryDamage": [
@@ -4159,7 +4428,11 @@ export const UNIT_PACK = {
       "bonus": 2,
       "stat": "strength",
       "reach": 1,
-      "staminaCost": 2
+      "staminaCost": 2,
+      "tags": [
+        "blade",
+        "melee"
+      ]
     },
     "attack.sword-of-the-fallen.remembrance": {
       "id": "attack.sword-of-the-fallen.remembrance",
@@ -4169,7 +4442,12 @@ export const UNIT_PACK = {
       "bonus": 0,
       "stat": "strength",
       "reach": 1,
-      "staminaCost": 1
+      "staminaCost": 1,
+      "tags": [
+        "blade",
+        "holy",
+        "melee"
+      ]
     },
     "attack.sword-of-the-fallen.honour-the-dead": {
       "id": "attack.sword-of-the-fallen.honour-the-dead",
@@ -4180,7 +4458,12 @@ export const UNIT_PACK = {
       "stat": "strength",
       "reach": 1,
       "staminaCost": 2,
-      "accuracy": 5
+      "accuracy": 5,
+      "tags": [
+        "blade",
+        "holy",
+        "melee"
+      ]
     },
     "attack.bloody-axe.cleave-open": {
       "id": "attack.bloody-axe.cleave-open",
@@ -4191,7 +4474,11 @@ export const UNIT_PACK = {
       "stat": "strength",
       "reach": 1,
       "staminaCost": 1,
-      "accuracy": -5
+      "accuracy": -5,
+      "tags": [
+        "axe",
+        "melee"
+      ]
     },
     "attack.bloody-axe.butcher": {
       "id": "attack.bloody-axe.butcher",
@@ -4202,7 +4489,11 @@ export const UNIT_PACK = {
       "stat": "strength",
       "reach": 1,
       "staminaCost": 2,
-      "crit": 5
+      "crit": 5,
+      "tags": [
+        "axe",
+        "melee"
+      ]
     },
     "attack.hammer-of-justice.judgment": {
       "impact": 2,
@@ -4214,7 +4505,11 @@ export const UNIT_PACK = {
       "stat": "strength",
       "reach": 1,
       "staminaCost": 2,
-      "accuracy": 5
+      "accuracy": 5,
+      "tags": [
+        "hammer",
+        "melee"
+      ]
     },
     "attack.hammer-of-justice.sentence": {
       "impact": 2,
@@ -4227,7 +4522,11 @@ export const UNIT_PACK = {
       "reach": 1,
       "staminaCost": 3,
       "crit": 3,
-      "accuracy": -5
+      "accuracy": -5,
+      "tags": [
+        "hammer",
+        "melee"
+      ]
     },
     "attack.holy-shield.shield-bash": {
       "id": "attack.holy-shield.shield-bash",
@@ -4238,7 +4537,11 @@ export const UNIT_PACK = {
       "stat": "strength",
       "reach": 1,
       "staminaCost": 1,
-      "accuracy": 5
+      "accuracy": 5,
+      "tags": [
+        "melee",
+        "shield"
+      ]
     },
     "attack.holy-shield.aegis-slam": {
       "id": "attack.holy-shield.aegis-slam",
@@ -4248,7 +4551,11 @@ export const UNIT_PACK = {
       "bonus": 0,
       "stat": "strength",
       "reach": 1,
-      "staminaCost": 2
+      "staminaCost": 2,
+      "tags": [
+        "melee",
+        "shield"
+      ]
     },
     "attack.death-blade.reap": {
       "id": "attack.death-blade.reap",
@@ -4258,7 +4565,11 @@ export const UNIT_PACK = {
       "bonus": 2,
       "stat": "strength",
       "reach": 1,
-      "staminaCost": 1
+      "staminaCost": 1,
+      "tags": [
+        "melee",
+        "sword"
+      ]
     },
     "attack.death-blade.death-stroke": {
       "id": "attack.death-blade.death-stroke",
@@ -4270,7 +4581,11 @@ export const UNIT_PACK = {
       "reach": 1,
       "staminaCost": 2,
       "crit": 5,
-      "accuracy": 10
+      "accuracy": 10,
+      "tags": [
+        "melee",
+        "sword"
+      ]
     },
     "attack.sniper-bow.loose": {
       "id": "attack.sniper-bow.loose",
@@ -4281,7 +4596,11 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 9,
       "staminaCost": 1,
-      "accuracy": 5
+      "accuracy": 5,
+      "tags": [
+        "bow",
+        "ranged"
+      ]
     },
     "attack.sniper-bow.long-shot": {
       "id": "attack.sniper-bow.long-shot",
@@ -4293,7 +4612,11 @@ export const UNIT_PACK = {
       "reach": 14,
       "staminaCost": 3,
       "crit": 5,
-      "accuracy": 10
+      "accuracy": 10,
+      "tags": [
+        "bow",
+        "ranged"
+      ]
     },
     "attack.runed-crossbow.rune-bolt": {
       "id": "attack.runed-crossbow.rune-bolt",
@@ -4304,7 +4627,11 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 8,
       "staminaCost": 2,
-      "accuracy": 5
+      "accuracy": 5,
+      "tags": [
+        "crossbow",
+        "ranged"
+      ]
     },
     "attack.runed-crossbow.banishing-bolt": {
       "id": "attack.runed-crossbow.banishing-bolt",
@@ -4315,7 +4642,11 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 8,
       "staminaCost": 3,
-      "crit": 3
+      "crit": 3,
+      "tags": [
+        "crossbow",
+        "ranged"
+      ]
     },
     "attack.poison-throwing-knives.toss": {
       "id": "attack.poison-throwing-knives.toss",
@@ -4325,7 +4656,11 @@ export const UNIT_PACK = {
       "bonus": 2,
       "stat": "precision",
       "reach": 5,
-      "staminaCost": 1
+      "staminaCost": 1,
+      "tags": [
+        "ranged",
+        "thrown"
+      ]
     },
     "attack.poison-throwing-knives.venom-fan": {
       "id": "attack.poison-throwing-knives.venom-fan",
@@ -4337,7 +4672,11 @@ export const UNIT_PACK = {
       "reach": 4,
       "staminaCost": 2,
       "accuracy": -5,
-      "hits": 3
+      "hits": 3,
+      "tags": [
+        "ranged",
+        "thrown"
+      ]
     },
     "attack.shadow-dagger.shadow-cut": {
       "id": "attack.shadow-dagger.shadow-cut",
@@ -4349,7 +4688,11 @@ export const UNIT_PACK = {
       "reach": 1,
       "staminaCost": 1,
       "crit": 5,
-      "accuracy": 5
+      "accuracy": 5,
+      "tags": [
+        "dagger",
+        "melee"
+      ]
     },
     "attack.shadow-dagger.from-behind": {
       "id": "attack.shadow-dagger.from-behind",
@@ -4361,7 +4704,11 @@ export const UNIT_PACK = {
       "reach": 1,
       "staminaCost": 2,
       "crit": 15,
-      "accuracy": 8
+      "accuracy": 8,
+      "tags": [
+        "dagger",
+        "melee"
+      ]
     },
     "attack.stormforged-blade.arc-cut": {
       "id": "attack.stormforged-blade.arc-cut",
@@ -4372,7 +4719,11 @@ export const UNIT_PACK = {
       "stat": "strength",
       "reach": 1,
       "staminaCost": 1,
-      "accuracy": 5
+      "accuracy": 5,
+      "tags": [
+        "melee",
+        "sword"
+      ]
     },
     "attack.stormforged-blade.thunder-strike": {
       "id": "attack.stormforged-blade.thunder-strike",
@@ -4383,7 +4734,11 @@ export const UNIT_PACK = {
       "stat": "strength",
       "reach": 1,
       "staminaCost": 2,
-      "crit": 5
+      "crit": 5,
+      "tags": [
+        "melee",
+        "sword"
+      ]
     },
     "attack.twin-talon-bow.talon-shot": {
       "id": "attack.twin-talon-bow.talon-shot",
@@ -4394,7 +4749,11 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 8,
       "staminaCost": 1,
-      "accuracy": 5
+      "accuracy": 5,
+      "tags": [
+        "bow",
+        "ranged"
+      ]
     },
     "attack.twin-talon-bow.double-nock": {
       "id": "attack.twin-talon-bow.double-nock",
@@ -4406,7 +4765,11 @@ export const UNIT_PACK = {
       "reach": 7,
       "staminaCost": 2,
       "accuracy": -5,
-      "hits": 2
+      "hits": 2,
+      "tags": [
+        "bow",
+        "ranged"
+      ]
     },
     "attack.book-of-exorcisms.reading": {
       "id": "attack.book-of-exorcisms.reading",
@@ -4416,7 +4779,12 @@ export const UNIT_PACK = {
       "bonus": 0,
       "stat": "precision",
       "reach": 4,
-      "staminaCost": 1
+      "staminaCost": 1,
+      "tags": [
+        "book",
+        "holy",
+        "ranged"
+      ]
     },
     "attack.book-of-exorcisms.rite-of-expulsion": {
       "id": "attack.book-of-exorcisms.rite-of-expulsion",
@@ -4426,7 +4794,13 @@ export const UNIT_PACK = {
       "bonus": 0,
       "stat": "precision",
       "reach": 3,
-      "staminaCost": 2
+      "staminaCost": 2,
+      "tags": [
+        "area",
+        "book",
+        "holy",
+        "ranged"
+      ]
     },
     "attack.cursed-sand-blade.sand-cut": {
       "id": "attack.cursed-sand-blade.sand-cut",
@@ -4437,7 +4811,11 @@ export const UNIT_PACK = {
       "stat": "strength",
       "reach": 1,
       "staminaCost": 1,
-      "accuracy": -5
+      "accuracy": -5,
+      "tags": [
+        "melee",
+        "sword"
+      ]
     },
     "attack.cursed-sand-blade.the-cursed-swing": {
       "id": "attack.cursed-sand-blade.the-cursed-swing",
@@ -4448,7 +4826,11 @@ export const UNIT_PACK = {
       "stat": "strength",
       "reach": 1,
       "staminaCost": 2,
-      "crit": 5
+      "crit": 5,
+      "tags": [
+        "melee",
+        "sword"
+      ]
     },
     "attack.skyforged-halberd.sky-sweep": {
       "id": "attack.skyforged-halberd.sky-sweep",
@@ -4459,7 +4841,12 @@ export const UNIT_PACK = {
       "stat": "strength",
       "reach": 1,
       "staminaCost": 2,
-      "accuracy": -5
+      "accuracy": -5,
+      "tags": [
+        "area",
+        "melee",
+        "polearm"
+      ]
     },
     "attack.skyforged-halberd.hallowed-thrust": {
       "id": "attack.skyforged-halberd.hallowed-thrust",
@@ -4471,7 +4858,11 @@ export const UNIT_PACK = {
       "reach": 2,
       "staminaCost": 2,
       "crit": 3,
-      "accuracy": 5
+      "accuracy": 5,
+      "tags": [
+        "melee",
+        "polearm"
+      ]
     },
     "attack.boarding-hook.hook": {
       "id": "attack.boarding-hook.hook",
@@ -4481,7 +4872,11 @@ export const UNIT_PACK = {
       "bonus": 1,
       "stat": "strength",
       "reach": 2,
-      "staminaCost": 1
+      "staminaCost": 1,
+      "tags": [
+        "chain",
+        "melee"
+      ]
     },
     "attack.boarding-hook.drag-down": {
       "id": "attack.boarding-hook.drag-down",
@@ -4492,7 +4887,11 @@ export const UNIT_PACK = {
       "stat": "strength",
       "reach": 2,
       "staminaCost": 2,
-      "accuracy": -5
+      "accuracy": -5,
+      "tags": [
+        "chain",
+        "melee"
+      ]
     },
     "attack.mirage-dagger.flicker-cut": {
       "id": "attack.mirage-dagger.flicker-cut",
@@ -4504,7 +4903,11 @@ export const UNIT_PACK = {
       "reach": 1,
       "staminaCost": 1,
       "crit": 3,
-      "accuracy": 10
+      "accuracy": 10,
+      "tags": [
+        "dagger",
+        "melee"
+      ]
     },
     "attack.mirage-dagger.two-places-at-once": {
       "id": "attack.mirage-dagger.two-places-at-once",
@@ -4517,7 +4920,11 @@ export const UNIT_PACK = {
       "staminaCost": 2,
       "crit": 3,
       "accuracy": -5,
-      "hits": 2
+      "hits": 2,
+      "tags": [
+        "dagger",
+        "melee"
+      ]
     },
     "attack.seraph-bow.seraph-shot": {
       "id": "attack.seraph-bow.seraph-shot",
@@ -4528,7 +4935,11 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 9,
       "staminaCost": 1,
-      "accuracy": 5
+      "accuracy": 5,
+      "tags": [
+        "bow",
+        "ranged"
+      ]
     },
     "attack.seraph-bow.feathered-judgment": {
       "id": "attack.seraph-bow.feathered-judgment",
@@ -4540,7 +4951,11 @@ export const UNIT_PACK = {
       "reach": 9,
       "staminaCost": 2,
       "crit": 5,
-      "accuracy": 5
+      "accuracy": 5,
+      "tags": [
+        "bow",
+        "ranged"
+      ]
     },
     "attack.death-bow.death-shot": {
       "id": "attack.death-bow.death-shot",
@@ -4551,7 +4966,11 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 9,
       "staminaCost": 1,
-      "accuracy": 5
+      "accuracy": 5,
+      "tags": [
+        "bow",
+        "ranged"
+      ]
     },
     "attack.death-bow.the-last-arrow": {
       "id": "attack.death-bow.the-last-arrow",
@@ -4563,7 +4982,11 @@ export const UNIT_PACK = {
       "reach": 12,
       "staminaCost": 3,
       "crit": 5,
-      "accuracy": 10
+      "accuracy": 10,
+      "tags": [
+        "bow",
+        "ranged"
+      ]
     },
     "attack.holy-avenger.avenging-strike": {
       "id": "attack.holy-avenger.avenging-strike",
@@ -4574,7 +4997,11 @@ export const UNIT_PACK = {
       "stat": "strength",
       "reach": 1,
       "staminaCost": 1,
-      "accuracy": 5
+      "accuracy": 5,
+      "tags": [
+        "melee",
+        "sword"
+      ]
     },
     "attack.holy-avenger.the-avenger-wakes": {
       "id": "attack.holy-avenger.the-avenger-wakes",
@@ -4586,7 +5013,11 @@ export const UNIT_PACK = {
       "reach": 1,
       "staminaCost": 2,
       "crit": 5,
-      "accuracy": 5
+      "accuracy": 5,
+      "tags": [
+        "melee",
+        "sword"
+      ]
     },
     "attack.demon-whip.crack": {
       "id": "attack.demon-whip.crack",
@@ -4596,7 +5027,11 @@ export const UNIT_PACK = {
       "bonus": 2,
       "stat": "strength",
       "reach": 3,
-      "staminaCost": 1
+      "staminaCost": 1,
+      "tags": [
+        "chain",
+        "melee"
+      ]
     },
     "attack.demon-whip.hellcoil": {
       "id": "attack.demon-whip.hellcoil",
@@ -4608,7 +5043,11 @@ export const UNIT_PACK = {
       "reach": 3,
       "staminaCost": 2,
       "accuracy": -5,
-      "hits": 2
+      "hits": 2,
+      "tags": [
+        "chain",
+        "melee"
+      ]
     },
     "attack.demonic-shiv.shiv": {
       "id": "attack.demonic-shiv.shiv",
@@ -4620,7 +5059,11 @@ export const UNIT_PACK = {
       "reach": 1,
       "staminaCost": 1,
       "crit": 5,
-      "accuracy": 10
+      "accuracy": 10,
+      "tags": [
+        "dagger",
+        "melee"
+      ]
     },
     "attack.demonic-shiv.the-devils-favour": {
       "id": "attack.demonic-shiv.the-devils-favour",
@@ -4631,7 +5074,11 @@ export const UNIT_PACK = {
       "stat": "strength",
       "reach": 1,
       "staminaCost": 2,
-      "crit": 10
+      "crit": 10,
+      "tags": [
+        "dagger",
+        "melee"
+      ]
     },
     "attack.blade-of-demon-slaying.slayer-cut": {
       "id": "attack.blade-of-demon-slaying.slayer-cut",
@@ -4642,7 +5089,11 @@ export const UNIT_PACK = {
       "stat": "strength",
       "reach": 1,
       "staminaCost": 1,
-      "accuracy": 5
+      "accuracy": 5,
+      "tags": [
+        "melee",
+        "sword"
+      ]
     },
     "attack.blade-of-demon-slaying.demonbane": {
       "id": "attack.blade-of-demon-slaying.demonbane",
@@ -4653,7 +5104,11 @@ export const UNIT_PACK = {
       "stat": "strength",
       "reach": 1,
       "staminaCost": 3,
-      "crit": 5
+      "crit": 5,
+      "tags": [
+        "melee",
+        "sword"
+      ]
     },
     "attack.pharaohs-gauntlets.gilded-strike": {
       "id": "attack.pharaohs-gauntlets.gilded-strike",
@@ -4664,7 +5119,12 @@ export const UNIT_PACK = {
       "stat": "strength",
       "reach": 1,
       "staminaCost": 1,
-      "accuracy": 5
+      "accuracy": 5,
+      "tags": [
+        "brawl",
+        "claw",
+        "melee"
+      ]
     },
     "attack.pharaohs-gauntlets.the-kings-hands": {
       "id": "attack.pharaohs-gauntlets.the-kings-hands",
@@ -4677,7 +5137,12 @@ export const UNIT_PACK = {
       "staminaCost": 2,
       "crit": 3,
       "accuracy": -5,
-      "hits": 2
+      "hits": 2,
+      "tags": [
+        "brawl",
+        "claw",
+        "melee"
+      ]
     },
     "attack.scepter-of-salvation.rebuke": {
       "id": "attack.scepter-of-salvation.rebuke",
@@ -4687,7 +5152,11 @@ export const UNIT_PACK = {
       "bonus": 0,
       "stat": "precision",
       "reach": 4,
-      "staminaCost": 1
+      "staminaCost": 1,
+      "tags": [
+        "holy",
+        "ranged"
+      ]
     },
     "attack.tomb-sentinels-blade.sentinel-cut": {
       "id": "attack.tomb-sentinels-blade.sentinel-cut",
@@ -4698,7 +5167,11 @@ export const UNIT_PACK = {
       "stat": "strength",
       "reach": 1,
       "staminaCost": 1,
-      "accuracy": 5
+      "accuracy": 5,
+      "tags": [
+        "melee",
+        "sword"
+      ]
     },
     "attack.tomb-sentinels-blade.grave-warden": {
       "id": "attack.tomb-sentinels-blade.grave-warden",
@@ -4710,7 +5183,11 @@ export const UNIT_PACK = {
       "reach": 1,
       "staminaCost": 2,
       "crit": 3,
-      "accuracy": 5
+      "accuracy": 5,
+      "tags": [
+        "melee",
+        "sword"
+      ]
     },
     "attack.siege-crossbow.bolt": {
       "id": "attack.siege-crossbow.bolt",
@@ -4720,7 +5197,11 @@ export const UNIT_PACK = {
       "bonus": 3,
       "stat": "precision",
       "reach": 10,
-      "staminaCost": 2
+      "staminaCost": 2,
+      "tags": [
+        "crossbow",
+        "ranged"
+      ]
     },
     "attack.siege-crossbow.siege-shot": {
       "id": "attack.siege-crossbow.siege-shot",
@@ -4732,7 +5213,11 @@ export const UNIT_PACK = {
       "reach": 12,
       "staminaCost": 3,
       "crit": 3,
-      "accuracy": -5
+      "accuracy": -5,
+      "tags": [
+        "crossbow",
+        "ranged"
+      ]
     },
     "attack.stormforged-halberd.storm-sweep": {
       "id": "attack.stormforged-halberd.storm-sweep",
@@ -4743,7 +5228,12 @@ export const UNIT_PACK = {
       "stat": "strength",
       "reach": 1,
       "staminaCost": 2,
-      "accuracy": -5
+      "accuracy": -5,
+      "tags": [
+        "area",
+        "melee",
+        "polearm"
+      ]
     },
     "attack.stormforged-halberd.thunderhead": {
       "id": "attack.stormforged-halberd.thunderhead",
@@ -4755,7 +5245,11 @@ export const UNIT_PACK = {
       "reach": 2,
       "staminaCost": 3,
       "crit": 5,
-      "accuracy": 5
+      "accuracy": 5,
+      "tags": [
+        "melee",
+        "polearm"
+      ]
     },
     "attack.fangs.bite": {
       "id": "attack.fangs.bite",
@@ -4766,7 +5260,11 @@ export const UNIT_PACK = {
       "stat": "strength",
       "reach": 1,
       "staminaCost": 1,
-      "crit": 5
+      "crit": 5,
+      "tags": [
+        "fang",
+        "melee"
+      ]
     },
     "attack.fangs.savage": {
       "id": "attack.fangs.savage",
@@ -4778,7 +5276,11 @@ export const UNIT_PACK = {
       "reach": 1,
       "staminaCost": 2,
       "accuracy": -10,
-      "hits": 2
+      "hits": 2,
+      "tags": [
+        "fang",
+        "melee"
+      ]
     },
     "attack.claws.swipe": {
       "id": "attack.claws.swipe",
@@ -4790,7 +5292,11 @@ export const UNIT_PACK = {
       "reach": 1,
       "staminaCost": 1,
       "crit": 5,
-      "accuracy": 5
+      "accuracy": 5,
+      "tags": [
+        "claw",
+        "melee"
+      ]
     },
     "attack.claws.flense": {
       "id": "attack.claws.flense",
@@ -4801,7 +5307,11 @@ export const UNIT_PACK = {
       "stat": "strength",
       "reach": 1,
       "staminaCost": 2,
-      "hits": 2
+      "hits": 2,
+      "tags": [
+        "claw",
+        "melee"
+      ]
     },
     "attack.tail.lash": {
       "id": "attack.tail.lash",
@@ -4811,7 +5321,10 @@ export const UNIT_PACK = {
       "bonus": 1,
       "stat": "strength",
       "reach": 1,
-      "staminaCost": 1
+      "staminaCost": 1,
+      "tags": [
+        "melee"
+      ]
     },
     "attack.tail.tail-sweep": {
       "id": "attack.tail.tail-sweep",
@@ -4822,7 +5335,10 @@ export const UNIT_PACK = {
       "stat": "strength",
       "reach": 1,
       "staminaCost": 2,
-      "accuracy": -5
+      "accuracy": -5,
+      "tags": [
+        "melee"
+      ]
     },
     "attack.horns.ram": {
       "id": "attack.horns.ram",
@@ -4833,7 +5349,10 @@ export const UNIT_PACK = {
       "stat": "strength",
       "reach": 1,
       "staminaCost": 2,
-      "accuracy": -10
+      "accuracy": -10,
+      "tags": [
+        "melee"
+      ]
     },
     "attack.horns.toss": {
       "id": "attack.horns.toss",
@@ -4844,7 +5363,10 @@ export const UNIT_PACK = {
       "stat": "strength",
       "reach": 1,
       "staminaCost": 1,
-      "crit": 5
+      "crit": 5,
+      "tags": [
+        "melee"
+      ]
     },
     "attack.breath.gout": {
       "id": "attack.breath.gout",
@@ -4854,7 +5376,12 @@ export const UNIT_PACK = {
       "bonus": 1,
       "stat": "magic",
       "reach": 3,
-      "staminaCost": 2
+      "staminaCost": 2,
+      "tags": [
+        "brawl",
+        "breath",
+        "ranged"
+      ]
     },
     "attack.breath.hiss": {
       "id": "attack.breath.hiss",
@@ -4865,7 +5392,12 @@ export const UNIT_PACK = {
       "stat": "magic",
       "reach": 3,
       "staminaCost": 1,
-      "accuracy": 5
+      "accuracy": 5,
+      "tags": [
+        "brawl",
+        "breath",
+        "ranged"
+      ]
     },
     "attack.hooves.kick": {
       "id": "attack.hooves.kick",
@@ -4876,7 +5408,10 @@ export const UNIT_PACK = {
       "stat": "strength",
       "reach": 1,
       "staminaCost": 1,
-      "accuracy": -5
+      "accuracy": -5,
+      "tags": [
+        "melee"
+      ]
     },
     "attack.hooves.stomp": {
       "id": "attack.hooves.stomp",
@@ -4888,7 +5423,10 @@ export const UNIT_PACK = {
       "reach": 1,
       "staminaCost": 2,
       "accuracy": -5,
-      "hits": 2
+      "hits": 2,
+      "tags": [
+        "melee"
+      ]
     },
     "attack.pickaxe.pick": {
       "id": "attack.pickaxe.pick",
@@ -4898,7 +5436,11 @@ export const UNIT_PACK = {
       "bonus": -3,
       "stat": "strength",
       "reach": 1,
-      "staminaCost": 1
+      "staminaCost": 1,
+      "tags": [
+        "improvised",
+        "melee"
+      ]
     },
     "attack.burning-torch.swing": {
       "id": "attack.burning-torch.swing",
@@ -4908,7 +5450,11 @@ export const UNIT_PACK = {
       "bonus": -2,
       "stat": "strength",
       "reach": 1,
-      "staminaCost": 1
+      "staminaCost": 1,
+      "tags": [
+        "improvised",
+        "melee"
+      ]
     },
     "attack.net.cast": {
       "id": "attack.net.cast",
@@ -4919,7 +5465,10 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 3,
       "staminaCost": 1,
-      "uses": 1
+      "uses": 1,
+      "tags": [
+        "thrown"
+      ]
     },
     "attack.barbarian-bow.power-shot": {
       "id": "attack.barbarian-bow.power-shot",
@@ -4930,7 +5479,11 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 6,
       "staminaCost": 2,
-      "accuracy": -10
+      "accuracy": -10,
+      "tags": [
+        "bow",
+        "ranged"
+      ]
     },
     "attack.barbarian-bow.crippling-shot": {
       "id": "attack.barbarian-bow.crippling-shot",
@@ -4941,7 +5494,11 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 6,
       "staminaCost": 2,
-      "accuracy": -10
+      "accuracy": -10,
+      "tags": [
+        "bow",
+        "ranged"
+      ]
     },
     "attack.earth-staff.earth-blast": {
       "id": "attack.earth-staff.earth-blast",
@@ -4951,7 +5508,11 @@ export const UNIT_PACK = {
       "bonus": 1,
       "stat": "precision",
       "reach": 3,
-      "staminaCost": 1
+      "staminaCost": 1,
+      "tags": [
+        "ranged",
+        "staff"
+      ]
     },
     "attack.force-staff.force-blast": {
       "id": "attack.force-staff.force-blast",
@@ -4961,7 +5522,11 @@ export const UNIT_PACK = {
       "bonus": 0,
       "stat": "precision",
       "reach": 4,
-      "staminaCost": 1
+      "staminaCost": 1,
+      "tags": [
+        "ranged",
+        "staff"
+      ]
     },
     "attack.priest-chain.smite": {
       "id": "attack.priest-chain.smite",
@@ -4971,7 +5536,12 @@ export const UNIT_PACK = {
       "bonus": 1,
       "stat": "precision",
       "reach": 5,
-      "staminaCost": 1
+      "staminaCost": 1,
+      "tags": [
+        "chain",
+        "holy",
+        "ranged"
+      ]
     },
     "attack.club.swing": {
       "id": "attack.club.swing",
@@ -4981,7 +5551,11 @@ export const UNIT_PACK = {
       "bonus": 0,
       "stat": "strength",
       "reach": 1,
-      "staminaCost": 1
+      "staminaCost": 1,
+      "tags": [
+        "hammer",
+        "melee"
+      ]
     },
     "attack.fire-gauntlet.fire-punch": {
       "id": "attack.fire-gauntlet.fire-punch",
@@ -4991,7 +5565,14 @@ export const UNIT_PACK = {
       "bonus": 0,
       "stat": "strength",
       "reach": 1,
-      "staminaCost": 1
+      "staminaCost": 1,
+      "tags": [
+        "brawl",
+        "fire",
+        "gauntlet",
+        "magic",
+        "melee"
+      ]
     },
     "attack.staff-of-summoning.unbinding": {
       "id": "attack.staff-of-summoning.unbinding",
@@ -5001,7 +5582,12 @@ export const UNIT_PACK = {
       "bonus": 0,
       "stat": "precision",
       "reach": 5,
-      "staminaCost": 2
+      "staminaCost": 2,
+      "tags": [
+        "magic",
+        "ranged",
+        "staff"
+      ]
     },
     "attack.staff-of-the-destroyer.ruin": {
       "id": "attack.staff-of-the-destroyer.ruin",
@@ -5011,7 +5597,13 @@ export const UNIT_PACK = {
       "bonus": 0,
       "stat": "precision",
       "reach": 8,
-      "staminaCost": 3
+      "staminaCost": 3,
+      "tags": [
+        "destroyer",
+        "magic",
+        "ranged",
+        "staff"
+      ]
     },
     "attack.staff-of-the-destroyer.sundering": {
       "id": "attack.staff-of-the-destroyer.sundering",
@@ -5021,7 +5613,14 @@ export const UNIT_PACK = {
       "bonus": 0,
       "stat": "precision",
       "reach": 10,
-      "staminaCost": 3
+      "staminaCost": 3,
+      "tags": [
+        "destroyer",
+        "magic",
+        "ranged",
+        "staff",
+        "stun"
+      ]
     },
     "attack.staff-of-the-ultimate-destroyer.annihilation": {
       "id": "attack.staff-of-the-ultimate-destroyer.annihilation",
@@ -5031,7 +5630,13 @@ export const UNIT_PACK = {
       "bonus": 0,
       "stat": "precision",
       "reach": 8,
-      "staminaCost": 4
+      "staminaCost": 4,
+      "tags": [
+        "destroyer",
+        "magic",
+        "ranged",
+        "staff"
+      ]
     },
     "attack.chains-of-the-wrathful.wrathful-sweep": {
       "id": "attack.chains-of-the-wrathful.wrathful-sweep",
@@ -5041,7 +5646,12 @@ export const UNIT_PACK = {
       "bonus": 1,
       "stat": "spirit",
       "reach": 3,
-      "staminaCost": 3
+      "staminaCost": 3,
+      "tags": [
+        "area",
+        "chain",
+        "holy"
+      ]
     },
     "attack.greatsword.hew.heavy": {
       "id": "attack.greatsword.hew.heavy",
@@ -5051,7 +5661,12 @@ export const UNIT_PACK = {
       "bonus": 3,
       "stat": "strength",
       "reach": 1,
-      "staminaCost": 2
+      "staminaCost": 2,
+      "tags": [
+        "2-hander",
+        "blade",
+        "melee"
+      ]
     },
     "attack.greatsword.hew.keen": {
       "id": "attack.greatsword.hew.keen",
@@ -5062,6 +5677,11 @@ export const UNIT_PACK = {
       "stat": "strength",
       "reach": 1,
       "staminaCost": 2,
+      "tags": [
+        "2-hander",
+        "blade",
+        "melee"
+      ],
       "accuracy": 6
     },
     "attack.greatsword.hew.cruel": {
@@ -5073,6 +5693,11 @@ export const UNIT_PACK = {
       "stat": "strength",
       "reach": 1,
       "staminaCost": 2,
+      "tags": [
+        "2-hander",
+        "blade",
+        "melee"
+      ],
       "accuracy": 3,
       "crit": 4
     },
@@ -5084,7 +5709,11 @@ export const UNIT_PACK = {
       "bonus": 2,
       "stat": "strength",
       "reach": 1,
-      "staminaCost": 1
+      "staminaCost": 1,
+      "tags": [
+        "axe",
+        "melee"
+      ]
     },
     "attack.war-axe.hack.heavy": {
       "id": "attack.war-axe.hack.heavy",
@@ -5096,7 +5725,11 @@ export const UNIT_PACK = {
       "reach": 1,
       "staminaCost": 2,
       "crit": 5,
-      "accuracy": -5
+      "accuracy": -5,
+      "tags": [
+        "axe",
+        "melee"
+      ]
     },
     "attack.war-axe.chop.keen": {
       "id": "attack.war-axe.chop.keen",
@@ -5107,6 +5740,10 @@ export const UNIT_PACK = {
       "stat": "strength",
       "reach": 1,
       "staminaCost": 1,
+      "tags": [
+        "axe",
+        "melee"
+      ],
       "accuracy": 6
     },
     "attack.war-axe.hack.keen": {
@@ -5119,7 +5756,11 @@ export const UNIT_PACK = {
       "reach": 1,
       "staminaCost": 2,
       "crit": 5,
-      "accuracy": 1
+      "accuracy": 1,
+      "tags": [
+        "axe",
+        "melee"
+      ]
     },
     "attack.war-axe.chop.cruel": {
       "id": "attack.war-axe.chop.cruel",
@@ -5130,6 +5771,10 @@ export const UNIT_PACK = {
       "stat": "strength",
       "reach": 1,
       "staminaCost": 1,
+      "tags": [
+        "axe",
+        "melee"
+      ],
       "accuracy": 3,
       "crit": 4
     },
@@ -5143,7 +5788,11 @@ export const UNIT_PACK = {
       "reach": 1,
       "staminaCost": 2,
       "crit": 9,
-      "accuracy": -2
+      "accuracy": -2,
+      "tags": [
+        "axe",
+        "melee"
+      ]
     },
     "attack.iron-mace.swing.heavy": {
       "impact": 2,
@@ -5154,7 +5803,11 @@ export const UNIT_PACK = {
       "bonus": 2,
       "stat": "strength",
       "reach": 1,
-      "staminaCost": 1
+      "staminaCost": 1,
+      "tags": [
+        "hammer",
+        "melee"
+      ]
     },
     "attack.iron-mace.crush.heavy": {
       "impact": 2,
@@ -5165,7 +5818,11 @@ export const UNIT_PACK = {
       "bonus": 2,
       "stat": "strength",
       "reach": 1,
-      "staminaCost": 2
+      "staminaCost": 2,
+      "tags": [
+        "hammer",
+        "melee"
+      ]
     },
     "attack.iron-mace.swing.keen": {
       "impact": 2,
@@ -5177,6 +5834,10 @@ export const UNIT_PACK = {
       "stat": "strength",
       "reach": 1,
       "staminaCost": 1,
+      "tags": [
+        "hammer",
+        "melee"
+      ],
       "accuracy": 6
     },
     "attack.iron-mace.crush.keen": {
@@ -5189,6 +5850,10 @@ export const UNIT_PACK = {
       "stat": "strength",
       "reach": 1,
       "staminaCost": 2,
+      "tags": [
+        "hammer",
+        "melee"
+      ],
       "accuracy": 6
     },
     "attack.iron-mace.swing.cruel": {
@@ -5201,6 +5866,10 @@ export const UNIT_PACK = {
       "stat": "strength",
       "reach": 1,
       "staminaCost": 1,
+      "tags": [
+        "hammer",
+        "melee"
+      ],
       "accuracy": 3,
       "crit": 4
     },
@@ -5214,6 +5883,10 @@ export const UNIT_PACK = {
       "stat": "strength",
       "reach": 1,
       "staminaCost": 2,
+      "tags": [
+        "hammer",
+        "melee"
+      ],
       "accuracy": 3,
       "crit": 4
     },
@@ -5227,7 +5900,12 @@ export const UNIT_PACK = {
       "stat": "strength",
       "reach": 1,
       "staminaCost": 2,
-      "accuracy": -5
+      "accuracy": -5,
+      "tags": [
+        "2-hander",
+        "hammer",
+        "melee"
+      ]
     },
     "attack.war-hammer.skullsplitter.heavy": {
       "impact": 2,
@@ -5240,7 +5918,12 @@ export const UNIT_PACK = {
       "reach": 1,
       "staminaCost": 3,
       "crit": 3,
-      "accuracy": -10
+      "accuracy": -10,
+      "tags": [
+        "2-hander",
+        "hammer",
+        "melee"
+      ]
     },
     "attack.war-hammer.smash.keen": {
       "impact": 2,
@@ -5252,7 +5935,12 @@ export const UNIT_PACK = {
       "stat": "strength",
       "reach": 1,
       "staminaCost": 2,
-      "accuracy": 1
+      "accuracy": 1,
+      "tags": [
+        "2-hander",
+        "hammer",
+        "melee"
+      ]
     },
     "attack.war-hammer.skullsplitter.keen": {
       "impact": 2,
@@ -5265,7 +5953,12 @@ export const UNIT_PACK = {
       "reach": 1,
       "staminaCost": 3,
       "crit": 3,
-      "accuracy": -4
+      "accuracy": -4,
+      "tags": [
+        "2-hander",
+        "hammer",
+        "melee"
+      ]
     },
     "attack.war-hammer.smash.cruel": {
       "impact": 2,
@@ -5278,6 +5971,11 @@ export const UNIT_PACK = {
       "reach": 1,
       "staminaCost": 2,
       "accuracy": -2,
+      "tags": [
+        "2-hander",
+        "hammer",
+        "melee"
+      ],
       "crit": 4
     },
     "attack.war-hammer.skullsplitter.cruel": {
@@ -5291,7 +5989,12 @@ export const UNIT_PACK = {
       "reach": 1,
       "staminaCost": 3,
       "crit": 7,
-      "accuracy": -7
+      "accuracy": -7,
+      "tags": [
+        "2-hander",
+        "hammer",
+        "melee"
+      ]
     },
     "attack.hunting-spear.thrust.heavy": {
       "id": "attack.hunting-spear.thrust.heavy",
@@ -5302,7 +6005,12 @@ export const UNIT_PACK = {
       "stat": "strength",
       "reach": 1,
       "staminaCost": 1,
-      "accuracy": 5
+      "accuracy": 5,
+      "tags": [
+        "melee",
+        "spear",
+        "thrown"
+      ]
     },
     "attack.hunting-spear.hurl.heavy": {
       "id": "attack.hunting-spear.hurl.heavy",
@@ -5312,7 +6020,12 @@ export const UNIT_PACK = {
       "bonus": 2,
       "stat": "precision",
       "reach": 4,
-      "staminaCost": 2
+      "staminaCost": 2,
+      "tags": [
+        "ranged",
+        "spear",
+        "thrown"
+      ]
     },
     "attack.hunting-spear.thrust.keen": {
       "id": "attack.hunting-spear.thrust.keen",
@@ -5323,7 +6036,12 @@ export const UNIT_PACK = {
       "stat": "strength",
       "reach": 1,
       "staminaCost": 1,
-      "accuracy": 11
+      "accuracy": 11,
+      "tags": [
+        "melee",
+        "spear",
+        "thrown"
+      ]
     },
     "attack.hunting-spear.hurl.keen": {
       "id": "attack.hunting-spear.hurl.keen",
@@ -5334,6 +6052,11 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 4,
       "staminaCost": 2,
+      "tags": [
+        "ranged",
+        "spear",
+        "thrown"
+      ],
       "accuracy": 6
     },
     "attack.hunting-spear.thrust.cruel": {
@@ -5346,6 +6069,11 @@ export const UNIT_PACK = {
       "reach": 1,
       "staminaCost": 1,
       "accuracy": 8,
+      "tags": [
+        "melee",
+        "spear",
+        "thrown"
+      ],
       "crit": 4
     },
     "attack.hunting-spear.hurl.cruel": {
@@ -5357,6 +6085,11 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 4,
       "staminaCost": 2,
+      "tags": [
+        "ranged",
+        "spear",
+        "thrown"
+      ],
       "accuracy": 3,
       "crit": 4
     },
@@ -5369,7 +6102,12 @@ export const UNIT_PACK = {
       "stat": "strength",
       "reach": 1,
       "staminaCost": 2,
-      "accuracy": -5
+      "accuracy": -5,
+      "tags": [
+        "2-hander",
+        "melee",
+        "polearm"
+      ]
     },
     "attack.glaive.impale.heavy": {
       "id": "attack.glaive.impale.heavy",
@@ -5381,7 +6119,12 @@ export const UNIT_PACK = {
       "reach": 1,
       "staminaCost": 2,
       "crit": 3,
-      "accuracy": 5
+      "accuracy": 5,
+      "tags": [
+        "2-hander",
+        "melee",
+        "polearm"
+      ]
     },
     "attack.glaive.sweep.keen": {
       "id": "attack.glaive.sweep.keen",
@@ -5392,7 +6135,12 @@ export const UNIT_PACK = {
       "stat": "strength",
       "reach": 1,
       "staminaCost": 2,
-      "accuracy": 1
+      "accuracy": 1,
+      "tags": [
+        "2-hander",
+        "melee",
+        "polearm"
+      ]
     },
     "attack.glaive.impale.keen": {
       "id": "attack.glaive.impale.keen",
@@ -5404,7 +6152,12 @@ export const UNIT_PACK = {
       "reach": 1,
       "staminaCost": 2,
       "crit": 3,
-      "accuracy": 11
+      "accuracy": 11,
+      "tags": [
+        "2-hander",
+        "melee",
+        "polearm"
+      ]
     },
     "attack.glaive.sweep.cruel": {
       "id": "attack.glaive.sweep.cruel",
@@ -5416,6 +6169,11 @@ export const UNIT_PACK = {
       "reach": 1,
       "staminaCost": 2,
       "accuracy": -2,
+      "tags": [
+        "2-hander",
+        "melee",
+        "polearm"
+      ],
       "crit": 4
     },
     "attack.glaive.impale.cruel": {
@@ -5428,7 +6186,12 @@ export const UNIT_PACK = {
       "reach": 1,
       "staminaCost": 2,
       "crit": 7,
-      "accuracy": 8
+      "accuracy": 8,
+      "tags": [
+        "2-hander",
+        "melee",
+        "polearm"
+      ]
     },
     "attack.crossbow.bolt.heavy": {
       "id": "attack.crossbow.bolt.heavy",
@@ -5439,7 +6202,11 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 8,
       "staminaCost": 2,
-      "accuracy": 5
+      "accuracy": 5,
+      "tags": [
+        "crossbow",
+        "ranged"
+      ]
     },
     "attack.crossbow.punch-through.heavy": {
       "id": "attack.crossbow.punch-through.heavy",
@@ -5450,7 +6217,11 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 8,
       "staminaCost": 3,
-      "crit": 3
+      "crit": 3,
+      "tags": [
+        "crossbow",
+        "ranged"
+      ]
     },
     "attack.crossbow.bolt.keen": {
       "id": "attack.crossbow.bolt.keen",
@@ -5461,7 +6232,11 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 8,
       "staminaCost": 2,
-      "accuracy": 11
+      "accuracy": 11,
+      "tags": [
+        "crossbow",
+        "ranged"
+      ]
     },
     "attack.crossbow.punch-through.keen": {
       "id": "attack.crossbow.punch-through.keen",
@@ -5473,6 +6248,10 @@ export const UNIT_PACK = {
       "reach": 8,
       "staminaCost": 3,
       "crit": 3,
+      "tags": [
+        "crossbow",
+        "ranged"
+      ],
       "accuracy": 6
     },
     "attack.crossbow.bolt.cruel": {
@@ -5485,6 +6264,10 @@ export const UNIT_PACK = {
       "reach": 8,
       "staminaCost": 2,
       "accuracy": 8,
+      "tags": [
+        "crossbow",
+        "ranged"
+      ],
       "crit": 4
     },
     "attack.crossbow.punch-through.cruel": {
@@ -5497,6 +6280,10 @@ export const UNIT_PACK = {
       "reach": 8,
       "staminaCost": 3,
       "crit": 7,
+      "tags": [
+        "crossbow",
+        "ranged"
+      ],
       "accuracy": 3
     },
     "attack.hand-crossbow.snapshot.heavy": {
@@ -5508,7 +6295,11 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 5,
       "staminaCost": 1,
-      "accuracy": 5
+      "accuracy": 5,
+      "tags": [
+        "crossbow",
+        "ranged"
+      ]
     },
     "attack.hand-crossbow.loaded-bolt.heavy": {
       "id": "attack.hand-crossbow.loaded-bolt.heavy",
@@ -5519,7 +6310,11 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 5,
       "staminaCost": 2,
-      "crit": 3
+      "crit": 3,
+      "tags": [
+        "crossbow",
+        "ranged"
+      ]
     },
     "attack.hand-crossbow.snapshot.keen": {
       "id": "attack.hand-crossbow.snapshot.keen",
@@ -5530,7 +6325,11 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 5,
       "staminaCost": 1,
-      "accuracy": 11
+      "accuracy": 11,
+      "tags": [
+        "crossbow",
+        "ranged"
+      ]
     },
     "attack.hand-crossbow.loaded-bolt.keen": {
       "id": "attack.hand-crossbow.loaded-bolt.keen",
@@ -5542,6 +6341,10 @@ export const UNIT_PACK = {
       "reach": 5,
       "staminaCost": 2,
       "crit": 3,
+      "tags": [
+        "crossbow",
+        "ranged"
+      ],
       "accuracy": 6
     },
     "attack.hand-crossbow.snapshot.cruel": {
@@ -5554,6 +6357,10 @@ export const UNIT_PACK = {
       "reach": 5,
       "staminaCost": 1,
       "accuracy": 8,
+      "tags": [
+        "crossbow",
+        "ranged"
+      ],
       "crit": 4
     },
     "attack.hand-crossbow.loaded-bolt.cruel": {
@@ -5566,6 +6373,10 @@ export const UNIT_PACK = {
       "reach": 5,
       "staminaCost": 2,
       "crit": 7,
+      "tags": [
+        "crossbow",
+        "ranged"
+      ],
       "accuracy": 3
     },
     "attack.rapier.thrust.heavy": {
@@ -5578,7 +6389,11 @@ export const UNIT_PACK = {
       "reach": 1,
       "staminaCost": 1,
       "crit": 3,
-      "accuracy": 10
+      "accuracy": 10,
+      "tags": [
+        "exotic",
+        "melee"
+      ]
     },
     "attack.rapier.pierce.heavy": {
       "id": "attack.rapier.pierce.heavy",
@@ -5590,7 +6405,11 @@ export const UNIT_PACK = {
       "reach": 1,
       "staminaCost": 2,
       "crit": 5,
-      "accuracy": 5
+      "accuracy": 5,
+      "tags": [
+        "exotic",
+        "melee"
+      ]
     },
     "attack.rapier.thrust.keen": {
       "id": "attack.rapier.thrust.keen",
@@ -5602,7 +6421,11 @@ export const UNIT_PACK = {
       "reach": 1,
       "staminaCost": 1,
       "crit": 3,
-      "accuracy": 16
+      "accuracy": 16,
+      "tags": [
+        "exotic",
+        "melee"
+      ]
     },
     "attack.rapier.pierce.keen": {
       "id": "attack.rapier.pierce.keen",
@@ -5614,7 +6437,11 @@ export const UNIT_PACK = {
       "reach": 1,
       "staminaCost": 2,
       "crit": 5,
-      "accuracy": 11
+      "accuracy": 11,
+      "tags": [
+        "exotic",
+        "melee"
+      ]
     },
     "attack.rapier.thrust.cruel": {
       "id": "attack.rapier.thrust.cruel",
@@ -5626,7 +6453,11 @@ export const UNIT_PACK = {
       "reach": 1,
       "staminaCost": 1,
       "crit": 7,
-      "accuracy": 13
+      "accuracy": 13,
+      "tags": [
+        "exotic",
+        "melee"
+      ]
     },
     "attack.rapier.pierce.cruel": {
       "id": "attack.rapier.pierce.cruel",
@@ -5638,7 +6469,11 @@ export const UNIT_PACK = {
       "reach": 1,
       "staminaCost": 2,
       "crit": 9,
-      "accuracy": 8
+      "accuracy": 8,
+      "tags": [
+        "exotic",
+        "melee"
+      ]
     },
     "attack.raiders-cutlass.slash.heavy": {
       "id": "attack.raiders-cutlass.slash.heavy",
@@ -5648,7 +6483,11 @@ export const UNIT_PACK = {
       "bonus": 2,
       "stat": "strength",
       "reach": 1,
-      "staminaCost": 1
+      "staminaCost": 1,
+      "tags": [
+        "blade",
+        "melee"
+      ]
     },
     "attack.raiders-cutlass.boarding-swing.heavy": {
       "id": "attack.raiders-cutlass.boarding-swing.heavy",
@@ -5660,7 +6499,11 @@ export const UNIT_PACK = {
       "reach": 1,
       "staminaCost": 2,
       "crit": 3,
-      "accuracy": -5
+      "accuracy": -5,
+      "tags": [
+        "blade",
+        "melee"
+      ]
     },
     "attack.raiders-cutlass.slash.keen": {
       "id": "attack.raiders-cutlass.slash.keen",
@@ -5671,6 +6514,10 @@ export const UNIT_PACK = {
       "stat": "strength",
       "reach": 1,
       "staminaCost": 1,
+      "tags": [
+        "blade",
+        "melee"
+      ],
       "accuracy": 6
     },
     "attack.raiders-cutlass.boarding-swing.keen": {
@@ -5683,7 +6530,11 @@ export const UNIT_PACK = {
       "reach": 1,
       "staminaCost": 2,
       "crit": 3,
-      "accuracy": 1
+      "accuracy": 1,
+      "tags": [
+        "blade",
+        "melee"
+      ]
     },
     "attack.raiders-cutlass.slash.cruel": {
       "id": "attack.raiders-cutlass.slash.cruel",
@@ -5694,6 +6545,10 @@ export const UNIT_PACK = {
       "stat": "strength",
       "reach": 1,
       "staminaCost": 1,
+      "tags": [
+        "blade",
+        "melee"
+      ],
       "accuracy": 3,
       "crit": 4
     },
@@ -5707,7 +6562,11 @@ export const UNIT_PACK = {
       "reach": 1,
       "staminaCost": 2,
       "crit": 7,
-      "accuracy": -2
+      "accuracy": -2,
+      "tags": [
+        "blade",
+        "melee"
+      ]
     },
     "attack.throwing-knives.flick.heavy": {
       "id": "attack.throwing-knives.flick.heavy",
@@ -5718,7 +6577,11 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 4,
       "staminaCost": 0,
-      "accuracy": 5
+      "accuracy": 5,
+      "tags": [
+        "ranged",
+        "thrown"
+      ]
     },
     "attack.throwing-knives.fan.heavy": {
       "id": "attack.throwing-knives.fan.heavy",
@@ -5730,7 +6593,11 @@ export const UNIT_PACK = {
       "reach": 3,
       "staminaCost": 2,
       "accuracy": -5,
-      "hits": 2
+      "hits": 2,
+      "tags": [
+        "ranged",
+        "thrown"
+      ]
     },
     "attack.throwing-knives.flick.keen": {
       "id": "attack.throwing-knives.flick.keen",
@@ -5741,7 +6608,11 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 4,
       "staminaCost": 0,
-      "accuracy": 11
+      "accuracy": 11,
+      "tags": [
+        "ranged",
+        "thrown"
+      ]
     },
     "attack.throwing-knives.fan.keen": {
       "id": "attack.throwing-knives.fan.keen",
@@ -5753,7 +6624,11 @@ export const UNIT_PACK = {
       "reach": 3,
       "staminaCost": 2,
       "accuracy": 1,
-      "hits": 2
+      "hits": 2,
+      "tags": [
+        "ranged",
+        "thrown"
+      ]
     },
     "attack.throwing-knives.flick.cruel": {
       "id": "attack.throwing-knives.flick.cruel",
@@ -5765,6 +6640,10 @@ export const UNIT_PACK = {
       "reach": 4,
       "staminaCost": 0,
       "accuracy": 8,
+      "tags": [
+        "ranged",
+        "thrown"
+      ],
       "crit": 4
     },
     "attack.throwing-knives.fan.cruel": {
@@ -5778,6 +6657,10 @@ export const UNIT_PACK = {
       "staminaCost": 2,
       "accuracy": -2,
       "hits": 2,
+      "tags": [
+        "ranged",
+        "thrown"
+      ],
       "crit": 4
     },
     "attack.poison-stars.star.heavy": {
@@ -5788,7 +6671,11 @@ export const UNIT_PACK = {
       "bonus": 2,
       "stat": "precision",
       "reach": 4,
-      "staminaCost": 1
+      "staminaCost": 1,
+      "tags": [
+        "ranged",
+        "thrown"
+      ]
     },
     "attack.poison-stars.venom-spread.heavy": {
       "id": "attack.poison-stars.venom-spread.heavy",
@@ -5800,7 +6687,11 @@ export const UNIT_PACK = {
       "reach": 4,
       "staminaCost": 2,
       "accuracy": -5,
-      "hits": 2
+      "hits": 2,
+      "tags": [
+        "ranged",
+        "thrown"
+      ]
     },
     "attack.poison-stars.star.keen": {
       "id": "attack.poison-stars.star.keen",
@@ -5811,6 +6702,10 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 4,
       "staminaCost": 1,
+      "tags": [
+        "ranged",
+        "thrown"
+      ],
       "accuracy": 6
     },
     "attack.poison-stars.venom-spread.keen": {
@@ -5823,7 +6718,11 @@ export const UNIT_PACK = {
       "reach": 4,
       "staminaCost": 2,
       "accuracy": 1,
-      "hits": 2
+      "hits": 2,
+      "tags": [
+        "ranged",
+        "thrown"
+      ]
     },
     "attack.poison-stars.star.cruel": {
       "id": "attack.poison-stars.star.cruel",
@@ -5834,6 +6733,10 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 4,
       "staminaCost": 1,
+      "tags": [
+        "ranged",
+        "thrown"
+      ],
       "accuracy": 3,
       "crit": 4
     },
@@ -5848,6 +6751,10 @@ export const UNIT_PACK = {
       "staminaCost": 2,
       "accuracy": -2,
       "hits": 2,
+      "tags": [
+        "ranged",
+        "thrown"
+      ],
       "crit": 4
     },
     "attack.obsidian-fang-dagger.fang.heavy": {
@@ -5859,7 +6766,11 @@ export const UNIT_PACK = {
       "stat": "strength",
       "reach": 1,
       "staminaCost": 1,
-      "accuracy": 5
+      "accuracy": 5,
+      "tags": [
+        "dagger",
+        "melee"
+      ]
     },
     "attack.obsidian-fang-dagger.gut.heavy": {
       "id": "attack.obsidian-fang-dagger.gut.heavy",
@@ -5871,7 +6782,11 @@ export const UNIT_PACK = {
       "reach": 1,
       "staminaCost": 2,
       "crit": 10,
-      "accuracy": 5
+      "accuracy": 5,
+      "tags": [
+        "dagger",
+        "melee"
+      ]
     },
     "attack.obsidian-fang-dagger.fang.keen": {
       "id": "attack.obsidian-fang-dagger.fang.keen",
@@ -5882,7 +6797,11 @@ export const UNIT_PACK = {
       "stat": "strength",
       "reach": 1,
       "staminaCost": 1,
-      "accuracy": 11
+      "accuracy": 11,
+      "tags": [
+        "dagger",
+        "melee"
+      ]
     },
     "attack.obsidian-fang-dagger.gut.keen": {
       "id": "attack.obsidian-fang-dagger.gut.keen",
@@ -5894,7 +6813,11 @@ export const UNIT_PACK = {
       "reach": 1,
       "staminaCost": 2,
       "crit": 10,
-      "accuracy": 11
+      "accuracy": 11,
+      "tags": [
+        "dagger",
+        "melee"
+      ]
     },
     "attack.obsidian-fang-dagger.fang.cruel": {
       "id": "attack.obsidian-fang-dagger.fang.cruel",
@@ -5906,6 +6829,10 @@ export const UNIT_PACK = {
       "reach": 1,
       "staminaCost": 1,
       "accuracy": 8,
+      "tags": [
+        "dagger",
+        "melee"
+      ],
       "crit": 4
     },
     "attack.obsidian-fang-dagger.gut.cruel": {
@@ -5918,7 +6845,11 @@ export const UNIT_PACK = {
       "reach": 1,
       "staminaCost": 2,
       "crit": 14,
-      "accuracy": 8
+      "accuracy": 8,
+      "tags": [
+        "dagger",
+        "melee"
+      ]
     },
     "attack.duel-runeblades.twin-cut.heavy": {
       "id": "attack.duel-runeblades.twin-cut.heavy",
@@ -5929,7 +6860,11 @@ export const UNIT_PACK = {
       "stat": "strength",
       "reach": 1,
       "staminaCost": 2,
-      "hits": 2
+      "hits": 2,
+      "tags": [
+        "blade",
+        "melee"
+      ]
     },
     "attack.duel-runeblades.rune-cross.heavy": {
       "id": "attack.duel-runeblades.rune-cross.heavy",
@@ -5941,7 +6876,11 @@ export const UNIT_PACK = {
       "reach": 1,
       "staminaCost": 2,
       "crit": 3,
-      "accuracy": 5
+      "accuracy": 5,
+      "tags": [
+        "blade",
+        "melee"
+      ]
     },
     "attack.duel-runeblades.twin-cut.keen": {
       "id": "attack.duel-runeblades.twin-cut.keen",
@@ -5953,6 +6892,10 @@ export const UNIT_PACK = {
       "reach": 1,
       "staminaCost": 2,
       "hits": 2,
+      "tags": [
+        "blade",
+        "melee"
+      ],
       "accuracy": 6
     },
     "attack.duel-runeblades.rune-cross.keen": {
@@ -5965,7 +6908,11 @@ export const UNIT_PACK = {
       "reach": 1,
       "staminaCost": 2,
       "crit": 3,
-      "accuracy": 11
+      "accuracy": 11,
+      "tags": [
+        "blade",
+        "melee"
+      ]
     },
     "attack.duel-runeblades.twin-cut.cruel": {
       "id": "attack.duel-runeblades.twin-cut.cruel",
@@ -5977,6 +6924,10 @@ export const UNIT_PACK = {
       "reach": 1,
       "staminaCost": 2,
       "hits": 2,
+      "tags": [
+        "blade",
+        "melee"
+      ],
       "accuracy": 3,
       "crit": 4
     },
@@ -5990,7 +6941,11 @@ export const UNIT_PACK = {
       "reach": 1,
       "staminaCost": 2,
       "crit": 7,
-      "accuracy": 8
+      "accuracy": 8,
+      "tags": [
+        "blade",
+        "melee"
+      ]
     },
     "attack.shepherds-sling.stone.heavy": {
       "id": "attack.shepherds-sling.stone.heavy",
@@ -6000,7 +6955,11 @@ export const UNIT_PACK = {
       "bonus": 2,
       "stat": "precision",
       "reach": 5,
-      "staminaCost": 1
+      "staminaCost": 1,
+      "tags": [
+        "ranged",
+        "sling"
+      ]
     },
     "attack.shepherds-sling.whirl.heavy": {
       "id": "attack.shepherds-sling.whirl.heavy",
@@ -6012,7 +6971,11 @@ export const UNIT_PACK = {
       "reach": 7,
       "staminaCost": 2,
       "crit": 3,
-      "accuracy": -5
+      "accuracy": -5,
+      "tags": [
+        "ranged",
+        "sling"
+      ]
     },
     "attack.shepherds-sling.stone.keen": {
       "id": "attack.shepherds-sling.stone.keen",
@@ -6023,6 +6986,10 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 5,
       "staminaCost": 1,
+      "tags": [
+        "ranged",
+        "sling"
+      ],
       "accuracy": 6
     },
     "attack.shepherds-sling.whirl.keen": {
@@ -6035,7 +7002,11 @@ export const UNIT_PACK = {
       "reach": 7,
       "staminaCost": 2,
       "crit": 3,
-      "accuracy": 1
+      "accuracy": 1,
+      "tags": [
+        "ranged",
+        "sling"
+      ]
     },
     "attack.shepherds-sling.stone.cruel": {
       "id": "attack.shepherds-sling.stone.cruel",
@@ -6046,6 +7017,10 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 5,
       "staminaCost": 1,
+      "tags": [
+        "ranged",
+        "sling"
+      ],
       "accuracy": 3,
       "crit": 4
     },
@@ -6059,7 +7034,11 @@ export const UNIT_PACK = {
       "reach": 7,
       "staminaCost": 2,
       "crit": 7,
-      "accuracy": -2
+      "accuracy": -2,
+      "tags": [
+        "ranged",
+        "sling"
+      ]
     },
     "attack.crippling-whip.lash.heavy": {
       "id": "attack.crippling-whip.lash.heavy",
@@ -6069,7 +7048,11 @@ export const UNIT_PACK = {
       "bonus": 1,
       "stat": "strength",
       "reach": 1,
-      "staminaCost": 1
+      "staminaCost": 1,
+      "tags": [
+        "exotic",
+        "melee"
+      ]
     },
     "attack.crippling-whip.hamstring.heavy": {
       "id": "attack.crippling-whip.hamstring.heavy",
@@ -6080,7 +7063,11 @@ export const UNIT_PACK = {
       "stat": "strength",
       "reach": 1,
       "staminaCost": 2,
-      "accuracy": -5
+      "accuracy": -5,
+      "tags": [
+        "exotic",
+        "melee"
+      ]
     },
     "attack.crippling-whip.lash.keen": {
       "id": "attack.crippling-whip.lash.keen",
@@ -6091,6 +7078,10 @@ export const UNIT_PACK = {
       "stat": "strength",
       "reach": 1,
       "staminaCost": 1,
+      "tags": [
+        "exotic",
+        "melee"
+      ],
       "accuracy": 6
     },
     "attack.crippling-whip.hamstring.keen": {
@@ -6102,7 +7093,11 @@ export const UNIT_PACK = {
       "stat": "strength",
       "reach": 1,
       "staminaCost": 2,
-      "accuracy": 1
+      "accuracy": 1,
+      "tags": [
+        "exotic",
+        "melee"
+      ]
     },
     "attack.crippling-whip.lash.cruel": {
       "id": "attack.crippling-whip.lash.cruel",
@@ -6113,6 +7108,10 @@ export const UNIT_PACK = {
       "stat": "strength",
       "reach": 1,
       "staminaCost": 1,
+      "tags": [
+        "exotic",
+        "melee"
+      ],
       "accuracy": 3,
       "crit": 4
     },
@@ -6126,6 +7125,10 @@ export const UNIT_PACK = {
       "reach": 1,
       "staminaCost": 2,
       "accuracy": -2,
+      "tags": [
+        "exotic",
+        "melee"
+      ],
       "crit": 4
     },
     "attack.iron-claws.rake.heavy": {
@@ -6138,7 +7141,11 @@ export const UNIT_PACK = {
       "reach": 1,
       "staminaCost": 2,
       "accuracy": 5,
-      "hits": 2
+      "hits": 2,
+      "tags": [
+        "claw",
+        "melee"
+      ]
     },
     "attack.iron-claws.eviscerate.heavy": {
       "id": "attack.iron-claws.eviscerate.heavy",
@@ -6149,7 +7156,11 @@ export const UNIT_PACK = {
       "stat": "strength",
       "reach": 1,
       "staminaCost": 2,
-      "crit": 5
+      "crit": 5,
+      "tags": [
+        "claw",
+        "melee"
+      ]
     },
     "attack.iron-claws.rake.keen": {
       "id": "attack.iron-claws.rake.keen",
@@ -6161,7 +7172,11 @@ export const UNIT_PACK = {
       "reach": 1,
       "staminaCost": 2,
       "accuracy": 11,
-      "hits": 2
+      "hits": 2,
+      "tags": [
+        "claw",
+        "melee"
+      ]
     },
     "attack.iron-claws.eviscerate.keen": {
       "id": "attack.iron-claws.eviscerate.keen",
@@ -6173,6 +7188,10 @@ export const UNIT_PACK = {
       "reach": 1,
       "staminaCost": 2,
       "crit": 5,
+      "tags": [
+        "claw",
+        "melee"
+      ],
       "accuracy": 6
     },
     "attack.iron-claws.rake.cruel": {
@@ -6186,6 +7205,10 @@ export const UNIT_PACK = {
       "staminaCost": 2,
       "accuracy": 8,
       "hits": 2,
+      "tags": [
+        "claw",
+        "melee"
+      ],
       "crit": 4
     },
     "attack.iron-claws.eviscerate.cruel": {
@@ -6198,6 +7221,10 @@ export const UNIT_PACK = {
       "reach": 1,
       "staminaCost": 2,
       "crit": 9,
+      "tags": [
+        "claw",
+        "melee"
+      ],
       "accuracy": 3
     },
     "attack.grappling-harpoon.brace.heavy": {
@@ -6209,7 +7236,12 @@ export const UNIT_PACK = {
       "stat": "strength",
       "reach": 1,
       "staminaCost": 1,
-      "accuracy": 5
+      "accuracy": 5,
+      "tags": [
+        "melee",
+        "spear",
+        "thrown"
+      ]
     },
     "attack.grappling-harpoon.hurl.heavy": {
       "id": "attack.grappling-harpoon.hurl.heavy",
@@ -6219,7 +7251,12 @@ export const UNIT_PACK = {
       "bonus": 1,
       "stat": "precision",
       "reach": 4,
-      "staminaCost": 2
+      "staminaCost": 2,
+      "tags": [
+        "ranged",
+        "spear",
+        "thrown"
+      ]
     },
     "attack.grappling-harpoon.brace.keen": {
       "id": "attack.grappling-harpoon.brace.keen",
@@ -6230,7 +7267,12 @@ export const UNIT_PACK = {
       "stat": "strength",
       "reach": 1,
       "staminaCost": 1,
-      "accuracy": 11
+      "accuracy": 11,
+      "tags": [
+        "melee",
+        "spear",
+        "thrown"
+      ]
     },
     "attack.grappling-harpoon.hurl.keen": {
       "id": "attack.grappling-harpoon.hurl.keen",
@@ -6241,6 +7283,11 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 4,
       "staminaCost": 2,
+      "tags": [
+        "ranged",
+        "spear",
+        "thrown"
+      ],
       "accuracy": 6
     },
     "attack.grappling-harpoon.brace.cruel": {
@@ -6253,6 +7300,11 @@ export const UNIT_PACK = {
       "reach": 1,
       "staminaCost": 1,
       "accuracy": 8,
+      "tags": [
+        "melee",
+        "spear",
+        "thrown"
+      ],
       "crit": 4
     },
     "attack.grappling-harpoon.hurl.cruel": {
@@ -6264,6 +7316,11 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 4,
       "staminaCost": 2,
+      "tags": [
+        "ranged",
+        "spear",
+        "thrown"
+      ],
       "accuracy": 3,
       "crit": 4
     },
@@ -6276,7 +7333,12 @@ export const UNIT_PACK = {
       "stat": "magic",
       "reach": 5,
       "staminaCost": 0,
-      "accuracy": 5
+      "accuracy": 5,
+      "tags": [
+        "magic",
+        "ranged",
+        "wand"
+      ]
     },
     "attack.apprentice-wand.surge.heavy": {
       "id": "attack.apprentice-wand.surge.heavy",
@@ -6287,7 +7349,12 @@ export const UNIT_PACK = {
       "stat": "magic",
       "reach": 5,
       "staminaCost": 2,
-      "crit": 3
+      "crit": 3,
+      "tags": [
+        "magic",
+        "ranged",
+        "wand"
+      ]
     },
     "attack.apprentice-wand.spark.keen": {
       "id": "attack.apprentice-wand.spark.keen",
@@ -6298,7 +7365,12 @@ export const UNIT_PACK = {
       "stat": "magic",
       "reach": 5,
       "staminaCost": 0,
-      "accuracy": 11
+      "accuracy": 11,
+      "tags": [
+        "magic",
+        "ranged",
+        "wand"
+      ]
     },
     "attack.apprentice-wand.surge.keen": {
       "id": "attack.apprentice-wand.surge.keen",
@@ -6310,6 +7382,11 @@ export const UNIT_PACK = {
       "reach": 5,
       "staminaCost": 2,
       "crit": 3,
+      "tags": [
+        "magic",
+        "ranged",
+        "wand"
+      ],
       "accuracy": 6
     },
     "attack.apprentice-wand.spark.cruel": {
@@ -6322,6 +7399,11 @@ export const UNIT_PACK = {
       "reach": 5,
       "staminaCost": 0,
       "accuracy": 8,
+      "tags": [
+        "magic",
+        "ranged",
+        "wand"
+      ],
       "crit": 4
     },
     "attack.apprentice-wand.surge.cruel": {
@@ -6334,6 +7416,11 @@ export const UNIT_PACK = {
       "reach": 5,
       "staminaCost": 2,
       "crit": 7,
+      "tags": [
+        "magic",
+        "ranged",
+        "wand"
+      ],
       "accuracy": 3
     },
     "attack.ancient-tome.read-the-page.heavy": {
@@ -6344,7 +7431,12 @@ export const UNIT_PACK = {
       "bonus": 1,
       "stat": "precision",
       "reach": 4,
-      "staminaCost": 1
+      "staminaCost": 1,
+      "tags": [
+        "book",
+        "magic",
+        "ranged"
+      ]
     },
     "attack.ancient-tome.long-passage.heavy": {
       "id": "attack.ancient-tome.long-passage.heavy",
@@ -6355,7 +7447,12 @@ export const UNIT_PACK = {
       "stat": "magic",
       "reach": 4,
       "staminaCost": 2,
-      "accuracy": -5
+      "accuracy": -5,
+      "tags": [
+        "book",
+        "magic",
+        "ranged"
+      ]
     },
     "attack.ancient-tome.read-the-page.keen": {
       "id": "attack.ancient-tome.read-the-page.keen",
@@ -6366,6 +7463,11 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 4,
       "staminaCost": 1,
+      "tags": [
+        "book",
+        "magic",
+        "ranged"
+      ],
       "accuracy": 6
     },
     "attack.ancient-tome.long-passage.keen": {
@@ -6377,7 +7479,12 @@ export const UNIT_PACK = {
       "stat": "magic",
       "reach": 4,
       "staminaCost": 2,
-      "accuracy": 1
+      "accuracy": 1,
+      "tags": [
+        "book",
+        "magic",
+        "ranged"
+      ]
     },
     "attack.ancient-tome.read-the-page.cruel": {
       "id": "attack.ancient-tome.read-the-page.cruel",
@@ -6388,6 +7495,11 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 4,
       "staminaCost": 1,
+      "tags": [
+        "book",
+        "magic",
+        "ranged"
+      ],
       "accuracy": 3,
       "crit": 4
     },
@@ -6401,6 +7513,11 @@ export const UNIT_PACK = {
       "reach": 4,
       "staminaCost": 2,
       "accuracy": -2,
+      "tags": [
+        "book",
+        "magic",
+        "ranged"
+      ],
       "crit": 4
     },
     "attack.holy-texts.verse.heavy": {
@@ -6411,7 +7528,11 @@ export const UNIT_PACK = {
       "bonus": 1,
       "stat": "precision",
       "reach": 4,
-      "staminaCost": 1
+      "staminaCost": 1,
+      "tags": [
+        "holy",
+        "ranged"
+      ]
     },
     "attack.holy-texts.verse.keen": {
       "id": "attack.holy-texts.verse.keen",
@@ -6422,6 +7543,10 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 4,
       "staminaCost": 1,
+      "tags": [
+        "holy",
+        "ranged"
+      ],
       "accuracy": 6
     },
     "attack.holy-texts.verse.cruel": {
@@ -6433,6 +7558,10 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 4,
       "staminaCost": 1,
+      "tags": [
+        "holy",
+        "ranged"
+      ],
       "accuracy": 3,
       "crit": 4
     },
@@ -6445,7 +7574,11 @@ export const UNIT_PACK = {
       "stat": "strength",
       "reach": 1,
       "staminaCost": 1,
-      "accuracy": 5
+      "accuracy": 5,
+      "tags": [
+        "blade",
+        "melee"
+      ]
     },
     "attack.bane-blade.banishing-blow.heavy": {
       "secondaryDamage": [
@@ -6463,7 +7596,11 @@ export const UNIT_PACK = {
       "bonus": 3,
       "stat": "strength",
       "reach": 1,
-      "staminaCost": 2
+      "staminaCost": 2,
+      "tags": [
+        "blade",
+        "melee"
+      ]
     },
     "attack.bane-blade.strike.keen": {
       "id": "attack.bane-blade.strike.keen",
@@ -6474,7 +7611,11 @@ export const UNIT_PACK = {
       "stat": "strength",
       "reach": 1,
       "staminaCost": 1,
-      "accuracy": 11
+      "accuracy": 11,
+      "tags": [
+        "blade",
+        "melee"
+      ]
     },
     "attack.bane-blade.banishing-blow.keen": {
       "secondaryDamage": [
@@ -6493,6 +7634,10 @@ export const UNIT_PACK = {
       "stat": "strength",
       "reach": 1,
       "staminaCost": 2,
+      "tags": [
+        "blade",
+        "melee"
+      ],
       "accuracy": 6
     },
     "attack.bane-blade.strike.cruel": {
@@ -6505,6 +7650,10 @@ export const UNIT_PACK = {
       "reach": 1,
       "staminaCost": 1,
       "accuracy": 8,
+      "tags": [
+        "blade",
+        "melee"
+      ],
       "crit": 4
     },
     "attack.bane-blade.banishing-blow.cruel": {
@@ -6524,6 +7673,10 @@ export const UNIT_PACK = {
       "stat": "strength",
       "reach": 1,
       "staminaCost": 2,
+      "tags": [
+        "blade",
+        "melee"
+      ],
       "accuracy": 3,
       "crit": 4
     },
@@ -6535,7 +7688,12 @@ export const UNIT_PACK = {
       "bonus": 1,
       "stat": "strength",
       "reach": 1,
-      "staminaCost": 1
+      "staminaCost": 1,
+      "tags": [
+        "blade",
+        "holy",
+        "melee"
+      ]
     },
     "attack.sword-of-the-fallen.honour-the-dead.heavy": {
       "id": "attack.sword-of-the-fallen.honour-the-dead.heavy",
@@ -6546,7 +7704,12 @@ export const UNIT_PACK = {
       "stat": "strength",
       "reach": 1,
       "staminaCost": 2,
-      "accuracy": 5
+      "accuracy": 5,
+      "tags": [
+        "blade",
+        "holy",
+        "melee"
+      ]
     },
     "attack.sword-of-the-fallen.remembrance.keen": {
       "id": "attack.sword-of-the-fallen.remembrance.keen",
@@ -6557,6 +7720,11 @@ export const UNIT_PACK = {
       "stat": "strength",
       "reach": 1,
       "staminaCost": 1,
+      "tags": [
+        "blade",
+        "holy",
+        "melee"
+      ],
       "accuracy": 6
     },
     "attack.sword-of-the-fallen.honour-the-dead.keen": {
@@ -6568,7 +7736,12 @@ export const UNIT_PACK = {
       "stat": "strength",
       "reach": 1,
       "staminaCost": 2,
-      "accuracy": 11
+      "accuracy": 11,
+      "tags": [
+        "blade",
+        "holy",
+        "melee"
+      ]
     },
     "attack.sword-of-the-fallen.remembrance.cruel": {
       "id": "attack.sword-of-the-fallen.remembrance.cruel",
@@ -6579,6 +7752,11 @@ export const UNIT_PACK = {
       "stat": "strength",
       "reach": 1,
       "staminaCost": 1,
+      "tags": [
+        "blade",
+        "holy",
+        "melee"
+      ],
       "accuracy": 3,
       "crit": 4
     },
@@ -6592,6 +7770,11 @@ export const UNIT_PACK = {
       "reach": 1,
       "staminaCost": 2,
       "accuracy": 8,
+      "tags": [
+        "blade",
+        "holy",
+        "melee"
+      ],
       "crit": 4
     },
     "attack.claws.swipe.heavy": {
@@ -6604,7 +7787,11 @@ export const UNIT_PACK = {
       "reach": 1,
       "staminaCost": 1,
       "crit": 5,
-      "accuracy": 5
+      "accuracy": 5,
+      "tags": [
+        "claw",
+        "melee"
+      ]
     },
     "attack.claws.flense.heavy": {
       "id": "attack.claws.flense.heavy",
@@ -6615,7 +7802,11 @@ export const UNIT_PACK = {
       "stat": "strength",
       "reach": 1,
       "staminaCost": 2,
-      "hits": 2
+      "hits": 2,
+      "tags": [
+        "claw",
+        "melee"
+      ]
     },
     "attack.claws.swipe.keen": {
       "id": "attack.claws.swipe.keen",
@@ -6627,7 +7818,11 @@ export const UNIT_PACK = {
       "reach": 1,
       "staminaCost": 1,
       "crit": 5,
-      "accuracy": 11
+      "accuracy": 11,
+      "tags": [
+        "claw",
+        "melee"
+      ]
     },
     "attack.claws.flense.keen": {
       "id": "attack.claws.flense.keen",
@@ -6639,6 +7834,10 @@ export const UNIT_PACK = {
       "reach": 1,
       "staminaCost": 2,
       "hits": 2,
+      "tags": [
+        "claw",
+        "melee"
+      ],
       "accuracy": 6
     },
     "attack.claws.swipe.cruel": {
@@ -6651,7 +7850,11 @@ export const UNIT_PACK = {
       "reach": 1,
       "staminaCost": 1,
       "crit": 9,
-      "accuracy": 8
+      "accuracy": 8,
+      "tags": [
+        "claw",
+        "melee"
+      ]
     },
     "attack.claws.flense.cruel": {
       "id": "attack.claws.flense.cruel",
@@ -6663,6 +7866,10 @@ export const UNIT_PACK = {
       "reach": 1,
       "staminaCost": 2,
       "hits": 2,
+      "tags": [
+        "claw",
+        "melee"
+      ],
       "accuracy": 3,
       "crit": 4
     },
@@ -6675,7 +7882,11 @@ export const UNIT_PACK = {
       "stat": "strength",
       "reach": 1,
       "staminaCost": 0,
-      "crit": 15
+      "crit": 15,
+      "tags": [
+        "dagger",
+        "melee"
+      ]
     },
     "attack.daggers.thrown-dagger.heavy": {
       "id": "attack.daggers.thrown-dagger.heavy",
@@ -6685,7 +7896,11 @@ export const UNIT_PACK = {
       "bonus": 2,
       "stat": "precision",
       "reach": 4,
-      "staminaCost": 1
+      "staminaCost": 1,
+      "tags": [
+        "dagger",
+        "ranged"
+      ]
     },
     "attack.daggers.stab.keen": {
       "id": "attack.daggers.stab.keen",
@@ -6697,6 +7912,10 @@ export const UNIT_PACK = {
       "reach": 1,
       "staminaCost": 0,
       "crit": 15,
+      "tags": [
+        "dagger",
+        "melee"
+      ],
       "accuracy": 6
     },
     "attack.daggers.thrown-dagger.keen": {
@@ -6708,6 +7927,10 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 4,
       "staminaCost": 1,
+      "tags": [
+        "dagger",
+        "ranged"
+      ],
       "accuracy": 6
     },
     "attack.daggers.stab.cruel": {
@@ -6720,6 +7943,10 @@ export const UNIT_PACK = {
       "reach": 1,
       "staminaCost": 0,
       "crit": 19,
+      "tags": [
+        "dagger",
+        "melee"
+      ],
       "accuracy": 3
     },
     "attack.daggers.thrown-dagger.cruel": {
@@ -6731,6 +7958,10 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 4,
       "staminaCost": 1,
+      "tags": [
+        "dagger",
+        "ranged"
+      ],
       "accuracy": 3,
       "crit": 4
     },
@@ -6742,7 +7973,11 @@ export const UNIT_PACK = {
       "bonus": 2,
       "stat": "precision",
       "reach": 6,
-      "staminaCost": 1
+      "staminaCost": 1,
+      "tags": [
+        "bow",
+        "ranged"
+      ]
     },
     "attack.longbow.long-shot.heavy": {
       "id": "attack.longbow.long-shot.heavy",
@@ -6753,7 +7988,11 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 7,
       "staminaCost": 2,
-      "accuracy": 10
+      "accuracy": 10,
+      "tags": [
+        "bow",
+        "ranged"
+      ]
     },
     "attack.longbow.shot.keen": {
       "id": "attack.longbow.shot.keen",
@@ -6764,6 +8003,10 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 6,
       "staminaCost": 1,
+      "tags": [
+        "bow",
+        "ranged"
+      ],
       "accuracy": 6
     },
     "attack.longbow.long-shot.keen": {
@@ -6775,7 +8018,11 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 7,
       "staminaCost": 2,
-      "accuracy": 16
+      "accuracy": 16,
+      "tags": [
+        "bow",
+        "ranged"
+      ]
     },
     "attack.longbow.shot.cruel": {
       "id": "attack.longbow.shot.cruel",
@@ -6786,6 +8033,10 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 6,
       "staminaCost": 1,
+      "tags": [
+        "bow",
+        "ranged"
+      ],
       "accuracy": 3,
       "crit": 4
     },
@@ -6799,6 +8050,10 @@ export const UNIT_PACK = {
       "reach": 7,
       "staminaCost": 2,
       "accuracy": 13,
+      "tags": [
+        "bow",
+        "ranged"
+      ],
       "crit": 4
     },
     "attack.longbow.shot.far": {
@@ -6809,7 +8064,11 @@ export const UNIT_PACK = {
       "bonus": 1,
       "stat": "precision",
       "reach": 8,
-      "staminaCost": 1
+      "staminaCost": 1,
+      "tags": [
+        "bow",
+        "ranged"
+      ]
     },
     "attack.longbow.long-shot.far": {
       "id": "attack.longbow.long-shot.far",
@@ -6820,7 +8079,11 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 9,
       "staminaCost": 2,
-      "accuracy": 10
+      "accuracy": 10,
+      "tags": [
+        "bow",
+        "ranged"
+      ]
     },
     "attack.longbow.shot.long": {
       "id": "attack.longbow.shot.long",
@@ -6831,6 +8094,10 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 7,
       "staminaCost": 1,
+      "tags": [
+        "bow",
+        "ranged"
+      ],
       "accuracy": 3
     },
     "attack.longbow.long-shot.long": {
@@ -6842,7 +8109,11 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 8,
       "staminaCost": 2,
-      "accuracy": 13
+      "accuracy": 13,
+      "tags": [
+        "bow",
+        "ranged"
+      ]
     },
     "attack.shortbow.short-shot.heavy": {
       "id": "attack.shortbow.short-shot.heavy",
@@ -6853,7 +8124,11 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 5,
       "staminaCost": 1,
-      "accuracy": 5
+      "accuracy": 5,
+      "tags": [
+        "bow",
+        "ranged"
+      ]
     },
     "attack.shortbow.quick-shot.heavy": {
       "id": "attack.shortbow.quick-shot.heavy",
@@ -6864,7 +8139,11 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 4,
       "staminaCost": 0,
-      "crit": 5
+      "crit": 5,
+      "tags": [
+        "bow",
+        "ranged"
+      ]
     },
     "attack.shortbow.short-shot.keen": {
       "id": "attack.shortbow.short-shot.keen",
@@ -6875,7 +8154,11 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 5,
       "staminaCost": 1,
-      "accuracy": 11
+      "accuracy": 11,
+      "tags": [
+        "bow",
+        "ranged"
+      ]
     },
     "attack.shortbow.quick-shot.keen": {
       "id": "attack.shortbow.quick-shot.keen",
@@ -6887,6 +8170,10 @@ export const UNIT_PACK = {
       "reach": 4,
       "staminaCost": 0,
       "crit": 5,
+      "tags": [
+        "bow",
+        "ranged"
+      ],
       "accuracy": 6
     },
     "attack.shortbow.short-shot.cruel": {
@@ -6899,6 +8186,10 @@ export const UNIT_PACK = {
       "reach": 5,
       "staminaCost": 1,
       "accuracy": 8,
+      "tags": [
+        "bow",
+        "ranged"
+      ],
       "crit": 4
     },
     "attack.shortbow.quick-shot.cruel": {
@@ -6911,6 +8202,10 @@ export const UNIT_PACK = {
       "reach": 4,
       "staminaCost": 0,
       "crit": 9,
+      "tags": [
+        "bow",
+        "ranged"
+      ],
       "accuracy": 3
     },
     "attack.shortbow.short-shot.far": {
@@ -6922,7 +8217,11 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 7,
       "staminaCost": 1,
-      "accuracy": 5
+      "accuracy": 5,
+      "tags": [
+        "bow",
+        "ranged"
+      ]
     },
     "attack.shortbow.quick-shot.far": {
       "id": "attack.shortbow.quick-shot.far",
@@ -6933,7 +8232,11 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 6,
       "staminaCost": 0,
-      "crit": 5
+      "crit": 5,
+      "tags": [
+        "bow",
+        "ranged"
+      ]
     },
     "attack.shortbow.short-shot.long": {
       "id": "attack.shortbow.short-shot.long",
@@ -6944,7 +8247,11 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 6,
       "staminaCost": 1,
-      "accuracy": 8
+      "accuracy": 8,
+      "tags": [
+        "bow",
+        "ranged"
+      ]
     },
     "attack.shortbow.quick-shot.long": {
       "id": "attack.shortbow.quick-shot.long",
@@ -6956,6 +8263,10 @@ export const UNIT_PACK = {
       "reach": 5,
       "staminaCost": 0,
       "crit": 5,
+      "tags": [
+        "bow",
+        "ranged"
+      ],
       "accuracy": 3
     },
     "attack.elfbow.elf-shot.heavy": {
@@ -6967,7 +8278,11 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 6,
       "staminaCost": 1,
-      "accuracy": 15
+      "accuracy": 15,
+      "tags": [
+        "bow",
+        "ranged"
+      ]
     },
     "attack.elfbow.double-shot.heavy": {
       "id": "attack.elfbow.double-shot.heavy",
@@ -6979,7 +8294,11 @@ export const UNIT_PACK = {
       "reach": 4,
       "staminaCost": 2,
       "accuracy": -5,
-      "hits": 2
+      "hits": 2,
+      "tags": [
+        "bow",
+        "ranged"
+      ]
     },
     "attack.elfbow.elf-shot.keen": {
       "id": "attack.elfbow.elf-shot.keen",
@@ -6990,7 +8309,11 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 6,
       "staminaCost": 1,
-      "accuracy": 21
+      "accuracy": 21,
+      "tags": [
+        "bow",
+        "ranged"
+      ]
     },
     "attack.elfbow.double-shot.keen": {
       "id": "attack.elfbow.double-shot.keen",
@@ -7002,7 +8325,11 @@ export const UNIT_PACK = {
       "reach": 4,
       "staminaCost": 2,
       "accuracy": 1,
-      "hits": 2
+      "hits": 2,
+      "tags": [
+        "bow",
+        "ranged"
+      ]
     },
     "attack.elfbow.elf-shot.cruel": {
       "id": "attack.elfbow.elf-shot.cruel",
@@ -7014,6 +8341,10 @@ export const UNIT_PACK = {
       "reach": 6,
       "staminaCost": 1,
       "accuracy": 18,
+      "tags": [
+        "bow",
+        "ranged"
+      ],
       "crit": 4
     },
     "attack.elfbow.double-shot.cruel": {
@@ -7027,6 +8358,10 @@ export const UNIT_PACK = {
       "staminaCost": 2,
       "accuracy": -2,
       "hits": 2,
+      "tags": [
+        "bow",
+        "ranged"
+      ],
       "crit": 4
     },
     "attack.elfbow.elf-shot.far": {
@@ -7038,7 +8373,11 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 8,
       "staminaCost": 1,
-      "accuracy": 15
+      "accuracy": 15,
+      "tags": [
+        "bow",
+        "ranged"
+      ]
     },
     "attack.elfbow.double-shot.far": {
       "id": "attack.elfbow.double-shot.far",
@@ -7050,7 +8389,11 @@ export const UNIT_PACK = {
       "reach": 6,
       "staminaCost": 2,
       "accuracy": -5,
-      "hits": 2
+      "hits": 2,
+      "tags": [
+        "bow",
+        "ranged"
+      ]
     },
     "attack.elfbow.elf-shot.long": {
       "id": "attack.elfbow.elf-shot.long",
@@ -7061,7 +8404,11 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 7,
       "staminaCost": 1,
-      "accuracy": 18
+      "accuracy": 18,
+      "tags": [
+        "bow",
+        "ranged"
+      ]
     },
     "attack.elfbow.double-shot.long": {
       "id": "attack.elfbow.double-shot.long",
@@ -7073,7 +8420,11 @@ export const UNIT_PACK = {
       "reach": 5,
       "staminaCost": 2,
       "accuracy": -2,
-      "hits": 2
+      "hits": 2,
+      "tags": [
+        "bow",
+        "ranged"
+      ]
     },
     "attack.barbarian-bow.power-shot.heavy": {
       "id": "attack.barbarian-bow.power-shot.heavy",
@@ -7084,7 +8435,11 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 6,
       "staminaCost": 2,
-      "accuracy": -10
+      "accuracy": -10,
+      "tags": [
+        "bow",
+        "ranged"
+      ]
     },
     "attack.barbarian-bow.crippling-shot.heavy": {
       "id": "attack.barbarian-bow.crippling-shot.heavy",
@@ -7095,7 +8450,11 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 6,
       "staminaCost": 2,
-      "accuracy": -10
+      "accuracy": -10,
+      "tags": [
+        "bow",
+        "ranged"
+      ]
     },
     "attack.barbarian-bow.power-shot.keen": {
       "id": "attack.barbarian-bow.power-shot.keen",
@@ -7106,7 +8465,11 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 6,
       "staminaCost": 2,
-      "accuracy": -4
+      "accuracy": -4,
+      "tags": [
+        "bow",
+        "ranged"
+      ]
     },
     "attack.barbarian-bow.crippling-shot.keen": {
       "id": "attack.barbarian-bow.crippling-shot.keen",
@@ -7117,7 +8480,11 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 6,
       "staminaCost": 2,
-      "accuracy": -4
+      "accuracy": -4,
+      "tags": [
+        "bow",
+        "ranged"
+      ]
     },
     "attack.barbarian-bow.power-shot.cruel": {
       "id": "attack.barbarian-bow.power-shot.cruel",
@@ -7129,6 +8496,10 @@ export const UNIT_PACK = {
       "reach": 6,
       "staminaCost": 2,
       "accuracy": -7,
+      "tags": [
+        "bow",
+        "ranged"
+      ],
       "crit": 4
     },
     "attack.barbarian-bow.crippling-shot.cruel": {
@@ -7141,6 +8512,10 @@ export const UNIT_PACK = {
       "reach": 6,
       "staminaCost": 2,
       "accuracy": -7,
+      "tags": [
+        "bow",
+        "ranged"
+      ],
       "crit": 4
     },
     "attack.barbarian-bow.power-shot.far": {
@@ -7152,7 +8527,11 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 8,
       "staminaCost": 2,
-      "accuracy": -10
+      "accuracy": -10,
+      "tags": [
+        "bow",
+        "ranged"
+      ]
     },
     "attack.barbarian-bow.crippling-shot.far": {
       "id": "attack.barbarian-bow.crippling-shot.far",
@@ -7163,7 +8542,11 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 8,
       "staminaCost": 2,
-      "accuracy": -10
+      "accuracy": -10,
+      "tags": [
+        "bow",
+        "ranged"
+      ]
     },
     "attack.barbarian-bow.power-shot.long": {
       "id": "attack.barbarian-bow.power-shot.long",
@@ -7174,7 +8557,11 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 7,
       "staminaCost": 2,
-      "accuracy": -7
+      "accuracy": -7,
+      "tags": [
+        "bow",
+        "ranged"
+      ]
     },
     "attack.barbarian-bow.crippling-shot.long": {
       "id": "attack.barbarian-bow.crippling-shot.long",
@@ -7185,7 +8572,11 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 7,
       "staminaCost": 2,
-      "accuracy": -7
+      "accuracy": -7,
+      "tags": [
+        "bow",
+        "ranged"
+      ]
     },
     "attack.javelin.throw.heavy": {
       "id": "attack.javelin.throw.heavy",
@@ -7196,7 +8587,12 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 4,
       "staminaCost": 1,
-      "accuracy": -10
+      "accuracy": -10,
+      "tags": [
+        "ranged",
+        "spear",
+        "thrown"
+      ]
     },
     "attack.javelin.stab.heavy": {
       "id": "attack.javelin.stab.heavy",
@@ -7207,7 +8603,12 @@ export const UNIT_PACK = {
       "stat": "strength",
       "reach": 1,
       "staminaCost": 0,
-      "crit": 6
+      "crit": 6,
+      "tags": [
+        "melee",
+        "spear",
+        "thrown"
+      ]
     },
     "attack.javelin.throw.keen": {
       "id": "attack.javelin.throw.keen",
@@ -7218,7 +8619,12 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 4,
       "staminaCost": 1,
-      "accuracy": -4
+      "accuracy": -4,
+      "tags": [
+        "ranged",
+        "spear",
+        "thrown"
+      ]
     },
     "attack.javelin.stab.keen": {
       "id": "attack.javelin.stab.keen",
@@ -7230,6 +8636,11 @@ export const UNIT_PACK = {
       "reach": 1,
       "staminaCost": 0,
       "crit": 6,
+      "tags": [
+        "melee",
+        "spear",
+        "thrown"
+      ],
       "accuracy": 6
     },
     "attack.javelin.throw.cruel": {
@@ -7242,6 +8653,11 @@ export const UNIT_PACK = {
       "reach": 4,
       "staminaCost": 1,
       "accuracy": -7,
+      "tags": [
+        "ranged",
+        "spear",
+        "thrown"
+      ],
       "crit": 4
     },
     "attack.javelin.stab.cruel": {
@@ -7254,6 +8670,11 @@ export const UNIT_PACK = {
       "reach": 1,
       "staminaCost": 0,
       "crit": 10,
+      "tags": [
+        "melee",
+        "spear",
+        "thrown"
+      ],
       "accuracy": 3
     },
     "attack.longsword.slash.heavy": {
@@ -7264,7 +8685,11 @@ export const UNIT_PACK = {
       "bonus": 2,
       "stat": "strength",
       "reach": 1,
-      "staminaCost": 1
+      "staminaCost": 1,
+      "tags": [
+        "blade",
+        "melee"
+      ]
     },
     "attack.longsword.slash.keen": {
       "id": "attack.longsword.slash.keen",
@@ -7275,6 +8700,10 @@ export const UNIT_PACK = {
       "stat": "strength",
       "reach": 1,
       "staminaCost": 1,
+      "tags": [
+        "blade",
+        "melee"
+      ],
       "accuracy": 6
     },
     "attack.longsword.slash.cruel": {
@@ -7286,6 +8715,10 @@ export const UNIT_PACK = {
       "stat": "strength",
       "reach": 1,
       "staminaCost": 1,
+      "tags": [
+        "blade",
+        "melee"
+      ],
       "accuracy": 3,
       "crit": 4
     },
@@ -7297,7 +8730,12 @@ export const UNIT_PACK = {
       "bonus": 3,
       "stat": "strength",
       "reach": 1,
-      "staminaCost": 1
+      "staminaCost": 1,
+      "tags": [
+        "exotic",
+        "melee",
+        "polearm"
+      ]
     },
     "attack.halberd.hack.keen": {
       "id": "attack.halberd.hack.keen",
@@ -7308,6 +8746,11 @@ export const UNIT_PACK = {
       "stat": "strength",
       "reach": 1,
       "staminaCost": 1,
+      "tags": [
+        "exotic",
+        "melee",
+        "polearm"
+      ],
       "accuracy": 6
     },
     "attack.halberd.hack.cruel": {
@@ -7319,6 +8762,11 @@ export const UNIT_PACK = {
       "stat": "strength",
       "reach": 1,
       "staminaCost": 1,
+      "tags": [
+        "exotic",
+        "melee",
+        "polearm"
+      ],
       "accuracy": 3,
       "crit": 4
     },
@@ -7330,7 +8778,11 @@ export const UNIT_PACK = {
       "bonus": 2,
       "stat": "precision",
       "reach": 4,
-      "staminaCost": 1
+      "staminaCost": 1,
+      "tags": [
+        "ranged",
+        "staff"
+      ]
     },
     "attack.fire-staff.fire-blast.keen": {
       "id": "attack.fire-staff.fire-blast.keen",
@@ -7341,6 +8793,10 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 4,
       "staminaCost": 1,
+      "tags": [
+        "ranged",
+        "staff"
+      ],
       "accuracy": 6
     },
     "attack.fire-staff.fire-blast.cruel": {
@@ -7352,6 +8808,10 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 4,
       "staminaCost": 1,
+      "tags": [
+        "ranged",
+        "staff"
+      ],
       "accuracy": 3,
       "crit": 4
     },
@@ -7363,7 +8823,11 @@ export const UNIT_PACK = {
       "bonus": 2,
       "stat": "precision",
       "reach": 4,
-      "staminaCost": 1
+      "staminaCost": 1,
+      "tags": [
+        "ranged",
+        "staff"
+      ]
     },
     "attack.frost-staff.frost-blast.keen": {
       "id": "attack.frost-staff.frost-blast.keen",
@@ -7374,6 +8838,10 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 4,
       "staminaCost": 1,
+      "tags": [
+        "ranged",
+        "staff"
+      ],
       "accuracy": 6
     },
     "attack.frost-staff.frost-blast.cruel": {
@@ -7385,6 +8853,10 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 4,
       "staminaCost": 1,
+      "tags": [
+        "ranged",
+        "staff"
+      ],
       "accuracy": 3,
       "crit": 4
     },
@@ -7396,7 +8868,11 @@ export const UNIT_PACK = {
       "bonus": 2,
       "stat": "precision",
       "reach": 3,
-      "staminaCost": 1
+      "staminaCost": 1,
+      "tags": [
+        "ranged",
+        "staff"
+      ]
     },
     "attack.earth-staff.earth-blast.keen": {
       "id": "attack.earth-staff.earth-blast.keen",
@@ -7407,6 +8883,10 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 3,
       "staminaCost": 1,
+      "tags": [
+        "ranged",
+        "staff"
+      ],
       "accuracy": 6
     },
     "attack.earth-staff.earth-blast.cruel": {
@@ -7418,6 +8898,10 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 3,
       "staminaCost": 1,
+      "tags": [
+        "ranged",
+        "staff"
+      ],
       "accuracy": 3,
       "crit": 4
     },
@@ -7430,7 +8914,11 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 5,
       "staminaCost": 2,
-      "accuracy": -20
+      "accuracy": -20,
+      "tags": [
+        "ranged",
+        "staff"
+      ]
     },
     "attack.lightning-staff.bolt.keen": {
       "id": "attack.lightning-staff.bolt.keen",
@@ -7441,7 +8929,11 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 5,
       "staminaCost": 2,
-      "accuracy": -14
+      "accuracy": -14,
+      "tags": [
+        "ranged",
+        "staff"
+      ]
     },
     "attack.lightning-staff.bolt.cruel": {
       "id": "attack.lightning-staff.bolt.cruel",
@@ -7453,6 +8945,10 @@ export const UNIT_PACK = {
       "reach": 5,
       "staminaCost": 2,
       "accuracy": -17,
+      "tags": [
+        "ranged",
+        "staff"
+      ],
       "crit": 4
     },
     "attack.force-staff.force-blast.heavy": {
@@ -7463,7 +8959,11 @@ export const UNIT_PACK = {
       "bonus": 1,
       "stat": "precision",
       "reach": 4,
-      "staminaCost": 1
+      "staminaCost": 1,
+      "tags": [
+        "ranged",
+        "staff"
+      ]
     },
     "attack.force-staff.force-blast.keen": {
       "id": "attack.force-staff.force-blast.keen",
@@ -7474,6 +8974,10 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 4,
       "staminaCost": 1,
+      "tags": [
+        "ranged",
+        "staff"
+      ],
       "accuracy": 6
     },
     "attack.force-staff.force-blast.cruel": {
@@ -7485,6 +8989,10 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 4,
       "staminaCost": 1,
+      "tags": [
+        "ranged",
+        "staff"
+      ],
       "accuracy": 3,
       "crit": 4
     },
@@ -7497,7 +9005,11 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 5,
       "staminaCost": 1,
-      "accuracy": 5
+      "accuracy": 5,
+      "tags": [
+        "holy",
+        "ranged"
+      ]
     },
     "attack.holy-symbol.wrath.keen": {
       "id": "attack.holy-symbol.wrath.keen",
@@ -7508,7 +9020,11 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 5,
       "staminaCost": 1,
-      "accuracy": 11
+      "accuracy": 11,
+      "tags": [
+        "holy",
+        "ranged"
+      ]
     },
     "attack.holy-symbol.wrath.cruel": {
       "id": "attack.holy-symbol.wrath.cruel",
@@ -7520,6 +9036,10 @@ export const UNIT_PACK = {
       "reach": 5,
       "staminaCost": 1,
       "accuracy": 8,
+      "tags": [
+        "holy",
+        "ranged"
+      ],
       "crit": 4
     },
     "attack.priest-chain.smite.heavy": {
@@ -7530,7 +9050,12 @@ export const UNIT_PACK = {
       "bonus": 2,
       "stat": "precision",
       "reach": 5,
-      "staminaCost": 1
+      "staminaCost": 1,
+      "tags": [
+        "chain",
+        "holy",
+        "ranged"
+      ]
     },
     "attack.priest-chain.smite.keen": {
       "id": "attack.priest-chain.smite.keen",
@@ -7541,6 +9066,11 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 5,
       "staminaCost": 1,
+      "tags": [
+        "chain",
+        "holy",
+        "ranged"
+      ],
       "accuracy": 6
     },
     "attack.priest-chain.smite.cruel": {
@@ -7552,6 +9082,11 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 5,
       "staminaCost": 1,
+      "tags": [
+        "chain",
+        "holy",
+        "ranged"
+      ],
       "accuracy": 3,
       "crit": 4
     }
@@ -12211,7 +13746,8 @@ export const UNIT_PACK = {
             "statusId": "status.weak",
             "value": 1
           },
-          "source": "item.pharaohs-gauntlets"
+          "source": "item.pharaohs-gauntlets",
+          "onlyWithTag": "brawl"
         }
       ]
     },
@@ -15551,7 +17087,8 @@ export const UNIT_PACK = {
             "statusId": "status.burn",
             "value": 1
           },
-          "source": "item.rune-burning-touch"
+          "source": "item.rune-burning-touch",
+          "onlyWithTag": "melee"
         }
       ]
     },
@@ -19575,6 +21112,49 @@ export const UNIT_PACK = {
         "id": "test.badge.fender",
         "name": "Fender (TEST)",
         "triggers": []
+      },
+      "test.badge.melee-burn": {
+        "statModifiers": {},
+        "grants": [],
+        "flags": {},
+        "id": "test.badge.melee-burn",
+        "name": "Burning Hands (TEST)",
+        "triggers": [
+          {
+            "id": "trigger.test-melee-burn.burn",
+            "hook": "onHit",
+            "chance": 100,
+            "select": "target",
+            "effect": {
+              "kind": "status.apply",
+              "statusId": "status.burn",
+              "value": 1
+            },
+            "onlyWithTag": "melee",
+            "source": "test.badge.melee-burn"
+          }
+        ]
+      },
+      "test.badge.any-burn": {
+        "statModifiers": {},
+        "grants": [],
+        "flags": {},
+        "id": "test.badge.any-burn",
+        "name": "Burning Aim (TEST)",
+        "triggers": [
+          {
+            "id": "trigger.test-any-burn.burn",
+            "hook": "onHit",
+            "chance": 100,
+            "select": "target",
+            "effect": {
+              "kind": "status.apply",
+              "statusId": "status.burn",
+              "value": 1
+            },
+            "source": "test.badge.any-burn"
+          }
+        ]
       }
     },
     "moves": {
