@@ -32,6 +32,13 @@ describe('independent audit of logged battles', () => {
       // the event carries stat/value/expiry — so the auditor keeps its own mod
       // ledger and recomputes the EFFECTIVE stat, exactly like the engine.
       const statMods = new Map<number, { stat: string; value: number; expiresAtTurn?: number; seq: number; source?: string }[]>()
+      // The auditor learned what GEAR folds on 2026-10-04 (capability.free-attack-accuracy; DECISIONS.md 2026-09-28, the Armory
+      // Ledger's rules: "'+10 counterattack' on a weapon is +10 Accuracy on your counterattacks."): a sword in hand carries
+      // Counterattack Accuracy, which no unit row has — so the base of a special free attack's stats is read from the log's own
+      // lines, as the engine's fielding wrote them: every `unit.equipped` and `unit.badged` names the `mods` it folds, and a
+      // `loadout.swapped` names the hands before and after (what left the hands folds nothing). EXTENDED, not weakened.
+      const gear = new Map<number, Map<string, Record<string, number>>>()
+      const folded = (actor: number, statName: string) => [...(gear.get(actor)?.values() ?? [])].reduce((sum, mods) => sum + (mods[statName] ?? 0), 0)
       // badge.afflictions (2026-09-04): a mod added WHILE a swing is in flight (an onHit
       // rider granting Rotting Flesh's +1 Armor before the damage line) does not touch
       // THAT damage — the number the preview promised is the number that lands (Law 1);
@@ -152,6 +159,17 @@ describe('independent audit of logged battles', () => {
           // weakened: two new mutator events join the stamina ledger so the
           // running model stays exact. Leaving them out made every later
           // spend's arithmetic wrong, which is precisely the audit working.
+          case 'unit.equipped': case 'unit.badged': {
+            const mine = gear.get(e.actor!) ?? new Map<string, Record<string, number>>()
+            mine.set(e.type === 'unit.equipped' ? String(e['instanceId'] ?? e['itemId']) : 'badge:' + String(e['badgeId']), (e['mods'] ?? {}) as Record<string, number>)
+            gear.set(e.actor!, mine)
+            break
+          }
+          case 'loadout.swapped': {
+            const after = new Set((e['handsAfter'] as { instanceId: string }[]).map((i) => i.instanceId))
+            for (const i of e['handsBefore'] as { instanceId: string }[]) if (!after.has(i.instanceId)) gear.get(e.actor!)?.delete(i.instanceId)
+            break
+          }
           case 'statmod.added': {
             const list = statMods.get(e.actor!) ?? []
             list.push({ stat: e['stat'] as string, value: e['value'] as number, seq: e.seq, source: e['source'] as string,
@@ -272,7 +290,13 @@ describe('independent audit of logged battles', () => {
             if (e['free'] === true) acc -= 20
             // … and on 2026-10-04 (capability.counterattack-and-fend) that a counterattack and a fend add the swinging
             // unit's own Accuracy for that free attack — "counterattack with +10 Accuracy" — read through the mod ledger.
-            if (e['free'] === true && typeof e['as'] === 'string') acc += modded(e.actor!, e['as'] + 'Accuracy', 0, e.turn)
+            // … and on 2026-10-04 (capability.free-attack-accuracy) that the kind's Accuracy has a base — what the swinging
+            // unit's gear folds (the sword's +10) — under what a power lends; that EVERY special free attack adds the unit's
+            // free-attack Accuracy; and that the target's Dodge against special free attacks comes off it. Each read from the
+            // gear's own lines and the mod ledger. (was: acc += modded(e.actor!, e['as'] + 'Accuracy', 0, e.turn) — a base of 0)
+            if (e['free'] === true && typeof e['as'] === 'string') acc += modded(e.actor!, e['as'] + 'Accuracy', folded(e.actor!, e['as'] + 'Accuracy'), e.turn)
+            if (e['free'] === true) acc += modded(e.actor!, 'freeAttackAccuracy', folded(e.actor!, 'freeAttackAccuracy'), e.turn)
+            if (e['free'] === true) acc -= modded(e.target!, 'freeAttackDodge', folded(e.target!, 'freeAttackDodge'), e.turn)
             // The auditor learned TARGET_DODGE on 2026-08-20 — the Codex
             // cohort brought the first nonzero dodge (Dusk Hawk 5), and dodge
             // is flat off the hit chance, plus whatever the target's terrain

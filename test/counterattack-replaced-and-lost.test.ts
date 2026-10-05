@@ -20,7 +20,7 @@ import { performAttack, preview } from '../src/core/pipeline.js'
 import { createBattle, createCustomBattle } from '../src/core/setup.js'
 import { effective } from '../src/core/stats.js'
 import { applyStatus } from '../src/core/status.js'
-import { ABILITIES } from '../src/content/index.js'
+import { ABILITIES, ITEMS } from '../src/content/index.js'
 import type { Ctx, Event, Unit } from '../src/core/types.js'
 import { hexId } from './board16.js'
 
@@ -28,6 +28,12 @@ const LONG = 'power.longsword.counterattack', GREAT = 'power.greatsword.countera
 const SLASH = 'attack.longsword.slash'
 const PALADIN = 'hero.base.paladin-hunk', ZOMBIE = 'unit.zombie'
 const stat = (ctx: Ctx, u: Unit, name: string) => effective(ctx, u, name as never).value
+// Law 10, 2026-10-04 — capability.free-attack-accuracy (DECISIONS.md 2026-09-28, the Armory Ledger's rules: "'+10 counterattack' on a
+// weapon is +10 Accuracy on your counterattacks."): the Longsword the rig's paladin holds carries +10 Counterattack Accuracy of its
+// own now. It is the sword's, not something a power put up, so it is neither replaced nor lost (SWITCHES.md
+// counterattackOwnIsNotLost) - every Accuracy this file expects is what the POWERS lend, over the sword's. The lines that read a
+// bare 10 or 0 read SWORD + 10 or SWORD; the claims are unchanged.
+const SWORD = (ITEMS['item.longsword']!.statModifiers as Record<string, number>)['counterattackAccuracy'] ?? 0
 const ended = (ev: readonly Event[]) => ev.filter((e) => e.type === 'statmod.expired').map((e) => [e['stat'], e['value'], e['source'], e['reason'], e['lost']])
 const provokes = (ctx: Ctx, as: string) => ctx.events.filter((e) => e.type === 'aoo.provoked' && e['as'] === as)
 
@@ -60,7 +66,7 @@ describe('a new counterattack replaces the old one', () => {
     const from = ctx.events.length
     use(ctx, h, LONG, true)
     expect(stat(ctx, h, 'counterattack')).toBe(1)
-    expect(stat(ctx, h, 'counterattackAccuracy')).toBe(10)
+    expect(stat(ctx, h, 'counterattackAccuracy')).toBe(SWORD + 10)   // was toBe(10)
     const after = ctx.events.slice(from)
     expect(ended(after)).toEqual([['counterattack', 1, LONG, 'replaced', 'counterattack'], ['counterattackAccuracy', 10, LONG, 'replaced', 'counterattack']])
     // the old ones end before the new ones are put on, and both name the power that did it
@@ -76,7 +82,7 @@ describe('a new counterattack replaces the old one', () => {
     use(ctx, h, LONG)
     use(ctx, h, GREAT, true)
     expect(stat(ctx, h, 'counterattack')).toBe(1)
-    expect(stat(ctx, h, 'counterattackAccuracy')).toBe(0)
+    expect(stat(ctx, h, 'counterattackAccuracy')).toBe(SWORD)   // was toBe(0)
     expect(stat(ctx, h, 'strength')).toBe(strength + 2)
   })
 
@@ -89,7 +95,7 @@ describe('a new counterattack replaces the old one', () => {
     const from = ctx.events.length
     use(ctx, h, LONG, true)
     expect(stat(ctx, h, 'strength')).toBe(strength)
-    expect(stat(ctx, h, 'counterattackAccuracy')).toBe(10)
+    expect(stat(ctx, h, 'counterattackAccuracy')).toBe(SWORD + 10)   // was toBe(10)
     expect(ended(ctx.events.slice(from))).toEqual([['counterattack', 1, GREAT, 'replaced', 'counterattack'], ['strength', 2, GREAT, 'replaced', 'counterattack']])
   })
 
@@ -102,7 +108,7 @@ describe('a new counterattack replaces the old one', () => {
     performAttack(ctx, z.id, h.id, z.actions.find((a) => ctx.actions[a]?.attack?.kind === 'melee')!)
     const swing = ctx.events.find((e) => e.type === 'attack.declared' && e.actor === h.id && e['as'] === 'counterattack')!
     expect(swing).toBeDefined()
-    expect(swing['hitChance']).toBe(Math.max(0, Math.min(100, own.accuracy - 20)))
+    expect(swing['hitChance']).toBe(Math.max(0, Math.min(100, own.accuracy - 20 + SWORD)))   // was own.accuracy - 20: without the POWER's +10, and with the sword's
   })
 
   it('a modifier another thing put on him is not the old counterattack\'s and stays', () => {
@@ -123,7 +129,7 @@ describe('knocked down, knocked back or moved: it is lost', () => {
     executeKnockback(ctx, z.id, h.id, 1, 'test.shove')
     expect(h.hex).not.toBe(was)
     expect(stat(ctx, h, 'counterattack')).toBe(0)
-    expect(stat(ctx, h, 'counterattackAccuracy')).toBe(0)
+    expect(stat(ctx, h, 'counterattackAccuracy')).toBe(SWORD)   // was toBe(0)
     const after = ctx.events.slice(from)
     expect(ended(after)).toEqual([['counterattack', 1, LONG, 'knocked-back', 'counterattack'], ['counterattackAccuracy', 10, LONG, 'knocked-back', 'counterattack']])
     expect(after.findIndex((e) => e.type === 'knocked')).toBeLessThan(after.findIndex((e) => e.type === 'statmod.expired'))

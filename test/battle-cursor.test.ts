@@ -444,6 +444,14 @@ const enchantStatsOnWeaponGolden = JSON.parse(readFileSync(new URL('./fixtures/b
 // +20, now 1 and +10), or is knocked down or back with one up.
 // Every case frozen here (tools/capture-counterattack-replaced-and-lost-cursor.mts). Moved: showcase.eve-24-a, test.opening-gates. A `changed` case is checked here and skips the older layers.
 const counterattackReplacedAndLostGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-counterattack-replaced-and-lost.json', import.meta.url), 'utf8'))
+// capability.free-attack-accuracy (2026-10-04; DECISIONS.md 2026-09-28, the Armory Ledger's rules: "'+10 counterattack' on a weapon is +10
+// Accuracy on your counterattacks." / "Bonuses 'to special attacks' and 'Dodge against special attacks' apply to all three."), Law 10:
+// the Longsword and the Great Sword carry +10 Counterattack Accuracy while held (a stat of the row, named on its unit.equipped line and
+// added to its holder's counterattack roll, on top of a power's own), and two stats exist - freeAttackAccuracy on every special free
+// attack, freeAttackDodge against them. Every case that fields either sword moves: its equipped line says the stat, and each
+// counterattack its holder makes rolls 10 higher.
+// Every case frozen here (tools/capture-free-attack-accuracy-cursor.mts). Moved: showcase.alpha-team, showcase.assembled-party, showcase.eve-24-a, showcase.eve-24-b, showcase.gash-variant, showcase.horrors, showcase.item-powers, showcase.kiln, showcase.rime, test.back-flip, test.counterattack, test.flaming-longsword, test.opening-cathedral, test.opening-cavern-trail, test.opening-gates, test.swap, progression-surge-0, progression-surge-1, progression-surge-2. A `changed` case is checked here and skips the older layers.
+const freeAttackAccuracyGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-free-attack-accuracy.json', import.meta.url), 'utf8'))
 const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
 // Explicit rule migration, not regenerated historical hashes. These nine old
 // cases contain Surge ledger/refresh changes or terminal markers corrected
@@ -586,7 +594,10 @@ describe('resumable battle cursor', () => {
       const greatswordWarAxeReauthoredExpected = greatswordWarAxeReauthoredGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const enchantStatsOnWeaponExpected = enchantStatsOnWeaponGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const counterattackReplacedAndLostExpected = counterattackReplacedAndLostGolden.cases.find((row:{id:string})=>row.id===fixture.id)
-      const counterattackReplacedAndLostMoved = counterattackReplacedAndLostExpected?.changed === true
+      const freeAttackAccuracyExpected = freeAttackAccuracyGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+      const freeAttackAccuracyMoved = freeAttackAccuracyExpected?.changed === true
+      // was: const counterattackReplacedAndLostMoved = counterattackReplacedAndLostExpected?.changed === true — a case capability.free-attack-accuracy moved skips this layer too (capability.free-attack-accuracy 2026-10-04)
+      const counterattackReplacedAndLostMoved = counterattackReplacedAndLostExpected?.changed === true || freeAttackAccuracyMoved
       // was: const enchantStatsOnWeaponMoved = enchantStatsOnWeaponExpected?.changed === true — a case rule.counterattack-replaced-and-lost moved skips this layer too (rule.counterattack-replaced-and-lost 2026-10-04)
       const enchantStatsOnWeaponMoved = enchantStatsOnWeaponExpected?.changed === true || counterattackReplacedAndLostMoved
       // was: const greatswordWarAxeReauthoredMoved = greatswordWarAxeReauthoredExpected?.changed === true — a case fix.enchant-stats-on-weapon moved skips this layer too (fix.enchant-stats-on-weapon 2026-10-04)
@@ -732,7 +743,14 @@ describe('resumable battle cursor', () => {
             battle.completeActionCycle(ctx)
           }
         } else result = battle.runBattle(ctx)
-        if (counterattackReplacedAndLostExpected) {
+        if (freeAttackAccuracyExpected) {
+        expect(hash(ctx.events), 'full free-attack-accuracy events').toBe(freeAttackAccuracyExpected.events)
+        expect(hash(ctx.state), 'full free-attack-accuracy state').toBe(freeAttackAccuracyExpected.state)
+        expect(hash(ctx.rng.log), 'full free-attack-accuracy RNG').toBe(freeAttackAccuracyExpected.rng)
+        expect(result).toEqual(freeAttackAccuracyExpected.result)
+        }
+        // was: if (counterattackReplacedAndLostExpected) { — capability.free-attack-accuracy (2026-10-04): a case it moved is checked above instead
+        if (counterattackReplacedAndLostExpected && !freeAttackAccuracyMoved) {
         expect(hash(ctx.events), 'full counterattack-replaced-and-lost events').toBe(counterattackReplacedAndLostExpected.events)
         expect(hash(ctx.state), 'full counterattack-replaced-and-lost state').toBe(counterattackReplacedAndLostExpected.state)
         expect(hash(ctx.rng.log), 'full counterattack-replaced-and-lost RNG').toBe(counterattackReplacedAndLostExpected.rng)

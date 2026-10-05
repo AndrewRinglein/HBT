@@ -1,0 +1,238 @@
+
+ RUN  v4.1.11 C:/Users/aring/Desktop/HBT-worker-engine/engine
+
+ ❯ test/free-attack-accuracy.test.ts (14 tests | 13 failed) 23ms
+     × free-attack Accuracy and Dodge against special free attacks are stats of the engine, beside each kind's own Accuracy 4ms
+     × the Longsword and the Great Sword say "+10 counterattack" while held: +10 Counterattack Accuracy on the row, beside their Block, and no gap for it 1ms
+     × every row made from either sword carries it too 1ms
+     × the two test badges are the general stats' instances, pure data 0ms
+     × a hero holding the Longsword has +10 Counterattack Accuracy from the weapon, power or no power; one who holds none has 0 4ms
+     × the Great Sword's holder, with its power up (which has no Accuracy of its own), answers at −20 +10 — the weapon's 6ms
+     × the Longsword's holder with the Longsword's power up: +10 from the weapon and +10 more from the power — they stack 1ms
+     × a knock takes the power's +10 and leaves the weapon's: what the sword gives is not something he has up 1ms
+     × +15 on the counterattack, the fend and the attack of opportunity, each as its own named row; nothing on an ordinary attack 2ms
+     × the swing itself rolls it: an attack of opportunity drawn in a battle declares the same chance the preview gave 0ms
+     × it stacks with a kind's own Accuracy: the Longsword's holder with the badge and the power up answers at −20 +20 +15 0ms
+     × +20: a counterattack, a fend and an attack of opportunity against him are each 20 lower, by a row that names him; an ordinary attack is not 0ms
+     × in a battle: the zombie's attack of opportunity on him declares the lower chance 0ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 13 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/free-attack-accuracy.test.ts > the stats and the rows > free-attack Accuracy and Dodge against special free attacks are stats of the engine, beside each kind's own Accuracy
+AssertionError: freeAttackAccuracy: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ test/free-attack-accuracy.test.ts:45:139
+     43| describe('the stats and the rows', () => {
+     44|   it('free-attack Accuracy and Dodge against special free attacks are …
+     45|     for (const name of ['freeAttackAccuracy', 'freeAttackDodge', 'coun…
+       |                                                                                                                                           ^
+     46|   })
+     47|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/13]⎯
+
+ FAIL  test/free-attack-accuracy.test.ts > the stats and the rows > the Longsword and the Great Sword say "+10 counterattack" while held: +10 Counterattack Accuracy on the row, beside their Block, and no gap for it
+AssertionError: item.longsword: expected { block: 5 } to deeply equal { block: 5, counterattackAccuracy: 10 }
+
+- Expected
++ Received
+
+  {
+    "block": 5,
+-   "counterattackAccuracy": 10,
+  }
+
+ ❯ test/free-attack-accuracy.test.ts:50:50
+     48|   it('the Longsword and the Great Sword say "+10 counterattack" while …
+     49|     for (const sword of [LONG, GREAT]) {
+     50|       expect(ITEMS[sword]!.statModifiers, sword).toEqual({ block: 5, c…
+       |                                                  ^
+     51|       expect(((ITEMS[sword] as { gaps?: string[] }).gaps ?? []).filter…
+     52|     }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/13]⎯
+
+ FAIL  test/free-attack-accuracy.test.ts > the stats and the rows > every row made from either sword carries it too
+AssertionError: item.greatsword.bloodletting: expected undefined to be 10 // Object.is equality
+
+- Expected:
+10
+
++ Received:
+undefined
+
+ ❯ test/free-attack-accuracy.test.ts:58:110
+     56|     const made = Object.values(ITEMS).filter((i) => [LONG, GREAT].incl…
+     57|     expect(made.length).toBeGreaterThan(10)
+     58|     for (const i of made) expect((i.statModifiers as Record<string, nu…
+       |                                                                                                              ^
+     59|   })
+     60|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/13]⎯
+
+ FAIL  test/free-attack-accuracy.test.ts > the stats and the rows > the two test badges are the general stats' instances, pure data
+TypeError: Cannot read properties of undefined (reading 'statModifiers')
+ ❯ test/free-attack-accuracy.test.ts:62:25
+     60|
+     61|   it('the two test badges are the general stats\' instances, pure data…
+     62|     expect(BADGES[AIM]!.statModifiers).toEqual({ freeAttackAccuracy: 1…
+       |                         ^
+     63|     expect(BADGES[SLIP]!.statModifiers).toEqual({ freeAttackDodge: 20 …
+     64|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/13]⎯
+
+ FAIL  test/free-attack-accuracy.test.ts > "+10 counterattack" on a weapon is +10 Accuracy on your counterattacks > a hero holding the Longsword has +10 Counterattack Accuracy from the weapon, power or no power; one who holds none has 0
+AssertionError: expected +0 to be 10 // Object.is equality
+
+- Expected
++ Received
+
+- 10
++ 0
+
+ ❯ test/free-attack-accuracy.test.ts:70:63
+     68|   it('a hero holding the Longsword has +10 Counterattack Accuracy from…
+     69|     const armed = rig(), bare = rig(PALADIN, [])
+     70|     expect(stat(armed.ctx, armed.h, 'counterattackAccuracy')).toBe(10)
+       |                                                               ^
+     71|     expect(stat(bare.ctx, bare.h, 'counterattackAccuracy')).toBe(0)
+     72|     expect(stat(armed.ctx, armed.h, 'counterattack'), 'the weapon give…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/13]⎯
+
+ FAIL  test/free-attack-accuracy.test.ts > "+10 counterattack" on a weapon is +10 Accuracy on your counterattacks > the Great Sword's holder, with its power up (which has no Accuracy of its own), answers at −20 +10 — the weapon's
+AssertionError: expected 55 to be 65 // Object.is equality
+
+- Expected
++ Received
+
+- 65
++ 55
+
+ ❯ test/free-attack-accuracy.test.ts:84:32
+     82|     const swing = ctx.events.find((e) => e.type === 'attack.declared' …
+     83|     expect(swing).toBeDefined()
+     84|     expect(swing['hitChance']).toBe(Math.max(0, Math.min(100, own.accu…
+       |                                ^
+     85|     const ledger = swing['accLedger'] as Row[]
+     86|     expect(ledger.find((r) => r.station === 'FREE_ATTACK')!.delta).toB…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/13]⎯
+
+ FAIL  test/free-attack-accuracy.test.ts > "+10 counterattack" on a weapon is +10 Accuracy on your counterattacks > the Longsword's holder with the Longsword's power up: +10 from the weapon and +10 more from the power — they stack
+AssertionError: expected 10 to be 20 // Object.is equality
+
+- Expected
++ Received
+
+- 20
++ 10
+
+ ❯ test/free-attack-accuracy.test.ts:93:51
+     91|     const { ctx, h, z } = rig()
+     92|     use(ctx, h, LONG_POWER)
+     93|     expect(stat(ctx, h, 'counterattackAccuracy')).toBe(20)
+       |                                                   ^
+     94|     const own = preview(ctx, h.id, z.id, basic(ctx, h))
+     95|     const asCounter = preview(ctx, h.id, z.id, basic(ctx, h), 'reactio…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/13]⎯
+
+ FAIL  test/free-attack-accuracy.test.ts > "+10 counterattack" on a weapon is +10 Accuracy on your counterattacks > a knock takes the power's +10 and leaves the weapon's: what the sword gives is not something he has up
+AssertionError: expected +0 to be 10 // Object.is equality
+
+- Expected
++ Received
+
+- 10
++ 0
+
+ ❯ test/free-attack-accuracy.test.ts:115:51
+    113|     executeKnockback(ctx, z.id, h.id, 1, 'test.shove')
+    114|     expect(stat(ctx, h, 'counterattack')).toBe(0)
+    115|     expect(stat(ctx, h, 'counterattackAccuracy')).toBe(10)
+       |                                                   ^
+    116|   })
+    117| })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/13]⎯
+
+ FAIL  test/free-attack-accuracy.test.ts > free-attack Accuracy — "bonuses to special attacks apply to all three" > +15 on the counterattack, the fend and the attack of opportunity, each as its own named row; nothing on an ordinary attack
+Error: grantBadge: 'test.badge.free-attack-aim' is not a badge in the registry
+ ❯ grantBadge src/core/mutate.ts:192:17
+    190|   const u = unit(ctx, id)
+    191|   const b = ctx.badges[badgeId]
+    192|   if (!b) throw new Error(`grantBadge: '${badgeId}' is not a badge in …
+       |                 ^
+    193|   const again = u.badges.includes(badgeId)
+    194|   // rule.afflictions-at-zero (2026-10-02): a badge that stacks (Fragi…
+ ❯ test/free-attack-accuracy.test.ts:122:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/13]⎯
+
+ FAIL  test/free-attack-accuracy.test.ts > free-attack Accuracy — "bonuses to special attacks apply to all three" > the swing itself rolls it: an attack of opportunity drawn in a battle declares the same chance the preview gave
+Error: grantBadge: 'test.badge.free-attack-aim' is not a badge in the registry
+ ❯ grantBadge src/core/mutate.ts:192:17
+    190|   const u = unit(ctx, id)
+    191|   const b = ctx.badges[badgeId]
+    192|   if (!b) throw new Error(`grantBadge: '${badgeId}' is not a badge in …
+       |                 ^
+    193|   const again = u.badges.includes(badgeId)
+    194|   // rule.afflictions-at-zero (2026-10-02): a badge that stacks (Fragi…
+ ❯ test/free-attack-accuracy.test.ts:136:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/13]⎯
+
+ FAIL  test/free-attack-accuracy.test.ts > free-attack Accuracy — "bonuses to special attacks apply to all three" > it stacks with a kind's own Accuracy: the Longsword's holder with the badge and the power up answers at −20 +20 +15
+Error: grantBadge: 'test.badge.free-attack-aim' is not a badge in the registry
+ ❯ grantBadge src/core/mutate.ts:192:17
+    190|   const u = unit(ctx, id)
+    191|   const b = ctx.badges[badgeId]
+    192|   if (!b) throw new Error(`grantBadge: '${badgeId}' is not a badge in …
+       |                 ^
+    193|   const again = u.badges.includes(badgeId)
+    194|   // rule.afflictions-at-zero (2026-10-02): a badge that stacks (Fragi…
+ ❯ test/free-attack-accuracy.test.ts:146:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/13]⎯
+
+ FAIL  test/free-attack-accuracy.test.ts > Dodge against special free attacks — harder to hit with any of the three, no harder with an ordinary attack > +20: a counterattack, a fend and an attack of opportunity against him are each 20 lower, by a row that names him; an ordinary attack is not
+Error: grantBadge: 'test.badge.free-attack-slip' is not a badge in the registry
+ ❯ grantBadge src/core/mutate.ts:192:17
+    190|   const u = unit(ctx, id)
+    191|   const b = ctx.badges[badgeId]
+    192|   if (!b) throw new Error(`grantBadge: '${badgeId}' is not a badge in …
+       |                 ^
+    193|   const again = u.badges.includes(badgeId)
+    194|   // rule.afflictions-at-zero (2026-10-02): a badge that stacks (Fragi…
+ ❯ test/free-attack-accuracy.test.ts:156:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/13]⎯
+
+ FAIL  test/free-attack-accuracy.test.ts > Dodge against special free attacks — harder to hit with any of the three, no harder with an ordinary attack > in a battle: the zombie's attack of opportunity on him declares the lower chance
+Error: grantBadge: 'test.badge.free-attack-slip' is not a badge in the registry
+ ❯ grantBadge src/core/mutate.ts:192:17
+    190|   const u = unit(ctx, id)
+    191|   const b = ctx.badges[badgeId]
+    192|   if (!b) throw new Error(`grantBadge: '${badgeId}' is not a badge in …
+       |                 ^
+    193|   const again = u.badges.includes(badgeId)
+    194|   // rule.afflictions-at-zero (2026-10-02): a badge that stacks (Fragi…
+ ❯ test/free-attack-accuracy.test.ts:170:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/13]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  13 failed | 1 passed (14)
+   Start at  22:05:16
+   Duration  828ms (transform 530ms, setup 0ms, import 681ms, tests 23ms, environment 0ms)
+

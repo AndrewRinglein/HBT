@@ -31485,3 +31485,286 @@ index 585be59..82e068d 100644
          expect(hash(ctx.state), 'full enchant-stats-on-weapon state').toBe(enchantStatsOnWeaponExpected.state)
 ```
 </details>
+
+## capability.free-attack-accuracy — LANDED `d4435cd` **NEEDS REVIEW**
+2026-10-05 05:41
+
+  PASS  dependencies landed
+  WARN  not already decided — 4 candidate ruling(s) — READ BEFORE ASKING: SWITCHES.md:2158 · SWITCHES.md:2282
+  PASS  typecheck
+  PASS  the item's own tests — test/audit.test.ts, test/battle-cursor.test.ts, test/counterattack-and-fend.test.ts, test/counterattack-replaced-and-lost.test.ts, test/greatsword-war-axe-reauthored.test.ts, test/items-per-unit.test.ts, test/opening-cathedral.test.ts, test/free-attack-accuracy.test.ts
+  PASS  gate 1 — the id appears in a real battle — item.longsword: 1 log lines, 1 fired, 1 changed state
+  PASS  brought its own tests — test/audit.test.ts, test/battle-cursor.test.ts, test/counterattack-and-fend.test.ts, test/counterattack-replaced-and-lost.test.ts, test/greatsword-war-axe-reauthored.test.ts, test/items-per-unit.test.ts, test/opening-cathedral.test.ts, test/fixtures/battle-cursor-free-attack-accuracy.json, test/free-attack-accuracy.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/audit.test.ts (-1), test/battle-cursor.test.ts (-2), test/counterattack-and-fend.test.ts (-7), test/counterattack-replaced-and-lost.test.ts (-6), test/greatsword-war-axe-reauthored.test.ts (-1), test/items-per-unit.test.ts (-1), test/opening-cathedral.test.ts (-1) — will land FLAGGED for review
+  PASS  control battles unchanged — will re-bless at commit — this item DECLARED it changes the control battles: map.open a2e08b0e->9b73ab98, map.ridge 0315184b->bd475b4f, map.flanks 0253d143->eb22eeb5, map.highlands f5b4becb->74797a07, map.field ab39f835->f09198b2, map.thicket 9aafd119->1852d765, map.proving.open a475f0c2->dfbdc1fc, map.proving.ridge aeba1dbf->d582eabb, map.proving.ford b6a62b96->30bd2377, map.proving.copse 701389ef->a4cac5f6, map.proving.ruin af223623->fc8b387c, map.courtyard 191bf406->762982c4, map.floodplain f127e5ad->c2020314, test.map.embers 95a5d84c->2b539aa5, test.map.showcase d5f78e89->b474314a, test.map.duel-8 3c4defbd->aa305f1c, test.map.dungeon-16x8 5e3ac185->17f70ad2, test.map.horde-24 08fc992f->11149d6d, test.map.journey-20x10 aa1f0cde->3d4cffba, test.map.authored-40x40 9cd419f7->8b801b91, test.map.high-prop-single d124d53e->bc5944ff, test.map.high-prop-multi 023f3ae8->ca9209bf, test.map.well-shove 0df694e7->73f06957
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — item.longsword live · item.greatsword live
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without item.longsword — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/audit.test.ts b/test/audit.test.ts
+index 8eb49e0..f229c06 100644
+--- a/test/audit.test.ts
++++ b/test/audit.test.ts
+@@ -33,4 +33,11 @@ describe('independent audit of logged battles', () => {
+       // ledger and recomputes the EFFECTIVE stat, exactly like the engine.
+       const statMods = new Map<number, { stat: string; value: number; expiresAtTurn?: number; seq: number; source?: string }[]>()
++      // The auditor learned what GEAR folds on 2026-10-04 (capability.free-attack-accuracy; DECISIONS.md 2026-09-28, the Armory
++      // Ledger's rules: "'+10 counterattack' on a weapon is +10 Accuracy on your counterattacks."): a sword in hand carries
++      // Counterattack Accuracy, which no unit row has — so the base of a special free attack's stats is read from the log's own
++      // lines, as the engine's fielding wrote them: every `unit.equipped` and `unit.badged` names the `mods` it folds, and a
++      // `loadout.swapped` names the hands before and after (what left the hands folds nothing). EXTENDED, not weakened.
++      const gear = new Map<number, Map<string, Record<string, number>>>()
++      const folded = (actor: number, statName: string) => [...(gear.get(actor)?.values() ?? [])].reduce((sum, mods) => sum + (mods[statName] ?? 0), 0)
+       // badge.afflictions (2026-09-04): a mod added WHILE a swing is in flight (an onHit
+       // rider granting Rotting Flesh's +1 Armor before the damage line) does not touch
+@@ -153,4 +160,15 @@ describe('independent audit of logged battles', () => {
+           // running model stays exact. Leaving them out made every later
+           // spend's arithmetic wrong, which is precisely the audit working.
++          case 'unit.equipped': case 'unit.badged': {
++            const mine = gear.get(e.actor!) ?? new Map<string, Record<string, number>>()
++            mine.set(e.type === 'unit.equipped' ? String(e['instanceId'] ?? e['itemId']) : 'badge:' + String(e['badgeId']), (e['mods'] ?? {}) as Record<string, number>)
++            gear.set(e.actor!, mine)
++            break
++          }
++          case 'loadout.swapped': {
++            const after = new Set((e['handsAfter'] as { instanceId: string }[]).map((i) => i.instanceId))
++            for (const i of e['handsBefore'] as { instanceId: string }[]) if (!after.has(i.instanceId)) gear.get(e.actor!)?.delete(i.instanceId)
++            break
++          }
+           case 'statmod.added': {
+             const list = statMods.get(e.actor!) ?? []
+@@ -273,5 +291,11 @@ describe('independent audit of logged battles', () => {
+             // … and on 2026-10-04 (capability.counterattack-and-fend) that a counterattack and a fend add the swinging
+             // unit's own Accuracy for that free attack — "counterattack with +10 Accuracy" — read through the mod ledger.
+-            if (e['free'] === true && typeof e['as'] === 'string') acc += modded(e.actor!, e['as'] + 'Accuracy', 0, e.turn)
++            // … and on 2026-10-04 (capability.free-attack-accuracy) that the kind's Accuracy has a base — what the swinging
++            // unit's gear folds (the sword's +10) — under what a power lends; that EVERY special free attack adds the unit's
++            // free-attack Accuracy; and that the target's Dodge against special free attacks comes off it. Each read from the
++            // gear's own lines and the mod ledger. (was: acc += modded(e.actor!, e['as'] + 'Accuracy', 0, e.turn) — a base of 0)
++            if (e['free'] === true && typeof e['as'] === 'string') acc += modded(e.actor!, e['as'] + 'Accuracy', folded(e.actor!, e['as'] + 'Accuracy'), e.turn)
++            if (e['free'] === true) acc += modded(e.actor!, 'freeAttackAccuracy', folded(e.actor!, 'freeAttackAccuracy'), e.turn)
++            if (e['free'] === true) acc -= modded(e.target!, 'freeAttackDodge', folded(e.target!, 'freeAttackDodge'), e.turn)
+             // The auditor learned TARGET_DODGE on 2026-08-20 — the Codex
+             // cohort brought the first nonzero dodge (Dusk Hawk 5), and dodge
+diff --git a/test/battle-cursor.test.ts b/test/battle-cursor.test.ts
+index 82e068d..52e9b3f 100644
+--- a/test/battle-cursor.test.ts
++++ b/test/battle-cursor.test.ts
+@@ -445,4 +445,12 @@ const enchantStatsOnWeaponGolden = JSON.parse(readFileSync(new URL('./fixtures/b
+ // Every case frozen here (tools/capture-counterattack-replaced-and-lost-cursor.mts). Moved: showcase.eve-24-a, test.opening-gates. A `changed` case is checked here and skips the older layers.
+ const counterattackReplacedAndLostGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-counterattack-replaced-and-lost.json', import.meta.url), 'utf8'))
++// capability.free-attack-accuracy (2026-10-04; DECISIONS.md 2026-09-28, the Armory Ledger's rules: "'+10 counterattack' on a weapon is +10
++// Accuracy on your counterattacks." / "Bonuses 'to special attacks' and 'Dodge against special attacks' apply to all three."), Law 10:
++// the Longsword and the Great Sword carry +10 Counterattack Accuracy while held (a stat of the row, named on its unit.equipped line and
++// added to its holder's counterattack roll, on top of a power's own), and two stats exist - freeAttackAccuracy on every special free
++// attack, freeAttackDodge against them. Every case that fields either sword moves: its equipped line says the stat, and each
++// counterattack its holder makes rolls 10 higher.
++// Every case frozen here (tools/capture-free-attack-accuracy-cursor.mts). Moved: showcase.alpha-team, showcase.assembled-party, showcase.eve-24-a, showcase.eve-24-b, showcase.gash-variant, showcase.horrors, showcase.item-powers, showcase.kiln, showcase.rime, test.back-flip, test.counterattack, test.flaming-longsword, test.opening-cathedral, test.opening-cavern-trail, test.opening-gates, test.swap, progression-surge-0, progression-surge-1, progression-surge-2. A `changed` case is checked here and skips the older layers.
++const freeAttackAccuracyGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-free-attack-accuracy.json', import.meta.url), 'utf8'))
+ const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
+ // Explicit rule migration, not regenerated historical hashes. These nine old
+@@ -587,5 +595,8 @@ describe('resumable battle cursor', () => {
+       const enchantStatsOnWeaponExpected = enchantStatsOnWeaponGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+       const counterattackReplacedAndLostExpected = counterattackReplacedAndLostGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+-      const counterattackReplacedAndLostMoved = counterattackReplacedAndLostExpected?.changed === true
++      const freeAttackAccuracyExpected = freeAttackAccuracyGolden.cases.find((row:{id:string})=>row.id===fixture.id)
++      const freeAttackAccuracyMoved = freeAttackAccuracyExpected?.changed === true
++      // was: const counterattackReplacedAndLostMoved = counterattackReplacedAndLostExpected?.changed === true — a case capability.free-attack-accuracy moved skips this layer too (capability.free-attack-accuracy 2026-10-04)
++      const counterattackReplacedAndLostMoved = counterattackReplacedAndLostExpected?.changed === true || freeAttackAccuracyMoved
+       // was: const enchantStatsOnWeaponMoved = enchantStatsOnWeaponExpected?.changed === true — a case rule.counterattack-replaced-and-lost moved skips this layer too (rule.counterattack-replaced-and-lost 2026-10-04)
+       const enchantStatsOnWeaponMoved = enchantStatsOnWeaponExpected?.changed === true || counterattackReplacedAndLostMoved
+@@ -733,5 +744,12 @@ describe('resumable battle cursor', () => {
+           }
+         } else result = battle.runBattle(ctx)
+-        if (counterattackReplacedAndLostExpected) {
++        if (freeAttackAccuracyExpected) {
++        expect(hash(ctx.events), 'full free-attack-accuracy events').toBe(freeAttackAccuracyExpected.events)
++        expect(hash(ctx.state), 'full free-attack-accuracy state').toBe(freeAttackAccuracyExpected.state)
++        expect(hash(ctx.rng.log), 'full free-attack-accuracy RNG').toBe(freeAttackAccuracyExpected.rng)
++        expect(result).toEqual(freeAttackAccuracyExpected.result)
++        }
++        // was: if (counterattackReplacedAndLostExpected) { — capability.free-attack-accuracy (2026-10-04): a case it moved is checked above instead
++        if (counterattackReplacedAndLostExpected && !freeAttackAccuracyMoved) {
+         expect(hash(ctx.events), 'full counterattack-replaced-and-lost events').toBe(counterattackReplacedAndLostExpected.events)
+         expect(hash(ctx.state), 'full counterattack-replaced-and-lost state').toBe(counterattackReplacedAndLostExpected.state)
+diff --git a/test/counterattack-and-fend.test.ts b/test/counterattack-and-fend.test.ts
+index f044806..e148b18 100644
+--- a/test/counterattack-and-fend.test.ts
++++ b/test/counterattack-and-fend.test.ts
+@@ -33,4 +33,6 @@ import { hexId } from './board16.js'
+ const COUNTER = 'power.longsword.counterattack', FEND = 'power.test-fend'
+ const SLASH = 'attack.longsword.slash'
++/** What the Longsword the paladin holds gives his counterattack while it is in hand (capability.free-attack-accuracy, 2026-10-04) - read from its row. */
++const SWORD_GIVES = (ITEMS['item.longsword']!.statModifiers as Record<string, number>)['counterattackAccuracy'] ?? 0
+ const PALADIN = 'hero.base.paladin-hunk', ZOMBIE = 'unit.zombie'
+ const LONG = 120_000   // whole battles beside other workers' suites: a time limit is not the assertion
+@@ -84,6 +86,9 @@ describe('Counterattack — set off by being attacked in melee by an adjacent en
+     expect(h.stamina).toBe(before - 2)
+     expect(stat(ctx, h, 'counterattack')).toBe(1)
+-    expect(stat(ctx, h, 'counterattackAccuracy')).toBe(10)
+-    expect(ctx.events.filter((e) => e.type === 'statmod.added' && e.causeId === COUNTER).map((e) => e['stat'])).toEqual(['counterattack', 'counterattackAccuracy'])
++    // Law 10, 2026-10-04 — capability.free-attack-accuracy (DECISIONS.md 2026-09-28, the Armory Ledger's rules: "'+10 counterattack' on a weapon is +10 Accuracy on your counterattacks."): this read
++    // toBe(10) - the power's +10 alone. The Longsword he holds carries +10 Counterattack Accuracy of its own now, and the two
++    // stack (SWITCHES.md freeAttackSwordStacks): the power still gives +10, on top of the sword's.
++    expect(stat(ctx, h, 'counterattackAccuracy')).toBe(SWORD_GIVES + 10)
++    expect(ctx.events.filter((e) => e.type === 'statmod.added' && e.causeId === COUNTER).map((e) => [e['stat'], e['value']])).toEqual([['counterattack', 1], ['counterattackAccuracy', 10]])
+   })
+ 
+@@ -103,8 +108,9 @@ describe('Counterattack — set off by being attacked in melee by an adjacent en
+     expect(Math.max(...theirs)).toBeLessThan(provoked)
+     const swing = after.find((e) => e.type === 'attack.declared' && e.actor === h.id)!
+-    expect(swing).toMatchObject({ attackId: SLASH, free: true, as: 'counterattack', hitChance: Math.max(0, Math.min(100, own.accuracy - 20 + 10)) })
++    // Law 10, 2026-10-04 (the note above): was own.accuracy - 20 + 10 and a FREE_ATTACK_BONUS row of 10 - the power's alone
++    expect(swing).toMatchObject({ attackId: SLASH, free: true, as: 'counterattack', hitChance: Math.max(0, Math.min(100, own.accuracy - 20 + 10 + SWORD_GIVES)) })
+     const ledger = swing['accLedger'] as { station: string; delta: number }[]
+     expect(ledger.find((r) => r.station === 'FREE_ATTACK')!.delta).toBe(-20)
+-    expect(ledger.find((r) => r.station === 'FREE_ATTACK_BONUS')!.delta).toBe(10)
++    expect(ledger.find((r) => r.station === 'FREE_ATTACK_BONUS')!.delta).toBe(10 + SWORD_GIVES)
+     expect(after.filter((e) => e.type === 'stamina.spent' && e.actor === h.id)).toEqual([])
+     expect(h.stamina).toBe(stamina)
+@@ -219,9 +225,11 @@ describe('Counterattack — set off by being attacked in melee by an adjacent en
+     ctx.state.turn = 4
+     expect(stat(ctx, h, 'counterattack'), 'through the next Turn').toBe(1)
+-    expect(stat(ctx, h, 'counterattackAccuracy')).toBe(10)
++    // Law 10, 2026-10-04 (the note at the power's test, above): was toBe(10) while it is up and toBe(0) when it has gone - the
++    // power's +10 alone. What ends with the Turn is the power's; the sword's own +10 is his for as long as he holds it.
++    expect(stat(ctx, h, 'counterattackAccuracy')).toBe(SWORD_GIVES + 10)
+     expireTurnMods(ctx, 'test')   // Turn 4 — his next Turn — ends
+     ctx.state.turn = 5
+     expect(stat(ctx, h, 'counterattack'), 'gone').toBe(0)
+-    expect(stat(ctx, h, 'counterattackAccuracy')).toBe(0)
++    expect(stat(ctx, h, 'counterattackAccuracy')).toBe(SWORD_GIVES)
+     expect(ctx.events.filter((e) => e.type === 'statmod.expired' && ['counterattack', 'counterattackAccuracy'].includes(e['stat'] as string))).toHaveLength(2)
+   })
+@@ -317,5 +325,7 @@ describe('Fend — set off by an enemy moving into the zone of control', () => {
+     const p = preview as unknown as (c: Ctx, a: number, t: number, id: string, mode: string, as?: string) => { accuracy: number }
+     expect(p(ctx, h.id, z.id, SLASH, 'reaction', 'fend').accuracy).toBe(base - 20 + 15)
+-    expect(p(ctx, h.id, z.id, SLASH, 'reaction', 'counterattack').accuracy).toBe(base - 20)
++    // Law 10, 2026-10-04 (the note at the power's test, above): was toBe(base - 20) - a counterattack with no Accuracy of its own.
++    // His Longsword gives his counterattack +10 now; the claim - the Fend's +15 is on the fend and on nothing else - is unchanged.
++    expect(p(ctx, h.id, z.id, SLASH, 'reaction', 'counterattack').accuracy).toBe(base - 20 + SWORD_GIVES)
+     expect(p(ctx, h.id, z.id, SLASH, 'reaction').accuracy).toBe(base - 20)
+   })
+diff --git a/test/counterattack-replaced-and-lost.test.ts b/test/counterattack-replaced-and-lost.test.ts
+index e05fb7d..9705f66 100644
+--- a/test/counterattack-replaced-and-lost.test.ts
++++ b/test/counterattack-replaced-and-lost.test.ts
+@@ -21,5 +21,5 @@ import { createBattle, createCustomBattle } from '../src/core/setup.js'
+ import { effective } from '../src/core/stats.js'
+ import { applyStatus } from '../src/core/status.js'
+-import { ABILITIES } from '../src/content/index.js'
++import { ABILITIES, ITEMS } from '../src/content/index.js'
+ import type { Ctx, Event, Unit } from '../src/core/types.js'
+ import { hexId } from './board16.js'
+@@ -29,4 +29,10 @@ const SLASH = 'attack.longsword.slash'
+ const PALADIN = 'hero.base.paladin-hunk', ZOMBIE = 'unit.zombie'
+ const stat = (ctx: Ctx, u: Unit, name: string) => effective(ctx, u, name as never).value
++// Law 10, 2026-10-04 — capability.free-attack-accuracy (DECISIONS.md 2026-09-28, the Armory Ledger's rules: "'+10 counterattack' on a
++// weapon is +10 Accuracy on your counterattacks."): the Longsword the rig's paladin holds carries +10 Counterattack Accuracy of its
++// own now. It is the sword's, not something a power put up, so it is neither replaced nor lost (SWITCHES.md
++// counterattackOwnIsNotLost) - every Accuracy this file expects is what the POWERS lend, over the sword's. The lines that read a
++// bare 10 or 0 read SWORD + 10 or SWORD; the claims are unchanged.
++const SWORD = (ITEMS['item.longsword']!.statModifiers as Record<string, number>)['counterattackAccuracy'] ?? 0
+ const ended = (ev: readonly Event[]) => ev.filter((e) => e.type === 'statmod.expired').map((e) => [e['stat'], e['value'], e['source'], e['reason'], e['lost']])
+ const provokes = (ctx: Ctx, as: string) => ctx.events.filter((e) => e.type === 'aoo.provoked' && e['as'] === as)
+@@ -61,5 +67,5 @@ describe('a new counterattack replaces the old one', () => {
+     use(ctx, h, LONG, true)
+     expect(stat(ctx, h, 'counterattack')).toBe(1)
+-    expect(stat(ctx, h, 'counterattackAccuracy')).toBe(10)
++    expect(stat(ctx, h, 'counterattackAccuracy')).toBe(SWORD + 10)   // was toBe(10)
+     const after = ctx.events.slice(from)
+     expect(ended(after)).toEqual([['counterattack', 1, LONG, 'replaced', 'counterattack'], ['counterattackAccuracy', 10, LONG, 'replaced', 'counterattack']])
+@@ -77,5 +83,5 @@ describe('a new counterattack replaces the old one', () => {
+     use(ctx, h, GREAT, true)
+     expect(stat(ctx, h, 'counterattack')).toBe(1)
+-    expect(stat(ctx, h, 'counterattackAccuracy')).toBe(0)
++    expect(stat(ctx, h, 'counterattackAccuracy')).toBe(SWORD)   // was toBe(0)
+     expect(stat(ctx, h, 'strength')).toBe(strength + 2)
+   })
+@@ -90,5 +96,5 @@ describe('a new counterattack replaces the old one', () => {
+     use(ctx, h, LONG, true)
+     expect(stat(ctx, h, 'strength')).toBe(strength)
+-    expect(stat(ctx, h, 'counterattackAccuracy')).toBe(10)
++    expect(stat(ctx, h, 'counterattackAccuracy')).toBe(SWORD + 10)   // was toBe(10)
+     expect(ended(ctx.events.slice(from))).toEqual([['counterattack', 1, GREAT, 'replaced', 'counterattack'], ['strength', 2, GREAT, 'replaced', 'counterattack']])
+   })
+@@ -103,5 +109,5 @@ describe('a new counterattack replaces the old one', () => {
+     const swing = ctx.events.find((e) => e.type === 'attack.declared' && e.actor === h.id && e['as'] === 'counterattack')!
+     expect(swing).toBeDefined()
+-    expect(swing['hitChance']).toBe(Math.max(0, Math.min(100, own.accuracy - 20)))
++    expect(swing['hitChance']).toBe(Math.max(0, Math.min(100, own.accuracy - 20 + SWORD)))   // was own.accuracy - 20: without the POWER's +10, and with the sword's
+   })
+ 
+@@ -124,5 +130,5 @@ describe('knocked down, knocked back or moved: it is lost', () => {
+     expect(h.hex).not.toBe(was)
+     expect(stat(ctx, h, 'counterattack')).toBe(0)
+-    expect(stat(ctx, h, 'counterattackAccuracy')).toBe(0)
++    expect(stat(ctx, h, 'counterattackAccuracy')).toBe(SWORD)   // was toBe(0)
+     const after = ctx.events.slice(from)
+     expect(ended(after)).toEqual([['counterattack', 1, LONG, 'knocked-back', 'counterattack'], ['counterattackAccuracy', 10, LONG, 'knocked-back', 'counterattack']])
+diff --git a/test/greatsword-war-axe-reauthored.test.ts b/test/greatsword-war-axe-reauthored.test.ts
+index 5c302da..71ca1c4 100644
+--- a/test/greatsword-war-axe-reauthored.test.ts
++++ b/test/greatsword-war-axe-reauthored.test.ts
+@@ -42,5 +42,7 @@ describe('the Great Sword, as the Ledger row reads', () => {
+     const bare = UNITS[BARBARIAN]!, w = applyItems(bare, [SWORD], ITEMS, ACTIONS, 'test').def
+     expect((w.block ?? 0) - (bare.block ?? 0)).toBe(5)
+-    expect(ITEMS[SWORD]!.statModifiers).toEqual({ block: 5 })
++    // Law 10, 2026-10-04 — capability.free-attack-accuracy (DECISIONS.md 2026-09-28, the Armory Ledger's rules: "'+10 counterattack' on a weapon is +10 Accuracy on your counterattacks."): this read
++    // toEqual({ block: 5 }) while the row's "+10 counterattack" was a named gap; the clause is a stat modifier of the row now.
++    expect(ITEMS[SWORD]!.statModifiers).toEqual({ block: 5, counterattackAccuracy: 10 })
+     expect(ITEMS[SWORD]!.grants).toEqual([HEW])
+     expect(ITEMS[SWORD]!.abilities).toEqual([COUNTER])
+diff --git a/test/items-per-unit.test.ts b/test/items-per-unit.test.ts
+index 3a474b7..fee29ff 100644
+--- a/test/items-per-unit.test.ts
++++ b/test/items-per-unit.test.ts
+@@ -59,5 +59,11 @@ describe('the invariant — no heroItems means the hero the converter used to fo
+       // the axe's onBlock trigger. A hero whose kit carries one of those items differs from
+       // the frozen oracle in exactly the fields those items carry, and only those.
+-      const R1 = new Set(['abilities', 'block', 'rangedBlock', 'triggers', 'dodge', 'maxStamina'])
++      // Law 10, 2026-10-04 — capability.free-attack-accuracy (DECISIONS.md 2026-09-28, the Armory Ledger's rules: "'+10 counterattack' on a weapon is +10 Accuracy on your counterattacks."): the Longsword and
++      // the Great Sword carry Counterattack Accuracy 10 on their rows, a stat the frozen oracle never had. A hero whose kit holds one
++      // differs from it in that field too - content moved, not the fold; exactly the kit's own sum, held below.
++      // (was: new Set(['abilities', 'block', 'rangedBlock', 'triggers', 'dodge', 'maxStamina']))
++      const R1 = new Set(['abilities', 'block', 'rangedBlock', 'triggers', 'dodge', 'maxStamina', 'counterattackAccuracy'])
++      const kitCounter = (fieldedDef(id).defaultItems ?? []).reduce((n, i) => n + ((ITEMS[i]?.statModifiers as Record<string, number> | undefined)?.['counterattackAccuracy'] ?? 0), 0)
++      expect((fieldedDef(id) as unknown as Record<string, number>)['counterattackAccuracy'] ?? 0, `${id} Counterattack Accuracy is its kit's`).toBe(kitCounter)
+       const r1Kit = (fieldedDef(id).defaultItems ?? []).some((i) => ITEMS[i]?.itemClass === 'shield' || ITEMS[i]?.statModifiers.block || ITEMS[i]?.triggers.some((t) => t.hook === 'onBlock'))
+       const keys = [...new Set([...Object.keys(f), ...Object.keys(r)])].filter((k) => !['attributes', 'tags', 'toughness', 'vision', 'levelTable', 'badges'].includes(k) && !(r1Kit && R1.has(k)) && JSON.stringify(f[k]) !== JSON.stringify(r[k]))
+diff --git a/test/opening-cathedral.test.ts b/test/opening-cathedral.test.ts
+index 9c5adab..2c02189 100644
+--- a/test/opening-cathedral.test.ts
++++ b/test/opening-cathedral.test.ts
+@@ -66,5 +66,20 @@ describe('encounter.opening.cathedral', () => {
+     const gone = ctx.events.filter((e) => e.type === 'corpse.removed').length
+     expect(gone).toBeGreaterThan(10)
+-    for (const h of hexes) expect(ctx.state.layers?.[h], `hex ${h}`).toBe(layerOfId('layer.weak'))
++    // Law 10, 2026-10-04 — capability.free-attack-accuracy (DECISIONS.md 2026-09-28, the Armory Ledger's rules: "'+10 counterattack' on a weapon is +10 Accuracy on your counterattacks."): this read
++    //   for (const h of hexes) expect(ctx.state.layers?.[h], `hex ${h}`).toBe(layerOfId('layer.weak'))
++    // — every remains hex still cursed at the battle's end, which held while nothing else painted one. The Longsword's holder answers
++    // at +10 now, replicate 0 is another fight, and on its Turn 14 a mage's Flame Burst lays fire on a remains hex - over the curse,
++    // as any ground a burst paints replaces what was there. The claim is the ruling's - "When the body is raised, the cursed ground
++    // stays" - and is held exactly: a remains hex is cursed unless the log holds a later line that painted it, and no such line is
++    // a raise's or an eating's.
++    const RAISED_OR_EATEN = new Set(ctx.events.filter((e) => e.type === 'unit.raised' || e.type === 'corpse.eaten' || e.type === 'corpse.removed').map((e) => e.causeId))
++    let cursed = 0
++    for (const h of hexes) {
++      const painted = ctx.events.filter((e) => e.type === 'layer.painted' && e['hex'] === h && e.causeId !== ENC)
++      for (const p of painted) expect(RAISED_OR_EATEN.has(p.causeId), `hex ${h} was repainted by ${p.causeId}`).toBe(false)
++      expect(ctx.state.layers?.[h], `hex ${h}`).toBe(painted.length ? painted[painted.length - 1]!['after'] : layerOfId('layer.weak'))
++      if (!painted.length) cursed++
++    }
++    expect(cursed, 'the remains hexes nothing else painted are still cursed').toBeGreaterThan(hexes.length - 6)
+   })
+   it('is won when the last enemy dies, the Turn 5 Ghouls included', () => {
+```
+</details>

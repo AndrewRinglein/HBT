@@ -32,6 +32,8 @@ import { hexId } from './board16.js'
 
 const COUNTER = 'power.longsword.counterattack', FEND = 'power.test-fend'
 const SLASH = 'attack.longsword.slash'
+/** What the Longsword the paladin holds gives his counterattack while it is in hand (capability.free-attack-accuracy, 2026-10-04) - read from its row. */
+const SWORD_GIVES = (ITEMS['item.longsword']!.statModifiers as Record<string, number>)['counterattackAccuracy'] ?? 0
 const PALADIN = 'hero.base.paladin-hunk', ZOMBIE = 'unit.zombie'
 const LONG = 120_000   // whole battles beside other workers' suites: a time limit is not the assertion
 const stat = (ctx: Ctx, u: Unit, name: string) => effective(ctx, u, name as never).value
@@ -83,8 +85,11 @@ describe('Counterattack — set off by being attacked in melee by an adjacent en
     guard(ctx, h)
     expect(h.stamina).toBe(before - 2)
     expect(stat(ctx, h, 'counterattack')).toBe(1)
-    expect(stat(ctx, h, 'counterattackAccuracy')).toBe(10)
-    expect(ctx.events.filter((e) => e.type === 'statmod.added' && e.causeId === COUNTER).map((e) => e['stat'])).toEqual(['counterattack', 'counterattackAccuracy'])
+    // Law 10, 2026-10-04 — capability.free-attack-accuracy (DECISIONS.md 2026-09-28, the Armory Ledger's rules: "'+10 counterattack' on a weapon is +10 Accuracy on your counterattacks."): this read
+    // toBe(10) - the power's +10 alone. The Longsword he holds carries +10 Counterattack Accuracy of its own now, and the two
+    // stack (SWITCHES.md freeAttackSwordStacks): the power still gives +10, on top of the sword's.
+    expect(stat(ctx, h, 'counterattackAccuracy')).toBe(SWORD_GIVES + 10)
+    expect(ctx.events.filter((e) => e.type === 'statmod.added' && e.causeId === COUNTER).map((e) => [e['stat'], e['value']])).toEqual([['counterattack', 1], ['counterattackAccuracy', 10]])
   })
 
   it('attacked, he makes one free basic attack at −20 +10 Accuracy after the attack has resolved, and spends no Stamina', () => {
@@ -102,10 +107,11 @@ describe('Counterattack — set off by being attacked in melee by an adjacent en
     expect(theirs.length).toBeGreaterThan(0)
     expect(Math.max(...theirs)).toBeLessThan(provoked)
     const swing = after.find((e) => e.type === 'attack.declared' && e.actor === h.id)!
-    expect(swing).toMatchObject({ attackId: SLASH, free: true, as: 'counterattack', hitChance: Math.max(0, Math.min(100, own.accuracy - 20 + 10)) })
+    // Law 10, 2026-10-04 (the note above): was own.accuracy - 20 + 10 and a FREE_ATTACK_BONUS row of 10 - the power's alone
+    expect(swing).toMatchObject({ attackId: SLASH, free: true, as: 'counterattack', hitChance: Math.max(0, Math.min(100, own.accuracy - 20 + 10 + SWORD_GIVES)) })
     const ledger = swing['accLedger'] as { station: string; delta: number }[]
     expect(ledger.find((r) => r.station === 'FREE_ATTACK')!.delta).toBe(-20)
-    expect(ledger.find((r) => r.station === 'FREE_ATTACK_BONUS')!.delta).toBe(10)
+    expect(ledger.find((r) => r.station === 'FREE_ATTACK_BONUS')!.delta).toBe(10 + SWORD_GIVES)
     expect(after.filter((e) => e.type === 'stamina.spent' && e.actor === h.id)).toEqual([])
     expect(h.stamina).toBe(stamina)
     expect(provokes(ctx, 'counterattack')).toHaveLength(1)
@@ -218,11 +224,13 @@ describe('Counterattack — set off by being attacked in melee by an adjacent en
     expireTurnMods(ctx, 'test')   // Turn 3 ends
     ctx.state.turn = 4
     expect(stat(ctx, h, 'counterattack'), 'through the next Turn').toBe(1)
-    expect(stat(ctx, h, 'counterattackAccuracy')).toBe(10)
+    // Law 10, 2026-10-04 (the note at the power's test, above): was toBe(10) while it is up and toBe(0) when it has gone - the
+    // power's +10 alone. What ends with the Turn is the power's; the sword's own +10 is his for as long as he holds it.
+    expect(stat(ctx, h, 'counterattackAccuracy')).toBe(SWORD_GIVES + 10)
     expireTurnMods(ctx, 'test')   // Turn 4 — his next Turn — ends
     ctx.state.turn = 5
     expect(stat(ctx, h, 'counterattack'), 'gone').toBe(0)
-    expect(stat(ctx, h, 'counterattackAccuracy')).toBe(0)
+    expect(stat(ctx, h, 'counterattackAccuracy')).toBe(SWORD_GIVES)
     expect(ctx.events.filter((e) => e.type === 'statmod.expired' && ['counterattack', 'counterattackAccuracy'].includes(e['stat'] as string))).toHaveLength(2)
   })
 })
@@ -316,7 +324,9 @@ describe('Fend — set off by an enemy moving into the zone of control', () => {
     const base = preview(ctx, h.id, z.id, SLASH).accuracy
     const p = preview as unknown as (c: Ctx, a: number, t: number, id: string, mode: string, as?: string) => { accuracy: number }
     expect(p(ctx, h.id, z.id, SLASH, 'reaction', 'fend').accuracy).toBe(base - 20 + 15)
-    expect(p(ctx, h.id, z.id, SLASH, 'reaction', 'counterattack').accuracy).toBe(base - 20)
+    // Law 10, 2026-10-04 (the note at the power's test, above): was toBe(base - 20) - a counterattack with no Accuracy of its own.
+    // His Longsword gives his counterattack +10 now; the claim - the Fend's +15 is on the fend and on nothing else - is unchanged.
+    expect(p(ctx, h.id, z.id, SLASH, 'reaction', 'counterattack').accuracy).toBe(base - 20 + SWORD_GIVES)
     expect(p(ctx, h.id, z.id, SLASH, 'reaction').accuracy).toBe(base - 20)
   })
 })

@@ -58,7 +58,13 @@ describe('the invariant — no heroItems means the hero the converter used to fo
       // (Kite/Round/Tower replace knight-shield and buckler), sword and dagger Block and
       // the axe's onBlock trigger. A hero whose kit carries one of those items differs from
       // the frozen oracle in exactly the fields those items carry, and only those.
-      const R1 = new Set(['abilities', 'block', 'rangedBlock', 'triggers', 'dodge', 'maxStamina'])
+      // Law 10, 2026-10-04 — capability.free-attack-accuracy (DECISIONS.md 2026-09-28, the Armory Ledger's rules: "'+10 counterattack' on a weapon is +10 Accuracy on your counterattacks."): the Longsword and
+      // the Great Sword carry Counterattack Accuracy 10 on their rows, a stat the frozen oracle never had. A hero whose kit holds one
+      // differs from it in that field too - content moved, not the fold; exactly the kit's own sum, held below.
+      // (was: new Set(['abilities', 'block', 'rangedBlock', 'triggers', 'dodge', 'maxStamina']))
+      const R1 = new Set(['abilities', 'block', 'rangedBlock', 'triggers', 'dodge', 'maxStamina', 'counterattackAccuracy'])
+      const kitCounter = (fieldedDef(id).defaultItems ?? []).reduce((n, i) => n + ((ITEMS[i]?.statModifiers as Record<string, number> | undefined)?.['counterattackAccuracy'] ?? 0), 0)
+      expect((fieldedDef(id) as unknown as Record<string, number>)['counterattackAccuracy'] ?? 0, `${id} Counterattack Accuracy is its kit's`).toBe(kitCounter)
       const r1Kit = (fieldedDef(id).defaultItems ?? []).some((i) => ITEMS[i]?.itemClass === 'shield' || ITEMS[i]?.statModifiers.block || ITEMS[i]?.triggers.some((t) => t.hook === 'onBlock'))
       const keys = [...new Set([...Object.keys(f), ...Object.keys(r)])].filter((k) => !['attributes', 'tags', 'toughness', 'vision', 'levelTable', 'badges'].includes(k) && !(r1Kit && R1.has(k)) && JSON.stringify(f[k]) !== JSON.stringify(r[k]))
       if (keys.length) differ[id] = keys

@@ -41,7 +41,9 @@ describe('the Great Sword, as the Ledger row reads', () => {
   it('+5 Block; one attack — Strength +2 for 1 Stamina — and the power Counterattack', () => {
     const bare = UNITS[BARBARIAN]!, w = applyItems(bare, [SWORD], ITEMS, ACTIONS, 'test').def
     expect((w.block ?? 0) - (bare.block ?? 0)).toBe(5)
-    expect(ITEMS[SWORD]!.statModifiers).toEqual({ block: 5 })
+    // Law 10, 2026-10-04 — capability.free-attack-accuracy (DECISIONS.md 2026-09-28, the Armory Ledger's rules: "'+10 counterattack' on a weapon is +10 Accuracy on your counterattacks."): this read
+    // toEqual({ block: 5 }) while the row's "+10 counterattack" was a named gap; the clause is a stat modifier of the row now.
+    expect(ITEMS[SWORD]!.statModifiers).toEqual({ block: 5, counterattackAccuracy: 10 })
     expect(ITEMS[SWORD]!.grants).toEqual([HEW])
     expect(ITEMS[SWORD]!.abilities).toEqual([COUNTER])
     expect(ATTACKS[HEW]).toMatchObject({ name: 'Hew', staminaCost: 1, attack: { kind: 'melee', stat: 'strength', bonus: 2 } })

@@ -5722,7 +5722,14 @@
   ],
   "spec": "Ruled 2026-09-28 (the Armory Ledger's rules: '\"+10 counterattack\" on a weapon is +10 Accuracy on your counterattacks.' / 'Bonuses \"to special attacks\" and \"Dodge against special attacks\" apply to all three.') and not built (the weapon audit, 2026-10-04; engine SWITCHES.md counterattackRowsAndGaps): nothing carries Accuracy on special free attacks as a standing bonus. The Ledger's swords say '+5 Block · +10 counterattack' while equipped (Short Sword, Long Sword, Great Sword, Giant Sword), a new relic gives Accuracy on special free attacks, and a new enchantment gives '+8 special free attacks'. Build two stats as second instances of the engine's stat shape: free-attack Accuracy (added to the roll of the holder's counterattack, fend and attack of opportunity; a row may say counterattack only) and Dodge against special free attacks (added to the defender's Dodge against any of the three). Then author the clause the swords already have in the Ledger - the Longsword's and the Great Sword's '+10 counterattack' while equipped (C:/Users/aring/Desktop/Heroes of Blight and Tragic/CONTENT-DRAFTS/2026-09-28-armory-ledger/ledger-rows.json). The power Counterattack's own +10 is the power's and stacks with it unless the Ledger row says otherwise - decide and record. Read ENGINE-CONSTITUTION.md and COMBAT-SEQUENCE.md first.",
   "expect": "A hero holding the Longsword rolls its counterattack at +10 Accuracy from the weapon (and +10 more from the Counterattack power when that is what is up); a unit with Dodge against special attacks is harder to hit with a counterattack, a fend and an attack of opportunity and no harder to hit with an ordinary attack; a test asserts each.",
-  "note": "Filed by the kingdom chat, 2026-10-04, from the weapon audit."
+  "note": "Filed by the kingdom chat, 2026-10-04, from the weapon audit.",
+  "changesBaseline": true,
+  "variants": [
+   "item.longsword",
+   "item.greatsword"
+  ],
+  "status": "done-needs-review",
+  "sha": "d4435cd"
  },
  {
   "id": "content.elfbow-double-shot-one-target",

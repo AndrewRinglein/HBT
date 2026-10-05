@@ -65,7 +65,22 @@ describe('encounter.opening.cathedral', () => {
     const hexes = encounterDef(ENC).remains!.flatMap((r) => r.hexes)
     const gone = ctx.events.filter((e) => e.type === 'corpse.removed').length
     expect(gone).toBeGreaterThan(10)
-    for (const h of hexes) expect(ctx.state.layers?.[h], `hex ${h}`).toBe(layerOfId('layer.weak'))
+    // Law 10, 2026-10-04 — capability.free-attack-accuracy (DECISIONS.md 2026-09-28, the Armory Ledger's rules: "'+10 counterattack' on a weapon is +10 Accuracy on your counterattacks."): this read
+    //   for (const h of hexes) expect(ctx.state.layers?.[h], `hex ${h}`).toBe(layerOfId('layer.weak'))
+    // — every remains hex still cursed at the battle's end, which held while nothing else painted one. The Longsword's holder answers
+    // at +10 now, replicate 0 is another fight, and on its Turn 14 a mage's Flame Burst lays fire on a remains hex - over the curse,
+    // as any ground a burst paints replaces what was there. The claim is the ruling's - "When the body is raised, the cursed ground
+    // stays" - and is held exactly: a remains hex is cursed unless the log holds a later line that painted it, and no such line is
+    // a raise's or an eating's.
+    const RAISED_OR_EATEN = new Set(ctx.events.filter((e) => e.type === 'unit.raised' || e.type === 'corpse.eaten' || e.type === 'corpse.removed').map((e) => e.causeId))
+    let cursed = 0
+    for (const h of hexes) {
+      const painted = ctx.events.filter((e) => e.type === 'layer.painted' && e['hex'] === h && e.causeId !== ENC)
+      for (const p of painted) expect(RAISED_OR_EATEN.has(p.causeId), `hex ${h} was repainted by ${p.causeId}`).toBe(false)
+      expect(ctx.state.layers?.[h], `hex ${h}`).toBe(painted.length ? painted[painted.length - 1]!['after'] : layerOfId('layer.weak'))
+      if (!painted.length) cursed++
+    }
+    expect(cursed, 'the remains hexes nothing else painted are still cursed').toBeGreaterThan(hexes.length - 6)
   })
   it('is won when the last enemy dies, the Turn 5 Ghouls included', () => {
     // The four starting enemies are struck down at setup so the drafted party can finish the fight;
