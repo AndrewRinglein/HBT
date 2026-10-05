@@ -48,6 +48,16 @@
 // description" and 2026-10-04's "never a number" for the first draft's cards; the class's sentence and the codex's
 // description stay (SWITCHES.md firstHeroCardKeeps). The later drafts never had the fault and are not changed.
 //
+// kingdom.first-hero-card-only-what-is-modified (2026-10-05, Andrew, engine/DECISIONS.md 'seven answers: the first hero's card
+// shows only what is modified; …': told that the card compares each hero, stat by stat, with the value most of its class's four
+// base heroes have, and asked whether that is the comparison he wants — "No, it's just the things that get modified: the extra
+// stats and the badges."). The "standard hero" above read "compared to a standard hero of that type" too widely and is GONE
+// (content/class-standard.ts is deleted; kingdom SWITCHES.md firstHeroStandard, overturned). A first-hero card lists only what
+// is MODIFIED on that hero: what its own draft gave it (the record the run keeps on the hero — core/draft-modifiers.ts
+// joinsWithOf: its badges, its stat changes) that is not already said once for the pick, and the badges its own row carries
+// (an origin badge — read from the row, never from a list here; no row carries one until content.hero-origin-badges). Nothing
+// is worked out by looking at another hero. A hero with nothing of its own says so in one plain line.
+//
 // kingdom.opening-draft-class-message (2026-10-04, Andrew, engine/DECISIONS.md 'the opening's tutorial: the first hero's class line, no map before battle 1, …':
 // "The second time you are drafting a hero, there should be a message …" — his sentence is the content's row,
 // content/prologue.ts DRAFT_MESSAGES, and is not repeated here): a draft whose content row gives it words (core/opening.ts draftMessageOf —
@@ -59,11 +69,10 @@ import { fieldedPreviewOf } from '../core/seam.js'
 import { UNKITTED_HEROES, heroDescriptionOf, type HeroRow, type UnkittedHero } from '../content/heroes.js'
 import { CRUCIBLE, FIRST_HERO, crucibleBadgeOf, crucibleStatOf, badgeLineOf, statLineOf } from '../content/crucible.js'
 import { CLASSES, classLineOf } from '../content/classes.js'
-import { ownDifferencesOf } from '../content/class-standard.js'
 import { BADGE_LINES } from '../content/generated/progress.js'
-import { joinsWithOf } from '../core/draft-modifiers.js'
+import { joinsWithOf, type JoinedWith } from '../core/draft-modifiers.js'
 import { statLabelOf } from '../content/stat-labels.js'
-import { BADGES, type UnitDef } from '../engine.js'
+import { BADGES, RULE_BADGES, UNITS, type UnitDef } from '../engine.js'
 import { portraitOf } from './art.js'
 
 const esc = (s: string) => s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]!))
@@ -93,17 +102,28 @@ function classLine(h: HeroRow): string {
 
 /** One plain line of what a first hero joins with, and the thing(s) it is said of (two things with the same words share a line). */
 type JoinLine = { words: string; of: string[] }
-/** What this hero joins with, in plain words: one line for each thing, in the record's order; things with the same words share a line. */
-function joinLinesOf(joined: Hero): JoinLine[] {
+/** The things said once for the pick, in plain words: one line for each, in the record's order; things with the same words share a line. */
+function pickLines(given: readonly JoinedWith[]): JoinLine[] {
   const lines: JoinLine[] = []
-  for (const j of joinsWithOf(joined.drafted!, FIRST_HERO.healthSource)) {
+  for (const j of given) {
     const words = j.badge ? badgeLineOf(j.badge) : statLineOf(j.stat!)
     const same = lines.find((l) => l.words === words)
     if (same) same.of.push(j.key); else lines.push({ words, of: [j.key] })
   }
   return lines
 }
-const sameLine = (a: JoinLine, b: JoinLine) => a.words === b.words && a.of.join(' ') === b.of.join(' ')
+const sameGiven = (a: JoinedWith, b: JoinedWith) => a.key === b.key && a.amount === b.amount
+
+/**
+ * What the first draft's offers were given, split: `pick` — what is said once for the pick, above the cards — and `own`,
+ * per offer in offer order, what is that hero's alone and goes on its card. A thing every one of the offers was given alike
+ * is the pick's; anything else is the hero's own. Pure.
+ */
+export function splitGiven(perOffer: readonly (readonly JoinedWith[])[]): { pick: JoinedWith[]; own: JoinedWith[][] } {
+  const first = perOffer[0] ?? []
+  const pick = first.filter((j) => perOffer.every((other) => other.some((x) => sameGiven(x, j))))
+  return { pick, own: perOffer.map((given) => given.filter((j) => !pick.some((x) => sameGiven(x, j)))) }
+}
 
 /** The hero's class as the content names it, in plain words: "A ranger." — the first of its classes that has a row. */
 function whatItIs(h: HeroRow): string {
@@ -116,32 +136,37 @@ function whatItIs(h: HeroRow): string {
 /** What one of the hero's own badges does, in the content's plain words — else the stats the battle fields for it. */
 const ownBadgeWords = (id: string): string => BADGE_LINES[id] ?? badgeWordsOf(id)
 
-/**
- * The hero's OWN positives and negatives against the standard hero of its class: each stat above it, each of its own badges
- * that is not a flaw, then each stat below it and each flawed badge. A hero that differs in nothing says so in one line.
- */
-function ownList(h: HeroRow): string {
-  const own = ownDifferencesOf(h)
-  const className = (CLASSES.find((c) => c.id === own.classId)?.name ?? own.classId.replace('class.', '')).toLowerCase()
-  if (!own.stats.length && !own.badges.length) return `<p class="own same" data-own="same">The same as a standard ${esc(className)} in everything.</p>`
-  const flawed = (b: string) => CRUCIBLE.flawed.some((x) => x.id === b)
-  const stat = (d: { stat: string; amount: number }) => `<li class="${d.amount > 0 ? 'pos' : 'neg'}" data-own="stat:${esc(d.stat)}" data-amount="${d.amount}">${sign(d.amount)} ${esc(statLabelOf(d.stat))}</li>`
-  const badge = (b: string) => `<li class="${flawed(b) ? 'neg' : 'pos'}" data-own="badge:${esc(b)}"><b>${esc(BADGES[b]?.name ?? b)}</b> ${esc(ownBadgeWords(b))}</li>`
-  return `<ul class="own" data-against="${esc(own.classId)}">${[
-    ...own.stats.filter((d) => d.amount > 0).map(stat), ...own.badges.filter((b) => !flawed(b)).map(badge),
-    ...own.stats.filter((d) => d.amount < 0).map(stat), ...own.badges.filter(flawed).map(badge),
-  ].join('')}</ul>`
+/** The badges a hero's own row carries — an origin badge — never the engine's rule badges, which every hero carries (a hero is a hero). */
+function rowBadgesOf(h: HeroRow): string[] {
+  const rule = new Set<string>(Object.values(RULE_BADGES))
+  const unit = (UNITS[h.unitType] as unknown as { badges?: readonly string[] } | undefined)?.badges ?? []
+  return [...new Set([...unit, ...h.badges])].filter((b) => !rule.has(b)).sort()
 }
 
 /**
- * One offer of the first draft: its card art, name, one line of what it is, the class's sentence, ITS OWN differences from
- * the standard hero of its class, and the codex's description. `extra`: anything this hero alone would be given as the first
- * hero — none while the first hero's rule gives all three the same (the pick's line above the cards says those). No kit.
+ * What is MODIFIED on this hero, and nothing else: `mine` — what its own draft gave it and is not said once for the pick —
+ * and the badges its row carries. Each stat change as its amount and the stat's word ("+2 Health"); each badge as its name
+ * and its one-line meaning; a good thing with the positives, a flaw or a loss with the negatives; positives first. A hero
+ * with nothing of its own says so in one plain line. Each line names the thing it is said of (data-own: the draft's own key —
+ * badge:<id>, health, point:<stat> — or badge:<id> for a badge of the row).
  */
-function firstOffer(h: HeroRow, extra: readonly JoinLine[]): string {
+function ownList(h: HeroRow, mine: readonly JoinedWith[]): string {
+  const flawed = (b: string) => CRUCIBLE.flawed.some((x) => x.id === b)
+  const badge = (b: string) => ({ pos: !flawed(b), html: `<li class="${flawed(b) ? 'neg' : 'pos'}" data-own="badge:${esc(b)}"><b>${esc(BADGES[b]?.name ?? b)}</b> ${esc(ownBadgeWords(b))}</li>` })
+  const stat = (j: JoinedWith) => ({ pos: j.amount! > 0, html: `<li class="${j.amount! > 0 ? 'pos' : 'neg'}" data-own="${esc(j.key)}" data-amount="${j.amount}">${sign(j.amount!)} ${esc(statLabelOf(crucibleStatOf(j.stat!)))}</li>` })
+  const lines = [...mine.map((j) => (j.badge ? badge(j.badge) : stat(j))), ...rowBadgesOf(h).filter((b) => !mine.some((j) => j.badge === b)).map(badge)]
+  if (!lines.length) return '<p class="own same" data-own="none">No extra stats and no badges of its own.</p>'
+  return `<ul class="own">${[...lines.filter((l) => l.pos), ...lines.filter((l) => !l.pos)].map((l) => l.html).join('')}</ul>`
+}
+
+/**
+ * One offer of the first draft: its card art, name, one line of what it is, the class's sentence, what is modified on THIS
+ * hero (`mine`: what its own draft gave it that the pick's line above the cards does not already say; and its row's own
+ * badges), and the codex's description. No kit.
+ */
+function firstOffer(h: HeroRow, mine: readonly JoinedWith[]): string {
   const d = heroDescriptionOf(h.id)
-  const mine = extra.length ? `<ul class="joins">${extra.map((l) => `<li data-joins="${esc(l.of.join(' '))}">${esc(l.words)}</li>`).join('')}</ul>` : ''
-  return `<div class="opt" data-act="draft" data-id="${esc(h.id)}" data-classes="${esc(h.classes.join(','))}">${cardArt(h.id)}<b>${esc(h.name)}</b>${whatItIs(h)}${classLine(h)}${ownList(h)}${mine}${d ? `<p class="who">${esc(d.description)}</p>${d.quote ? `<p class="quote">“${esc(d.quote)}”</p>` : ''}` : ''}</div>`
+  return `<div class="opt" data-act="draft" data-id="${esc(h.id)}" data-classes="${esc(h.classes.join(','))}">${cardArt(h.id)}<b>${esc(h.name)}</b>${whatItIs(h)}${classLine(h)}${ownList(h, mine)}${d ? `<p class="who">${esc(d.description)}</p>${d.quote ? `<p class="quote">“${esc(d.quote)}”</p>` : ''}` : ''}</div>`
 }
 
 /** What a badge does, in words: the stats the battle fields for it (the engine's row), and the item slots the campaign gives or takes. */
@@ -190,12 +215,12 @@ export function draftScreen(c: CampaignState, leftOut: readonly UnkittedHero[] =
   const notice = said ? `\n    <p class="draftNotice" data-draft-notice="${said.draft}" role="note">${esc(said.text)}</p>` : ''
   // kingdom.first-hero-own-positives-negatives: what the first hero is given is the PICK's — the lines every one of the three
   // would join with are said once, above the cards; a line only one of them would get stays under that one
-  const joins = first ? offers.map((h) => joinLinesOf(draftedHeroOf(c, h.id))) : []
-  const shared = first && joins.length ? joins[0]!.filter((l) => joins.every((other) => other.some((x) => sameLine(x, l)))) : []
+  const given = first ? splitGiven(offers.map((h) => joinsWithOf(draftedHeroOf(c, h.id).drafted!, FIRST_HERO.healthSource))) : { pick: [], own: [] }
+  const shared = pickLines(given.pick)
   const gifts = shared.length ? `\n    <p class="firstGifts" data-first-gifts="${shared.length}">Whoever you choose leads the party and also gets: ${shared.map((l) => `<span data-joins="${esc(l.of.join(' '))}">${esc(l.words)}</span>`).join(' · ')}.</p>` : ''
   return `<h2>The draft — ${first ? 'your first hero' : `hero ${draftedCountOf(c) + 1} of six`}</h2>
     <p class="meta">${first
-      ? 'Three come to the fire. Each card says what the hero is and how it differs from a standard hero of its kind. Choose the one who will lead.'
+      ? 'Three come to the fire. Each card says what the hero is and what is its own — its extra stats and its badges. Choose the one who will lead.'
       : 'Three come to the fire, each as the Crucible made them: their numbers, the points they rolled against their kind, and their badges. Take the one you want.'}${owed}</p>${notice}${gifts}
-    <div class="card"><div class="pick${first ? '' : ' draft-rolled'}">${offers.map((h, i) => (first ? firstOffer(h, joins[i]!.filter((l) => !shared.some((x) => sameLine(x, l)))) : rolledOffer(h, draftedHeroOf(c, h.id)))).join('')}</div></div>${leftOut.length ? `<p class="meta">Not at the fire — no kit in the content: ${leftOut.map((h) => `<span data-unkitted="${esc(h.id)}">${esc(h.name)}</span>`).join(', ')}.</p>` : ''}`
+    <div class="card"><div class="pick${first ? '' : ' draft-rolled'}">${offers.map((h, i) => (first ? firstOffer(h, given.own[i]!) : rolledOffer(h, draftedHeroOf(c, h.id)))).join('')}</div></div>${leftOut.length ? `<p class="meta">Not at the fire — no kit in the content: ${leftOut.map((h) => `<span data-unkitted="${esc(h.id)}">${esc(h.name)}</span>`).join(', ')}.</p>` : ''}`
 }

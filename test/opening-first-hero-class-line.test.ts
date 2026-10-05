@@ -234,6 +234,8 @@ describe('kingdom.opening-first-hero-class-line — the first draft says what th
   it('the page: every draft card of a three-battle sitting carries its class line, and the first draft says once, above its cards, what the first hero joins with in plain words', () => {
     const out = execFileSync(process.execPath, ['tools/opening-loop-three.verify.mjs', 'BATTLE-SANDBOX.html'], { cwd: '../kingdom', encoding: 'utf8', maxBuffer: 1 << 24 })
     expect(out).toMatch(/every draft card showed the class line of its own class \(9 cards\); /)
-    expect(out).toMatch(/what the first hero is given was said once, above the three \(\d+ plain lines — one per badge, the Health as "Tougher than most", each rolled point — no stat table\)/)
+    // (Law 10, 2026-10-05, kingdom.first-hero-card-only-what-is-modified: the sentence named "what the first hero is given" — all of it;
+    // what is said for the pick is what every one of the three is given, however the first hero is rolled)
+    expect(out).toMatch(/what every one of the three is given was said once, above the three \(\d+ plain lines, "Born leader" first — no stat table\)/)
   }, 600000)
 })
