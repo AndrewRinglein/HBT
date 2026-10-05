@@ -677,16 +677,6 @@
    "needs": "item power — shape unparsed"
   },
   {
-   "unit": "item.fire-gauntlet",
-   "what": "grants power.fire-gauntlet.stoke",
-   "needs": "item power — shape unparsed"
-  },
-  {
-   "unit": "item.fire-gauntlet",
-   "what": "attack.fire-gauntlet.fire-punch onHit: \"apply Burn equal to half your Magic, rounded nearest, 0.5 u",
-   "needs": "trigger shape unparsed"
-  },
-  {
    "unit": "item.staff-of-summoning",
    "what": "grants power.staff-of-summoning.call-the-wolf",
    "needs": "item power — shape unparsed"
@@ -730,11 +720,6 @@
    "unit": "item.staff-of-the-destroyer",
    "what": "attack.staff-of-the-destroyer.sundering doubleStatBonus: \"magic\"",
    "needs": "damage from two stats — engine capability.damage-from-two-stats"
-  },
-  {
-   "unit": "item.staff-of-the-ultimate-destroyer",
-   "what": "grants power.staff-of-the-ultimate-destroyer.perfect-sight",
-   "needs": "item power — shape unparsed"
   },
   {
    "unit": "item.staff-of-the-ultimate-destroyer",
@@ -930,16 +915,6 @@
    "unit": "item.burning-oil",
    "what": "power.burning-oil.use: and the hex it stands on gains Burning — a painted layer from a power (not yet an ability effect)",
    "needs": "item active clause"
-  },
-  {
-   "unit": "item.poison-coating",
-   "what": "active: Once per Battle, 1 Stamina: for the rest of the Ba",
-   "needs": "an ability with charges/targets — capability.consumables"
-  },
-  {
-   "unit": "item.poison-coating",
-   "what": "uses: 1 — no active compiled to carry the charge",
-   "needs": "charges spent in battle — capability.consumables"
   },
   {
    "unit": "item.winter-cloak",
