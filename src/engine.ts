@@ -72,6 +72,9 @@ export { isAttack, isMove, isBurst, staminaCostOf } from '../../engine/src/core/
 // host listed and took a unit's STORED list, so a knocked-down unit's Stand Up was never offered to the engine and its button
 // did nothing. What a unit may use is the engine's answer, not the host's.
 export { grantedActionIds } from '../../engine/src/core/action.js'
+// Widened 2026-10-05 (kingdom.stand-up-one-press): standsUp — is this movement the stand (its effects stand the unit up)?
+// Read-only, pure. The play input uses a stand on one press; which move is the stand is the engine's answer, never an id.
+export { standsUp } from '../../engine/src/core/action.js'
 // Widened 2026-10-04 (viewer.move-cost-on-grid): stepCost — the engine's own charge for one step onto a hex, read-only, so
 // the battle screen's movement grid shows the engine's number on a tile and adds nothing up.
 export { movementOptions, stepCost } from '../../engine/src/core/movement.js'
