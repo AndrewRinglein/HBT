@@ -1756,7 +1756,7 @@
     "height": 14
    },
    "retreat": false,
-   "note": "The opening, battle 2 (engine DECISIONS.md 2026-09-28 'battle 2's final schedule' and 'no cut-off hexes; the Lumberjack and Wife on the road'; \"Second battle is Lumberjack and wife. They're two different units.\"). Three Zombies on the east edge; the Lumberjack and his Wife on the road in column 13, two civilians, not objectives; a Skeletal Archer at the end of Turn 1's Enemy Phase from the bottom edge; Turn 3 one from the top and one from behind the heroes; Turn 5 the Undead Soldier (unit.soldier, ruled 2026-09-28) from behind the heroes. Seven enemies. No retreat; clear the map. Hexes are the Ground Check's markers; the heroes' zone is Claude's reading (engine SWITCHES.md openingHeroZones).",
+   "note": "The opening, battle 2 (engine DECISIONS.md 2026-09-28 'battle 2's final schedule' and 'no cut-off hexes; the Lumberjack and Wife on the road'; \"Second battle is Lumberjack and wife. They're two different units.\"). Three Zombies on the east edge; the Lumberjack and his Wife on the road in column 13, two civilians, not objectives; a Skeletal Archer at the end of Turn 1's Enemy Phase from the bottom edge; Turn 3 one from the top and one from behind the heroes; Turn 5 the Undead Soldier (unit.soldier, ruled 2026-09-28) from behind the heroes. Seven enemies. No retreat; clear the map. Hexes are the Ground Check's markers; the heroes' zone is Claude's reading (engine SWITCHES.md openingHeroZones). AMENDED 2026-10-05 (engine item content.orphanage-body-and-graves-cursed; engine DECISIONS.md 2026-10-05 'playtest post: … bodies, cursed ground …' and 'the playtest post answered'): \"both the body and the graves are supposed to be cursed ground, and they're not.\" — \"It is already written down somewhere that you should take it from.\" What is written (engine DECISIONS.md 2026-09-28 'cursed ground is the Weak ground layer, the one ground-status shape'): cursed ground is layer.weak, +1 Weak on entering and +1 Weak at End of Activation; \"the opening's cursed hexes (the Ground Check's `*`) … are all painted `layer.weak`\". This map's Ground Check marks four: the three graves on the east edge and the body in the clearing (gen/opening-maps.json `cursed`). The row never painted them; it names its map's ground now, as the Cathedral's and the caravan's rows do. He said \"the Orphanage\"; the body and the graves are this battle's — the Orphanage's scene holds neither (engine SWITCHES.md cursedGravesAreTheLumberjackHouses).",
    "heroZone": {
     "count": 4,
     "at": {
@@ -1801,6 +1801,12 @@
        "row": 8
       }
      ]
+    }
+   ],
+   "paint": [
+    {
+     "layer": "layer.weak",
+     "ground": "cursed"
     }
    ],
    "schedule": [
