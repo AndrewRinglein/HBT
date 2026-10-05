@@ -92,11 +92,6 @@
    "needs": "trigger-effect: statMod before damage"
   },
   {
-   "unit": "hero.base.paladin-dark",
-   "what": "attack.greatsword.great-cleave accuracy -5 — a burst does not roll to hit",
-   "needs": "accuracy on a burst — a burst is not an attack (V2 bursts)"
-  },
-  {
    "unit": "hero.base.ranger-ranger",
    "what": "attack.elfbow.double-shot targets 'up to 2 enemies within 4 hexes' — lands SINGLE-TARGET",
    "needs": "an attack at several chosen targets — engine capability.attack-several-targets"
@@ -105,11 +100,6 @@
    "unit": "hero.base.ranger-scantily",
    "what": "attack.elfbow.double-shot targets 'up to 2 enemies within 4 hexes' — lands SINGLE-TARGET",
    "needs": "an attack at several chosen targets — engine capability.attack-several-targets"
-  },
-  {
-   "unit": "hero.base.warrior-barbarian",
-   "what": "attack.greatsword.great-cleave accuracy -5 — a burst does not roll to hit",
-   "needs": "accuracy on a burst — a burst is not an attack (V2 bursts)"
   },
   {
    "unit": "hero.base.priest-pauper",
@@ -153,8 +143,8 @@
   },
   {
    "unit": "item.greatsword",
-   "what": "attack.greatsword.great-cleave accuracy -5 — a burst does not roll to hit",
-   "needs": "accuracy on a burst — a burst is not an attack (V2 bursts)"
+   "what": "counterattackAccuracy: 10",
+   "needs": "Accuracy on the holder's counterattack while the weapon is held — engine capability.free-attack-accuracy"
   },
   {
    "unit": "item.iron-mace",
@@ -690,6 +680,11 @@
    "unit": "item.elfbow",
    "what": "attack.elfbow.double-shot targets 'up to 2 enemies within 4 hexes' — lands SINGLE-TARGET",
    "needs": "an attack at several chosen targets — engine capability.attack-several-targets"
+  },
+  {
+   "unit": "item.longsword",
+   "what": "counterattackAccuracy: 10",
+   "needs": "Accuracy on the holder's counterattack while the weapon is held — engine capability.free-attack-accuracy"
   },
   {
    "unit": "item.earth-staff",

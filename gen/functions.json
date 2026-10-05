@@ -2,7 +2,7 @@
  "hooks": [
   {
    "name": "onHit",
-   "uses": 81,
+   "uses": 80,
    "ids": [
     "item.hammer-of-justice",
     "item.runed-crossbow",
@@ -14,7 +14,6 @@
     "item.rune-elemental-bane",
     "item.rune-hunters-mark",
     "item.rune-crushing",
-    "attack.war-axe.hack",
     "attack.iron-mace.crush",
     "attack.war-hammer.skullsplitter",
     "attack.crossbow.punch-through",
@@ -43,7 +42,8 @@
     "attack.tail.lash",
     "attack.horns.ram",
     "attack.breath.gout",
-    "attack.breath.hiss"
+    "attack.breath.hiss",
+    "attack.pickaxe.pick"
    ]
   },
   {
@@ -318,7 +318,7 @@
  "shapes": [
   {
    "name": "self",
-   "uses": 160,
+   "uses": 161,
    "ids": [
     "item.loaded-dice-of-mirran",
     "item.mug-of-endless-dregs",
@@ -723,14 +723,6 @@
    ]
   },
   {
-   "name": "an adjacent hex and the two hexes adjacent to both you and it",
-   "uses": 2,
-   "ids": [
-    "attack.greatsword.great-cleave",
-    "attack.halberd.cleave"
-   ]
-  },
-  {
    "name": "an adjacent hex and one hex adjacent to both you and it",
    "uses": 2,
    "ids": [
@@ -796,6 +788,13 @@
    "uses": 1,
    "ids": [
     "attack.glaive.impale"
+   ]
+  },
+  {
+   "name": "an adjacent hex and the two hexes adjacent to both you and it",
+   "uses": 1,
+   "ids": [
+    "attack.halberd.cleave"
    ]
   },
   {
@@ -943,7 +942,7 @@
   },
   {
    "name": "apply a status",
-   "uses": 140,
+   "uses": 139,
    "ids": [
     "item.bloody-axe",
     "item.runed-crossbow",
@@ -971,7 +970,6 @@
     "item.rune-hunters-mark",
     "item.rune-aura-of-dread",
     "item.scorpion-shield",
-    "attack.war-axe.hack",
     "attack.war-hammer.skullsplitter",
     "attack.hand-crossbow.loaded-bolt",
     "attack.raiders-cutlass.slash",
@@ -984,7 +982,8 @@
     "attack.iron-claws.eviscerate",
     "attack.apprentice-wand.surge",
     "attack.bloody-axe.butcher",
-    "attack.holy-shield.shield-bash"
+    "attack.holy-shield.shield-bash",
+    "attack.poison-throwing-knives.venom-fan"
    ]
   },
   {
@@ -1081,7 +1080,7 @@
   },
   {
    "name": "grant a stat until end of next Turn",
-   "uses": 48,
+   "uses": 49,
    "ids": [
     "item.rapier",
     "item.mirage-dagger",
@@ -1363,28 +1362,6 @@
    ]
   },
   {
-   "name": "deal PHYSICAL damage",
-   "uses": 16,
-   "ids": [
-    "item.bear-trap",
-    "item.stormcallers-orb",
-    "item.necklace-of-frost-immunity",
-    "attack.greatsword.great-cleave",
-    "attack.halberd.cleave",
-    "power.reaver.cleave",
-    "power.bowmaster.rain-of-arrows",
-    "power.trapper.bear-trap",
-    "power.trapper.spring-the-trap",
-    "power.nightblade.fan-of-knives",
-    "power.grove-keeper.quench",
-    "power.serpent.constrict",
-    "power.drake.wing-buffet",
-    "power.direbeast.trample",
-    "power.stalker.throat-hold",
-    "specialty.spirit-walker"
-   ]
-  },
-  {
    "name": "move WITHOUT provoking",
    "uses": 16,
    "ids": [
@@ -1425,6 +1402,27 @@
     "enchant.abundant",
     "enchant.bloodthirsty",
     "enchant.death"
+   ]
+  },
+  {
+   "name": "deal PHYSICAL damage",
+   "uses": 15,
+   "ids": [
+    "item.bear-trap",
+    "item.stormcallers-orb",
+    "item.necklace-of-frost-immunity",
+    "attack.halberd.cleave",
+    "power.reaver.cleave",
+    "power.bowmaster.rain-of-arrows",
+    "power.trapper.bear-trap",
+    "power.trapper.spring-the-trap",
+    "power.nightblade.fan-of-knives",
+    "power.grove-keeper.quench",
+    "power.serpent.constrict",
+    "power.drake.wing-buffet",
+    "power.direbeast.trample",
+    "power.stalker.throat-hold",
+    "specialty.spirit-walker"
    ]
   },
   {
@@ -1668,7 +1666,7 @@
   },
   {
    "name": "bleed",
-   "uses": 64,
+   "uses": 63,
    "ids": [
     "item.bloody-axe",
     "item.twin-talon-bow",
@@ -1682,7 +1680,6 @@
     "item.rune-hunters-mark",
     "item.scorpion-shield",
     "item.kals-mercy",
-    "attack.war-axe.hack",
     "attack.raiders-cutlass.slash",
     "attack.raiders-cutlass.boarding-swing",
     "attack.iron-claws.eviscerate",
@@ -1709,7 +1706,8 @@
     "power.nightblade.exsanguinate",
     "power.nightblade.long-knife",
     "power.havoc.blade-dance",
-    "power.soul-stealer.dark-bolt"
+    "power.soul-stealer.dark-bolt",
+    "power.spirit-walker.mend-the-thread"
    ]
   },
   {
@@ -2654,7 +2652,7 @@
   },
   {
    "name": "until the end of your next Turn",
-   "uses": 41,
+   "uses": 42,
    "ids": [
     "item.rapier",
     "item.ghost-thread-cloak",

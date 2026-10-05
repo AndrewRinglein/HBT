@@ -11,7 +11,7 @@ When a rule fires. Twelve, plus `aura` and `passive` which are standing properti
 
 | Function | Uses | Notes |
 |---|---:|---|
-| `onHit` | 81 | after a hit lands, even if armour ate all of it |
+| `onHit` | 80 | after a hit lands, even if armour ate all of it |
 | `onKill` | 37 |  |
 | `startOfBattle` | 37 |  |
 | `onDamage` | 19 | only if damage actually landed |
@@ -32,7 +32,7 @@ When a rule fires. Twelve, plus `aura` and `passive` which are standing properti
 
 | Function | Uses |
 |---|---:|
-| `self` | 160 |
+| `self` | 161 |
 | `one enemy in melee reach` | 98 |
 | `one enemy within N hexes` | 82 |
 | `one ally within N hexes` | 54 |
@@ -50,7 +50,6 @@ When a rule fires. Twelve, plus `aura` and `passive` which are standing properti
 | `one enemy within your Vision` | 4 |
 | `three hexes within N hexes` | 3 |
 | `two empty hexes within N` | 3 |
-| `an adjacent hex and the two hexes adjacent to both you and it` | 2 |
 | `an adjacent hex and one hex adjacent to both you and it` | 2 |
 | `one enemy within N hexes and every enemy adjacent to it` | 2 |
 | `every enemy within N hexes` | 2 |
@@ -60,6 +59,7 @@ When a rule fires. Twelve, plus `aura` and `passive` which are standing properti
 | `one empty hex within N` | 1 |
 | `one enemy in melee reach and the hex directly behind it` | 1 |
 | `one enemy within N hexes and the hex directly behind it` | 1 |
+| `an adjacent hex and the two hexes adjacent to both you and it` | 1 |
 | `up to N enemies within Reach` | 1 |
 | `one forest hex within N` | 1 |
 | `an empty hex adjacent to you` | 1 |
@@ -85,10 +85,10 @@ What a rule may DO.
 | Function | Uses |
 |---|---:|
 | `grant a stat for the Battle` | 173 |
-| `apply a status` | 140 |
+| `apply a status` | 139 |
 | `heal` | 84 |
 | `deal TRUE damage` | 56 |
-| `grant a stat until end of next Turn` | 48 |
+| `grant a stat until end of next Turn` | 49 |
 | `remove N of a status` | 40 |
 | `grant an aura` | 38 |
 | `move yourself` | 31 |
@@ -96,9 +96,9 @@ What a rule may DO.
 | `deal MAGIC damage` | 22 |
 | `place a trap` | 19 |
 | `reveal / break stealth` | 18 |
-| `deal PHYSICAL damage` | 16 |
 | `move WITHOUT provoking` | 16 |
 | `regain stamina` | 15 |
+| `deal PHYSICAL damage` | 15 |
 | `deal damage (type from the weapon)` | 14 |
 | `set a ground layer` | 12 |
 | `Thorns N` | 11 |
@@ -124,7 +124,7 @@ What a rule may DO.
 | Function | Uses |
 |---|---:|
 | `burn` | 79 |
-| `bleed` | 64 |
+| `bleed` | 63 |
 | `poison` | 51 |
 | `protection` | 43 |
 | `weak` | 39 |
@@ -171,7 +171,7 @@ A stat modifier lasts the rest of the Battle unless the row says otherwise.
 | Function | Uses |
 |---|---:|
 | `rest of the Battle` | 174 |
-| `until the end of your next Turn` | 41 |
+| `until the end of your next Turn` | 42 |
 | `until the start of your next Turn` | 7 |
 | `until the end of the Turn` | 3 |
 
