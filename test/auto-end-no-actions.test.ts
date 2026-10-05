@@ -55,20 +55,52 @@ describe('a player unit with nothing left it can do ends its Activation by itsel
     expect(P.next()).toBe(true); expect(actor(box)).not.toBe(me)
     expect(P.rest(), 'the next unit has not acted').toBe(false)
   })
-  it('a hero with a usable shield power or a bonus move after moving is left alone', () => {
+  // Law 10, 2026-10-04 — rule.walked-unit-has-moved (engine item; engine DECISIONS.md 2026-10-04 'after the backlog run: ... moves are refused
+  // once a unit has walked ...': asked "Once a unit has walked, should Leap and Side Roll grey out and be refused? Today the engine still
+  // accepts them." - "2 yes"). This test held "a bonus move after moving" as a thing still left - the Hunter's Side Roll, taken as the
+  // primary action after its whole walk. The engine now takes no other movement from a unit that has walked, so after its whole walk the
+  // Hunter has nothing left and its Activation ends by itself - this item's own rule, applied; a hero with a usable shield power is
+  // still left alone.
+  // was:
+  //   it('a hero with a usable shield power or a bonus move after moving is left alone', () => {
+  //   const p = start(), { box, P } = p; P.next()
+  //   const seen: string[] = []
+  //   for (let n = 0; n < 3; n++) {
+  //   const me = actor(box)!; expect(isCivilian(box, me)).toBe(false)
+  //   walkTo(p, farthest(p))
+  //   const left = sandboxChoices(box.s).map((c) => c.command.actionId)
+  //   expect(left.length, `${unit(box, me).name} can still do something`).toBeGreaterThan(0)
+  //   seen.push(...left)
+  //   expect(P.rest()).toBe(false); expect(actor(box)).toBe(me); expect(ended(box, me)).toBe(0)
+  //   P.input({ kind: 'end-activation' }); P.next()
+  //   }
+  //   expect(seen.some((id) => /shield/.test(id)), 'a shield power was among them').toBe(true)
+  //   expect(seen.some((id) => box.s.ctx.actions[id]?.move), 'and a movement power in the primary slot').toBe(true)
+  //   })
+  it('a hero with a usable shield power after moving is left alone; one whose only other thing was a bonus move has nothing left once it has walked, and is ended', () => {
     const p = start(), { box, P } = p; P.next()
     const seen: string[] = []
+    let leftAlone = 0, endedByItself = 0
     for (let n = 0; n < 3; n++) {
       const me = actor(box)!; expect(isCivilian(box, me)).toBe(false)
       walkTo(p, farthest(p))
+      expect(unit(box, me).walked, 'the engine: it has walked').toBe(true)
       const left = sandboxChoices(box.s).map((c) => c.command.actionId)
-      expect(left.length, `${unit(box, me).name} can still do something`).toBeGreaterThan(0)
+      expect(left.filter((id) => box.s.ctx.actions[id]?.move && !isAttack(box.s.ctx.actions[id]!)), `${unit(box, me).name}: no movement is offered after the whole walk`).toEqual([])
       seen.push(...left)
-      expect(P.rest()).toBe(false); expect(actor(box)).toBe(me); expect(ended(box, me)).toBe(0)
-      P.input({ kind: 'end-activation' }); P.next()
+      if (left.length > 0) {
+        expect(P.rest()).toBe(false); expect(actor(box)).toBe(me); expect(ended(box, me)).toBe(0)
+        leftAlone++
+        P.input({ kind: 'end-activation' })
+      } else {
+        expect(P.rest(), `${unit(box, me).name} has nothing left and is ended`).toBe(true); expect(ended(box, me)).toBe(1)
+        endedByItself++
+      }
+      P.next()
     }
     expect(seen.some((id) => /shield/.test(id)), 'a shield power was among them').toBe(true)
-    expect(seen.some((id) => box.s.ctx.actions[id]?.move), 'and a movement power in the primary slot').toBe(true)
+    expect(leftAlone, 'the heroes with a shield power').toBeGreaterThan(0)
+    expect(endedByItself, 'the hero whose bonus move was all it had left').toBeGreaterThan(0)
   })
   it('the same walk ending beside an enemy leaves the unit acting, its attack offered', () => {
     const p = start(), { box, P } = p
