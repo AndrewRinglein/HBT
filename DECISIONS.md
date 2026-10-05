@@ -5094,3 +5094,19 @@ Ruled:
 The chat's own defaults, said to him the same day and his to change in a line: with the ability click no longer centring, a click on the acting unit's portrait, or on any unit's card in the top bar, centres the view on that unit; the eleven items go first in the viewer-and-kingdom queue, the speed items at the head, because every playtest is felt through the frame rate.
 
 Filed, first in the viewer-and-kingdom queue, in this order: `viewer.frame-cost-measured` (a tool that prints these numbers), `viewer.see-through-only-when-moved`, `viewer.scenery-shadow-drawn-once`, `viewer.scene-drawn-in-few-calls`, `viewer.view-stays-where-put`, `viewer.edge-scroll-at-screen-edges`, `viewer.map-drag-and-keys`, `viewer.zoom-stays`, `viewer.ability-click-keeps-view`, `kingdom.attack-one-armed-after-move`, `kingdom.move-click-setting`.
+
+## 2026-10-05 — seven answers: the first hero's card shows only what is modified; origin badges go on the heroes; Stand Up is one press; an X on a hex that cannot be walked; a walk closes every move-class action
+
+Andrew, in the kingdom chat, answering seven questions (1 who builds the eleven 'feel smooth' items the root chat filed - this chat's workers or the root chat; 2 the 'standard hero' of a class is taken, stat by stat, as the value most of that class's four base heroes have - is that the comparison you want; 3 should the Codex's origin badges (Dwarf, Elf, Lithe...) be put on the heroes' rows so the first-hero cards can show them; 4 what should the stat swapCost (on the Fast Hands and Slow Hands badges) be called on screen; 5 should Stand Up stand the unit on one press instead of two; 6 is an X right for a hex you can't walk through; 7 is it right that a Mage or Priest who walks first loses Focus or Devotion for that Activation):
+
+“For one, I don't know what's more effective. I'd like to get it done without spending a day.   2. No, it's just the things that get modified: the extra stats and the badges.   3, yes.   4 cost 1 stam   stand up one press.   6, yes.  7, yes.   Everything that is categorized as a move class action, because there are other things that are that too  can you continue all the remaining items by different workers?”
+
+Ruled:
+
+- **The first hero's card shows only what is modified on that hero - its extra stats and its badges.** Not a comparison against the other heroes of its class: the 'standard hero' the kingdom worker took by majority (kingdom SWITCHES firstHeroStandard) is not what he meant. Filed: `kingdom.first-hero-card-only-what-is-modified`.
+- **The Codex's origin badges go on the heroes' rows** ("3, yes"). Filed: `content.hero-origin-badges`.
+- **Stand Up is one press.** Overturns the kingdom switch standUpIsUsedLikeAMoveThatGoesNowhere. Filed: `kingdom.stand-up-one-press`.
+- **A hex that cannot be walked shows an X** ("6, yes") - `viewer.move-cost-on-hex` as filed.
+- **A unit that has walked loses every move-class action for that Activation** - Focus and Devotion among them: "7, yes. Everything that is categorized as a move class action, because there are other things that are that too". As `rule.walked-unit-has-moved` built it.
+- **swapCost on screen:** "4 cost 1 stam". The chat reads it as: the line says what swapping costs, in Stamina - "Swap costs 1 Stamina" with the badge's own number - rather than a stat word and a number (said to him the same day; one line to change). Filed: `kingdom.swap-cost-reads-as-stamina`.
+- **All the remaining items go to this chat's workers, on different workers at once** ("can you continue all the remaining items by different workers?"; "I'd like to get it done without spending a day") - the eleven 'feel smooth' items the root chat filed among them, since he did not say the root chat builds them. Said to him: the root chat should not start workers on those eleven while these run.
