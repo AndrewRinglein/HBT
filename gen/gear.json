@@ -2028,7 +2028,8 @@
    "triggers": [
     {
      "hook": "onHit",
-     "effect": "apply 1 Burn"
+     "effect": "apply 1 Burn",
+     "attackTag": "melee"
     }
    ],
    "grants": [],
@@ -2038,7 +2039,7 @@
    "persists": true,
    "tags": [],
    "intent": "Flames lick from every strike, and two Resist on the target neutralises the whole rune per tick.",
-   "source": "Hell-TCG name reused (blood rune, Burning Touch — onAttack:applyBurn moved to the onHit hook, since HoBaT rolls to hit)"
+   "source": "Hell-TCG name reused (blood rune, Burning Touch — onAttack:applyBurn moved to the onHit hook, since HoBaT rolls to hit) | 2026-10-04 (engine/DECISIONS.md ‘after the backlog run: … a trigger on the hero with a tag requirement …’): \"There's also the ability to have a trigger on a hero itself. That trigger could have a tag requirement like melee … and then it only triggers when you're using something that has the tag melee.\" The rune is worn, so its trigger is its bearer's, and it now carries the requirement its own words mean: a TOUCH that burns, flames from every STRIKE — a melee attack (attackTag melee). An arrow or a thrown knife is not a touch and no longer burns by this rune (engine item capability.unit-trigger-with-tag; engine SWITCHES.md unitTriggerTagRows)."
   },
   {
    "id": "item.rune-bleeding-strike",
@@ -2064,7 +2065,7 @@
    "persists": true,
    "tags": [],
    "intent": "Wounds from this bearer are slow to close — bleed is TRUE damage, which makes it the most reliable damage in the set, though a heal will now shed half its value.",
-   "source": "Hell-TCG name reused (blood rune, Bleeding Strike — moved onto the crit, where the unresistable status belongs)"
+   "source": "Hell-TCG name reused (blood rune, Bleeding Strike — moved onto the crit, where the unresistable status belongs) | 2026-10-04 (engine/DECISIONS.md ‘after the backlog run: … a trigger on the hero with a tag requirement …’): \"There's also the ability to have a trigger on a hero itself. That trigger could have a tag requirement like melee … and then it only triggers when you're using something that has the tag melee.\" Read against that: this rune's words are ‘Wounds from this bearer’ — any wound its bearer deals, by blade or by arrow — so its trigger carries NO tag requirement and fires on every attack of the bearer, as before (engine item capability.unit-trigger-with-tag; engine SWITCHES.md unitTriggerTagRows)."
   },
   {
    "id": "item.rune-horror-breaker",

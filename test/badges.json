@@ -122,5 +122,42 @@
       "power.test-fend"
     ],
     "note": "engine capability.counterattack-and-fend (2026-10-04): a badge that grants the test Fend power, so a real hero can carry it into the fielding test.fend. Test data only."
+  },
+  {
+    "id": "test.badge.melee-burn",
+    "name": "Burning Hands (TEST)",
+    "triggers": [
+      {
+        "id": "trigger.test-melee-burn.burn",
+        "hook": "onHit",
+        "chance": 100,
+        "select": "target",
+        "effect": {
+          "kind": "status.apply",
+          "statusId": "status.burn",
+          "value": 1
+        },
+        "onlyWithTag": "melee"
+      }
+    ],
+    "note": "capability.unit-trigger-with-tag (2026-10-04): a badge whose trigger names a tag requirement - Burn 1 on a hit with an attack that carries the tag melee, and on no other. The ruling's own example (\"you can add burn to melee attacks on a hero\")."
+  },
+  {
+    "id": "test.badge.any-burn",
+    "name": "Burning Aim (TEST)",
+    "triggers": [
+      {
+        "id": "trigger.test-any-burn.burn",
+        "hook": "onHit",
+        "chance": 100,
+        "select": "target",
+        "effect": {
+          "kind": "status.apply",
+          "statusId": "status.burn",
+          "value": 1
+        }
+      }
+    ],
+    "note": "capability.unit-trigger-with-tag (2026-10-04): the same trigger with no requirement - it fires for every attack of the unit, as a unit trigger always has. The control the requirement is read against."
   }
 ]

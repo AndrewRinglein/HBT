@@ -1111,11 +1111,12 @@
    "triggers": [
     {
      "hook": "onHit",
-     "effect": "apply 1 Weak"
+     "effect": "apply 1 Weak",
+     "attackTag": "brawl"
     }
    ],
    "intent": "Both hands are the weapon, so nothing you find later can replace them — which is the price of them being this good.",
-   "source": "Hell-TCG name reused (Pharaoh's Gauntlets — on-attack Weak kept)"
+   "source": "Hell-TCG name reused (Pharaoh's Gauntlets — on-attack Weak kept) | 2026-10-04 (engine/DECISIONS.md ‘after the backlog run: … a trigger on the hero with a tag requirement …’): \"There's also the ability to have a trigger on a hero itself. That trigger could have a tag requirement like melee … and then it only triggers when you're using something that has the tag melee.\" ‘Both hands are the weapon’: the Weak rides every blow of its holder's hands — the gauntlets' two strikes and a Punch, the attacks tagged brawl — and nothing else (attackTag brawl). It is the unit's trigger with a requirement, not the weapon's own-attack scope, because a Punch thrown in the gauntlets is a gauntlet blow (engine item capability.unit-trigger-with-tag; engine SWITCHES.md unitTriggerTagRows)."
   },
   {
    "id": "item.scepter-of-salvation",

@@ -562,7 +562,17 @@ function distinctTriggerIds(rowId, triggers) {
   refuseSharedTriggerIds(rowId, out);
   return out;
 }
+// engine capability.unit-trigger-with-tag (2026-10-04; engine DECISIONS.md 2026-10-04 'after the backlog run: … a trigger on the
+// hero with a tag requirement …': "That trigger could have a tag requirement like melee … and then it only triggers when you're
+// using something that has the tag melee."): a trigger row may say `attackTag: '<tag>'` — it fires only for an attack that
+// carries that tag (the engine's Trigger.onlyWithTag, read where onlyWithAttack is). One word, the same on a unit's row, an
+// attack's rider, a hero's kit and an item's row; a tag the Codex's vocabulary does not hold FAILS THE BUILD (below, over the
+// whole pack). Unstated: every attack, as before.
+function tagScopeOf(t) { return t.attackTag !== undefined ? { onlyWithTag: t.attackTag } : {}; }
 function compileTrigger(t, unitId, attackId) {
+  return compileTriggerRows(t, unitId, attackId).map((x) => ({ ...x, ...tagScopeOf(t) }));
+}
+function compileTriggerRows(t, unitId, attackId) {
   const where = attackId ?? '(unit)';
   const needs = (t.needs || []).filter((n) => !HAVE.has(n));
   if (needs.length) { gap(unitId, `${where} ${t.hook}: ${t.effects?.map((e) => e.effect).join('; ')}`, needs.join(',')); return []; }
@@ -1652,7 +1662,8 @@ function compileItems() {
       // that grants no attack, is a named gap — never a guessed scope.
       if (t.attack !== undefined && t.attack !== 'own') { g(`${t.hook}: ${eff.slice(0, 50)} — attack '${t.attack}'`, "trigger scope: only 'own' is read on an item row"); continue; }
       if (t.attack === 'own' && !grants.length) { g(`${t.hook}: ${eff.slice(0, 50)} — attack 'own'`, 'trigger scope: the row grants no attack of its own'); continue; }
-      const scopes = t.attack === 'own' ? grants.map((a) => ({ onlyWithAttack: a })) : [{}];
+      // engine capability.unit-trigger-with-tag (2026-10-04): … and may say `attackTag` — with or without 'own' (tagScopeOf, above)
+      const scopes = (t.attack === 'own' ? grants.map((a) => ({ onlyWithAttack: a })) : [{}]).map((sc) => ({ ...sc, ...tagScopeOf(t) }));
       if ((m = eff.match(/^(apply|gain) (\d+) ([A-Za-z]+)$/)) && STATUS_OK.has(m[3].toLowerCase())) {
         for (const scope of scopes) triggers.push({ id: `trigger.${it.id.replace(/^item\./, '')}.${m[3].toLowerCase()}`, hook: t.hook, chance: t.chance ?? 100,
           select: m[1] === 'gain' ? 'self' : 'target', effect: { kind: 'status.apply', statusId: 'status.' + m[3].toLowerCase(), value: parseInt(m[2], 10) }, source: it.id, ...scope });
@@ -1958,6 +1969,27 @@ for (const combo of TIER3) {
   if (!enchanted[combo.id].gaps) delete enchanted[combo.id].gaps;
 }
 
+// ── THE ATTACKS' TAGS (engine capability.unit-trigger-with-tag, 2026-10-04) ──
+// What "has the tag" means, in one place (engine SWITCHES.md attackHasTag): an attack's tags are ITS OWN Codex row's tags
+// (how it is made and with what: melee, ranged, brawl, dagger …) joined with the tags of the item that grants it — the weapon
+// in use (blade, bow, 2-hander …) — except the item's MANNER words (melee, ranged, brawl, area …: the vocabulary's own group),
+// which say how a thing is done and so belong to the attack alone: a weapon tagged melee that also grants a throw does not make
+// the throw a melee attack. A row with no tags from either (the bestiary's attacks, the test lane's) carries none here, and the
+// engine reads its kind — melee or ranged — instead. Written before the Forge copies attack rows, so a copy keeps its
+// original's; a test attack that is a delta over a real one keeps the real one's.
+const TAG_GROUP = new Map((D.tags || []).map((t) => [String(t.id).replace(/^tag./, ''), t.group]));
+{
+  const tagsOfAttack = new Map();
+  const add = (id, tags) => { if (!tagsOfAttack.has(id)) tagsOfAttack.set(id, new Set()); for (const t of tags) tagsOfAttack.get(id).add(t); };
+  for (const a of D.attacks || []) add(a.id, a.tags || []);
+  for (const i of D.items || []) for (const g of i.grants || []) if (tagsOfAttack.has(g) || authoredAttacks[g]) add(g, (i.tags || []).filter((t) => TAG_GROUP.get(t) !== 'manner'));
+  for (const [id, tags] of tagsOfAttack) {
+    if (!authoredAttacks[id] || tags.size === 0) continue;
+    for (const t of tags) if (!TAG_GROUP.has(t)) throw new Error(`mkenginepack: attack '${id}' carries tag '${t}', which is not in the Codex's tag vocabulary`);
+    authoredAttacks[id] = { ...authoredAttacks[id], tags: [...tags].sort() };
+  }
+}
+
 // ── THE FORGE'S TIER-2 ROWS (engine pack.derived-rows, 2026-09-25) ───────────
 // GEAR-DESIGN.md §3: MASTERWORK — a tier-1 two-hander, one-hander, shield or armor,
 // +1 Max Stamina, tier 2 (widened 2026-09-25, Andrew, engine DECISIONS.md "masterwork:
@@ -2108,7 +2140,7 @@ function testAbilities() {
   return out;
 }
 const UNIT_FIELDS = new Set(['typeId', 'name', 'side', 'levelTable', 'badges', 'maxHp', 'armor', 'resist', 'fireResist', 'poisonResist', 'shadowResist', 'coldResist', 'block', 'rangedBlock', 'accuracy', 'dodge', 'strength', 'precision', 'magic', 'spirit', 'crit', 'luck', 'toughness', 'surge', 'vision', 'bleedOutTurns', 'deathbedFighting', 'tier', 'auras', 'role', 'movement', 'reach', 'maxStamina', 'staminaRegen', 'ai', 'aiChanges', 'attacks', 'abilities', 'moves', 'tags', 'triggers', 'badges']);   // aiChanges: ai.mode-change (engine, 2026-09-26)
-const ATTACK_FIELDS = new Set(['id', 'name', 'slot', 'kind', 'damageType', 'bonus', 'stat', 'reach', 'staminaCost', 'crit', 'critCount', 'burst', 'cooldown', 'warmup', 'uses', 'free', 'accuracy', 'hits', 'secondaryDamage', 'armorPenetration', 'impact', 'destroy']);
+const ATTACK_FIELDS = new Set(['id', 'name', 'slot', 'kind', 'damageType', 'bonus', 'stat', 'reach', 'staminaCost', 'crit', 'critCount', 'burst', 'cooldown', 'warmup', 'uses', 'free', 'accuracy', 'hits', 'secondaryDamage', 'armorPenetration', 'impact', 'destroy', 'tags']);   // tags: engine capability.unit-trigger-with-tag (2026-10-04) — a delta keeps its real attack's; a test row may state its own
 // a delta may start from any packed row — the real families AND the test
 // cohort (test-gash-zombie is the cohort's zombie plus one rider)
 const realUnits = new Map([...alphaTeam, ...prologueParty, ...authoredEnemies, ...heroes, ...enemies].map((u) => [u.typeId, u]));
@@ -2121,6 +2153,7 @@ function testAttacks() {
     if (from) { base = authoredAttacks[from]; if (!base) throw new Error(`content/test/attacks.json: '${row.id}' is a delta over '${from}', which is not a real attack in the pack`); }
     const a = { ...base, ...rest, ...(set || {}), id: row.id };
     for (const k of Object.keys(a)) if (!ATTACK_FIELDS.has(k)) throw new Error(`content/test/attacks.json: '${row.id}' carries unknown field '${k}'`);
+    for (const t of a.tags || []) if (!TAG_GROUP.has(t)) throw new Error(`content/test/attacks.json: '${row.id}' carries tag '${t}', which is not in the Codex's tag vocabulary`);
     out[row.id] = {...a,...packetFields(a)};
   }
   return out;
@@ -2356,6 +2389,19 @@ if (!xpByTier || Object.keys(xpByTier).some((k) => !/^[1-9]$/.test(k)) || Object
 for (const u of authoredEnemies) if (u.tier !== undefined && xpByTier[u.tier] === undefined) throw new Error(`${u.typeId}: tier ${u.tier} has no price in xpByTier`);
 const pack = { note: D.testCohort.note, xpByTier, heroes, enemies, authoredEnemies, authoredAttacks, authoredAbilities, authoredBursts, prologueParty, alphaTeam, critChart: compileCritChart(SETTLED.critChart), statuses, moves, items, test,
   classPowers, specialties, levels, generalPool, enchanted, derivedItems, encounters, badges, maps };
+
+// engine capability.unit-trigger-with-tag (2026-10-04): a trigger's tag requirement names a tag of the Codex's vocabulary —
+// every list named `triggers`, wherever it sits (units, test units, items, tier-3 and derived items, badges, test badges).
+// An unknown tag fails the build, before a file is written: a mistyped requirement would otherwise never fire, silently.
+(function everyTagRequirementIsATag(node, where) {
+  if (Array.isArray(node)) { node.forEach((x, i) => everyTagRequirementIsATag(x, `${where}[${i}]`)); return; }
+  if (!node || typeof node !== 'object') return;
+  for (const [k, v] of Object.entries(node)) {
+    if (k === 'triggers' && Array.isArray(v)) {
+      for (const t of v) if (t && t.onlyWithTag !== undefined && !TAG_GROUP.has(t.onlyWithTag)) throw new Error(`mkenginepack: '${node.typeId ?? node.id ?? where}' trigger '${t.id}' requires tag '${t.onlyWithTag}', which is not in the Codex's tag vocabulary`);
+    } else everyTagRequirementIsATag(v, `${where}.${k}`);
+  }
+})(pack, 'pack');
 
 // engine fix.trigger-ids-and-scopes (2026-10-04): no row of the pack holds two triggers under one id — every list
 // named `triggers`, wherever it sits (units, test units, items, enchanted and derived items, badges). Before a file is written.

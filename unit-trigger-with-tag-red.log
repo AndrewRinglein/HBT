@@ -1,0 +1,132 @@
+✔ the pack compiles, and no row in it holds two triggers under one id (6.062ms)
+✔ the Fire Imp: the end-of-Activation burn keeps the plain id; the burn of its Blast is named for the Blast (0.1518ms)
+✔ the three parts of the rule, each on the row that needs it: the attack, then the hook, then the effect (0.2455ms)
+✔ a row whose every trigger already has its own id keeps every id as it was (0.157ms)
+✔ two triggers the rule cannot tell apart fail the build, naming the row and the id (180.3139ms)
+✔ a test unit that is a delta over another holds the triggers of its base once (0.1713ms)
+✔ the War Axe says attack: own — its on-block pair rides Chop and Hack, each scoped; its copies follow their own attacks (0.1391ms)
+✔ the scope is the word on the row: without it the trigger rides every attack its holder makes, as before (250.1832ms)
+✔ a scope word the compiler does not read, or a row with no attack of its own, is a named gap — never a guessed scope (510.6993ms)
+✔ the nine weapons that say attack: own, and the three rows whose words are every strike of their bearer (0.3917ms)
+✔ an attribute on a weapon: every trigger it adds on an attacker's hook is scoped to an attack that weapon grants — over every tier-3 row (0.2964ms)
+✔ the attribute's own word still decides: basic is the first attack alone (Flaming), own is said the same as unsaid, another word is a named gap (508.6237ms)
+✔ a hook that is not the attacker's keeps no scope: an attribute on worn armor is its wearer's (0.2394ms)
+✖ the rows that say attackTag: the Burning Touch requires melee, Pharaoh's Gauntlets brawl; the Bleeding Strike says nothing and requires nothing (0.8706ms)
+✖ an attack's tags: its own Codex tags, joined with its item's tags less the manner words; a Forge copy keeps its original's (9.9272ms)
+✖ an unknown tag fails the build, naming the row, the trigger and the tag — on an item's row and on a test badge (243.4091ms)
+✖ the word is the same on a unit's own row, and beside attack: own on a weapon's row; without it nothing is required (244.8265ms)
+ℹ tests 17
+ℹ suites 0
+ℹ pass 13
+ℹ fail 4
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2302.2861
+
+✖ failing tests:
+
+test at test\trigger-ids.test.mjs:176:1
+✖ the rows that say attackTag: the Burning Touch requires melee, Pharaoh's Gauntlets brawl; the Bleeding Strike says nothing and requires nothing (0.8706ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    [
+      [
+        'trigger.rune-burning-touch.burn',
+        'onHit',
+  -     'melee',
+        null,
+  +     null
+      ]
+    ]
+  
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-engine/content/test/trigger-ids.test.mjs:178:9)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+      at Test.postRun (node:internal/test_runner/test:1235:19)
+      at Test.run (node:internal/test_runner/test:1163:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ [ 'trigger.rune-burning-touch.burn', 'onHit', null, null ] ],
+    expected: [ [ 'trigger.rune-burning-touch.burn', 'onHit', 'melee', null ] ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at test\trigger-ids.test.mjs:185:1
+✖ an attack's tags: its own Codex tags, joined with its item's tags less the manner words; a Forge copy keeps its original's (9.9272ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + undefined
+  - [
+  -   'dagger',
+  -   'melee'
+  - ]
+  
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-engine/content/test/trigger-ids.test.mjs:187:9)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+      at Test.postRun (node:internal/test_runner/test:1235:19)
+      at Test.run (node:internal/test_runner/test:1163:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: [ 'dagger', 'melee' ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at test\trigger-ids.test.mjs:209:1
+✖ an unknown tag fails the build, naming the row, the trigger and the tag — on an item's row and on a test badge (243.4091ms)
+  AssertionError [ERR_ASSERTION]: Expected "actual" to be strictly unequal to: 0
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-engine/content/test/trigger-ids.test.mjs:211:9)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+      at Test.postRun (node:internal/test_runner/test:1235:19)
+      at Test.run (node:internal/test_runner/test:1163:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 0,
+    operator: 'notStrictEqual',
+    diff: 'simple'
+  }
+
+test at test\trigger-ids.test.mjs:217:1
+✖ the word is the same on a unit's own row, and beside attack: own on a weapon's row; without it nothing is required (244.8265ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    [
+      [
+        'trigger.fire-imp.burn',
+  +     null
+  -     'melee'
+      ],
+      [
+        'trigger.fire-imp.burn.blast',
+        null
+      ]
+  
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-engine/content/test/trigger-ids.test.mjs:220:9)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+      at Test.postRun (node:internal/test_runner/test:1235:19)
+      at Test.run (node:internal/test_runner/test:1163:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ [ 'trigger.fire-imp.burn', null ], [ 'trigger.fire-imp.burn.blast', null ] ],
+    expected: [ [ 'trigger.fire-imp.burn', 'melee' ], [ 'trigger.fire-imp.burn.blast', null ] ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }

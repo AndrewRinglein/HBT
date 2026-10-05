@@ -166,3 +166,63 @@ test('a hook that is not the attacker\'s keeps no scope: an attribute on worn ar
  assert.deepEqual(worn.filter(t=>t.onlyWithAttack).map(t=>t.id),[]);
  assert.deepEqual([...new Set(worn.map(t=>t.hook))].filter(h=>ATTACKERS.has(h)),[]);
 });
+
+// engine capability.unit-trigger-with-tag (2026-10-04; engine DECISIONS.md 2026-10-04 'after the backlog run: … a trigger on the hero
+// with a tag requirement …'): a trigger row may say `attackTag: '<tag>'` — the compiled trigger carries `onlyWithTag` and fires
+// only for an attack carrying that tag. One word on a unit's row, an item's row, a test badge; an unknown tag fails the build.
+// What an attack's tags are is the compiler's (engine SWITCHES.md attackHasTag): its own Codex tags, joined with its item's
+// tags less the manner words.
+const MANNER=new Set(JSON.parse(fs.readFileSync(path.join(source,'hbt-content.json'),'utf8')).tags.filter(t=>t.group==='manner').map(t=>t.id.replace(/^tag\./,'')));
+test('the rows that say attackTag: the Burning Touch requires melee, Pharaoh\'s Gauntlets brawl; the Bleeding Strike says nothing and requires nothing',()=>{
+ const tagOf=id=>live.pack.items[id].triggers.map(t=>[t.id,t.hook,t.onlyWithTag??null,t.onlyWithAttack??null]);
+ assert.deepEqual(tagOf('item.rune-burning-touch'),[['trigger.rune-burning-touch.burn','onHit','melee',null]]);
+ assert.deepEqual(tagOf('item.pharaohs-gauntlets'),[['trigger.pharaohs-gauntlets.weak','onHit','brawl',null]]);
+ assert.deepEqual(tagOf('item.rune-bleeding-strike'),[['trigger.rune-bleeding-strike.bleed','onCrit',null,null]]);
+ const badge=live.pack.test.badges['test.badge.melee-burn'];
+ assert.deepEqual(badge.triggers.map(t=>[t.id,t.onlyWithTag,t.source]),[['trigger.test-melee-burn.burn','melee','test.badge.melee-burn']]);
+ assert.equal(live.pack.test.badges['test.badge.any-burn'].triggers[0].onlyWithTag,undefined);
+});
+test('an attack\'s tags: its own Codex tags, joined with its item\'s tags less the manner words; a Forge copy keeps its original\'s',()=>{
+ const A=live.pack.authoredAttacks,codex=JSON.parse(fs.readFileSync(path.join(source,'hbt-content.json'),'utf8'));
+ assert.deepEqual(A['attack.dagger.stab'].tags,['dagger','melee']);
+ assert.deepEqual(A['attack.longsword.slash'].tags,['blade','melee']);             // 'blade' is the Longsword's, 'melee' the Slash's own
+ assert.ok(A['attack.javelin.throw'].tags.includes('ranged')&&!A['attack.javelin.throw'].tags.includes('melee'));
+ assert.ok(A['attack.javelin.stab'].tags.includes('melee')&&!A['attack.javelin.stab'].tags.includes('ranged'));
+ assert.deepEqual(A['attack.punch'].tags,['brawl','melee']);
+ assert.deepEqual(A['attack.longsword.slash.keen'].tags,A['attack.longsword.slash'].tags);
+ // the rule, over every Codex attack the pack holds: exactly its own tags and its granting items' non-manner tags
+ let checked=0;
+ for(const a of codex.attacks){
+  if(!A[a.id])continue;
+  const want=new Set(a.tags||[]);
+  for(const i of codex.items)if((i.grants||[]).includes(a.id))for(const t of i.tags||[])if(!MANNER.has(t))want.add(t);
+  assert.deepEqual(A[a.id].tags??[],[...want].sort(),a.id);checked++;
+ }
+ assert.ok(checked>100,String(checked));
+ // an item's manner word never reaches an attack that does not say it itself
+ const leaked=[];
+ for(const i of codex.items)for(const m of (i.tags||[]).filter(t=>MANNER.has(t)))for(const g of i.grants||[]){const row=codex.attacks.find(a=>a.id===g);if(row&&A[g]&&!(row.tags||[]).includes(m)&&(A[g].tags||[]).includes(m))leaked.push(`${i.id} ${m} -> ${g}`)}
+ assert.deepEqual(leaked,[]);
+ // a bestiary attack authors no tags: the pack row carries none (the engine reads its kind)
+ assert.equal(A['attack.zombie.claw'].tags,undefined);
+});
+test('an unknown tag fails the build, naming the row, the trigger and the tag — on an item\'s row and on a test badge',()=>{
+ const item=candidate(edit=>edit('gen/gear.json',data=>{data.bloodrunes.find(i=>i.id==='item.rune-burning-touch').triggers[0].attackTag='meele'}));
+ assert.notEqual(item.status,0);assert.equal(item.pack,null);
+ assert.match(item.stderr+item.stdout,/'item\.rune-burning-touch' trigger 'trigger\.rune-burning-touch\.burn' requires tag 'meele', which is not in the Codex's tag vocabulary/);
+ const badge=candidate(edit=>edit('test/badges.json',data=>{data.find(b=>b.id==='test.badge.melee-burn').triggers[0].onlyWithTag='handheld'}));
+ assert.notEqual(badge.status,0);assert.equal(badge.pack,null);
+ assert.match(badge.stderr+badge.stdout,/'test\.badge\.melee-burn' trigger 'trigger\.test-melee-burn\.burn' requires tag 'handheld'/);
+});
+test('the word is the same on a unit\'s own row, and beside attack: own on a weapon\'s row; without it nothing is required',()=>{
+ const unit=candidate(edit=>edit('gen/enemies-authored.json',data=>{authoredRow(data,'unit.fire-imp').triggers[0].attackTag='melee'}));
+ assert.equal(unit.status,0,unit.stderr);
+ assert.deepEqual(enemy(unit.pack,'unit.fire-imp').triggers.map(t=>[t.id,t.onlyWithTag??null]),[['trigger.fire-imp.burn','melee'],['trigger.fire-imp.burn.blast',null]]);
+ const both=candidate(edit=>edit('gen/weapons.json',data=>{for(const t of data.items.find(i=>i.id==='item.war-axe').triggers)if(t.attack==='own')t.attackTag='axe'}));
+ assert.equal(both.status,0,both.stderr);
+ const onBlock=both.pack.items['item.war-axe'].triggers.filter(t=>t.hook==='onBlock');
+ assert.ok(onBlock.length>=4);assert.ok(onBlock.every(t=>t.onlyWithTag==='axe'&&both.pack.items['item.war-axe'].grants.includes(t.onlyWithAttack)));
+ const none=candidate(edit=>edit('gen/gear.json',data=>{delete data.bloodrunes.find(i=>i.id==='item.rune-burning-touch').triggers[0].attackTag}));
+ assert.equal(none.status,0,none.stderr);
+ assert.equal(none.pack.items['item.rune-burning-touch'].triggers[0].onlyWithTag,undefined);
+});
