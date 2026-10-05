@@ -34954,3 +34954,228 @@ index 368e3e6..c2bd3bf 100644
          // never as a stat table — and still no number, no badge by name, no kit (2026-10-03, as far as it stands)
 ```
 </details>
+
+## kingdom.swap-cost-reads-as-stamina — LANDED `fdcc1a2` **NEEDS REVIEW**
+2026-10-05 10:21
+
+  PASS  dependencies landed
+  PASS  not already decided — no existing ruling matches
+  PASS  typecheck
+  PASS  the item's own tests — test/stat-labels-missing-words.test.ts, test/swap-cost-reads-as-stamina.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — kingdom/test/stat-labels-missing-words.test.ts, kingdom/test/swap-cost-reads-as-stamina.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/stat-labels-missing-words.test.ts (-5) — will land FLAGGED for review
+  SKIPPED  control battles unchanged — engine code f48a625458 and the content pack are the ones the control battles last passed on (2026-10-05 06:05, gate content.elfbow-double-shot-one-target --land, in HBT-worker-engine) — not run
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+217c22e
+
+diff --git a/test/stat-labels-missing-words.test.ts b/test/stat-labels-missing-words.test.ts
+index 8ece1a7..13e7009 100644
+--- a/test/stat-labels-missing-words.test.ts
++++ b/test/stat-labels-missing-words.test.ts
+@@ -9,8 +9,15 @@
+ // The words are ones the game's documents and its battle screen ALREADY say — taken, not invented; each is cited in the table
+ // and in kingdom SWITCHES.md statLabelWords. A stat nobody has named stays raw and is listed (STATS_WITHOUT_A_WORD) for Andrew.
++//
++// LAW 10 — 2026-10-05, kingdom.swap-cost-reads-as-stamina (engine/DECISIONS.md 'seven answers: …' — Andrew, asked what swapCost
++// should be called on screen: "4 cost 1 stam"; read as a plain sentence of what a swap costs, in Stamina). This file held
++// swapCost as THE stat nobody has named — on the no-word list, shown raw — and let every row's check pass for it through that
++// exception (the item's Expect: "the stat-label test covers swapCost without an exception"). As the rule now stands: the no-word
++// list is empty; a stat a row carries has a label in the table OR a sentence (stat-labels.ts statHasWords), and swapCost has its
++// sentence; nothing passes by being listed. The other checks stand as written.
+ import { describe, it, expect } from 'vitest'
+ import { ITEMS, itemOf } from '../src/content/items.js'
+ import * as LABELS from '../src/content/stat-labels.js'
+-import { STAT_LABEL, statLabelOf } from '../src/content/stat-labels.js'
++import { STAT_LABEL, statHasWords, statLabelOf, statWordsOf } from '../src/content/stat-labels.js'
+ import { BADGES, LEVELS, SPECIALTIES } from '../src/engine.js'
+ import { makeNewCampaign } from '../src/core/opening.js'
+@@ -38,12 +45,19 @@ describe('kingdom.stat-labels-missing-words — the words', () => {
+   })
+ 
+-  it('a stat nobody has named stays raw and is on the list for Andrew — swapCost — and nothing on that list has a word', () => {
+-    expect(NO_WORD).toEqual(['swapCost'])
+-    for (const k of NO_WORD) { expect(k in STAT_LABEL, `${k} is on the no-word list and in the table`).toBe(false); expect(statLabelOf(k)).toBe(k) }
++  // (Law 10, 2026-10-05, above: this read "a stat nobody has named stays raw and is on the list for Andrew — swapCost", with
++  // expect(NO_WORD).toEqual(['swapCost']) and statLabelOf('swapCost') held to the raw name)
++  it('no stat is left without words: the no-word list is empty, and swapCost — which stood on it — reads as the sentence of what a swap costs', () => {
++    expect(NO_WORD).toEqual([])
++    expect('swapCost' in STAT_LABEL, 'not a stat word with a signed number').toBe(false)
++    expect(statHasWords('swapCost')).toBe(true)
++    expect(statWordsOf('swapCost', 0)).toMatch(/^Swap costs \d+ Stamina$/)
++    expect(statWordsOf('swapCost', 1)).not.toMatch(/swapCost|swapcost/)
+   })
+ })
+ 
+ describe('kingdom.stat-labels-missing-words — no row can show a raw stat again', () => {
+-  const unnamed = (keys: Iterable<string>) => [...new Set(keys)].filter((k) => !(k in STAT_LABEL) && !NO_WORD.includes(k)).sort()
++  // (Law 10, 2026-10-05, above: a stat passed here by being in the table or ON THE NO-WORD LIST; it passes now only by having
++  // words — a label or a sentence. The list is kept in the check so that a stat put back on it would still be named below.)
++  const unnamed = (keys: Iterable<string>) => [...new Set(keys)].filter((k) => !statHasWords(k) && !NO_WORD.includes(k)).sort()
+ 
+   it('every stat an item row in the game carries — what it gives, and what its set pays — has a label or is on the no-word list', () => {
+@@ -69,4 +83,6 @@ describe('kingdom.stat-labels-missing-words — no row can show a raw stat again
+     // the no-word list holds nothing that no row carries: a stat leaves it the day it is named
+     for (const k of NO_WORD) expect([...badges, ...levels, ...specialties, ...ITEMS.flatMap((r) => Object.keys(r.statModifiers))].includes(k), `${k} is carried by a row`).toBe(true)
++    // swapCost is carried (the Fast Hands and Slow Hands badges) and is covered by its sentence, not by an exception
++    expect(badges).toContain('swapCost'); expect(NO_WORD).not.toContain('swapCost')
+   })
+ 
+diff --git a/test/swap-cost-reads-as-stamina.test.ts b/test/swap-cost-reads-as-stamina.test.ts
+new file mode 100644
+index 0000000..f8e67d2
+--- /dev/null
++++ b/test/swap-cost-reads-as-stamina.test.ts
+@@ -0,0 +1,139 @@
++// kingdom.swap-cost-reads-as-stamina — ruled 2026-10-05 (Andrew, engine/DECISIONS.md 'seven answers: the first hero's card
++// shows only what is modified; origin badges go on the heroes; Stand Up is one press; …': asked what the stat swapCost (on the
++// Fast Hands and Slow Hands badges) should be called on screen — "4 cost 1 stam". Read, and said to him the same day: the line
++// says what swapping costs, in Stamina, as a plain sentence — "Swap costs 1 Stamina" with the badge's own number — not a stat
++// word and a signed number).
++//
++// Expect: "The Fast Hands and Slow Hands badges each read as a sentence giving the Stamina a swap costs with that badge; no
++// screen shows 'swapcost'; the stat-label test covers swapCost without an exception."
++//
++// What a swap costs with nothing on the unit is the ENGINE's (core/items.ts FOLD_BASE.swapCost, read through the kingdom's
++// door), and what the two badges change is their rows' — both read here, neither assumed.
++import { describe, it, expect } from 'vitest'
++import { readFileSync } from 'node:fs'
++import * as LABELS from '../src/content/stat-labels.js'
++import * as ENGINE from '../src/engine.js'
++import { BADGES } from '../src/engine.js'
++import { ITEMS, itemOf } from '../src/content/items.js'
++import { itemCardOf } from '../src/content/item-card.js'
++import { makeNewCampaign } from '../src/core/opening.js'
++import { makeCtx } from '../src/core/mutate.js'
++import { HERO_POOL } from '../src/content/heroes.js'
++import { equipPage, deltasOf, setLineOf } from '../src/ui/equip.js'
++import { rewardsScreen } from '../src/ui/after.js'
++import * as DRAFT from '../src/ui/draft.js'
++
++const statWordsOf = (LABELS as unknown as { statWordsOf?: (k: string, n: number, o?: { lower?: boolean }) => string }).statWordsOf
++const BASE = (ENGINE as unknown as { FOLD_BASE?: Record<string, number> }).FOLD_BASE?.['swapCost']
++const FAST = 'test.badge.fast-hands', SLOW = 'test.badge.slow-hands'
++const changeOf = (badge: string) => (BADGES[badge]!.statModifiers as Record<string, number>)['swapCost']!
++const text = (html: string) => html.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ')
++const NO_FIELD = /swap ?cost(?!s)/i   // "swapcost", "swapCost", "swap cost" — never the sentence's own "Swap costs"
++
++describe('kingdom.swap-cost-reads-as-stamina — the sentence', () => {
++  it('what a swap costs is the engine\'s, and what the two badges change is their rows\'', () => {
++    expect(typeof BASE, 'the engine\'s base swap cost, through the kingdom\'s door').toBe('number')
++    expect(typeof changeOf(FAST)).toBe('number'); expect(typeof changeOf(SLOW)).toBe('number')
++    expect(changeOf(FAST)).toBeLessThan(0); expect(changeOf(SLOW)).toBeGreaterThan(0)
++  })
++
++  it('a change to the swap cost reads as what a swap then costs, in Stamina — the engine\'s base and the row\'s change — never below 0', () => {
++    expect(typeof statWordsOf).toBe('function')
++    expect(statWordsOf!('swapCost', changeOf(FAST))).toBe(`Swap costs ${BASE! + changeOf(FAST)} Stamina`)
++    expect(statWordsOf!('swapCost', changeOf(SLOW))).toBe(`Swap costs ${BASE! + changeOf(SLOW)} Stamina`)
++    expect(statWordsOf!('swapCost', 0)).toBe(`Swap costs ${BASE!} Stamina`)
++    expect(statWordsOf!('swapCost', -BASE! - 3), 'as the engine holds it (core/swap.ts swapCostOf)').toBe('Swap costs 0 Stamina')
++    // the examples the item names, as the numbers stand today
++    expect([statWordsOf!('swapCost', changeOf(FAST)), statWordsOf!('swapCost', 0), statWordsOf!('swapCost', changeOf(SLOW))]).toEqual(['Swap costs 0 Stamina', 'Swap costs 1 Stamina', 'Swap costs 2 Stamina'])
++    // where a screen writes its stat words small, the sentence is left as it is
++    expect(statWordsOf!('swapCost', changeOf(FAST), { lower: true })).toBe('Swap costs 0 Stamina')
++  })
++
++  it('every other stat reads as it did: its signed amount and its word', () => {
++    expect(statWordsOf!('maxHp', 2)).toBe('+2 Health')
++    expect(statWordsOf!('armor', -1)).toBe('-1 Armor')
++    expect(statWordsOf!('rangedBlock', 5)).toBe('+5 Ranged Block')
++    expect(statWordsOf!('rangedBlock', 5, { lower: true })).toBe('+5 ranged block')
++    expect(statWordsOf!('itemSlots', 1)).toBe('+1 Item Slot')
++  })
++
++  it('the stat-label table has no exception left: nothing is on the no-word list, and swapCost is worded', () => {
++    expect((LABELS as unknown as { STATS_WITHOUT_A_WORD: readonly string[] }).STATS_WITHOUT_A_WORD).toEqual([])
++    expect((LABELS as unknown as { statHasWords?: (k: string) => boolean }).statHasWords?.('swapCost')).toBe(true)
++    expect((LABELS as unknown as { statHasWords?: (k: string) => boolean }).statHasWords?.('aStatNobodyNamed')).toBe(false)
++  })
++})
++
++describe('kingdom.swap-cost-reads-as-stamina — on the screens', () => {
++  it('the Fast Hands and Slow Hands badges each read as the sentence, with that badge\'s own cost', () => {
++    const giftsBlock = (DRAFT as unknown as { giftsBlock: (g: readonly { key: string; badge?: string }[]) => string }).giftsBlock
++    const badgeWordsOf = (DRAFT as unknown as { badgeWordsOf?: (id: string) => string }).badgeWordsOf
++    expect(typeof badgeWordsOf, 'the words a draft card says for a badge').toBe('function')
++    for (const [badge, cost] of [[FAST, BASE! + changeOf(FAST)], [SLOW, BASE! + changeOf(SLOW)]] as const) {
++      expect(badgeWordsOf!(badge), badge).toBe(`Swap costs ${cost} Stamina`)
++      const line = text(giftsBlock([{ key: 'badge:' + badge, badge }]))
++      expect(line, `${badge}: as a hero's gift`).toContain(`${BADGES[badge]!.name} Swap costs ${cost} Stamina`)
++      expect(line).not.toMatch(NO_FIELD)
++    }
++  })
++
++  /** An item row made to carry a change to the swap cost for the length of one check (no row in the game carries one today). */
++  function withSwapCostOn<T>(itemId: string, change: number, run: () => T): T {
++    const mods = itemOf(itemId).statModifiers as Record<string, number>, had = 'swapCost' in mods
++    expect(had, `${itemId} carries no swap cost of its own`).toBe(false)
++    mods['swapCost'] = change
++    try { return run() } finally { delete mods['swapCost'] }
++  }
++  const SHIELD = 'item.tower-shield'
++  function atEquip() {
++    const ctx = makeCtx(makeNewCampaign(11)), c = ctx.campaign
++    const row = HERO_POOL.find((h) => h.equipped.includes(SHIELD))!
++    c.roster[row.id] = structuredClone(row); c.stash = [SHIELD]
++    return { c, hero: row.id }
++  }
++
++  it('an item that changed the swap cost would read the same on its card, its Equip tile, what the hero\'s gear gives, and a reward card', () => {
++    withSwapCostOn(SHIELD, 1, () => {
++      const want = `Swap costs ${BASE! + 1} Stamina`
++      // its card
++      const gives = itemCardOf(SHIELD).gives.find((g) => g.stat === 'swapCost')!
++      expect(gives.words).toBe(want)
++      // Equip: the stash tile, and the line of what the hero's gear gives
++      const { c, hero } = atEquip(), html = equipPage(c, [hero], { where: 'prep', picked: null })
++      const tile = html.slice(html.indexOf(`data-act="pick" data-id="${SHIELD}"`)), small = text(tile.slice(0, tile.indexOf('</small>')))
++      expect(small, 'the stash tile').toContain(want)
++      expect(small).not.toMatch(NO_FIELD)
++      const deltas = [...deltasOf(c, hero).matchAll(/<span class="delta (won|lost)">([^<]*)<\/span>/g)].map((m) => ({ side: m[1]!, words: m[2]! }))
++      const mine = deltas.find((d) => /^Swap costs/.test(d.words))!
++      expect(mine, `the gear's lines: ${deltas.map((d) => d.words).join(' · ')}`).toBeTruthy()
++      expect(mine.words).toBe(want)
++      expect(mine.side, 'a swap that costs more is a loss').toBe('lost')
++      expect(deltas.map((d) => d.words).join(' ')).not.toMatch(NO_FIELD)
++      // a reward card
++      c.cursor.step = 'rewards'; c.cursor.rewardOffer = [SHIELD]
++      const card = rewardsScreen(c, [], null), words = text(card.slice(card.indexOf('class="reward-description"')).split('</div>')[0]!)
++      expect(words).toContain(want)
++      expect(words).not.toMatch(NO_FIELD)
++    })
++    withSwapCostOn(SHIELD, -1, () => {
++      const { c, hero } = atEquip()
++      const mine = [...deltasOf(c, hero).matchAll(/<span class="delta (won|lost)">([^<]*)<\/span>/g)].map((m) => ({ side: m[1]!, words: m[2]! })).find((d) => /^Swap costs/.test(d.words))!
++      expect([mine.words, mine.side], 'a swap that costs less is a gain').toEqual([`Swap costs ${BASE! - 1} Stamina`, 'won'])
++    })
++  })
++
++  it('a set that paid in swap cost would say the sentence too', () => {
++    const row = ITEMS.find((r) => r.setBonus)!
++    const line = setLineOf({ itemId: row.id, tag: 'chain', shape: 'per-other', count: 2, stats: { swapCost: -1, precision: 2 }, attackDamage: 0 } as unknown as Parameters<typeof setLineOf>[0])
++    expect(line).toContain(`Swap costs ${BASE! - 1} Stamina`)
++    expect(line).toContain('+2 precision')
++    expect(line).not.toMatch(NO_FIELD)
++  })
++
++  it('no screen words a row\'s stat change any other way: every place goes through the one function', () => {
++    for (const f of ['src/ui/after.ts', 'src/ui/draft.ts', 'src/ui/equip.ts', 'src/content/item-card.ts', 'src/ui/roster.ts']) {
++      const src = readFileSync(f, 'utf8').split('\n').filter((l) => !/^\s*(\/\/|\*|\/\*)/.test(l)).join('\n')
++      expect(src, `${f}: a signed amount beside a stat's label, put together by hand`).not.toMatch(/sign\([^)]*\)\}\s*\$\{(?:esc\()?(?:statLabelOf|label)\(/)
++    }
++  })
++})
+```
+</details>

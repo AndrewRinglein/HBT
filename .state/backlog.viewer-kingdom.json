@@ -55,7 +55,9 @@
   ],
   "spec": "Ruled 2026-10-05 (Andrew, engine/DECISIONS.md 'seven answers: the first hero's card shows only what is modified; origin badges go on the heroes; Stand Up is one press; an X on a hex that cannot be walked; a walk closes every move-class action'): asked what the stat swapCost (on the Fast Hands and Slow Hands badges) should be called on screen - '4 cost 1 stam'. The chat's reading (said to him; one line to change): the line says what swapping costs, in Stamina, as a plain sentence - not a stat word with a signed number. kingdom.stat-labels-missing-words left swapCost raw (kingdom SWITCHES statsWithoutAWord). Wanted: wherever a badge, an item or a level row that carries swapCost is described (the badge's line on a card, Equip, the reward and draft cards, the battle panel if it lists it), it reads as the cost of a swap in Stamina worked out from the engine's base swap cost and the row's change - 'Swap costs 1 Stamina', 'Swap costs 0 Stamina', 'Swap costs 2 Stamina' - never 'swapcost +1'. Read what a swap costs today from the engine (do not assume 1) and what Fast Hands and Slow Hands change. The test that every stat on a row has a label now passes for swapCost through this sentence. Rebuild the pages.",
   "expect": "The Fast Hands and Slow Hands badges each read as a sentence giving the Stamina a swap costs with that badge; no screen shows 'swapcost'; the stat-label test covers swapCost without an exception.",
-  "note": "Filed by the home chat 2026-10-05."
+  "note": "Filed by the home chat 2026-10-05.",
+  "status": "done-needs-review",
+  "sha": "fdcc1a2"
  },
  {
   "id": "viewer.frame-cost-measured",
