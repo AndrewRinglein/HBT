@@ -483,3 +483,23 @@ test('a set row that disagrees with its own sentence, pays no engine stat, or na
  const tag=candidate(edit=>edit('gen/settled-items.json',data=>{row(data).setBonus.tag='gryphon'}));
  assert.notEqual(tag.status,0);assert.match(tag.stdout+tag.stderr,/names the tag 'gryphon'/);
 });
+
+// engine capability.raise-lower-magic (2026-10-05; engine DECISIONS.md 2026-10-04 'his 28 reward weapons read back …': "we need to
+// lower and raise magic"): the Staff of the Magi's Vortex is in the pack as the burst its sentence says — Magic counted three
+// times, and what using it does to the party's Magic and the enemy side's Power — and a row whose burst and sentence disagree fails.
+test('Vortex is a burst of Magic x 3 that lowers the party\'s Magic and the enemy side\'s Power by 1 for the rest of the Battle; the test row raises Magic for two Turns',()=>{
+ const v=live.pack.authoredBursts?.['power.staff-of-the-magi.vortex']??live.pack.authoredAbilities['power.staff-of-the-magi.vortex'];assert.ok(v,'Vortex is in the pack');
+ assert.deepEqual([v.range,v.staminaCost,v.cooldown],[5,3,0]);
+ assert.deepEqual(v.burst,{shape:{kind:'radius',radius:1},side:'any',packets:[{id:'base',damageType:'magic',amount:0,stat:'magic',statMult:3}],sideStats:[{stat:'magic',side:'own',value:-1,until:'battle'},{stat:'power',value:-1,until:'battle'}]});
+ const staff=live.pack.items['item.staff-of-the-magi'];assert.deepEqual((staff.gaps??[]).filter(g=>/vortex/.test(g)),[]);
+ assert.deepEqual(live.pack.test.abilities['power.test-mage.swell'].effects,[{kind:'side.stat',stat:'magic',side:'own',value:2,until:'endOfNextTurn'}]);
+});
+test('a burst row whose sentence and fields disagree about its stat multiple or its side-stat changes fails the build',()=>{
+ const row=data=>data.powers.find(p=>p.id==='power.staff-of-the-magi.vortex');
+ const mult=candidate(edit=>edit('gen/settled-items.json',data=>{row(data).burst.packets[0].statMult=2}));
+ assert.notEqual(mult.status,0);assert.match(mult.stdout+mult.stderr,/power\.staff-of-the-magi\.vortex' disagrees with its authored sentence/);
+ const less=candidate(edit=>edit('gen/settled-items.json',data=>{row(data).burst.sideStats.pop()}));
+ assert.notEqual(less.status,0);assert.match(less.stdout+less.stderr,/disagrees with its authored sentence/);
+ const other=candidate(edit=>edit('gen/settled-items.json',data=>{data.powers.find(p=>p.id==='power.fire-staff.fireball').burst.sideStats=[{stat:'power',value:-1,until:'battle'}]}));
+ assert.notEqual(other.status,0);assert.match(other.stdout+other.stderr,/carries a stat multiple or a side's stat change its sentence does not say/);
+});

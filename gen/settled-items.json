@@ -2197,9 +2197,38 @@
     "area"
    ],
    "description": "Deal magic damage equal to Magic x 3 to every unit in the blast. It does not roll to hit, so it cannot crit. Using it lowers the party's Magic by 1 AND the enemy side's Power by 1 for the rest of the Battle.",
-   "source": "Ruled 2026-09-02b, dictated: the priest and mage ladder above tier 3, and the sets it hangs on.",
+   "source": "Ruled 2026-09-02b, dictated: the priest and mage ladder above tier 3, and the sets it hangs on. | 2026-10-05 engine capability.raise-lower-magic: its sentence as the burst the engine fights - Magic counted three times as magic damage on the hex and the six beside it, and what using it does to the party's Magic and the enemy side's Power.",
    "triggers": [],
-   "intent": "It eats the magic out of the field -- yours and theirs, one point each. The blast is enormous and every spell cast after it, on either side, is smaller."
+   "intent": "It eats the magic out of the field -- yours and theirs, one point each. The blast is enormous and every spell cast after it, on either side, is smaller.",
+   "burst": {
+    "shape": {
+     "kind": "radius",
+     "radius": 1
+    },
+    "side": "any",
+    "packets": [
+     {
+      "id": "base",
+      "damageType": "magic",
+      "amount": 0,
+      "stat": "magic",
+      "statMult": 3
+     }
+    ],
+    "sideStats": [
+     {
+      "stat": "magic",
+      "side": "own",
+      "value": -1,
+      "until": "battle"
+     },
+     {
+      "stat": "power",
+      "value": -1,
+      "until": "battle"
+     }
+    ]
+   }
   },
   {
    "id": "power.staff-of-the-ultimate-destroyer.perfect-sight",

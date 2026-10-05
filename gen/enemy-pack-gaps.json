@@ -587,11 +587,6 @@
    "needs": "item power — shape unparsed"
   },
   {
-   "unit": "item.staff-of-the-magi",
-   "what": "grants power.staff-of-the-magi.vortex",
-   "needs": "item power — shape unparsed"
-  },
-  {
    "unit": "item.staff-of-the-destroyer",
    "what": "attack.staff-of-the-destroyer.ruin onKill: \"the corpse is destroyed\"",
    "needs": "trigger shape unparsed"

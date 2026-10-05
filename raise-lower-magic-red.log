@@ -1,0 +1,42 @@
+✖ Vortex is a burst of Magic x 3 that lowers the party's Magic and the enemy side's Power by 1 for the rest of the Battle; the test row raises Magic for two Turns (1.1885ms)
+✖ a burst row whose sentence and fields disagree about its stat multiple or its side-stat changes fails the build (63.1789ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 0
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 565.0216
+
+✖ failing tests:
+
+test at test\trigger-ids.test.mjs:490:1
+✖ Vortex is a burst of Magic x 3 that lowers the party's Magic and the enemy side's Power by 1 for the rest of the Battle; the test row raises Magic for two Turns (1.1885ms)
+  AssertionError [ERR_ASSERTION]: Vortex is in the pack
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-engine/content/test/trigger-ids.test.mjs:491:141)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.start (node:internal/test_runner/test:1003:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:358:17) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at test\trigger-ids.test.mjs:497:1
+✖ a burst row whose sentence and fields disagree about its stat multiple or its side-stat changes fails the build (63.1789ms)
+  TypeError: Cannot read properties of undefined (reading 'packets')
+      at file:///C:/Users/aring/Desktop/HBT-worker-engine/content/test/trigger-ids.test.mjs:499:81
+      at edit (file:///C:/Users/aring/Desktop/HBT-worker-engine/content/test/trigger-ids.test.mjs:23:98)
+      at file:///C:/Users/aring/Desktop/HBT-worker-engine/content/test/trigger-ids.test.mjs:499:29
+      at candidate (file:///C:/Users/aring/Desktop/HBT-worker-engine/content/test/trigger-ids.test.mjs:24:3)
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-engine/content/test/trigger-ids.test.mjs:499:13)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+      at Test.postRun (node:internal/test_runner/test:1235:19)
+      at Test.run (node:internal/test_runner/test:1163:12)

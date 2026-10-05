@@ -117,5 +117,15 @@
       }
     ],
     "note": "engine capability.counterattack-and-fend (2026-10-04): Fend, the second special free attack a power puts up \u2014 the same statMod shape as the Longsword's Counterattack with the other stat, pure data. The numbers are the ruled trinket's (engine DECISIONS.md 2026-09-28 'two new trinkets': free use, 1 Stamina, cooldown 7, Fend until the end of your next turn); the trinket itself has no Codex row yet. Test data only."
+  },
+  {
+    "id": "power.test-mage.swell",
+    "name": "Swell (TEST)",
+    "range": 0,
+    "target": { "select": "self", "side": "any" },
+    "effects": [{ "kind": "side.stat", "stat": "magic", "side": "own", "value": 2, "until": "endOfNextTurn" }],
+    "staminaCost": 1,
+    "cooldown": 6,
+    "note": "engine capability.raise-lower-magic (2026-10-05): a test row that RAISES a side's party stat for a number of Turns - the Magic of the caster's own side by 2, this Turn and the next - so the mechanism is held on a raise and on a Turn count as well as on the Vortex's battle-long lowering. No unit row grants it: a test hands it to a unit."
   }
 ]

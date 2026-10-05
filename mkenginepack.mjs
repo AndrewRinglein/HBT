@@ -1179,10 +1179,25 @@ function compiledPowerOf(p, unitId) {
       if (tgt !== `a hex within ${range[1]} hexes and every hex adjacent to it` || burst.shape.kind !== 'radius' || burst.shape.radius !== 1 || burst.side !== 'any' || burst.heal !== undefined
         || pk.length !== 1 || pk[0].stat !== 'magic' || pk[0].damageType !== 'magic' || pk[0].amount !== +(m[1] ?? 0) || pk[0].powerScale !== undefined)
         throw Error(`Item burst '${p.id}' disagrees with its authored sentence`);
+      // engine capability.raise-lower-magic (2026-10-05): this sentence says no stat multiple and no change to a side's party stats
+      if (pk[0].statMult !== undefined || burst.sideStats !== undefined) throw Error(`Item burst '${p.id}' carries a stat multiple or a side's stat change its sentence does not say`);
       // engine capability.burst-paints-ground (2026-10-04): the ground clause is the profile's `paints` — the layer the
       // burst leaves on its hexes. The sentence and the field must say the same thing, both ways; it was a named gap.
       if ((burst.paints ?? null) !== (m[2] ? `layer.${m[2]}` : null)) throw Error(`Item burst '${p.id}' disagrees with its authored sentence: the ground it leaves`);
     }
+    // engine capability.raise-lower-magic (2026-10-05; engine DECISIONS.md 2026-10-04 'his 28 reward weapons read back …': "we need
+    // to lower and raise magic"): the Vortex's sentence — "Deal magic damage equal to Magic x N to every unit in the blast. It
+    // does not roll to hit, so it cannot crit. Using it lowers the party's Magic by A AND the enemy side's Power by B for the
+    // rest of the Battle." — on a row that authors the burst: one Magic packet counted N times (a burst rolls nothing, so it
+    // cannot crit), and the two changes to the sides' party stats, for the rest of the Battle. Held to the sentence both ways.
+    else if ((m = desc.match(/^Deal magic damage equal to Magic x (\d+) to every unit in the blast\. It does not roll to hit, so it cannot crit\. Using it lowers the party's Magic by (\d+) AND the enemy side's Power by (\d+) for the rest of the Battle\.$/))) {
+      const pk = burst.packets, want = [{ stat: 'magic', side: 'own', value: -+m[2], until: 'battle' }, { stat: 'power', value: -+m[3], until: 'battle' }];
+      if (tgt !== `a hex within ${range[1]} hexes and every hex adjacent to it` || burst.shape.kind !== 'radius' || burst.shape.radius !== 1 || burst.side !== 'any' || burst.heal !== undefined || burst.paints !== undefined
+        || pk.length !== 1 || pk[0].stat !== 'magic' || pk[0].damageType !== 'magic' || pk[0].amount !== 0 || pk[0].statMult !== +m[1] || pk[0].powerScale !== undefined
+        || JSON.stringify(burst.sideStats ?? null) !== JSON.stringify(want))
+        throw Error(`Item burst '${p.id}' disagrees with its authored sentence`);
+    }
+    else if (burst.sideStats !== undefined || burst.packets.some((x) => x.statMult !== undefined)) throw Error(`Item burst '${p.id}' carries a stat multiple or a side's stat change its sentence does not say`);
     POWER_GAPS.set(p.id, found);
     return { ...base, range: +range[1], burst, ...(found.length ? { gaps: found.map((x) => `${x.clause} — ${x.needs}`) } : {}) };
   }
