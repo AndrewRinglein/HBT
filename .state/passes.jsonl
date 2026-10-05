@@ -81,6 +81,13 @@
 {"suite":"kingdom","stamp":"f46f65327b","with":{"engine":"f48a625458","content":"3ce22151fa","viewer":"e0d1779ebc","kingdom":"f46f65327b"},"at":"2026-10-05T10:19:57.014Z","by":"gate --shard (4 of 4)","in":"HBT-worker-kingdom"}
 {"suite":"kingdom","stamp":"91cfd14efb","with":{"engine":"f48a625458","content":"3ce22151fa","viewer":"403b9daa6e","kingdom":"91cfd14efb"},"at":"2026-10-05T10:06:43.763Z","by":"gate --shard (4 of 4)","in":"HBT-worker-content"}
 {"suite":"kingdom","stamp":"3bb9ef351e","with":{"engine":"f48a625458","content":"3ce22151fa","viewer":"403b9daa6e","kingdom":"3bb9ef351e"},"at":"2026-10-05T10:27:09.431Z","by":"gate --shard (4 of 4)","in":"HBT-worker-kingdom"}
+{"suite":"kingdom","stamp":"3bb9ef351e","with":null,"at":"2026-10-05T12:00:53.952Z","by":"gate --shard (4 of 4)","in":"HBT-worker-kingdom"}
+{"suite":"kingdom","stamp":"3bb9ef351e","failed":true,"at":"2026-10-05T12:04:56.946Z","by":"gate --shard 3/4","in":"HBT-worker-kingdom"}
+{"suite":"kingdom","stamp":"3bb9ef351e","with":null,"at":"2026-10-05T12:06:57.382Z","by":"gate --shard (4 of 4)","in":"HBT-worker-kingdom"}
+{"suite":"kingdom","stamp":"3bb9ef351e","failed":true,"at":"2026-10-05T12:08:57.123Z","by":"gate --shard 4/4","in":"HBT-worker-kingdom"}
+{"suite":"kingdom","stamp":"3bb9ef351e","with":{"engine":"f48a625458","content":"3ce22151fa","viewer":"ca9a60620d","kingdom":"3bb9ef351e"},"at":"2026-10-05T12:19:36.301Z","by":"gate --shard (4 of 4)","in":"HBT-worker-kingdom"}
+{"suite":"kingdom","stamp":"3bb9ef351e","with":{"engine":"c5f16f0991","content":"8de9847058","viewer":"e1f81e1c82","kingdom":"3bb9ef351e"},"at":"2026-10-05T10:54:14.242Z","by":"suites --run","in":"HBT-worker-engine"}
+{"suite":"kingdom","stamp":"3bb9ef351e","with":null,"at":"2026-10-05T12:44:19.087Z","by":"gate --shard (4 of 4)","in":"HBT-worker-kingdom"}
 {"suite":"kingdom","stamp":"c421e58702","with":{"engine":"f48a625458","content":"3ce22151fa","viewer":"7e00e41446","kingdom":"c421e58702"},"at":"2026-10-05T10:54:18.901Z","by":"gate --shard (4 of 4)","in":"HBT-worker-content"}
 {"suite":"kingdom","stamp":"3bb9ef351e","with":{"engine":"c5f16f0991","content":"8de9847058","viewer":"e1f81e1c82","kingdom":"3bb9ef351e"},"at":"2026-10-05T10:54:14.242Z","by":"suites --run","in":"HBT-worker-engine"}
 {"suite":"kingdom","stamp":"3bb9ef351e","failed":true,"at":"2026-10-05T12:26:54.354Z","by":"suites --run","in":"HBT-worker-engine"}
@@ -91,3 +98,11 @@
 {"suite":"kingdom","stamp":"e09a0e26be","failed":true,"at":"2026-10-05T15:03:55.285Z","by":"suites --run","in":"HBT-worker-engine"}
 {"suite":"kingdom","stamp":"cf7abfc150","with":{"engine":"f62baea959","content":"9a72fe3292","viewer":"4f10244955","kingdom":"cf7abfc150"},"at":"2026-10-05T15:10:47.153Z","by":"suites --run","in":"HBT-worker-engine"}
 {"suite":"kingdom","stamp":"4fb6392cfb","with":{"engine":"f9fdfb5dde","content":"a1cfec8160","viewer":"bee8086c58","kingdom":"4fb6392cfb"},"at":"2026-10-05T17:42:28.883Z","by":"suites --run","in":"HBT-worker-engine"}
+{"suite":"kingdom","stamp":"ca884370ea","with":null,"at":"2026-10-05T14:09:51.498Z","by":"gate --shard (4 of 4)","in":"HBT-worker-kingdom"}
+{"suite":"kingdom","stamp":"ca884370ea","with":{"engine":"6067b2a8be","content":"844a0069af","viewer":"7ca8628c44","kingdom":"ca884370ea"},"at":"2026-10-05T14:12:12.903Z","by":"gate --shard (4 of 4)","in":"HBT-worker-kingdom"}
+{"suite":"kingdom","stamp":"ca884370ea","with":{"engine":"6067b2a8be","content":"844a0069af","viewer":"2422ddee14","kingdom":"ca884370ea"},"at":"2026-10-05T15:29:39.539Z","by":"gate --shard (4 of 4)","in":"HBT-worker-kingdom"}
+{"suite":"kingdom","stamp":"f0c53da248","with":{"engine":"6067b2a8be","content":"844a0069af","viewer":"f353a0aa11","kingdom":"f0c53da248"},"at":"2026-10-05T15:00:01.147Z","by":"gate --shard (4 of 4)","in":"HBT-worker-content"}
+{"suite":"kingdom","stamp":"5851b0b54e","with":{"engine":"6067b2a8be","content":"844a0069af","viewer":"d99cde1ae9","kingdom":"5851b0b54e"},"at":"2026-10-05T16:21:45.592Z","by":"gate --shard (4 of 4)","in":"HBT-worker-content"}
+{"suite":"kingdom","stamp":"f0c53da248","with":null,"at":"2026-10-05T16:14:26.539Z","by":"gate --shard (4 of 4)","in":"HBT-worker-kingdom"}
+{"suite":"kingdom","stamp":"f0c53da248","with":{"engine":"6067b2a8be","content":"844a0069af","viewer":"d0d5c7912c","kingdom":"f0c53da248"},"at":"2026-10-05T16:16:48.945Z","by":"gate --shard (4 of 4)","in":"HBT-worker-kingdom"}
+{"suite":"kingdom","stamp":"5851b0b54e","with":{"engine":"6067b2a8be","content":"844a0069af","viewer":"8060cb7731","kingdom":"5851b0b54e"},"at":"2026-10-05T16:41:44.239Z","by":"gate --shard (4 of 4)","in":"HBT-worker-content"}

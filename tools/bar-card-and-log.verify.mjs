@@ -7,6 +7,7 @@
 // the log button with the real mouse and saves a screenshot of the screen it checked.
 //
 //   node tools/bar-card-and-log.verify.mjs <page.html> [screenshot.png]   prints one line per check and `bar-card-and-log: … passed`
+import {stillShot,lastStill} from './still-shot.mjs'   // viewer.screenshot-time-out-under-load: the page's frame loop is held for the shot
 import assert from 'node:assert/strict'
 import {createRequire} from 'node:module'
 import {createServer} from 'node:net'
@@ -71,7 +72,12 @@ try{
  /* the screenshot shows the board drawn: the 3D map is given up to 90 s (software GL here), then the screen is taken as it is */
  await page.waitForFunction(()=>!document.querySelector('#terrainLoading'),null,{timeout:90000}).catch(()=>say('the 3D map was still loading at the screenshot'))
  await page.waitForTimeout(500)
- await page.screenshot({path:(mkdirSync(dirname(SHOT),{recursive:true}),SHOT)})
+ /* viewer.screenshot-time-out-under-load (2026-10-05): this shot stalled past its 30 s under a full run — the 3D board draws a
+    frame every frame, software GL takes seconds a frame, and the shot waited behind the frames under way and every new one.
+    The page's frame loop is held, the page is waited on until it stands still, and only then is the shot taken
+    (tools/still-shot.mjs); the loop is let go after it. What is checked, before and after, is what it was. */
+ const shotMs=await stillShot(page,page,{path:(mkdirSync(dirname(SHOT),{recursive:true}),SHOT)})
+ say(`the page stood still ${lastStill.settleMs} ms after its frame loop was held (${lastStill.frames} frames${lastStill.still?'':', NOT still at the limit'}); the screenshot then took ${shotMs} ms`)
  await page.mouse.click(s.btn.l+s.btn.w/2,s.btn.t+s.btn.h/2);await page.waitForTimeout(200);s=await look()
  assert.equal(s.logShown,true,'the log button opens it');assert.equal(s.pressed,'true')
  assert.equal(meet(s.log,s.board),false,`the open log does not cover the board: (${s.log.l.toFixed(0)}, ${s.log.t.toFixed(0)}) ${s.log.w.toFixed(0)} x ${s.log.h.toFixed(0)}`)

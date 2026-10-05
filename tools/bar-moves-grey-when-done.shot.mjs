@@ -4,6 +4,7 @@
 // the bar again — the basic move slightly greyed, everything else as it was.
 //
 //   node tools/bar-moves-grey-when-done.shot.mjs <page.html> <out-dir>     writes bar-before-move.png and bar-after-move.png
+import {stillShot} from './still-shot.mjs'   // viewer.screenshot-time-out-under-load: the page's frame loop is held for the shot
 import assert from 'node:assert/strict'
 import {createRequire} from 'node:module'
 import {createServer} from 'node:net'
@@ -26,7 +27,7 @@ try{
  const still=async()=>{let quiet=0;for(let n=0;n<300&&quiet<4;n++){await page.waitForTimeout(100);quiet=await page.evaluate(()=>window.__sandbox.busy)?0:quiet+1}}
  await still();mkdirSync(OUT,{recursive:true})
  const bar=page.locator('#barrow')
- await bar.screenshot({path:resolve(OUT,'bar-before-move.png')})
+ await stillShot(page,bar,{path:resolve(OUT,'bar-before-move.png')})
  const walked=await page.evaluate(()=>{const s=window.__sandbox.session.ctx,V=window.__sandbox.viewer._V,me=s.state.units[s.battleCursor.actor]
   const far=[...V.play.reach].sort((x,y)=>s.geo.distance(me.hex,y)-s.geo.distance(me.hex,x)||x-y)[0]
   V.offerPlay({kind:'hex',hex:far});V.offerPlay({kind:'hex',hex:far});return {name:me.name,far}})
@@ -35,7 +36,7 @@ try{
   return {name:me.name,moveUsed:me.moveUsed,left:me.movePointsLeft,done:V.play.moveDone,greyed:[...document.querySelectorAll('#actionbar .acRow.moveDone')].map(r=>r.dataset.act),
    opacity:[...document.querySelectorAll('#actionbar .acRow[data-act]')].map(r=>r.dataset.act+' '+getComputedStyle(r).opacity)}})
  assert.equal(after.name,walked.name);assert.equal(after.left,0);assert.ok(after.greyed.length>0,'the basic move is greyed after the walk')
- await bar.screenshot({path:resolve(OUT,'bar-after-move.png')})
+ await stillShot(page,bar,{path:resolve(OUT,'bar-after-move.png')})
  console.log(`  ${after.name} walked its whole movement: ${after.greyed.join(', ')} greyed (${after.opacity.join(' · ')})`)
  console.log('  screenshots: '+resolve(OUT,'bar-before-move.png')+' and '+resolve(OUT,'bar-after-move.png'))
 }finally{await browser.close();child.kill()}
