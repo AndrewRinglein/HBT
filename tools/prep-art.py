@@ -110,8 +110,13 @@ ARTMAP = {
  # viewer.painted-board (2026-09-29): battle 1's School Teacher, the existing one-level civilian art (viewer SWITCHES schoolTeacherArt)
  'hero.fixed.school-teacher':   {'token':'schoolteacher_256.png','card':'card-schoolteacher','src':'art/heroes/schoolteacher/hex/l1_256.png','cardsrc':'art/heroes/schoolteacher/card/l1.png'},
  'hero.fixed.lumberjack-and-wife':{'token':'lumberjack_256.png','card':'card-lumberjack','src':'art/heroes/lumberjack/hex/l1_256.png','cardsrc':'art/heroes/lumberjack/card/l1.png','height':1.6},
- # viewer.opening-cast (2026-09-30): battle 2's Lumberjack's Wife has no token or card art -- the ART PENDING standee, never borrowed (viewer SWITCHES lumberjacksWifeToken)
- 'hero.fixed.lumberjacks-wife': {'ph':'Lumberjacks Wife', 'height':1.5},
+ # kingdom.lumberjack-wife-top-card-art (2026-10-05, Andrew: "The lumberjack wife in battle 2, in the top card, just has LW and not
+ # her art, when there clearly is her art."): her token is her OWN body's front render -- the idle frame of the civilian study's
+ # painted body, the one she wears on the board (tools/character-models.mjs CIVILIANS) -- cut from its flat background ('cut').
+ # Until then (viewer.opening-cast, 2026-09-30) this row was the lettered ART PENDING standee: no art of her existed that day, and
+ # the body made since never entered this table. No card: she has no card painting of her own (the couple painting is the
+ # Lumberjack's) -- that is an art need (viewer SWITCHES lumberjacksWifeToken).
+ 'hero.fixed.lumberjacks-wife': {'token':'lumberjacks-wife_256.png','src':'assets/characters/oathblade-armor/rebuild/civilian-study/lumberjacks-wife/animated-v1/idle-front-0.png','cut':'flat-background','height':1.5},
  'hero.fixed.farmer':           {'token':'farmer_256.png','card':'card-farmer','src':'art/heroes/farmer/hex/l1_256.png','cardsrc':'art/heroes/farmer/card/l1.png','height':1.5},
  'unit.skeleton': {'token':'skeleton_256.png','card':'card-skeleton','src':'battle-tokens/units/skeleton_256.png','cardsrc':'assets/bestiary/eve/skeleton.png','height':1.55},
  'unit.zombie':      {'token':'zombie_256.png','card':'card-zombie','src':'battle-tokens/units/zombie_256.png','cardsrc':'assets/bestiary/eve/zombie.png'},
@@ -199,10 +204,44 @@ def placeholder_token(label):
     d.text((128, 326), 'PENDING', font=f2, fill=(180, 168, 140, 255), anchor='mm')
     return im
 
+def cut_flat_background(im, tolerance=14, height=256):
+    """A render on one flat colour -> a token like the cutouts: the background, reached from the picture's edge and within
+    `tolerance` of the corner colour, made clear; the figure cropped to its own box and brought to the tokens' height.
+    Only what touches the edge is cleared -- a patch of the same colour inside the figure stays. Integers, no randomness:
+    the same source gives the same bytes."""
+    rgb = im.convert('RGB'); w, h = rgb.size; px = rgb.load()
+    bg = px[0, 0]
+    near = lambda p: max(abs(p[0] - bg[0]), abs(p[1] - bg[1]), abs(p[2] - bg[2])) <= tolerance
+    clear = bytearray(w * h); stack = []
+    for x in range(w): stack += [(x, 0), (x, h - 1)]
+    for y in range(h): stack += [(0, y), (w - 1, y)]
+    while stack:
+        x, y = stack.pop()
+        if x < 0 or y < 0 or x >= w or y >= h or clear[y * w + x] or not near(px[x, y]): continue
+        clear[y * w + x] = 1
+        stack += [(x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)]
+    alpha = Image.frombytes('L', (w, h), bytes(0 if c else 255 for c in clear))
+    from PIL import ImageFilter
+    alpha = alpha.filter(ImageFilter.MinFilter(3))   # one pixel in from the edge: no rim of the background colour
+    out = rgb.convert('RGBA'); out.putalpha(alpha)
+    box = alpha.getbbox()
+    if not box: raise ValueError('cut_flat_background: nothing but background')
+    out = out.crop(box)
+    return out.resize((max(1, round(out.width * height / out.height)), height), Image.LANCZOS)
+
 if ONLY and ONLY not in ARTMAP: raise ValueError('Unknown art typeId: ' + ONLY)
 KEEP = bool(ONLY) or AFTER_ONLY                      # a run that preserves what it does not name
 previous = json.load(open(os.path.join(OUT, 'manifest.json'))) if KEEP else None
 written = dict.fromkeys(previous['files'], True) if KEEP else {}
+if ONLY and ONLY in previous['artmap']:
+    # --only on a row whose token or card NAME changed: the file the row no longer names goes, unless another row still
+    # names it -- a stale token must not ship forever (kingdom.lumberjack-wife-top-card-art: ph-lumberjacks-wife.png)
+    was, now = previous['artmap'][ONLY], ARTMAP[ONLY]
+    named = {('ph-' + now['ph'].lower().replace(' ', '-') + '.png') if 'ph' in now else now['token'], (now['card'] + '.jpg') if now.get('card') else None}
+    for old in (was.get('token'), was.get('card')):
+        if old and old not in named and not any(old in (r.get('token'), r.get('card')) for t, r in previous['artmap'].items() if t != ONLY):
+            written.pop(old, None)
+            if os.path.exists(os.path.join(OUT, old)): os.remove(os.path.join(OUT, old))
 from art_reuse import shared_files_for_new_mapping
 reused = shared_files_for_new_mapping(ONLY, previous, ARTMAP) if ONLY else set()
 def save_png(name, im):
@@ -234,6 +273,8 @@ for tid, m in ARTMAP.items():
             im = Image.open(os.path.join(OUT, token)); written[token] = True
         else:
             im = Image.open(src)
+            if m.get('cut') == 'flat-background': im = cut_flat_background(im)
+            elif m.get('cut'): raise ValueError('unknown cut for %s: %s' % (tid, m['cut']))
     save_png(token, im.convert('RGBA'))
     card = m.get('card')
     if card:

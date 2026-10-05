@@ -182,7 +182,7 @@ exists, else their token"; "outfits may be reused across heroes"). `tools/charac
 | `flightPace` | A flight is one `moved` event: how long does its traversal take? | **By the engine's own distance, `move.begin` `hexes`: 200 + 85 × hexes ms, clamped 320–900 ms, as a walk of that many hexes.** | One landing hex paced a five-hex flight at the 320 ms floor — too short to be seen in the air. | the distance kept; the pace superseded 2026-10-01 by `walkPace` (viewer.walk-in-step) |
 | `modelFireImp` | The Fire Imp's fire appearance (winged-imp/fire-appearance.mjs)? | **Not applied: the Fire Imp wears the Imp's body.** Its name under the unit tells them apart. | The module fetches its flame atlas from the imp pack's own `/vfx/` server and cannot load from the battle screen; accepted appearance, integration pending. | provisional — 2026-09-30 |
 | `openingBattleAddresses` | How do battles 2 and 3 open on their scenes in the replay page? | **Their exports (`test.opening-lumberjack`, `test.opening-bridge`, engine a281811) join the library after battle 1;** `BATTLE-VIEWER.html#map.opening.lumberjack` and `#map.opening.bridge` open them. | As battleOneAddress. | provisional — 2026-09-30 |
-| `lumberjacksWifeToken` | The Lumberjack's Wife has no token art. | **The honest ART PENDING standee.** | No hex token exists for her (art/heroes has card art only for other wives); never borrowed art (Law 1). | provisional — 2026-09-30 |
+| `lumberjacksWifeToken` | The Lumberjack's Wife has no token art. | **The honest ART PENDING standee.** | No hex token exists for her (art/heroes has card art only for other wives); never borrowed art (Law 1). | provisional — 2026-09-30. **Replaced 2026-10-05** (kingdom.lumberjack-wife-top-card-art, below): her body exists now and its render is her token. |
 
 
 ## viewer.true-3d-camera — one real camera; the board drawn through it; no flat board first (2026-09-30)
@@ -1340,6 +1340,22 @@ already an attack on one unit with two hits, so the bar and its tooltip said one
 | Switch | Question | Default | Reason | Status |
 |---|---|---|---|---|
 | `elfbowStampOnly` | What moves in the viewer? | **Only the engine code stamp the dumps and the six opening recordings carry (5888006d24): `generated/static.json`, `fields.json` and the six recordings — re-exported together on their seeds (Orphanage 5, Lumberjack House 3, Bridge 19, Cavern Trail 11, Gates 0, Cathedral 10) — are otherwise byte for byte what they were; no event of any recording differs.** | The engine's pack is unchanged; a dump and a recording carry the stamp of the engine that made them, and the six go together. | Default — 2026-10-04 |
+
+## kingdom.lumberjack-wife-top-card-art — 2026-10-05 (the kingdom's item; the fault's home is this package's art table)
+
+Engine DECISIONS.md 2026-10-05 'playtest post, two more reports' (Andrew: "The lumberjack wife in battle 2, in the top card,
+just has LW and not her art, when there clearly is her art."). The top bar's card is the unit type's token in `tools/prep-art.py`
+`ARTMAP` (`generated/art/manifest.json`). Her row was the lettered ART PENDING standee (`lumberjacksWifeToken`, 2026-09-30:
+no art of her existed). Her body was made afterwards — the civilian study's painted body, the one `tools/character-models.mjs`
+stands on the board — and never entered the table. Probes: `tools/opening-cast.test.mjs` here; in the kingdom
+`test/lumberjack-wife-top-card-art.test.ts` and `tools/top-card-art.verify.mjs`.
+
+| Switch | Question | Default | Reason | Status |
+|---|---|---|---|---|
+| `lumberjacksWifeToken` (replaces the row above) | Which of her art is her token? There is no cutout of her under `art/heroes/` as the other civilians have; there are the civilian study's renders of her body and the reference painting it was made from (a T-pose). | **The front render of her painted body at rest: `assets/characters/oathblade-armor/rebuild/civilian-study/lumberjacks-wife/animated-v1/idle-front-0.png`, cut from its flat background and brought to the tokens' 256 pixels of height (`lumberjacks-wife_256.png`, 101 by 256). It is the body she wears on the board, standing as she stands.** Not the T-pose reference (arms out), not the face portrait of the player roster (a head alone beside full figures). | Her own art, never another's (Law 1); the card in the top bar shows the figure the player sees on the board. | Default — the look is Andrew's — 2026-10-05 |
+| `flatBackgroundCut` | The art table took cutouts ready-made. Her render stands on a flat colour. | **A row may say `'cut': 'flat-background'`: the background reached from the picture's edge, within 14 of the corner colour on every channel, is cleared; one pixel is taken in from the edge; the figure is cropped to its box and scaled to 256 high. A patch of the same colour inside the figure stays. Integers and no randomness — the same source gives the same bytes.** | The smallest thing that turns an existing render into a token; no painting is made or changed. | Default — 2026-10-05 |
+| `lumberjacksWifeCard` | Does she get a card (the panel's portrait; the kingdom's hero card on the victory screen)? | **No: `card` stays null. She has no card painting of her own — the couple painting is the Lumberjack's card — and a render is not put in a painting's place. The panel shows no portrait for her and the kingdom's screens show her card blank (the Codex names no art for her). Listed for the art thread.** | Never borrowed art. | Open — an art need — 2026-10-05 |
+| `onlyDropsTheReplacedFile` | `--only` kept every file of the earlier manifest, so a row whose token name changed left its old file shipping. | **`--only` on a row whose token or card name changed removes the file the row no longer names, unless another row still names it** (here `ph-lumberjacks-wife.png`). | "a stale token must not ship forever" — the tool's own rule for a full run. | Default — 2026-10-05 |
 
 ## viewer.prone-lies-down — 2026-10-05
 
