@@ -26,6 +26,13 @@
 //     is the shadow map, without one the scene; the bodies' canvas is its own pass.
 // Each number is taken over --frames frames with nothing moving (the bodies idling where they stand), and again while the view
 // scrolls (the edge scroll's own step, a little each frame, back and forth between the bounds).
+//
+// viewer.see-through-only-when-moved (2026-10-05) added the see-through check's own columns, read from what the page says of it
+// (src/terrain3d.js V.seeThrough; a page built before that item has none and the columns read —): how often the check ran over
+// the still frames and over the scrolling ones; what ONE asking of "which pieces hide a body now" costs, by the structure the
+// check uses and by trying every triangle (the rule as first written — the cost it had); and, over a round of views — the
+// view turned through its four quarters and scrolled at each — in how many the two name the same pieces (all of them, or what
+// is drawn see-through has changed).
 import {createRequire} from 'node:module'
 import {createServer} from 'node:net'
 import {spawn} from 'node:child_process'
@@ -77,6 +84,13 @@ function tick(step){
  return {ms,counts,runs:window.__sandbox.viewer._V.seeThrough?.runs??null}
 }
 /** the edge scroll's own step (src/board.js edgeScroll): the view shown as it goes, a little to one side; turned about at a bound */
+/** which pieces hide a body now: by the structure and by every triangle — the same? and what each asking cost */
+function hidingNow(){
+ const s=window.__sandbox.viewer._V.seeThrough,S=window.__frameCost;if(!s?.hiding)return null
+ const a=S.realNow(),fast=s.hiding(),b=S.realNow(),plain=s.hiding('plain'),c=S.realNow()
+ return {same:fast.length===plain.length&&fast.every((x,i)=>x===plain[i]),hiding:plain.length,ms:b-a,plainMs:c-b}
+}
+function quarterTurn(){window.__sandbox.viewer.turn(90);return true}
 function scrollStep(px){
  const v=window.__sandbox.viewer,V=v._V,S=window.__frameCost
  const before=V.camTarget?{...V.camTarget}:null
@@ -110,6 +124,22 @@ async function measure(page,step,scroll){
  if(runs[0]!=null)out.checks=runs[runs.length-1]-runs[0]
  return out
 }
+/** a round of views: the four quarters, the view scrolled at each — which pieces hide a body, both ways, at every one */
+async function seeThroughRound(page){
+ if(await page.evaluate(hidingNow)===null)return null
+ const views=[]
+ for(let q=0;q<4;q++){
+  for(let i=0;i<8;i++){
+   for(let k=0;k<3;k++){await page.evaluate(scrollStep,SCROLL_PX*4);await page.evaluate(tick,WITH_CHECK_MS)}
+   views.push(await page.evaluate(hidingNow))}
+  await page.evaluate(quarterTurn)
+  /* the turn is a glide of about a second: let it arrive */
+  for(let i=0;i<12;i++)await page.evaluate(tick,WITH_CHECK_MS)}
+ const ms=views.map(v=>v.ms),plain=views.map(v=>v.plainMs)
+ const built=await page.evaluate(()=>window.__sandbox.viewer._V.seeThrough.built||null)
+ return {...(built?{built:{pieces:built.pieces,triangles:built.triangles,ms:round(built.ms)}}:{}),views:views.length,same:views.filter(v=>v.same).length,withSomethingHiding:views.filter(v=>v.hiding>0).length,
+  ms:{median:round(median(ms),2),max:round(Math.max(...ms),2)},plainMs:{median:round(median(plain),1),max:round(Math.max(...plain),1)}}
+}
 async function battle(browser,port,id){
  const page=await browser.newPage({viewport:{width:1920,height:1080}}),errors=[]
  page.on('pageerror',e=>errors.push(String(e)))
@@ -129,9 +159,13 @@ async function battle(browser,port,id){
   await page.evaluate(install)
   /* the frames the browser already held are its own to fire: let them, so each lands in the tool's hands */
   await page.waitForFunction(()=>[...window.__frameCost.queue.values()].some(cb=>/sawThrough/.test(String(cb))),null,{timeout:30000})
+  /* "nothing moving": the battle opens with a glide to the unit that begins — let it arrive before a still frame is counted */
+  for(let i=0;i<40;i++){await page.evaluate(tick,WITH_CHECK_MS);if(!await page.evaluate(()=>!!window.__sandbox.viewer._V.camAnim))break}
+  for(let i=0;i<3;i++)await page.evaluate(tick,WITH_CHECK_MS)
   const row={battle:id,name,board,gpu,loadMs}
   row.still={withCheck:await measure(page,WITH_CHECK_MS,false),withoutCheck:await measure(page,WITHOUT_CHECK_MS,false)}
   row.scrolling={withCheck:await measure(page,WITH_CHECK_MS,true),withoutCheck:await measure(page,WITHOUT_CHECK_MS,true)}
+  const seen=await seeThroughRound(page);if(seen)row.seeThrough=seen
   if(errors.length)row.pageErrors=errors
   return row
  }finally{await page.close()}
@@ -140,13 +174,16 @@ async function battle(browser,port,id){
 const n=x=>x==null?'—':x.toLocaleString('en-US')
 const short=id=>id.replace(/^encounter\.(opening\.)?/,'')
 function table(rows){
- const head=['battle','draw calls a frame (shadow · scene · bodies)','triangles a frame (shadow · scene · bodies)','script ms, still: with the check / without','script ms, scrolling: with / without','draw calls scrolling']
- const lines=rows.map(r=>r.flat?[short(r.battle),r.note,'','','','']:[short(r.battle),
+ const head=['battle','draw calls a frame (shadow · scene · bodies)','triangles a frame (shadow · scene · bodies)','script ms, still: with the check / without','script ms, scrolling: with / without','draw calls scrolling','see-through checks run: still / scrolling','one check, ms: now / every triangle','same pieces both ways']
+ const lines=rows.map(r=>r.flat?[short(r.battle),r.note,'','','','','','','']:[short(r.battle),
   `${n(r.still.withoutCheck.draws.all)} (${n(r.still.withoutCheck.draws.shadow)} · ${n(r.still.withoutCheck.draws.scene)} · ${n(r.still.withoutCheck.draws.bodies)})`,
   `${n(r.still.withoutCheck.triangles.all)} (${n(r.still.withoutCheck.triangles.shadow)} · ${n(r.still.withoutCheck.triangles.scene)} · ${n(r.still.withoutCheck.triangles.bodies)})`,
   `${r.still.withCheck.ms.median} (${r.still.withCheck.ms.min}–${r.still.withCheck.ms.max}) / ${r.still.withoutCheck.ms.median} (${r.still.withoutCheck.ms.min}–${r.still.withoutCheck.ms.max})`,
   `${r.scrolling.withCheck.ms.median} (${r.scrolling.withCheck.ms.min}–${r.scrolling.withCheck.ms.max}) / ${r.scrolling.withoutCheck.ms.median} (${r.scrolling.withoutCheck.ms.min}–${r.scrolling.withoutCheck.ms.max})`,
-  `${n(r.scrolling.withoutCheck.draws.all)}`])
+  `${n(r.scrolling.withoutCheck.draws.all)}`,
+  r.still.withCheck.checks==null?'—':`${r.still.withCheck.checks} / ${r.scrolling.withCheck.checks} of ${r.still.withCheck.frames}`,
+  r.seeThrough?`${r.seeThrough.ms.median} (to ${r.seeThrough.ms.max}) / ${r.seeThrough.plainMs.median} (to ${r.seeThrough.plainMs.max})`:'—',
+  r.seeThrough?`${r.seeThrough.same} of ${r.seeThrough.views} views (${r.seeThrough.withSomethingHiding} with a piece in the way)`:'—'])
  const w=head.map((h,i)=>Math.max(h.length,...lines.map(l=>l[i].length)))
  const row=c=>'| '+c.map((x,i)=>x.padEnd(w[i])).join(' | ')+' |'
  return [row(head),'|'+w.map(x=>'-'.repeat(x+2)).join('|')+'|',...lines.map(row)].join('\n')
@@ -172,7 +209,7 @@ try{
   const first=rows.find(r=>!r.flat)
   console.log(`frame-cost: ${relative(ROOT,PAGE).replace(/\\/g,'/')} in a 1920x1080 window${first?`, the board ${first.board.w}x${first.board.h}, drawn by ${first.gpu}`:''}; each number the median of ${FRAMES} frames (lowest–highest), the bodies idling; script ms is one call of src/terrain3d.js frame()`)
   console.log(table(rows))
-  for(const r of rows)if(r.still?.withCheck.checks!=null)console.log(`  ${short(r.battle)}: the see-through check ran ${r.still.withCheck.checks} time(s) over ${FRAMES} still frames, ${r.scrolling.withCheck.checks} while scrolling`)
+  for(const r of rows)if(r.seeThrough?.built)console.log(`  ${short(r.battle)}: the see-through structures — ${n(r.seeThrough.built.pieces)} pieces, ${n(r.seeThrough.built.triangles)} triangles — were built in ${r.seeThrough.built.ms} ms while the scene loaded (the page was ready ${n(r.loadMs)} ms after it was opened)`)
   for(const r of rows)if(r.pageErrors)console.log(`  ${short(r.battle)}: page errors — ${r.pageErrors.join(' · ')}`)}
 }finally{clearTimeout(deadline);await browser.close();child.kill()}
 process.exitCode=code
