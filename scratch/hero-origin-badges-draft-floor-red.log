@@ -1,0 +1,50 @@
+
+ RUN  v4.1.11 C:/Users/aring/Desktop/HBT-worker-engine/engine
+
+ ❯ test/hero-origin-badges.test.ts (8 tests | 2 failed) 1332ms
+     × every opening battle fields on every replicate read (0 to 59): no drafted hero is driven below 1 Health 1314ms
+     × a rolled loss is held at the Crucible's floor against the hero as fielded: the Forest Fey, fielded at Health 2, loses 1 and stands at 1 5ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/hero-origin-badges.test.ts > content.hero-origin-badges: a drafted hero can always be fielded > every opening battle fields on every replicate read (0 to 59): no drafted hero is driven below 1 Health
+Error: scenario 'test.opening-gates': hero.base.ranger-nature: mods drive a pool below its floor ({"maxHp":0,"maxStamina":5,"staminaRegen":1})
+ ❯ checkUnitMods src/core/setup.ts:629:92
+    627|     if (s.stat in pools) pools[s.stat]! += s.add
+    628|   }
+    629|   if (pools['maxHp']! < 1 || pools['maxStamina']! < 0 || pools['stamin…
+       |                                                                                            ^
+    630|   for (const a of m.attacks ?? []) {
+    631|     if (!Number.isSafeInteger(a.damage)) throw new Error(`${where}: we…
+ ❯ assemble src/core/setup.ts:236:22
+ ❯ src/core/setup.ts:564:15
+ ❯ createBattle src/core/setup.ts:551:10
+ ❯ test/hero-origin-badges.test.ts:161:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  test/hero-origin-badges.test.ts > content.hero-origin-badges: a drafted hero can always be fielded > a rolled loss is held at the Crucible's floor against the hero as fielded: the Forest Fey, fielded at Health 2, loses 1 and stands at 1
+AssertionError: replicate 17: expected -2 to be -1 // Object.is equality
+
+- Expected
++ Received
+
+- -1
++ -2
+
+ ❯ test/hero-origin-badges.test.ts:174:66
+    172|       if (h.id !== 'hero.base.ranger-nature') continue
+    173|       const lost = h.rolls.filter((x) => x.stat === 'health' && x.amou…
+    174|       for (const x of lost) { expect(x.amount, `replicate ${r}`).toBe(…
+       |                                                                  ^
+    175|       const handed = (h.mods.stats ?? []).filter((m) => m.stat === 'ma…
+    176|       expect(2 + handed, `replicate ${r}`).toBeGreaterThanOrEqual(1)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 6 passed (8)
+   Start at  07:03:07
+   Duration  2.47s (transform 773ms, setup 0ms, import 986ms, tests 1.33s, environment 0ms)
+

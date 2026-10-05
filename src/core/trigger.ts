@@ -597,6 +597,9 @@ export function applyEffect(ctx: Ctx, e: Effect, src: EffectSource, targetId: nu
       }
       return 0
     }
+    // capability.summons (2026-10-05): a summon needs the hex it was aimed at, which only a hex-aimed power has (ability.ts
+    // usePowerAt places the unit); anywhere else the row is refused at load (content/pack.ts), so reaching this is a bug.
+    case 'summon': throw new Error(`'${cause}' summons '${e.unit}' with no hex to place it on — a summon belongs to a power aimed at a hex`)
     case 'corpse.consume': {
       const near = corpsesNear(ctx, actor.hex, e.radius)
       say({ corpses: near.length })

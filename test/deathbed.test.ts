@@ -110,12 +110,21 @@ describe('the roll', () => {
     expect(BADGES[ctx.ruleBadges.hero]!.flags.bleedsOut).toBe(true)
     expect(BADGES[ctx.ruleBadges.wounded]!.flags.wounded).toBe(true)
     const w = ctx.state.units[0]!
-    expect(w.badges).toEqual(['badge.hero'])
+    // Law 10, 2026-10-05 — content.hero-origin-badges (DECISIONS.md 2026-10-05 'seven answers: … origin badges go on the heroes …': "3, yes."): this read
+    //   expect(w.badges).toEqual(['badge.hero'])
+    // - the Iron Dwarf's row carried the Hero badge alone. It carries its origin badges after it now (Stalwart, Dwarf); the
+    // claim here is the Hero badge, first on the row, and no Wounded yet.
+    expect(w.badges[0]).toBe('badge.hero')
+    expect(w.badges).toEqual(UNITS['hero.base.warrior-iron']!.badges)
+    expect(w.badges).not.toContain('badge.wounded')
     w.toughness = 16
     const acc = effective(ctx, w, 'accuracy').value, maxHp = w.maxHp
     drop(ctx, w.id)
     expect(w.lifeState).toBe('standing')
-    expect(w.badges).toEqual(['badge.hero', 'badge.wounded'])
+    // Law 10, 2026-10-05 — content.hero-origin-badges, the note above: this read
+    //   expect(w.badges).toEqual(['badge.hero', 'badge.wounded'])
+    // - the row's badges, then Wounded. The row's are the Hero badge and his origin badges now.
+    expect(w.badges).toEqual([...UNITS['hero.base.warrior-iron']!.badges!, 'badge.wounded'])
     expect(effective(ctx, w, 'accuracy').value).toBe(acc - 10)
     expect(w.maxHp).toBe(maxHp - 2)
     const stood = ctx.events.find((e) => e.type === 'deathbed.stood')!

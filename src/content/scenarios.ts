@@ -121,6 +121,13 @@ const RAW_SCENARIOS: Readonly<Record<string, ScenarioDef>> = {
     id: 'test.force-blast', note: 'TEST: two mages, one holding the Force Staff (Force Blast: Precision plus half the Magic of the party, as magic damage), against two zombies. No campaign claim.',
     mapId: 'map.open', heroes: ['hero.base.mage-fire', 'hero.base.mage-thinking'], heroHexes: [85, 101], heroItems: [['item.force-staff'], ['item.frost-staff']], enemies: ['unit.zombie', 'unit.zombie'], enemyHexes: [91, 107], replicate: 0,
   },
+  // capability.summons (2026-10-05; DECISIONS.md 2026-10-04 'his 28 reward weapons read back …': "We need: summons"): the Staff
+  // of Summoning's Call the Wolf live in a real battle - a mage holding it, the zombies too far to reach on the first Turn, so
+  // the computer calls the Wolf first and the Wolf then fights in the Hero Phase by its own AI. A fielding, not a balance claim.
+  'test.call-the-wolf': {
+    id: 'test.call-the-wolf', note: 'TEST: a mage holding the Staff of Summoning (Call the Wolf: summon one Wolf on an empty hex beside you; Unbinding) against two zombies. No campaign claim.',
+    mapId: 'map.open', heroes: ['hero.base.mage-fire'], heroHexes: [80], heroItems: [['item.staff-of-summoning']], enemies: ['unit.zombie', 'unit.zombie'], enemyHexes: [95, 111], replicate: 0,
+  },
   // content.afflictions-revised (2026-09-29, Andrew, DECISIONS.md 'the four afflictions'): "when the
   // affliction of Vampirism happens, it grants both Cold Heart and Vampirism." A real battle in which a
   // Vampire's bite afflicts — replicate 7 is the first whose 20% roll succeeds (found, not tuned).

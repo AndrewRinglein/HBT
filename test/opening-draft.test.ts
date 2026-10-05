@@ -60,7 +60,21 @@ describe('fix.opening-draft — the first hero, the class rule, the Crucible\'s 
   it('a Health point is 2 Health — the Crucible\'s step', () => {
     const health = Array.from({ length: N }, (_, r) => openingHeroesOf(r, 6)).flat().flatMap((h) => h.rolls).filter((x) => x.stat === 'health')
     expect(health.length).toBeGreaterThan(0)
-    for (const x of health) expect(Math.abs(x.amount)).toBe(2)
+    // Law 10, 2026-10-05 — content.hero-origin-badges (DECISIONS.md 2026-10-05 'seven answers: … origin badges go on the heroes …': "3, yes."; SWITCHES.md originBadgeDraftFloor): this read
+    //   for (const x of health) expect(Math.abs(x.amount)).toBe(2)
+    // A Health point is still 2 Health. A LOSS is held at the Crucible's floor (Health 1) against the hero as fielded as well
+    // as against its row, so a hero fielded 1 above the floor loses 1: the one case is the Forest Fey (fielded at Health 2).
+    // Every gain is 2; a loss is 2, or exactly what takes the fielded hero to the floor.
+    const all = Array.from({ length: N }, (_, r) => openingHeroesOf(r, 6)).flat()
+    let held = 0
+    for (const h of all) for (const x of h.rolls.filter((r) => r.stat === 'health')) {
+      if (Math.abs(x.amount) === 2) continue
+      held++
+      expect(x.amount, h.id).toBeLessThan(0)
+      expect(fieldedDef(h.id).maxHp + x.amount, `${h.id}: held at the floor`).toBe(OPENING.crucible.statFloor.health)
+      expect(h.id).toBe('hero.base.ranger-nature')
+    }
+    expect(health.filter((x) => Math.abs(x.amount) === 2).length + held).toBe(health.length)
   })
 
   it('no draft offers a class already drafted until all six are: the six drafted heroes are six classes', () => {

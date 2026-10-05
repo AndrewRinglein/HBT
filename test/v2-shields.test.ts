@@ -10,7 +10,7 @@ import { usePower } from '../src/core/ability.js'
 import { effective } from '../src/core/stats.js'
 import { applyItems } from '../src/core/items.js'
 import { runBattle } from '../src/core/battle.js'
-import { ACTIONS, ITEMS, UNITS } from '../src/content/index.js'
+import { ACTIONS, BADGES, ITEMS, UNITS } from '../src/content/index.js'
 import type { Ctx } from '../src/core/types.js'
 
 const KITE = 'item.kite-shield', ROUND = 'item.round-shield', TOWER = 'item.tower-shield'
@@ -69,7 +69,13 @@ describe('the three shields, as the pack publishes them', () => {
     expect([row.block, row.dodge, row.maxStamina].every((n) => typeof n === 'number' && n !== 0)).toBe(true)
     expect(effective(ctx, w, 'block').value).toBeGreaterThanOrEqual(row.block!)
     expect(w.dodge).toBe(bare.dodge + row.dodge!)
-    expect(w.maxStamina).toBe(bare.maxStamina + row.maxStamina!)
+    // Law 10, 2026-10-05 — content.hero-origin-badges (DECISIONS.md 2026-10-05 'seven answers: … origin badges go on the heroes …': "3, yes."): this read
+    //   expect(w.maxStamina).toBe(bare.maxStamina + row.maxStamina!)
+    // - `bare` is the Iron Dwarf's row with his other items, no badge folded. His row carries Stalwart now (+1 Stamina), and
+    // the fielded hero wears it: the Tower's part is still exactly its row's, on top of the hero's own.
+    const origin = (stat: string) => (warrior.badges ?? []).reduce((n, b) => n + ((BADGES[b]!.statModifiers as Record<string, number>)[stat] ?? 0), 0)
+    expect(w.maxStamina).toBe(bare.maxStamina + origin('maxStamina') + row.maxStamina!)
+    expect(w.dodge).toBe(bare.dodge + origin('dodge') + row.dodge!)
   })
 })
 

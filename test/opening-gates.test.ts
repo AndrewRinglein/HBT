@@ -34,7 +34,13 @@ const S = 'test.opening-gates', ENC = 'encounter.opening.gates', FALL = 'trigger
 // Law 10, combine 2026-10-04 (GBH SWITCHES combine.mergeMainFirst): with BOTH changes — five heroes at the Gates and the Longsword's
 // Counterattack — every replicate is another battle again. Replicates read from 0 upward on the combined tree, as the notes above did:
 // replicate 6 is the first whose curse lands on a unit and which runs past Turn 7. Nothing here asks who wins.
-const SEEN = 6
+// was: const SEEN = 6
+// Law 10, 2026-10-05 — content.hero-origin-badges (DECISIONS.md 2026-10-05 'seven answers: … origin badges go on the heroes …':
+// "3, yes."): each base hero is fielded with its origin badges (the Raven and the Pyre Witch 2 Health fewer and 20 Dodge more,
+// the Iron Dwarf 2 Health more, …), so every replicate is another battle; replicate 6's curse now lands on nobody (0 hit).
+// Replicates read from 0 upward, as the notes above did: none of 0 to 20 has a curse that lands on a unit; replicate 21 is the
+// first whose curse lands on a unit and which runs past Turn 7 (both Imps arrive). Nothing here asks who wins.
+const SEEN = 21
 describe('encounter.opening.gates', () => {
   it('fields the six defenders at the Ground Check\'s markers and carries the curse strike with the ruled numbers', () => {
     const e = encounterDef(ENC)

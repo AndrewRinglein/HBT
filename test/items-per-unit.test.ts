@@ -14,7 +14,7 @@ import { createBattle, fieldedDef } from '../src/core/setup.js'
 import { runBattle } from '../src/core/battle.js'
 import { applyItems } from '../src/core/items.js'
 import { CRIT_BASE } from '../src/core/pipeline.js'
-import { ATTACKS, ITEMS, UNITS } from '../src/content/index.js'
+import { ATTACKS, BADGES, ITEMS, UNITS } from '../src/content/index.js'
 import { scenarioDef, scenarioOptions } from '../src/content/scenarios.js'
 
 const oracle = (): Record<string, Record<string, unknown>> =>
@@ -66,7 +66,16 @@ describe('the invariant — no heroItems means the hero the converter used to fo
       const kitCounter = (fieldedDef(id).defaultItems ?? []).reduce((n, i) => n + ((ITEMS[i]?.statModifiers as Record<string, number> | undefined)?.['counterattackAccuracy'] ?? 0), 0)
       expect((fieldedDef(id) as unknown as Record<string, number>)['counterattackAccuracy'] ?? 0, `${id} Counterattack Accuracy is its kit's`).toBe(kitCounter)
       const r1Kit = (fieldedDef(id).defaultItems ?? []).some((i) => ITEMS[i]?.itemClass === 'shield' || ITEMS[i]?.statModifiers.block || ITEMS[i]?.triggers.some((t) => t.hook === 'onBlock'))
-      const keys = [...new Set([...Object.keys(f), ...Object.keys(r)])].filter((k) => !['attributes', 'tags', 'toughness', 'vision', 'levelTable', 'badges'].includes(k) && !(r1Kit && R1.has(k)) && JSON.stringify(f[k]) !== JSON.stringify(r[k]))
+      // Law 10, 2026-10-05 — content.hero-origin-badges (DECISIONS.md 2026-10-05 'seven answers: … origin badges go on the heroes …': "3, yes."): the line below read
+      //   const keys = […].filter((k) => !['attributes', …, 'badges'].includes(k) && !(r1Kit && R1.has(k)) && JSON.stringify(f[k]) !== JSON.stringify(r[k]))
+      // A base hero's row carries its origin badges now and a badge acts from the row - content moved, not the fold; the oracle
+      // stays frozen. A stat an origin badge carries is compared with exactly that badge's number taken out again, so a row
+      // differs here only where it differed before, and a wrong badge fold would still show.
+      const origin: Record<string, number> = {}
+      for (const b of UNITS[id]?.badges ?? []) for (const [k, v] of Object.entries(BADGES[b]!.statModifiers as Record<string, number>)) origin[k] = (origin[k] ?? 0) + v
+      const less = (k: string) => (origin[k] ? JSON.stringify(((f[k] as number | undefined) ?? 0) - origin[k]!) : JSON.stringify(f[k]))
+      const same = (k: string) => less(k) === JSON.stringify(r[k]) || (origin[k] !== undefined && r[k] === undefined && ((f[k] as number | undefined) ?? 0) - origin[k]! === 0)
+      const keys = [...new Set([...Object.keys(f), ...Object.keys(r)])].filter((k) => !['attributes', 'tags', 'toughness', 'vision', 'levelTable', 'badges'].includes(k) && !(r1Kit && R1.has(k)) && !same(k))
       if (keys.length) differ[id] = keys
     }
     // FINDING: the converter folded item crit/luck into `ported`, then wrote
@@ -143,7 +152,13 @@ describe('the invariant — no heroItems means the hero the converter used to fo
       'hero.base.ranger-scantily': ['triggers'],
       'hero.base.rogue-raven': ['maxHp', 'attacks'],   // 'attacks': Law 10, 2026-10-04, the note above (was: ['maxHp'])
     })
-    for (const id of ['hero.base.priest-robes', 'hero.base.rogue-raven']) expect(fieldedDef(id).maxHp, id).toBe((o[id]!['maxHp'] as number) + 2)
+    // Law 10, 2026-10-05 — content.hero-origin-badges, the note in the loop above: this read
+    //   for (const id of ['hero.base.priest-robes', 'hero.base.rogue-raven']) expect(fieldedDef(id).maxHp, id).toBe((o[id]!['maxHp'] as number) + 2)
+    // The vest's 2 Health came back to both; the Raven's row carries Lithe now (-2 Health), which is hers and not the vest's -
+    // taken out again here, the difference from the frozen oracle is still exactly the vest's 2.
+    const originHp = (id: string) => (UNITS[id]!.badges ?? []).reduce((n, b) => n + ((BADGES[b]!.statModifiers as Record<string, number>)['maxHp'] ?? 0), 0)
+    expect([originHp('hero.base.priest-robes'), originHp('hero.base.rogue-raven')]).toEqual([0, -2])
+    for (const id of ['hero.base.priest-robes', 'hero.base.rogue-raven']) expect(fieldedDef(id).maxHp - originHp(id), id).toBe((o[id]!['maxHp'] as number) + 2)
     // fix.kit-attack-clauses (2026-10-04): the `triggers` that differ are exactly the weapon's stat rider, one more than the oracle's
     for (const [id, rider] of [['hero.base.priest-scantily', 'trigger.iron-mace.crush.armor'], ['hero.base.ranger-ranger', 'trigger.elfbow.elf-shot.precision'], ['hero.base.ranger-scantily', 'trigger.elfbow.elf-shot.precision']] as const) {
       const was = ((o[id]!['triggers'] as { id: string }[] | undefined) ?? []).map((t) => t.id)

@@ -478,6 +478,19 @@ const effectLastsActivationsGolden = JSON.parse(readFileSync(new URL('./fixtures
 // test.force-blast is ADDED: the Force Staff's Force Blast live in a real battle.
 // Every case frozen here (tools/capture-damage-from-two-stats-cursor.mts). Moved: showcase.eve-24-b (text only), showcase.horrors, showcase.kiln (text only), showcase.prologue-party, showcase.rime (text only), showcase.supper, showcase.surrounded, showcase.waystation, test.caravan-aftermath, test.item-uses, test.opening-bridge (text only), test.opening-cathedral, test.opening-cavern-trail (text only), test.opening-gates, test.perfect-sight (text only), progression-surge-0, progression-surge-1, progression-surge-2. A `changed` case is checked here and skips the older layers.
 const damageFromTwoStatsGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-damage-from-two-stats.json', import.meta.url), 'utf8'))
+// content.hero-origin-badges (2026-10-05; DECISIONS.md 2026-10-05 'seven answers: … origin badges go on the heroes …': asked whether
+// the Codex's origin badges should be put on the heroes' rows - "3, yes."), Law 10: each of the 24 base heroes' rows carries the
+// origin badges the Codex names for it, and a badge acts from the row. Every case that fields a base hero has one more line per
+// origin badge at fielding; the 13 heroes whose badges carry numbers are fielded with them (the Iron Dwarf +2 Health +1 Stamina,
+// the Pyre Witch and the Raven -2 Health +20 Dodge, …), so every such battle moves.
+// Every case frozen here (tools/capture-hero-origin-badges-cursor.mts). Moved: showcase.assembled-party, showcase.civilians, showcase.eve-24-a, showcase.eve-24-b, showcase.horrors, showcase.item-powers, showcase.kiln, showcase.prologue-party, showcase.rime, showcase.supper, showcase.surrounded, showcase.two-zombies-and-a-child, showcase.waystation, test.back-flip, test.caravan-aftermath, test.counterattack, test.fend, test.force-blast, test.item-uses, test.opening-bridge, test.opening-cathedral, test.opening-cavern-trail, test.opening-gates, test.opening-lumberjack, test.opening-orphanage, test.swap, progression-surge-0, progression-surge-1, progression-surge-2. A `changed` case is checked here and skips the older layers.
+const heroOriginBadgesGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-hero-origin-badges.json', import.meta.url), 'utf8'))
+// capability.summons (2026-10-05; DECISIONS.md 2026-10-04 'his 28 reward weapons read back …': "We need: summons"), Law 10: a power
+// may be aimed at an empty hex and place a unit of a named row there, on the caster's side; an attack may carry Accuracy against
+// a kind of target. No case that was fought before moves (no row in them summoned by a power or carried Accuracy against a kind);
+// test.call-the-wolf is ADDED: the Staff of Summoning's Call the Wolf live in a real battle.
+// Every case frozen here (tools/capture-summons-cursor.mts). Moved: none. A `changed` case is checked here and skips the older layers.
+const summonsGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-summons.json', import.meta.url), 'utf8'))
 const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
 // Explicit rule migration, not regenerated historical hashes. These nine old
 // cases contain Surge ledger/refresh changes or terminal markers corrected
@@ -625,7 +638,13 @@ describe('resumable battle cursor', () => {
       const lumberjackGravesCursedExpected = lumberjackGravesCursedGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const effectLastsActivationsExpected = effectLastsActivationsGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const damageFromTwoStatsExpected = damageFromTwoStatsGolden.cases.find((row:{id:string})=>row.id===fixture.id)
-      const damageFromTwoStatsMoved = damageFromTwoStatsExpected?.changed === true
+      const heroOriginBadgesExpected = heroOriginBadgesGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+      const summonsExpected = summonsGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+      const summonsMoved = summonsExpected?.changed === true
+      // was: const heroOriginBadgesMoved = heroOriginBadgesExpected?.changed === true — a case capability.summons moved skips this layer too (capability.summons 2026-10-04)
+      const heroOriginBadgesMoved = heroOriginBadgesExpected?.changed === true || summonsMoved
+      // was: const damageFromTwoStatsMoved = damageFromTwoStatsExpected?.changed === true — a case content.hero-origin-badges moved skips this layer too (content.hero-origin-badges 2026-10-04)
+      const damageFromTwoStatsMoved = damageFromTwoStatsExpected?.changed === true || heroOriginBadgesMoved
       // was: const effectLastsActivationsMoved = effectLastsActivationsExpected?.changed === true — a case capability.damage-from-two-stats moved skips this layer too (capability.damage-from-two-stats 2026-10-04)
       const effectLastsActivationsMoved = effectLastsActivationsExpected?.changed === true || damageFromTwoStatsMoved
       // was: const lumberjackGravesCursedMoved = lumberjackGravesCursedExpected?.changed === true — a case capability.effect-lasts-activations moved skips this layer too (capability.effect-lasts-activations 2026-10-04)
@@ -781,7 +800,21 @@ describe('resumable battle cursor', () => {
             battle.completeActionCycle(ctx)
           }
         } else result = battle.runBattle(ctx)
-        if (damageFromTwoStatsExpected) {
+        if (summonsExpected) {
+        expect(hash(ctx.events), 'full summons events').toBe(summonsExpected.events)
+        expect(hash(ctx.state), 'full summons state').toBe(summonsExpected.state)
+        expect(hash(ctx.rng.log), 'full summons RNG').toBe(summonsExpected.rng)
+        expect(result).toEqual(summonsExpected.result)
+        }
+        // was: if (heroOriginBadgesExpected) { — capability.summons (2026-10-04): a case it moved is checked above instead
+        if (heroOriginBadgesExpected && !summonsMoved) {
+        expect(hash(ctx.events), 'full hero-origin-badges events').toBe(heroOriginBadgesExpected.events)
+        expect(hash(ctx.state), 'full hero-origin-badges state').toBe(heroOriginBadgesExpected.state)
+        expect(hash(ctx.rng.log), 'full hero-origin-badges RNG').toBe(heroOriginBadgesExpected.rng)
+        expect(result).toEqual(heroOriginBadgesExpected.result)
+        }
+        // was: if (damageFromTwoStatsExpected) { — content.hero-origin-badges (2026-10-04): a case it moved is checked above instead
+        if (damageFromTwoStatsExpected && !heroOriginBadgesMoved) {
         expect(hash(ctx.events), 'full damage-from-two-stats events').toBe(damageFromTwoStatsExpected.events)
         expect(hash(ctx.state), 'full damage-from-two-stats state').toBe(damageFromTwoStatsExpected.state)
         expect(hash(ctx.rng.log), 'full damage-from-two-stats RNG').toBe(damageFromTwoStatsExpected.rng)

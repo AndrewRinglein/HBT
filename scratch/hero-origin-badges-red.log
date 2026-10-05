@@ -1,0 +1,79 @@
+
+ RUN  v4.1.11 C:/Users/aring/Desktop/HBT-worker-engine/engine
+
+ ❯ test/hero-origin-badges.test.ts (6 tests | 3 failed) 19ms
+     × the 24 base heroes, walked against the Codex's list: the Hero badge, then the origin badges in the Codex's order - no more, no fewer 7ms
+     × a badge acts from the row: each hero is fielded as it was the day before, plus exactly what its origin badges carry 2ms
+     × in a real battle: the hero on the board wears its origin badges - one line each at fielding, saying what it put on and what waits - and the Forest Elf cannot be knocked down 5ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/hero-origin-badges.test.ts > content.hero-origin-badges: each base hero's row carries the origin badges the Codex names for it > the 24 base heroes, walked against the Codex's list: the Hero badge, then the origin badges in the Codex's order - no more, no fewer
+AssertionError: hero.base.warrior-iron Iron Dwarf: expected [ 'badge.hero' ] to deeply equal [ Array(3) ]
+
+- Expected
++ Received
+
+  [
+    "badge.hero",
+-   "badge.stalwart",
+-   "badge.dwarf",
+  ]
+
+ ❯ test/hero-origin-badges.test.ts:97:83
+     95|     expect(codexHeroes.length).toBe(24)
+     96|     expect(Object.keys(UNITS).filter((k) => k.startsWith('hero.base.')…
+     97|     for (const h of codexHeroes) expect(UNITS[h.id]!.badges, `${h.id} …
+       |                                                                                   ^
+     98|   })
+     99|   it('the Codex\'s list is the one this landing read: 21 heroes with a…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  test/hero-origin-badges.test.ts > content.hero-origin-badges: each base hero's row carries the origin badges the Codex names for it > a badge acts from the row: each hero is fielded as it was the day before, plus exactly what its origin badges carry
+AssertionError: hero.base.warrior-iron maxHp: expected 16 to be 18 // Object.is equality
+
+- Expected
++ Received
+
+- 18
++ 16
+
+ ❯ test/hero-origin-badges.test.ts:126:93
+    124|       const sum: Record<string, number> = {}
+    125|       for (const n of names) for (const [k, v] of Object.entries(CARRI…
+    126|       for (const [k, was] of Object.entries(BEFORE[id]!)) expect(now[k…
+       |                                                                                             ^
+    127|       if (Object.keys(sum).length) changed.push(id)
+    128|     }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  test/hero-origin-badges.test.ts > content.hero-origin-badges: each base hero's row carries the origin badges the Codex names for it > in a real battle: the hero on the board wears its origin badges - one line each at fielding, saying what it put on and what waits - and the Forest Elf cannot be knocked down
+AssertionError: expected [ 'badge.hero' ] to deeply equal [ Array(3) ]
+
+- Expected
++ Received
+
+  [
+    "badge.hero",
+-   "badge.stalwart",
+-   "badge.dwarf",
+  ]
+
+ ❯ test/hero-origin-badges.test.ts:138:27
+    136|     const ctx = createCustomBattle([{ type: 'hero.base.warrior-iron', …
+    137|     const [dwarf, elf] = ctx.state.units
+    138|     expect(dwarf!.badges).toEqual(['badge.hero', 'badge.stalwart', 'ba…
+       |                           ^
+    139|     expect(dwarf!.maxHp).toBe(BEFORE['hero.base.warrior-iron']!['maxHp…
+    140|     expect(elf!.badges).toEqual(['badge.hero', 'badge.agile', 'badge.e…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  3 failed | 3 passed (6)
+   Start at  06:26:26
+   Duration  1.33s (transform 854ms, setup 0ms, import 1.06s, tests 19ms, environment 0ms)
+

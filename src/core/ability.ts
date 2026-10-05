@@ -22,6 +22,7 @@ import { incomingAbsorb, outgoingPenalty, untargetableBy } from './status.js'
 import { applyEffect } from './trigger.js'
 import { canSee } from './vision.js'
 import { forkBattle } from './fork.js'
+import { passableHexes } from './props.js'
 
 export function abilityDef(ctx: Ctx, id: string): AbilityDef {
   const a = ctx.actions[id]
@@ -67,6 +68,7 @@ export function canUsePower(ctx: Ctx, userId: number, targetId: number, abilityI
   for (const e of effects) if (e.kind === 'corpse.eat' && corpsesNear(ctx, u.hex, e.radius).length === 0) return false
   // ability.effects (2026-09-03): legality is the ONE targeting vocabulary.
   const t = a.target ?? { select: 'self', side: 'any' as const }
+  if (t.select === 'hex') return false   // capability.summons: a hex-aimed power is used on a hex (canUsePowerAt), never on a unit
   if (t.select === 'self') { if (targetId !== userId) return false }
   else if (t.select === 'unit') {
     if (t.side === 'ally' && u.side !== tg.side) return false
@@ -167,6 +169,61 @@ export function usePower(ctx: Ctx, userId: number, targetId: number, abilityId: 
 // applyStatus/reduceStatus, stat modifiers through addStatMod with a stated
 // lifetime. `who: 'self'` lands an effect on the caster whatever the targeting
 // says (Fortify: "every ally within 3 gains +1 Armor; YOU gain +3 Health").
+
+// ── capability.summons (2026-10-05): a power aimed at an empty HEX ──────────
+// `target: { select: 'hex' }`: the power is used ON a hex within its range that nobody stands on, and what it does there is
+// its effect list's (a summon: one unit of a named row arrives on that hex, on the caster's side). The same limits check,
+// spend and status breaks as every power; no unit is aimed at.
+
+/** Passable, in range of the caster, and nobody standing or downed on it. */
+function emptyHexInRange(ctx: Ctx, u: Unit, hex: number, range: number): boolean {
+  if (!Number.isSafeInteger(hex) || hex < 0 || hex >= ctx.geo.hexCount) return false
+  const d = ctx.geo.distance(u.hex, hex)
+  if (d < 1 || d > range) return false
+  if (!passableHexes(ctx)(hex)) return false
+  return !ctx.state.units.some((o) => o.lifeState !== 'dead' && o.hex === hex)
+}
+export function canUsePowerAt(ctx: Ctx, userId: number, hex: number, abilityId: string, slot?: import('./types.js').ActionSlot): boolean {
+  const u = unit(ctx, userId)
+  const a = ctx.actions[abilityId]
+  if (!a || !isPower(a) || a.target?.select !== 'hex') return false
+  if (u.lifeState !== 'standing') return false
+  for (const s of u.statuses) if (s.value > 0 && ctx.statuses[s.id]?.locksPowers) return false
+  if (!actionReady(ctx, u, a)) return false
+  if (resolveActionSlot(ctx, u, a, slot) === null) return false
+  for (const e of a.effects ?? []) if (e.kind === 'summon' && (!ctx.units?.[e.unit] || !ctx.arrive)) return false
+  return emptyHexInRange(ctx, u, hex, a.range)
+}
+/** Every hex this power may be used on right now, ascending (Law 6). */
+export function powerHexesOf(ctx: Ctx, userId: number, abilityId: string): number[] {
+  const u = unit(ctx, userId)
+  const a = ctx.actions[abilityId]
+  if (!a || a.target?.select !== 'hex') return []
+  const out: number[] = []
+  for (let h = 0; h < ctx.geo.hexCount; h++) if (ctx.geo.distance(u.hex, h) <= a.range && canUsePowerAt(ctx, userId, h, abilityId)) out.push(h)
+  return out
+}
+export function usePowerAt(ctx: Ctx, userId: number, hex: number, abilityId: string, slot?: import('./types.js').ActionSlot): void {
+  const u = unit(ctx, userId)
+  const a = abilityDef(ctx, abilityId)
+  if (!canUsePowerAt(ctx, userId, hex, abilityId, slot)) throw new Error(`illegal power: ${u.name} -> hex ${hex} with ${abilityId}`)
+  spendAction(ctx, userId, a, resolveActionSlot(ctx, u, a, slot)!)
+  breakStatuses(ctx, userId, 'power', a.id)
+  emit(ctx, 'power.used', a.id, { actor: userId, target: null, hex, abilityId: a.id, name: a.name, distance: ctx.geo.distance(u.hex, hex), targets: [], ...(a.free ? { free: true } : {}) })
+  for (const e of a.effects ?? []) {
+    if (e.kind === 'summon') {
+      const row = ctx.units![e.unit]!
+      // on the caster's side, whatever side its row is written for (as a form that changes sides keeps its row's side: rowSide)
+      const arrived = ctx.arrive!(ctx, row.side === u.side ? row : { ...row, side: u.side, rowSide: row.rowSide ?? row.side }, hex, a.id)
+      arrived.summoned = true
+      arrived.summonedBy = userId
+      emit(ctx, 'unit.summoned', a.id, { actor: userId, summoned: arrived.id, typeId: arrived.typeId, hex: arrived.hex, side: arrived.side })
+      continue
+    }
+    // the kinds that are the caster's own land on the caster; a kind that needs a unit aimed at has none here (pack.ts refuses the row)
+    if ('who' in e && e.who === 'self') applyEffect(ctx, e, { causeId: a.id, actor: userId, by: userId, abilityId: a.id }, userId)
+  }
+}
 
 /** The units a power's targeting resolves to, given what it was aimed at. */
 export function powerTargetsOf(ctx: Ctx, userId: number, targetId: number, a: AbilityDef): number[] {
