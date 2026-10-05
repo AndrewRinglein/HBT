@@ -464,6 +464,12 @@ const computerReachesClassPowerGolden = JSON.parse(readFileSync(new URL('./fixtu
 // layer.painted lines at the start, and Weak on whoever enters or ends an Activation on one.
 // Every case frozen here (tools/capture-lumberjack-graves-cursed-cursor.mts). Moved: test.opening-lumberjack. A `changed` case is checked here and skips the older layers.
 const lumberjackGravesCursedGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-lumberjack-graves-cursed.json', import.meta.url), 'utf8'))
+// capability.effect-lasts-activations (2026-10-05; DECISIONS.md 2026-10-04 'his 28 reward weapons read back …': "We need: … time /
+// number of activations for a duration"), Law 10: two fieldings join the scenarios - test.stoke (a mage with the Fire Gauntlet stokes
+// it and his hits burn) and test.perfect-sight (a mage with the Staff of the Ultimate Destroyer takes Perfect Sight) - so each counted
+// status is live in a real battle. They are ADDED cases; no case that existed moves.
+// Every case frozen here (tools/capture-effect-lasts-activations-cursor.mts). Moved: none. A `changed` case is checked here and skips the older layers.
+const effectLastsActivationsGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-effect-lasts-activations.json', import.meta.url), 'utf8'))
 const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
 // Explicit rule migration, not regenerated historical hashes. These nine old
 // cases contain Surge ledger/refresh changes or terminal markers corrected
@@ -609,7 +615,10 @@ describe('resumable battle cursor', () => {
       const freeAttackAccuracyExpected = freeAttackAccuracyGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const computerReachesClassPowerExpected = computerReachesClassPowerGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const lumberjackGravesCursedExpected = lumberjackGravesCursedGolden.cases.find((row:{id:string})=>row.id===fixture.id)
-      const lumberjackGravesCursedMoved = lumberjackGravesCursedExpected?.changed === true
+      const effectLastsActivationsExpected = effectLastsActivationsGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+      const effectLastsActivationsMoved = effectLastsActivationsExpected?.changed === true
+      // was: const lumberjackGravesCursedMoved = lumberjackGravesCursedExpected?.changed === true — a case capability.effect-lasts-activations moved skips this layer too (capability.effect-lasts-activations 2026-10-04)
+      const lumberjackGravesCursedMoved = lumberjackGravesCursedExpected?.changed === true || effectLastsActivationsMoved
       // was: const computerReachesClassPowerMoved = computerReachesClassPowerExpected?.changed === true — a case content.orphanage-body-and-graves-cursed moved skips this layer too (content.orphanage-body-and-graves-cursed 2026-10-04)
       const computerReachesClassPowerMoved = computerReachesClassPowerExpected?.changed === true || lumberjackGravesCursedMoved
       // was: const freeAttackAccuracyMoved = freeAttackAccuracyExpected?.changed === true — a case fix.computer-reaches-class-power-past-shield-power moved skips this layer too (fix.computer-reaches-class-power-past-shield-power 2026-10-04)
@@ -761,7 +770,14 @@ describe('resumable battle cursor', () => {
             battle.completeActionCycle(ctx)
           }
         } else result = battle.runBattle(ctx)
-        if (lumberjackGravesCursedExpected) {
+        if (effectLastsActivationsExpected) {
+        expect(hash(ctx.events), 'full effect-lasts-activations events').toBe(effectLastsActivationsExpected.events)
+        expect(hash(ctx.state), 'full effect-lasts-activations state').toBe(effectLastsActivationsExpected.state)
+        expect(hash(ctx.rng.log), 'full effect-lasts-activations RNG').toBe(effectLastsActivationsExpected.rng)
+        expect(result).toEqual(effectLastsActivationsExpected.result)
+        }
+        // was: if (lumberjackGravesCursedExpected) { — capability.effect-lasts-activations (2026-10-04): a case it moved is checked above instead
+        if (lumberjackGravesCursedExpected && !effectLastsActivationsMoved) {
         expect(hash(ctx.events), 'full lumberjack-graves-cursed events').toBe(lumberjackGravesCursedExpected.events)
         expect(hash(ctx.state), 'full lumberjack-graves-cursed state').toBe(lumberjackGravesCursedExpected.state)
         expect(hash(ctx.rng.log), 'full lumberjack-graves-cursed RNG').toBe(lumberjackGravesCursedExpected.rng)

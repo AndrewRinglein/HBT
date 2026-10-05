@@ -12,6 +12,7 @@ import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { STATUSES } from '../src/content/statuses.js'
 import { packStatuses } from '../src/content/pack.js'
+import { ABILITIES, ITEMS } from '../src/content/index.js'
 import { createBattle, createCustomBattle } from '../src/core/setup.js'
 import { runBattle } from '../src/core/battle.js'
 import { applyStatus, tickStatuses } from '../src/core/status.js'
@@ -27,9 +28,23 @@ describe('the rows come from the Codex, and only from the Codex', () => {
     const codex = settledStatuses()
     const codexIds = new Set(codex.map((r) => r.id))
     const gapIds = new Set(gaps().filter((g) => g.unit.startsWith('status.')).map((g) => g.unit))
+    // Law 10, 2026-10-05 — capability.effect-lasts-activations (DECISIONS.md 2026-10-04 'his 28 reward weapons read back …': "We
+    // need: … time / number of activations for a duration"): this read
+    //   expect(codexIds.has(id), `${id} is loaded but no Codex row says so`).toBe(true)
+    // for every loaded id - a status row of the Codex, and nothing else. A TIMED EFFECT is a status now: a power's or an item's
+    // own line ("for your next 3 Activations …") is compiled into a counted status the row LENDS through, whose id is that
+    // row's with the kind changed (power.fire-gauntlet.stoke -> status.fire-gauntlet.stoke). So a loaded status is a Codex
+    // status row, or it is made from a Codex power or item row that exists and applies it - still "from the Codex, and only
+    // from the Codex", held as exactly that.
+    const lentFrom = (id: string) => { const rest = id.replace(/^status\./, ''); return ['power.' + rest, 'item.' + rest].find((owner) => ABILITIES[owner] !== undefined || ITEMS[owner] !== undefined) }
     for (const id of Object.keys(STATUSES)) {
       if (id.startsWith('test.')) continue
-      expect(codexIds.has(id), `${id} is loaded but no Codex row says so`).toBe(true)
+      if (codexIds.has(id)) continue
+      const owner = lentFrom(id)
+      expect(owner, `${id} is loaded but no Codex row says so`).toBeDefined()
+      expect(STATUSES[id]!.lends, `${id} is made from ${owner}: it lends what that row's line gives`).toBeDefined()
+      const appliers = owner!.startsWith('power.') ? [ABILITIES[owner!]!] : ITEMS[owner!]!.abilities.map((a) => ABILITIES[a]!)
+      expect(appliers.some((a) => a.effects?.some((e) => e.kind === 'status.apply' && e.statusId === id)), `${owner} applies ${id}`).toBe(true)
     }
     for (const r of codex) {
       const loaded = STATUSES[r.id] !== undefined
@@ -76,6 +91,9 @@ describe('the rows come from the Codex, and only from the Codex', () => {
     // the family word rides along verbatim
     for (const [id, def] of Object.entries(STATUSES)) {
       if (id.startsWith('test.')) continue
+      // Law 10, 2026-10-05 (the note in the test above): a status made from a power's or an item's timed line has no Codex status
+      // row to take a family word from; it is of the duration family. (was: every loaded id read byId.get(id)!.family)
+      if (!byId.has(id)) { expect((def as { family?: string }).family, id).toBe('duration'); expect(def.lends, id).toBeDefined(); continue }
       expect((def as { family?: string }).family, id).toBe(byId.get(id)!.family ?? (byId.get(id) as { shape?: string }).shape)
     }
   })

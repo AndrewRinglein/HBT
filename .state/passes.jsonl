@@ -48,3 +48,5 @@
 {"suite":"control","stamp":"b81ef55233","pack":"73ba186f36","golden":"2a98bd088f","at":"2026-10-05T07:57:37.260Z","by":"gate fix.computer-reaches-class-power-past-shield-power --land","in":"HBT-worker-engine","moved":null}
 {"suite":"engine","stamp":"02514550fe","failed":true,"at":"2026-10-05T08:15:32.288Z","by":"gate --shard 1/1","in":"HBT-worker-engine"}
 {"suite":"control","stamp":"5e86ba4301","pack":"e4b7af80a6","golden":"2a98bd088f","at":"2026-10-05T08:41:36.467Z","by":"gate content.orphanage-body-and-graves-cursed --land","in":"HBT-worker-engine","moved":null}
+{"suite":"engine","stamp":"49e52fef19","failed":true,"at":"2026-10-05T08:53:24.590Z","by":"gate --shard 1/1","in":"HBT-worker-engine"}
+{"suite":"control","stamp":"b31863a611","pack":"24ac096176","golden":"2a98bd088f","at":"2026-10-05T09:36:30.455Z","by":"gate capability.effect-lasts-activations --land","in":"HBT-worker-engine","moved":null}

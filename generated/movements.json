@@ -2295,10 +2295,10 @@
     "item.fire-gauntlet"
    ],
    "action": "power.fire-gauntlet.stoke",
-   "name": "power.fire-gauntlet.stoke",
-   "kind": null,
-   "engine": "no",
-   "bar": null,
+   "name": "Stoke",
+   "kind": "power",
+   "engine": "yes",
+   "bar": "power",
    "motion": null,
    "bodies": {
     "Ancient Elf": null,
@@ -2324,9 +2324,14 @@
     "The Skull": null
    },
    "motionStatus": "missing",
-   "selected": null,
+   "selected": {
+    "key": "spell",
+    "label": "Casting / power gesture",
+    "clip": "Spell_Simple_Shoot",
+    "record": "assets/characters/oathblade-armor/rebuild/free-motion-study/selections.json"
+   },
    "ruling": null,
-   "note": "the pack names it; the engine has no row (item power — shape unparsed)",
+   "note": null,
    "variants": 0
   },
   {
@@ -6015,10 +6020,10 @@
     "item.staff-of-the-ultimate-destroyer"
    ],
    "action": "power.staff-of-the-ultimate-destroyer.perfect-sight",
-   "name": "power.staff-of-the-ultimate-destroyer.perfect-sight",
-   "kind": null,
-   "engine": "no",
-   "bar": null,
+   "name": "Perfect Sight",
+   "kind": "power",
+   "engine": "yes",
+   "bar": "power",
    "motion": null,
    "bodies": {
     "Ancient Elf": null,
@@ -6044,9 +6049,14 @@
     "The Skull": null
    },
    "motionStatus": "missing",
-   "selected": null,
+   "selected": {
+    "key": "spell",
+    "label": "Casting / power gesture",
+    "clip": "Spell_Simple_Shoot",
+    "record": "assets/characters/oathblade-armor/rebuild/free-motion-study/selections.json"
+   },
    "ruling": null,
-   "note": "the pack names it; the engine has no row (item power — shape unparsed)",
+   "note": null,
    "variants": 0
   },
   {
@@ -8849,11 +8859,11 @@
    "content": [
     "item.poison-coating"
    ],
-   "action": null,
-   "name": "active: Once per Battle, 1 Stamina: for the rest of the Ba",
-   "kind": null,
-   "engine": "no",
-   "bar": null,
+   "action": "power.poison-coating.use",
+   "name": "Poison Coating",
+   "kind": "power",
+   "engine": "yes",
+   "bar": "power",
    "motion": null,
    "bodies": {
     "Ancient Elf": null,
@@ -8879,9 +8889,14 @@
     "The Skull": null
    },
    "motionStatus": "missing",
-   "selected": null,
+   "selected": {
+    "key": "consume",
+    "label": "Drink or consume",
+    "clip": "Consume",
+    "record": "assets/characters/oathblade-armor/rebuild/free-motion-study/selections.json"
+   },
    "ruling": null,
-   "note": "an item power the engine has no row for (an ability with charges/targets — capability.consumables)",
+   "note": null,
    "variants": 0
   },
   {
@@ -22669,10 +22684,10 @@
  "counts": {
   "rows": 521,
   "missing": 352,
-  "noEngine": 37,
+  "noEngine": 34,
   "inert": 239,
   "noMotion": 352,
-  "selectedUnbound": 308,
+  "selectedUnbound": 311,
   "partial": 81
  }
 }
