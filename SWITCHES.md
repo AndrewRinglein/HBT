@@ -1297,3 +1297,13 @@ the opening six, shields, custom weapons'; engine SWITCHES.md greatsword*, warAx
 | Switch | Question | Default | Reason | Status |
 |---|---|---|---|---|
 | `greatswordOpeningSeeds` | Do the six opening recordings move, and on which seeds are they? | **The same seeds — Orphanage 5, Lumberjack House 3, Bridge 19, Cavern Trail 11 (still the lowest of seeds 0 to 29 whose battle turns a hero; 17 is the other), Gates 0, Cathedral 10 — all six re-exported together at engine code stamp 9a8a0b609c.** Nobody in the opening holds a Great Sword or a War Axe, so each battle is what it was, event for event but for the lines that carry the engine's stamp; `generated/static.json` and `fields.json` are re-dumped at the same stamp, and the engine-made rosters and fixtures rewritten by their own commands (the bar audit's roster holds the two weapons' new rows). | A recording carries the stamp of the engine that made it, and the six go together (viewer SWITCHES `kitClausesOpeningSeeds`). | Default — 2026-10-04 |
+
+## fix.enchant-stats-on-weapon (engine item) — the dumps and the recordings again, 2026-10-04
+
+A weapon row's Strength, Precision, Crit and Accuracy ride its own attacks at every tier (engine DECISIONS.md 2026-09-28
+'counterattack, special free attacks, the opening six, shields, custom weapons'; engine SWITCHES.md weaponStats*). No viewer
+source changed.
+
+| Switch | Question | Default | Reason | Status |
+|---|---|---|---|---|
+| `weaponStatsDumps` | What moves in the viewer's data? | **`generated/static.json` holds 899 actions where it held 793** — the 106 attack rows the tier-3 rows now grant as their own copies ('<attack id>.<attribute>': the page draws a copy as it draws the Forge's, by its own row) — **and the named weapons' attack rows say their raised numbers; `fields.json` re-dumped at the same engine code stamp, 7c523d3ecd; the engine-made rosters rewritten by their own commands** (the tag-requirement roster moves). **The six opening recordings are re-exported together on their seeds** (Orphanage 5, Lumberjack House 3, Bridge 19, Cavern Trail 11 — still the lowest that turns a hero — Gates 0, Cathedral 10): no event of any of them differs; only the stamp they carry. | Nobody in the opening holds a tier-3 or a named weapon; a recording carries the stamp of the engine that made it, and the six go together. | Default — 2026-10-04 |
