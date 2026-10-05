@@ -19,8 +19,10 @@ export function battleViewAssets(){
      viewer.shield-guard-motion: each item's own class (a power a held shield grants raises the shield);
      viewer.panel-lists-items: each item's own row and the engine's count of hands (the battle panel's items section);
      viewer.hex-tooltip: each ground's name for the tooltip under the hex pointed at;
-     viewer.new-enemy-ability-line: each enemy kind's player-facing sentence (the content's row, dumped with the sheets) */
- return {units:stat.units,statuses:stat.statuses,absorbingStatuses:stat.absorbingStatuses,actions:stat.actions,badges:stat.badges,layers:stat.layers,actionKinds:stat.actionKinds,statusRows:stat.statusRows,layerStatus:stat.layerStatus,terrainApplies:stat.terrainApplies,terrainNames:stat.terrainNames,unitLines:stat.unitLines,itemClasses:stat.itemClasses,items:stat.items,hands:stat.hands,artmap:manifest.artmap,assets,glyphs:read('ra-glyphs.json')}
+     viewer.new-enemy-ability-line: each enemy kind's player-facing sentence (the content's row, dumped with the sheets);
+     viewer.bar-shows-tag-requirement: which actions carry each tag a trigger requires (the engine's carriesTag, dumped) - the
+     bar lists a tag-required trigger (the Burning Touch: melee) on those attacks only, and refuses to guess without it */
+ return {units:stat.units,statuses:stat.statuses,absorbingStatuses:stat.absorbingStatuses,actions:stat.actions,badges:stat.badges,layers:stat.layers,actionKinds:stat.actionKinds,statusRows:stat.statusRows,layerStatus:stat.layerStatus,terrainApplies:stat.terrainApplies,terrainNames:stat.terrainNames,unitLines:stat.unitLines,itemClasses:stat.itemClasses,items:stat.items,hands:stat.hands,tagCarriers:stat.tagCarriers,artmap:manifest.artmap,assets,glyphs:read('ra-glyphs.json')}
 }
 export function scopeBattleCSS(source){
  const root=postcss.parse(source)
