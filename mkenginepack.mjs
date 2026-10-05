@@ -1024,7 +1024,17 @@ function settledAttackExtras(a, unitId) {
     const lose = typeof t.effect === 'string' && t.effect.match(/^(?:the )?target loses (\d+) ([A-Za-z]+(?: [A-Za-z]+)?)(?: for the rest of the Battle)?$/);
     const moved = lose ? { word: lose[2], stat: modStatOf(lose[2]), value: -parseInt(lose[1], 10), select: 'target' }
       : m && m[1] === 'gain' && !STATUS_OK.has(status) ? { word: m[3], stat: modStatOf(m[3]), value: parseInt(m[2], 10), select: 'self' } : null;
-    if (push && TRIG_HOOKS.has(t.hook)) {
+    // engine capability.effect-lasts-activations (2026-10-05): "apply <Status> equal to half your Magic, rounded nearest, 0.5
+    // up" — the Fire Punch's own rider, the value Stoke lends: the engine's scaled value with the nearest rounding
+    const half = typeof t.effect === 'string' && t.effect.match(/^apply ([A-Z][a-z]+) equal to half your (Magic|Spirit), rounded nearest, 0\.5 up$/);
+    if (half && STATUS_OK.has(half[1].toLowerCase()) && TRIG_HOOKS.has(t.hook)) {
+      out.push({
+        id: `trigger.${a.id.replace(/^attack\./, '')}.${half[1].toLowerCase()}`,
+        hook: t.hook, chance: t.chance ?? 100, select: 'target',
+        effect: { kind: 'status.apply', statusId: 'status.' + half[1].toLowerCase(), value: { scale: HALF_PARTY[half[2]], div: 2, round: 'nearest' } },
+        source: unitId, onlyWithAttack: a.id,
+      });
+    } else if (push && TRIG_HOOKS.has(t.hook)) {
       out.push({
         id: `trigger.${a.id.replace(/^attack\./, '')}.knockback`,
         hook: t.hook, chance: t.chance ?? 100, select: 'target',
@@ -1111,6 +1121,23 @@ function settledAttackExtras(a, unitId) {
 // callers that report into gen/enemy-pack-gaps.json.
 const POWER_GAPS = new Map();
 function reportPowerGaps(row, report) { for (const x of POWER_GAPS.get(row.id) ?? []) report(x.clause, x.needs); }
+// ── TIMED EFFECTS ARE STATUSES (engine capability.effect-lasts-activations, 2026-10-05) ──────────────────────────────────
+// Engine DECISIONS.md 2026-10-04 'his 28 reward weapons read back …': "We need: … time / number of activations for a duration".
+// A power's line that lasts "your next N Activations", "until the end of your third Activation from now" or "the rest of
+// the Battle" compiles to (a) a STATUS row of the pack, named for the power and counted as the line says — the engine shows
+// it on the unit with its count, as it shows every status — which LENDS its holder what the line gives (a trigger on its
+// hits, a stat doubled), and (b) the engine's existing "apply a status" effect on the power. The status's id is the power's
+// (or the item's) with the kind changed: power.fire-gauntlet.stoke -> status.fire-gauntlet.stoke. One row per power; a second
+// power that would make the same id fails the build.
+const HALF_PARTY = { Magic: 'partyMagic', Spirit: 'partySpirit' };
+const COUNT_WORD = { second: 2, third: 3, fourth: 4, fifth: 5 };
+function lentStatus(ownerId, name, { countsDown, countsAttackTag, lends }) {
+  const id = 'status.' + ownerId.replace(/^(power|item)\./, '');
+  if (statuses[id]) throw new Error(`mkenginepack: '${ownerId}' would make the status '${id}', which exists`);
+  for (const t of lends.triggers || []) t.source = id;
+  statuses[id] = { id, name, shape: 'counter', family: 'duration', stacking: 'highest', decayPerPhase: 0, ...(countsDown ? { countsDown } : {}), ...(countsAttackTag ? { countsAttackTag } : {}), lends };
+  return id;
+}
 function compiledPowerOf(p, unitId) {
   const desc = String(p.description || '');
   const tgt = String(p.targets || '');
@@ -1180,6 +1207,21 @@ function compiledPowerOf(p, unitId) {
   }
   if ((m = desc.match(/^An adjacent ally gains (\d+) Protection\.$/)) && tgt === 'one ally within 1 hex') {
     return { ...base, range: 1, target: { select: 'unit', side: 'ally' }, effects: [{ kind: 'status.apply', statusId: 'status.protection', value: +m[1] }] };
+  }
+  // engine capability.effect-lasts-activations (2026-10-05): the Fire Gauntlet's Stoke — "For your next N Activations, every
+  // hit you land applies <Status> equal to half your Magic, rounded nearest, 0.5 up." "Your Magic" is the party's (a party
+  // stat); the half is the engine's nearest rounding, 0.5 up, the line's own words.
+  if ((m = desc.match(/^For your next (\d+) Activations, every hit you land applies ([A-Z][a-z]+) equal to half your (Magic|Spirit), rounded nearest, 0\.5 up\.$/)) && tgt === 'self' && STATUS_OK.has(m[2].toLowerCase())) {
+    const slug = p.id.replace(/^power\./, '');
+    const statusId = lentStatus(p.id, p.name, { countsDown: 'activation', lends: { triggers: [{ id: `trigger.${slug}.${m[2].toLowerCase()}`, hook: 'onHit', chance: 100, select: 'target',
+      effect: { kind: 'status.apply', statusId: 'status.' + m[2].toLowerCase(), value: { scale: HALF_PARTY[m[3]], div: 2, round: 'nearest' } } }] } });
+    return { ...base, range: 0, target: { select: 'self', side: 'any' }, effects: [{ kind: 'status.apply', statusId, value: +m[1], who: 'self' }] };
+  }
+  // … and the Staff of the Ultimate Destroyer's Perfect Sight — "Until the end of your third Activation from now, your
+  // <Stat> is doubled (<Stat> added to <Stat>)." The row says what "doubled" is: the stat added to itself, once.
+  if ((m = desc.match(/^Until the end of your (second|third|fourth|fifth) Activation from now, your ([A-Z][a-z]+) is doubled \(\2 added to \2\)\.$/)) && tgt === 'self' && modStatOf(m[2])) {
+    const statusId = lentStatus(p.id, p.name, { countsDown: 'activation', lends: { doubles: [modStatOf(m[2])] } });
+    return { ...base, range: 0, target: { select: 'self', side: 'any' }, effects: [{ kind: 'status.apply', statusId, value: COUNT_WORD[m[1]], who: 'self' }] };
   }
   // engine capability.counterattack-and-fend (2026-10-04; engine DECISIONS.md 2026-09-28 'counterattack, special free
   // attacks …'): "Gain Counterattack[ with +N Accuracy] until the end of your next Turn." / "Gain Fend[ …]" — the stat
@@ -1660,6 +1702,14 @@ function compileItemActive(it, row) {
     if ((m = s0.match(/^remove (\d+) ([A-Z][a-z]+) and (\d+) ([A-Z][a-z]+) from yourself$/i))) { effects.push({ kind: 'status.remove', statusId: 'status.' + m[2].toLowerCase(), value: +m[1] }); effects.push({ kind: 'status.remove', statusId: 'status.' + m[4].toLowerCase(), value: +m[3] }); continue; }
     if ((m = s0.match(/^Remove (\d+) ([A-Z][a-z]+), (\d+) ([A-Z][a-z]+) and (\d+) ([A-Z][a-z]+) from the target$/))) { for (const [n, w] of [[m[1], m[2]], [m[3], m[4]], [m[5], m[6]]]) effects.push({ kind: 'status.remove', statusId: 'status.' + w.toLowerCase(), value: +n }); continue; }
     if ((m = s0.match(/^regain (\d+) Stamina$/))) { effects.push({ kind: 'stamina.gain', value: +m[1] }); continue; }
+    // engine capability.effect-lasts-activations (2026-10-05): Poison Coating — "for the rest of the Battle, the target's hits
+    // have a N% chance to apply K <Status>": a status with no clock on the target, lending the trigger at its chance
+    if ((m = s0.match(/^for the rest of the Battle, the target's hits have a (\d+)% chance to apply (\d+) ([A-Z][a-z]+)$/)) && STATUS_OK.has(m[3].toLowerCase())) {
+      const slug = it.id.replace(/^item\./, '');
+      const statusId = lentStatus(it.id, it.name, { lends: { triggers: [{ id: `trigger.${slug}.${m[3].toLowerCase()}`, hook: 'onHit', chance: +m[1], select: 'target',
+        effect: { kind: 'status.apply', statusId: 'status.' + m[3].toLowerCase(), value: +m[2] } }] } });
+      effects.push({ kind: 'status.apply', statusId, value: 1 }); continue;
+    }
     if ((m = s0.match(/^apply (\d+) ([A-Z][a-z]+) to a target within \d+$/))) { effects.push({ kind: 'status.apply', statusId: 'status.' + m[2].toLowerCase(), value: +m[1] }); continue; }
     if ((m = s0.match(/^apply (\d+) ([A-Z][a-z]+) to a target within \d+, and the hex it stands on gains Burning$/))) { effects.push({ kind: 'status.apply', statusId: 'status.' + m[2].toLowerCase(), value: +m[1] }); gaps.push('and the hex it stands on gains Burning — a painted layer from a power (not yet an ability effect)'); continue; }
     if ((m = s0.match(/^Gain (\d+) Protection$/))) { effects.push({ kind: 'status.apply', statusId: 'status.protection', value: +m[1] }); continue; }
@@ -2339,13 +2389,14 @@ function testUnits(testAttackRows, testAbilityRows) {
 }
 function testStatuses() {
   const out = {};
-  const FLAGS = new Set(['id', 'name', 'shape', 'family', 'decayPerPhase', 'tick', 'tickDamageType', 'reducesIncomingDamage', 'reducesOutgoingDamage', 'blocksAction', 'blocksBlock', 'reducesMovement', 'halvesHealing', 'locksPowers', 'shedByHealing', 'aiControlled', 'prone', 'kdbDown', 'hidesFromFoes', 'untargetable', 'breaksOnAttack', 'breaksOnPower', 'breaksOnReveal']);   // hidesFromFoes: ai.sight (engine, 2026-09-27); untargetable and the breaksOn flags: capability.stealth (engine, 2026-09-28)
+  const FLAGS = new Set(['id', 'name', 'shape', 'family', 'decayPerPhase', 'tick', 'tickDamageType', 'reducesIncomingDamage', 'reducesOutgoingDamage', 'blocksAction', 'blocksBlock', 'reducesMovement', 'halvesHealing', 'locksPowers', 'shedByHealing', 'aiControlled', 'prone', 'kdbDown', 'hidesFromFoes', 'untargetable', 'breaksOnAttack', 'breaksOnPower', 'breaksOnReveal', 'lends', 'countsDown', 'countsAttackTag']);   // the last three: engine capability.effect-lasts-activations, 2026-10-05   // hidesFromFoes: ai.sight (engine, 2026-09-27); untargetable and the breaksOn flags: capability.stealth (engine, 2026-09-28)
   for (const row of readTest('statuses.json')) {
     const { note, ...r } = row;
     if (r.blocksBlock !== undefined && typeof r.blocksBlock !== 'boolean') throw Error('Invalid blocksBlock flag');
     if (!isTestId.status(r.id)) throw new Error(`content/test/statuses.json: '${r.id}' is not test.status.*`);
     for (const k of Object.keys(r)) if (!FLAGS.has(k)) throw new Error(`content/test/statuses.json: '${r.id}' carries unknown field '${k}'`);
-    out[r.id] = { ...r, stacking: 'add' };
+    // a counted status renews to its count rather than adding to it (engine capability.effect-lasts-activations)
+    out[r.id] = { ...r, stacking: r.countsDown ? 'highest' : 'add' };
   }
   return out;
 }

@@ -369,3 +369,29 @@ test('the Elfbow\'s Double Shot: one enemy within 4 hexes, two hits; the Throwin
  // (the gap list itself is the shipped gen/enemy-pack-gaps.json: the engine's test/elfbow-double-shot-one-target.test.ts holds that no line of it names the Double Shot)
  assert.equal(JSON.parse(fs.readFileSync(path.join(source,'gen/weapons.json'),'utf8')).attacks.find(x=>x.id==='attack.throwing-knives.fan').targets,'up to 3 enemies within 3 hexes');
 });
+
+// engine capability.effect-lasts-activations (2026-10-05; engine DECISIONS.md 2026-10-04 'his 28 reward weapons read back …': "We need:
+// … time / number of activations for a duration"): a power's timed line compiles to a counted STATUS row of the pack that lends
+// what the line gives, and the power applies it. Three of his lines; a line the compiler does not read is still a named gap.
+test('a timed effect is a status the pack carries: Stoke, Perfect Sight and Poison Coating — and the Fire Punch\'s own half-Magic Burn',()=>{
+ const S=live.pack.statuses,A=live.pack.authoredAbilities,half={scale:'partyMagic',div:2,round:'nearest'};
+ assert.deepEqual(S['status.fire-gauntlet.stoke'],{id:'status.fire-gauntlet.stoke',name:'Stoke',shape:'counter',family:'duration',stacking:'highest',decayPerPhase:0,countsDown:'activation',
+  lends:{triggers:[{id:'trigger.fire-gauntlet.stoke.burn',hook:'onHit',chance:100,select:'target',effect:{kind:'status.apply',statusId:'status.burn',value:half},source:'status.fire-gauntlet.stoke'}]}});
+ assert.deepEqual(A['power.fire-gauntlet.stoke'].effects,[{kind:'status.apply',statusId:'status.fire-gauntlet.stoke',value:3,who:'self'}]);
+ assert.deepEqual(S['status.staff-of-the-ultimate-destroyer.perfect-sight'].lends,{doubles:['precision']});
+ assert.equal(S['status.staff-of-the-ultimate-destroyer.perfect-sight'].countsDown,'activation');
+ assert.deepEqual(A['power.staff-of-the-ultimate-destroyer.perfect-sight'].effects,[{kind:'status.apply',statusId:'status.staff-of-the-ultimate-destroyer.perfect-sight',value:3,who:'self'}]);
+ const coat=S['status.poison-coating'];
+ assert.equal(coat.countsDown,undefined);assert.equal(coat.decayPerPhase,0);
+ assert.deepEqual(coat.lends.triggers.map(t=>[t.hook,t.chance,t.effect]),[['onHit',60,{kind:'status.apply',statusId:'status.poison',value:1}]]);
+ assert.deepEqual(live.pack.items['item.poison-coating'].gaps??[],[]);assert.deepEqual(live.pack.items['item.fire-gauntlet'].gaps??[],[]);assert.deepEqual(live.pack.items['item.staff-of-the-ultimate-destroyer'].gaps??[],[]);
+ assert.deepEqual(live.pack.items['item.fire-gauntlet'].triggers.map(t=>[t.id,t.onlyWithAttack,t.effect.value]),[['trigger.fire-gauntlet.fire-punch.burn','attack.fire-gauntlet.fire-punch',half]]);
+ // every status the Codex already had is what it was: none of them lends or counts
+ for(const id of ['status.burn','status.poison','status.weak','status.protection','status.stun'])assert.ok(!S[id].lends&&!S[id].countsDown,id);
+});
+test('the timed lines are exact: other words compile no status and stay a named gap',()=>{
+ const odd=candidate(edit=>edit('gen/settled-items.json',data=>{data.powers.find(p=>p.id==='power.fire-gauntlet.stoke').description='For your next 3 Activations, every hit you land sets the target alight.'}));
+ assert.equal(odd.status,0,odd.stderr);
+ assert.equal(odd.pack.statuses['status.fire-gauntlet.stoke'],undefined);
+ assert.ok(odd.pack.items['item.fire-gauntlet'].gaps.some(g=>g.includes('power.fire-gauntlet.stoke')));
+});

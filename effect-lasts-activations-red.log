@@ -1,0 +1,513 @@
+✖ the pack compiles, and no row in it holds two triggers under one id (2.0581ms)
+✖ the Fire Imp: the end-of-Activation burn keeps the plain id; the burn of its Blast is named for the Blast (0.1923ms)
+✖ the three parts of the rule, each on the row that needs it: the attack, then the hook, then the effect (0.2035ms)
+✖ a row whose every trigger already has its own id keeps every id as it was (0.1534ms)
+✔ two triggers the rule cannot tell apart fail the build, naming the row and the id (354.5818ms)
+✖ a test unit that is a delta over another holds the triggers of its base once (0.219ms)
+✖ the War Axe says attack: own — its on-block pair rides Chop and Hack, each scoped; its copies follow their own attacks (0.1665ms)
+✖ the scope is the word on the row: without it the trigger rides every attack its holder makes, as before (445.3949ms)
+✖ a scope word the compiler does not read, or a row with no attack of its own, is a named gap — never a guessed scope (429.8555ms)
+✖ the nine weapons that say attack: own, and the three rows whose words are every strike of their bearer (0.4954ms)
+✖ an attribute on a weapon: every trigger it adds on an attacker's hook is scoped to an attack that weapon grants — over every tier-3 row (0.32ms)
+✖ the attribute's own word still decides: basic is the first attack alone (Flaming), own is said the same as unsaid, another word is a named gap (0.2327ms)
+✖ a hook that is not the attacker's keeps no scope: an attribute on worn armor is its wearer's (0.1587ms)
+✖ the rows that say attackTag: the Burning Touch requires melee, Pharaoh's Gauntlets brawl; the Bleeding Strike says nothing and requires nothing (0.1978ms)
+✖ an attack's tags: its own Codex tags, joined with its item's tags less the manner words; a Forge copy keeps its original's (0.3528ms)
+✖ an unknown tag fails the build, naming the row, the trigger and the tag — on an item's row and on a test badge (366.484ms)
+✖ the word is the same on a unit's own row, and beside attack: own on a weapon's row; without it nothing is required (365.1408ms)
+✖ a weapon attack's stat rider: Crush takes 1 Armor, Elf Shot gives 1 Precision, the Obsidian Fang takes 1 Strength at 20% — each scoped to its attack, for the Battle (0.2878ms)
+✖ the phrase is exact: a stat the engine cannot modify, or other words, compile nothing (341.1951ms)
+✖ Lock Shields lends its Block to every ally within 1 of the holder; Cover Ally puts Protection on one adjacent ally; a sentence the compiler does not read compiles nothing (0.2817ms)
+✖ a weapon attack's own cooldown reaches the pack: the Knight Shield's Shield Slam, and the staffs whose rows always said one (0.1179ms)
+✖ the Great Sword's Counterattack: the free attack up and +2 Strength, both until the end of the next Turn; a stat the engine has no name for compiles nothing (0.1451ms)
+✖ the War Axe's attacks at the Ledger's numbers: the basic attack −10 Accuracy, Heavy Chop Strength +3 at −15, and the on-block rider on each and on nothing else (0.1302ms)
+✖ a weapon row carries no Strength, Precision, Crit or Accuracy for its wielder — codex rows, tier-3 rows and the Forge's rows alike (0.1692ms)
+✖ a tier-3 row grants its own copy of each attack it raises, by the damage stat the attack uses; a number that can ride nothing is named (0.2559ms)
+✖ a named weapon's own attack rows are raised where they are; the Forge's rows are what they were (0.2161ms)
+✖ the swords' "+10 counterattack" is a stat modifier of the row — Counterattack Accuracy 10 — and no longer a named gap; the stat words map to the engine's (1.3676ms)
+✖ the Elfbow's Double Shot: one enemy within 4 hexes, two hits; the Throwing Knives' Fan still names its several targets (3.0531ms)
+✖ a timed effect is a status the pack carries: Stoke, Perfect Sight and Poison Coating — and the Fire Punch's own half-Magic Burn (0.2128ms)
+✖ the timed lines are exact: other words compile no status and stay a named gap (304.848ms)
+ℹ tests 30
+ℹ suites 0
+ℹ pass 1
+ℹ fail 29
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3529.9368
+
+✖ failing tests:
+
+test at test\trigger-ids.test.mjs:47:1
+✖ the pack compiles, and no row in it holds two triggers under one id (2.0581ms)
+  AssertionError [ERR_ASSERTION]: file:///C:/Users/aring/AppData/Local/Temp/hobat-trigger-ids-BUQ4Mk/content/mkenginepack.mjs:2347
+      for (const k of Object.keys(r)) if (!FLAGS.has(k)) throw new Error(`content/test/statuses.json: '${r.id}' carries unknown field '${k}'`);
+                                                               ^
+  
+  Error: content/test/statuses.json: 'test.status.whetted' carries unknown field 'countsDown'
+      at testStatuses (file:///C:/Users/aring/AppData/Local/Temp/hobat-trigger-ids-BUQ4Mk/content/mkenginepack.mjs:2347:62)
+      at file:///C:/Users/aring/AppData/Local/Temp/hobat-trigger-ids-BUQ4Mk/content/mkenginepack.mjs:2378:246
+      at ModuleJob.run (node:internal/modules/esm/module_job:413:25)
+      at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:660:26)
+      at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+  
+  Node.js v24.12.0
+  
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-engine/content/test/trigger-ids.test.mjs:48:9)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.start (node:internal/test_runner/test:1003:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:358:17) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at test\trigger-ids.test.mjs:53:1
+✖ the Fire Imp: the end-of-Activation burn keeps the plain id; the burn of its Blast is named for the Blast (0.1923ms)
+  TypeError: Cannot read properties of null (reading 'authoredEnemies')
+      at enemy (file:///C:/Users/aring/Desktop/HBT-worker-engine/content/test/trigger-ids.test.mjs:42:29)
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-engine/content/test/trigger-ids.test.mjs:54:11)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+      at Test.postRun (node:internal/test_runner/test:1235:19)
+      at Test.run (node:internal/test_runner/test:1163:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:358:3)
+
+test at test\trigger-ids.test.mjs:58:1
+✖ the three parts of the rule, each on the row that needs it: the attack, then the hook, then the effect (0.2035ms)
+  TypeError: Cannot read properties of null (reading 'authoredEnemies')
+      at enemy (file:///C:/Users/aring/Desktop/HBT-worker-engine/content/test/trigger-ids.test.mjs:42:29)
+      at ids (file:///C:/Users/aring/Desktop/HBT-worker-engine/content/test/trigger-ids.test.mjs:59:16)
+      at file:///C:/Users/aring/Desktop/HBT-worker-engine/content/test/trigger-ids.test.mjs:60:95
+      at Array.every (<anonymous>)
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-engine/content/test/trigger-ids.test.mjs:60:86)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+      at Test.postRun (node:internal/test_runner/test:1235:19)
+      at Test.run (node:internal/test_runner/test:1163:12)
+
+test at test\trigger-ids.test.mjs:71:1
+✖ a row whose every trigger already has its own id keeps every id as it was (0.1534ms)
+  TypeError: Cannot read properties of null (reading 'authoredEnemies')
+      at enemy (file:///C:/Users/aring/Desktop/HBT-worker-engine/content/test/trigger-ids.test.mjs:42:29)
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-engine/content/test/trigger-ids.test.mjs:72:19)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+      at Test.postRun (node:internal/test_runner/test:1235:19)
+      at Test.run (node:internal/test_runner/test:1163:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7)
+
+test at test\trigger-ids.test.mjs:88:1
+✖ a test unit that is a delta over another holds the triggers of its base once (0.219ms)
+  TypeError: Cannot read properties of null (reading 'heroes')
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-engine/content/test/trigger-ids.test.mjs:89:23)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+      at Test.postRun (node:internal/test_runner/test:1235:19)
+      at Test.run (node:internal/test_runner/test:1163:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7)
+
+test at test\trigger-ids.test.mjs:96:1
+✖ the War Axe says attack: own — its on-block pair rides Chop and Hack, each scoped; its copies follow their own attacks (0.1665ms)
+  TypeError: Cannot read properties of null (reading 'items')
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-engine/content/test/trigger-ids.test.mjs:97:25)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+      at Test.postRun (node:internal/test_runner/test:1235:19)
+      at Test.run (node:internal/test_runner/test:1163:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7)
+
+test at test\trigger-ids.test.mjs:106:1
+✖ the scope is the word on the row: without it the trigger rides every attack its holder makes, as before (445.3949ms)
+  AssertionError [ERR_ASSERTION]: file:///C:/Users/aring/AppData/Local/Temp/hobat-trigger-ids-oQrwVq/content/mkenginepack.mjs:2347
+      for (const k of Object.keys(r)) if (!FLAGS.has(k)) throw new Error(`content/test/statuses.json: '${r.id}' carries unknown field '${k}'`);
+                                                               ^
+  
+  Error: content/test/statuses.json: 'test.status.whetted' carries unknown field 'countsDown'
+      at testStatuses (file:///C:/Users/aring/AppData/Local/Temp/hobat-trigger-ids-oQrwVq/content/mkenginepack.mjs:2347:62)
+      at file:///C:/Users/aring/AppData/Local/Temp/hobat-trigger-ids-oQrwVq/content/mkenginepack.mjs:2378:246
+      at ModuleJob.run (node:internal/modules/esm/module_job:413:25)
+      at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:660:26)
+      at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+  
+  Node.js v24.12.0
+  
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-engine/content/test/trigger-ids.test.mjs:108:9)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+      at Test.postRun (node:internal/test_runner/test:1235:19)
+      at Test.run (node:internal/test_runner/test:1163:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at test\trigger-ids.test.mjs:112:1
+✖ a scope word the compiler does not read, or a row with no attack of its own, is a named gap — never a guessed scope (429.8555ms)
+  AssertionError [ERR_ASSERTION]: file:///C:/Users/aring/AppData/Local/Temp/hobat-trigger-ids-ietDdG/content/mkenginepack.mjs:2347
+      for (const k of Object.keys(r)) if (!FLAGS.has(k)) throw new Error(`content/test/statuses.json: '${r.id}' carries unknown field '${k}'`);
+                                                               ^
+  
+  Error: content/test/statuses.json: 'test.status.whetted' carries unknown field 'countsDown'
+      at testStatuses (file:///C:/Users/aring/AppData/Local/Temp/hobat-trigger-ids-ietDdG/content/mkenginepack.mjs:2347:62)
+      at file:///C:/Users/aring/AppData/Local/Temp/hobat-trigger-ids-ietDdG/content/mkenginepack.mjs:2378:246
+      at ModuleJob.run (node:internal/modules/esm/module_job:413:25)
+      at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:660:26)
+      at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+  
+  Node.js v24.12.0
+  
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-engine/content/test/trigger-ids.test.mjs:114:9)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+      at Test.postRun (node:internal/test_runner/test:1235:19)
+      at Test.run (node:internal/test_runner/test:1163:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at test\trigger-ids.test.mjs:123:1
+✖ the nine weapons that say attack: own, and the three rows whose words are every strike of their bearer (0.4954ms)
+  TypeError: Cannot read properties of null (reading 'items')
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-engine/content/test/trigger-ids.test.mjs:125:41)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+      at Test.postRun (node:internal/test_runner/test:1235:19)
+      at Test.run (node:internal/test_runner/test:1163:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7)
+
+test at test\trigger-ids.test.mjs:144:1
+✖ an attribute on a weapon: every trigger it adds on an attacker's hook is scoped to an attack that weapon grants — over every tier-3 row (0.32ms)
+  TypeError: Cannot read properties of null (reading 'enchanted')
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-engine/content/test/trigger-ids.test.mjs:145:37)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+      at Test.postRun (node:internal/test_runner/test:1235:19)
+      at Test.run (node:internal/test_runner/test:1163:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7)
+
+test at test\trigger-ids.test.mjs:156:1
+✖ the attribute's own word still decides: basic is the first attack alone (Flaming), own is said the same as unsaid, another word is a named gap (0.2327ms)
+  TypeError: Cannot read properties of null (reading 'enchanted')
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-engine/content/test/trigger-ids.test.mjs:157:22)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+      at Test.postRun (node:internal/test_runner/test:1235:19)
+      at Test.run (node:internal/test_runner/test:1163:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7)
+
+test at test\trigger-ids.test.mjs:167:1
+✖ a hook that is not the attacker's keeps no scope: an attribute on worn armor is its wearer's (0.1587ms)
+  TypeError: Cannot read properties of null (reading 'enchanted')
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-engine/content/test/trigger-ids.test.mjs:168:37)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+      at Test.postRun (node:internal/test_runner/test:1235:19)
+      at Test.run (node:internal/test_runner/test:1163:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7)
+
+test at test\trigger-ids.test.mjs:180:1
+✖ the rows that say attackTag: the Burning Touch requires melee, Pharaoh's Gauntlets brawl; the Bleeding Strike says nothing and requires nothing (0.1978ms)
+  TypeError: Cannot read properties of null (reading 'items')
+      at tagOf (file:///C:/Users/aring/Desktop/HBT-worker-engine/content/test/trigger-ids.test.mjs:181:28)
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-engine/content/test/trigger-ids.test.mjs:182:19)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+      at Test.postRun (node:internal/test_runner/test:1235:19)
+      at Test.run (node:internal/test_runner/test:1163:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7)
+
+test at test\trigger-ids.test.mjs:189:1
+✖ an attack's tags: its own Codex tags, joined with its item's tags less the manner words; a Forge copy keeps its original's (0.3528ms)
+  TypeError: Cannot read properties of null (reading 'authoredAttacks')
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-engine/content/test/trigger-ids.test.mjs:190:20)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+      at Test.postRun (node:internal/test_runner/test:1235:19)
+      at Test.run (node:internal/test_runner/test:1163:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7)
+
+test at test\trigger-ids.test.mjs:213:1
+✖ an unknown tag fails the build, naming the row, the trigger and the tag — on an item's row and on a test badge (366.484ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /'item\.rune-burning-touch' trigger 'trigger\.rune-burning-touch\.burn' requires tag 'meele', which is not in the Codex's tag vocabulary/. Input:
+  
+  'file:///C:/Users/aring/AppData/Local/Temp/hobat-trigger-ids-5QTMPT/content/mkenginepack.mjs:2347\r\n' +
+    "    for (const k of Object.keys(r)) if (!FLAGS.has(k)) throw new Error(`content/test/statuses.json: '${r.id}' carries unknown field '${k}'`);\r\n" +
+    '                                                             ^\r\n' +
+    '\r\n' +
+    "Error: content/test/statuses.json: 'test.status.whetted' carries unknown field 'countsDown'\r\n" +
+    '    at testStatuses (file:///C:/Users/aring/AppData/Local/Temp/hobat-trigger-ids-5QTMPT/content/mkenginepack.mjs:2347:62)\r\n' +
+    '    at file:///C:/Users/aring/AppData/Local/Temp/hobat-trigger-ids-5QTMPT/content/mkenginepack.mjs:2378:246\r\n' +
+    '    at ModuleJob.run (node:internal/modules/esm/module_job:413:25)\r\n' +
+    '    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:660:26)\r\n' +
+    '    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)\r\n' +
+    '\r\n' +
+    'Node.js v24.12.0\r\n'
+  
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-engine/content/test/trigger-ids.test.mjs:216:9)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+      at Test.postRun (node:internal/test_runner/test:1235:19)
+      at Test.run (node:internal/test_runner/test:1163:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: "file:///C:/Users/aring/AppData/Local/Temp/hobat-trigger-ids-5QTMPT/content/mkenginepack.mjs:2347\r\n    for (const k of Object.keys(r)) if (!FLAGS.has(k)) throw new Error(`content/test/statuses.json: '${r.id}' carries unknown field '${k}'`);\r\n                                                             ^\r\n\r\nError: content/test/statuses.json: 'test.status.whetted' carries unknown field 'countsDown'\r\n    at testStatuses (file:///C:/Users/aring/AppData/Local/Temp/hobat-trigger-ids-5QTMPT/content/mkenginepack.mjs:2347:62)\r\n    at file:///C:/Users/aring/AppData/Local/Temp/hobat-trigger-ids-5QTMPT/content/mkenginepack.mjs:2378:246\r\n    at ModuleJob.run (node:internal/modules/esm/module_job:413:25)\r\n    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:660:26)\r\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)\r\n\r\nNode.js v24.12.0\r\n",
+    expected: /'item\.rune-burning-touch' trigger 'trigger\.rune-burning-touch\.burn' requires tag 'meele', which is not in the Codex's tag vocabulary/,
+    operator: 'match',
+    diff: 'simple'
+  }
+
+test at test\trigger-ids.test.mjs:221:1
+✖ the word is the same on a unit's own row, and beside attack: own on a weapon's row; without it nothing is required (365.1408ms)
+  AssertionError [ERR_ASSERTION]: file:///C:/Users/aring/AppData/Local/Temp/hobat-trigger-ids-wSrgi2/content/mkenginepack.mjs:2347
+      for (const k of Object.keys(r)) if (!FLAGS.has(k)) throw new Error(`content/test/statuses.json: '${r.id}' carries unknown field '${k}'`);
+                                                               ^
+  
+  Error: content/test/statuses.json: 'test.status.whetted' carries unknown field 'countsDown'
+      at testStatuses (file:///C:/Users/aring/AppData/Local/Temp/hobat-trigger-ids-wSrgi2/content/mkenginepack.mjs:2347:62)
+      at file:///C:/Users/aring/AppData/Local/Temp/hobat-trigger-ids-wSrgi2/content/mkenginepack.mjs:2378:246
+      at ModuleJob.run (node:internal/modules/esm/module_job:413:25)
+      at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:660:26)
+      at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+  
+  Node.js v24.12.0
+  
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-engine/content/test/trigger-ids.test.mjs:223:9)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+      at Test.postRun (node:internal/test_runner/test:1235:19)
+      at Test.run (node:internal/test_runner/test:1163:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at test\trigger-ids.test.mjs:237:1
+✖ a weapon attack's stat rider: Crush takes 1 Armor, Elf Shot gives 1 Precision, the Obsidian Fang takes 1 Strength at 20% — each scoped to its attack, for the Battle (0.2878ms)
+  TypeError: Cannot read properties of null (reading 'items')
+      at of (file:///C:/Users/aring/Desktop/HBT-worker-engine/content/test/trigger-ids.test.mjs:238:36)
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-engine/content/test/trigger-ids.test.mjs:239:19)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+      at Test.postRun (node:internal/test_runner/test:1235:19)
+      at Test.run (node:internal/test_runner/test:1163:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7)
+
+test at test\trigger-ids.test.mjs:246:1
+✖ the phrase is exact: a stat the engine cannot modify, or other words, compile nothing (341.1951ms)
+  AssertionError [ERR_ASSERTION]: file:///C:/Users/aring/AppData/Local/Temp/hobat-trigger-ids-R4eXp7/content/mkenginepack.mjs:2347
+      for (const k of Object.keys(r)) if (!FLAGS.has(k)) throw new Error(`content/test/statuses.json: '${r.id}' carries unknown field '${k}'`);
+                                                               ^
+  
+  Error: content/test/statuses.json: 'test.status.whetted' carries unknown field 'countsDown'
+      at testStatuses (file:///C:/Users/aring/AppData/Local/Temp/hobat-trigger-ids-R4eXp7/content/mkenginepack.mjs:2347:62)
+      at file:///C:/Users/aring/AppData/Local/Temp/hobat-trigger-ids-R4eXp7/content/mkenginepack.mjs:2378:246
+      at ModuleJob.run (node:internal/modules/esm/module_job:413:25)
+      at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:660:26)
+      at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+  
+  Node.js v24.12.0
+  
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-engine/content/test/trigger-ids.test.mjs:248:9)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+      at Test.postRun (node:internal/test_runner/test:1235:19)
+      at Test.run (node:internal/test_runner/test:1163:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at test\trigger-ids.test.mjs:254:1
+✖ Lock Shields lends its Block to every ally within 1 of the holder; Cover Ally puts Protection on one adjacent ally; a sentence the compiler does not read compiles nothing (0.2817ms)
+  TypeError: Cannot read properties of null (reading 'authoredAbilities')
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-engine/content/test/trigger-ids.test.mjs:255:20)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+      at Test.postRun (node:internal/test_runner/test:1235:19)
+      at Test.run (node:internal/test_runner/test:1163:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7)
+
+test at test\trigger-ids.test.mjs:264:1
+✖ a weapon attack's own cooldown reaches the pack: the Knight Shield's Shield Slam, and the staffs whose rows always said one (0.1179ms)
+  TypeError: Cannot read properties of null (reading 'authoredAttacks')
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-engine/content/test/trigger-ids.test.mjs:265:20)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+      at Test.postRun (node:internal/test_runner/test:1235:19)
+      at Test.run (node:internal/test_runner/test:1163:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7)
+
+test at test\trigger-ids.test.mjs:275:1
+✖ the Great Sword's Counterattack: the free attack up and +2 Strength, both until the end of the next Turn; a stat the engine has no name for compiles nothing (0.1451ms)
+  TypeError: Cannot read properties of null (reading 'authoredAbilities')
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-engine/content/test/trigger-ids.test.mjs:276:20)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+      at Test.postRun (node:internal/test_runner/test:1235:19)
+      at Test.run (node:internal/test_runner/test:1163:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7)
+
+test at test\trigger-ids.test.mjs:289:1
+✖ the War Axe's attacks at the Ledger's numbers: the basic attack −10 Accuracy, Heavy Chop Strength +3 at −15, and the on-block rider on each and on nothing else (0.1302ms)
+  TypeError: Cannot read properties of null (reading 'authoredAttacks')
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-engine/content/test/trigger-ids.test.mjs:290:20)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+      at Test.postRun (node:internal/test_runner/test:1235:19)
+      at Test.run (node:internal/test_runner/test:1163:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7)
+
+test at test\trigger-ids.test.mjs:301:1
+✖ a weapon row carries no Strength, Precision, Crit or Accuracy for its wielder — codex rows, tier-3 rows and the Forge's rows alike (0.1692ms)
+  TypeError: Cannot read properties of null (reading 'items')
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-engine/content/test/trigger-ids.test.mjs:302:41)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+      at Test.postRun (node:internal/test_runner/test:1235:19)
+      at Test.run (node:internal/test_runner/test:1163:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7)
+
+test at test\trigger-ids.test.mjs:308:1
+✖ a tier-3 row grants its own copy of each attack it raises, by the damage stat the attack uses; a number that can ride nothing is named (0.2559ms)
+  TypeError: Cannot read properties of null (reading 'authoredAttacks')
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-engine/content/test/trigger-ids.test.mjs:309:20)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+      at Test.postRun (node:internal/test_runner/test:1235:19)
+      at Test.run (node:internal/test_runner/test:1163:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7)
+
+test at test\trigger-ids.test.mjs:331:1
+✖ a named weapon's own attack rows are raised where they are; the Forge's rows are what they were (0.2161ms)
+  TypeError: Cannot read properties of null (reading 'authoredAttacks')
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-engine/content/test/trigger-ids.test.mjs:332:20)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+      at Test.postRun (node:internal/test_runner/test:1235:19)
+      at Test.run (node:internal/test_runner/test:1163:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7)
+
+test at test\trigger-ids.test.mjs:345:1
+✖ the swords' "+10 counterattack" is a stat modifier of the row — Counterattack Accuracy 10 — and no longer a named gap; the stat words map to the engine's (1.3676ms)
+  TypeError: Cannot read properties of null (reading 'items')
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-engine/content/test/trigger-ids.test.mjs:350:30)
+      at async Test.run (node:internal/test_runner/test:1113:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7)
+
+test at test\trigger-ids.test.mjs:365:1
+✖ the Elfbow's Double Shot: one enemy within 4 hexes, two hits; the Throwing Knives' Fan still names its several targets (3.0531ms)
+  TypeError: Cannot read properties of null (reading 'authoredAttacks')
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-engine/content/test/trigger-ids.test.mjs:368:25)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+      at Test.postRun (node:internal/test_runner/test:1235:19)
+      at Test.run (node:internal/test_runner/test:1163:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7)
+
+test at test\trigger-ids.test.mjs:376:1
+✖ a timed effect is a status the pack carries: Stoke, Perfect Sight and Poison Coating — and the Fire Punch's own half-Magic Burn (0.2128ms)
+  TypeError: Cannot read properties of null (reading 'statuses')
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-engine/content/test/trigger-ids.test.mjs:377:20)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+      at Test.postRun (node:internal/test_runner/test:1235:19)
+      at Test.run (node:internal/test_runner/test:1163:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7)
+
+test at test\trigger-ids.test.mjs:392:1
+✖ the timed lines are exact: other words compile no status and stay a named gap (304.848ms)
+  AssertionError [ERR_ASSERTION]: file:///C:/Users/aring/AppData/Local/Temp/hobat-trigger-ids-EuwSFV/content/mkenginepack.mjs:2347
+      for (const k of Object.keys(r)) if (!FLAGS.has(k)) throw new Error(`content/test/statuses.json: '${r.id}' carries unknown field '${k}'`);
+                                                               ^
+  
+  Error: content/test/statuses.json: 'test.status.whetted' carries unknown field 'countsDown'
+      at testStatuses (file:///C:/Users/aring/AppData/Local/Temp/hobat-trigger-ids-EuwSFV/content/mkenginepack.mjs:2347:62)
+      at file:///C:/Users/aring/AppData/Local/Temp/hobat-trigger-ids-EuwSFV/content/mkenginepack.mjs:2378:246
+      at ModuleJob.run (node:internal/modules/esm/module_job:413:25)
+      at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:660:26)
+      at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+  
+  Node.js v24.12.0
+  
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/HBT-worker-engine/content/test/trigger-ids.test.mjs:394:9)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+      at Test.postRun (node:internal/test_runner/test:1235:19)
+      at Test.run (node:internal/test_runner/test:1163:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
