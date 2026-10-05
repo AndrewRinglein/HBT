@@ -1249,15 +1249,15 @@
    "accuracy": -5,
    "crit": 0,
    "hits": 2,
-   "targets": "up to 2 enemies within 4 hexes",
+   "targets": "one enemy within 4 hexes",
    "damageType": "physical",
    "tags": [
     "ranged"
    ],
    "triggers": [],
    "slayer": null,
-   "intent": "Two weak arrows in the time of one good one; it is a spread, not an upgrade.",
-   "source": "settled content | 2026-08-27 review: damage -1 -> -2, 2 attacks."
+   "intent": "Two weak arrows at one mark in the time of one good one; it is a second chance to hit, not an upgrade.",
+   "source": "settled content | 2026-08-27 review: damage -1 -> -2, 2 attacks. | 2026-10-04 (engine item content.elfbow-double-shot-one-target; engine/DECISIONS.md 2026-10-04 ‘his 28 reward weapons read back: the Elfbow shoots one target; the mechanics his own items need are wanted’): \"Elfpo is supposed to only shoot one target.\" (‘Elfpo’ is the Elfbow — dictation.) Double Shot is two hits on ONE target; its targets line named a second enemy and no longer does. Its numbers are unchanged. The intent line was ‘Two weak arrows in the time of one good one; it is a spread, not an upgrade.’"
   },
   {
    "id": "attack.barbarian-bow.power-shot",

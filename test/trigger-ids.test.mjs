@@ -359,3 +359,13 @@ test('the swords\' "+10 counterattack" is a stat modifier of the row — Counter
  const odd=candidate(edit=>edit('gen/settled-items.json',data=>{data.items.find(i=>i.id==='item.longsword').statModifiers.counterAccuracy=10}));
  assert.notEqual(odd.status,0);assert.match(odd.stdout+odd.stderr,/item item\.longsword: unknown stat "counterAccuracy"/);assert.equal(odd.pack,null);
 });
+
+// engine content.elfbow-double-shot-one-target (2026-10-04; engine DECISIONS.md 2026-10-04 'his 28 reward weapons read back: the Elfbow
+// shoots one target …'): the Elfbow's Double Shot is two hits on one target — the row says one enemy, so nothing of it is a gap.
+test('the Elfbow\'s Double Shot: one enemy within 4 hexes, two hits; the Throwing Knives\' Fan still names its several targets',()=>{
+ const row=JSON.parse(fs.readFileSync(path.join(source,'gen/settled-items.json'),'utf8')).attacks.find(a=>a.id==='attack.elfbow.double-shot');
+ assert.deepEqual([row.targets,row.hits,row.damage,row.stamina,row.accuracy,row.range],['one enemy within 4 hexes',2,-2,2,-5,4]);
+ assert.equal(live.pack.authoredAttacks['attack.elfbow.double-shot'].hits,2);
+ // (the gap list itself is the shipped gen/enemy-pack-gaps.json: the engine's test/elfbow-double-shot-one-target.test.ts holds that no line of it names the Double Shot)
+ assert.equal(JSON.parse(fs.readFileSync(path.join(source,'gen/weapons.json'),'utf8')).attacks.find(x=>x.id==='attack.throwing-knives.fan').targets,'up to 3 enemies within 3 hexes');
+});
