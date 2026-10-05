@@ -291,3 +291,47 @@ test('the War Axe\'s attacks at the Ledger\'s numbers: the basic attack −10 Ac
  assert.ok(T.length>0&&T.every(t=>t.hook==='onBlock'),'no rider but the on-block ones (the Hack\'s Bleed is gone)');
  assert.deepEqual([...new Set(T.map(t=>t.onlyWithAttack))].sort(),['attack.war-axe.chop','attack.war-axe.hack']);
 });
+
+// engine fix.enchant-stats-on-weapon (2026-10-04; engine DECISIONS.md 2026-09-28 '… What a weapon's enchantment or custom tier may
+// convey: Strength becomes the weapon's damage (its attacks go up); Crit and Accuracy apply to that weapon's attacks …'): one
+// rule for every weapon row of every tier — its Strength, Precision, Crit and Accuracy ride its own attacks, never its wielder.
+test('a weapon row carries no Strength, Precision, Crit or Accuracy for its wielder — codex rows, tier-3 rows and the Forge\'s rows alike',()=>{
+ const rows=[...Object.values(live.pack.items),...Object.values(live.pack.enchanted),...Object.values(live.pack.derivedItems)].filter(i=>i.itemClass==='weapon');
+ assert.ok(rows.length>300);
+ assert.deepEqual(rows.filter(i=>['strength','precision','crit','accuracy'].some(k=>i.statModifiers[k])).map(i=>i.id),[]);
+ // every attack-scoped rider of a row rides an attack that row grants (a copy carries its riders with it)
+ for(const i of rows)for(const t of i.triggers)if(t.onlyWithAttack)assert.ok(i.grants.includes(t.onlyWithAttack),i.id+': '+t.id+' rides '+t.onlyWithAttack);
+});
+test('a tier-3 row grants its own copy of each attack it raises, by the damage stat the attack uses; a number that can ride nothing is named',()=>{
+ const A=live.pack.authoredAttacks,E=live.pack.enchanted;
+ // +1 Strength on a Strength attack
+ assert.deepEqual(E['item.greatsword.soul-reaper'].grants,['attack.greatsword.hew.soul-reaper']);
+ assert.equal(A['attack.greatsword.hew.soul-reaper'].bonus,A['attack.greatsword.hew'].bonus+1);
+ assert.deepEqual(A['attack.greatsword.hew.soul-reaper'].tags,A['attack.greatsword.hew'].tags);
+ assert.equal(E['item.greatsword.soul-reaper'].statModifiers.strength,undefined);
+ // +3 Crit, and its on-crit rider follows the copy
+ assert.equal(A['attack.greatsword.hew.bloodletting'].crit??0,(A['attack.greatsword.hew'].crit??0)+3);
+ assert.deepEqual(E['item.greatsword.bloodletting'].triggers.filter(t=>t.hook==='onCrit').map(t=>t.onlyWithAttack),['attack.greatsword.hew.bloodletting']);
+ // +1 Precision rides the throw, not the thrust: the spear's Strength attack is not copied at all
+ const spear=live.pack.items['item.hunting-spear'].grants,hunt=E['item.hunting-spear.hunting'].grants;
+ for(const [i,aid] of spear.entries()){if(A[aid].stat==='precision'){assert.equal(hunt[i],aid+'.hunting');assert.equal(A[hunt[i]].bonus,A[aid].bonus+1)}else assert.equal(hunt[i],aid)}
+ // +2 Strength rides; +2 Precision has no attack on a Greatsword — named on the row, and no stat of the wielder; −4 Health and −10 Dodge are his
+ const sac=E['item.greatsword.sacrifice'];
+ assert.equal(A[sac.grants[0]].bonus,A['attack.greatsword.hew'].bonus+2);
+ assert.ok(sac.gaps.some(g=>/precision 2: the weapon grants no attack that uses precision/.test(g)),JSON.stringify(sac.gaps));
+ assert.deepEqual([sac.statModifiers.maxHp,sac.statModifiers.dodge,sac.statModifiers.precision],[-4,-10,undefined]);
+ // an attribute with nothing for the attacks grants the base's own attacks (the Flaming Longsword)
+ assert.deepEqual(E['item.longsword.flaming'].grants,live.pack.items['item.longsword'].grants);
+ // "+1 damage" (an attackModifier) was dropped on a tier-3 row; it rides the copy as it does on the Forge's
+ assert.equal(A[E['item.greatsword.destroying'].grants[0]].bonus,A['attack.greatsword.hew'].bonus+1);
+});
+test('a named weapon\'s own attack rows are raised where they are; the Forge\'s rows are what they were',()=>{
+ const A=live.pack.authoredAttacks,C=Object.fromEntries(JSON.parse(fs.readFileSync(path.join(source,'gen/weapons.json'),'utf8')).attacks.map(a=>[a.id,a]));
+ for(const [item,strength,crit] of [['item.death-blade',1,0],['item.demonic-shiv',1,5],['item.cursed-sand-blade',2,0]]){
+  const row=live.pack.items[item];assert.equal(row.statModifiers.strength,undefined,item);assert.equal(row.statModifiers.crit,undefined,item);
+  for(const g of row.grants){assert.ok(C[g],g+' is authored in gen/weapons.json');assert.equal(A[g].bonus,C[g].damage+(C[g].stat==='strength'?strength:0),g);assert.equal(A[g].crit??0,(C[g].crit??0)+crit,g)}
+ }
+ const hew=A['attack.greatsword.hew'];
+ assert.equal(A['attack.greatsword.hew.heavy'].bonus,hew.bonus+1);assert.equal(A['attack.greatsword.hew.keen'].accuracy,(hew.accuracy??0)+6);
+ assert.deepEqual([A['attack.greatsword.hew.cruel'].accuracy,A['attack.greatsword.hew.cruel'].crit],[(hew.accuracy??0)+3,(hew.crit??0)+4]);
+});

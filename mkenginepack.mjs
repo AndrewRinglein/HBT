@@ -1695,8 +1695,74 @@ function slayerRules(m, where) {
     return { tag, add: n };
   });
 }
+// ── A WEAPON ROW'S ATTACK NUMBERS RIDE ITS OWN ATTACKS (engine fix.enchant-stats-on-weapon, 2026-10-04) ──
+// Ruled 2026-09-28 (engine DECISIONS.md 'counterattack, special free attacks, the opening six, shields, custom weapons'):
+// "What a weapon's enchantment or custom tier may convey: Strength becomes the weapon's damage (its attacks go up); Crit and
+// Accuracy apply to that weapon's attacks; Stamina, Luck, Block, Dodge and Armor may be conveyed to the wielder". The Forge's
+// tier-2 rows did this (GEAR-DESIGN.md §3: the numbers ride COPIED attack rows); the tier-3 artifact attributes and the named
+// weapons folded Strength, Precision, Crit and Accuracy onto the WIELDER, so the bonus also rode a Punch, the other hand's
+// weapon and a cast. ONE RULE, here, for every weapon row of every tier:
+//   Accuracy, Crit            -> that field of each attack the row grants
+//   Strength, Precision       -> the damage (bonus) of each attack the row grants that USES that stat ("its attacks go up")
+//   an attackModifier damage  -> the damage of each attack the row grants
+//   everything else           -> not this rule's: the caller's (the wielder's stat, or a named gap)
+// A row MADE FROM a weapon (a tier-3 row, a Forge row) grants its own COPY of each raised attack — '<attack id>.<slug>' — so the
+// plain weapon is untouched; a NAMED weapon's attacks are its own rows and are raised where they are. A number that can ride
+// nothing (a burst does not roll; no attack of the weapon uses the stat) is a named gap, never passed to the wielder.
+const WEAPON_ATTACK_FIELD = { accuracy: 'accuracy', crit: 'crit' };
+const WEAPON_DAMAGE_STATS = new Set(['strength', 'precision']);
+const attackCopies = new Set();     // every copied attack row, whoever made it — one owner per id
+const raisedInPlace = new Map();    // attack id -> the named weapon row that raised it
+/** A weapon row's stat words, split: what its attacks carry (`adds` by attack field, `byStat` by damage stat) and the `rest`.
+ *  `moreFields`: further stats the caller's own rule puts on the attack (the Forge's Reach). */
+function weaponAttackNumbers(mods, attackModifiers, moreFields = {}) {
+  const adds = {}, byStat = {}, rest = {}, otherAttackModifiers = {};
+  for (const [k, v] of Object.entries(mods || {})) {
+    const st = statOf(k);
+    const field = st && (WEAPON_ATTACK_FIELD[st] ?? moreFields[st]);
+    if (field) adds[field] = (adds[field] ?? 0) + v;
+    else if (WEAPON_DAMAGE_STATS.has(st)) byStat[st] = (byStat[st] ?? 0) + v;
+    else rest[k] = v;
+  }
+  for (const [k, v] of Object.entries(attackModifiers || {})) {
+    if (k === 'damage') adds.bonus = (adds.bonus ?? 0) + v;
+    else otherAttackModifiers[k] = v;
+  }
+  return { adds, byStat, rest, otherAttackModifiers };
+}
+/** Put the numbers on the attacks `grants` names. `slug`: each raised attack is copied as '<id>.<slug>' (a row made from a weapon);
+ *  null: the rows are the weapon's own and are raised where they are. `always`: copy every attack row, raised or not (the Forge's
+ *  rows — one id shape per enchantment). Returns the grants, and the triggers with each attack-scoped rider following its copy. */
+function rideOwnAttacks({ rowId, grants, triggers, adds, byStat, slug, always = false, label, gaps }) {
+  const copyOf = {}, rode = new Set();
+  const flat = Object.entries(adds).filter(([, v]) => v !== 0);
+  const stats = Object.entries(byStat).filter(([, v]) => v !== 0);
+  const out = grants.map((aid) => {
+    const a = authoredAttacks[aid];
+    if (!a || a.burst) { if (always || flat.length || stats.length) gaps.push(`${label} on ${aid}: not an attack row — not ${slug === null ? 'raised' : 'copied'}`); return aid; }
+    const own = byStat[a.stat] ?? 0;
+    if (own) rode.add(a.stat);
+    if (!always && !flat.length && !own) return aid;
+    const raise = (row) => { for (const [field, v] of flat) row[field] = (row[field] ?? 0) + v; if (own) row.bonus = (row.bonus ?? 0) + own; return row; };
+    if (slug === null) {
+      if (raisedInPlace.has(aid)) throw new Error(`mkenginepack: attack '${aid}' is raised by ${raisedInPlace.get(aid)} and by ${rowId} — a named weapon's attacks are its own`);
+      raisedInPlace.set(aid, rowId); authoredAttacks[aid] = raise({ ...a }); return aid;
+    }
+    const id = `${aid}.${slug}`;
+    if (authoredAttacks[id] && !attackCopies.has(id)) throw new Error(`forge rows: copied attack '${id}' collides with an authored attack`);
+    if (!attackCopies.has(id)) { authoredAttacks[id] = raise({ ...a, id }); attackCopies.add(id); }
+    copyOf[aid] = id;
+    return id;
+  });
+  for (const [st, v] of stats) if (!rode.has(st)) gaps.push(`${label} ${st} ${v}: the weapon grants no attack that uses ${st} — it rides nothing`);
+  // an attack-scoped rider follows its attack onto the copy
+  return { grants: out, triggers: triggers.map((t) => (t.onlyWithAttack && copyOf[t.onlyWithAttack] ? { ...t, onlyWithAttack: copyOf[t.onlyWithAttack] } : t)) };
+}
+/** How many Codex item rows grant each attack: a named weapon's attacks are raised where they are only when they are its own. */
+const GRANTED_BY = new Map();
 function compileItems() {
   const out = {};
+  for (const it of CODEX_ITEMS) for (const aid of (ITEM_BY_ID.get(it.id) ?? it).grants || []) GRANTED_BY.set(aid, [...(GRANTED_BY.get(aid) || []), it.id]);
   for (const it of CODEX_ITEMS) {
     const row = ITEM_BY_ID.get(it.id) ?? it; // later sources win, as for kits
     const gapsHere = [];
@@ -1800,6 +1866,20 @@ function compileItems() {
     // one-use rows (the Waystation, 2026-09-02): a charge is spent IN battle —
     // the same missing capability as an activated item.
     if (row.uses !== undefined && !abilities.some((a) => authoredAbilities[a]?.uses) && !grants.some((a) => authoredAttacks[a]?.uses)) g(`uses: ${JSON.stringify(row.uses)} — no active compiled to carry the charge`, 'charges spent in battle — capability.consumables');
+    // engine fix.enchant-stats-on-weapon (2026-10-04; the rule above): a weapon row's own Strength, Precision, Crit and Accuracy
+    // (the named weapons — the Death Blade's "+1 Strength") ride its own attacks, raised where they are; they are no stat of
+    // the wielder. An attack another row also grants is not this row's alone to raise: named, and the number rides nothing.
+    if (it.itemClass === 'weapon') {
+      const { adds, byStat } = weaponAttackNumbers(statModifiers);
+      if (Object.keys(adds).length || Object.keys(byStat).length) {
+        const shared = grants.filter((aid) => (GRANTED_BY.get(aid) || []).some((other) => other !== it.id));
+        const said = [];
+        if (shared.length) said.push(`weapon stats ${JSON.stringify({ ...adds, ...byStat })}: ${shared.join(', ')} is granted by another row too — not raised`);
+        else rideOwnAttacks({ rowId: it.id, grants, triggers: [], adds, byStat, slug: null, label: 'weapon stat', gaps: said });
+        for (const k of [...Object.keys(WEAPON_ATTACK_FIELD), ...WEAPON_DAMAGE_STATS]) delete statModifiers[k];
+        for (const line of said) g(line, 'a weapon row\'s attack numbers ride its own attacks — engine fix.enchant-stats-on-weapon');
+      }
+    }
     out[it.id] = {
       id: it.id, name: it.name, itemClass: it.itemClass, tier: it.tier ?? 0, hands: it.hands ?? 0, slots: it.slots ?? 0,
       ...(it.classRestriction ? { classRestriction: it.classRestriction } : {}),
@@ -1989,6 +2069,28 @@ for (const c of [...(LEVELS.classes || []), ...(LEVELS.civilianTypes || [])]) {
   }
   levels[c.id] = { id: c.id, rows };
 }
+// ── THE ATTACKS' TAGS (engine capability.unit-trigger-with-tag, 2026-10-04) ──
+// What "has the tag" means, in one place (engine SWITCHES.md attackHasTag): an attack's tags are ITS OWN Codex row's tags
+// (how it is made and with what: melee, ranged, brawl, dagger …) joined with the tags of the item that grants it — the weapon
+// in use (blade, bow, 2-hander …) — except the item's MANNER words (melee, ranged, brawl, area …: the vocabulary's own group),
+// which say how a thing is done and so belong to the attack alone: a weapon tagged melee that also grants a throw does not make
+// the throw a melee attack. A row with no tags from either (the bestiary's attacks, the test lane's) carries none here, and the
+// engine reads its kind — melee or ranged — instead. Written before any row copies an attack — the tier-3 rows and the Forge's (engine fix.enchant-stats-on-weapon moved it
+// above both) — so a copy keeps its
+// original's; a test attack that is a delta over a real one keeps the real one's.
+const TAG_GROUP = new Map((D.tags || []).map((t) => [String(t.id).replace(/^tag\./, ''), t.group]));
+{
+  const tagsOfAttack = new Map();
+  const add = (id, tags) => { if (!tagsOfAttack.has(id)) tagsOfAttack.set(id, new Set()); for (const t of tags) tagsOfAttack.get(id).add(t); };
+  for (const a of D.attacks || []) add(a.id, a.tags || []);
+  for (const i of D.items || []) for (const g of i.grants || []) if (tagsOfAttack.has(g) || authoredAttacks[g]) add(g, (i.tags || []).filter((t) => TAG_GROUP.get(t) !== 'manner'));
+  for (const [id, tags] of tagsOfAttack) {
+    if (!authoredAttacks[id] || tags.size === 0) continue;
+    for (const t of tags) if (!TAG_GROUP.has(t)) throw new Error(`mkenginepack: attack '${id}' carries tag '${t}', which is not in the Codex's tag vocabulary`);
+    authoredAttacks[id] = { ...authoredAttacks[id], tags: [...tags].sort() };
+  }
+}
+
 // tier-3 rows: base + enchant, merged the way progression/build-schedule.mjs merges them
 const ENCH_BY_ID = new Map([...(ARMORS.enchants || []), ...(SITEMS.enchants || [])].map((e) => [e.id, e]));
 const enchanted = {};
@@ -1998,11 +2100,17 @@ for (const combo of TIER3) {
   if (!b) { enchanted[combo.id] = { id: combo.id, name: combo.name, itemClass: combo.itemClass, tier: 3, hands: 0, slots: 0, statModifiers: {}, grants: [], abilities: [], triggers: [], gaps: [`base ${combo.base} is not an ItemDef`] }; continue; }
   if (!e) gaps.push(`enchant ${combo.enchant} unauthored`);
   const statModifiers = { ...b.statModifiers };
-  for (const [k, v] of Object.entries(e?.statModifiers || {})) {
+  // engine fix.enchant-stats-on-weapon (2026-10-04; the rule above compileItems): on a WEAPON the attribute's Strength,
+  // Precision, Crit, Accuracy and "+N damage" ride the row's own copies of its attacks (below, where the row is put);
+  // what is left — and everything, on armor — is the wielder's, as before.
+  const onWeapon = b.itemClass === 'weapon';
+  const numbers = onWeapon ? weaponAttackNumbers(e?.statModifiers, e?.attackModifiers) : { adds: {}, byStat: {}, rest: e?.statModifiers || {}, otherAttackModifiers: e?.attackModifiers || {} };
+  for (const [k, v] of Object.entries(numbers.rest)) {
     const st = statOf(k);
     if (st) statModifiers[st] = (statModifiers[st] ?? 0) + v;
     else gaps.push(`enchant stat ${k} ${v}: no engine stat`);   // never passed, never rounded
   }
+  for (const [k, v] of Object.entries(numbers.otherAttackModifiers)) gaps.push(onWeapon ? `enchant attackModifier ${k} ${v}: no attack field` : `enchant attackModifier ${k} ${v}: ${b.itemClass} grants no attack`);
   const triggers = [...b.triggers];
   for (const t of e?.triggers || []) {
     const eff = String(t.effect || ''); let m;
@@ -2042,30 +2150,13 @@ for (const combo of TIER3) {
   // station.vs-target (engine, 2026-09-25): the enchant's slayer joins the base's — rules on the
   // enchanted item; held or worn, the engine decides the reach (fix.vs-target-worn-and-flat).
   const vsTarget = [...(b.vsTarget || []), ...slayerRules(e?.slayer, combo.enchant)];
-  enchanted[combo.id] = { ...b, id: combo.id, name: combo.name, tier: 3, statModifiers, triggers: distinctTriggerIds(combo.id, triggers), ...(vsTarget.length ? { vsTarget } : {}), base: combo.base, enchant: combo.enchant,
+  // the triggers are named by the BASE's attacks (their ids are what they were), then follow their attacks onto the copies
+  const named = distinctTriggerIds(combo.id, triggers);
+  const rode = onWeapon ? rideOwnAttacks({ rowId: combo.id, grants: b.grants || [], triggers: named, adds: numbers.adds, byStat: numbers.byStat, slug: String(combo.enchant).replace(/^enchant\./, ''), label: `enchant ${combo.enchant}`, gaps })
+    : { grants: b.grants, triggers: named };
+  enchanted[combo.id] = { ...b, id: combo.id, name: combo.name, tier: 3, statModifiers, grants: rode.grants, triggers: rode.triggers, ...(vsTarget.length ? { vsTarget } : {}), base: combo.base, enchant: combo.enchant,
     gaps: [...(b.gaps || []), ...gaps].length ? [...(b.gaps || []), ...gaps] : undefined };
   if (!enchanted[combo.id].gaps) delete enchanted[combo.id].gaps;
-}
-
-// ── THE ATTACKS' TAGS (engine capability.unit-trigger-with-tag, 2026-10-04) ──
-// What "has the tag" means, in one place (engine SWITCHES.md attackHasTag): an attack's tags are ITS OWN Codex row's tags
-// (how it is made and with what: melee, ranged, brawl, dagger …) joined with the tags of the item that grants it — the weapon
-// in use (blade, bow, 2-hander …) — except the item's MANNER words (melee, ranged, brawl, area …: the vocabulary's own group),
-// which say how a thing is done and so belong to the attack alone: a weapon tagged melee that also grants a throw does not make
-// the throw a melee attack. A row with no tags from either (the bestiary's attacks, the test lane's) carries none here, and the
-// engine reads its kind — melee or ranged — instead. Written before the Forge copies attack rows, so a copy keeps its
-// original's; a test attack that is a delta over a real one keeps the real one's.
-const TAG_GROUP = new Map((D.tags || []).map((t) => [String(t.id).replace(/^tag\./, ''), t.group]));
-{
-  const tagsOfAttack = new Map();
-  const add = (id, tags) => { if (!tagsOfAttack.has(id)) tagsOfAttack.set(id, new Set()); for (const t of tags) tagsOfAttack.get(id).add(t); };
-  for (const a of D.attacks || []) add(a.id, a.tags || []);
-  for (const i of D.items || []) for (const g of i.grants || []) if (tagsOfAttack.has(g) || authoredAttacks[g]) add(g, (i.tags || []).filter((t) => TAG_GROUP.get(t) !== 'manner'));
-  for (const [id, tags] of tagsOfAttack) {
-    if (!authoredAttacks[id] || tags.size === 0) continue;
-    for (const t of tags) if (!TAG_GROUP.has(t)) throw new Error(`mkenginepack: attack '${id}' carries tag '${t}', which is not in the Codex's tag vocabulary`);
-    authoredAttacks[id] = { ...authoredAttacks[id], tags: [...tags].sort() };
-  }
 }
 
 // ── THE FORGE'S TIER-2 ROWS (engine pack.derived-rows, 2026-09-25) ───────────
@@ -2107,8 +2198,8 @@ const derivedItems = {};
     }
     return false;
   };
-  const ATTACK_FIELD = { accuracy: 'accuracy', crit: 'crit', reach: 'reach' };   // a weapon enchant's statModifiers -> the attack row's own field
-  const copies = new Set();
+  // a weapon enchantment's numbers ride the attack rows by the one rule above compileItems (weaponAttackNumbers, rideOwnAttacks);
+  // the Forge's own addition is Reach (GEAR-DESIGN.md §3: Long, Far)
   const put = (row) => {
     if (derivedItems[row.id] || items[row.id] || enchanted[row.id]) throw new Error(`forge rows: '${row.id}' already has an owner — one owner only`);
     derivedItems[row.id] = row;
@@ -2142,31 +2233,10 @@ const derivedItems = {};
       const statModifiers = { ...b.statModifiers };
       let grants = [...b.grants], triggers = [...b.triggers];
       if (ci.itemClass === 'weapon') {
-        const adds = {};
-        for (const [k, v] of Object.entries(e.statModifiers || {})) {
-          if (ATTACK_FIELD[k]) adds[ATTACK_FIELD[k]] = (adds[ATTACK_FIELD[k]] ?? 0) + v;
-          else gaps.push(`enchant stat ${k} ${v}: no attack field`);
-        }
-        for (const [k, v] of Object.entries(e.attackModifiers || {})) {
-          if (k === 'damage') adds.bonus = (adds.bonus ?? 0) + v;
-          else gaps.push(`enchant attackModifier ${k} ${v}: no attack field`);
-        }
-        const copyOf = {};
-        grants = b.grants.map((aid) => {
-          const a = authoredAttacks[aid];
-          if (!a || a.burst) { gaps.push(`enchant ${e.id} on ${aid}: not an attack row — not copied`); return aid; }
-          const id = `${aid}.${slug}`;
-          if (authoredAttacks[id] && !copies.has(id)) throw new Error(`forge rows: copied attack '${id}' collides with an authored attack`);
-          if (!copies.has(id)) {
-            const c = { ...a, id };
-            for (const [f, v] of Object.entries(adds)) c[f] = (c[f] ?? 0) + v;
-            authoredAttacks[id] = c; copies.add(id);
-          }
-          copyOf[aid] = id;
-          return id;
-        });
-        // an attack-scoped rider follows its attack onto the copy
-        triggers = b.triggers.map((t) => (t.onlyWithAttack && copyOf[t.onlyWithAttack] ? { ...t, onlyWithAttack: copyOf[t.onlyWithAttack] } : t));
+        const { adds, byStat, rest, otherAttackModifiers } = weaponAttackNumbers(e.statModifiers, e.attackModifiers, { reach: 'reach' });
+        for (const [k, v] of Object.entries(rest)) gaps.push(`enchant stat ${k} ${v}: no attack field`);
+        for (const [k, v] of Object.entries(otherAttackModifiers)) gaps.push(`enchant attackModifier ${k} ${v}: no attack field`);
+        ({ grants, triggers } = rideOwnAttacks({ rowId: `${b.id}.${slug}`, grants: b.grants, triggers: b.triggers, adds, byStat, slug, always: true, label: `enchant ${e.id}`, gaps }));
       } else {
         for (const [k, v] of Object.entries(e.statModifiers || {})) {
           const st = statOf(k);
