@@ -36159,3 +36159,85 @@ index efb9947..ff0fb0b 100644
  })
 ```
 </details>
+
+## capability.summons — LANDED `fed1efb` **NEEDS REVIEW**
+2026-10-05 17:45
+
+  PASS  dependencies landed
+  WARN  not already decided — 2 candidate ruling(s) — READ BEFORE ASKING: SWITCHES.md:1944 · SWITCHES.md:2262
+  PASS  typecheck
+  PASS  the item's own tests — test/battle-cursor.test.ts, test/target.test.ts, test/summons.test.ts
+  PASS  gate 1 — the id appears in a real battle — power.staff-of-summoning.call-the-wolf: 7 log lines, 7 fired, 3 changed state
+  PASS  brought its own tests — test/battle-cursor.test.ts, test/target.test.ts, test/fixtures/battle-cursor-summons.json, test/summons.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/battle-cursor.test.ts (-2), test/target.test.ts (-1) — will land FLAGGED for review
+  PASS  control battles unchanged
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without power.staff-of-summoning.call-the-wolf — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/battle-cursor.test.ts b/test/battle-cursor.test.ts
+index 2718b35..48b09da 100644
+--- a/test/battle-cursor.test.ts
++++ b/test/battle-cursor.test.ts
+@@ -486,4 +486,10 @@ const damageFromTwoStatsGolden = JSON.parse(readFileSync(new URL('./fixtures/bat
+ // Every case frozen here (tools/capture-hero-origin-badges-cursor.mts). Moved: showcase.assembled-party, showcase.civilians, showcase.eve-24-a, showcase.eve-24-b, showcase.horrors, showcase.item-powers, showcase.kiln, showcase.prologue-party, showcase.rime, showcase.supper, showcase.surrounded, showcase.two-zombies-and-a-child, showcase.waystation, test.back-flip, test.caravan-aftermath, test.counterattack, test.fend, test.force-blast, test.item-uses, test.opening-bridge, test.opening-cathedral, test.opening-cavern-trail, test.opening-gates, test.opening-lumberjack, test.opening-orphanage, test.swap, progression-surge-0, progression-surge-1, progression-surge-2. A `changed` case is checked here and skips the older layers.
+ const heroOriginBadgesGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-hero-origin-badges.json', import.meta.url), 'utf8'))
++// capability.summons (2026-10-05; DECISIONS.md 2026-10-04 'his 28 reward weapons read back …': "We need: summons"), Law 10: a power
++// may be aimed at an empty hex and place a unit of a named row there, on the caster's side; an attack may carry Accuracy against
++// a kind of target. No case that was fought before moves (no row in them summoned by a power or carried Accuracy against a kind);
++// test.call-the-wolf is ADDED: the Staff of Summoning's Call the Wolf live in a real battle.
++// Every case frozen here (tools/capture-summons-cursor.mts). Moved: none. A `changed` case is checked here and skips the older layers.
++const summonsGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-summons.json', import.meta.url), 'utf8'))
+ const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
+ // Explicit rule migration, not regenerated historical hashes. These nine old
+@@ -634,5 +640,8 @@ describe('resumable battle cursor', () => {
+       const damageFromTwoStatsExpected = damageFromTwoStatsGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+       const heroOriginBadgesExpected = heroOriginBadgesGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+-      const heroOriginBadgesMoved = heroOriginBadgesExpected?.changed === true
++      const summonsExpected = summonsGolden.cases.find((row:{id:string})=>row.id===fixture.id)
++      const summonsMoved = summonsExpected?.changed === true
++      // was: const heroOriginBadgesMoved = heroOriginBadgesExpected?.changed === true — a case capability.summons moved skips this layer too (capability.summons 2026-10-04)
++      const heroOriginBadgesMoved = heroOriginBadgesExpected?.changed === true || summonsMoved
+       // was: const damageFromTwoStatsMoved = damageFromTwoStatsExpected?.changed === true — a case content.hero-origin-badges moved skips this layer too (content.hero-origin-badges 2026-10-04)
+       const damageFromTwoStatsMoved = damageFromTwoStatsExpected?.changed === true || heroOriginBadgesMoved
+@@ -792,5 +801,12 @@ describe('resumable battle cursor', () => {
+           }
+         } else result = battle.runBattle(ctx)
+-        if (heroOriginBadgesExpected) {
++        if (summonsExpected) {
++        expect(hash(ctx.events), 'full summons events').toBe(summonsExpected.events)
++        expect(hash(ctx.state), 'full summons state').toBe(summonsExpected.state)
++        expect(hash(ctx.rng.log), 'full summons RNG').toBe(summonsExpected.rng)
++        expect(result).toEqual(summonsExpected.result)
++        }
++        // was: if (heroOriginBadgesExpected) { — capability.summons (2026-10-04): a case it moved is checked above instead
++        if (heroOriginBadgesExpected && !summonsMoved) {
+         expect(hash(ctx.events), 'full hero-origin-badges events').toBe(heroOriginBadgesExpected.events)
+         expect(hash(ctx.state), 'full hero-origin-badges state').toBe(heroOriginBadgesExpected.state)
+diff --git a/test/target.test.ts b/test/target.test.ts
+index 3392f6d..53161f5 100644
+--- a/test/target.test.ts
++++ b/test/target.test.ts
+@@ -178,5 +178,11 @@ describe('targeting — a typo fails loudly, at load', () => {
+   })
+   it('the vocabularies are closed', () => {
+-    expect(TARGET_SELECTS).toEqual(['self', 'unit', 'area'])
++    // Law 10, 2026-10-05 — capability.summons (DECISIONS.md 2026-10-04 'his 28 reward weapons read back …': "We need: summons"):
++    // this read expect(TARGET_SELECTS).toEqual(['self', 'unit', 'area']). A power may be aimed at an empty hex now - a fourth
++    // word of the one vocabulary, still closed: a hex has no side and no tags, and any other word still fails at load.
++    expect(TARGET_SELECTS).toEqual(['self', 'unit', 'area', 'hex'])
++    expect(() => validateTargeting({ select: 'hex', side: 'enemy' }, 'test')).toThrow(/select:'hex' is an empty hex/)
++    expect(() => validateTargeting({ select: 'hex', side: 'any', requireTags: ['undead'] }, 'test')).toThrow(/select:'hex' is an empty hex/)
++    expect(() => validateTargeting({ select: 'hex', side: 'any' }, 'test')).not.toThrow()
+     expect(TARGET_SIDES).toEqual(['ally', 'enemy', 'any'])
+   })
+```
+</details>

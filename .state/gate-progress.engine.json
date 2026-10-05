@@ -1,24 +1,24 @@
 {
- "id": "content.hero-origin-badges",
- "tree": "ca83693b35dd5ecbe676c7742d15a6790d824ea7",
- "ctx": "c1bba856fe881a11845a8e9a4ead66fd1112a15d",
+ "id": "capability.summons",
+ "tree": "b34b9408aab967ccab5355d3bf39d5f906667ae5",
+ "ctx": "0e18312022670cc1ff1b1a1607031e35d0ca59a4",
  "results": {},
  "durations": {
-  "dependencies landed": 1,
-  "not already decided": 491,
-  "typecheck": 2565,
-  "the item's own tests": 11051,
-  "gate 1 — the id appears in a real battle": 1621,
+  "dependencies landed": 0,
+  "not already decided": 490,
+  "typecheck": 2160,
+  "the item's own tests": 10842,
+  "gate 1 — the id appears in a real battle": 1602,
   "brought its own tests": 37,
   "existing tests untouched": 0,
-  "control battles unchanged": 37867,
-  "content has a published source": 156,
+  "control battles unchanged": 38382,
+  "content has a published source": 126,
   "hardcode scan — core knows mechanisms, never names": 35,
   "prior art — nothing new copies what exists": 0,
   "wrong home — nothing another package owns": 0,
-  "generalizes — the second instance costs zero engine code": 1,
-  "naming — new content ids use declared kinds": 32,
-  "naming — no banned words invented": 110,
-  "kill switch — the tests fail without the content": 2323
+  "generalizes — the second instance costs zero engine code": 0,
+  "naming — new content ids use declared kinds": 33,
+  "naming — no banned words invented": 106,
+  "kill switch — the tests fail without the content": 2375
  }
 }

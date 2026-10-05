@@ -177,7 +177,13 @@ describe('targeting — a typo fails loudly, at load', () => {
     expect(() => validateTargeting({ select: 'unit', side: 'ally', requireTags: [''] }, 'x')).toThrow(/tag/)
   })
   it('the vocabularies are closed', () => {
-    expect(TARGET_SELECTS).toEqual(['self', 'unit', 'area'])
+    // Law 10, 2026-10-05 — capability.summons (DECISIONS.md 2026-10-04 'his 28 reward weapons read back …': "We need: summons"):
+    // this read expect(TARGET_SELECTS).toEqual(['self', 'unit', 'area']). A power may be aimed at an empty hex now - a fourth
+    // word of the one vocabulary, still closed: a hex has no side and no tags, and any other word still fails at load.
+    expect(TARGET_SELECTS).toEqual(['self', 'unit', 'area', 'hex'])
+    expect(() => validateTargeting({ select: 'hex', side: 'enemy' }, 'test')).toThrow(/select:'hex' is an empty hex/)
+    expect(() => validateTargeting({ select: 'hex', side: 'any', requireTags: ['undead'] }, 'test')).toThrow(/select:'hex' is an empty hex/)
+    expect(() => validateTargeting({ select: 'hex', side: 'any' }, 'test')).not.toThrow()
     expect(TARGET_SIDES).toEqual(['ally', 'enemy', 'any'])
   })
 })

@@ -5815,7 +5815,15 @@
   "shape": "plumbing",
   "spec": "Ruled 2026-10-04 (Andrew, engine/DECISIONS.md 'his 28 reward weapons read back: ... the mechanics his own items need are wanted'): 'We need: summons'. His Staff of Summoning is in the game with 'Call the Wolf: 2 Stamina, cooldown 5, target: an empty hex adjacent to you. Summon one Wolf on a hex adjacent to you. It is a summoned ally with its own stat block and its own AI' and 'Unbinding: ... +15 Accuracy against summon', and the item review of 2026-10-04 reads neither as acting. Confirm first what the engine has (units arriving mid-battle exist - reinforcements; what a power can create is the question). Run `node tools/decided.mjs \"summon\"` and read every ruling on summons before building; where a ruling settles a point below, the ruling wins. Wanted, with no content name in core: a power places a unit of a named unit row on a chosen empty hex in range, on the summoner's side, flagged summoned; it acts by its own AI in its side's phase (for a hero's summon: in the Hero Phase, by the AI, not by the player - the row says 'its own AI'; record as a switch if no ruling says), it is not a hero for victory, defeat, wounds, rewards or the after-battle screen, it is removed at the end of the Battle, and its death is not a hero's death. An attack may carry extra Accuracy against a kind of target named by a flag or a unit tag ('against summon'; the same field serves 'against undead' if nothing does today). The viewer needs the summoned unit to appear on the board with an arrival; if the Wolf has no model the viewer shows its stand-in and the art need is filed in the art queue by name.",
   "expect": "Call the Wolf puts a Wolf on the chosen adjacent hex on the heroes' side; it moves and attacks by its AI in the Hero Phase; it is not counted for victory or the after-battle screen and is gone when the Battle ends; the power's cooldown and cost hold; Unbinding has +15 Accuracy against a summoned unit and not against any other; a replay of a recording made before this item is event for event what it was.",
-  "note": "Filed by the home chat 2026-10-04."
+  "note": "Filed by the home chat 2026-10-04.",
+  "probeIds": [
+   "power.staff-of-summoning.call-the-wolf"
+  ],
+  "variants": [
+   "power.staff-of-summoning.call-the-wolf"
+  ],
+  "status": "done-needs-review",
+  "sha": "fed1efb"
  },
  {
   "id": "capability.set-bonus",

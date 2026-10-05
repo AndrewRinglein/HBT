@@ -1,0 +1,167 @@
+
+ RUN  v4.1.11 C:/Users/aring/Desktop/HBT-worker-engine/engine
+
+ ❯ test/summons.test.ts (10 tests | 10 failed) 9ms
+     × Call the Wolf is a power aimed at an empty hex within 1, 2 Stamina, cooldown 5, that summons the Codex's Wolf; Unbinding is 15 Accuracy better against anything summoned 3ms
+     × the action list offers it once for each empty hex beside the caster, and for no other hex 2ms
+     × used: a Wolf stands on the chosen hex on the caster's side, flagged summoned; the cost, the cooldown and the primary action are spent; the log says the power, the arrival and the summon 0ms
+     × a hand that is not the session's is not the player's: the summoned unit is the computer's, whoever controls the caster 0ms
+     × a battle with a summoned unit on the board saves and restores 0ms
+     × the mage calls the Wolf; from the next Turn it is activated in the Hero Phase by its own AI, walks and attacks the enemy 0ms
+     × the battle's end removes every summoned unit still standing: one line each, before the end is told - and a recording made before has none 0ms
+     × for defeat: with every hero dead and the Wolf standing the battle is lost; for victory: the last enemy dead wins it 0ms
+     × its death is not a hero's death: no Deathbed roll, no bleeding out, no body left 0ms
+     × Unbinding is 15 better against a summoned unit and not against any other; a row of its own says so 0ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 10 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/summons.test.ts > the rows > Call the Wolf is a power aimed at an empty hex within 1, 2 Stamina, cooldown 5, that summons the Codex's Wolf; Unbinding is 15 Accuracy better against anything summoned
+AssertionError: expected undefined to be defined
+ ❯ test/summons.test.ts:37:15
+     35|   it('Call the Wolf is a power aimed at an empty hex within 1, 2 Stami…
+     36|     const a = ACTIONS[CALL]!
+     37|     expect(a).toBeDefined()
+       |               ^
+     38|     expect([a.staminaCost, a.cooldown, a.range, a.free ?? false]).toEq…
+     39|     expect(a.target).toEqual({ select: 'hex', side: 'any' })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/10]⎯
+
+ FAIL  test/summons.test.ts > a power places a unit on a chosen empty hex > the action list offers it once for each empty hex beside the caster, and for no other hex
+TypeError: Cannot read properties of undefined (reading 'replicate')
+ ❯ scenarioOptions src/content/scenarios.ts:894:71
+    892|  * battles gave the party: levels and items, fielded instead of the bu…
+    893|  */
+    894| export function scenarioOptions(s: ScenarioDef, replicate: number = s.…
+       |                                                                       ^
+    895|   // fix.opening-levels: a carry (the kingdom's run through the openin…
+    896|   if (carry && !s.openingPosition) throw new Error(`scenario '${s.id}'…
+ ❯ fielding test/summons.test.ts:23:37
+ ❯ atMage test/summons.test.ts:26:15
+ ❯ test/summons.test.ts:50:27
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/10]⎯
+
+ FAIL  test/summons.test.ts > a power places a unit on a chosen empty hex > used: a Wolf stands on the chosen hex on the caster's side, flagged summoned; the cost, the cooldown and the primary action are spent; the log says the power, the arrival and the summon
+TypeError: Cannot read properties of undefined (reading 'replicate')
+ ❯ scenarioOptions src/content/scenarios.ts:894:71
+    892|  * battles gave the party: levels and items, fielded instead of the bu…
+    893|  */
+    894| export function scenarioOptions(s: ScenarioDef, replicate: number = s.…
+       |                                                                       ^
+    895|   // fix.opening-levels: a carry (the kingdom's run through the openin…
+    896|   if (carry && !s.openingPosition) throw new Error(`scenario '${s.id}'…
+ ❯ fielding test/summons.test.ts:23:37
+ ❯ atMage test/summons.test.ts:26:15
+ ❯ test/summons.test.ts:65:27
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/10]⎯
+
+ FAIL  test/summons.test.ts > a power places a unit on a chosen empty hex > a hand that is not the session's is not the player's: the summoned unit is the computer's, whoever controls the caster
+TypeError: Cannot read properties of undefined (reading 'replicate')
+ ❯ scenarioOptions src/content/scenarios.ts:894:71
+    892|  * battles gave the party: levels and items, fielded instead of the bu…
+    893|  */
+    894| export function scenarioOptions(s: ScenarioDef, replicate: number = s.…
+       |                                                                       ^
+    895|   // fix.opening-levels: a carry (the kingdom's run through the openin…
+    896|   if (carry && !s.openingPosition) throw new Error(`scenario '${s.id}'…
+ ❯ fielding test/summons.test.ts:23:37
+ ❯ atMage test/summons.test.ts:26:15
+ ❯ test/summons.test.ts:85:27
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/10]⎯
+
+ FAIL  test/summons.test.ts > a power places a unit on a chosen empty hex > a battle with a summoned unit on the board saves and restores
+TypeError: Cannot read properties of undefined (reading 'replicate')
+ ❯ scenarioOptions src/content/scenarios.ts:894:71
+    892|  * battles gave the party: levels and items, fielded instead of the bu…
+    893|  */
+    894| export function scenarioOptions(s: ScenarioDef, replicate: number = s.…
+       |                                                                       ^
+    895|   // fix.opening-levels: a carry (the kingdom's run through the openin…
+    896|   if (carry && !s.openingPosition) throw new Error(`scenario '${s.id}'…
+ ❯ fielding test/summons.test.ts:23:37
+ ❯ atMage test/summons.test.ts:26:15
+ ❯ test/summons.test.ts:93:27
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/10]⎯
+
+ FAIL  test/summons.test.ts > in a real battle, fought by the computer > the mage calls the Wolf; from the next Turn it is activated in the Hero Phase by its own AI, walks and attacks the enemy
+TypeError: Cannot read properties of undefined (reading 'replicate')
+ ❯ scenarioOptions src/content/scenarios.ts:894:71
+    892|  * battles gave the party: levels and items, fielded instead of the bu…
+    893|  */
+    894| export function scenarioOptions(s: ScenarioDef, replicate: number = s.…
+       |                                                                       ^
+    895|   // fix.opening-levels: a carry (the kingdom's run through the openin…
+    896|   if (carry && !s.openingPosition) throw new Error(`scenario '${s.id}'…
+ ❯ fielding test/summons.test.ts:23:37
+ ❯ test/summons.test.ts:103:17
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/10]⎯
+
+ FAIL  test/summons.test.ts > in a real battle, fought by the computer > the battle's end removes every summoned unit still standing: one line each, before the end is told - and a recording made before has none
+TypeError: Cannot read properties of undefined (reading 'replicate')
+ ❯ scenarioOptions src/content/scenarios.ts:894:71
+    892|  * battles gave the party: levels and items, fielded instead of the bu…
+    893|  */
+    894| export function scenarioOptions(s: ScenarioDef, replicate: number = s.…
+       |                                                                       ^
+    895|   // fix.opening-levels: a carry (the kingdom's run through the openin…
+    896|   if (carry && !s.openingPosition) throw new Error(`scenario '${s.id}'…
+ ❯ fielding test/summons.test.ts:23:37
+ ❯ test/summons.test.ts:120:17
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/10]⎯
+
+ FAIL  test/summons.test.ts > a summoned unit is not a hero > for defeat: with every hero dead and the Wolf standing the battle is lost; for victory: the last enemy dead wins it
+TypeError: Cannot read properties of undefined (reading 'replicate')
+ ❯ scenarioOptions src/content/scenarios.ts:894:71
+    892|  * battles gave the party: levels and items, fielded instead of the bu…
+    893|  */
+    894| export function scenarioOptions(s: ScenarioDef, replicate: number = s.…
+       |                                                                       ^
+    895|   // fix.opening-levels: a carry (the kingdom's run through the openin…
+    896|   if (carry && !s.openingPosition) throw new Error(`scenario '${s.id}'…
+ ❯ fielding test/summons.test.ts:23:37
+ ❯ atMage test/summons.test.ts:26:15
+ ❯ test/summons.test.ts:135:27
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/10]⎯
+
+ FAIL  test/summons.test.ts > a summoned unit is not a hero > its death is not a hero's death: no Deathbed roll, no bleeding out, no body left
+TypeError: Cannot read properties of undefined (reading 'replicate')
+ ❯ scenarioOptions src/content/scenarios.ts:894:71
+    892|  * battles gave the party: levels and items, fielded instead of the bu…
+    893|  */
+    894| export function scenarioOptions(s: ScenarioDef, replicate: number = s.…
+       |                                                                       ^
+    895|   // fix.opening-levels: a carry (the kingdom's run through the openin…
+    896|   if (carry && !s.openingPosition) throw new Error(`scenario '${s.id}'…
+ ❯ fielding test/summons.test.ts:23:37
+ ❯ test/summons.test.ts:150:17
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/10]⎯
+
+ FAIL  test/summons.test.ts > Accuracy against a kind of target > Unbinding is 15 better against a summoned unit and not against any other; a row of its own says so
+TypeError: Cannot read properties of undefined (reading 'replicate')
+ ❯ scenarioOptions src/content/scenarios.ts:894:71
+    892|  * battles gave the party: levels and items, fielded instead of the bu…
+    893|  */
+    894| export function scenarioOptions(s: ScenarioDef, replicate: number = s.…
+       |                                                                       ^
+    895|   // fix.opening-levels: a carry (the kingdom's run through the openin…
+    896|   if (carry && !s.openingPosition) throw new Error(`scenario '${s.id}'…
+ ❯ fielding test/summons.test.ts:23:37
+ ❯ atMage test/summons.test.ts:26:15
+ ❯ test/summons.test.ts:163:27
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/10]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  10 failed (10)
+   Start at  08:28:15
+   Duration  1.13s (transform 786ms, setup 0ms, import 985ms, tests 9ms, environment 0ms)
+

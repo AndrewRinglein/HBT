@@ -5780,10 +5780,10 @@
     "item.staff-of-summoning"
    ],
    "action": "power.staff-of-summoning.call-the-wolf",
-   "name": "power.staff-of-summoning.call-the-wolf",
-   "kind": null,
-   "engine": "no",
-   "bar": null,
+   "name": "Call the Wolf",
+   "kind": "power",
+   "engine": "yes",
+   "bar": "power",
    "motion": null,
    "bodies": {
     "Ancient Elf": null,
@@ -5809,9 +5809,14 @@
     "The Skull": null
    },
    "motionStatus": "missing",
-   "selected": null,
+   "selected": {
+    "key": "spell",
+    "label": "Casting / power gesture",
+    "clip": "Spell_Simple_Shoot",
+    "record": "assets/characters/oathblade-armor/rebuild/free-motion-study/selections.json"
+   },
    "ruling": null,
-   "note": "the pack names it; the engine has no row (item power — shape unparsed)",
+   "note": null,
    "variants": 0
   },
   {
@@ -22684,10 +22689,10 @@
  "counts": {
   "rows": 521,
   "missing": 352,
-  "noEngine": 34,
+  "noEngine": 33,
   "inert": 239,
   "noMotion": 352,
-  "selectedUnbound": 311,
+  "selectedUnbound": 312,
   "partial": 81
  }
 }
