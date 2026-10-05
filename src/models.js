@@ -62,6 +62,11 @@ export function equippedLook(binding, unit) {
       free[hand] = false
       if (!asset) { props.push({ ...legacy.find(p => p.hand === hand) || legacy[0], item, hand }); continue }
       const own = base.props.find(p => p.fit === 'body' && p.item === item && p.hand === hand)
+      // These two grasps were fitted to V1's handle. The metric V2 handle does not match the
+      // teacher's fitted finger closure, so retain the complete fitted prop until a new fit exists.
+      if (own && item === 'item.dagger' && ['orphan-child', 'school-teacher'].includes(base.id)) {
+        props.push(own); continue
+      }
       props.push({ path: asset.path, sha256: asset.sha256, assetId: asset.assetId, item, hand, model,
         fit: 'tiered', attachment: model === 'shield' ? 'shield' : model === 'bow' ? 'bow' : 'palm',
         ...(own ? { socket: own.socket, grasp: own.grasp, reverse: true } : {}) })
@@ -394,6 +399,12 @@ export function createBody(loaded, appearanceOptions = {}) {
   const b0 = bounds(), tall = b0.max.y - b0.min.y
   if (!(tall > 0)) throw new Error(`${look.name}: its body has no height`)
   const scale = height / tall
+  // Equipment files already use metres. Body normalization must not enlarge them; keep the
+  // socket's body-specific palm placement and the deliberate whole-board appearance scale.
+  for (const [i, p] of (loaded.props || []).entries()) if (p.fit === 'tiered') {
+    const socket = root.getObjectByName(`held:${i}:${p.item ?? p.path}`)
+    for (const child of socket.children) child.scale.multiplyScalar(tall / look.height)
+  }
   const model = new THREE.Group(), lean = new THREE.Group(), stage = new THREE.Group()
   model.scale.setScalar(scale); model.position.y = -b0.min.y * scale; model.add(root); lean.add(model); stage.add(lean); stage.name = 'model:' + look.id
   /* the rim: a twin per drawn piece, OUTSIDE the rig (the transformation layer walks the rig's meshes and must not meet them).

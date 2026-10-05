@@ -38,6 +38,12 @@ test('the complete asset catalog is registered, while only explicit authored IDs
     assert.equal(b.equipment.catalog, 'equipment-v2')
     for (const [item, ref] of Object.entries(equipment.items)) {
       const look = A.equippedLook(b, { id: 0, kit: { items: [item] } })
+      if (item === 'item.dagger' && ['orphan-child', 'school-teacher'].includes(look.id)) {
+        assert.equal(look.props[0], b.looks[0].props.find(p => p.item === item), 'civilian dagger retains its complete fitted model, socket and grasp')
+        assert.equal(look.props[0].fit, 'body')
+        assert.ok(look.props[0].grasp)
+        continue
+      }
       assert.equal(look.props[0]?.path, ref.path, `${b.typeId} ${item}`)
       assert.equal(look.props[0]?.sha256, ref.sha256)
       assert.equal(look.props.length, ref.pair ? 2 : 1)
@@ -48,6 +54,7 @@ test('the complete asset catalog is registered, while only explicit authored IDs
 
 test('actual compact models attach to male, female and civilian hands through existing motions', async () => {
   const pack = awaitPack
+  const registered = packEquipmentModels().items
   const location = { protocol: 'http:', href: 'http://127.0.0.1:4230/viewer/BATTLE-VIEWER.html' }
   const fetch = async url => { const b = readFileSync('..' + new URL(url).pathname); return { ok: true, arrayBuffer: async () => b.buffer.slice(b.byteOffset, b.byteOffset + b.byteLength) } }
   const samples = [
@@ -55,6 +62,7 @@ test('actual compact models attach to male, female and civilian hands through ex
     ['hero.base.mage-sexy', 'item.frost-staff'], ['hero.base.paladin-shiney', 'item.tower-shield'],
     ['hero.base.rogue-rose', 'item.hand-crossbow'], ['hero.base.priest-robes', 'item.holy-texts'],
     ['hero.fixed.orphans', 'item.dagger'], ['hero.fixed.school-teacher', 'item.dagger'],
+    ['hero.fixed.orphans', 'item.club'], ['hero.fixed.school-teacher', 'item.club'],
     ['hero.fixed.lumberjack-and-wife', 'item.lumberjack-axe'],
   ]
   for (const [typeId, item] of samples) {
@@ -64,6 +72,13 @@ test('actual compact models attach to male, female and civilian hands through ex
     assert.ok(socket, `${typeId}: ${item} attached`)
     assert.equal(socket.parent.name, `CC_Base_${look.props[0].hand}_Hand`)
     const basis = socket.getObjectByName('equipment-basis')
+    const equipment = registered[item]
+    body.stage.updateMatrixWorld(true)
+    if (look.props[0].fit === 'tiered') {
+      const frame = basis || socket.children[0]
+      const along = frame.localToWorld(new THREE.Vector3(0, equipment.lengthM, 0)).distanceTo(frame.localToWorld(new THREE.Vector3()))
+      assert.ok(Math.abs(along - equipment.lengthM) < 1e-5, `${typeId}: metric equipment length ${along} matches ${equipment.lengthM}`)
+    }
     if (look.props[0].model === 'bow') {
       assert.ok(new THREE.Vector3(-1, 0, 0).applyQuaternion(basis.quaternion).distanceTo(new THREE.Vector3(0, 0, -1)) < 1e-8, 'bow string faces back along the shot')
     } else if (look.props[0].attachment === 'palm') {
