@@ -4470,7 +4470,7 @@ export const UNIT_PACK = {
       "name": "Cleave Open",
       "kind": "melee",
       "damageType": "physical",
-      "bonus": 2,
+      "bonus": 3,
       "stat": "strength",
       "reach": 1,
       "staminaCost": 1,
@@ -4485,7 +4485,7 @@ export const UNIT_PACK = {
       "name": "Butcher",
       "kind": "melee",
       "damageType": "physical",
-      "bonus": 2,
+      "bonus": 3,
       "stat": "strength",
       "reach": 1,
       "staminaCost": 2,
@@ -4501,7 +4501,7 @@ export const UNIT_PACK = {
       "name": "Judgment",
       "kind": "melee",
       "damageType": "physical",
-      "bonus": 2,
+      "bonus": 3,
       "stat": "strength",
       "reach": 1,
       "staminaCost": 2,
@@ -4517,7 +4517,7 @@ export const UNIT_PACK = {
       "name": "Sentence",
       "kind": "melee",
       "damageType": "physical",
-      "bonus": 1,
+      "bonus": 2,
       "stat": "strength",
       "reach": 1,
       "staminaCost": 3,
@@ -4562,7 +4562,7 @@ export const UNIT_PACK = {
       "name": "Reap",
       "kind": "melee",
       "damageType": "physical",
-      "bonus": 2,
+      "bonus": 3,
       "stat": "strength",
       "reach": 1,
       "staminaCost": 1,
@@ -4576,7 +4576,7 @@ export const UNIT_PACK = {
       "name": "Death Stroke",
       "kind": "melee",
       "damageType": "physical",
-      "bonus": 3,
+      "bonus": 4,
       "stat": "strength",
       "reach": 1,
       "staminaCost": 2,
@@ -4715,7 +4715,7 @@ export const UNIT_PACK = {
       "name": "Arc Cut",
       "kind": "melee",
       "damageType": "physical",
-      "bonus": 2,
+      "bonus": 3,
       "stat": "strength",
       "reach": 1,
       "staminaCost": 1,
@@ -4730,7 +4730,7 @@ export const UNIT_PACK = {
       "name": "Thunder Strike",
       "kind": "melee",
       "damageType": "physical",
-      "bonus": 0,
+      "bonus": 1,
       "stat": "strength",
       "reach": 1,
       "staminaCost": 2,
@@ -4807,7 +4807,7 @@ export const UNIT_PACK = {
       "name": "Sand Cut",
       "kind": "melee",
       "damageType": "physical",
-      "bonus": 2,
+      "bonus": 4,
       "stat": "strength",
       "reach": 1,
       "staminaCost": 1,
@@ -4822,7 +4822,7 @@ export const UNIT_PACK = {
       "name": "The Cursed Swing",
       "kind": "melee",
       "damageType": "magic",
-      "bonus": 1,
+      "bonus": 3,
       "stat": "strength",
       "reach": 1,
       "staminaCost": 2,
@@ -4931,7 +4931,7 @@ export const UNIT_PACK = {
       "name": "Seraph Shot",
       "kind": "ranged",
       "damageType": "physical",
-      "bonus": 2,
+      "bonus": 3,
       "stat": "precision",
       "reach": 9,
       "staminaCost": 1,
@@ -4946,7 +4946,7 @@ export const UNIT_PACK = {
       "name": "Feathered Judgment",
       "kind": "ranged",
       "damageType": "physical",
-      "bonus": 3,
+      "bonus": 4,
       "stat": "precision",
       "reach": 9,
       "staminaCost": 2,
@@ -4962,7 +4962,7 @@ export const UNIT_PACK = {
       "name": "Death Shot",
       "kind": "ranged",
       "damageType": "physical",
-      "bonus": 3,
+      "bonus": 5,
       "stat": "precision",
       "reach": 9,
       "staminaCost": 1,
@@ -4977,7 +4977,7 @@ export const UNIT_PACK = {
       "name": "The Last Arrow",
       "kind": "ranged",
       "damageType": "physical",
-      "bonus": 5,
+      "bonus": 7,
       "stat": "precision",
       "reach": 12,
       "staminaCost": 3,
@@ -4993,7 +4993,7 @@ export const UNIT_PACK = {
       "name": "Avenging Strike",
       "kind": "melee",
       "damageType": "physical",
-      "bonus": 2,
+      "bonus": 3,
       "stat": "strength",
       "reach": 1,
       "staminaCost": 1,
@@ -5008,7 +5008,7 @@ export const UNIT_PACK = {
       "name": "The Avenger Wakes",
       "kind": "melee",
       "damageType": "true",
-      "bonus": 4,
+      "bonus": 5,
       "stat": "strength",
       "reach": 1,
       "staminaCost": 2,
@@ -5024,7 +5024,7 @@ export const UNIT_PACK = {
       "name": "Crack",
       "kind": "ranged",
       "damageType": "physical",
-      "bonus": 2,
+      "bonus": 4,
       "stat": "strength",
       "reach": 3,
       "staminaCost": 1,
@@ -5038,7 +5038,7 @@ export const UNIT_PACK = {
       "name": "Hellcoil",
       "kind": "ranged",
       "damageType": "physical",
-      "bonus": 2,
+      "bonus": 4,
       "stat": "strength",
       "reach": 3,
       "staminaCost": 2,
@@ -5054,11 +5054,11 @@ export const UNIT_PACK = {
       "name": "Shiv",
       "kind": "melee",
       "damageType": "physical",
-      "bonus": 2,
+      "bonus": 3,
       "stat": "strength",
       "reach": 1,
       "staminaCost": 1,
-      "crit": 5,
+      "crit": 10,
       "accuracy": 10,
       "tags": [
         "dagger",
@@ -5070,11 +5070,11 @@ export const UNIT_PACK = {
       "name": "The Devil's Favour",
       "kind": "melee",
       "damageType": "true",
-      "bonus": 0,
+      "bonus": 1,
       "stat": "strength",
       "reach": 1,
       "staminaCost": 2,
-      "crit": 10,
+      "crit": 15,
       "tags": [
         "dagger",
         "melee"
@@ -5085,7 +5085,7 @@ export const UNIT_PACK = {
       "name": "Slayer's Cut",
       "kind": "melee",
       "damageType": "physical",
-      "bonus": 2,
+      "bonus": 3,
       "stat": "strength",
       "reach": 1,
       "staminaCost": 1,
@@ -5100,7 +5100,7 @@ export const UNIT_PACK = {
       "name": "Demonbane",
       "kind": "melee",
       "damageType": "physical",
-      "bonus": 4,
+      "bonus": 5,
       "stat": "strength",
       "reach": 1,
       "staminaCost": 3,
@@ -5115,7 +5115,7 @@ export const UNIT_PACK = {
       "name": "Gilded Strike",
       "kind": "melee",
       "damageType": "physical",
-      "bonus": 2,
+      "bonus": 4,
       "stat": "strength",
       "reach": 1,
       "staminaCost": 1,
@@ -5131,7 +5131,7 @@ export const UNIT_PACK = {
       "name": "The King's Hands",
       "kind": "melee",
       "damageType": "physical",
-      "bonus": 2,
+      "bonus": 4,
       "stat": "strength",
       "reach": 1,
       "staminaCost": 2,
@@ -5163,7 +5163,7 @@ export const UNIT_PACK = {
       "name": "Sentinel's Cut",
       "kind": "melee",
       "damageType": "physical",
-      "bonus": 2,
+      "bonus": 4,
       "stat": "strength",
       "reach": 1,
       "staminaCost": 1,
@@ -5178,7 +5178,7 @@ export const UNIT_PACK = {
       "name": "Grave Warden",
       "kind": "melee",
       "damageType": "physical",
-      "bonus": 1,
+      "bonus": 3,
       "stat": "strength",
       "reach": 1,
       "staminaCost": 2,
@@ -5194,7 +5194,7 @@ export const UNIT_PACK = {
       "name": "Bolt",
       "kind": "ranged",
       "damageType": "physical",
-      "bonus": 3,
+      "bonus": 5,
       "stat": "precision",
       "reach": 10,
       "staminaCost": 2,
@@ -5208,7 +5208,7 @@ export const UNIT_PACK = {
       "name": "Siege Shot",
       "kind": "ranged",
       "damageType": "physical",
-      "bonus": 1,
+      "bonus": 3,
       "stat": "precision",
       "reach": 12,
       "staminaCost": 3,
@@ -5224,7 +5224,7 @@ export const UNIT_PACK = {
       "name": "Storm Sweep",
       "kind": "melee",
       "damageType": "physical",
-      "bonus": 2,
+      "bonus": 4,
       "stat": "strength",
       "reach": 1,
       "staminaCost": 2,
@@ -5240,7 +5240,7 @@ export const UNIT_PACK = {
       "name": "Thunderhead",
       "kind": "ranged",
       "damageType": "physical",
-      "bonus": 4,
+      "bonus": 6,
       "stat": "strength",
       "reach": 2,
       "staminaCost": 3,
@@ -5685,6 +5685,1645 @@ export const UNIT_PACK = {
         "melee",
         "shield"
       ]
+    },
+    "attack.greatsword.hew.bloodletting": {
+      "id": "attack.greatsword.hew.bloodletting",
+      "name": "Hew",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 1,
+      "tags": [
+        "2-hander",
+        "blade",
+        "melee"
+      ],
+      "crit": 3
+    },
+    "attack.greatsword.hew.soul-reaper": {
+      "id": "attack.greatsword.hew.soul-reaper",
+      "name": "Hew",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 3,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 1,
+      "tags": [
+        "2-hander",
+        "blade",
+        "melee"
+      ]
+    },
+    "attack.greatsword.hew.sacrifice": {
+      "id": "attack.greatsword.hew.sacrifice",
+      "name": "Hew",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 4,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 1,
+      "tags": [
+        "2-hander",
+        "blade",
+        "melee"
+      ]
+    },
+    "attack.greatsword.hew.destroying": {
+      "id": "attack.greatsword.hew.destroying",
+      "name": "Hew",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 3,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 1,
+      "tags": [
+        "2-hander",
+        "blade",
+        "melee"
+      ]
+    },
+    "attack.war-axe.chop.bloodletting": {
+      "id": "attack.war-axe.chop.bloodletting",
+      "name": "Chop",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 1,
+      "accuracy": -10,
+      "tags": [
+        "axe",
+        "melee"
+      ],
+      "crit": 3
+    },
+    "attack.war-axe.hack.bloodletting": {
+      "id": "attack.war-axe.hack.bloodletting",
+      "name": "Heavy Chop",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 3,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 2,
+      "accuracy": -15,
+      "tags": [
+        "axe",
+        "melee"
+      ],
+      "crit": 3
+    },
+    "attack.war-axe.chop.bloodthirsty": {
+      "id": "attack.war-axe.chop.bloodthirsty",
+      "name": "Chop",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 1,
+      "accuracy": -10,
+      "tags": [
+        "axe",
+        "melee"
+      ]
+    },
+    "attack.war-axe.hack.bloodthirsty": {
+      "id": "attack.war-axe.hack.bloodthirsty",
+      "name": "Heavy Chop",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 4,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 2,
+      "accuracy": -15,
+      "tags": [
+        "axe",
+        "melee"
+      ]
+    },
+    "attack.war-hammer.smash.destroying": {
+      "impact": 2,
+      "id": "attack.war-hammer.smash.destroying",
+      "name": "Smash",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 3,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 2,
+      "accuracy": -5,
+      "tags": [
+        "2-hander",
+        "hammer",
+        "melee"
+      ]
+    },
+    "attack.war-hammer.skullsplitter.destroying": {
+      "impact": 2,
+      "id": "attack.war-hammer.skullsplitter.destroying",
+      "name": "Skullsplitter",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 3,
+      "crit": 3,
+      "accuracy": -10,
+      "tags": [
+        "2-hander",
+        "hammer",
+        "melee"
+      ]
+    },
+    "attack.hunting-spear.hurl.hunting": {
+      "id": "attack.hunting-spear.hurl.hunting",
+      "name": "Hurl",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "precision",
+      "reach": 4,
+      "staminaCost": 2,
+      "tags": [
+        "ranged",
+        "spear",
+        "thrown"
+      ]
+    },
+    "attack.glaive.sweep.bloodletting": {
+      "id": "attack.glaive.sweep.bloodletting",
+      "name": "Sweep",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 2,
+      "accuracy": -5,
+      "tags": [
+        "2-hander",
+        "melee",
+        "polearm"
+      ],
+      "crit": 3
+    },
+    "attack.glaive.impale.bloodletting": {
+      "id": "attack.glaive.impale.bloodletting",
+      "name": "Impale",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 2,
+      "crit": 6,
+      "accuracy": 5,
+      "tags": [
+        "2-hander",
+        "melee",
+        "polearm"
+      ]
+    },
+    "attack.crossbow.bolt.gale": {
+      "id": "attack.crossbow.bolt.gale",
+      "name": "Bolt",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "precision",
+      "reach": 8,
+      "staminaCost": 2,
+      "accuracy": 25,
+      "tags": [
+        "crossbow",
+        "ranged"
+      ]
+    },
+    "attack.crossbow.punch-through.gale": {
+      "id": "attack.crossbow.punch-through.gale",
+      "name": "Punch Through",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 3,
+      "stat": "precision",
+      "reach": 8,
+      "staminaCost": 3,
+      "crit": 3,
+      "tags": [
+        "crossbow",
+        "ranged"
+      ],
+      "accuracy": 20
+    },
+    "attack.crossbow.bolt.hunting": {
+      "id": "attack.crossbow.bolt.hunting",
+      "name": "Bolt",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 3,
+      "stat": "precision",
+      "reach": 8,
+      "staminaCost": 2,
+      "accuracy": 5,
+      "tags": [
+        "crossbow",
+        "ranged"
+      ]
+    },
+    "attack.crossbow.punch-through.hunting": {
+      "id": "attack.crossbow.punch-through.hunting",
+      "name": "Punch Through",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 4,
+      "stat": "precision",
+      "reach": 8,
+      "staminaCost": 3,
+      "crit": 3,
+      "tags": [
+        "crossbow",
+        "ranged"
+      ]
+    },
+    "attack.crossbow.bolt.magic": {
+      "id": "attack.crossbow.bolt.magic",
+      "name": "Bolt",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 3,
+      "stat": "precision",
+      "reach": 8,
+      "staminaCost": 2,
+      "accuracy": 5,
+      "tags": [
+        "crossbow",
+        "ranged"
+      ]
+    },
+    "attack.crossbow.punch-through.magic": {
+      "id": "attack.crossbow.punch-through.magic",
+      "name": "Punch Through",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 4,
+      "stat": "precision",
+      "reach": 8,
+      "staminaCost": 3,
+      "crit": 3,
+      "tags": [
+        "crossbow",
+        "ranged"
+      ]
+    },
+    "attack.hand-crossbow.snapshot.hunting": {
+      "id": "attack.hand-crossbow.snapshot.hunting",
+      "name": "Snapshot",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "precision",
+      "reach": 5,
+      "staminaCost": 1,
+      "accuracy": 5,
+      "tags": [
+        "crossbow",
+        "ranged"
+      ]
+    },
+    "attack.hand-crossbow.loaded-bolt.hunting": {
+      "id": "attack.hand-crossbow.loaded-bolt.hunting",
+      "name": "Loaded Bolt",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "precision",
+      "reach": 5,
+      "staminaCost": 2,
+      "crit": 3,
+      "tags": [
+        "crossbow",
+        "ranged"
+      ]
+    },
+    "attack.hand-crossbow.snapshot.magic": {
+      "id": "attack.hand-crossbow.snapshot.magic",
+      "name": "Snapshot",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "precision",
+      "reach": 5,
+      "staminaCost": 1,
+      "accuracy": 5,
+      "tags": [
+        "crossbow",
+        "ranged"
+      ]
+    },
+    "attack.hand-crossbow.loaded-bolt.magic": {
+      "id": "attack.hand-crossbow.loaded-bolt.magic",
+      "name": "Loaded Bolt",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "precision",
+      "reach": 5,
+      "staminaCost": 2,
+      "crit": 3,
+      "tags": [
+        "crossbow",
+        "ranged"
+      ]
+    },
+    "attack.rapier.thrust.shadow-touched": {
+      "id": "attack.rapier.thrust.shadow-touched",
+      "name": "Thrust",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 0,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 1,
+      "crit": 6,
+      "accuracy": 10,
+      "tags": [
+        "exotic",
+        "melee"
+      ]
+    },
+    "attack.rapier.pierce.shadow-touched": {
+      "id": "attack.rapier.pierce.shadow-touched",
+      "name": "Pierce",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 2,
+      "crit": 8,
+      "accuracy": 5,
+      "tags": [
+        "exotic",
+        "melee"
+      ]
+    },
+    "attack.raiders-cutlass.slash.bloodletting": {
+      "id": "attack.raiders-cutlass.slash.bloodletting",
+      "name": "Slash",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 1,
+      "tags": [
+        "blade",
+        "melee"
+      ],
+      "crit": 3
+    },
+    "attack.raiders-cutlass.boarding-swing.bloodletting": {
+      "id": "attack.raiders-cutlass.boarding-swing.bloodletting",
+      "name": "Boarding Swing",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 2,
+      "crit": 6,
+      "accuracy": -5,
+      "tags": [
+        "blade",
+        "melee"
+      ]
+    },
+    "attack.raiders-cutlass.slash.bloodthirsty": {
+      "id": "attack.raiders-cutlass.slash.bloodthirsty",
+      "name": "Slash",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 1,
+      "tags": [
+        "blade",
+        "melee"
+      ]
+    },
+    "attack.raiders-cutlass.boarding-swing.bloodthirsty": {
+      "id": "attack.raiders-cutlass.boarding-swing.bloodthirsty",
+      "name": "Boarding Swing",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 3,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 2,
+      "crit": 3,
+      "accuracy": -5,
+      "tags": [
+        "blade",
+        "melee"
+      ]
+    },
+    "attack.throwing-knives.flick.hunting": {
+      "id": "attack.throwing-knives.flick.hunting",
+      "name": "Flick",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "precision",
+      "reach": 4,
+      "staminaCost": 0,
+      "accuracy": 5,
+      "tags": [
+        "ranged",
+        "thrown"
+      ]
+    },
+    "attack.throwing-knives.fan.hunting": {
+      "id": "attack.throwing-knives.fan.hunting",
+      "name": "Fan",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "precision",
+      "reach": 3,
+      "staminaCost": 2,
+      "accuracy": -5,
+      "hits": 2,
+      "tags": [
+        "ranged",
+        "thrown"
+      ]
+    },
+    "attack.throwing-knives.flick.gale": {
+      "id": "attack.throwing-knives.flick.gale",
+      "name": "Flick",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 0,
+      "stat": "precision",
+      "reach": 4,
+      "staminaCost": 0,
+      "accuracy": 25,
+      "tags": [
+        "ranged",
+        "thrown"
+      ]
+    },
+    "attack.throwing-knives.fan.gale": {
+      "id": "attack.throwing-knives.fan.gale",
+      "name": "Fan",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 0,
+      "stat": "precision",
+      "reach": 3,
+      "staminaCost": 2,
+      "accuracy": 15,
+      "hits": 2,
+      "tags": [
+        "ranged",
+        "thrown"
+      ]
+    },
+    "attack.poison-stars.star.hunting": {
+      "id": "attack.poison-stars.star.hunting",
+      "name": "Star",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "precision",
+      "reach": 4,
+      "staminaCost": 1,
+      "tags": [
+        "ranged",
+        "thrown"
+      ]
+    },
+    "attack.poison-stars.venom-spread.hunting": {
+      "id": "attack.poison-stars.venom-spread.hunting",
+      "name": "Venom Spread",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "precision",
+      "reach": 4,
+      "staminaCost": 2,
+      "accuracy": -5,
+      "hits": 2,
+      "tags": [
+        "ranged",
+        "thrown"
+      ]
+    },
+    "attack.obsidian-fang-dagger.fang.bloodletting": {
+      "id": "attack.obsidian-fang-dagger.fang.bloodletting",
+      "name": "Fang",
+      "kind": "melee",
+      "damageType": "true",
+      "bonus": 0,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 1,
+      "accuracy": 5,
+      "tags": [
+        "dagger",
+        "melee"
+      ],
+      "crit": 3
+    },
+    "attack.obsidian-fang-dagger.gut.bloodletting": {
+      "id": "attack.obsidian-fang-dagger.gut.bloodletting",
+      "name": "Gut",
+      "kind": "melee",
+      "damageType": "true",
+      "bonus": 1,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 2,
+      "crit": 13,
+      "accuracy": 5,
+      "tags": [
+        "dagger",
+        "melee"
+      ]
+    },
+    "attack.obsidian-fang-dagger.fang.shadow-touched": {
+      "id": "attack.obsidian-fang-dagger.fang.shadow-touched",
+      "name": "Fang",
+      "kind": "melee",
+      "damageType": "true",
+      "bonus": 0,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 1,
+      "accuracy": 5,
+      "tags": [
+        "dagger",
+        "melee"
+      ],
+      "crit": 3
+    },
+    "attack.obsidian-fang-dagger.gut.shadow-touched": {
+      "id": "attack.obsidian-fang-dagger.gut.shadow-touched",
+      "name": "Gut",
+      "kind": "melee",
+      "damageType": "true",
+      "bonus": 1,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 2,
+      "crit": 13,
+      "accuracy": 5,
+      "tags": [
+        "dagger",
+        "melee"
+      ]
+    },
+    "attack.obsidian-fang-dagger.fang.hobbling": {
+      "id": "attack.obsidian-fang-dagger.fang.hobbling",
+      "name": "Fang",
+      "kind": "melee",
+      "damageType": "true",
+      "bonus": 1,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 1,
+      "accuracy": 5,
+      "tags": [
+        "dagger",
+        "melee"
+      ]
+    },
+    "attack.obsidian-fang-dagger.gut.hobbling": {
+      "id": "attack.obsidian-fang-dagger.gut.hobbling",
+      "name": "Gut",
+      "kind": "melee",
+      "damageType": "true",
+      "bonus": 2,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 2,
+      "crit": 10,
+      "accuracy": 5,
+      "tags": [
+        "dagger",
+        "melee"
+      ]
+    },
+    "attack.duel-runeblades.twin-cut.bloodletting": {
+      "id": "attack.duel-runeblades.twin-cut.bloodletting",
+      "name": "Twin Cut",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 0,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 2,
+      "hits": 2,
+      "tags": [
+        "blade",
+        "melee"
+      ],
+      "crit": 3
+    },
+    "attack.duel-runeblades.rune-cross.bloodletting": {
+      "id": "attack.duel-runeblades.rune-cross.bloodletting",
+      "name": "Rune Cross",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 0,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 2,
+      "crit": 6,
+      "accuracy": 5,
+      "tags": [
+        "blade",
+        "melee"
+      ]
+    },
+    "attack.duel-runeblades.twin-cut.lightning": {
+      "id": "attack.duel-runeblades.twin-cut.lightning",
+      "name": "Twin Cut",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 0,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 2,
+      "hits": 2,
+      "tags": [
+        "blade",
+        "melee"
+      ],
+      "accuracy": 5
+    },
+    "attack.duel-runeblades.rune-cross.lightning": {
+      "id": "attack.duel-runeblades.rune-cross.lightning",
+      "name": "Rune Cross",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 0,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 2,
+      "crit": 3,
+      "accuracy": 10,
+      "tags": [
+        "blade",
+        "melee"
+      ]
+    },
+    "attack.duel-runeblades.twin-cut.sacrifice": {
+      "id": "attack.duel-runeblades.twin-cut.sacrifice",
+      "name": "Twin Cut",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 2,
+      "hits": 2,
+      "tags": [
+        "blade",
+        "melee"
+      ]
+    },
+    "attack.duel-runeblades.rune-cross.sacrifice": {
+      "id": "attack.duel-runeblades.rune-cross.sacrifice",
+      "name": "Rune Cross",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 2,
+      "crit": 3,
+      "accuracy": 5,
+      "tags": [
+        "blade",
+        "melee"
+      ]
+    },
+    "attack.shepherds-sling.stone.hunting": {
+      "id": "attack.shepherds-sling.stone.hunting",
+      "name": "Stone",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "precision",
+      "reach": 5,
+      "staminaCost": 1,
+      "tags": [
+        "ranged",
+        "sling"
+      ]
+    },
+    "attack.shepherds-sling.whirl.hunting": {
+      "id": "attack.shepherds-sling.whirl.hunting",
+      "name": "Whirl",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 3,
+      "stat": "precision",
+      "reach": 7,
+      "staminaCost": 2,
+      "crit": 3,
+      "accuracy": -5,
+      "tags": [
+        "ranged",
+        "sling"
+      ]
+    },
+    "attack.shepherds-sling.stone.magic": {
+      "id": "attack.shepherds-sling.stone.magic",
+      "name": "Stone",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "precision",
+      "reach": 5,
+      "staminaCost": 1,
+      "tags": [
+        "ranged",
+        "sling"
+      ]
+    },
+    "attack.shepherds-sling.whirl.magic": {
+      "id": "attack.shepherds-sling.whirl.magic",
+      "name": "Whirl",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 3,
+      "stat": "precision",
+      "reach": 7,
+      "staminaCost": 2,
+      "crit": 3,
+      "accuracy": -5,
+      "tags": [
+        "ranged",
+        "sling"
+      ]
+    },
+    "attack.shepherds-sling.stone.gale": {
+      "id": "attack.shepherds-sling.stone.gale",
+      "name": "Stone",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "precision",
+      "reach": 5,
+      "staminaCost": 1,
+      "tags": [
+        "ranged",
+        "sling"
+      ],
+      "accuracy": 20
+    },
+    "attack.shepherds-sling.whirl.gale": {
+      "id": "attack.shepherds-sling.whirl.gale",
+      "name": "Whirl",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "precision",
+      "reach": 7,
+      "staminaCost": 2,
+      "crit": 3,
+      "accuracy": 15,
+      "tags": [
+        "ranged",
+        "sling"
+      ]
+    },
+    "attack.crippling-whip.lash.shadow-touched": {
+      "id": "attack.crippling-whip.lash.shadow-touched",
+      "name": "Lash",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 0,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 1,
+      "tags": [
+        "exotic",
+        "melee"
+      ],
+      "crit": 3
+    },
+    "attack.crippling-whip.hamstring.shadow-touched": {
+      "id": "attack.crippling-whip.hamstring.shadow-touched",
+      "name": "Hamstring",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 2,
+      "accuracy": -5,
+      "tags": [
+        "exotic",
+        "melee"
+      ],
+      "crit": 3
+    },
+    "attack.iron-claws.rake.bloodletting": {
+      "id": "attack.iron-claws.rake.bloodletting",
+      "name": "Rake",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": -1,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 2,
+      "accuracy": 5,
+      "hits": 2,
+      "tags": [
+        "claw",
+        "melee"
+      ],
+      "crit": 3
+    },
+    "attack.iron-claws.eviscerate.bloodletting": {
+      "id": "attack.iron-claws.eviscerate.bloodletting",
+      "name": "Eviscerate",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 2,
+      "crit": 8,
+      "tags": [
+        "claw",
+        "melee"
+      ]
+    },
+    "attack.iron-claws.rake.bloodthirsty": {
+      "id": "attack.iron-claws.rake.bloodthirsty",
+      "name": "Rake",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 0,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 2,
+      "accuracy": 5,
+      "hits": 2,
+      "tags": [
+        "claw",
+        "melee"
+      ]
+    },
+    "attack.iron-claws.eviscerate.bloodthirsty": {
+      "id": "attack.iron-claws.eviscerate.bloodthirsty",
+      "name": "Eviscerate",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 2,
+      "crit": 5,
+      "tags": [
+        "claw",
+        "melee"
+      ]
+    },
+    "attack.grappling-harpoon.hurl.hunting": {
+      "id": "attack.grappling-harpoon.hurl.hunting",
+      "name": "Hurl",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "precision",
+      "reach": 4,
+      "staminaCost": 2,
+      "tags": [
+        "ranged",
+        "spear",
+        "thrown"
+      ]
+    },
+    "attack.apprentice-wand.spark.lightning": {
+      "id": "attack.apprentice-wand.spark.lightning",
+      "name": "Spark",
+      "kind": "ranged",
+      "damageType": "magic",
+      "bonus": 0,
+      "stat": "magic",
+      "reach": 5,
+      "staminaCost": 0,
+      "accuracy": 10,
+      "tags": [
+        "magic",
+        "ranged",
+        "wand"
+      ]
+    },
+    "attack.apprentice-wand.surge.lightning": {
+      "id": "attack.apprentice-wand.surge.lightning",
+      "name": "Surge",
+      "kind": "ranged",
+      "damageType": "magic",
+      "bonus": 1,
+      "stat": "magic",
+      "reach": 5,
+      "staminaCost": 2,
+      "crit": 3,
+      "tags": [
+        "magic",
+        "ranged",
+        "wand"
+      ],
+      "accuracy": 5
+    },
+    "attack.ancient-tome.read-the-page.lightning": {
+      "id": "attack.ancient-tome.read-the-page.lightning",
+      "name": "Read the Page",
+      "kind": "ranged",
+      "damageType": "magic",
+      "bonus": 0,
+      "stat": "precision",
+      "reach": 4,
+      "staminaCost": 1,
+      "tags": [
+        "book",
+        "magic",
+        "ranged"
+      ],
+      "accuracy": 5
+    },
+    "attack.ancient-tome.long-passage.lightning": {
+      "id": "attack.ancient-tome.long-passage.lightning",
+      "name": "Long Passage",
+      "kind": "ranged",
+      "damageType": "magic",
+      "bonus": 2,
+      "stat": "magic",
+      "reach": 4,
+      "staminaCost": 2,
+      "accuracy": 0,
+      "tags": [
+        "book",
+        "magic",
+        "ranged"
+      ]
+    },
+    "attack.bane-blade.strike.sacrifice": {
+      "id": "attack.bane-blade.strike.sacrifice",
+      "name": "Strike",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 3,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 1,
+      "accuracy": 5,
+      "tags": [
+        "blade",
+        "melee"
+      ]
+    },
+    "attack.bane-blade.banishing-blow.sacrifice": {
+      "secondaryDamage": [
+        {
+          "id": "critical-rider",
+          "when": "crit",
+          "damageType": "physical",
+          "amount": 6
+        }
+      ],
+      "id": "attack.bane-blade.banishing-blow.sacrifice",
+      "name": "Banishing Blow",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 4,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 2,
+      "tags": [
+        "blade",
+        "melee"
+      ]
+    },
+    "attack.sword-of-the-fallen.remembrance.soul-reaper": {
+      "id": "attack.sword-of-the-fallen.remembrance.soul-reaper",
+      "name": "Remembrance",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 1,
+      "tags": [
+        "blade",
+        "holy",
+        "melee"
+      ]
+    },
+    "attack.sword-of-the-fallen.honour-the-dead.soul-reaper": {
+      "id": "attack.sword-of-the-fallen.honour-the-dead.soul-reaper",
+      "name": "Honour the Dead",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 2,
+      "accuracy": 5,
+      "tags": [
+        "blade",
+        "holy",
+        "melee"
+      ]
+    },
+    "attack.daggers.stab.shadow-touched": {
+      "id": "attack.daggers.stab.shadow-touched",
+      "name": "Stab",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 0,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 0,
+      "crit": 18,
+      "tags": [
+        "dagger",
+        "melee"
+      ]
+    },
+    "attack.daggers.thrown-dagger.shadow-touched": {
+      "id": "attack.daggers.thrown-dagger.shadow-touched",
+      "name": "Thrown Dagger",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "precision",
+      "reach": 4,
+      "staminaCost": 1,
+      "tags": [
+        "dagger",
+        "ranged"
+      ],
+      "crit": 3
+    },
+    "attack.daggers.stab.hobbling": {
+      "id": "attack.daggers.stab.hobbling",
+      "name": "Stab",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 0,
+      "crit": 15,
+      "tags": [
+        "dagger",
+        "melee"
+      ]
+    },
+    "attack.daggers.thrown-dagger.hobbling": {
+      "id": "attack.daggers.thrown-dagger.hobbling",
+      "name": "Thrown Dagger",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "precision",
+      "reach": 4,
+      "staminaCost": 1,
+      "tags": [
+        "dagger",
+        "ranged"
+      ]
+    },
+    "attack.daggers.stab.bloodletting": {
+      "id": "attack.daggers.stab.bloodletting",
+      "name": "Stab",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 0,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 0,
+      "crit": 18,
+      "tags": [
+        "dagger",
+        "melee"
+      ]
+    },
+    "attack.daggers.thrown-dagger.bloodletting": {
+      "id": "attack.daggers.thrown-dagger.bloodletting",
+      "name": "Thrown Dagger",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "precision",
+      "reach": 4,
+      "staminaCost": 1,
+      "tags": [
+        "dagger",
+        "ranged"
+      ],
+      "crit": 3
+    },
+    "attack.longbow.shot.rooting": {
+      "id": "attack.longbow.shot.rooting",
+      "name": "Shot",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "precision",
+      "reach": 6,
+      "staminaCost": 1,
+      "tags": [
+        "bow",
+        "ranged"
+      ]
+    },
+    "attack.longbow.long-shot.rooting": {
+      "id": "attack.longbow.long-shot.rooting",
+      "name": "Long Shot",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 3,
+      "stat": "precision",
+      "reach": 7,
+      "staminaCost": 2,
+      "accuracy": 10,
+      "tags": [
+        "bow",
+        "ranged"
+      ]
+    },
+    "attack.longbow.shot.gale": {
+      "id": "attack.longbow.shot.gale",
+      "name": "Shot",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "precision",
+      "reach": 6,
+      "staminaCost": 1,
+      "tags": [
+        "bow",
+        "ranged"
+      ],
+      "accuracy": 20
+    },
+    "attack.longbow.long-shot.gale": {
+      "id": "attack.longbow.long-shot.gale",
+      "name": "Long Shot",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "precision",
+      "reach": 7,
+      "staminaCost": 2,
+      "accuracy": 30,
+      "tags": [
+        "bow",
+        "ranged"
+      ]
+    },
+    "attack.longbow.shot.hunting": {
+      "id": "attack.longbow.shot.hunting",
+      "name": "Shot",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "precision",
+      "reach": 6,
+      "staminaCost": 1,
+      "tags": [
+        "bow",
+        "ranged"
+      ]
+    },
+    "attack.longbow.long-shot.hunting": {
+      "id": "attack.longbow.long-shot.hunting",
+      "name": "Long Shot",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 3,
+      "stat": "precision",
+      "reach": 7,
+      "staminaCost": 2,
+      "accuracy": 10,
+      "tags": [
+        "bow",
+        "ranged"
+      ]
+    },
+    "attack.longbow.shot.magic": {
+      "id": "attack.longbow.shot.magic",
+      "name": "Shot",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "precision",
+      "reach": 6,
+      "staminaCost": 1,
+      "tags": [
+        "bow",
+        "ranged"
+      ]
+    },
+    "attack.longbow.long-shot.magic": {
+      "id": "attack.longbow.long-shot.magic",
+      "name": "Long Shot",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 3,
+      "stat": "precision",
+      "reach": 7,
+      "staminaCost": 2,
+      "accuracy": 10,
+      "tags": [
+        "bow",
+        "ranged"
+      ]
+    },
+    "attack.shortbow.short-shot.rooting": {
+      "id": "attack.shortbow.short-shot.rooting",
+      "name": "Short Shot",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "precision",
+      "reach": 5,
+      "staminaCost": 1,
+      "accuracy": 5,
+      "tags": [
+        "bow",
+        "ranged"
+      ]
+    },
+    "attack.shortbow.quick-shot.rooting": {
+      "id": "attack.shortbow.quick-shot.rooting",
+      "name": "Quick Shot",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "precision",
+      "reach": 4,
+      "staminaCost": 0,
+      "crit": 5,
+      "tags": [
+        "bow",
+        "ranged"
+      ]
+    },
+    "attack.shortbow.short-shot.hunting": {
+      "id": "attack.shortbow.short-shot.hunting",
+      "name": "Short Shot",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "precision",
+      "reach": 5,
+      "staminaCost": 1,
+      "accuracy": 5,
+      "tags": [
+        "bow",
+        "ranged"
+      ]
+    },
+    "attack.shortbow.quick-shot.hunting": {
+      "id": "attack.shortbow.quick-shot.hunting",
+      "name": "Quick Shot",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "precision",
+      "reach": 4,
+      "staminaCost": 0,
+      "crit": 5,
+      "tags": [
+        "bow",
+        "ranged"
+      ]
+    },
+    "attack.elfbow.elf-shot.gale": {
+      "id": "attack.elfbow.elf-shot.gale",
+      "name": "Elf Shot",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": -1,
+      "stat": "precision",
+      "reach": 6,
+      "staminaCost": 1,
+      "accuracy": 35,
+      "tags": [
+        "bow",
+        "ranged"
+      ]
+    },
+    "attack.elfbow.double-shot.gale": {
+      "id": "attack.elfbow.double-shot.gale",
+      "name": "Double Shot",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": -2,
+      "stat": "precision",
+      "reach": 4,
+      "staminaCost": 2,
+      "accuracy": 15,
+      "hits": 2,
+      "tags": [
+        "bow",
+        "ranged"
+      ]
+    },
+    "attack.elfbow.elf-shot.magic": {
+      "id": "attack.elfbow.elf-shot.magic",
+      "name": "Elf Shot",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 0,
+      "stat": "precision",
+      "reach": 6,
+      "staminaCost": 1,
+      "accuracy": 15,
+      "tags": [
+        "bow",
+        "ranged"
+      ]
+    },
+    "attack.elfbow.double-shot.magic": {
+      "id": "attack.elfbow.double-shot.magic",
+      "name": "Double Shot",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": -1,
+      "stat": "precision",
+      "reach": 4,
+      "staminaCost": 2,
+      "accuracy": -5,
+      "hits": 2,
+      "tags": [
+        "bow",
+        "ranged"
+      ]
+    },
+    "attack.elfbow.elf-shot.shadow-touched": {
+      "id": "attack.elfbow.elf-shot.shadow-touched",
+      "name": "Elf Shot",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": -1,
+      "stat": "precision",
+      "reach": 6,
+      "staminaCost": 1,
+      "accuracy": 15,
+      "tags": [
+        "bow",
+        "ranged"
+      ],
+      "crit": 3
+    },
+    "attack.elfbow.double-shot.shadow-touched": {
+      "id": "attack.elfbow.double-shot.shadow-touched",
+      "name": "Double Shot",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": -2,
+      "stat": "precision",
+      "reach": 4,
+      "staminaCost": 2,
+      "accuracy": -5,
+      "hits": 2,
+      "tags": [
+        "bow",
+        "ranged"
+      ],
+      "crit": 3
+    },
+    "attack.elfbow.elf-shot.rooting": {
+      "id": "attack.elfbow.elf-shot.rooting",
+      "name": "Elf Shot",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 0,
+      "stat": "precision",
+      "reach": 6,
+      "staminaCost": 1,
+      "accuracy": 15,
+      "tags": [
+        "bow",
+        "ranged"
+      ]
+    },
+    "attack.elfbow.double-shot.rooting": {
+      "id": "attack.elfbow.double-shot.rooting",
+      "name": "Double Shot",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": -1,
+      "stat": "precision",
+      "reach": 4,
+      "staminaCost": 2,
+      "accuracy": -5,
+      "hits": 2,
+      "tags": [
+        "bow",
+        "ranged"
+      ]
+    },
+    "attack.barbarian-bow.power-shot.hunting": {
+      "id": "attack.barbarian-bow.power-shot.hunting",
+      "name": "Power Shot",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 3,
+      "stat": "precision",
+      "reach": 6,
+      "staminaCost": 2,
+      "accuracy": -10,
+      "tags": [
+        "bow",
+        "ranged"
+      ]
+    },
+    "attack.barbarian-bow.crippling-shot.hunting": {
+      "id": "attack.barbarian-bow.crippling-shot.hunting",
+      "name": "Crippling Shot",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "precision",
+      "reach": 6,
+      "staminaCost": 2,
+      "accuracy": -10,
+      "tags": [
+        "bow",
+        "ranged"
+      ]
+    },
+    "attack.barbarian-bow.power-shot.rooting": {
+      "id": "attack.barbarian-bow.power-shot.rooting",
+      "name": "Power Shot",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 3,
+      "stat": "precision",
+      "reach": 6,
+      "staminaCost": 2,
+      "accuracy": -10,
+      "tags": [
+        "bow",
+        "ranged"
+      ]
+    },
+    "attack.barbarian-bow.crippling-shot.rooting": {
+      "id": "attack.barbarian-bow.crippling-shot.rooting",
+      "name": "Crippling Shot",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "precision",
+      "reach": 6,
+      "staminaCost": 2,
+      "accuracy": -10,
+      "tags": [
+        "bow",
+        "ranged"
+      ]
+    },
+    "attack.javelin.throw.hunting": {
+      "id": "attack.javelin.throw.hunting",
+      "name": "Throw",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 3,
+      "stat": "precision",
+      "reach": 4,
+      "staminaCost": 1,
+      "accuracy": -10,
+      "tags": [
+        "ranged",
+        "spear",
+        "thrown"
+      ]
+    },
+    "attack.longsword.slash.bloodletting": {
+      "id": "attack.longsword.slash.bloodletting",
+      "name": "Slash",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 1,
+      "tags": [
+        "blade",
+        "melee"
+      ],
+      "crit": 3
+    },
+    "attack.longsword.slash.destroying": {
+      "id": "attack.longsword.slash.destroying",
+      "name": "Slash",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 1,
+      "tags": [
+        "blade",
+        "melee"
+      ]
+    },
+    "attack.halberd.hack.bloodletting": {
+      "id": "attack.halberd.hack.bloodletting",
+      "name": "Hack",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 1,
+      "tags": [
+        "exotic",
+        "melee",
+        "polearm"
+      ],
+      "crit": 3
+    },
+    "attack.halberd.hack.destroying": {
+      "id": "attack.halberd.hack.destroying",
+      "name": "Hack",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 3,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 1,
+      "tags": [
+        "exotic",
+        "melee",
+        "polearm"
+      ]
+    },
+    "attack.fire-staff.fire-blast.lightning": {
+      "id": "attack.fire-staff.fire-blast.lightning",
+      "name": "Fire Blast",
+      "kind": "ranged",
+      "damageType": "magic",
+      "bonus": 1,
+      "stat": "precision",
+      "reach": 4,
+      "staminaCost": 1,
+      "tags": [
+        "ranged",
+        "staff"
+      ],
+      "accuracy": 5
+    },
+    "attack.lightning-staff.bolt.lightning": {
+      "id": "attack.lightning-staff.bolt.lightning",
+      "name": "Bolt",
+      "kind": "ranged",
+      "damageType": "magic",
+      "bonus": 3,
+      "stat": "precision",
+      "reach": 5,
+      "staminaCost": 2,
+      "accuracy": -15,
+      "tags": [
+        "ranged",
+        "staff"
+      ]
+    },
+    "attack.force-staff.force-blast.lightning": {
+      "id": "attack.force-staff.force-blast.lightning",
+      "name": "Force Blast",
+      "kind": "ranged",
+      "damageType": "magic",
+      "bonus": 0,
+      "stat": "precision",
+      "reach": 4,
+      "staminaCost": 1,
+      "tags": [
+        "ranged",
+        "staff"
+      ],
+      "accuracy": 5
     },
     "attack.greatsword.hew.heavy": {
       "id": "attack.greatsword.hew.heavy",
@@ -13350,9 +14989,7 @@ export const UNIT_PACK = {
       "tier": 2,
       "hands": 1,
       "slots": 1,
-      "statModifiers": {
-        "strength": 1
-      },
+      "statModifiers": {},
       "grants": [
         "attack.bloody-axe.cleave-open",
         "attack.bloody-axe.butcher"
@@ -13468,9 +15105,7 @@ export const UNIT_PACK = {
       "hands": 2,
       "slots": 2,
       "classRestriction": "class.paladin",
-      "statModifiers": {
-        "strength": 1
-      },
+      "statModifiers": {},
       "grants": [
         "attack.hammer-of-justice.judgment",
         "attack.hammer-of-justice.sentence"
@@ -13526,7 +15161,6 @@ export const UNIT_PACK = {
       "hands": 1,
       "slots": 1,
       "statModifiers": {
-        "strength": 1,
         "block": 5
       },
       "grants": [
@@ -13650,7 +15284,6 @@ export const UNIT_PACK = {
       "hands": 1,
       "slots": 1,
       "statModifiers": {
-        "strength": 1,
         "block": 5
       },
       "grants": [
@@ -13770,7 +15403,6 @@ export const UNIT_PACK = {
       "hands": 2,
       "slots": 2,
       "statModifiers": {
-        "strength": 2,
         "maxHp": -2,
         "block": 10
       },
@@ -13875,7 +15507,6 @@ export const UNIT_PACK = {
       "slots": 2,
       "classRestriction": "class.ranger",
       "statModifiers": {
-        "precision": 1,
         "reach": 1
       },
       "grants": [
@@ -13895,9 +15526,7 @@ export const UNIT_PACK = {
       "tier": 3,
       "hands": 2,
       "slots": 2,
-      "statModifiers": {
-        "precision": 2
-      },
+      "statModifiers": {},
       "grants": [
         "attack.death-bow.death-shot",
         "attack.death-bow.the-last-arrow"
@@ -13918,7 +15547,6 @@ export const UNIT_PACK = {
       "slots": 1,
       "classRestriction": "class.paladin",
       "statModifiers": {
-        "strength": 1,
         "resist": 1,
         "block": 5
       },
@@ -13940,9 +15568,7 @@ export const UNIT_PACK = {
       "tier": 3,
       "hands": 1,
       "slots": 1,
-      "statModifiers": {
-        "strength": 2
-      },
+      "statModifiers": {},
       "grants": [
         "attack.demon-whip.crack",
         "attack.demon-whip.hellcoil"
@@ -13962,8 +15588,6 @@ export const UNIT_PACK = {
       "slots": 1,
       "classRestriction": "class.rogue",
       "statModifiers": {
-        "strength": 1,
-        "crit": 5,
         "block": 5
       },
       "grants": [
@@ -13984,7 +15608,6 @@ export const UNIT_PACK = {
       "hands": 2,
       "slots": 2,
       "statModifiers": {
-        "strength": 1,
         "resist": 1,
         "block": 10
       },
@@ -14006,7 +15629,6 @@ export const UNIT_PACK = {
       "hands": 2,
       "slots": 2,
       "statModifiers": {
-        "strength": 2,
         "armor": 1
       },
       "grants": [
@@ -14070,7 +15692,6 @@ export const UNIT_PACK = {
       "hands": 1,
       "slots": 1,
       "statModifiers": {
-        "strength": 2,
         "block": 5,
         "thorns": 3
       },
@@ -14092,7 +15713,6 @@ export const UNIT_PACK = {
       "hands": 2,
       "slots": 2,
       "statModifiers": {
-        "precision": 2,
         "movement": -1
       },
       "grants": [
@@ -14113,9 +15733,7 @@ export const UNIT_PACK = {
       "hands": 2,
       "slots": 2,
       "classRestriction": "class.warrior",
-      "statModifiers": {
-        "strength": 2
-      },
+      "statModifiers": {},
       "grants": [
         "attack.stormforged-halberd.storm-sweep",
         "attack.stormforged-halberd.thunderhead"
@@ -31000,11 +32618,10 @@ export const UNIT_PACK = {
       "hands": 2,
       "slots": 2,
       "statModifiers": {
-        "block": 5,
-        "crit": 3
+        "block": 5
       },
       "grants": [
-        "attack.greatsword.hew"
+        "attack.greatsword.hew.bloodletting"
       ],
       "abilities": [
         "power.greatsword.counterattack"
@@ -31021,7 +32638,7 @@ export const UNIT_PACK = {
             "value": 2
           },
           "source": "item.greatsword.bloodletting",
-          "onlyWithAttack": "attack.greatsword.hew"
+          "onlyWithAttack": "attack.greatsword.hew.bloodletting"
         }
       ],
       "gaps": [
@@ -31038,11 +32655,10 @@ export const UNIT_PACK = {
       "hands": 2,
       "slots": 2,
       "statModifiers": {
-        "block": 5,
-        "strength": 1
+        "block": 5
       },
       "grants": [
-        "attack.greatsword.hew"
+        "attack.greatsword.hew.soul-reaper"
       ],
       "abilities": [
         "power.greatsword.counterattack"
@@ -31064,20 +32680,19 @@ export const UNIT_PACK = {
       "slots": 2,
       "statModifiers": {
         "block": 5,
-        "strength": 2,
-        "precision": 2,
         "maxHp": -4,
         "dodge": -10
       },
       "grants": [
-        "attack.greatsword.hew"
+        "attack.greatsword.hew.sacrifice"
       ],
       "abilities": [
         "power.greatsword.counterattack"
       ],
       "triggers": [],
       "gaps": [
-        "counterattackAccuracy: 10 — Accuracy on the holder's counterattack while the weapon is held — engine capability.free-attack-accuracy"
+        "counterattackAccuracy: 10 — Accuracy on the holder's counterattack while the weapon is held — engine capability.free-attack-accuracy",
+        "enchant enchant.sacrifice precision 2: the weapon grants no attack that uses precision — it rides nothing"
       ],
       "base": "item.greatsword",
       "enchant": "enchant.sacrifice"
@@ -31123,7 +32738,7 @@ export const UNIT_PACK = {
         "block": 5
       },
       "grants": [
-        "attack.greatsword.hew"
+        "attack.greatsword.hew.destroying"
       ],
       "abilities": [
         "power.greatsword.counterattack"
@@ -31169,12 +32784,10 @@ export const UNIT_PACK = {
       "hands": 1,
       "slots": 1,
       "classRestriction": "class.warrior",
-      "statModifiers": {
-        "crit": 3
-      },
+      "statModifiers": {},
       "grants": [
-        "attack.war-axe.chop",
-        "attack.war-axe.hack"
+        "attack.war-axe.chop.bloodletting",
+        "attack.war-axe.hack.bloodletting"
       ],
       "abilities": [],
       "triggers": [
@@ -31191,7 +32804,7 @@ export const UNIT_PACK = {
             "until": "battle"
           },
           "source": "item.war-axe",
-          "onlyWithAttack": "attack.war-axe.chop"
+          "onlyWithAttack": "attack.war-axe.chop.bloodletting"
         },
         {
           "id": "trigger.war-axe.on-block.ranged-block.chop",
@@ -31206,7 +32819,7 @@ export const UNIT_PACK = {
             "until": "battle"
           },
           "source": "item.war-axe",
-          "onlyWithAttack": "attack.war-axe.chop"
+          "onlyWithAttack": "attack.war-axe.chop.bloodletting"
         },
         {
           "id": "trigger.war-axe.on-block.block.hack",
@@ -31221,7 +32834,7 @@ export const UNIT_PACK = {
             "until": "battle"
           },
           "source": "item.war-axe",
-          "onlyWithAttack": "attack.war-axe.hack"
+          "onlyWithAttack": "attack.war-axe.hack.bloodletting"
         },
         {
           "id": "trigger.war-axe.on-block.ranged-block.hack",
@@ -31236,7 +32849,7 @@ export const UNIT_PACK = {
             "until": "battle"
           },
           "source": "item.war-axe",
-          "onlyWithAttack": "attack.war-axe.hack"
+          "onlyWithAttack": "attack.war-axe.hack.bloodletting"
         },
         {
           "id": "trigger.war-axe.bloodletting.bleed-crit.chop",
@@ -31249,7 +32862,7 @@ export const UNIT_PACK = {
             "value": 2
           },
           "source": "item.war-axe.bloodletting",
-          "onlyWithAttack": "attack.war-axe.chop"
+          "onlyWithAttack": "attack.war-axe.chop.bloodletting"
         },
         {
           "id": "trigger.war-axe.bloodletting.bleed-crit.hack",
@@ -31262,7 +32875,7 @@ export const UNIT_PACK = {
             "value": 2
           },
           "source": "item.war-axe.bloodletting",
-          "onlyWithAttack": "attack.war-axe.hack"
+          "onlyWithAttack": "attack.war-axe.hack.bloodletting"
         }
       ],
       "base": "item.war-axe",
@@ -31366,12 +32979,11 @@ export const UNIT_PACK = {
       "slots": 1,
       "classRestriction": "class.warrior",
       "statModifiers": {
-        "strength": 1,
         "dodge": -5
       },
       "grants": [
-        "attack.war-axe.chop",
-        "attack.war-axe.hack"
+        "attack.war-axe.chop.bloodthirsty",
+        "attack.war-axe.hack.bloodthirsty"
       ],
       "abilities": [],
       "triggers": [
@@ -31388,7 +33000,7 @@ export const UNIT_PACK = {
             "until": "battle"
           },
           "source": "item.war-axe",
-          "onlyWithAttack": "attack.war-axe.chop"
+          "onlyWithAttack": "attack.war-axe.chop.bloodthirsty"
         },
         {
           "id": "trigger.war-axe.on-block.ranged-block.chop",
@@ -31403,7 +33015,7 @@ export const UNIT_PACK = {
             "until": "battle"
           },
           "source": "item.war-axe",
-          "onlyWithAttack": "attack.war-axe.chop"
+          "onlyWithAttack": "attack.war-axe.chop.bloodthirsty"
         },
         {
           "id": "trigger.war-axe.on-block.block.hack",
@@ -31418,7 +33030,7 @@ export const UNIT_PACK = {
             "until": "battle"
           },
           "source": "item.war-axe",
-          "onlyWithAttack": "attack.war-axe.hack"
+          "onlyWithAttack": "attack.war-axe.hack.bloodthirsty"
         },
         {
           "id": "trigger.war-axe.on-block.ranged-block.hack",
@@ -31433,7 +33045,7 @@ export const UNIT_PACK = {
             "until": "battle"
           },
           "source": "item.war-axe",
-          "onlyWithAttack": "attack.war-axe.hack"
+          "onlyWithAttack": "attack.war-axe.hack.bloodthirsty"
         }
       ],
       "base": "item.war-axe",
@@ -31972,8 +33584,8 @@ export const UNIT_PACK = {
       "classRestriction": "class.warrior",
       "statModifiers": {},
       "grants": [
-        "attack.war-hammer.smash",
-        "attack.war-hammer.skullsplitter"
+        "attack.war-hammer.smash.destroying",
+        "attack.war-hammer.skullsplitter.destroying"
       ],
       "abilities": [],
       "triggers": [
@@ -31988,7 +33600,7 @@ export const UNIT_PACK = {
             "value": 1
           },
           "source": "item.war-hammer",
-          "onlyWithAttack": "attack.war-hammer.skullsplitter"
+          "onlyWithAttack": "attack.war-hammer.skullsplitter.destroying"
         }
       ],
       "gaps": [
@@ -32066,12 +33678,10 @@ export const UNIT_PACK = {
       "tier": 3,
       "hands": 1,
       "slots": 1,
-      "statModifiers": {
-        "precision": 1
-      },
+      "statModifiers": {},
       "grants": [
         "attack.hunting-spear.thrust",
-        "attack.hunting-spear.hurl"
+        "attack.hunting-spear.hurl.hunting"
       ],
       "abilities": [],
       "triggers": [],
@@ -32215,12 +33825,10 @@ export const UNIT_PACK = {
       "tier": 3,
       "hands": 2,
       "slots": 2,
-      "statModifiers": {
-        "crit": 3
-      },
+      "statModifiers": {},
       "grants": [
-        "attack.glaive.sweep",
-        "attack.glaive.impale"
+        "attack.glaive.sweep.bloodletting",
+        "attack.glaive.impale.bloodletting"
       ],
       "abilities": [],
       "triggers": [
@@ -32235,7 +33843,7 @@ export const UNIT_PACK = {
             "value": 2
           },
           "source": "item.glaive.bloodletting",
-          "onlyWithAttack": "attack.glaive.sweep"
+          "onlyWithAttack": "attack.glaive.sweep.bloodletting"
         },
         {
           "id": "trigger.glaive.bloodletting.bleed-crit.impale",
@@ -32248,7 +33856,7 @@ export const UNIT_PACK = {
             "value": 2
           },
           "source": "item.glaive.bloodletting",
-          "onlyWithAttack": "attack.glaive.impale"
+          "onlyWithAttack": "attack.glaive.impale.bloodletting"
         }
       ],
       "base": "item.glaive",
@@ -32450,12 +34058,11 @@ export const UNIT_PACK = {
       "hands": 2,
       "slots": 2,
       "statModifiers": {
-        "accuracy": 20,
         "reach": 1
       },
       "grants": [
-        "attack.crossbow.bolt",
-        "attack.crossbow.punch-through"
+        "attack.crossbow.bolt.gale",
+        "attack.crossbow.punch-through.gale"
       ],
       "abilities": [],
       "triggers": [],
@@ -32472,12 +34079,10 @@ export const UNIT_PACK = {
       "tier": 3,
       "hands": 2,
       "slots": 2,
-      "statModifiers": {
-        "precision": 1
-      },
+      "statModifiers": {},
       "grants": [
-        "attack.crossbow.bolt",
-        "attack.crossbow.punch-through"
+        "attack.crossbow.bolt.hunting",
+        "attack.crossbow.punch-through.hunting"
       ],
       "abilities": [],
       "triggers": [],
@@ -32517,12 +34122,10 @@ export const UNIT_PACK = {
       "tier": 3,
       "hands": 2,
       "slots": 2,
-      "statModifiers": {
-        "precision": 1
-      },
+      "statModifiers": {},
       "grants": [
-        "attack.crossbow.bolt",
-        "attack.crossbow.punch-through"
+        "attack.crossbow.bolt.magic",
+        "attack.crossbow.punch-through.magic"
       ],
       "abilities": [],
       "triggers": [],
@@ -32689,12 +34292,10 @@ export const UNIT_PACK = {
       "tier": 3,
       "hands": 1,
       "slots": 1,
-      "statModifiers": {
-        "precision": 1
-      },
+      "statModifiers": {},
       "grants": [
-        "attack.hand-crossbow.snapshot",
-        "attack.hand-crossbow.loaded-bolt"
+        "attack.hand-crossbow.snapshot.hunting",
+        "attack.hand-crossbow.loaded-bolt.hunting"
       ],
       "abilities": [],
       "triggers": [
@@ -32709,7 +34310,7 @@ export const UNIT_PACK = {
             "value": 2
           },
           "source": "item.hand-crossbow",
-          "onlyWithAttack": "attack.hand-crossbow.loaded-bolt"
+          "onlyWithAttack": "attack.hand-crossbow.loaded-bolt.hunting"
         }
       ],
       "vsTarget": [
@@ -32728,12 +34329,10 @@ export const UNIT_PACK = {
       "tier": 3,
       "hands": 1,
       "slots": 1,
-      "statModifiers": {
-        "precision": 1
-      },
+      "statModifiers": {},
       "grants": [
-        "attack.hand-crossbow.snapshot",
-        "attack.hand-crossbow.loaded-bolt"
+        "attack.hand-crossbow.snapshot.magic",
+        "attack.hand-crossbow.loaded-bolt.magic"
       ],
       "abilities": [],
       "triggers": [
@@ -32748,7 +34347,7 @@ export const UNIT_PACK = {
             "value": 2
           },
           "source": "item.hand-crossbow",
-          "onlyWithAttack": "attack.hand-crossbow.loaded-bolt"
+          "onlyWithAttack": "attack.hand-crossbow.loaded-bolt.magic"
         }
       ],
       "base": "item.hand-crossbow",
@@ -32795,12 +34394,10 @@ export const UNIT_PACK = {
       "tier": 3,
       "hands": 1,
       "slots": 1,
-      "statModifiers": {
-        "crit": 3
-      },
+      "statModifiers": {},
       "grants": [
-        "attack.rapier.thrust",
-        "attack.rapier.pierce"
+        "attack.rapier.thrust.shadow-touched",
+        "attack.rapier.pierce.shadow-touched"
       ],
       "abilities": [],
       "triggers": [],
@@ -32935,12 +34532,11 @@ export const UNIT_PACK = {
       "hands": 1,
       "slots": 1,
       "statModifiers": {
-        "block": 5,
-        "crit": 3
+        "block": 5
       },
       "grants": [
-        "attack.raiders-cutlass.slash",
-        "attack.raiders-cutlass.boarding-swing"
+        "attack.raiders-cutlass.slash.bloodletting",
+        "attack.raiders-cutlass.boarding-swing.bloodletting"
       ],
       "abilities": [],
       "triggers": [
@@ -32955,7 +34551,7 @@ export const UNIT_PACK = {
             "value": 1
           },
           "source": "item.raiders-cutlass",
-          "onlyWithAttack": "attack.raiders-cutlass.slash"
+          "onlyWithAttack": "attack.raiders-cutlass.slash.bloodletting"
         },
         {
           "id": "trigger.raiders-cutlass.boarding-swing.bleed",
@@ -32968,7 +34564,7 @@ export const UNIT_PACK = {
             "value": 2
           },
           "source": "item.raiders-cutlass",
-          "onlyWithAttack": "attack.raiders-cutlass.boarding-swing"
+          "onlyWithAttack": "attack.raiders-cutlass.boarding-swing.bloodletting"
         },
         {
           "id": "trigger.raiders-cutlass.bloodletting.bleed-crit.slash",
@@ -32981,7 +34577,7 @@ export const UNIT_PACK = {
             "value": 2
           },
           "source": "item.raiders-cutlass.bloodletting",
-          "onlyWithAttack": "attack.raiders-cutlass.slash"
+          "onlyWithAttack": "attack.raiders-cutlass.slash.bloodletting"
         },
         {
           "id": "trigger.raiders-cutlass.bloodletting.bleed-crit.boarding-swing",
@@ -32994,7 +34590,7 @@ export const UNIT_PACK = {
             "value": 2
           },
           "source": "item.raiders-cutlass.bloodletting",
-          "onlyWithAttack": "attack.raiders-cutlass.boarding-swing"
+          "onlyWithAttack": "attack.raiders-cutlass.boarding-swing.bloodletting"
         }
       ],
       "base": "item.raiders-cutlass",
@@ -33065,12 +34661,11 @@ export const UNIT_PACK = {
       "slots": 1,
       "statModifiers": {
         "block": 5,
-        "strength": 1,
         "dodge": -5
       },
       "grants": [
-        "attack.raiders-cutlass.slash",
-        "attack.raiders-cutlass.boarding-swing"
+        "attack.raiders-cutlass.slash.bloodthirsty",
+        "attack.raiders-cutlass.boarding-swing.bloodthirsty"
       ],
       "abilities": [],
       "triggers": [
@@ -33085,7 +34680,7 @@ export const UNIT_PACK = {
             "value": 1
           },
           "source": "item.raiders-cutlass",
-          "onlyWithAttack": "attack.raiders-cutlass.slash"
+          "onlyWithAttack": "attack.raiders-cutlass.slash.bloodthirsty"
         },
         {
           "id": "trigger.raiders-cutlass.boarding-swing.bleed",
@@ -33098,7 +34693,7 @@ export const UNIT_PACK = {
             "value": 2
           },
           "source": "item.raiders-cutlass",
-          "onlyWithAttack": "attack.raiders-cutlass.boarding-swing"
+          "onlyWithAttack": "attack.raiders-cutlass.boarding-swing.bloodthirsty"
         }
       ],
       "base": "item.raiders-cutlass",
@@ -33235,12 +34830,10 @@ export const UNIT_PACK = {
       "hands": 1,
       "slots": 1,
       "classRestriction": "class.rogue",
-      "statModifiers": {
-        "precision": 1
-      },
+      "statModifiers": {},
       "grants": [
-        "attack.throwing-knives.flick",
-        "attack.throwing-knives.fan"
+        "attack.throwing-knives.flick.hunting",
+        "attack.throwing-knives.fan.hunting"
       ],
       "abilities": [],
       "triggers": [],
@@ -33262,12 +34855,11 @@ export const UNIT_PACK = {
       "slots": 1,
       "classRestriction": "class.rogue",
       "statModifiers": {
-        "accuracy": 20,
         "reach": 1
       },
       "grants": [
-        "attack.throwing-knives.flick",
-        "attack.throwing-knives.fan"
+        "attack.throwing-knives.flick.gale",
+        "attack.throwing-knives.fan.gale"
       ],
       "abilities": [],
       "triggers": [],
@@ -33397,12 +34989,10 @@ export const UNIT_PACK = {
       "hands": 1,
       "slots": 1,
       "classRestriction": "class.rogue",
-      "statModifiers": {
-        "precision": 1
-      },
+      "statModifiers": {},
       "grants": [
-        "attack.poison-stars.star",
-        "attack.poison-stars.venom-spread"
+        "attack.poison-stars.star.hunting",
+        "attack.poison-stars.venom-spread.hunting"
       ],
       "abilities": [],
       "triggers": [
@@ -33417,7 +35007,7 @@ export const UNIT_PACK = {
             "value": 2
           },
           "source": "item.poison-stars",
-          "onlyWithAttack": "attack.poison-stars.star"
+          "onlyWithAttack": "attack.poison-stars.star.hunting"
         }
       ],
       "vsTarget": [
@@ -33623,12 +35213,11 @@ export const UNIT_PACK = {
       "slots": 1,
       "classRestriction": "class.rogue",
       "statModifiers": {
-        "block": 5,
-        "crit": 3
+        "block": 5
       },
       "grants": [
-        "attack.obsidian-fang-dagger.fang",
-        "attack.obsidian-fang-dagger.gut"
+        "attack.obsidian-fang-dagger.fang.bloodletting",
+        "attack.obsidian-fang-dagger.gut.bloodletting"
       ],
       "abilities": [],
       "triggers": [
@@ -33644,7 +35233,7 @@ export const UNIT_PACK = {
             "until": "battle"
           },
           "source": "item.obsidian-fang-dagger",
-          "onlyWithAttack": "attack.obsidian-fang-dagger.fang"
+          "onlyWithAttack": "attack.obsidian-fang-dagger.fang.bloodletting"
         },
         {
           "id": "trigger.obsidian-fang-dagger.gut.strength",
@@ -33658,7 +35247,7 @@ export const UNIT_PACK = {
             "until": "battle"
           },
           "source": "item.obsidian-fang-dagger",
-          "onlyWithAttack": "attack.obsidian-fang-dagger.gut"
+          "onlyWithAttack": "attack.obsidian-fang-dagger.gut.bloodletting"
         },
         {
           "id": "trigger.obsidian-fang-dagger.bloodletting.bleed-crit.fang",
@@ -33671,7 +35260,7 @@ export const UNIT_PACK = {
             "value": 2
           },
           "source": "item.obsidian-fang-dagger.bloodletting",
-          "onlyWithAttack": "attack.obsidian-fang-dagger.fang"
+          "onlyWithAttack": "attack.obsidian-fang-dagger.fang.bloodletting"
         },
         {
           "id": "trigger.obsidian-fang-dagger.bloodletting.bleed-crit.gut",
@@ -33684,7 +35273,7 @@ export const UNIT_PACK = {
             "value": 2
           },
           "source": "item.obsidian-fang-dagger.bloodletting",
-          "onlyWithAttack": "attack.obsidian-fang-dagger.gut"
+          "onlyWithAttack": "attack.obsidian-fang-dagger.gut.bloodletting"
         }
       ],
       "base": "item.obsidian-fang-dagger",
@@ -33699,12 +35288,11 @@ export const UNIT_PACK = {
       "slots": 1,
       "classRestriction": "class.rogue",
       "statModifiers": {
-        "block": 5,
-        "crit": 3
+        "block": 5
       },
       "grants": [
-        "attack.obsidian-fang-dagger.fang",
-        "attack.obsidian-fang-dagger.gut"
+        "attack.obsidian-fang-dagger.fang.shadow-touched",
+        "attack.obsidian-fang-dagger.gut.shadow-touched"
       ],
       "abilities": [],
       "triggers": [
@@ -33720,7 +35308,7 @@ export const UNIT_PACK = {
             "until": "battle"
           },
           "source": "item.obsidian-fang-dagger",
-          "onlyWithAttack": "attack.obsidian-fang-dagger.fang"
+          "onlyWithAttack": "attack.obsidian-fang-dagger.fang.shadow-touched"
         },
         {
           "id": "trigger.obsidian-fang-dagger.gut.strength",
@@ -33734,7 +35322,7 @@ export const UNIT_PACK = {
             "until": "battle"
           },
           "source": "item.obsidian-fang-dagger",
-          "onlyWithAttack": "attack.obsidian-fang-dagger.gut"
+          "onlyWithAttack": "attack.obsidian-fang-dagger.gut.shadow-touched"
         }
       ],
       "base": "item.obsidian-fang-dagger",
@@ -33830,8 +35418,8 @@ export const UNIT_PACK = {
         "block": 5
       },
       "grants": [
-        "attack.obsidian-fang-dagger.fang",
-        "attack.obsidian-fang-dagger.gut"
+        "attack.obsidian-fang-dagger.fang.hobbling",
+        "attack.obsidian-fang-dagger.gut.hobbling"
       ],
       "abilities": [],
       "triggers": [
@@ -33847,7 +35435,7 @@ export const UNIT_PACK = {
             "until": "battle"
           },
           "source": "item.obsidian-fang-dagger",
-          "onlyWithAttack": "attack.obsidian-fang-dagger.fang"
+          "onlyWithAttack": "attack.obsidian-fang-dagger.fang.hobbling"
         },
         {
           "id": "trigger.obsidian-fang-dagger.gut.strength",
@@ -33861,7 +35449,7 @@ export const UNIT_PACK = {
             "until": "battle"
           },
           "source": "item.obsidian-fang-dagger",
-          "onlyWithAttack": "attack.obsidian-fang-dagger.gut"
+          "onlyWithAttack": "attack.obsidian-fang-dagger.gut.hobbling"
         },
         {
           "id": "trigger.obsidian-fang-dagger.hobbling.slow.fang",
@@ -33874,7 +35462,7 @@ export const UNIT_PACK = {
             "value": 2
           },
           "source": "item.obsidian-fang-dagger.hobbling",
-          "onlyWithAttack": "attack.obsidian-fang-dagger.fang"
+          "onlyWithAttack": "attack.obsidian-fang-dagger.fang.hobbling"
         },
         {
           "id": "trigger.obsidian-fang-dagger.hobbling.slow.gut",
@@ -33887,7 +35475,7 @@ export const UNIT_PACK = {
             "value": 2
           },
           "source": "item.obsidian-fang-dagger.hobbling",
-          "onlyWithAttack": "attack.obsidian-fang-dagger.gut"
+          "onlyWithAttack": "attack.obsidian-fang-dagger.gut.hobbling"
         }
       ],
       "base": "item.obsidian-fang-dagger",
@@ -33960,12 +35548,11 @@ export const UNIT_PACK = {
       "hands": 2,
       "slots": 2,
       "statModifiers": {
-        "block": 10,
-        "crit": 3
+        "block": 10
       },
       "grants": [
-        "attack.duel-runeblades.twin-cut",
-        "attack.duel-runeblades.rune-cross"
+        "attack.duel-runeblades.twin-cut.bloodletting",
+        "attack.duel-runeblades.rune-cross.bloodletting"
       ],
       "abilities": [],
       "triggers": [
@@ -33980,7 +35567,7 @@ export const UNIT_PACK = {
             "value": 2
           },
           "source": "item.duel-runeblades.bloodletting",
-          "onlyWithAttack": "attack.duel-runeblades.twin-cut"
+          "onlyWithAttack": "attack.duel-runeblades.twin-cut.bloodletting"
         },
         {
           "id": "trigger.duel-runeblades.bloodletting.bleed-crit.rune-cross",
@@ -33993,7 +35580,7 @@ export const UNIT_PACK = {
             "value": 2
           },
           "source": "item.duel-runeblades.bloodletting",
-          "onlyWithAttack": "attack.duel-runeblades.rune-cross"
+          "onlyWithAttack": "attack.duel-runeblades.rune-cross.bloodletting"
         }
       ],
       "base": "item.duel-runeblades",
@@ -34007,12 +35594,11 @@ export const UNIT_PACK = {
       "hands": 2,
       "slots": 2,
       "statModifiers": {
-        "block": 10,
-        "accuracy": 5
+        "block": 10
       },
       "grants": [
-        "attack.duel-runeblades.twin-cut",
-        "attack.duel-runeblades.rune-cross"
+        "attack.duel-runeblades.twin-cut.lightning",
+        "attack.duel-runeblades.rune-cross.lightning"
       ],
       "abilities": [],
       "triggers": [],
@@ -34103,19 +35689,20 @@ export const UNIT_PACK = {
       "slots": 2,
       "statModifiers": {
         "block": 10,
-        "strength": 2,
-        "precision": 2,
         "maxHp": -4,
         "dodge": -10
       },
       "grants": [
-        "attack.duel-runeblades.twin-cut",
-        "attack.duel-runeblades.rune-cross"
+        "attack.duel-runeblades.twin-cut.sacrifice",
+        "attack.duel-runeblades.rune-cross.sacrifice"
       ],
       "abilities": [],
       "triggers": [],
       "base": "item.duel-runeblades",
-      "enchant": "enchant.sacrifice"
+      "enchant": "enchant.sacrifice",
+      "gaps": [
+        "enchant enchant.sacrifice precision 2: the weapon grants no attack that uses precision — it rides nothing"
+      ]
     },
     "item.shepherds-sling.venomous": {
       "id": "item.shepherds-sling.venomous",
@@ -34207,12 +35794,10 @@ export const UNIT_PACK = {
       "tier": 3,
       "hands": 1,
       "slots": 1,
-      "statModifiers": {
-        "precision": 1
-      },
+      "statModifiers": {},
       "grants": [
-        "attack.shepherds-sling.stone",
-        "attack.shepherds-sling.whirl"
+        "attack.shepherds-sling.stone.hunting",
+        "attack.shepherds-sling.whirl.hunting"
       ],
       "abilities": [],
       "triggers": [
@@ -34227,7 +35812,7 @@ export const UNIT_PACK = {
             "value": 1
           },
           "source": "item.shepherds-sling",
-          "onlyWithAttack": "attack.shepherds-sling.whirl"
+          "onlyWithAttack": "attack.shepherds-sling.whirl.hunting"
         }
       ],
       "vsTarget": [
@@ -34280,12 +35865,10 @@ export const UNIT_PACK = {
       "tier": 3,
       "hands": 1,
       "slots": 1,
-      "statModifiers": {
-        "precision": 1
-      },
+      "statModifiers": {},
       "grants": [
-        "attack.shepherds-sling.stone",
-        "attack.shepherds-sling.whirl"
+        "attack.shepherds-sling.stone.magic",
+        "attack.shepherds-sling.whirl.magic"
       ],
       "abilities": [],
       "triggers": [
@@ -34300,7 +35883,7 @@ export const UNIT_PACK = {
             "value": 1
           },
           "source": "item.shepherds-sling",
-          "onlyWithAttack": "attack.shepherds-sling.whirl"
+          "onlyWithAttack": "attack.shepherds-sling.whirl.magic"
         }
       ],
       "base": "item.shepherds-sling",
@@ -34314,12 +35897,11 @@ export const UNIT_PACK = {
       "hands": 1,
       "slots": 1,
       "statModifiers": {
-        "accuracy": 20,
         "reach": 1
       },
       "grants": [
-        "attack.shepherds-sling.stone",
-        "attack.shepherds-sling.whirl"
+        "attack.shepherds-sling.stone.gale",
+        "attack.shepherds-sling.whirl.gale"
       ],
       "abilities": [],
       "triggers": [
@@ -34334,7 +35916,7 @@ export const UNIT_PACK = {
             "value": 1
           },
           "source": "item.shepherds-sling",
-          "onlyWithAttack": "attack.shepherds-sling.whirl"
+          "onlyWithAttack": "attack.shepherds-sling.whirl.gale"
         }
       ],
       "base": "item.shepherds-sling",
@@ -34433,12 +36015,10 @@ export const UNIT_PACK = {
       "tier": 3,
       "hands": 1,
       "slots": 1,
-      "statModifiers": {
-        "crit": 3
-      },
+      "statModifiers": {},
       "grants": [
-        "attack.crippling-whip.lash",
-        "attack.crippling-whip.hamstring"
+        "attack.crippling-whip.lash.shadow-touched",
+        "attack.crippling-whip.hamstring.shadow-touched"
       ],
       "abilities": [],
       "triggers": [
@@ -34453,7 +36033,7 @@ export const UNIT_PACK = {
             "value": 2
           },
           "source": "item.crippling-whip",
-          "onlyWithAttack": "attack.crippling-whip.lash"
+          "onlyWithAttack": "attack.crippling-whip.lash.shadow-touched"
         }
       ],
       "base": "item.crippling-whip",
@@ -34586,12 +36166,10 @@ export const UNIT_PACK = {
       "tier": 3,
       "hands": 2,
       "slots": 2,
-      "statModifiers": {
-        "crit": 3
-      },
+      "statModifiers": {},
       "grants": [
-        "attack.iron-claws.rake",
-        "attack.iron-claws.eviscerate"
+        "attack.iron-claws.rake.bloodletting",
+        "attack.iron-claws.eviscerate.bloodletting"
       ],
       "abilities": [],
       "triggers": [
@@ -34606,7 +36184,7 @@ export const UNIT_PACK = {
             "value": 3
           },
           "source": "item.iron-claws",
-          "onlyWithAttack": "attack.iron-claws.eviscerate"
+          "onlyWithAttack": "attack.iron-claws.eviscerate.bloodletting"
         },
         {
           "id": "trigger.iron-claws.bloodletting.bleed-crit.rake",
@@ -34619,7 +36197,7 @@ export const UNIT_PACK = {
             "value": 2
           },
           "source": "item.iron-claws.bloodletting",
-          "onlyWithAttack": "attack.iron-claws.rake"
+          "onlyWithAttack": "attack.iron-claws.rake.bloodletting"
         },
         {
           "id": "trigger.iron-claws.bloodletting.bleed-crit.eviscerate",
@@ -34632,7 +36210,7 @@ export const UNIT_PACK = {
             "value": 2
           },
           "source": "item.iron-claws.bloodletting",
-          "onlyWithAttack": "attack.iron-claws.eviscerate"
+          "onlyWithAttack": "attack.iron-claws.eviscerate.bloodletting"
         }
       ],
       "base": "item.iron-claws",
@@ -34687,12 +36265,11 @@ export const UNIT_PACK = {
       "hands": 2,
       "slots": 2,
       "statModifiers": {
-        "strength": 1,
         "dodge": -5
       },
       "grants": [
-        "attack.iron-claws.rake",
-        "attack.iron-claws.eviscerate"
+        "attack.iron-claws.rake.bloodthirsty",
+        "attack.iron-claws.eviscerate.bloodthirsty"
       ],
       "abilities": [],
       "triggers": [
@@ -34707,7 +36284,7 @@ export const UNIT_PACK = {
             "value": 3
           },
           "source": "item.iron-claws",
-          "onlyWithAttack": "attack.iron-claws.eviscerate"
+          "onlyWithAttack": "attack.iron-claws.eviscerate.bloodthirsty"
         }
       ],
       "base": "item.iron-claws",
@@ -34777,12 +36354,10 @@ export const UNIT_PACK = {
       "tier": 3,
       "hands": 2,
       "slots": 2,
-      "statModifiers": {
-        "precision": 1
-      },
+      "statModifiers": {},
       "grants": [
         "attack.grappling-harpoon.brace",
-        "attack.grappling-harpoon.hurl"
+        "attack.grappling-harpoon.hurl.hunting"
       ],
       "abilities": [],
       "triggers": [],
@@ -34873,12 +36448,10 @@ export const UNIT_PACK = {
       "hands": 1,
       "slots": 1,
       "classRestriction": "class.mage",
-      "statModifiers": {
-        "accuracy": 5
-      },
+      "statModifiers": {},
       "grants": [
-        "attack.apprentice-wand.spark",
-        "attack.apprentice-wand.surge"
+        "attack.apprentice-wand.spark.lightning",
+        "attack.apprentice-wand.surge.lightning"
       ],
       "abilities": [],
       "triggers": [
@@ -34893,7 +36466,7 @@ export const UNIT_PACK = {
             "value": 1
           },
           "source": "item.apprentice-wand",
-          "onlyWithAttack": "attack.apprentice-wand.surge"
+          "onlyWithAttack": "attack.apprentice-wand.surge.lightning"
         }
       ],
       "base": "item.apprentice-wand",
@@ -35012,12 +36585,10 @@ export const UNIT_PACK = {
       "hands": 1,
       "slots": 1,
       "classRestriction": "class.mage",
-      "statModifiers": {
-        "accuracy": 5
-      },
+      "statModifiers": {},
       "grants": [
-        "attack.ancient-tome.read-the-page",
-        "attack.ancient-tome.long-passage"
+        "attack.ancient-tome.read-the-page.lightning",
+        "attack.ancient-tome.long-passage.lightning"
       ],
       "abilities": [],
       "triggers": [],
@@ -35318,19 +36889,20 @@ export const UNIT_PACK = {
       "classRestriction": "class.paladin",
       "statModifiers": {
         "block": 5,
-        "strength": 2,
-        "precision": 2,
         "maxHp": -4,
         "dodge": -10
       },
       "grants": [
-        "attack.bane-blade.strike",
-        "attack.bane-blade.banishing-blow"
+        "attack.bane-blade.strike.sacrifice",
+        "attack.bane-blade.banishing-blow.sacrifice"
       ],
       "abilities": [],
       "triggers": [],
       "base": "item.bane-blade",
-      "enchant": "enchant.sacrifice"
+      "enchant": "enchant.sacrifice",
+      "gaps": [
+        "enchant enchant.sacrifice precision 2: the weapon grants no attack that uses precision — it rides nothing"
+      ]
     },
     "item.sword-of-the-fallen.undead-slayer": {
       "id": "item.sword-of-the-fallen.undead-slayer",
@@ -35430,12 +37002,11 @@ export const UNIT_PACK = {
       "slots": 1,
       "classRestriction": "class.paladin",
       "statModifiers": {
-        "block": 5,
-        "strength": 1
+        "block": 5
       },
       "grants": [
-        "attack.sword-of-the-fallen.remembrance",
-        "attack.sword-of-the-fallen.honour-the-dead"
+        "attack.sword-of-the-fallen.remembrance.soul-reaper",
+        "attack.sword-of-the-fallen.honour-the-dead.soul-reaper"
       ],
       "abilities": [],
       "triggers": [],
@@ -35525,12 +37096,11 @@ export const UNIT_PACK = {
       "hands": 2,
       "slots": 2,
       "statModifiers": {
-        "block": 5,
-        "crit": 3
+        "block": 5
       },
       "grants": [
-        "attack.daggers.stab",
-        "attack.daggers.thrown-dagger"
+        "attack.daggers.stab.shadow-touched",
+        "attack.daggers.thrown-dagger.shadow-touched"
       ],
       "abilities": [],
       "triggers": [],
@@ -35597,8 +37167,8 @@ export const UNIT_PACK = {
         "block": 5
       },
       "grants": [
-        "attack.daggers.stab",
-        "attack.daggers.thrown-dagger"
+        "attack.daggers.stab.hobbling",
+        "attack.daggers.thrown-dagger.hobbling"
       ],
       "abilities": [],
       "triggers": [
@@ -35613,7 +37183,7 @@ export const UNIT_PACK = {
             "value": 2
           },
           "source": "item.daggers.hobbling",
-          "onlyWithAttack": "attack.daggers.stab"
+          "onlyWithAttack": "attack.daggers.stab.hobbling"
         },
         {
           "id": "trigger.daggers.hobbling.slow.thrown-dagger",
@@ -35626,7 +37196,7 @@ export const UNIT_PACK = {
             "value": 2
           },
           "source": "item.daggers.hobbling",
-          "onlyWithAttack": "attack.daggers.thrown-dagger"
+          "onlyWithAttack": "attack.daggers.thrown-dagger.hobbling"
         }
       ],
       "base": "item.daggers",
@@ -35640,12 +37210,11 @@ export const UNIT_PACK = {
       "hands": 2,
       "slots": 2,
       "statModifiers": {
-        "block": 5,
-        "crit": 3
+        "block": 5
       },
       "grants": [
-        "attack.daggers.stab",
-        "attack.daggers.thrown-dagger"
+        "attack.daggers.stab.bloodletting",
+        "attack.daggers.thrown-dagger.bloodletting"
       ],
       "abilities": [],
       "triggers": [
@@ -35660,7 +37229,7 @@ export const UNIT_PACK = {
             "value": 2
           },
           "source": "item.daggers.bloodletting",
-          "onlyWithAttack": "attack.daggers.stab"
+          "onlyWithAttack": "attack.daggers.stab.bloodletting"
         },
         {
           "id": "trigger.daggers.bloodletting.bleed-crit.thrown-dagger",
@@ -35673,7 +37242,7 @@ export const UNIT_PACK = {
             "value": 2
           },
           "source": "item.daggers.bloodletting",
-          "onlyWithAttack": "attack.daggers.thrown-dagger"
+          "onlyWithAttack": "attack.daggers.thrown-dagger.bloodletting"
         }
       ],
       "base": "item.daggers",
@@ -35711,8 +37280,8 @@ export const UNIT_PACK = {
       "classRestriction": "class.ranger",
       "statModifiers": {},
       "grants": [
-        "attack.longbow.shot",
-        "attack.longbow.long-shot"
+        "attack.longbow.shot.rooting",
+        "attack.longbow.long-shot.rooting"
       ],
       "abilities": [],
       "triggers": [
@@ -35727,7 +37296,7 @@ export const UNIT_PACK = {
             "value": 1
           },
           "source": "item.longbow.rooting",
-          "onlyWithAttack": "attack.longbow.shot"
+          "onlyWithAttack": "attack.longbow.shot.rooting"
         },
         {
           "id": "trigger.longbow.rooting.root.long-shot",
@@ -35740,7 +37309,7 @@ export const UNIT_PACK = {
             "value": 1
           },
           "source": "item.longbow.rooting",
-          "onlyWithAttack": "attack.longbow.long-shot"
+          "onlyWithAttack": "attack.longbow.long-shot.rooting"
         }
       ],
       "base": "item.longbow",
@@ -35755,12 +37324,11 @@ export const UNIT_PACK = {
       "slots": 2,
       "classRestriction": "class.ranger",
       "statModifiers": {
-        "accuracy": 20,
         "reach": 1
       },
       "grants": [
-        "attack.longbow.shot",
-        "attack.longbow.long-shot"
+        "attack.longbow.shot.gale",
+        "attack.longbow.long-shot.gale"
       ],
       "abilities": [],
       "triggers": [],
@@ -35778,12 +37346,10 @@ export const UNIT_PACK = {
       "hands": 2,
       "slots": 2,
       "classRestriction": "class.ranger",
-      "statModifiers": {
-        "precision": 1
-      },
+      "statModifiers": {},
       "grants": [
-        "attack.longbow.shot",
-        "attack.longbow.long-shot"
+        "attack.longbow.shot.hunting",
+        "attack.longbow.long-shot.hunting"
       ],
       "abilities": [],
       "triggers": [],
@@ -35875,12 +37441,10 @@ export const UNIT_PACK = {
       "hands": 2,
       "slots": 2,
       "classRestriction": "class.ranger",
-      "statModifiers": {
-        "precision": 1
-      },
+      "statModifiers": {},
       "grants": [
-        "attack.longbow.shot",
-        "attack.longbow.long-shot"
+        "attack.longbow.shot.magic",
+        "attack.longbow.long-shot.magic"
       ],
       "abilities": [],
       "triggers": [],
@@ -36041,8 +37605,8 @@ export const UNIT_PACK = {
       "slots": 2,
       "statModifiers": {},
       "grants": [
-        "attack.shortbow.short-shot",
-        "attack.shortbow.quick-shot"
+        "attack.shortbow.short-shot.rooting",
+        "attack.shortbow.quick-shot.rooting"
       ],
       "abilities": [],
       "triggers": [
@@ -36057,7 +37621,7 @@ export const UNIT_PACK = {
             "value": 1
           },
           "source": "item.shortbow.rooting",
-          "onlyWithAttack": "attack.shortbow.short-shot"
+          "onlyWithAttack": "attack.shortbow.short-shot.rooting"
         },
         {
           "id": "trigger.shortbow.rooting.root.quick-shot",
@@ -36070,7 +37634,7 @@ export const UNIT_PACK = {
             "value": 1
           },
           "source": "item.shortbow.rooting",
-          "onlyWithAttack": "attack.shortbow.quick-shot"
+          "onlyWithAttack": "attack.shortbow.quick-shot.rooting"
         }
       ],
       "base": "item.shortbow",
@@ -36217,12 +37781,10 @@ export const UNIT_PACK = {
       "tier": 3,
       "hands": 2,
       "slots": 2,
-      "statModifiers": {
-        "precision": 1
-      },
+      "statModifiers": {},
       "grants": [
-        "attack.shortbow.short-shot",
-        "attack.shortbow.quick-shot"
+        "attack.shortbow.short-shot.hunting",
+        "attack.shortbow.quick-shot.hunting"
       ],
       "abilities": [],
       "triggers": [],
@@ -36314,12 +37876,11 @@ export const UNIT_PACK = {
       "slots": 2,
       "classRestriction": "class.ranger",
       "statModifiers": {
-        "accuracy": 20,
         "reach": 1
       },
       "grants": [
-        "attack.elfbow.elf-shot",
-        "attack.elfbow.double-shot"
+        "attack.elfbow.elf-shot.gale",
+        "attack.elfbow.double-shot.gale"
       ],
       "abilities": [],
       "triggers": [
@@ -36335,7 +37896,7 @@ export const UNIT_PACK = {
             "until": "battle"
           },
           "source": "item.elfbow",
-          "onlyWithAttack": "attack.elfbow.elf-shot"
+          "onlyWithAttack": "attack.elfbow.elf-shot.gale"
         }
       ],
       "base": "item.elfbow",
@@ -36352,12 +37913,10 @@ export const UNIT_PACK = {
       "hands": 2,
       "slots": 2,
       "classRestriction": "class.ranger",
-      "statModifiers": {
-        "precision": 1
-      },
+      "statModifiers": {},
       "grants": [
-        "attack.elfbow.elf-shot",
-        "attack.elfbow.double-shot"
+        "attack.elfbow.elf-shot.magic",
+        "attack.elfbow.double-shot.magic"
       ],
       "abilities": [],
       "triggers": [
@@ -36373,7 +37932,7 @@ export const UNIT_PACK = {
             "until": "battle"
           },
           "source": "item.elfbow",
-          "onlyWithAttack": "attack.elfbow.elf-shot"
+          "onlyWithAttack": "attack.elfbow.elf-shot.magic"
         }
       ],
       "base": "item.elfbow",
@@ -36387,12 +37946,10 @@ export const UNIT_PACK = {
       "hands": 2,
       "slots": 2,
       "classRestriction": "class.ranger",
-      "statModifiers": {
-        "crit": 3
-      },
+      "statModifiers": {},
       "grants": [
-        "attack.elfbow.elf-shot",
-        "attack.elfbow.double-shot"
+        "attack.elfbow.elf-shot.shadow-touched",
+        "attack.elfbow.double-shot.shadow-touched"
       ],
       "abilities": [],
       "triggers": [
@@ -36408,7 +37965,7 @@ export const UNIT_PACK = {
             "until": "battle"
           },
           "source": "item.elfbow",
-          "onlyWithAttack": "attack.elfbow.elf-shot"
+          "onlyWithAttack": "attack.elfbow.elf-shot.shadow-touched"
         }
       ],
       "base": "item.elfbow",
@@ -36427,8 +37984,8 @@ export const UNIT_PACK = {
       "classRestriction": "class.ranger",
       "statModifiers": {},
       "grants": [
-        "attack.elfbow.elf-shot",
-        "attack.elfbow.double-shot"
+        "attack.elfbow.elf-shot.rooting",
+        "attack.elfbow.double-shot.rooting"
       ],
       "abilities": [],
       "triggers": [
@@ -36444,7 +38001,7 @@ export const UNIT_PACK = {
             "until": "battle"
           },
           "source": "item.elfbow",
-          "onlyWithAttack": "attack.elfbow.elf-shot"
+          "onlyWithAttack": "attack.elfbow.elf-shot.rooting"
         },
         {
           "id": "trigger.elfbow.rooting.root.elf-shot",
@@ -36457,7 +38014,7 @@ export const UNIT_PACK = {
             "value": 1
           },
           "source": "item.elfbow.rooting",
-          "onlyWithAttack": "attack.elfbow.elf-shot"
+          "onlyWithAttack": "attack.elfbow.elf-shot.rooting"
         },
         {
           "id": "trigger.elfbow.rooting.root.double-shot",
@@ -36470,7 +38027,7 @@ export const UNIT_PACK = {
             "value": 1
           },
           "source": "item.elfbow.rooting",
-          "onlyWithAttack": "attack.elfbow.double-shot"
+          "onlyWithAttack": "attack.elfbow.double-shot.rooting"
         }
       ],
       "base": "item.elfbow",
@@ -36568,12 +38125,10 @@ export const UNIT_PACK = {
       "tier": 3,
       "hands": 2,
       "slots": 2,
-      "statModifiers": {
-        "precision": 1
-      },
+      "statModifiers": {},
       "grants": [
-        "attack.barbarian-bow.power-shot",
-        "attack.barbarian-bow.crippling-shot"
+        "attack.barbarian-bow.power-shot.hunting",
+        "attack.barbarian-bow.crippling-shot.hunting"
       ],
       "abilities": [],
       "triggers": [
@@ -36587,7 +38142,7 @@ export const UNIT_PACK = {
             "value": 1
           },
           "source": "item.barbarian-bow",
-          "onlyWithAttack": "attack.barbarian-bow.power-shot"
+          "onlyWithAttack": "attack.barbarian-bow.power-shot.hunting"
         },
         {
           "id": "trigger.barbarian-bow.crippling-shot.weak",
@@ -36600,7 +38155,7 @@ export const UNIT_PACK = {
             "value": 2
           },
           "source": "item.barbarian-bow",
-          "onlyWithAttack": "attack.barbarian-bow.crippling-shot"
+          "onlyWithAttack": "attack.barbarian-bow.crippling-shot.hunting"
         }
       ],
       "vsTarget": [
@@ -36814,8 +38369,8 @@ export const UNIT_PACK = {
       "slots": 2,
       "statModifiers": {},
       "grants": [
-        "attack.barbarian-bow.power-shot",
-        "attack.barbarian-bow.crippling-shot"
+        "attack.barbarian-bow.power-shot.rooting",
+        "attack.barbarian-bow.crippling-shot.rooting"
       ],
       "abilities": [],
       "triggers": [
@@ -36829,7 +38384,7 @@ export const UNIT_PACK = {
             "value": 1
           },
           "source": "item.barbarian-bow",
-          "onlyWithAttack": "attack.barbarian-bow.power-shot"
+          "onlyWithAttack": "attack.barbarian-bow.power-shot.rooting"
         },
         {
           "id": "trigger.barbarian-bow.crippling-shot.weak",
@@ -36842,7 +38397,7 @@ export const UNIT_PACK = {
             "value": 2
           },
           "source": "item.barbarian-bow",
-          "onlyWithAttack": "attack.barbarian-bow.crippling-shot"
+          "onlyWithAttack": "attack.barbarian-bow.crippling-shot.rooting"
         },
         {
           "id": "trigger.barbarian-bow.rooting.root.power-shot",
@@ -36855,7 +38410,7 @@ export const UNIT_PACK = {
             "value": 1
           },
           "source": "item.barbarian-bow.rooting",
-          "onlyWithAttack": "attack.barbarian-bow.power-shot"
+          "onlyWithAttack": "attack.barbarian-bow.power-shot.rooting"
         },
         {
           "id": "trigger.barbarian-bow.rooting.root.crippling-shot",
@@ -36868,7 +38423,7 @@ export const UNIT_PACK = {
             "value": 1
           },
           "source": "item.barbarian-bow.rooting",
-          "onlyWithAttack": "attack.barbarian-bow.crippling-shot"
+          "onlyWithAttack": "attack.barbarian-bow.crippling-shot.rooting"
         }
       ],
       "base": "item.barbarian-bow",
@@ -36907,11 +38462,9 @@ export const UNIT_PACK = {
       "tier": 3,
       "hands": 1,
       "slots": 1,
-      "statModifiers": {
-        "precision": 1
-      },
+      "statModifiers": {},
       "grants": [
-        "attack.javelin.throw",
+        "attack.javelin.throw.hunting",
         "attack.javelin.stab"
       ],
       "abilities": [],
@@ -37073,11 +38626,10 @@ export const UNIT_PACK = {
       "hands": 1,
       "slots": 1,
       "statModifiers": {
-        "block": 5,
-        "crit": 3
+        "block": 5
       },
       "grants": [
-        "attack.longsword.slash"
+        "attack.longsword.slash.bloodletting"
       ],
       "abilities": [
         "power.longsword.counterattack"
@@ -37094,7 +38646,7 @@ export const UNIT_PACK = {
             "value": 2
           },
           "source": "item.longsword.bloodletting",
-          "onlyWithAttack": "attack.longsword.slash"
+          "onlyWithAttack": "attack.longsword.slash.bloodletting"
         }
       ],
       "gaps": [
@@ -37269,7 +38821,7 @@ export const UNIT_PACK = {
         "block": 5
       },
       "grants": [
-        "attack.longsword.slash"
+        "attack.longsword.slash.destroying"
       ],
       "abilities": [
         "power.longsword.counterattack"
@@ -37330,11 +38882,9 @@ export const UNIT_PACK = {
       "hands": 2,
       "slots": 2,
       "classRestriction": "class.warrior",
-      "statModifiers": {
-        "crit": 3
-      },
+      "statModifiers": {},
       "grants": [
-        "attack.halberd.hack",
+        "attack.halberd.hack.bloodletting",
         "attack.halberd.cleave"
       ],
       "abilities": [],
@@ -37349,7 +38899,7 @@ export const UNIT_PACK = {
             "value": 1
           },
           "source": "item.halberd",
-          "onlyWithAttack": "attack.halberd.hack"
+          "onlyWithAttack": "attack.halberd.hack.bloodletting"
         },
         {
           "id": "trigger.halberd.bloodletting.bleed-crit.hack",
@@ -37362,7 +38912,7 @@ export const UNIT_PACK = {
             "value": 2
           },
           "source": "item.halberd.bloodletting",
-          "onlyWithAttack": "attack.halberd.hack"
+          "onlyWithAttack": "attack.halberd.hack.bloodletting"
         },
         {
           "id": "trigger.halberd.bloodletting.bleed-crit.cleave",
@@ -37379,7 +38929,10 @@ export const UNIT_PACK = {
         }
       ],
       "base": "item.halberd",
-      "enchant": "enchant.bloodletting"
+      "enchant": "enchant.bloodletting",
+      "gaps": [
+        "enchant enchant.bloodletting on attack.halberd.cleave: not an attack row — not copied"
+      ]
     },
     "item.halberd.death": {
       "id": "item.halberd.death",
@@ -37482,7 +39035,7 @@ export const UNIT_PACK = {
       "classRestriction": "class.warrior",
       "statModifiers": {},
       "grants": [
-        "attack.halberd.hack",
+        "attack.halberd.hack.destroying",
         "attack.halberd.cleave"
       ],
       "abilities": [],
@@ -37497,13 +39050,14 @@ export const UNIT_PACK = {
             "value": 1
           },
           "source": "item.halberd",
-          "onlyWithAttack": "attack.halberd.hack"
+          "onlyWithAttack": "attack.halberd.hack.destroying"
         }
       ],
       "base": "item.halberd",
       "enchant": "enchant.destroying",
       "gaps": [
-        "enchant onKill: the corpse is destroyed — trigger shape unparsed"
+        "enchant onKill: the corpse is destroyed — trigger shape unparsed",
+        "enchant enchant.destroying on attack.halberd.cleave: not an attack row — not copied"
       ]
     },
     "item.fire-staff.cursed-skull": {
@@ -37645,11 +39199,9 @@ export const UNIT_PACK = {
       "hands": 2,
       "slots": 2,
       "classRestriction": "class.mage",
-      "statModifiers": {
-        "accuracy": 5
-      },
+      "statModifiers": {},
       "grants": [
-        "attack.fire-staff.fire-blast"
+        "attack.fire-staff.fire-blast.lightning"
       ],
       "abilities": [
         "power.fire-staff.fireball"
@@ -37666,7 +39218,7 @@ export const UNIT_PACK = {
             "value": 1
           },
           "source": "item.fire-staff",
-          "onlyWithAttack": "attack.fire-staff.fire-blast"
+          "onlyWithAttack": "attack.fire-staff.fire-blast.lightning"
         }
       ],
       "base": "item.fire-staff",
@@ -37953,11 +39505,9 @@ export const UNIT_PACK = {
       "hands": 2,
       "slots": 2,
       "classRestriction": "class.mage",
-      "statModifiers": {
-        "accuracy": 5
-      },
+      "statModifiers": {},
       "grants": [
-        "attack.lightning-staff.bolt"
+        "attack.lightning-staff.bolt.lightning"
       ],
       "abilities": [
         "power.lightning-staff.storm"
@@ -38080,11 +39630,9 @@ export const UNIT_PACK = {
       "hands": 2,
       "slots": 2,
       "classRestriction": "class.mage",
-      "statModifiers": {
-        "accuracy": 5
-      },
+      "statModifiers": {},
       "grants": [
-        "attack.force-staff.force-blast"
+        "attack.force-staff.force-blast.lightning"
       ],
       "abilities": [],
       "triggers": [],
