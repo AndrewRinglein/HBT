@@ -7,6 +7,7 @@
 // flushed), never the launcher's "Show current state". Prints one line per step and `switch-hero-asks: … passed` at the end.
 import assert from 'node:assert/strict'
 import {bootSlice} from './atlas-dom.mjs'
+import {shownName} from '../../viewer/src/names.js'
 const {w}=bootSlice(process.argv[2]??'BATTLE-SANDBOX.html',{search:'?play=encounter.opening.orphanage'}),h=w.__sandbox
 w.confirm=q=>{throw Error('window.confirm: '+q)}
 const V=()=>h.viewer._V,ctx=()=>h.session.ctx,unit=id=>ctx().state.units[id]
@@ -19,7 +20,10 @@ const chip=id=>V().dom.rail.querySelectorAll('.railchip').find(c=>+c.dataset.i==
 const acting=()=>[ctx().battleCursor.at,ctx().battleCursor.actor]
 const walk=()=>{const dest=V().play.reach[0];hexBtn(dest).handlers.click({detail:1});hexBtn(dest).handlers.click({detail:2});settle()}
 const dbl=id=>{chip(id).handlers.click({detail:1});chip(id).handlers.click({detail:2});chip(id).handlers.dblclick({});settle()}
-const asks=(x,y)=>{assert.ok(shown($('playSwitch')),'the pop-up shows');assert.equal($('playSwitchText').textContent,`End activation of ${unit(x).name} and start activation of ${unit(y).name}?`)}
+/* Law 10, 2026-10-05 - viewer.unit-names-no-letters-or-numbers (engine DECISIONS.md 2026-10-05 'no unit is shown with a number or a
+   letter', Andrew: "it shouldn't be Soldier A or Lumberjack 1"): the pop-up and the refusal line were held to the engine's marked names (`unit(x).name`). The claim is unchanged; the name the screen shows is the
+   engine's less its mark, read through the one function the screen itself uses (viewer src/names.js shownName). */
+const asks=(x,y)=>{assert.ok(shown($('playSwitch')),'the pop-up shows');assert.equal($('playSwitchText').textContent,`End activation of ${shownName(unit(x).name)} and start activation of ${shownName(unit(y).name)}?`)}
 
 settle()
 const heroes=ctx().state.units.filter(u=>u.side==='hero').map(u=>u.id).sort((a,b)=>a-b)
@@ -46,7 +50,7 @@ assert.deepEqual(V().dom.rail.querySelectorAll('.railchip').filter(c=>c.classNam
 assert.equal(V().play.actor,second);assert.ok(V().play.reach.length>0,'its basic move is armed')
 say(`3 Yes: ${unit(first).name} is marked acted; ${unit(second).name} is acting`)
 // the first does not come back: a double-click on it is refused in a line, with no pop-up
-dbl(first);assert.equal(shown($('playSwitch')),false);assert.equal(V().dom.playNote.textContent,`${unit(first).name} has already acted this Phase.`)
+dbl(first);assert.equal(shown($('playSwitch')),false);assert.equal(V().dom.playNote.textContent,`${shownName(unit(first).name)} has already acted this Phase.`)
 // 4. a hero that has done nothing is switched away from as before, with no pop-up
 const third=heroes.find(id=>id!==first&&id!==second&&!civs.includes(id))
 if(third!==undefined){dbl(third);assert.equal(shown($('playSwitch')),false,'no question for a hero that has done nothing');assert.deepEqual(acting(),['acting',third]);assert.ok(!chip(second).className.includes(' done'))
