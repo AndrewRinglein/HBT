@@ -16,6 +16,7 @@ import {spawn} from 'node:child_process'
 import {resolve,dirname,relative} from 'node:path'
 import {fileURLToPath} from 'node:url'
 import {mkdirSync} from 'node:fs'
+import {shownName} from '../../viewer/src/names.js'
 
 const here=dirname(fileURLToPath(import.meta.url)),ROOT=resolve(here,'../..')
 const PAGE=resolve(process.argv[2]??'BATTLE-SANDBOX.html'),SHOT=resolve(process.argv[3]??resolve(here,'../scratch/affliction-pop-up.png'))
@@ -89,7 +90,10 @@ try{
  let p=await read()
  // the pop-up: over the whole battle screen, naming the hero and the affliction
  assert.ok(p.pop.w>=p.screen.w-1&&p.pop.h>=p.screen.h-1,'it covers the battle screen');assert.ok(p.plate.l>=p.pop.l&&p.plate.r<=p.pop.r&&p.plate.t>=p.pop.t&&p.plate.b<=p.pop.b,'its plate is inside the screen')
- assert.ok(p.title.includes(fact.name)&&p.title.includes(fact.e.name),`names the hero and the affliction: ${p.title}`)
+ /* Law 10, 2026-10-05 - viewer.unit-names-no-letters-or-numbers (engine DECISIONS.md 2026-10-05 'no unit is shown with a number or a
+   letter', Andrew: "it shouldn't be Soldier A or Lumberjack 1"): the pop-up's title was asked for the engine's marked name (`fact.name`). The claim is unchanged; the name the screen shows is the
+   engine's less its mark, read through the one function the screen itself uses (viewer src/names.js shownName). */
+ assert.ok(p.title.includes(shownName(fact.name))&&!p.title.includes(fact.name)&&p.title.includes(fact.e.name),`names the hero and the affliction: ${p.title}`)
  // before and after: that hero's own card and its own afflicted card, both loaded, side by side, the same size
  assert.ok(p.before&&p.after&&p.noArt===0,'both cards are pictures');assert.equal(p.before.src,p.wantBefore,'before: the hero\'s card');assert.equal(p.after.src,p.wantAfter,'after: the hero\'s own after card for this affliction')
  assert.notEqual(p.before.src,p.after.src);assert.ok(p.before.w>0&&p.after.w>0,'both loaded')

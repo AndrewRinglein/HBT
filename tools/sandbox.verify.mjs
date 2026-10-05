@@ -32,7 +32,11 @@ assert.deepEqual(handle.session.ctx.events.filter(e=>e.type==='activation.begin'
     the names of the powers the Tower Shield's row grants. */
  const towerPowers=handle.session.ctx.items['item.tower-shield'].abilities.map(p=>handle.session.ctx.actions[p].name);assert.equal(towerPowers.length,2)
  assert.ok(opts.length>0);for(const o of opts)assert.ok(towerPowers.some(n=>o.startsWith(n+' · ')),'blocked first hero has no made-up movement: '+o)
- assert.equal(aims.length,1);assert.match(aims[0],/^Iron Dwarf A · hex /)}
+ /* Law 10, 2026-10-05 - viewer.unit-names-no-letters-or-numbers (engine DECISIONS.md 2026-10-05 'no unit is shown with a number or a
+    letter', Andrew: "it shouldn't be Soldier A or Lumberjack 1"): the aim's label named the unit with the engine's letter. The claim is
+    unchanged - the one aim offered is the hero itself, by name and hex - and the name is the plain one
+    (was: assert.match(aims[0],/^Iron Dwarf A · hex /)) */
+ assert.equal(aims.length,1);assert.match(aims[0],/^Iron Dwarf · hex /)}
 assert.equal(button('end').disabled,false)
 click('hero-remove');click('hero-remove');click('start');ready()
 assert.equal(handle.session.ctx.state.units.filter(u=>u.side==='hero').length,1)

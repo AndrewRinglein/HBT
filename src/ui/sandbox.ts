@@ -7,6 +7,7 @@ import {sandboxTargetingOf} from './sandbox-targeting.js'
 import {controllerOf,validateBattleCommand,type BattleCommand} from '../engine.js'
 import {createPlayInput,NO_ACTIONS_LEFT,type PlayEvent} from './play-input.js'
 import {refusalLine} from './refusals.js'
+import {shownName} from '../../../viewer/src/names.js'
 import {ABBOTOWN_MAP} from '../content/conquest.js'
 import {conquestProgress,takeSection,nextSection} from '../core/conquest.js'
 import {conquestMapHTML} from './conquest-map.js'
@@ -24,6 +25,7 @@ import {performEquip,performUnequip} from '../core/shop.js'
 import {sandboxResult} from '../core/sandbox.js'
 import {encounterDef} from '../engine.js'
 import {equipPage} from './equip.js'
+import {lookingAfter,isClickAway} from './item-card.js'
 import {draftScreen} from './draft.js'
 import {deployPage} from './deploy.js'
 import {recapScreen,mountRecap,rewardsScreen,mountRewards,carrierChoice,whoseOf,levelUpScreen,mountLevelUp,toggleMute,type LastBattle,type Cleanup} from './after.js'
@@ -115,8 +117,10 @@ function skipChrome(){
  if(show)el.removeAttribute('hidden');else el.setAttribute('hidden','')
  const state=!show?'':skipAsking?'ask':'offer';if(el.dataset.state===state)return
  el.dataset.state=state
- const button='background:#14110c;color:#e8c36a;border:1px solid #e8c36a;border-radius:4px;padding:5px 12px;margin-left:8px;font:inherit;cursor:pointer'
- el.innerHTML=!show?'':skipAsking?`<span id="skipAsk" role="alertdialog" style="background:#14110c;padding:6px 10px;border:1px solid #e8c36a;border-radius:4px">Skip every tutorial message for this run?<button type="button" data-skip="yes" style="${button}">Yes</button><button type="button" data-skip="no" style="${button}">No</button></span>`
+ /* viewer.notices-gold-low-no-backdrop: the question keeps its buttons and loses the box behind its words (the notice's one
+    lettering reaches #skipAsk through the builders' lifted rule); a button's own words are not outlined */
+ const button='background:#14110c;color:#e8c36a;border:1px solid #e8c36a;border-radius:4px;padding:5px 12px;margin-left:8px;font:inherit;font-weight:600;letter-spacing:0;text-shadow:none;cursor:pointer'
+ el.innerHTML=!show?'':skipAsking?`<span id="skipAsk" role="alertdialog" style="padding:6px 0">Skip every tutorial message for this run?<button type="button" data-skip="yes" style="${button}">Yes</button><button type="button" data-skip="no" style="${button}">No</button></span>`
   :`<button type="button" data-skip="ask" style="${button}">Skip tutorial</button>`
  el.querySelectorAll<HTMLElement>('[data-skip]').forEach(b=>b.addEventListener('click',(ev:Event)=>{ev?.stopPropagation?.();const what=b.dataset.skip
   if(what==='ask'){skipAsking=true;skipChrome()}else if(what==='no'){skipAsking=false;skipChrome()}else skipTutorial()}))
@@ -208,7 +212,9 @@ function runFooter(){
     encounter's battle fielded with the campaign's own Hero rows, then the one writer, the recap, the rewards and the
     level-ups (the copied Hell-TCG screens, ui/after.ts), and the map again. A lost battle is offered again with the same
     party, wounds kept. Every step is a perform* call; the page decides nothing. kingdom SWITCHES.md opening* */
-type Sitting={ctx:Ctx;lastBattle:LastBattle|null;levelHero:string|null;picked:string|null;giving:string|null;mounted:Cleanup|null}
+/* look (kingdom.equip-item-card): an item looked at where it lies — a view choice, as picked is */
+type Sitting={ctx:Ctx;lastBattle:LastBattle|null;levelHero:string|null;picked:string|null;look:string|null;giving:string|null;mounted:Cleanup|null}
+const looked=(s:Sitting,e:Parameters<typeof lookingAfter>[1])=>{const n=lookingAfter({picked:s.picked,look:s.look},e);s.picked=n.picked;s.look=n.look}
 let sitting:Sitting|null=null,campaignOpen=false
 const sitCause='sitting'
 /** kingdom.opening-run-six (engine DECISIONS.md 2026-10-01 'one continuous run through the first six battles, saved'): the
@@ -300,10 +306,12 @@ function campaignAct(act:string,el:HTMLElement){
  if(act==='draft'){performDraft(ctx,id!,sitCause);if(draftsOwedOf(ctx.campaign)>0)performAdvanceOpening(ctx,sitCause);else if(toBattle(nextSection(mapOrder,taken)!))return;drawCampaign()}
  else if(act==='deploy'){performDeploy(ctx,id!,sitCause);drawCampaign()}
  else if(act==='undeploy'){performUndeploy(ctx,id!,sitCause);drawCampaign()}
- else if(act==='pick'){s.picked=s.picked===id?null:id!;drawCampaign()}
- else if(act==='drop'){performEquip(ctx,id!,el.dataset.item!,sitCause,el.dataset.displace);s.picked=null;drawCampaign()}
- else if(act==='unequip'){performUnequip(ctx,id!,el.dataset.item!,sitCause);drawCampaign()}
- else if(act==='advance'){performAdvancePrep(ctx,sitCause);if(ctx.campaign.cursor.step==='battle')startCampaignBattle();else drawCampaign()}
+ /* kingdom.equip-item-card: the item clicked is the one looked at — its card opens at the right (ui/item-card.ts lookingAfter) */
+ else if(act==='pick'){looked(s,{kind:'pick',id:id!});drawCampaign()}
+ else if(act==='look'){looked(s,{kind:'look',id:id!});drawCampaign()}
+ else if(act==='drop'){performEquip(ctx,id!,el.dataset.item!,sitCause,el.dataset.displace);looked(s,{kind:'done'});drawCampaign()}
+ else if(act==='unequip'){performUnequip(ctx,id!,el.dataset.item!,sitCause);looked(s,{kind:'done'});drawCampaign()}
+ else if(act==='advance'){looked(s,{kind:'done'});performAdvancePrep(ctx,sitCause);if(ctx.campaign.cursor.step==='battle')startCampaignBattle();else drawCampaign()}
  else if(act==='exit'){if(c.cursor.step==='reckoning')performExitBattle(ctx,sitCause);else if(c.cursor.step==='levelUp')performLeaveLevelUp(ctx,sitCause);else return;onward()}
  else if(act==='level-hero'){s.levelHero=id!;drawCampaign()}
  else if(act==='give'){const item=s.giving;if(!item)throw Error('No reward is waiting for its carrier')
@@ -345,7 +353,7 @@ function drawCampaign(){
   mount=hx=>mountLevelUp(hx,choice=>{try{performLevelUp(s.ctx,who,sitCause,choice);persist()}catch(e){error=(e as Error).message}},()=>{s.levelHero=null;drawCampaign()})}
  else if(c.cursor.step==='draft')html=`<div class="sliceView">${draftScreen(c)}</div>`
  else if(c.cursor.step==='prep'&&c.cursor.prepStep==='deploy'){const e=c.cursor.engagement!;html=`<div class="sliceView">${deployPage(c,{engagementId:sectionOf(e.id)?.name??e.id})}</div>`}
- else if(c.cursor.step==='prep'&&c.cursor.prepStep==='equip'){const e=c.cursor.engagement!;html=`<div class="sliceView">${equipPage(c,e.deployed,{where:'prep',picked:s.picked,engagementId:sectionOf(e.id)?.name??e.id,canAdvance:true})}</div>`}
+ else if(c.cursor.step==='prep'&&c.cursor.prepStep==='equip'){const e=c.cursor.engagement!;html=`<div class="sliceView">${equipPage(c,e.deployed,{where:'prep',picked:s.picked,look:s.look,engagementId:sectionOf(e.id)?.name??e.id,canAdvance:true})}</div>`}
  else if(c.cursor.step==='reckoning'){html=recapScreen(c,s.ctx.events,s.lastBattle);mount=hx=>mountRecap(hx,()=>act(()=>campaignAct('exit',hx)))}
  else if(c.cursor.step==='rewards'||c.cursor.step==='levelUp'){html=rewardsScreen(c,s.ctx.events,s.lastBattle)+(s.giving?giveChoice(s.giving):'');mount=hx=>mountRewards(hx,id=>act(()=>takeReward(id)))}
  else if(c.cursor.step==='open'&&s.giving)html=`<div class="sliceView waitingOffer" data-waiting="${escape(s.giving)}"><h2>The ${escape(itemName(s.giving))} has waited in the stash</h2><p class="meta">It is for ${escape(whoseOf(s.giving))}. One is with you now, with a hand free for it.</p></div>`+giveChoice(s.giving)
@@ -384,6 +392,9 @@ root.innerHTML=`<section id="conquest" hidden></section><section id="campaign" h
 const q=<T extends HTMLElement>(id:string)=>document.getElementById(id) as T
 const options=(rows:readonly {id:string;name:string}[],selected:string)=>rows.map(r=>`<option value="${escape(r.id)}"${r.id===selected?' selected':''}>${escape(r.name)}</option>`).join('')
 const attached=(host:HTMLElement,el:HTMLElement)=>root.contains(host)&&host.contains(el)
+/* kingdom.equip-item-card: a click AWAY on the sitting's screen — on no control, no item, not on the card — closes the card and
+   puts the item in hand down. Bound once to the screen's section, which every draw keeps. */
+q('campaign').addEventListener('click',(ev:Event)=>{const s=sitting;if(!s||(s.picked===null&&s.look===null)||!isClickAway(ev))return;looked(s,{kind:'away'});drawCampaign()})
 function changeListener(host:HTMLElement,el:HTMLSelectElement|HTMLInputElement|null,fn:()=>void,phase?:'acting'|'selecting'){
  if(!el)return
  el.addEventListener('change',()=>{if(!attached(host,el)||el.hasAttribute('disabled')||(phase&&(busy||!!fault||session?.ctx.battleCursor?.at!==phase)))return;fn()})
@@ -444,7 +455,7 @@ function controls(){
  if(choice&&'centre' in choice.command&&!board&&!busy&&!fault&&!selecting&&!session!.ctx.state.outcome){
   try{const preview=previewSandboxChoice(session!,choice.command);burst=burstForecast(preview,session!.ctx.state.units);targeting=sandboxTargetingOf(aims,preview)}catch(e){fault=(e as Error).message;error=fault;busy=false}
  }
- const label=(c:SandboxChoice)=>'destination' in c.command?`Hex ${c.command.destination} (${session!.ctx.geo.colOf(c.command.destination)}, ${session!.ctx.geo.rowOf(c.command.destination)})`:'hex' in c.command?`Prop at hex ${c.command.hex} (${session!.ctx.geo.colOf(c.command.hex)}, ${session!.ctx.geo.rowOf(c.command.hex)})`:'centre' in c.command?`Centre hex ${c.command.centre} (${session!.ctx.geo.colOf(c.command.centre)}, ${session!.ctx.geo.rowOf(c.command.centre)})`:session!.ctx.state.units[c.command.target]!.name+' · hex '+session!.ctx.state.units[c.command.target]!.hex
+ const label=(c:SandboxChoice)=>'destination' in c.command?`Hex ${c.command.destination} (${session!.ctx.geo.colOf(c.command.destination)}, ${session!.ctx.geo.rowOf(c.command.destination)})`:'hex' in c.command?`Prop at hex ${c.command.hex} (${session!.ctx.geo.colOf(c.command.hex)}, ${session!.ctx.geo.rowOf(c.command.hex)})`:'centre' in c.command?`Centre hex ${c.command.centre} (${session!.ctx.geo.colOf(c.command.centre)}, ${session!.ctx.geo.rowOf(c.command.centre)})`:shownName(session!.ctx.state.units[c.command.target]!.name)+' · hex '+session!.ctx.state.units[c.command.target]!.hex
  // encounter.area-fall: the areas marked to fall, shown from their area.marked line until they land
  const marked=session&&!session.ctx.state.outcome?sandboxMarkedAreas(session):[]
  // kingdom.abbotown-map: in a map sitting a hero win takes its section (only the next one — core/conquest.ts takeSection),
@@ -455,7 +466,7 @@ function controls(){
  const sectionName=mapBattle?sectionOf(session!.config.encounterId!)!.name:''
  const nav=session&&boardOnly()?launcher?'<p><button data-act="battle">Return to the battle</button></p>':ended?mapBattle?`<p id="mapOutcome">${escape(sectionName)} ${ended==='heroClear'?'is retaken.':straightIn()?'is not taken — it is fought again at once, by the same party.':'is not taken — it waits on the map to be fought again, by the same party.'}</p><p><button data-act="reckon">Continue to the reckoning →</button></p>`:'<p><button data-act="launcher">Back to the launcher</button></p>':'':''
  const markedNote=marked.map(m=>`<p id="markedAreas" role="status">Marked to fall after Turn ${m.landsAfterTurn}'s Player Phase (${escape(m.fall)}): hexes ${m.hexes.map(h=>`${h} (${session!.ctx.geo.colOf(h)}, ${session!.ctx.geo.rowOf(h)})`).join(', ')}</p>`).join('')
- q('commands').innerHTML=`<h2>${session?.ctx.state.outcome?'Battle complete: '+escape(session.ctx.state.outcome):session?`Turn ${session.ctx.state.turn} · ${escape(selecting?'Choose a hero':u?.name??'Resolving battle')}`:'Start a battle to play'}</h2>${nav}${markedNote}${error?`<p role="alert">${escape(error)}</p>`:''}${fault?'<p>Battle stopped after an error. Reset or resume a saved battle to continue.</p>':''}${busy&&!fault?'<p>Playing the resolved actions…</p><button data-act="skip">Show current state</button>':''}${session&&!session.ctx.state.outcome?`${board?'':`${selecting?`<label>Remaining heroes <select id="actor"${busy||fault?' disabled':''}>${available.map(u=>`<option value="${u.uid}"${String(u.uid)===selectedActor?' selected':''}>${escape(u.name)} · hex ${u.hex}</option>`).join('')}</select></label><button data-act="select"${busy||fault||!available.length?' disabled':''}>Activate hero</button>`:''}<label>Action <select id="action"${busy||fault||selecting?' disabled':''}>${actions.map(c=>`<option value="${escape(actionKey(c))}"${actionKey(c)===selectedAction?' selected':''}>${escape(c.name)} · ${c.command.slot} · ${c.cost} stamina</option>`).join('')}</select></label><label>Legal destination / target <select id="aim"${busy||fault||selecting?' disabled':''}>${aims.map(c=>`<option value="${escape(JSON.stringify(c.command))}"${JSON.stringify(c.command)===selectedAim?' selected':''}>${escape(label(c))}</option>`).join('')}</select></label>${targeting&&!fault?'<p>Choose a hex, then Execute.</p>':''}<p id="preview">${busy||fault?'Forecast unavailable while resolving or stopped.':burst?escape(burst.headline):choice?.preview?escape(forecast(choice.preview)):choice&&'destination' in choice.command?'Move along engine path: '+choice.path.join(' → '):selecting?'Choose a remaining hero to begin their activation.':'No legal action available. End this activation to continue.'}</p>${busy||fault?'':burst?burst.details:choice?.preview?packetDetails(choice.preview):''}`}${busy||fault?'':'<p id="playHelp">On the board: each hero begins in turn, its move chosen · click a hex to see the path and plan attacks from its end, double-click it (or click it again) to move · click an action on the bar, point at an enemy for the forecast, click it, click again to confirm · double-click another hero to switch to it — once this one has moved or acted, the screen asks before its Activation ends · a hero with nothing left it can do ends its Activation by itself · right-click (or Esc) steps back'+(board?' · End activation ends a hero who will not act again; End Turn ends the Player Phase.':'.')+'</p>'}${board?'':`${swapControl(selecting)}<button data-act="execute"${busy||fault||!choice?' disabled':''}>Execute action</button> <button data-act="end"${busy||fault||selecting?' disabled':''}>End activation</button>`}`:''}`
+ q('commands').innerHTML=`<h2>${session?.ctx.state.outcome?'Battle complete: '+escape(session.ctx.state.outcome):session?`Turn ${session.ctx.state.turn} · ${escape(selecting?'Choose a hero':u?shownName(u.name):'Resolving battle')}`:'Start a battle to play'}</h2>${nav}${markedNote}${error?`<p role="alert">${escape(error)}</p>`:''}${fault?'<p>Battle stopped after an error. Reset or resume a saved battle to continue.</p>':''}${busy&&!fault?'<p>Playing the resolved actions…</p><button data-act="skip">Show current state</button>':''}${session&&!session.ctx.state.outcome?`${board?'':`${selecting?`<label>Remaining heroes <select id="actor"${busy||fault?' disabled':''}>${available.map(u=>`<option value="${u.uid}"${String(u.uid)===selectedActor?' selected':''}>${escape(u.name)} · hex ${u.hex}</option>`).join('')}</select></label><button data-act="select"${busy||fault||!available.length?' disabled':''}>Activate hero</button>`:''}<label>Action <select id="action"${busy||fault||selecting?' disabled':''}>${actions.map(c=>`<option value="${escape(actionKey(c))}"${actionKey(c)===selectedAction?' selected':''}>${escape(c.name)} · ${c.command.slot} · ${c.cost} stamina</option>`).join('')}</select></label><label>Legal destination / target <select id="aim"${busy||fault||selecting?' disabled':''}>${aims.map(c=>`<option value="${escape(JSON.stringify(c.command))}"${JSON.stringify(c.command)===selectedAim?' selected':''}>${escape(label(c))}</option>`).join('')}</select></label>${targeting&&!fault?'<p>Choose a hex, then Execute.</p>':''}<p id="preview">${busy||fault?'Forecast unavailable while resolving or stopped.':burst?escape(burst.headline):choice?.preview?escape(forecast(choice.preview)):choice&&'destination' in choice.command?'Move along engine path: '+choice.path.join(' → '):selecting?'Choose a remaining hero to begin their activation.':'No legal action available. End this activation to continue.'}</p>${busy||fault?'':burst?burst.details:choice?.preview?packetDetails(choice.preview):''}`}${busy||fault?'':'<p id="playHelp">On the board: each hero begins in turn, its move chosen · click a hex to see the path and plan attacks from its end, double-click it (or click it again) to move · click an action on the bar, point at an enemy for the forecast, click it, click again to confirm · double-click another hero to switch to it — once this one has moved or acted, the screen asks before its Activation ends · a hero with nothing left it can do ends its Activation by itself · right-click (or Esc) steps back'+(board?' · End activation ends a hero who will not act again; End Turn ends the Player Phase.':'.')+'</p>'}${board?'':`${swapControl(selecting)}<button data-act="execute"${busy||fault||!choice?' disabled':''}>Execute action</button> <button data-act="end"${busy||fault||selecting?' disabled':''}>End activation</button>`}`:''}`
  changeListener(q('commands'),q<HTMLSelectElement>('actor'),()=>{selectedActor=q<HTMLSelectElement>('actor').value;controls()},'selecting')
  changeListener(q('commands'),q<HTMLSelectElement>('action'),()=>{selectedAction=q<HTMLSelectElement>('action').value;selectedAim='';controls()},'acting')
  changeListener(q('commands'),q<HTMLSelectElement>('aim'),()=>{selectedAim=q<HTMLSelectElement>('aim').value;controls()},'acting')
@@ -557,7 +568,7 @@ bind(q('transfer'));bind(q('battleNav'));setup();controls()
   if(kept.why)runNote=`The saved run could not be read (${kept.why}); a new run is started.`
   {const ff=fontFaces();if(ff){const st=document.createElement('style');st.textContent=ff;document.head.appendChild(st)}}
   if(kept.run){
-   sitting={ctx:makeCtx(kept.run.campaign),lastBattle:kept.run.lastBattle,levelHero:null,picked:null,giving:null,mounted:null}
+   sitting={ctx:makeCtx(kept.run.campaign),lastBattle:kept.run.lastBattle,levelHero:null,picked:null,look:null,giving:null,mounted:null}
    taken=mapOrder.slice(0,openingBattlesWonOf(kept.run.campaign))
    const step=kept.run.campaign.cursor.step
    if(step==='battle'){mapOpen=false;startCampaignBattle()}
@@ -570,7 +581,7 @@ bind(q('transfer'));bind(q('battleNav'));setup();controls()
    else{mapOpen=false;campaignOpen=true;controls();drawCampaign()}
   }else{
    taken=mapOrder.filter(id=>(params.get('taken')??'').split(',').includes(id));seededMap=taken.length>0
-   sitting={ctx:makeCtx(makeNewCampaign(Number.isSafeInteger(seed)&&seed>=0?seed:Math.floor(Math.random()*1e9))),lastBattle:null,levelHero:null,picked:null,giving:null,mounted:null}
+   sitting={ctx:makeCtx(makeNewCampaign(Number.isSafeInteger(seed)&&seed>=0?seed:Math.floor(Math.random()*1e9))),lastBattle:null,levelHero:null,picked:null,look:null,giving:null,mounted:null}
    /* kingdom.opening-starts-in-battle: a new run opens on the first draft — no map before battle 1 */
    if(straightIn())openStraight(()=>beginSection(nextSection(mapOrder,taken)!))
    else{drawMap();controls()}}}}

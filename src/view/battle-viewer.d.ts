@@ -21,6 +21,10 @@ declare module '*viewer/src/viewer.js' {
     dispose(): void
   }
 }
+// viewer.unit-names-no-letters-or-numbers: a unit's shown name - the engine's, less the mark that tells it from another of its kind
+declare module '*viewer/src/names.js' {
+  export function shownName(name: string): string
+}
 declare module '*tools/battle-atlas/combat-compiler.mjs' {
   export function compileAtlasCombat(layout:unknown,catalog:unknown,options:unknown):{compiler:string;sourceFingerprint:string;map:unknown}
   export function canonicalJSON(value:unknown):string

@@ -8,6 +8,7 @@
 // state — the unit's loadout (hands, stowed, worn), each item's row (ctx.items) and the actions it grants (ctx.actions) — for
 // every unit on the player's side, and after a swap made on the board. Prints one line per unit and `panel-lists-items: … passed`.
 import assert from 'node:assert/strict'
+import {shownName} from '../../viewer/src/names.js'
 import {bootSlice} from './atlas-dom.mjs'
 const {w}=bootSlice(process.argv[2]??'BATTLE-SANDBOX.html',{search:'?play=encounter.opening.orphanage'}),h=w.__sandbox
 const V=()=>h.viewer._V,ctx=()=>h.session.ctx,unit=id=>ctx().state.units[id]
@@ -24,7 +25,10 @@ const item=id=>ctx().items[id],action=id=>ctx().actions[id]
 function reads(id){
  const u=unit(id),L=u.loadout;assert.ok(L,`${u.name} carries items`)
  look(id)
- assert.ok(V().dom.panel.innerHTML.includes(u.name));assert.ok(V().dom.panel.querySelector('.pItems'),`${u.name}: the items section under the character`)
+ /* Law 10, 2026-10-05 - viewer.unit-names-no-letters-or-numbers (engine DECISIONS.md 2026-10-05 'no unit is shown with a number or a
+    letter', Andrew: "it shouldn't be Soldier A or Lumberjack 1"): the panel was asked for the engine's marked name (`innerHTML.includes(u.name)`). The claim is unchanged; the name the screen shows is the
+    engine's less its mark, read through the one function the screen itself uses (viewer src/names.js shownName). */
+ assert.ok(V().dom.panel.innerHTML.includes(shownName(u.name)));assert.ok(V().dom.panel.querySelector('.pItems'),`${u.name}: the items section under the character`)
  const rs=rows(),held=of(rs,'hand','both-hands')
  // the hands: the engine's, by name, in order; a hand nothing fills reads as empty
  assert.deepEqual(held.filter(r=>r.item).map(r=>[r.item,r.name]),L.hands.map(i=>[i.itemId,item(i.itemId).name]),`${u.name}: its hands`)

@@ -9,7 +9,7 @@
 // Generated output. Never hand-edit SLICE.html — change src/ui and rebuild.
 
 import '../../engine/tools/engine-modules.mjs'   // first: links engine/node_modules into a worker's copy (Andrew, 2026-10-01)
-import {battleViewAssets,scopeBattleCSS} from './battle-view-assets.mjs'
+import {battleViewAssets,scopeBattleCSS,noticeLook} from './battle-view-assets.mjs'
 import { readFileSync, writeFileSync, existsSync } from 'node:fs'
 import { createRequire } from 'node:module'
 import { execSync } from 'node:child_process'
@@ -52,7 +52,7 @@ for (const w of warnings) console.warn(w.text)
 const license=readFileSync('../viewer/node_modules/three/LICENSE','utf8')
 const js = ('/*! Three.js\n'+license+'\n*/\n'+outputFiles[0].text).replace(/<\/script/g, '<\\/script')
 const viewerCSS=readFileSync('../viewer/src/styles.css','utf8').replace(/url\(["']?art\/([^"')]+)["']?\)/g,(_,file)=>{if(!battleAssets.assets[file])throw Error('Missing viewer CSS art '+file);return `url("${battleAssets.assets[file]}")`})
-const css = readFileSync('src/ui/slice.css', 'utf8') + '\n' + readFileSync('src/ui/after.css', 'utf8')+'\n'+scopeBattleCSS(viewerCSS)
+const css = readFileSync('src/ui/slice.css', 'utf8') + '\n' + readFileSync('src/ui/after.css', 'utf8')+'\n'+scopeBattleCSS(viewerCSS)+noticeLook(viewerCSS)
 
 const html = `<!doctype html>
 <html lang="en">

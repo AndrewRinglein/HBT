@@ -47,12 +47,26 @@ td.n{text-align:right;font-variant-numeric:tabular-nums}
 .pick .opt .art .noart{width:100%;height:100%}
 /* the draft (kingdom.opening-draft-modifiers): the first hero by description only; a later draft's heroes with their stats, rolled points and badges */
 /* kingdom.opening-draft-class-message: what a draft says above its offers — one line in the kingdom's gold */
-.lessonLine{position:fixed;left:50%;top:18px;transform:translateX(-50%);z-index:400;max-width:min(1100px,92vw);margin:0;padding:10px 22px;color:var(--gold,#e8c36a);background:rgba(12,10,8,.92);border:1px solid var(--gold,#e8c36a);border-radius:6px;font:700 19px/1.4 Cinzel,"Palatino Linotype",Georgia,serif;letter-spacing:.02em;text-align:center;text-shadow:0 1px 4px #000;pointer-events:none}
-.draftNotice{color:var(--gold);font:700 17px/1.4 Cinzel,"Palatino Linotype",Georgia,serif;letter-spacing:.02em;text-align:center;margin:10px 0 14px;text-shadow:0 1px 4px #000}
+/* viewer.notices-gold-low-no-backdrop (engine DECISIONS.md 2026-10-05, Andrew: "gold and bright text with no backdrop … right above
+   the bottom of the screen" · "I don't like the way it is for anything."): the look of both is the battle screen's one notice
+   rule, lifted by the builders (tools/battle-view-assets.mjs noticeLook) — no colour, box or shadow is written here. The gold
+   line of a screen between battles stands just above the bottom of the screen (was: a boxed line at its top); a draft's
+   message stays a line of the page above its offers (kingdom SWITCHES noticeDraftMessagePlace). */
+.lessonLine{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);z-index:400;width:max-content;max-width:min(1100px,92vw);margin:0;padding:0;font:700 22px/1.3 Cinzel,"Palatino Linotype",Georgia,serif;text-align:center;pointer-events:none}
+.draftNotice{font:700 17px/1.4 Cinzel,"Palatino Linotype",Georgia,serif;text-align:center;margin:10px 0 14px}
 /* kingdom.opening-first-hero-class-line: the class's sentence under the class word, then what this hero joins with */
 .pick .opt .classline{margin:6px 0 0;font-size:13px;line-height:1.4;color:var(--ink)}
 .pick .opt .joins{margin:8px 0 0;padding:0;list-style:none;font-size:13px;line-height:1.5;color:var(--good)}
 .pick .opt .joins li::before{content:'+ ';color:var(--faint)}
+/* kingdom.first-hero-own-positives-negatives: one line of what the hero is; its own differences from its class's standard —
+   a positive green, a negative red; and, above the three cards, what the first hero is given whichever is chosen */
+.pick .opt .whatitis{display:block;font-size:13px;color:var(--ink)}
+.pick .opt .own{margin:8px 0 0;padding:0;list-style:none;font-size:13.5px;line-height:1.55}
+.pick .opt .own .pos{color:var(--good)} .pick .opt .own .neg{color:var(--bad)}
+.pick .opt .own li b{font-weight:700}
+.pick .opt .own.same{color:var(--faint);font-style:italic}
+.firstGifts{margin:8px 0 12px;font-size:13.5px;line-height:1.5;color:var(--ink)}
+.firstGifts span{color:var(--good)}
 .pick .opt .who{margin:8px 0 0;font-size:13px;line-height:1.45;color:var(--ink)}
 .pick .opt .quote{margin:6px 0 0;font-size:12.5px;font-style:italic;color:var(--faint)}
 .pick.draft-rolled .opt{min-width:260px}

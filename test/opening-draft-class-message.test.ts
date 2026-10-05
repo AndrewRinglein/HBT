@@ -80,11 +80,22 @@ describe('kingdom.opening-draft-class-message — the second draft says one hero
     }
   })
 
-  it('it is gold — the kingdom\'s own gold — and a line of the page, not a pop-up: nothing to press, nothing timed', () => {
+  it('it is gold — the kingdom\'s own gold — and a line of the page, not a pop-up: nothing to press, nothing timed', async () => {
     const css = readFileSync('src/ui/slice.css', 'utf8'), rule = css.match(/\.draftNotice\{([^}]*)\}/)
     expect(rule, 'slice.css styles .draftNotice').not.toBeNull()
-    expect(rule![1]).toMatch(/color:var\(--gold\)/)
-    expect(css).toMatch(/--gold:#c9a227/)
+    /* Law 10, 2026-10-05 - viewer.notices-gold-low-no-backdrop (engine DECISIONS.md 2026-10-05 'the playtest post answered: every notice
+       gold and low ...', Andrew: "I was imagining this as gold and bright text with no backdrop." - "I don't like the way it is for
+       anything."): this held the message to the kingdom's own darker gold, written in its own rule:
+         expect(rule![1]).toMatch(/color:var\(--gold\)/); expect(css).toMatch(/--gold:#c9a227/)
+       The newer ruling gives every notice one look. The message is gold still - the notice's bright gold, with its outline - and the
+       colour is no longer written here: its rule keeps the place and the type, and the look is the battle screen's one notice rule,
+       lifted by the builders for the kingdom's notices, this one named among them (kingdom SWITCHES noticeDraftMessagePlace). */
+    expect(rule![1]).not.toMatch(/color:|background|border|text-shadow/)
+    const { noticeLook, KINGDOM_NOTICES } = await import('../tools/battle-view-assets.mjs' as string) as { noticeLook: (css: string) => string; KINGDOM_NOTICES: string[] }
+    expect(KINGDOM_NOTICES).toContain('.draftNotice')
+    const look = noticeLook(readFileSync('../viewer/src/styles.css', 'utf8'))
+    expect(look.slice(0, look.indexOf('{')).split(',').sort()).toEqual(['#skipAsk', '.draftNotice', '.lessonLine'])
+    expect(look).toMatch(/color:#ffd45e/); expect(look).toMatch(/background:none/); expect(look).toMatch(/text-shadow:[^;}]*#000/)
     const html = draftScreen(atDraft(2).campaign), at = html.indexOf('class="draftNotice"')
     expect(html.slice(at - 3, at)).toBe('<p ')
     expect(html.slice(html.lastIndexOf('<p class="draftNotice"'), html.indexOf('</p>', at))).not.toMatch(/data-act|button|onclick/)

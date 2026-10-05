@@ -9,6 +9,7 @@
 // Prints one line per step and `turn-taking: … passed` at the end.
 import assert from 'node:assert/strict'
 import {bootSlice} from './atlas-dom.mjs'
+import {shownName} from '../../viewer/src/names.js'
 const {w,click}=bootSlice(process.argv[2]??'BATTLE-SANDBOX.html',{search:'?play=encounter.opening.orphanage'}),h=w.__sandbox
 const V=()=>h.viewer._V,ctx=()=>h.session.ctx,stage=()=>V().dom.stage,wrap=()=>stage().parentNode
 const settle=()=>{for(let i=0;i<50&&h.busy;i++)click('skip');assert.equal(h.busy,false,'the board settles')}
@@ -36,7 +37,10 @@ say('2 the top bar: '+kids.join(' '))
 // clicking a zombie shows it in the right panel while the bar and card stay the hero's
 const zombie=ctx().state.units.find(u=>u.side==='enemy'&&u.lifeState==='standing'),bar0=V().dom.actionbar.innerHTML
 V().layers.UEL.get(zombie.id).img.handlers.click({detail:1});settle()
-assert.equal(V().view.inspectId,zombie.id);assert.ok(V().dom.panel.innerHTML.includes(zombie.name),'the zombie in the right panel')
+/* Law 10, 2026-10-05 - viewer.unit-names-no-letters-or-numbers (engine DECISIONS.md 2026-10-05 'no unit is shown with a number or a
+   letter', Andrew: "it shouldn't be Soldier A or Lumberjack 1"): the panel was asked for the engine's marked name (`includes(zombie.name)`). The claim is unchanged; the name the screen shows is the
+   engine's less its mark, read through the one function the screen itself uses (viewer src/names.js shownName). */
+assert.equal(V().view.inspectId,zombie.id);assert.equal(V().dom.panel.querySelector('.pName').textContent,shownName(zombie.name),'the zombie in the right panel')
 assert.equal(V().dom.actionbar.innerHTML,bar0,'the bar stays the hero\'s');assert.equal(card(),cardOf(first),'the card stays the hero\'s')
 assert.equal(ctx().battleCursor.actor,first);assert.deepEqual(lit(),[first])
 say(`3 ${zombie.name} clicked: in the panel; the bar and card stay ${me().name}'s`)
@@ -58,7 +62,10 @@ chip(other).handlers.dblclick({});settle()
 assert.equal(ctx().battleCursor.actor,first,'no switching away mid-Activation without a yes')
 const askBox=V().dom.root.querySelector('#playSwitch'),note=V().dom.root.querySelector('#playSwitchText').textContent
 assert.notEqual(askBox.style.display,'none','the screen asks')
-assert.equal(note,`End activation of ${me().name} and start activation of ${ctx().state.units[other].name}?`);assert.doesNotMatch(note,RAW)
+/* Law 10, 2026-10-05 - viewer.unit-names-no-letters-or-numbers (engine DECISIONS.md 2026-10-05 'no unit is shown with a number or a
+   letter', Andrew: "it shouldn't be Soldier A or Lumberjack 1"): the question was held to the engine's marked names (`me().name`). The claim is unchanged; the name the screen shows is the
+   engine's less its mark, read through the one function the screen itself uses (viewer src/names.js shownName). */
+assert.equal(note,`End activation of ${shownName(me().name)} and start activation of ${shownName(ctx().state.units[other].name)}?`);assert.doesNotMatch(note,RAW)
 V().dom.root.querySelector('#playSwitchNo').handlers.click({});settle()
 assert.equal(askBox.style.display,'none','No closes it');assert.equal(ctx().battleCursor.actor,first,'No: the hero is still the one acting')
 say(`5 a double-click on ${ctx().state.units[other].name}: "${note}" - No keeps ${me().name} acting`)
