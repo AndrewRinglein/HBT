@@ -1340,3 +1340,12 @@ already an attack on one unit with two hits, so the bar and its tooltip said one
 | Switch | Question | Default | Reason | Status |
 |---|---|---|---|---|
 | `elfbowStampOnly` | What moves in the viewer? | **Only the engine code stamp the dumps and the six opening recordings carry (5888006d24): `generated/static.json`, `fields.json` and the six recordings — re-exported together on their seeds (Orphanage 5, Lumberjack House 3, Bridge 19, Cavern Trail 11, Gates 0, Cathedral 10) — are otherwise byte for byte what they were; no event of any recording differs.** | The engine's pack is unchanged; a dump and a recording carry the stamp of the engine that made them, and the six go together. | Default — 2026-10-04 |
+
+## fix.computer-reaches-class-power-past-shield-power (engine item) — the stamp, 2026-10-05
+
+The computer tries a unit's powers longest cooldown first (engine SWITCHES.md `aiPowerLongestCooldownFirst`). No viewer source
+changed.
+
+| Switch | Question | Default | Reason | Status |
+|---|---|---|---|---|
+| `aiPowerOrderStampOnly` | What moves in the viewer? | **The engine code stamp the dumps, the swap fixture and the six opening recordings carry (b9058ca112) — re-dumped and re-exported together on their seeds (Orphanage 5, Lumberjack House 3, Bridge 19, Cavern Trail 11, Gates 0, Cathedral 10); no event of any recording differs** (nobody in the opening holds powers of different cooldowns and reaches for one). `tools/fixtures/enemies-together.json` rewritten by its command. | A dump and a recording carry the stamp of the engine that made them, and the six go together. | Default — 2026-10-05 |
