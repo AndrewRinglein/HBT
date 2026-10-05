@@ -105,23 +105,40 @@ describe('alive in a real battle', () => {
   // holds is that the class powers' effect lists are ALIVE in a real battle, so the party is fielded with its Codex kits less the
   // shields - a fielding choice, as heroItems is for; every assertion below is as it was.
   // was: const ctx = createBattle({ ...scenarioOptions(scenarioDef('showcase.assembled-party')), replicate: r })
-  it('the assembled party uses its powers — a heal, a buff and an area blast all fire', () => {
+  // Law 10, 2026-10-05 — fix.computer-reaches-class-power-past-shield-power (SWITCHES.md aiPowerLongestCooldownFirst): the computer
+  // tries its power with the longest cooldown first now, so a shield's power no longer stands in front of the class's. The party is
+  // fielded with its FULL Codex kits again, as this test first had it (the line above), and Aegis and the blast are held there -
+  // Aegis was the power the shields hid. The heal is held in the fielding of 2026-10-04, the kits less their shields: with the
+  // Ledger's shields the party ends these fights in three or four Turns with nobody missing the four Health a 7-point Circle of
+  // Healing asks for (none in 20 replicates) - that is how hurt they are, not which power the computer reaches for, and
+  // test/computer-reaches-class-power.test.ts holds that she reaches for the Circle first when the circle holds someone hurt. So one
+  // test is two fieldings; no assertion is dropped, and Aegis is held on the harder one.
+  const played = (heroItems?: string[][]) => {
     const used = new Set<string>(), bursts = new Set<string>()
     const opts = scenarioOptions(scenarioDef('showcase.assembled-party'))
-    const heroItems = opts.heroes!.map((h) => (UNITS[h]!.defaultItems ?? []).filter((i) => ITEMS[i]?.itemClass !== 'shield'))
-    expect(heroItems.flat().length, 'three of the six leave a shield behind').toBe(opts.heroes!.flatMap((h) => UNITS[h]!.defaultItems ?? []).length - 3)
     for (let r = 0; r < 3; r++) {
-      const ctx = createBattle({ ...opts, heroItems, replicate: r })
+      const ctx = createBattle({ ...opts, ...(heroItems ? { heroItems } : {}), replicate: r })
       runBattle(ctx)
       for (const e of ctx.events) {
         if (e.type === 'power.used') used.add(String(e.causeId))
         if (e.type === 'burst.declared') bursts.add(String(e.causeId))
       }
     }
-    expect(used.has(AEGIS)).toBe(true)
-    expect(used.has(CIRCLE)).toBe(true)
+    return { used, bursts }
+  }
+  it('the assembled party uses its powers — a heal, a buff and an area blast all fire', () => {
+    const full = played()
+    expect(full.used.has(AEGIS)).toBe(true)
     // V2 section 7 supersedes unit-centred power.used for the travelling blast.
-    expect(bursts.has(FIREBALL)).toBe(true)
-    expect(used.has(FIREBALL)).toBe(false)
+    expect(full.bursts.has(FIREBALL)).toBe(true)
+    expect(full.used.has(FIREBALL)).toBe(false)
+    const opts = scenarioOptions(scenarioDef('showcase.assembled-party'))
+    const heroItems = opts.heroes!.map((h) => (UNITS[h]!.defaultItems ?? []).filter((i) => ITEMS[i]?.itemClass !== 'shield'))
+    expect(heroItems.flat().length, 'three of the six leave a shield behind').toBe(opts.heroes!.flatMap((h) => UNITS[h]!.defaultItems ?? []).length - 3)
+    const bare = played(heroItems)
+    expect(bare.used.has(AEGIS)).toBe(true)
+    expect(bare.used.has(CIRCLE)).toBe(true)
+    expect(bare.bursts.has(FIREBALL)).toBe(true)
+    expect(bare.used.has(FIREBALL)).toBe(false)
   })
 })

@@ -33,7 +33,7 @@ import { carriesTag } from './action.js'
 import { addStatMod, applyDamage, applyHealing, breakStatuses, corpsesNear, drainStamina, emit, gainMaxHp, gainPower, gainStamina, grantBadge, loseMaxHp, loseMaxStamina, reduceStatus, removeCorpse, standUp, unit } from './mutate.js'
 import { paintRadius } from './vision.js'
 import { layerOfId } from '../content/maps.js'
-import { applyStatus, dealDirectDamage, incomingAbsorb, outgoingPenalty, removeStatus, spendAbsorb } from './status.js'
+import { applyStatus, dealDirectDamage, incomingAbsorb, outgoingPenalty, removeStatus, spendAbsorb, lentTriggers } from './status.js'
 import { resolveDamage } from './pipeline.js'
 import { effective } from './stats.js'
 import type { StatName } from './stats.js'
@@ -124,11 +124,11 @@ export type ValueSpec =
   | {
       /** capability.power-pool (2026-09-03): 'power' scales off the enemy side's pool, base + share. */
       readonly scale: 'partyMagic' | 'partySpirit' | 'power'
-      /** value = base + mult x sum / div, rounded as stated. Law 7: integers only. */
+      /** value = base + mult x sum / div, rounded as stated. Law 7: integers only. 'nearest' is 0.5 up (the half-stat ruling: "rounded nearest, 0.5 up"). */
       readonly div?: number
       readonly mult?: number
       readonly base?: number
-      readonly round?: 'up' | 'down'
+      readonly round?: 'up' | 'down' | 'nearest'
     }
   /**
    * fix.one-effect-vocabulary (2026-10-01): base + mult x the ACTING unit's own effective `stat` / div
@@ -311,7 +311,7 @@ export function valueOf(ctx: Ctx, owner: Unit, spec: ValueSpec): number {
     const div = spec.div ?? 1
     const scaled = (total * (spec.mult ?? 1)) / div
     // Integers only, one stated rounding rule (Law 7).
-    const rounded = spec.round === 'up' ? Math.ceil(scaled) : Math.trunc(scaled)
+    const rounded = spec.round === 'up' ? Math.ceil(scaled) : spec.round === 'nearest' ? Math.floor(scaled + 0.5) : Math.trunc(scaled)
     // `base` survives a zero stat: the Priest's heal is 6 + 2 x Spirit, and at
     // Spirit 0 it is still 6. Angela, 2026-08-15.
     return (spec.base ?? 0) + rounded
@@ -398,7 +398,9 @@ export function fireTriggers(ctx: Ctx, hook: Hook, fc: FireContext): BurstAdjust
   // and silently never fire: the worst failure shape in this project.
   if (owner.lifeState === 'dead' && hook !== 'onDeath') return adjustments
 
-  const slots = owner.triggers
+  // capability.effect-lasts-activations (2026-10-05): the triggers the statuses it holds lend it fire as its own. They take
+  // the slots after the unit's own, so no existing trigger's roll key moves.
+  const slots = [...owner.triggers, ...lentTriggers(ctx, owner)]
     .map((t, slot) => ({ t, slot }))
     .filter((x) => x.t.hook === hook)
     // Attack scope: on attack-anchored hooks the FireContext's causeId is the

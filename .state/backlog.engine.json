@@ -5,7 +5,12 @@
   "shape": "data",
   "spec": "Ruled 2026-10-05 (Andrew, engine/DECISIONS.md 'playtest post: notices, target lines, item cards, arrows, move costs on hexes, knocked down, bodies, cursed ground, the first hero's positives' and 'the playtest post answered'): 'In the Orphanage, both the body and the graves are supposed to be cursed ground, and they're not.' - asked what cursed ground does: 'It is already written down somewhere that you should take it from.' On the Orphanage's map (the opening's battle 1) the hex of the body and the hexes of the graves are plain ground today. Find what is written: run `node tools/decided.mjs \"cursed ground\"` (it finds engine SWITCHES.md caravanGround - 'The corpses are cur...' - and placedRemainsGround, ATLAS-COMBAT-INTEGRATION.md, DESIGN-DUMP-CLEANED.md) and read GLOSSARY.md and the terrain rows in content for the engine's cursed ground and what it does to a unit on it; use that ground exactly - do not write a new one. Then mark the Orphanage's body hex and each grave hex as that ground in the map's own source, by the pipeline the caravan's cursed corpses use (content first, the engine pack, the viewer's dumps, the six opening recordings re-exported together on their recorded seeds, the kingdom's pages, the engine gate last). The board shows cursed ground as it shows it elsewhere. The Orphanage is the tutorial battle: if cursed ground under the first hero's opening walk changes the authored first moves (kingdom's lesson table), say so in the report and keep the lessons true rather than move the ground. If what is written does not say what cursed ground does, stop building, abandon with that finding and quote what you found.",
   "expect": "On the Orphanage's map the body's hex and every grave's hex are the engine's cursed ground and a unit entering one gets what cursed ground gives by the written rule; the board marks them as cursed ground; hexes that were plain and hold no body or grave are unchanged; the tutorial's first battle still runs its lessons; the report quotes the rule used and where it is written.",
-  "note": "Filed by the home chat 2026-10-05."
+  "note": "Filed by the home chat 2026-10-05.",
+  "probeIds": [
+   "encounter.opening.lumberjack"
+  ],
+  "status": "done-needs-review",
+  "sha": "8fdaa09"
  },
  {
   "id": "tool.kingdom-vitest-workers",
@@ -5758,7 +5763,16 @@
   "shape": "rule",
   "spec": "Found landing content.shields-reauthored (2026-10-04, engine SWITCHES.md shieldPowersDisplaceClassPowers): the Armory Ledger's shield powers cost 1 Stamina and have no cooldown (Brace, Raise Guard, Guard, Set Feet), and the computer's power rule (src/ai/modes.ts effectsPower) uses the FIRST ready power in the unit's kit order whenever it is not about to attack. A computer-played hero that holds a shield therefore raises it every Activation it does not swing, and never reaches the class powers behind it in its kit: in 40 replicates of showcase.assembled-party the Priest never used Circle of Healing and the Paladin never used Aegis (test/ability-effects.test.ts, whose liveness check now fields the party with its kits less the shields - a fielding choice with a dated Law 10 note, to be put back when this lands). The player's own heroes are not touched (the player chooses); what moves is every computer-played hero - the six opening recordings the viewer plays, the sandbox's watch-it-play, the control battles. Not ruled: what the computer should prefer. A proposal to put to Andrew in one line before building: among the ready powers that are legal now, the computer takes the one with the longest cooldown first (a power it can use only now and then is worth more than one it can use every Activation), kit order breaking ties - one comparison, no list of powers. Read ENGINE-CONSTITUTION.md (Law 5: one decision layer) and src/ai/modes.ts first.",
   "expect": "In the assembled party, fielded with its shields, the computer-played Paladin uses Aegis and still raises its shield on other Activations; test/ability-effects.test.ts fields the full kits again and every power of the party is used at least once in its replicates; a test asserts the choice for two units with different kits.",
-  "note": "Filed by the engine worker, 2026-10-04, from content.shields-reauthored. The first step is the one question to Andrew. variants: a hero with a shield and a class power, and an enemy with two powers of different cooldowns."
+  "note": "Filed by the engine worker, 2026-10-04, from content.shields-reauthored. The first step is the one question to Andrew. variants: a hero with a shield and a class power, and an enemy with two powers of different cooldowns.",
+  "variants": [
+   "power.sacred-shield.aegis",
+   "power.tower-shield.arrow-wall"
+  ],
+  "probeIds": [
+   "power.sacred-shield.aegis"
+  ],
+  "status": "done-needs-review",
+  "sha": "ad291d9"
  },
  {
   "id": "capability.effect-lasts-activations",
@@ -5766,7 +5780,17 @@
   "shape": "trigger",
   "spec": "Ruled 2026-10-04 (Andrew, engine/DECISIONS.md 'his 28 reward weapons read back: ... the mechanics his own items need are wanted'): 'We need: ... time / number of activations for a duration'. The item review of 2026-10-04 (C:/Users/aring/Desktop/Heroes of Blight and Tragic/CONTENT-DRAFTS/2026-10-04-item-review/rows.json - each row's `marks` with k 'miss' name the clause and the mechanic; this folder is in the MAIN folder only, read it there) found that these lines of his do nothing in a battle: the Fire Gauntlet's Stoke - 'For your next 3 Activations, every hit you land applies Burn equal to half your Magic, rounded nearest, 0.5 up'; the Staff of the Ultimate Destroyer's Perfect Sight - 'Until the end of your third Activation from now, your Precision is doubled'; Poison Coating - 'Once per Battle, 1 Stamina: for the rest of the Battle, the target's hits have a 60% chance to apply 1 Poison'; and, drafted, the Flaming power - 'Power (cooldown 6, 2 Stamina): your next two sword attacks add Burn 2' (Envenomed and Crippling the same with Poison and Weak). The review's reading is not proof: confirm first what the engine has (a stat change for a time exists - the Elfbow's 'gain 1 Precision' is wired) and build only what is missing. Wanted, as one mechanism with no content name in core: a power can put on a unit a timed effect that lasts (a) a number of that unit's Activations, (b) a number of its next attacks, optionally only attacks with a weapon tag, or (c) the rest of the Battle, and while it lasts it adds a trigger to the unit's hits (apply a status, by an amount or by a stat's fraction, at a chance) or changes a stat (add, or double). It is shown on the unit like a status with its count left, it ends on its count, and it is a field on the content row. Read ENGINE-CONSTITUTION.md and COMBAT-SEQUENCE.md first. Then wire the four in-game rows above through content so their lines act; the drafted rows are not landed here. If it does not fit one landing, land the Activation-count kind with the Fire Gauntlet and re-file the rest by name with a recorded switch.",
   "expect": "After Stoke, each hit the Fire Gauntlet's holder lands in its next 3 Activations applies Burn of half its Magic, and the fourth Activation's hits do not; after Perfect Sight the holder's Precision is doubled until the end of its third Activation from then and is its own again after; a unit under Poison Coating applies 1 Poison on about 60% of its hits for the rest of the Battle; the effect shows on the unit with its count; a test row proves the next-N-attacks kind with a tag limit. No content name in core.",
-  "note": "Filed by the home chat 2026-10-04. Placed after the engine items already queued and ahead of the deferred item content (the chat's placing)."
+  "note": "Filed by the home chat 2026-10-04. Placed after the engine items already queued and ahead of the deferred item content (the chat's placing).",
+  "probeIds": [
+   "power.fire-gauntlet.stoke"
+  ],
+  "variants": [
+   "power.fire-gauntlet.stoke",
+   "power.staff-of-the-ultimate-destroyer.perfect-sight"
+  ],
+  "attempts": 1,
+  "status": "done-needs-review",
+  "sha": "dcece0b"
  },
  {
   "id": "capability.damage-from-two-stats",

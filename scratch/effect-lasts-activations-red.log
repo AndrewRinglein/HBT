@@ -1,0 +1,241 @@
+
+ RUN  v4.1.11 C:/Users/aring/Desktop/HBT-worker-engine/engine
+
+ ❯ test/effect-lasts-activations.test.ts (14 tests | 14 failed) 20ms
+     × Stoke: 1 Stamina, a status of 3 that counts down by the holder's Activations and lends an on-hit Burn of half the party's Magic, rounded nearest 6ms
+     × Perfect Sight: 2 Stamina, a status of 3 that counts down by Activations and doubles Precision 1ms
+     × Poison Coating: once per Battle, 1 Stamina, on yourself or an ally beside you — a status with no clock that lends a 60% on-hit Poison 1ms
+     × the Fire Punch's own line acts too: on hit, Burn of half the party's Magic, rounded nearest 1ms
+     × each hit of the three Activations after it burns; the fourth Activation's does not; the unit shows the count, 3 then 2 then 1 then gone 4ms
+     × it is EVERY hit he lands, with any attack — and a miss burns nothing 1ms
+     × used again while it is up, it is 3 again — not 6 1ms
+     × his Precision is his own added to itself through three Activations, and his own again after 1ms
+     × put on an ally beside him: the ally's hits roll the Poison at 60, about six in ten apply it, and the status never counts down 1ms
+     × once per Battle: the second use is refused 1ms
+     × the row: counts down by attacks that carry the tag, and its trigger asks for the same tag 0ms
+     × two sword swings carry it and use it up; a Punch between them neither carries it nor counts; the third swing has none 1ms
+     × an Activation ending does not count it down, and the Phase does not either: only its attacks do 0ms
+     × no Codex status but the lent ones carries the new fields 0ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 14 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/effect-lasts-activations.test.ts > the rows: each power puts a counted status on its user, and the status row says what it lends > Stoke: 1 Stamina, a status of 3 that counts down by the holder's Activations and lends an on-hit Burn of half the party's Magic, rounded nearest
+AssertionError: expected [] to deeply equal [ 'power.fire-gauntlet.stoke' ]
+
+- Expected
++ Received
+
+- [
+-   "power.fire-gauntlet.stoke",
+- ]
++ []
+
+ ❯ test/effect-lasts-activations.test.ts:51:40
+     49| describe('the rows: each power puts a counted status on its user, and …
+     50|   it('Stoke: 1 Stamina, a status of 3 that counts down by the holder\'…
+     51|     expect(ITEMS[GAUNTLET]!.abilities).toEqual([STOKE])
+       |                                        ^
+     52|     expect(ABILITIES[STOKE]).toMatchObject({ name: 'Stoke', staminaCos…
+     53|     const id = lentBy(STOKE), row = STATUSES[id]!
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/14]⎯
+
+ FAIL  test/effect-lasts-activations.test.ts > the rows: each power puts a counted status on its user, and the status row says what it lends > Perfect Sight: 2 Stamina, a status of 3 that counts down by Activations and doubles Precision
+AssertionError: expected [] to deeply equal [ Array(1) ]
+
+- Expected
++ Received
+
+- [
+-   "power.staff-of-the-ultimate-destroyer.perfect-sight",
+- ]
++ []
+
+ ❯ test/effect-lasts-activations.test.ts:61:37
+     59|
+     60|   it('Perfect Sight: 2 Stamina, a status of 3 that counts down by Acti…
+     61|     expect(ITEMS[STAFF]!.abilities).toEqual([SIGHT])
+       |                                     ^
+     62|     expect(ABILITIES[SIGHT]).toMatchObject({ name: 'Perfect Sight', st…
+     63|     const row = STATUSES[lentBy(SIGHT)]!
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/14]⎯
+
+ FAIL  test/effect-lasts-activations.test.ts > the rows: each power puts a counted status on its user, and the status row says what it lends > Poison Coating: once per Battle, 1 Stamina, on yourself or an ally beside you — a status with no clock that lends a 60% on-hit Poison
+AssertionError: expected undefined to match object { staminaCost: 1, uses: 1 }
+
+- Expected:
+{
+  "staminaCost": 1,
+  "uses": 1,
+}
+
++ Received:
+undefined
+
+ ❯ test/effect-lasts-activations.test.ts:69:28
+     67|   it('Poison Coating: once per Battle, 1 Stamina, on yourself or an al…
+     68|     const power = ITEMS[COATING]!.abilities[0]!
+     69|     expect(ACTIONS[power]).toMatchObject({ staminaCost: 1, uses: 1 })
+       |                            ^
+     70|     const row = STATUSES[lentBy(power)]!
+     71|     expect(row.countsDown).toBeUndefined(); expect(row.decayPerPhase).…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/14]⎯
+
+ FAIL  test/effect-lasts-activations.test.ts > the rows: each power puts a counted status on its user, and the status row says what it lends > the Fire Punch's own line acts too: on hit, Burn of half the party's Magic, rounded nearest
+AssertionError: expected [] to deeply equal [ [ 'onHit', …(2) ] ]
+
+- Expected
++ Received
+
+- [
+-   [
+-     "onHit",
+-     "attack.fire-gauntlet.fire-punch",
+-     {
+-       "kind": "status.apply",
+-       "statusId": "status.burn",
+-       "value": {
+-         "div": 2,
+-         "round": "nearest",
+-         "scale": "partyMagic",
+-       },
+-     },
+-   ],
+- ]
++ []
+
+ ❯ test/effect-lasts-activations.test.ts:77:88
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/14]⎯
+
+ FAIL  test/effect-lasts-activations.test.ts > Stoke — for the next 3 Activations every hit applies Burn of half the party's Magic > each hit of the three Activations after it burns; the fourth Activation's does not; the unit shows the count, 3 then 2 then 1 then gone
+TypeError: Cannot read properties of undefined (reading 'effects')
+ ❯ lentBy test/effect-lasts-activations.test.ts:46:54
+
+ ❯ test/effect-lasts-activations.test.ts:83:49
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/14]⎯
+
+ FAIL  test/effect-lasts-activations.test.ts > Stoke — for the next 3 Activations every hit applies Burn of half the party's Magic > it is EVERY hit he lands, with any attack — and a miss burns nothing
+Error: unknown ability 'power.fire-gauntlet.stoke' — abilities are an explicit registry, check content/index.ts
+ ❯ abilityDef src/core/ability.ts:28:17
+     26| export function abilityDef(ctx: Ctx, id: string): AbilityDef {
+     27|   const a = ctx.actions[id]
+     28|   if (!a) throw new Error(`unknown ability '${id}' — abilities are an …
+       |                 ^
+     29|   if (!isPower(a)) throw new Error(`'${id}' is not a power — it carrie…
+     30|   return a
+ ❯ usePower src/core/ability.ts:149:13
+ ❯ test/effect-lasts-activations.test.ts:103:30
+ ❯ activation test/effect-lasts-activations.test.ts:44:109
+ ❯ test/effect-lasts-activations.test.ts:103:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/14]⎯
+
+ FAIL  test/effect-lasts-activations.test.ts > Stoke — for the next 3 Activations every hit applies Burn of half the party's Magic > used again while it is up, it is 3 again — not 6
+TypeError: Cannot read properties of undefined (reading 'effects')
+ ❯ lentBy test/effect-lasts-activations.test.ts:46:54
+
+ ❯ test/effect-lasts-activations.test.ts:114:46
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/14]⎯
+
+ FAIL  test/effect-lasts-activations.test.ts > Perfect Sight — until the end of the third Activation from now, Precision is doubled > his Precision is his own added to itself through three Activations, and his own again after
+Error: unknown ability 'power.staff-of-the-ultimate-destroyer.perfect-sight' — abilities are an explicit registry, check content/index.ts
+ ❯ abilityDef src/core/ability.ts:28:17
+     26| export function abilityDef(ctx: Ctx, id: string): AbilityDef {
+     27|   const a = ctx.actions[id]
+     28|   if (!a) throw new Error(`unknown ability '${id}' — abilities are an …
+       |                 ^
+     29|   if (!isPower(a)) throw new Error(`'${id}' is not a power — it carrie…
+     30|   return a
+ ❯ usePower src/core/ability.ts:149:13
+ ❯ test/effect-lasts-activations.test.ts:128:32
+ ❯ activation test/effect-lasts-activations.test.ts:44:109
+ ❯ test/effect-lasts-activations.test.ts:128:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/14]⎯
+
+ FAIL  test/effect-lasts-activations.test.ts > Poison Coating — for the rest of the Battle the target's hits have a 60% chance to apply 1 Poison > put on an ally beside him: the ally's hits roll the Poison at 60, about six in ten apply it, and the status never counts down
+TypeError: Cannot read properties of undefined (reading 'effects')
+ ❯ lentBy test/effect-lasts-activations.test.ts:46:54
+
+ ❯ test/effect-lasts-activations.test.ts:140:55
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/14]⎯
+
+ FAIL  test/effect-lasts-activations.test.ts > Poison Coating — for the rest of the Battle the target's hits have a 60% chance to apply 1 Poison > once per Battle: the second use is refused
+Error: unknown ability 'undefined' — abilities are an explicit registry, check content/index.ts
+ ❯ abilityDef src/core/ability.ts:28:17
+     26| export function abilityDef(ctx: Ctx, id: string): AbilityDef {
+     27|   const a = ctx.actions[id]
+     28|   if (!a) throw new Error(`unknown ability '${id}' — abilities are an …
+       |                 ^
+     29|   if (!isPower(a)) throw new Error(`'${id}' is not a power — it carrie…
+     30|   return a
+ ❯ usePower src/core/ability.ts:149:13
+ ❯ test/effect-lasts-activations.test.ts:159:30
+ ❯ activation test/effect-lasts-activations.test.ts:44:109
+ ❯ test/effect-lasts-activations.test.ts:159:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/14]⎯
+
+ FAIL  test/effect-lasts-activations.test.ts > the next-N-attacks kind, with a tag limit — the test row (test.status.whetted: 2 blade attacks, each hit applies 2 Weak) > the row: counts down by attacks that carry the tag, and its trigger asks for the same tag
+TypeError: Cannot read properties of undefined (reading 'test.status.whetted')
+ ❯ test/effect-lasts-activations.test.ts:168:12
+    166|   const WHET = 'test.status.whetted'
+    167|   it('the row: counts down by attacks that carry the tag, and its trig…
+    168|     expect(STATUSES[WHET]).toMatchObject({ countsDown: 'attack', count…
+       |            ^
+    169|     expect(STATUSES[WHET]!.lends!.triggers![0]).toMatchObject({ hook: …
+    170|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/14]⎯
+
+ FAIL  test/effect-lasts-activations.test.ts > the next-N-attacks kind, with a tag limit — the test row (test.status.whetted: 2 blade attacks, each hit applies 2 Weak) > two sword swings carry it and use it up; a Punch between them neither carries it nor counts; the third swing has none
+Error: unknown status 'test.status.whetted' — statuses are an explicit registry, check content/statuses.ts
+ ❯ applyStatus src/core/status.ts:225:19
+    223| export function applyStatus(ctx: Ctx, unitId: number, id: string, valu…
+    224|   const def = ctx.statuses[id]
+    225|   if (!def) throw new Error(`unknown status '${id}' — statuses are an …
+       |                   ^
+    226|   const u = unit(ctx, unitId)
+    227|   // rule.burn-frost-cancel (capability.frost, 2026-09-03): one for on…
+ ❯ test/effect-lasts-activations.test.ts:177:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/14]⎯
+
+ FAIL  test/effect-lasts-activations.test.ts > the next-N-attacks kind, with a tag limit — the test row (test.status.whetted: 2 blade attacks, each hit applies 2 Weak) > an Activation ending does not count it down, and the Phase does not either: only its attacks do
+Error: unknown status 'test.status.whetted' — statuses are an explicit registry, check content/statuses.ts
+ ❯ applyStatus src/core/status.ts:225:19
+    223| export function applyStatus(ctx: Ctx, unitId: number, id: string, valu…
+    224|   const def = ctx.statuses[id]
+    225|   if (!def) throw new Error(`unknown status '${id}' — statuses are an …
+       |                   ^
+    226|   const u = unit(ctx, unitId)
+    227|   // rule.burn-frost-cancel (capability.frost, 2026-09-03): one for on…
+ ❯ test/effect-lasts-activations.test.ts:187:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/14]⎯
+
+ FAIL  test/effect-lasts-activations.test.ts > a status that lends nothing is what it was > no Codex status but the lent ones carries the new fields
+TypeError: Cannot convert undefined or null to object
+ ❯ test/effect-lasts-activations.test.ts:195:25
+    193| describe('a status that lends nothing is what it was', () => {
+    194|   it('no Codex status but the lent ones carries the new fields', () =>…
+    195|     const lent = Object.values(STATUSES).filter((s) => s.lends || s.co…
+       |                         ^
+    196|     for (const s of lent) expect(s.decayPerPhase, s.id).toBe(0)
+    197|     expect(Object.values(STATUSES).filter((s) => ['status.burn', 'stat…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/14]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  14 failed (14)
+   Start at  01:43:00
+   Duration  1.38s (transform 976ms, setup 0ms, import 1.21s, tests 20ms, environment 0ms)
+

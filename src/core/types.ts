@@ -1094,7 +1094,8 @@ export type Unit = {
   cooldowns: Record<string, number>
   /** Live statuses, kept sorted by id so iteration is never insertion order. */
   /** `by` = the unit that applied it (Taunt reads it; capability.taunt 2026-09-03). */
-  statuses: { id: string; value: number; by?: number }[]
+  /** `since`: capability.effect-lasts-activations — on a status counted by Activations only, the activationOrdinal it was put on in. */
+  statuses: { id: string; value: number; by?: number; since?: number }[]
   /** Stored stat modifiers — gear, wounds, badges. Terrain is derived, not stored. */
   mods: import('./stats.js').StatMod[]
   tags: readonly string[]

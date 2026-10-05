@@ -529,7 +529,12 @@ function supportPower(decision: Decision, u: Unit): boolean {
  */
 function effectsPower(decision: Decision, u: Unit, when: 'free' | 'primary' | 'opening' | 'feast'): boolean {
   const ctx = decision.ctx
-  for (const a of powersOf(ctx, u)) {
+  // fix.computer-reaches-class-power-past-shield-power (2026-10-05; SWITCHES.md aiPowerLongestCooldownFirst): the powers are
+  // tried longest cooldown first - one it can use only now and then is worth more than one it can use every Activation - the
+  // unit's own order breaking ties (a stable sort, Law 6). It took the first its kit listed, so a shield's power, which has no
+  // cooldown and is listed before the class's, was raised every Activation and the class's never came up.
+  const byCooldown = powersOf(ctx, u).map((a, i) => ({ a, i })).sort((x, y) => (y.a.cooldown ?? 0) - (x.a.cooldown ?? 0) || x.i - y.i).map((x) => x.a)
+  for (const a of byCooldown) {
     const id = a.id
     if (!a.effects || a.effects.length === 0 || isSupportHeal(a)) continue
     if (when === 'feast') {

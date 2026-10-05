@@ -163,7 +163,7 @@ export function restoreBattle(json: string, runtime: BattleRuntime): Ctx {
         if (typeof v === 'number') requireThat(integer(v), 'trigger amount')
         else {
           record(v)
-          requireThat(['partyMagic', 'partySpirit', 'power'].includes(v.scale) && (v.div === undefined || integer(v.div, 1)) && (v.mult === undefined || typeof v.mult === 'number') && (v.base === undefined || integer(v.base)) && (v.round === undefined || ['up', 'down'].includes(v.round)), 'trigger scaling')
+          requireThat(['partyMagic', 'partySpirit', 'power'].includes(v.scale) && (v.div === undefined || integer(v.div, 1)) && (v.mult === undefined || typeof v.mult === 'number') && (v.base === undefined || integer(v.base)) && (v.round === undefined || ['up', 'down', 'nearest'].includes(v.round)), 'trigger scaling')   // 'nearest': capability.effect-lasts-activations (the half-stat rounding)
         }
       }
       if (['corpse.raise', 'corpse.consume', 'layer.paint'].includes(e.kind)) requireThat(integer(e.radius, 0), 'trigger radius')
@@ -174,6 +174,7 @@ export function restoreBattle(json: string, runtime: BattleRuntime): Ctx {
     for (const status of u.statuses) {
       record(status)
       requireThat(typeof status.id === 'string' && Object.hasOwn(runtime.statuses, status.id) && integer(status.value, 0) && (status.by === undefined || unitId(status.by)), 'unit status')
+      requireThat(status.since === undefined || integer(status.since, 0), 'unit status since')   // capability.effect-lasts-activations: the Activation a counted status was put on in
     }
     requireThat(u.huntTarget === undefined || unitId(u.huntTarget), 'hunt target')
     // rule.afflictions-at-zero: a transformed hero — the badge that did it, the row it became, and what it was
