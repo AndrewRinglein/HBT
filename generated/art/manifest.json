@@ -1057,6 +1057,12 @@
    "card": "card-wolf.jpg",
    "aspect": 0.8633,
    "height": 1.0
+  },
+  "test-swell-mage": {
+   "token": "air-mage_256.png",
+   "card": "card-airmage.jpg",
+   "aspect": 0.8281,
+   "height": 1.55
   }
  },
  "noAfterArt": {
@@ -1217,6 +1223,12 @@
    "badge.vampirism"
   ],
   "test-sky-pirate": [
+   "badge.lycanthropy",
+   "badge.possession",
+   "badge.rotting-flesh",
+   "badge.vampirism"
+  ],
+  "test-swell-mage": [
    "badge.lycanthropy",
    "badge.possession",
    "badge.rotting-flesh",

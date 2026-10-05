@@ -98,6 +98,8 @@ export const DUR = { 'burst.declared': 900, 'burst.shielded': 300, 'burst.struck
   'corpse.created': 0, 'corpse.removed': 380, 'unit.raised': 640, 'corpse.eaten': 300, 'unit.obliterated': 520,
   /* capability.summons (engine item, 2026-10-05) */
   'unit.summoned': 640, 'unit.dismissed': 200,
+  /* capability.raise-lower-magic (engine item, 2026-10-05) */
+  'side.stat.changed': 420, 'side.stat.restored': 320,
   /* viewer.plays-turned-units (2026-10-04) */
   'unit.transformed': 900, 'unit.reverted': 420,
   /* the Deathbed Fighting modal holds the game (ruled 2026-09-03 evening): DB_TOTAL + a breath */
@@ -140,7 +142,7 @@ function sameFact(a, b) {
 const TEMPLATE = `
   <div id="left">
     <div id="topbar">
-      <div id="turnchip">Turn 1</div><div id="phasechip">Hero Phase</div><div id="encchip" style="display:none"></div><div id="powerchip" style="display:none" title="the enemy side's Power pool"></div>
+      <div id="turnchip">Turn 1</div><div id="phasechip">Hero Phase</div><div id="encchip" style="display:none"></div><div id="powerchip" style="display:none" title="the enemy side's Power pool"></div><div id="partychip" style="display:none" title="a side's party stat, raised or lowered"></div>
       <div id="rail" role="toolbar" aria-label="Units"></div>
       <div data-slot="top" style="display:contents"></div>
     </div>
@@ -172,7 +174,7 @@ export function mountBattleViewer(root, data, opts = {}) {
   const q = s => root.querySelector(s)
   const dom = { root, stage: q('#stage'), stageTop: q('#stageTop'), canvas: q('#vfxC'), hud: q('#camHud'), portrait: q('#unitPortrait'), rail: q('#rail'), panel: q('#panel'),
     stambar: q('#stambar'), actionbar: q('#actionbar'), turnchip: q('#turnchip'), phasechip: q('#phasechip'),
-    encchip: q('#encchip'), powerchip: q('#powerchip'), playNote: q('#playNote'),
+    encchip: q('#encchip'), powerchip: q('#powerchip'), partychip: q('#partychip'), playNote: q('#playNote'),
     slots: { top: q('[data-slot=top]'), transport: q('[data-slot=transport]'), bottom: q('[data-slot=bottom]') } }
   /* THE BOARD IS THE MAP'S (engine 5603c40): width and height come from the
      field dump (and map.loaded says the same); nothing here assumes 16×16 */
@@ -297,6 +299,9 @@ export function mountBattleViewer(root, data, opts = {}) {
     if (dom.encchip) { const enc = S.encounter
       dom.encchip.style.display = enc ? '' : 'none'; dom.encchip.textContent = enc ? enc.name : '' }
     if (dom.powerchip) { dom.powerchip.style.display = S.power == null ? 'none' : ''; dom.powerchip.textContent = S.power == null ? '' : 'Power ' + S.power }
+    /* capability.raise-lower-magic (engine item): a side's Magic or Spirit as it stands, once an effect has changed it */
+    if (dom.partychip) { const said = Object.entries(S.party || {}).map(([k, n]) => (k.startsWith('hero.') ? 'Party ' : 'Enemy ') + (k.endsWith('.magic') ? 'Magic ' : 'Spirit ') + n)
+      dom.partychip.style.display = said.length ? '' : 'none'; dom.partychip.textContent = said.join(' · ') }
   }
 
   // Burst facts are durable; this small clock controls only their visibility.

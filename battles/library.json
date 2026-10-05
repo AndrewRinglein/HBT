@@ -138,6 +138,14 @@
    "label": "TEST · Call the Wolf: a summoned ally, and it leaves at the end (seed 1)"
   },
   {
+   "file": "test.vortex.json",
+   "label": "TEST · Vortex: the party’s Magic lowered for the rest of the Battle"
+  },
+  {
+   "file": "test.swell.json",
+   "label": "TEST · Swell: a side’s Magic raised for two Turns, and its return"
+  },
+  {
    "file": "test.knockback-well.json",
    "label": "TEST · knockback collisions: boulder and well (consumed)"
   },

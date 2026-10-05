@@ -1804,6 +1804,28 @@ Overhead; a click that ends a drag is no click — is still the rule and passes 
 | `turnTime` | "The quarter turn completes in about 300 ms, not the 1,100 ms glide." | **A quarter turn — by the arrow keys, Q / E, the camera's left and right, or a host's call — glides for 300 ms (`TURN_MS`), on the glide's own curve. Every other move of the camera keeps the 1,100 ms.** | The item's words. | Default — 2026-10-05 |
 | `hudWays` | "The HUD line names the new ways." | **"←/→ or Q/E turn 90° · wheel to look closer · drag, W A S D or an edge to move the map".** | The item's words. | Default — the words are his — 2026-10-05 |
 
+## capability.set-bonus (engine item) — a set's pay is the unit's mod, as every unit mod is, 2026-10-05
+
+An item's set line is counted by the engine when it fields the unit (engine DECISIONS.md 2026-10-04 'his 28 reward weapons read
+back …': "We need: … set bonus"; engine SWITCHES.md setBonus*, partyStatIsTheMembersOwn).
+
+| Switch | Question | Default | Reason | Status |
+|---|---|---|---|---|
+| `setBonusShownAsAUnitMod` | What does the page show of a set? | **No viewer source changed: what a set pays arrives as the engine's `unit.modified` line naming the item that pays (the line the kingdom's set numbers already arrived as), which the fold and the log have read since unit mods were built; the panel's numbers are the fielded unit's.** The set line's words and the count it is at are the kingdom's Equip screen and item card (kingdom SWITCHES `setBonusLineAndCount`). | The page draws what the engine fields. | Default — 2026-10-05 |
+| `setBonusOpeningSeeds` | Which recordings move? | **All six re-exported together at the engine's new code stamp on their seeds (Orphanage 5, Lumberjack House 3, Bridge 19, Cavern Trail 11, Gates 0, Cathedral 10), the dumps and the engine-made fixtures by their own commands; the library's `test.call-the-wolf-s1` is not re-exported (a library battle is a recording of the engine that made it).** No opening battle fields a set row, and none of the six moves in what happens: each is line for line what it was, under the new stamp (no party of theirs carries a drafted gift of Magic or Spirit that a party sum reads — engine SWITCHES `partyStatIsTheMembersOwn`). | A recording carries the stamp of the engine that made it. | Default — 2026-10-05 |
+
+## capability.raise-lower-magic (engine item) — a side's party stat changing, on the bar, in the log and on the top strip, 2026-10-05
+
+An effect can raise or lower the heroes' Magic or Spirit or the enemy side's Power (engine DECISIONS.md 2026-10-04 'his 28 reward
+weapons read back …': "we need to lower and raise magic"; engine SWITCHES.md sideStat*).
+
+| Switch | Question | Default | Reason | Status |
+|---|---|---|---|---|
+| `sideStatShown` | "The change is an event the viewer shows (the party's stat line changes and a line says why)." | **The log says each change in one line — "the party's Magic 5 → 4 · −1 · staff-of-the-magi.vortex · for the rest of the Battle" — and its return when a change that lasted Turns ends; the word floats over whoever did it (PARTY MAGIC −1); the top strip shows the stat as it stands: Power on the chip it always had, and a second chip beside it for a side's Magic or Spirit ("Party Magic 4"), which appears with the first change, as the Power chip appears with the first Power (`src/fold.js`, `src/log.js`, `src/viewer.js`).** The page had no party stat line of its own to change; the chip is that line, shown only once there is something to say. | The engine's line carries before and after; the page shows the engine's number and reckons none. | Default — 2026-10-05 |
+| `sideStatOnTheBar` | What does the bar say of the Vortex? | **A burst packet that counts its stat several times reads "3 × MAGIC +0 magic", and what using the burst does to the sides' party stats is on its line in the engine's own fields: "using it lowers the party's Magic by 1 for the rest of the Battle · using it lowers the enemy side's Power by 1 for the rest of the Battle" (`src/actions.js` `sideStatWords`; an effect `side.stat` reads the same).** Held in `tools/bar-shows-every-effect.test.mjs` (its seventh test) and by the bar's audit (`tools/bar-audit.mjs`). | Nothing an action does is left unsaid. | Default — 2026-10-05 |
+| `sideStatLibraryBattle` | The fold knows two more lines; the gate asks that a library battle carry each. | **Two of the engine's fieldings exported on their own replicates and listed in `battles/library.json`: `battles/test.vortex.json` (the Vortex: `side.stat.changed`, for the rest of the Battle) and `battles/test.swell.json` (a test mage whose power raises its side's Magic for two Turns: the change and, as the second Turn ends, `side.stat.restored`). The test mage wears the Air Mage's art (`tools/prep-art.py`).** Not read for who wins. | "Field a showcase that exercises it" (tools/verify.mjs), rather than listing a line as never exercised. | Default — 2026-10-05 |
+| `sideStatOpeningSeeds` | Which recordings move? | **None in what happens. All six re-exported together at the engine's new code stamp on their seeds (Orphanage 5, Lumberjack House 3, Bridge 19, Cavern Trail 11, Gates 0, Cathedral 10), the dumps and the engine-made fixtures by their own commands.** | A recording carries the stamp of the engine that made it. | Default — 2026-10-05 |
+
 ## viewer.frame-time-tests-hold-under-load — 2026-10-05
 
 Found twice the same day: the page test of `viewer.see-through-only-when-moved` asserted a frame's time in milliseconds and went
