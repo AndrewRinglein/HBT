@@ -92,14 +92,34 @@
    "needs": "trigger-effect: statMod before damage"
   },
   {
+   "unit": "hero.base.paladin-dark",
+   "what": "attack.greatsword.great-cleave accuracy -5 — a burst does not roll to hit",
+   "needs": "accuracy on a burst — a burst is not an attack (V2 bursts)"
+  },
+  {
    "unit": "hero.base.ranger-ranger",
-   "what": "attack.elfbow.elf-shot onHit: \"gain 1 Precision\"",
-   "needs": "trigger shape unparsed"
+   "what": "attack.elfbow.double-shot targets 'up to 2 enemies within 4 hexes' — lands SINGLE-TARGET",
+   "needs": "an attack at several chosen targets — engine capability.attack-several-targets"
   },
   {
    "unit": "hero.base.ranger-scantily",
-   "what": "attack.elfbow.elf-shot onHit: \"gain 1 Precision\"",
-   "needs": "trigger shape unparsed"
+   "what": "attack.elfbow.double-shot targets 'up to 2 enemies within 4 hexes' — lands SINGLE-TARGET",
+   "needs": "an attack at several chosen targets — engine capability.attack-several-targets"
+  },
+  {
+   "unit": "hero.base.warrior-barbarian",
+   "what": "attack.greatsword.great-cleave accuracy -5 — a burst does not roll to hit",
+   "needs": "accuracy on a burst — a burst is not an attack (V2 bursts)"
+  },
+  {
+   "unit": "hero.base.priest-pauper",
+   "what": "attack.holy-texts.verse addsStat: \"spirit\"",
+   "needs": "damage from two stats — engine capability.damage-from-two-stats"
+  },
+  {
+   "unit": "hero.base.priest-armored",
+   "what": "attack.holy-texts.verse addsStat: \"spirit\"",
+   "needs": "damage from two stats — engine capability.damage-from-two-stats"
   },
   {
    "unit": "hero.base.priest-robes",
@@ -108,8 +128,8 @@
   },
   {
    "unit": "hero.base.priest-scantily",
-   "what": "attack.iron-mace.crush onHit: \"the target loses 1 Armor for the rest of the Battle\"",
-   "needs": "trigger shape unparsed"
+   "what": "attack.iron-mace.crush addsTargetStatus: {\"status\":\"stun\",\"consumes\":false}",
+   "needs": "damage that adds the target's own status — engine capability.damage-adds-target-status"
   },
   {
    "unit": "hero.base.rogue-raven",
@@ -117,19 +137,14 @@
    "needs": "stat: itemSlots (no UnitDef field)"
   },
   {
-   "unit": "hero.base.rogue-rose",
-   "what": "attack.obsidian-fang-dagger.fang onHit: \"target loses 1 Strength\"",
-   "needs": "trigger shape unparsed"
-  },
-  {
-   "unit": "hero.base.rogue-rose",
-   "what": "attack.obsidian-fang-dagger.gut onHit: \"target loses 1 Strength\"",
-   "needs": "trigger shape unparsed"
+   "unit": "hero.base.rogue-snake",
+   "what": "attack.throwing-knives.fan targets 'up to 3 enemies within 3 hexes' — lands SINGLE-TARGET",
+   "needs": "an attack at several chosen targets — engine capability.attack-several-targets"
   },
   {
    "unit": "hero.base.rogue-skull",
    "what": "attack.daggers.thrown-dagger onKill: \"gain 50 Surge\"",
-   "needs": "trigger shape unparsed"
+   "needs": "no effect moves a unit's Surge amount — engine capability.trigger-moves-surge"
   },
   {
    "unit": "hero.fixed.lumberjack-and-wife",
@@ -137,9 +152,19 @@
    "needs": "area attack shape"
   },
   {
+   "unit": "item.greatsword",
+   "what": "attack.greatsword.great-cleave accuracy -5 — a burst does not roll to hit",
+   "needs": "accuracy on a burst — a burst is not an attack (V2 bursts)"
+  },
+  {
    "unit": "item.iron-mace",
-   "what": "attack.iron-mace.crush onHit: \"the target loses 1 Armor for the rest of the Battle\"",
-   "needs": "trigger shape unparsed"
+   "what": "attack.iron-mace.crush addsTargetStatus: {\"status\":\"stun\",\"consumes\":false}",
+   "needs": "damage that adds the target's own status — engine capability.damage-adds-target-status"
+  },
+  {
+   "unit": "item.war-hammer",
+   "what": "attack.war-hammer.skullsplitter addsStat: \"armor\"",
+   "needs": "damage from two stats — engine capability.damage-from-two-stats"
   },
   {
    "unit": "item.war-hammer",
@@ -147,8 +172,18 @@
    "needs": "trigger shape unparsed"
   },
   {
+   "unit": "item.hunting-spear",
+   "what": "attack.hunting-spear.thrust targets 'one enemy in melee reach and the hex directly behind it' — lands SINGLE-TARGET",
+   "needs": "area attack shape"
+  },
+  {
    "unit": "item.glaive",
    "what": "attack.glaive.sweep targets 'an adjacent hex and one hex adjacent to both you a' — lands SINGLE-TARGET",
+   "needs": "area attack shape"
+  },
+  {
+   "unit": "item.glaive",
+   "what": "attack.glaive.impale targets 'one enemy within 2 hexes and the hex directly behind it' — lands SINGLE-TARGET",
    "needs": "area attack shape"
   },
   {
@@ -167,24 +202,59 @@
    "needs": "trigger shape unparsed"
   },
   {
+   "unit": "item.throwing-knives",
+   "what": "attack.throwing-knives.fan targets 'up to 3 enemies within 3 hexes' — lands SINGLE-TARGET",
+   "needs": "an attack at several chosen targets — engine capability.attack-several-targets"
+  },
+  {
    "unit": "item.poison-stars",
    "what": "attack.poison-stars.venom-spread onHit: \"apply 2 Poison to each target hit\"",
    "needs": "trigger shape unparsed"
   },
   {
-   "unit": "item.obsidian-fang-dagger",
-   "what": "attack.obsidian-fang-dagger.fang onHit: \"target loses 1 Strength\"",
-   "needs": "trigger shape unparsed"
+   "unit": "item.poison-stars",
+   "what": "attack.poison-stars.venom-spread targets 'up to 2 enemies within 4 hexes' — lands SINGLE-TARGET",
+   "needs": "an attack at several chosen targets — engine capability.attack-several-targets"
   },
   {
-   "unit": "item.obsidian-fang-dagger",
-   "what": "attack.obsidian-fang-dagger.gut onHit: \"target loses 1 Strength\"",
-   "needs": "trigger shape unparsed"
+   "unit": "item.duel-runeblades",
+   "what": "attack.duel-runeblades.rune-cross addsStat: \"magic\"",
+   "needs": "damage from two stats — engine capability.damage-from-two-stats"
   },
   {
    "unit": "item.crippling-whip",
    "what": "attack.crippling-whip.hamstring onHit: \"apply 2 Weak and the target gains 1 Slow\"",
    "needs": "trigger shape unparsed"
+  },
+  {
+   "unit": "item.iron-claws",
+   "what": "attack.iron-claws.eviscerate addsTargetStatus: {\"status\":\"weak\",\"consumes\":false}",
+   "needs": "damage that adds the target's own status — engine capability.damage-adds-target-status"
+  },
+  {
+   "unit": "item.grappling-harpoon",
+   "what": "attack.grappling-harpoon.hurl addsStat: \"strength\"",
+   "needs": "damage from two stats — engine capability.damage-from-two-stats"
+  },
+  {
+   "unit": "item.apprentice-wand",
+   "what": "attack.apprentice-wand.surge addsTargetStatus: {\"status\":\"burn\",\"consumes\":false}",
+   "needs": "damage that adds the target's own status — engine capability.damage-adds-target-status"
+  },
+  {
+   "unit": "item.ancient-tome",
+   "what": "attack.ancient-tome.read-the-page halfStatBonus: \"magic\"",
+   "needs": "damage from two stats — engine capability.damage-from-two-stats"
+  },
+  {
+   "unit": "item.ancient-tome",
+   "what": "attack.ancient-tome.long-passage targets 'one enemy within 4 hexes and every enemy adjacent to it' — lands SINGLE-TARGET",
+   "needs": "area attack shape"
+  },
+  {
+   "unit": "item.holy-texts",
+   "what": "attack.holy-texts.verse addsStat: \"spirit\"",
+   "needs": "damage from two stats — engine capability.damage-from-two-stats"
   },
   {
    "unit": "item.sword-of-the-fallen",
@@ -197,6 +267,16 @@
    "needs": "trigger shape unparsed"
   },
   {
+   "unit": "item.bloody-axe",
+   "what": "attack.bloody-axe.butcher addsTargetStatus: {\"status\":\"bleed\",\"consumes\":true}",
+   "needs": "damage that adds the target's own status — engine capability.damage-adds-target-status"
+  },
+  {
+   "unit": "item.hammer-of-justice",
+   "what": "attack.hammer-of-justice.sentence addsStat: \"spirit\"",
+   "needs": "damage from two stats — engine capability.damage-from-two-stats"
+  },
+  {
    "unit": "item.hammer-of-justice",
    "what": "onHit: the target loses 1 Armor for the rest of the Battl",
    "needs": "trigger shape unparsed"
@@ -205,6 +285,11 @@
    "unit": "item.holy-shield",
    "what": "attack.holy-shield.aegis-slam onHit: \"push the target 1 hex and it gains 1 Slow\"",
    "needs": "trigger shape unparsed"
+  },
+  {
+   "unit": "item.holy-shield",
+   "what": "attack.holy-shield.aegis-slam addsStat: \"armor\"",
+   "needs": "damage from two stats — engine capability.damage-from-two-stats"
   },
   {
    "unit": "item.holy-shield",
@@ -237,9 +322,29 @@
    "needs": "trigger shape unparsed"
   },
   {
+   "unit": "item.poison-throwing-knives",
+   "what": "attack.poison-throwing-knives.venom-fan targets 'up to 3 enemies within 4 hexes' — lands SINGLE-TARGET",
+   "needs": "an attack at several chosen targets — engine capability.attack-several-targets"
+  },
+  {
+   "unit": "item.poison-throwing-knives",
+   "what": "attack.poison-throwing-knives.venom-fan addsTargetStatus: {\"status\":\"poison\",\"consumes\":true}",
+   "needs": "damage that adds the target's own status — engine capability.damage-adds-target-status"
+  },
+  {
+   "unit": "item.shadow-dagger",
+   "what": "attack.shadow-dagger.from-behind addsTargetStatus: {\"status\":\"bleed\",\"consumes\":false}",
+   "needs": "damage that adds the target's own status — engine capability.damage-adds-target-status"
+  },
+  {
    "unit": "item.shadow-dagger",
    "what": "onKill: gain +5 Dodge for the rest of the Battle",
    "needs": "trigger shape unparsed"
+  },
+  {
+   "unit": "item.stormforged-blade",
+   "what": "attack.stormforged-blade.thunder-strike addsStat: \"resist\"",
+   "needs": "damage from two stats — engine capability.damage-from-two-stats"
   },
   {
    "unit": "item.stormforged-blade",
@@ -248,8 +353,28 @@
   },
   {
    "unit": "item.book-of-exorcisms",
+   "what": "attack.book-of-exorcisms.reading halfStatBonus: \"spirit\"",
+   "needs": "damage from two stats — engine capability.damage-from-two-stats"
+  },
+  {
+   "unit": "item.book-of-exorcisms",
    "what": "attack.book-of-exorcisms.rite-of-expulsion targets 'one enemy within 3 hexes and every enemy adjacent ' — lands SINGLE-TARGET",
    "needs": "area attack shape"
+  },
+  {
+   "unit": "item.book-of-exorcisms",
+   "what": "attack.book-of-exorcisms.rite-of-expulsion addsStat: \"resist\"",
+   "needs": "damage from two stats — engine capability.damage-from-two-stats"
+  },
+  {
+   "unit": "item.book-of-exorcisms",
+   "what": "attack.book-of-exorcisms.rite-of-expulsion halfStatBonus: \"spirit\"",
+   "needs": "damage from two stats — engine capability.damage-from-two-stats"
+  },
+  {
+   "unit": "item.cursed-sand-blade",
+   "what": "attack.cursed-sand-blade.the-cursed-swing addsStat: \"magic\"",
+   "needs": "damage from two stats — engine capability.damage-from-two-stats"
   },
   {
    "unit": "item.cursed-sand-blade",
@@ -313,8 +438,23 @@
   },
   {
    "unit": "item.demon-whip",
+   "what": "attack.demon-whip.hellcoil targets 'up to 2 enemies within 3 hexes' — lands SINGLE-TARGET",
+   "needs": "an attack at several chosen targets — engine capability.attack-several-targets"
+  },
+  {
+   "unit": "item.demon-whip",
+   "what": "attack.demon-whip.hellcoil addsTargetStatus: {\"status\":\"bleed\",\"consumes\":true}",
+   "needs": "damage that adds the target's own status — engine capability.damage-adds-target-status"
+  },
+  {
+   "unit": "item.demon-whip",
    "what": "onAttack: apply 2 Burn to the target",
    "needs": "trigger shape unparsed"
+  },
+  {
+   "unit": "item.demonic-shiv",
+   "what": "attack.demonic-shiv.the-devils-favour addsStat: \"precision\"",
+   "needs": "damage from two stats — engine capability.damage-from-two-stats"
   },
   {
    "unit": "item.demonic-shiv",
@@ -327,14 +467,34 @@
    "needs": "trigger shape unparsed"
   },
   {
+   "unit": "item.pharaohs-gauntlets",
+   "what": "attack.pharaohs-gauntlets.the-kings-hands addsTargetStatus: {\"status\":\"weak\",\"consumes\":true}",
+   "needs": "damage that adds the target's own status — engine capability.damage-adds-target-status"
+  },
+  {
+   "unit": "item.scepter-of-salvation",
+   "what": "attack.scepter-of-salvation.rebuke halfStatBonus: \"spirit\"",
+   "needs": "damage from two stats — engine capability.damage-from-two-stats"
+  },
+  {
    "unit": "item.scepter-of-salvation",
    "what": "grants power.scepter-of-salvation.salvation",
    "needs": "item power — shape unparsed"
   },
   {
    "unit": "item.tomb-sentinels-blade",
+   "what": "attack.tomb-sentinels-blade.grave-warden addsStat: \"armor\"",
+   "needs": "damage from two stats — engine capability.damage-from-two-stats"
+  },
+  {
+   "unit": "item.tomb-sentinels-blade",
    "what": "onKill: gain +1 Armor for the rest of the Battle, stacking",
    "needs": "trigger shape unparsed"
+  },
+  {
+   "unit": "item.siege-crossbow",
+   "what": "attack.siege-crossbow.siege-shot addsStat: \"strength\"",
+   "needs": "damage from two stats — engine capability.damage-from-two-stats"
   },
   {
    "unit": "item.siege-crossbow",
@@ -358,6 +518,11 @@
   },
   {
    "unit": "item.tail",
+   "what": "attack.tail.tail-sweep targets 'every enemy adjacent to you' — lands SINGLE-TARGET",
+   "needs": "area attack shape"
+  },
+  {
+   "unit": "item.tail",
    "what": "natural: true",
    "needs": "item field: natural"
   },
@@ -372,6 +537,11 @@
    "needs": "item field: natural"
   },
   {
+   "unit": "item.breath",
+   "what": "attack.breath.gout targets 'a hex within 3 hexes and every hex adjacent to it' — lands SINGLE-TARGET",
+   "needs": "area attack shape"
+  },
+  {
    "unit": "item.hooves",
    "what": "natural: true",
    "needs": "item field: natural"
@@ -379,12 +549,7 @@
   {
    "unit": "item.daggers",
    "what": "attack.daggers.thrown-dagger onKill: \"gain 50 Surge\"",
-   "needs": "trigger shape unparsed"
-  },
-  {
-   "unit": "item.pickaxe",
-   "what": "attack.pickaxe.pick onHit: \"the target loses 1 Armor for the rest of the Battle\"",
-   "needs": "trigger shape unparsed"
+   "needs": "no effect moves a unit's Surge amount — engine capability.trigger-moves-surge"
   },
   {
    "unit": "item.peddlers-vest",
@@ -523,13 +688,18 @@
   },
   {
    "unit": "item.elfbow",
-   "what": "attack.elfbow.elf-shot onHit: \"gain 1 Precision\"",
-   "needs": "trigger shape unparsed"
+   "what": "attack.elfbow.double-shot targets 'up to 2 enemies within 4 hexes' — lands SINGLE-TARGET",
+   "needs": "an attack at several chosen targets — engine capability.attack-several-targets"
   },
   {
    "unit": "item.earth-staff",
    "what": "grants power.earth-staff.earth-shield",
    "needs": "item power — shape unparsed"
+  },
+  {
+   "unit": "item.force-staff",
+   "what": "attack.force-staff.force-blast halfStatBonus: \"magic\"",
+   "needs": "damage from two stats — engine capability.damage-from-two-stats"
   },
   {
    "unit": "item.priest-chain",
@@ -552,6 +722,16 @@
    "needs": "item power — shape unparsed"
   },
   {
+   "unit": "item.staff-of-summoning",
+   "what": "attack.staff-of-summoning.unbinding halfStatBonus: \"magic\"",
+   "needs": "damage from two stats — engine capability.damage-from-two-stats"
+  },
+  {
+   "unit": "item.staff-of-summoning",
+   "what": "attack.staff-of-summoning.unbinding accuracyVs: {\"summon\":15}",
+   "needs": "Accuracy against one kind of enemy — engine capability.summons"
+  },
+  {
    "unit": "item.staff-of-the-magi",
    "what": "grants power.staff-of-the-magi.power-ward",
    "needs": "item power — shape unparsed"
@@ -568,13 +748,33 @@
   },
   {
    "unit": "item.staff-of-the-destroyer",
+   "what": "attack.staff-of-the-destroyer.ruin doubleStatBonus: \"magic\"",
+   "needs": "damage from two stats — engine capability.damage-from-two-stats"
+  },
+  {
+   "unit": "item.staff-of-the-destroyer",
    "what": "attack.staff-of-the-destroyer.sundering onKill: \"the corpse is destroyed\"",
    "needs": "trigger shape unparsed"
+  },
+  {
+   "unit": "item.staff-of-the-destroyer",
+   "what": "attack.staff-of-the-destroyer.sundering doubleStatBonus: \"magic\"",
+   "needs": "damage from two stats — engine capability.damage-from-two-stats"
   },
   {
    "unit": "item.staff-of-the-ultimate-destroyer",
    "what": "grants power.staff-of-the-ultimate-destroyer.perfect-sight",
    "needs": "item power — shape unparsed"
+  },
+  {
+   "unit": "item.staff-of-the-ultimate-destroyer",
+   "what": "attack.staff-of-the-ultimate-destroyer.annihilation doubleStatBonus: \"magic\"",
+   "needs": "damage from two stats — engine capability.damage-from-two-stats"
+  },
+  {
+   "unit": "item.staff-of-the-ultimate-destroyer",
+   "what": "attack.staff-of-the-ultimate-destroyer.annihilation doubleStat: true",
+   "needs": "damage from two stats — engine capability.damage-from-two-stats"
   },
   {
    "unit": "item.chains-of-the-wrathful",
