@@ -4,7 +4,7 @@ import type { Ctx } from './types.js'
 import { actionReady, grantedActionIds, isAttack, isBurst, isCharge, isMove, resolveActionSlot } from './action.js'
 import { canAttack, performAttack } from './pipeline.js'
 import { burstCentres, canUseBurst, useBurst } from './burst.js'
-import { canUsePower, usePower } from './ability.js'
+import { canUsePower, canUsePowerAt, powerHexesOf, usePower, usePowerAt } from './ability.js'
 import { executeFlight, executeMove, executeSidestep, movementOptions, planMovement, type MovementPlan } from './movement.js'
 import { forcedTargetOf, isBlocked } from './status.js'
 import { settle } from './settle.js'
@@ -36,6 +36,8 @@ type Plan = { kind: 'attack'; actor: number; actionId: string; target: number; s
   | { kind: 'power'; actor: number; actionId: string; target: number; slot: import('./types.js').ActionSlot }
   | { kind: 'burst'; actor: number; actionId: string; centre: number; slot: import('./types.js').ActionSlot }
   | { kind: 'prop-attack'; actor: number; actionId: string; hex: number; slot: import('./types.js').ActionSlot }
+  /** capability.summons: a power aimed at an empty hex (ability.ts usePowerAt). */
+  | { kind: 'power-at'; actor: number; actionId: string; hex: number; slot: import('./types.js').ActionSlot }
   | MovementPlan
   /** capability.charge: a walk and an attack as one action, aimed at a unit (core/charge.ts). */
   | ChargePlan
@@ -71,6 +73,10 @@ function planAction(ctx: Ctx, request: unknown): Plan | Rejection {
     return canUseBurst(ctx, actor, request.centre, actionId, slot) ? { kind: 'burst', actor, centre: request.centre, actionId, slot } : reject('illegal-centre-or-action')
   }
   if (centred) return reject('malformed-target')
+  if (hexed && a.target?.select === 'hex') {
+    if (!integer(request.hex) || request.hex >= ctx.state.terrain.length) return reject('malformed-hex')
+    return canUsePowerAt(ctx, actor, request.hex, actionId, slot) ? { kind: 'power-at', actor, hex: request.hex, actionId, slot } : reject('illegal-hex-or-action')
+  }
   if (hexed) {
     if (!isAttack(a) || isCharge(a) || !integer(request.hex) || request.hex >= ctx.state.terrain.length) return reject('malformed-hex')
     if (forcedTargetOf(ctx, u) !== null) return reject('forced-target')
@@ -135,6 +141,7 @@ export function legalActions(ctx: Ctx, actor: number): ActionRequest[] {
     if (isMove(a) && !isCharge(a)) { for (const plan of movementOptions(ctx, actor, actionId)) out.push({ actor, actionId, destination: plan.destination }); continue }
     const candidates: ActionRequest[] = []
     if (isBurst(a)) for (const centre of burstCentres(ctx, actor, actionId)) candidates.push({ actor, actionId, centre })
+    else if (a.target?.select === 'hex') for (const hex of powerHexesOf(ctx, actor, actionId)) candidates.push({ actor, actionId, hex })
     else {
       for (let target = 0; target < ctx.state.units.length; target++) candidates.push({ actor, actionId, target })
       if (isAttack(a) && !isCharge(a)) for (const hex of propAttackHexes(ctx, actor, actionId)) candidates.push({ actor, actionId, hex })
@@ -146,6 +153,7 @@ export function legalActions(ctx: Ctx, actor: number): ActionRequest[] {
 function resolvePlan(ctx: Ctx, plan: Plan): void {
   if (plan.kind === 'burst') useBurst(ctx, plan.actor, plan.centre, plan.actionId, plan.slot)
   else if (plan.kind === 'prop-attack') { attackProp(ctx, plan.actor, plan.hex, plan.actionId, plan.slot); settle(ctx, plan.actionId) }
+  else if (plan.kind === 'power-at') { usePowerAt(ctx, plan.actor, plan.hex, plan.actionId, plan.slot); settle(ctx, plan.actionId) }
   else if (plan.kind === 'attack') { performAttack(ctx, plan.actor, plan.target, plan.actionId, plan.slot); settle(ctx, plan.actionId) }
   else if (plan.kind === 'power') { usePower(ctx, plan.actor, plan.target, plan.actionId, plan.slot); settle(ctx, plan.actionId) }
   else if (plan.kind === 'charge') executeCharge(ctx, plan)

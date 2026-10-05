@@ -138,8 +138,25 @@ export function packAbilities(): Readonly<Record<string, AbilityDef>> {
     for (const f of ['effect', 'stat', 'bonus', 'heal', 'guard']) if ((a as Record<string, unknown>)[f] !== undefined) throw new Error(`unit pack: power '${k}' carries the retired legacy field '${f}' — regenerate the pack`)
     if (!a.effects && !a.burst) throw new Error(`unit pack: power '${k}' carries no effects list — regenerate the pack`)
     for (const e of a.effects ?? []) if (!EFFECT_KINDS.includes(e.kind)) throw new Error(`unit pack: power '${k}' has an effect of kind '${String((e as { kind: string }).kind)}'`)
+    validateHexPower(a, `unit pack: power '${k}'`)
   }
   return raw
+}
+
+/**
+ * capability.summons (2026-10-05): a summon places a unit on the hex its power was aimed at, so it belongs to a power whose
+ * target is `select: 'hex'` and to nothing else; and a hex-aimed power aims at no unit, so every effect of it is a summon or
+ * the caster's own (`who: 'self'`). A row that says otherwise is refused at load, never a fizzle in a battle.
+ */
+export function validateHexPower(a: { readonly target?: { readonly select: string }; readonly effects?: readonly import('../core/types.js').Effect[] }, where: string): void {
+  const hex = a.target?.select === 'hex'
+  for (const e of a.effects ?? []) {
+    if (e.kind === 'summon') {
+      if (!hex) throw new Error(`${where} summons '${e.unit}' but is not aimed at a hex (target select 'hex')`)
+      if (typeof e.unit !== 'string' || !e.unit) throw new Error(`${where} summons no named unit row`)
+    } else if (hex && !('who' in e && e.who === 'self')) throw new Error(`${where} is aimed at an empty hex and carries '${e.kind}', which needs a unit aimed at`)
+  }
+  if (hex && !(a.effects ?? []).length) throw new Error(`${where} is aimed at a hex and does nothing there`)
 }
 
 /**
@@ -278,6 +295,8 @@ export type PackAttackRow = {
   /** capability.damage-from-two-stats (2026-10-05): the attack's own stat counted N times, and the stats added to it (AttackProfile). */
   readonly statMult?: number
   readonly addsStats?: readonly { readonly stat: import('../core/stats.js').StatName; readonly mult: number; readonly div?: number }[]
+  /** capability.summons (2026-10-05): extra Accuracy against a kind of target - the flag `summon` or a unit tag (AttackProfile). */
+  readonly accuracyVs?: Readonly<Record<string, number>>
   /**
    * capability.charge (2026-09-27): the Codex move row's `hexes` — the attack is
    * a CHARGE, walking at most this many movement points to its target first.
@@ -299,7 +318,8 @@ export function liftAttack(r: PackAttackRow): AttackDef {
   validateActionMetadata(r)
   validateBurstAction(r as unknown as ActionDef)
   if(!isDamageType(r.damageType))throw Error(`unit pack: invalid damage type on '${r.id}'`)
-  const { id, name, kind, damageType, bonus, stat, reach, staminaCost, applies, crit, hits, cooldown, warmup, powerScale, accuracy, critCount, uses, free, hexes, statMult, addsStats } = r
+  const { id, name, kind, damageType, bonus, stat, reach, staminaCost, applies, crit, hits, cooldown, warmup, powerScale, accuracy, critCount, uses, free, hexes, statMult, addsStats, accuracyVs } = r
+  if (accuracyVs !== undefined && (accuracyVs === null || typeof accuracyVs !== 'object' || Array.isArray(accuracyVs) || !Object.keys(accuracyVs).length || Object.entries(accuracyVs).some(([kind, n]) => !kind || !Number.isSafeInteger(n) || n === 0))) throw new Error(`unit pack: attack '${id}' has accuracyVs that is not a kind of target and a whole number for each`)
   // capability.damage-from-two-stats: whole multiples, a divisor of 1 or 2, a stat the engine resolves — or the pack is refused
   if (statMult !== undefined && (!Number.isSafeInteger(statMult) || statMult < 2)) throw new Error(`unit pack: attack '${id}' has statMult '${String(statMult)}' — a whole number of at least 2, or absent`)
   if (addsStats !== undefined) {
@@ -320,7 +340,7 @@ export function liftAttack(r: PackAttackRow): AttackDef {
       kind, damageType, bonus, stat, ...attackPacketFields(r),
       ...(applies ? { applies } : {}), ...(crit !== undefined ? { crit } : {}), ...(hits !== undefined ? { hits } : {}),
       ...(powerScale !== undefined ? { powerScale } : {}), ...(accuracy !== undefined ? { accuracy } : {}), ...(critCount !== undefined ? { critCount } : {}),
-      ...(statMult !== undefined ? { statMult } : {}), ...(addsStats !== undefined ? { addsStats } : {}),
+      ...(statMult !== undefined ? { statMult } : {}), ...(addsStats !== undefined ? { addsStats } : {}), ...(accuracyVs !== undefined ? { accuracyVs } : {}),
     },
   }
 }
@@ -465,6 +485,7 @@ export function packClassPowers(): Readonly<Record<string, AbilityDef>> {
     if (!k.startsWith('power.')) throw new Error(`class powers: '${k}' is not a power.* id`)
     if (!Array.isArray(a.effects)) throw new Error(`class powers: '${k}' carries no effects list — regenerate the pack`)
     for (const e of a.effects) if (!EFFECT_KINDS.includes(e.kind)) throw new Error(`class powers: '${k}' has an effect of kind '${String((e as { kind: string }).kind)}'`)
+    validateHexPower(a, `class powers: '${k}'`)
     if (!a.target) throw new Error(`class powers: '${k}' has no targeting`)
     if (a.effects.length === 0 && !(a.gaps && a.gaps.length)) throw new Error(`class powers: '${k}' compiled nothing and names no gap — the converter must say why`)
   }

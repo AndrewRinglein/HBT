@@ -290,6 +290,12 @@ type EffectBody =
    * within `radius` as `unit`, nearest first, ties by the lower corpse id (Law 6). A summon; leaves no corpse.
    */
   | { readonly kind: 'corpse.raise'; readonly unit: string; readonly radius: number; readonly count?: number }
+  /**
+   * capability.summons (2026-10-05): place one unit of the row `unit` on the hex the power was aimed at, on the side of the
+   * one acting, flagged summoned. Only on a power whose target is `select: 'hex'` (ability.ts usePowerAt) — a hex is what
+   * it needs, and nothing else hands it one.
+   */
+  | { readonly kind: 'summon'; readonly unit: string }
   /** capability.corpses: remove every corpse within `radius`, healing the one acting `healPer` each (Consume the Fallen). */
   | { readonly kind: 'corpse.consume'; readonly radius: number; readonly healPer: number }
   /** capability.corpses: eat one corpse within `radius` — heal and battle-long stat gains to the eater. Refused (canUsePower) when none is in reach. */
@@ -524,6 +530,11 @@ export type AttackProfile = {
   readonly stat: 'strength' | 'precision' | 'magic' | 'spirit'
   /** On hit, apply this status to the target. A rider, not a station. */
   readonly applies?: { readonly statusId: string; readonly value: number }
+  /**
+   * capability.summons (2026-10-05): extra Accuracy against a kind of target — each key the flag `summon` (a summoned unit)
+   * or a unit tag, its number added when the target is of that kind (pipeline.ts resolveAccuracy, its own ledger row).
+   */
+  readonly accuracyVs?: Readonly<Record<string, number>>
   /** The weapon's flat addition to crit chance — station.crit (2026-08-27): the Dagger's +5. Plus OR minus (ruled 2026-09-04). */
   readonly crit?: number
   /**
@@ -611,7 +622,7 @@ export type MoveDef = ActionDef & { readonly move: MoveProfile }
 export type AbilityDef = ActionDef
 
 /** plumbing.vocabulary-export: every effect kind, checked against the union by tsc — snapshot validation, pack validation and the exported vocabulary read it, never a copy. */
-export const EFFECT_KINDS = ['statDamage', 'damage', 'heal', 'status.apply', 'status.remove', 'statMod', 'stamina.gain', 'stamina.drain', 'loseMaxStamina', 'loseMaxHp', 'stand', 'knockback', 'badge.grant', 'power.gain', 'corpse.raise', 'corpse.consume', 'corpse.eat', 'layer.paint', 'reveal', 'burstScale'] as const satisfies readonly Effect['kind'][]
+export const EFFECT_KINDS = ['statDamage', 'damage', 'heal', 'status.apply', 'status.remove', 'statMod', 'stamina.gain', 'stamina.drain', 'loseMaxStamina', 'loseMaxHp', 'stand', 'knockback', 'badge.grant', 'power.gain', 'corpse.raise', 'summon', 'corpse.consume', 'corpse.eat', 'layer.paint', 'reveal', 'burstScale'] as const satisfies readonly Effect['kind'][]
 export type EffectKindsCovered = Assert<Covers<Effect['kind'], typeof EFFECT_KINDS>>
 
 
@@ -1076,8 +1087,13 @@ export type Unit = {
   walked?: boolean
   /** capability.auras: this unit's auras, own frozen copies (plain data). */
   auras: AuraDef[]
-  /** capability.corpses: a raised or summoned unit leaves no corpse. */
+  /** capability.corpses: a raised or summoned unit leaves no corpse. capability.summons: on the heroes' side it is not a hero for victory or defeat. */
   summoned: boolean
+  /**
+   * capability.summons (2026-10-05): the unit whose power placed this one. Set by a power's summon and by nothing else (a
+   * raised corpse has none): such a unit is removed when the Battle ends.
+   */
+  summonedBy?: number
   /** ai.mode.hunter (2026-09-03): the quarry, until it falls. */
   huntTarget?: number
   /** An AI mode standing in for the row's until a Turn ends (the civilians' flight, ruled 2026-09-03). */

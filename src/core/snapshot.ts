@@ -177,6 +177,7 @@ export function restoreBattle(json: string, runtime: BattleRuntime): Ctx {
       requireThat(status.since === undefined || integer(status.since, 0), 'unit status since')   // capability.effect-lasts-activations: the Activation a counted status was put on in
     }
     requireThat(u.huntTarget === undefined || unitId(u.huntTarget), 'hunt target')
+    requireThat(u.summonedBy === undefined || (unitId(u.summonedBy) && u.summoned === true), 'unit summonedBy')   // capability.summons: the unit whose power placed it
     // rule.afflictions-at-zero: a transformed hero — the badge that did it, the row it became, and what it was
     if (u.transformed !== undefined) {
       record(u.transformed); record(u.transformed.original)

@@ -216,6 +216,12 @@ export function resolveAccuracy(ctx: Ctx, attacker: Unit, target: Unit, a: Attac
   for (const { statusId, rule } of proneRulesOf(ctx, target)) v = step(ledger, ACC.PRONE, 'TARGET_PRONE', statusId, v, v + rule.accuracyAgainst)
   // SITUATIONAL — the attack's own modifier (station.accuracy-field, 2026-09-03).
   if (a.attack.accuracy) v = step(ledger, ACC.SITUATIONAL, 'SITUATIONAL', a.id, v, v + a.attack.accuracy)
+  // capability.summons (2026-10-05): the attack's Accuracy against a kind of target — the flag `summon` (a summoned unit) or
+  // a unit tag — one row for the kinds the target is, in the row's own order (Law 6).
+  if (a.attack.accuracyVs) {
+    const vs = Object.entries(a.attack.accuracyVs).reduce((n, [kind, add]) => n + ((kind === 'summon' ? target.summoned : target.tags.includes(kind)) ? add : 0), 0)
+    if (vs) v = step(ledger, ACC.SITUATIONAL, 'ACCURACY_VS', a.id, v, v + vs)
+  }
   // rule.free-attack-is-basic-attack: a special free attack (the attack of opportunity) swings at the ruled penalty — its own named row
   if (mode === 'reaction') v = step(ledger, ACC.SITUATIONAL, 'FREE_ATTACK', FREE_ATTACK_CAUSE, v, v + FREE_ATTACK_ACCURACY)
   // capability.counterattack-and-fend: a counterattack and a fend add their own Accuracy stat ("counterattack with +10 Accuracy")

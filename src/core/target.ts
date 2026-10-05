@@ -21,11 +21,11 @@ import type { Ctx, Unit } from './types.js'
 export type TargetSide = 'ally' | 'enemy' | 'any'
 export const TARGET_SIDES: readonly TargetSide[] = ['ally', 'enemy', 'any'] as const
 
-export type TargetSelect = 'self' | 'unit' | 'area'
-export const TARGET_SELECTS: readonly TargetSelect[] = ['self', 'unit', 'area'] as const
+export type TargetSelect = 'self' | 'unit' | 'area' | 'hex'
+export const TARGET_SELECTS: readonly TargetSelect[] = ['self', 'unit', 'area', 'hex'] as const
 
 export type Targeting = {
-  /** `self` · one `unit` · everything in an `area`. */
+  /** `self` · one `unit` · everything in an `area` · one empty `hex` within the action's range (capability.summons: nobody stands on it; side is 'any'). */
   readonly select: TargetSelect
   /** Which side is eligible. Ignored when select is 'self'. */
   readonly side: TargetSide
@@ -72,6 +72,7 @@ export function validateTargeting(t: Targeting, where: string): void {
       throw new Error(`${where}: radius must be a non-negative integer, got ${t.radius}`)
     }
   }
+  if (t.select === 'hex' && (t.side !== 'any' || t.requireTags !== undefined)) throw new Error(`${where}: select:'hex' is an empty hex — it has no side and no tags`)
   if (t.select === 'self' && t.side !== 'any' && t.side !== 'ally') {
     throw new Error(`${where}: select:'self' cannot have side:'${t.side}'`)
   }
@@ -129,6 +130,10 @@ export function resolveTargets(ctx: Ctx, actor: Unit, t: Targeting, aimedAt: num
       const u = ctx.state.units[aimedAt]
       return u && eligible(actor, u, t) ? [u.id] : []
     }
+
+    // capability.summons: an empty hex holds nobody — what the power does there is its effect's (a summon)
+    case 'hex':
+      return []
 
     case 'area': {
       const centre = ctx.state.units[aimedAt]

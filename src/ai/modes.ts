@@ -12,7 +12,7 @@ import { executeAction, legalActions, type ActionRequest } from './../core/comma
 import type { ActionDef, AttackDef, MoveDef } from './../core/types.js'
 import { actionReady, attackIdsOf, attacksOf, burstsOf, isBurst, isCharge, movesOf, powerIdsOf, powersOf, resolveActionSlot, standsUp } from './../core/action.js'
 import { attackDef, attackReachesHex, preview, reachOf } from './../core/pipeline.js'
-import { isReady, powerTargetsOf, previewPower } from './../core/ability.js'
+import { isReady, powerHexesOf, powerTargetsOf, previewPower } from './../core/ability.js'
 import { previewBurst } from './../core/burst.js'
 import { hiddenFrom, isBlocked, isConfused, isProne } from './../core/status.js'
 import { TERRAIN } from './../core/types.js'
@@ -555,6 +555,17 @@ function effectsPower(decision: Decision, u: Unit, when: 'free' | 'primary' | 'o
     } else if ((when === 'free') !== !!a.free) continue
     const kinds = new Set(a.effects.map((e) => e.kind))
     const t = a.target ?? { select: 'self' as const, side: 'any' as const }
+    // capability.summons (2026-10-05; SWITCHES.md summonAiUse): a power that places a unit on a hex is used when it is ready and
+    // an enemy still stands - on the open hex nearest the nearest enemy, the lower hex on a tie (Law 6).
+    if (t.select === 'hex') {
+      if (!kinds.has('summon') || decision.freeUsed.has(id)) continue
+      const foe = nearestEnemy(ctx, u)
+      if (!foe) continue
+      const hex = powerHexesOf(ctx, u.id, id).filter((h) => onList(decision, { actor: u.id, hex: h, actionId: id }))
+        .sort((x, y) => ctx.geo.distance(x, foe.hex) - ctx.geo.distance(y, foe.hex) || x - y)[0]
+      if (hex === undefined) continue
+      act(decision, { actor: u.id, hex, actionId: id }, { choice: `rule.effects-${when}` }); return true
+    }
     // what the power costs its caster in HP — a flat damage said on the caster (fix.one-effect-vocabulary: was 'selfDamage')
     const selfDamage = a.effects.reduce((n, e) => n + (e.kind === 'damage' && e.who === 'self' && typeof e.amount === 'number' ? e.amount : 0), 0)
     if (selfDamage > 0 && u.hp <= selfDamage * 2) continue

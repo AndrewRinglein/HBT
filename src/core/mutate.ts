@@ -35,7 +35,7 @@ export const EVENT_TYPES = [
   'status.applied', 'status.cancelled', 'status.expired', 'status.reduced', 'surge.checked',
   'surge.hit', 'thorns.reflected', 'trigger.fired', 'trigger.rolled', 'turn.begin', 'turn.end',
   'unit.badged', 'unit.enter', 'unit.equipped', 'unit.grown', 'unit.modified', 'unit.obliterated',
-  'unit.proned', 'unit.raised', 'unit.reverted', 'unit.shunted', 'unit.stood', 'unit.transformed', 'zoc.ignored',
+  'unit.dismissed', 'unit.proned', 'unit.raised', 'unit.reverted', 'unit.shunted', 'unit.stood', 'unit.summoned', 'unit.transformed', 'zoc.ignored',
 ] as const
 export type EventType = (typeof EVENT_TYPES)[number] | `life.${LifeState}`
 
@@ -703,6 +703,9 @@ export function setOutcome(ctx: Ctx, outcome: Ctx['state']['outcome'], causeId: 
   // rule.afflictions-at-zero (2026-10-02): "At battle end the hero is back to normal; no other consequence" — every
   // hero still standing in a transformed form falls back into its own, in unit order (Law 6), before the end is told
   for (const u of ctx.state.units) if (u.transformed && u.lifeState === 'standing') revertUnit(ctx, u.id, 'battleEnd', 'battle.end')
+  // capability.summons (2026-10-05): "it is removed at the end of the Battle" — every unit a power summoned that still stands
+  // leaves, one line each in unit order (Law 6), before the end is told. A raised corpse is not one (no summonedBy).
+  for (const u of ctx.state.units) if (u.summonedBy !== undefined && u.lifeState === 'standing') emit(ctx, 'unit.dismissed', 'battle.end', { actor: u.id, hex: u.hex, typeId: u.typeId, summonedBy: u.summonedBy })
   emit(ctx, 'battle.end', causeId, { outcome, turn: ctx.state.turn })
 }
 

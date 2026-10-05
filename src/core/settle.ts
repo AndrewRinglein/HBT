@@ -133,7 +133,9 @@ export function checkVictory(ctx: Ctx, causeId: string): boolean {
     }
   }
   const enemiesLeft = ctx.state.units.some((u) => u.side === 'enemy' && u.lifeState === 'standing')
-  const heroesLeft = ctx.state.units.some((u) => u.side === 'hero' && u.lifeState === 'standing')
+  // capability.summons (2026-10-05): a summoned unit on the heroes' side is not a hero — with every hero down the battle is
+  // lost though a summon still stands. (No unit was ever summoned onto that side before; an enemy's raised dead still count.)
+  const heroesLeft = ctx.state.units.some((u) => u.side === 'hero' && u.lifeState === 'standing' && !u.summoned)
 
   // encounter.runner (2026-09-03): a board is not CLEAR while the schedule
   // still owes arrivals — the wave that has not come yet is the fight

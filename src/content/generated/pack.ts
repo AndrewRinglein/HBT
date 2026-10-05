@@ -2707,6 +2707,53 @@ export const UNIT_PACK = {
       ]
     },
     {
+      "typeId": "unit.wolf",
+      "name": "Wolf",
+      "side": "enemy",
+      "tier": 1,
+      "maxHp": 5,
+      "armor": 0,
+      "resist": 0,
+      "accuracy": 67,
+      "dodge": 0,
+      "strength": 3,
+      "precision": 2,
+      "magic": 0,
+      "spirit": 0,
+      "role": "melee",
+      "movement": 6,
+      "reach": 0,
+      "maxStamina": 0,
+      "staminaRegen": 0,
+      "ai": "dumb-melee",
+      "attacks": [
+        "attack.wolf.pounce",
+        "attack.wolf.nip"
+      ],
+      "abilities": [],
+      "moves": [
+        "power.move"
+      ],
+      "tags": [
+        "beast"
+      ],
+      "triggers": [
+        {
+          "id": "trigger.wolf.weak",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.weak",
+            "value": 1
+          },
+          "source": "unit.wolf",
+          "onlyWithAttack": "attack.wolf.nip"
+        }
+      ]
+    },
+    {
       "typeId": "unit.zombie",
       "name": "Zombie",
       "side": "enemy",
@@ -3425,6 +3472,26 @@ export const UNIT_PACK = {
       "kind": "melee",
       "damageType": "physical",
       "bonus": 0,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 0
+    },
+    "attack.wolf.pounce": {
+      "id": "attack.wolf.pounce",
+      "name": "Pounce",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 0,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 0
+    },
+    "attack.wolf.nip": {
+      "id": "attack.wolf.nip",
+      "name": "Nip",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": -1,
       "stat": "strength",
       "reach": 1,
       "staminaCost": 0
@@ -5695,6 +5762,9 @@ export const UNIT_PACK = {
           "div": 2
         }
       ],
+      "accuracyVs": {
+        "summon": 15
+      },
       "tags": [
         "magic",
         "ranged",
@@ -11398,6 +11468,24 @@ export const UNIT_PACK = {
           "statusId": "status.fire-gauntlet.stoke",
           "value": 3,
           "who": "self"
+        }
+      ]
+    },
+    "power.staff-of-summoning.call-the-wolf": {
+      "id": "power.staff-of-summoning.call-the-wolf",
+      "name": "Call the Wolf",
+      "free": false,
+      "staminaCost": 2,
+      "cooldown": 5,
+      "range": 1,
+      "target": {
+        "select": "hex",
+        "side": "any"
+      },
+      "effects": [
+        {
+          "kind": "summon",
+          "unit": "unit.wolf"
         }
       ]
     },
@@ -17907,11 +17995,10 @@ export const UNIT_PACK = {
       "grants": [
         "attack.staff-of-summoning.unbinding"
       ],
-      "abilities": [],
-      "triggers": [],
-      "gaps": [
-        "grants power.staff-of-summoning.call-the-wolf — item power — shape unparsed"
-      ]
+      "abilities": [
+        "power.staff-of-summoning.call-the-wolf"
+      ],
+      "triggers": []
     },
     "item.staff-of-the-magi": {
       "id": "item.staff-of-the-magi",
