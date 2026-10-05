@@ -19,6 +19,12 @@ const PAGE = process.env.VIEWER_PAGE || 'BATTLE-VIEWER.html'
    library battle in which, on its own seed, a zombie afflicted a hero. The Priest's Holy Texts deals its written second term
    now (Precision plus the party's Spirit) and in that battle no hero is afflicted any more. The scene is found by its KIND - a
    library battle that, on its own seed, afflicts a hero: showcase.waystation today (the only one). Every check is unchanged. */
+/* Law 10, 2026-10-05 — engine content.hero-origin-badges (engine DECISIONS.md 2026-10-05 'seven answers: … origin badges go on
+   the heroes …': "3, yes."): the line above this note read const SCENE = 'showcase.waystation' and the tests read
+   sceneOf() - that battle on its own seed. Each base hero is fielded with its origin badges now, every battle of theirs
+   is another battle, and on its own seed that one afflicts nobody. A named battle on one seed is a scene that the next rule
+   moves again, so the scene is said as what it is: the library battle showcase.waystation (heroes against Zombies) on the
+   first replicate, read from 0 upward, on which a hero is afflicted - replicate 1 today. Every check is unchanged. */
 const SCENE = 'showcase.waystation'
 /** a battle the engine fights now: its own export tool, as tools/direct-map.test.mjs asks it */
 const exportOf = (scenario, seed) => JSON.parse(execFileSync(process.execPath, ['node_modules/tsx/dist/cli.mjs', 'tools/export-battle.mts', '--scenario', scenario, ...(seed == null ? [] : ['--seed', String(seed)])], { cwd: '../engine', encoding: 'utf8', maxBuffer: 1 << 27 }))
@@ -46,11 +52,21 @@ const words = x => String(x ?? '').replace(/&#39;/g, "'").replace(/&quot;/g, '"'
 const paras = P => P.querySelector('#afflZero').querySelectorAll('p').map(p => words(p.textContent))
 /** the first affliction a hero gains mid-battle: the engine's badge.gained line carrying its 0-Health rule */
 const gainOf = battle => { const i = battle.events.findIndex(e => e.type === 'badge.gained' && e.atZero); assert.ok(i > 0, 'the battle afflicts a hero'); return { i, e: battle.events[i] } }
+/** the scene: SCENE on the first replicate, from 0 upward, on which a hero gains an affliction (found once, kept) */
+let scene = null
+function sceneOf() {
+  for (let r = 0; scene === null && r < 24; r++) {
+    const b = exportOf(SCENE, r), side = id => (b.events.find(x => x.type === 'unit.enter' && x.actor === id) || {}).side
+    if (b.events.some(e => e.type === 'badge.gained' && e.atZero && side(e.actor) === 'hero')) { scene = b; console.log(`# the scene: ${SCENE}, replicate ${r}`) }
+  }
+  assert.ok(scene, 'a replicate of 0 to 23 afflicts a hero')
+  return scene
+}
 /** play from just before event i until the pop-up stands (or the pump runs dry) */
 function playTo(t, i) { t.v.seek(i); t.v.play(); for (let n = 0; n < 400 && !pop(t.V) && t.v.cursor < t.v.events.length; n++) t.w._flush(250) }
 
 test('a hero first afflicted: the battle holds on the pop-up — its card before and after, the three explanations — and goes on when it is closed', () => {
-  const battle = exportOf(SCENE), { i, e } = gainOf(battle), t = boot(battle), { v, V, w, L } = t
+  const battle = sceneOf(), { i, e } = gainOf(battle), t = boot(battle), { v, V, w, L } = t
   const hero = battle.events.find(x => x.type === 'unit.enter' && x.actor === e.actor)
   assert.equal(hero.side, 'hero'); assert.equal(e.badgeId, 'badge.rotting-flesh')
   playTo(t, i)
@@ -148,7 +164,7 @@ test('Vampirism and Possession read their own 0-Health rules off the event: a Va
 })
 
 test('a scrub draws no pop-up and is never held; a hand step shows it and the next step goes on; an enemy\'s gain is not a hero\'s', () => {
-  const battle = exportOf(SCENE), { i } = gainOf(battle), t = boot(battle), { v, V, w } = t
+  const battle = sceneOf(), { i } = gainOf(battle), t = boot(battle), { v, V, w } = t
   v.seek(battle.events.length); assert.equal(pop(V), null, 'a seek past the gain plays no cue')
   v.seek(i); v.step(); assert.ok(pop(V), 'a hand step over the gain shows it'); assert.equal(v.cursor, i + 1)
   v.step(); assert.equal(v.cursor > i + 1, true, 'the next hand step is never held'); assert.equal(pop(V), null, 'and the pop-up is gone')
@@ -163,7 +179,7 @@ test('a scrub draws no pop-up and is never held; a hand step shows it and the ne
 })
 
 test('the art: every after card the manifest names is inlined; heroes with none are listed, not faked', () => {
-  const { v, L } = boot(exportOf(SCENE)), art = L.art
+  const { v, L } = boot(sceneOf()), art = L.art
   const afflictions = Object.values(L.static.badges).filter(b => b.atZero).map(b => b.id).sort()
   assert.deepEqual(afflictions, ['badge.lycanthropy', 'badge.possession', 'badge.rotting-flesh', 'badge.vampirism'], 'the engine\'s four afflictions (badges with a 0-Health rule)')
   let cards = 0

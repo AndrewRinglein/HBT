@@ -157,6 +157,8 @@ export function buildLog(events, SN, turns, D = {}) {
       case 'corpse.created': return b('down', `&nbsp;&nbsp;&nbsp;&nbsp;a corpse lies at hex ${e.hex} <span class="sq">· ${e.typeId}</span>`)
       case 'corpse.removed': return b('status', `&nbsp;&nbsp;&nbsp;&nbsp;corpse at hex ${e.hex} ${e.how} <span class="sq">· by ${nmAt(e)}</span>`)
       case 'unit.raised': return b('enemy', `&nbsp;&nbsp;<b>${NAMES[e.raised] ?? '#' + e.raised}</b> rises at hex ${e.hex} <span class="sq">· raised by ${nmAt(e)} from ${e.from}</span>`)
+      case 'unit.summoned': return b(e.side === 'hero' ? 'hero' : 'enemy', `&nbsp;&nbsp;<b>${NAMES[e.summoned] ?? '#' + e.summoned}</b> is summoned at hex ${e.hex} <span class="sq">· by ${nmAt(e)} · it acts by its own AI</span>`)
+      case 'unit.dismissed': return b('status', `&nbsp;&nbsp;<b>${nmAt(e)}</b> leaves — the battle is over <span class="sq">· summoned</span>`)
       case 'corpse.eaten': return b('status', `&nbsp;&nbsp;<b>${nmAt(e)}</b> eats a corpse <span class="sq">· ${e.of}</span>`)
       case 'unit.obliterated': return b('down', `&nbsp;&nbsp;<b>${nmT(e)}</b> is OBLITERATED <span class="sq">· shadow ${e.shadow} ≥ max health ${e.maxHp}</span>`)
       case 'deathbed.stood': return b('status', `&nbsp;&nbsp;<b>${nmT(e)}</b> downed — Deathbed Fighting: <b>fights on</b> <span class="sq">· rolled ${e.roll} vs ${e.chance} · roll ${e.ordinal}</span>`)

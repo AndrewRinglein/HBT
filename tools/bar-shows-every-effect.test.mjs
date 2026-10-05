@@ -117,3 +117,23 @@ test('an attack whose damage is a sum of terms says each on its line: the Force 
   for (const [id, a] of Object.entries(STATIC.actions)) { const p = a.attack; if (!p || !(p.addsStats?.length || p.statMult > 1)) continue; n++; assert.ok(/ \+ |× /.test(said(id).split('(')[1]), id + ': ' + said(id)) }
   assert.ok(n > 15, n + ' attacks carry a second term')
 })
+
+/* capability.summons (engine item, 2026-10-05; engine DECISIONS.md 2026-10-04 'his 28 reward weapons read back …': "We need:
+   summons"): a power that places a unit on a hex says so on the bar - what it summons and where - and the fold and the log
+   know the engine's two lines for it. Read off the engine's own rows (generated/static.json). */
+test('a summon is said: the bar names the unit and the empty hex; an attack says its Accuracy against anything summoned; the fold knows unit.summoned and unit.dismissed', async () => {
+  const { targetWords, effectWord, helpsTarget } = await import('../src/actions.js')
+  const { FOLDED_TYPES } = await import('../src/fold.js')
+  const call = STATIC.actions['power.staff-of-summoning.call-the-wolf']
+  assert.ok(call, 'the engine holds Call the Wolf')
+  assert.deepEqual(call.target, { select: 'hex', side: 'any' })
+  assert.equal(targetWords(call.target), 'an empty hex')
+  assert.equal(effectWord(call.effects[0], D, STATIC.statuses).word, 'Summons Wolf')
+  assert.equal(helpsTarget(call, 'hero', null), true, 'nothing flies at anyone')
+  const lines = actionLines({ id: 'power.staff-of-summoning.call-the-wolf', ...call }, {}, D, STATIC.statuses).join(' | ')
+  assert.match(lines, /summon one Wolf on that hex, on your side/)
+  assert.match(lines, /an empty hex/)
+  for (const t of ['unit.summoned', 'unit.dismissed']) assert.ok(FOLDED_TYPES.includes(t), t)
+  const unbinding = actionLines({ id: 'attack.staff-of-summoning.unbinding', ...STATIC.actions['attack.staff-of-summoning.unbinding'] }, {}, D, STATIC.statuses).join(' | ')
+  assert.match(unbinding, /[+]15 Accuracy against anything summoned/)
+})

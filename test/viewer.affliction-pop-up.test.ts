@@ -24,9 +24,21 @@ describe('the first-affliction pop-up: before and after art, the three explanati
     // - the library battle in which a zombie afflicted a hero of the battle-2 party. The Priest's Holy Texts deals its written
     // second term now and no hero is afflicted in that battle. The scene is a library battle that, on its own seed, afflicts a
     // hero: showcase.waystation today (as tools/affliction-pop-up.test.mjs). Every check below is unchanged.
-    const ctx = createBattle(scenarioOptions(scenarioDef('showcase.waystation')))
-    runBattle(ctx)
-    const gain = ctx.events.find((e) => e.type === 'badge.gained' && e['atZero'] !== undefined) as Record<string, any> | undefined
+    // Law 10, 2026-10-05 — engine content.hero-origin-badges (engine DECISIONS.md 2026-10-05 'seven answers: … origin badges go
+    // on the heroes …': "3, yes."): the three lines here read
+    //   const ctx = createBattle(scenarioOptions(scenarioDef('showcase.waystation')))
+    //   runBattle(ctx)
+    //   const gain = ctx.events.find((e) => e.type === 'badge.gained' && e['atZero'] !== undefined) …
+    // - that battle on its own seed, which afflicts nobody now that each base hero is fielded with its origin badges. The scene
+    // is said as what it is (as tools/affliction-pop-up.test.mjs): showcase.waystation on the first replicate, read from 0
+    // upward, on which a hero is afflicted - replicate 1 today.
+    let ctx = createBattle(scenarioOptions(scenarioDef('showcase.waystation')))
+    let gain: Record<string, any> | undefined
+    for (let r = 0; r < 24 && !gain; r++) {
+      ctx = createBattle({ ...scenarioOptions(scenarioDef('showcase.waystation')), replicate: r })
+      runBattle(ctx)
+      gain = ctx.events.find((e) => e.type === 'badge.gained' && e['atZero'] !== undefined && ctx.events.some((x) => x.type === 'unit.enter' && x.actor === e.actor && x['side'] === 'hero')) as Record<string, any> | undefined
+    }
     expect(gain, 'the battle afflicts a hero').toBeDefined()
     const enter = ctx.events.find((e) => e.type === 'unit.enter' && e.actor === gain!['actor']) as Record<string, any>
     expect(enter['side']).toBe('hero')

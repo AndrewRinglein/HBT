@@ -212,6 +212,8 @@ function effectWordOf(ef, D, SN) {
     case 'power.gain':     return { word: 'Power', val: ef.value, signed: true }
     case 'layer.paint':    return { word: layerName(ef.layer) + ' ground', val: ef.radius, radius: true }
     case 'corpse.raise':   return { word: 'Raises a corpse', val: ef.radius, radius: true }
+    /* capability.summons (engine item, 2026-10-05): one unit of the engine's named row, placed on the hex aimed at */
+    case 'summon':         return { word: 'Summons ' + ((((D && D.UD) || {})[ef.unit] || {}).name || String(ef.unit || '').replace(/^unit\./, '')) }
     case 'corpse.consume': return { word: 'Consumes a corpse', val: ef.radius, radius: true }
     /* an effect kind the engine added and the viewer has not been taught: show
        the engine's own word rather than invent one, and it is a viewer finding */
@@ -234,6 +236,7 @@ export function targetWords(sel) {
   const who = (tags ? tags + ' ' : '') + ({ any: 'unit', ally: 'ally', enemy: 'enemy' }[sel.side] || 'unit')
   if (sel.select === 'self') return 'self'
   if (sel.select === 'unit') return 'one ' + who
+  if (sel.select === 'hex') return 'an empty hex'   /* capability.summons (engine item): a hex nobody stands on, within the action's range */
   if (sel.select !== 'area') throw new Error('viewer: unknown target select ' + JSON.stringify(sel.select))
   const every = 'every ' + (sel.excludeSelf ? 'other ' : '') + who
   if (sel.radius == null) return every                     // the whole side, unbounded — "heal all rangers"
@@ -357,6 +360,7 @@ export function effectSentence(ef, sel, D, SN) {
     case 'power.gain':     return `Power ${typeof ef.value === 'number' ? sgn(ef.value) : '+ ' + amt(ef.value)}`
     case 'layer.paint':    return `${String(ef.layer || '').replace(/^layer\./, '')} ground, radius ${ef.radius}${ef.origin === 'target' ? ' round the target' : ''}`
     case 'corpse.raise':   return `raise ${ef.count == null ? 'a corpse' : ef.count + ' corpses'} within ${hexes(ef.radius)} as ${(UD[ef.unit] || {}).name || ef.unit}`
+    case 'summon':         return `summon one ${(UD[ef.unit] || {}).name || ef.unit} on that hex, on your side — it acts by its own AI`
     case 'corpse.consume': return `consume every corpse within ${hexes(ef.radius)}, heal ${ef.healPer} for each`
     case 'corpse.eat':     return `eat a corpse within ${hexes(ef.radius)}: heal ${ef.heal}${Object.entries(ef.mods || {}).map(([k, v]) => ', ' + statWord(k) + ' ' + sgn(v)).join('')}${ef.maxHp ? ', MAX HEALTH ' + sgn(ef.maxHp) : ''}`
     default:               return ef.kind
@@ -381,6 +385,7 @@ export function helpsTarget(row, actorSide, targetSide) {
   if (row.attack || row.burst || !row.target) return false
   const t = row.target
   if (t.select === 'self' || t.side === 'ally') return true
+  if (t.select === 'hex') return true   /* capability.summons (engine item): aimed at an empty hex — nothing flies at anyone */
   if (t.side === 'any') return actorSide != null && actorSide === targetSide
   return false
 }
@@ -456,6 +461,9 @@ export function actionLines(a, u, D, SN) {
     const sum = `${p.statMult > 1 ? p.statMult + ' × ' : ''}${statWord(p.stat)}${(p.addsStats || []).map(termWord).join('')}`
     lines.push(`Accuracy ${base == null ? '—' : base}${p.accuracy ? ' · ACC ' + sgn(p.accuracy) + ' with this attack' : ''} · Range ${a.range} · Damage ${dm ? dm.n : '—'} (${sum}${p.bonus ? ' ' + sgn(p.bonus) : ''}${p.powerScale != null ? ' + Power × ' + p.powerScale : ''})`)
     const more = []
+    /* capability.summons (engine item, 2026-10-05): the attack's Accuracy against a kind of target - the engine's flag
+       'summon' (anything summoned) or a unit tag */
+    for (const [kind, n] of Object.entries(p.accuracyVs || {})) more.push(sgn(n) + ' Accuracy against ' + (kind === 'summon' ? 'anything summoned' : kind))
     if (p.crit) more.push('crit ' + sgn(p.crit))
     if (p.hits > 1) more.push(p.hits + ' hits')
     if (p.critCount > 1) more.push(p.critCount + ' criticals on a crit')

@@ -35,7 +35,7 @@ const OWN_ACTION = new Set(['attack.declared', 'power.used', 'burst.declared', '
 const BOUNDARY = new Set(['phase.end.begin', 'phase.end.done', 'phase.begin', 'turn.end', 'turn.begin', 'battle.end', 'encounter.won', 'encounter.lost', 'encounter.wave'])
 /** a remainder with none of these has nothing to show */
 const SHOWN = new Set(['attack.declared', 'attack.hit', 'attack.miss', 'power.used', 'power.hit', 'burst.declared', 'burst.struck', 'damage.applied', 'heal.applied', 'move.begin', 'moved', 'move.stopped',
-  'knocked', 'knockback.blocked', 'status.applied', 'life.downed', 'life.dead', 'unit.enter', 'unit.raised', 'corpse.eaten', 'unit.obliterated', 'aoo.provoked', 'prop.struck', 'prop.damaged', 'prop.destroyed',
+  'knocked', 'knockback.blocked', 'status.applied', 'life.downed', 'life.dead', 'unit.enter', 'unit.raised', 'unit.summoned', 'unit.dismissed', 'corpse.eaten', 'unit.obliterated', 'aoo.provoked', 'prop.struck', 'prop.damaged', 'prop.destroyed',
   'deathbed.stood', 'deathbed.fell', 'deathbed.none', 'surge.hit', 'badge.gained', 'thorns.reflected', 'crit.effect', 'layer.painted', 'layer.cancelled', 'unit.shunted', 'statmod.added', 'maxHp.lost', 'maxHp.gained',
   'loadout.swapped', 'hp.reset', 'bleedout.accelerated', 'corpse.removed', 'power.gained', 'unit.proned', 'unit.stood', 'stamina.drained', 'status.cancelled', 'heal.boosted', 'trigger.fired'])
 
