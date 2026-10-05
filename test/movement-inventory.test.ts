@@ -54,9 +54,18 @@ describe('movement.inventory — every movement the content needs, in one genera
   it('carries movement.swap-and-shields\' findings as missing: the swap\'s draw or stow; the shield powers\' raise-the-shield, ruled and filed', () => {
     const swap = inv.rows.filter((r) => r.group === 'swap')
     expect(swap.map((r) => [r.engine, r.bar, r.motion, r.motionStatus, r.ruling])).toEqual([['yes', 'swap', null, 'missing', null]])
-    const shields = inv.rows.filter((r) => r.group === 'shield')
-    expect(new Set(shields.map((r) => r.action))).toEqual(new Set(['power.kite-shield.shield-wall', 'power.kite-shield.raise-guard', 'power.round-shield.turn-aside',
-      'power.round-shield.brace', 'power.tower-shield.cover', 'power.tower-shield.stand-tall']))
+    const group = inv.rows.filter((r) => r.group === 'shield')
+    // a shield's attack (the Knight Shield's Shield Slam, back with the Ledger) is in the group and is an attack: it plays the attack's motion, not the raise
+    const slams = group.filter((r) => r.bar === 'attack'), shields = group.filter((r) => r.bar !== 'attack')
+    expect(new Set(slams.map((r) => r.action))).toEqual(new Set(Object.values(ITEMS).filter((i) => i.itemClass === 'shield').flatMap((i) => i.grants)))
+    for (const r of slams) expect([r.engine, r.motion], r.action!).toEqual(['yes', 'attack'])
+    // Law 10, 2026-10-04 — content.shields-reauthored (2026-10-04; DECISIONS.md 2026-09-28 'counterattack, special free attacks, the opening six, shields, custom weapons' and the Armory Ledger approved that day): the six ids typed here were the three shields' powers; the Ledger replaced them and
+    // added the Knight Shield and the four Iron shields. The rule is what the list was an instance of: the shield group is every power
+    // a shield's row grants (was: new Set(['power.kite-shield.shield-wall', 'power.kite-shield.raise-guard', 'power.round-shield.turn-aside',
+    // 'power.round-shield.brace', 'power.tower-shield.cover', 'power.tower-shield.stand-tall'])).
+    const granted = Object.values(ITEMS).filter((i) => i.itemClass === 'shield').flatMap((i) => i.abilities)
+    expect(granted.length).toBeGreaterThanOrEqual(6)
+    expect(new Set(shields.map((r) => r.action))).toEqual(new Set(granted))
     // Law 10, 2026-10-02 (viewer.shield-guard-motion): the ruled raise-the-shield motion is built — the motion word `guard`, the
     // Oathblade body's shield_blockleft, bound on every body a shield-holding hero wears (viewer SWITCHES guardWord, guardHolders) —
     // so a shield power is no longer missing: it plays `guard` where a shield is held, partial across the hero bodies. Was

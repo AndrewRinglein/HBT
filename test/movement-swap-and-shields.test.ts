@@ -11,7 +11,7 @@ import { execFileSync } from 'node:child_process'
 import { mkdirSync } from 'node:fs'
 import { createCustomBattle } from '../src/core/setup.js'
 import { swapCostOf } from '../src/core/swap.js'
-import { ACTIONS } from '../src/content/index.js'
+import { ACTIONS, ITEMS } from '../src/content/index.js'
 
 type Power = { hero: string, id: string, turn: number, onBar: boolean, used: boolean, name: string | null, stamina: number | null, logNamed: boolean, note: string | null }
 type Record = {
@@ -26,11 +26,12 @@ const record = (): Record => {
   execFileSync(process.execPath, ['tools/build-sandbox.mjs', 'scratch/swap-shields.html'], { cwd: '../kingdom', stdio: 'pipe' })
   return JSON.parse(execFileSync(process.execPath, ['tools/swap-shields.verify.mjs', 'scratch/swap-shields.html'], { cwd: '../kingdom', encoding: 'utf8', maxBuffer: 1 << 26 }))
 }
-const SHIELD_POWERS: [string, string][] = [
-  ['hero.base.paladin-hunk', 'power.kite-shield.shield-wall'], ['hero.base.paladin-hunk', 'power.kite-shield.raise-guard'],
-  ['hero.base.priest-armored', 'power.round-shield.turn-aside'], ['hero.base.priest-armored', 'power.round-shield.brace'],
-  ['hero.base.warrior-iron', 'power.tower-shield.cover'], ['hero.base.warrior-iron', 'power.tower-shield.stand-tall'],
-]
+// Law 10, 2026-10-04 — content.shields-reauthored (engine item; engine DECISIONS.md 2026-09-28 'counterattack, special free attacks, the opening six, shields, custom weapons' and the Armory Ledger approved that day): the six powers were typed here by id
+//   ['hero.base.paladin-hunk', 'power.kite-shield.shield-wall'], […, 'power.kite-shield.raise-guard'], ['hero.base.priest-armored',
+//   'power.round-shield.turn-aside'], […, 'power.round-shield.brace'], ['hero.base.warrior-iron', 'power.tower-shield.cover'], […, 'power.tower-shield.stand-tall']
+// and the Ledger replaced them. Each hero's are the two powers its shield's row grants, in the row's order.
+const SHIELD_POWERS: [string, string][] = ([['hero.base.paladin-hunk', 'item.kite-shield'], ['hero.base.priest-armored', 'item.round-shield'], ['hero.base.warrior-iron', 'item.tower-shield']] as const)
+  .flatMap(([hero, shield]) => ITEMS[shield]!.abilities.map((p): [string, string] => [hero, p]))
 
 describe('the swap and the shield powers, played on the board of a sandbox battle', () => {
   const r = record()
@@ -74,6 +75,8 @@ describe('the swap and the shield powers, played on the board of a sandbox battl
       expect(p.stamina, p.id).toBe(def.staminaCost)
       expect(p.logNamed, p.id).toBe(true)
     }
-    expect(new Set(r.powers.map((p) => p.name))).toEqual(new Set(['Lock Shields', 'Raise Guard', 'Turn Aside', 'Bear Down', 'Cover', 'Stand Tall']))
+    // Law 10, 2026-10-04 (the note above): the six names are the rows' own (was: new Set(['Lock Shields', 'Raise Guard', 'Turn Aside', 'Bear Down', 'Cover', 'Stand Tall']))
+    expect(SHIELD_POWERS).toHaveLength(6)
+    expect(new Set(r.powers.map((p) => p.name))).toEqual(new Set(SHIELD_POWERS.map(([, p]) => ACTIONS[p]!.name)))
   })
 }, 170000)

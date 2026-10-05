@@ -10,13 +10,15 @@ import { canUsePower, previewPower, usePower } from '../src/core/ability.js'
 import { previewBurst, useBurst } from '../src/core/burst.js'
 import { effective } from '../src/core/stats.js'
 import { partySpiritSum } from '../src/core/trigger.js'
-import { ABILITIES, BURSTS, UNITS } from '../src/content/index.js'
+import { ABILITIES, BURSTS, ITEMS, UNITS } from '../src/content/index.js'
 import { scenarioDef, scenarioOptions } from '../src/content/scenarios.js'
 import { createBattle } from '../src/core/setup.js'
 import { runBattle } from '../src/core/battle.js'
 import { beginActivation } from '../src/core/mutate.js'
 
 const SC = 'showcase.alpha-team'
+/** the Kite Shield's guard: the power of its row that raises it over its holder (content.shields-reauthored, 2026-10-04) */
+const GUARD = 'power.kite-shield.raise-guard'
 
 describe('the pack carries the three powers, faithfully', () => {
   it('Heal, Block and Storm exist with their authored numbers', () => {
@@ -28,10 +30,15 @@ describe('the pack carries the three powers, faithfully', () => {
     // Law 10, 2026-09-23 (v2.shields): Knight Block (selfGuard) retired with item.knight-shield in
     // V2 R1; Osric's kit carries the Kite Shield, whose Lock Shields replaces it here. The claims —
     // authored numbers, self only, live in a real battle — are unchanged.
-    expect(ABILITIES['power.kite-shield.shield-wall']).toMatchObject({
-      range: 0, staminaCost: 1, cooldown: 3,
+    // Law 10, 2026-10-04 — content.shields-reauthored (2026-10-04; DECISIONS.md 2026-09-28 'counterattack, special free attacks, the opening six, shields, custom weapons' and the Armory Ledger approved that day): the Kite Shield's guard is Raise Guard now ("+15 Block, +10 Ranged Block, +10 Luck
+    // until the end of your next activation. 1 Stamina"); Lock Shields is the Round Shield's. The claim - the pack carries the guard
+    // with its authored numbers - is unchanged.
+    // was: expect(ABILITIES['power.kite-shield.shield-wall']).toMatchObject({ range: 0, staminaCost: 1, cooldown: 3, effects: [… block 15 …, … armor 1 …] })
+    expect(ABILITIES[GUARD]).toMatchObject({
+      range: 0, staminaCost: 1, cooldown: 0,
       effects: [{ kind: 'statMod', stat: 'block', value: 15, until: 'endOfNextActivation', who: 'self' },
-        { kind: 'statMod', stat: 'armor', value: 1, until: 'endOfNextActivation', who: 'self' }],
+        { kind: 'statMod', stat: 'rangedBlock', value: 10, until: 'endOfNextActivation', who: 'self' },
+        { kind: 'statMod', stat: 'luck', value: 10, until: 'endOfNextActivation', who: 'self' }],
     })
     expect(BURSTS['power.lightning-staff.storm']).toMatchObject({
       burst: {shape: {kind: 'radius', radius: 1}, side: 'any', packets: [{id: 'base', amount: 1, stat: 'magic', damageType: 'magic'}]},
@@ -78,22 +85,39 @@ describe('Heal — one ally within 6, 1 + 2 x party Spirit', () => {
 // Law 10, 2026-09-23 (v2.shields): Knight Block (selfGuard) retired with item.knight-shield in
 // V2 R1; Osric's kit carries the Kite Shield, whose Lock Shields replaces it here. The claims —
 // authored numbers, self only, live in a real battle — are unchanged.
-describe('Lock Shields — the Kite Shield\'s guard, until the end of the next Activation', () => {
+// Law 10, 2026-10-04 — content.shields-reauthored (2026-10-04; DECISIONS.md 2026-09-28 'counterattack, special free attacks, the opening six, shields, custom weapons' and the Armory Ledger approved that day): the Kite's guard is Raise Guard (the note above); the three claims are held on it.
+// was: describe('Lock Shields — the Kite Shield\'s guard, until the end of the next Activation', …
+describe('Raise Guard — the Kite Shield\'s guard, until the end of the next Activation', () => {
   const rig = () => createBattle({
     ...scenarioOptions(scenarioDef(SC)),
     heroes: ['alpha-osric'], heroHexes: [135],
     enemies: ['unit.zombie'], enemyHexes: [1], enemyCount: 1,
   })
 
-  it('+15 Block and +1 Armor now, and the cooldown is real', () => {
+  // Law 10, 2026-10-04 (the note above): Raise Guard gives Block, Ranged Block and Luck and has no cooldown, so "the cooldown is
+  // real" is held where a shield power has one - the Tower Shield's Arrow Wall (cooldown 1) - and the guard's own limit is its Stamina.
+  // was: it('+15 Block and +1 Armor now, and the cooldown is real', … usePower(…, 'power.kite-shield.shield-wall') … block0 + 15 … armor0 + 1 …
+  //        expect(canUsePower(ctx, osric.id, osric.id, 'power.kite-shield.shield-wall')).toBe(false)
+  it('+15 Block, +10 Ranged Block and +10 Luck now, its Stamina paid; and a shield power\'s cooldown is real', () => {
     const ctx = rig()
     const osric = ctx.state.units.find((u) => u.typeId === 'alpha-osric')!
-    const block0 = effective(ctx, osric, 'block').value, armor0 = effective(ctx, osric, 'armor').value
+    const block0 = effective(ctx, osric, 'block').value, ranged0 = effective(ctx, osric, 'rangedBlock').value, luck0 = effective(ctx, osric, 'luck').value
     beginActivation(ctx, osric.id, 'test')
-    usePower(ctx, osric.id, osric.id, 'power.kite-shield.shield-wall')
+    const stamina0 = osric.stamina
+    usePower(ctx, osric.id, osric.id, GUARD)
     expect(effective(ctx, osric, 'block').value).toBe(block0 + 15)
-    expect(effective(ctx, osric, 'armor').value).toBe(armor0 + 1)
-    expect(canUsePower(ctx, osric.id, osric.id, 'power.kite-shield.shield-wall')).toBe(false)
+    expect(effective(ctx, osric, 'rangedBlock').value).toBe(ranged0 + 10)
+    expect(effective(ctx, osric, 'luck').value).toBe(luck0 + 10)
+    expect(stamina0 - osric.stamina).toBe(ABILITIES[GUARD]!.staminaCost)
+    // the cooldown, on the shield power that has one
+    const WALL = 'power.tower-shield.arrow-wall'
+    expect(ABILITIES[WALL]!.cooldown).toBeGreaterThan(0)
+    const tower = createBattle({ ...scenarioOptions(scenarioDef(SC)), heroes: ['hero.base.warrior-iron'], heroHexes: [135], enemies: ['unit.zombie'], enemyHexes: [1], enemyCount: 1 })
+    const dwarf = tower.state.units[0]!
+    beginActivation(tower, dwarf.id, 'test'); dwarf.stamina = 9
+    expect(canUsePower(tower, dwarf.id, dwarf.id, WALL)).toBe(true)
+    usePower(tower, dwarf.id, dwarf.id, WALL)
+    expect(canUsePower(tower, dwarf.id, dwarf.id, WALL)).toBe(false)
   })
 
   it('legality: self only', () => {
@@ -104,8 +128,8 @@ describe('Lock Shields — the Kite Shield\'s guard, until the end of the next A
     })
     const osric = ctx.state.units.find((u) => u.typeId === 'alpha-osric')!
     const oath = ctx.state.units.find((u) => u.typeId === 'alpha-oathblade')!
-    expect(canUsePower(ctx, osric.id, osric.id, 'power.kite-shield.shield-wall')).toBe(true)
-    expect(canUsePower(ctx, osric.id, oath.id, 'power.kite-shield.shield-wall')).toBe(false)
+    expect(canUsePower(ctx, osric.id, osric.id, GUARD)).toBe(true)   // Law 10, 2026-10-04: the Kite's guard is Raise Guard (was 'power.kite-shield.shield-wall', twice)
+    expect(canUsePower(ctx, osric.id, oath.id, GUARD)).toBe(false)
   })
 })
 
@@ -168,7 +192,9 @@ describe('they run — no power is dead content in a real battle', () => {
     // 2) and the loop stopped early. The exit now names the two powers it is
     // looking for. Neither assertion changed.
     // Law 10, 2026-09-23 (v2.shields): Osric's guard is the Kite Shield's now — either of its two powers.
-    const guarded = () => used.has('power.kite-shield.shield-wall') || used.has('power.kite-shield.raise-guard')
+    // Law 10, 2026-10-04 — content.shields-reauthored (2026-10-04; DECISIONS.md 2026-09-28 'counterattack, special free attacks, the opening six, shields, custom weapons' and the Armory Ledger approved that day): either of the Kite's two powers, read from its row
+    // (was: used.has('power.kite-shield.shield-wall') || used.has('power.kite-shield.raise-guard'))
+    const guarded = () => ITEMS['item.kite-shield']!.abilities.some((p) => used.has(p))
     const both = () => used.has('power.holy-symbol.heal') && guarded()
     // Law 10, 2026-10-04 (rule.free-attack-is-basic-attack): every attack of opportunity is the basic attack at −20 now, so the
     // fights re-time again and Osric's first raised shield moved from a seed under 20 to seed 24. The claim (both powers are

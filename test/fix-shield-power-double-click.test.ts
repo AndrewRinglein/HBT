@@ -10,7 +10,7 @@
 import { describe, it, expect } from 'vitest'
 import { execFileSync } from 'node:child_process'
 import { mkdirSync } from 'node:fs'
-import { ACTIONS } from '../src/content/index.js'
+import { ACTIONS, ITEMS } from '../src/content/index.js'
 
 type Use = { how: string, hero: string, power: string, used: boolean, cost: number, staminaBefore: number, staminaAfter: number, logNamed: boolean,
   modsShown: number, badgesBefore: number, badgesAfter: number, note: string | null }
@@ -24,11 +24,15 @@ describe('a shield power fires from the bar of the built sandbox, driven by a re
   const r = record()
   it('the page runs without an error', () => { expect(r.errors).toEqual([]) })
   it('every way Andrew tried: a double-click on the bar (the hero proposed, the hero looked at), the bar then the hero', () => {
+    // Law 10, 2026-10-04 — content.shields-reauthored (engine item; engine DECISIONS.md 2026-09-28 'counterattack, special free attacks, the opening six, shields, custom weapons' and the Armory Ledger approved that day): the four powers were typed by id
+    // ('power.tower-shield.cover', 'power.round-shield.turn-aside', 'power.tower-shield.stand-tall', 'power.round-shield.brace') and the Ledger
+    // replaced them. The four ways are unchanged; the powers are the Tower's and the Round's own, in their rows' order.
+    const [towerFirst, towerSecond] = ITEMS['item.tower-shield']!.abilities, [roundFirst, roundSecond] = ITEMS['item.round-shield']!.abilities
     expect(r.uses.map((u) => [u.how, u.power])).toEqual([
-      ['double-click on the bar, the hero proposed', 'power.tower-shield.cover'],
-      ['double-click on the bar of the hero looked at', 'power.round-shield.turn-aside'],
-      ['click on the bar, then the hero', 'power.tower-shield.stand-tall'],
-      ['click on the bar of the hero looked at, then the hero', 'power.round-shield.brace'],
+      ['double-click on the bar, the hero proposed', towerFirst],
+      ['double-click on the bar of the hero looked at', roundFirst],
+      ['click on the bar, then the hero', towerSecond],
+      ['click on the bar of the hero looked at, then the hero', roundSecond],
     ])
   })
   for (const i of [0, 1, 2, 3]) it(`fires: stamina paid, the log names it, the board shows it — use ${i + 1}`, () => {

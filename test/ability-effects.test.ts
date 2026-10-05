@@ -13,7 +13,7 @@ import { canUsePower, usePower, previewPower, powerTargetsOf } from '../src/core
 import { beginActivation } from '../src/core/mutate.js'
 import { valueOf } from '../src/core/status.js'
 import { effective } from '../src/core/stats.js'
-import { ABILITIES, BURSTS } from '../src/content/index.js'
+import { ABILITIES, BURSTS, ITEMS, UNITS } from '../src/content/index.js'
 import { scenarioDef, scenarioOptions } from '../src/content/scenarios.js'
 import { hexId } from './board16.js'
 import type { Effect } from '../src/core/types.js'
@@ -96,10 +96,22 @@ describe('the effect vocabulary, one row each', () => {
 })
 
 describe('alive in a real battle', () => {
+  // Law 10, 2026-10-04 — content.shields-reauthored (DECISIONS.md 2026-09-28 'counterattack, special free attacks, the opening six,
+  // shields, custom weapons' and the Armory Ledger approved that day): the shields' powers have no cooldown now (the Ledger gives one
+  // to Arrow Wall alone), and the computer uses the FIRST power its kit lists that is ready when it is not about to attack (ai/modes.ts
+  // effectsPower) - so the Priest raises Lock Shields and the Paladin covers an ally every time, and the class powers listed after
+  // their shields (Circle of Healing, Aegis) never come up: none in 40 replicates of this scenario as it is fielded. That is the
+  // computer's order of preference, not a rule (SWITCHES.md shieldPowersDisplaceClassPowers, FOUND for Andrew). What this test
+  // holds is that the class powers' effect lists are ALIVE in a real battle, so the party is fielded with its Codex kits less the
+  // shields - a fielding choice, as heroItems is for; every assertion below is as it was.
+  // was: const ctx = createBattle({ ...scenarioOptions(scenarioDef('showcase.assembled-party')), replicate: r })
   it('the assembled party uses its powers — a heal, a buff and an area blast all fire', () => {
     const used = new Set<string>(), bursts = new Set<string>()
+    const opts = scenarioOptions(scenarioDef('showcase.assembled-party'))
+    const heroItems = opts.heroes!.map((h) => (UNITS[h]!.defaultItems ?? []).filter((i) => ITEMS[i]?.itemClass !== 'shield'))
+    expect(heroItems.flat().length, 'three of the six leave a shield behind').toBe(opts.heroes!.flatMap((h) => UNITS[h]!.defaultItems ?? []).length - 3)
     for (let r = 0; r < 3; r++) {
-      const ctx = createBattle({ ...scenarioOptions(scenarioDef('showcase.assembled-party')), replicate: r })
+      const ctx = createBattle({ ...opts, heroItems, replicate: r })
       runBattle(ctx)
       for (const e of ctx.events) {
         if (e.type === 'power.used') used.add(String(e.causeId))

@@ -414,6 +414,13 @@ const unitTriggerWithTagGolden = JSON.parse(readFileSync(new URL('./fixtures/bat
 // another fight, so each case that fields one of those weapons moves - the six opening battles (their first hero holds an Elfbow) among them.
 // Every case frozen here (tools/capture-kit-attack-clauses-cursor.mts). Moved: showcase.eve-24-a, showcase.eve-24-b, test.back-flip, test.caravan-aftermath, test.opening-bridge, test.opening-cathedral, test.opening-cavern-trail, test.opening-gates, test.opening-lumberjack, test.opening-orphanage, progression-surge-0, progression-surge-1, progression-surge-2. A `changed` case is checked here and skips the older layers.
 const kitAttackClausesGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-kit-attack-clauses.json', import.meta.url), 'utf8'))
+// content.shields-reauthored (2026-10-04; DECISIONS.md 2026-09-28 'counterattack, special free attacks, the opening six, shields, custom
+// weapons' and the Armory Ledger approved that day), Law 10: the shields are the Ledger's - the Tower +10 Block, +20 Ranged Block, -5 Dodge
+// with Brace and Arrow Wall; the Round with Lock Shields and Set Feet; the Kite with Raise Guard and Cover Ally; the powers without the
+// cooldowns the old six had. A shield holder's numbers and powers are part of the state and the computer raises a ready shield power when
+// it is not about to attack, so every case that fields a shield moves - the standard battle's paladin among them.
+// Every case frozen here (tools/capture-shields-reauthored-cursor.mts). Moved: showcase.alpha-team, showcase.assembled-party, showcase.eve-24-a, showcase.eve-24-b, showcase.gash-variant, showcase.horrors, showcase.item-powers, showcase.kiln, showcase.prologue-party, showcase.rime, showcase.supper, showcase.surrounded, showcase.waystation, test.caravan-aftermath, test.counterattack, test.fend, test.item-uses, test.opening-bridge, test.opening-cathedral, test.opening-cavern-trail, test.opening-gates. A `changed` case is checked here and skips the older layers.
+const shieldsReauthoredGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-shields-reauthored.json', import.meta.url), 'utf8'))
 const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
 // Explicit rule migration, not regenerated historical hashes. These nine old
 // cases contain Surge ledger/refresh changes or terminal markers corrected
@@ -552,7 +559,10 @@ describe('resumable battle cursor', () => {
       const walkedUnitHasMovedExpected = walkedUnitHasMovedGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const unitTriggerWithTagExpected = unitTriggerWithTagGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const kitAttackClausesExpected = kitAttackClausesGolden.cases.find((row:{id:string})=>row.id===fixture.id)
-      const kitAttackClausesMoved = kitAttackClausesExpected?.changed === true
+      const shieldsReauthoredExpected = shieldsReauthoredGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+      const shieldsReauthoredMoved = shieldsReauthoredExpected?.changed === true
+      // was: const kitAttackClausesMoved = kitAttackClausesExpected?.changed === true — a case content.shields-reauthored moved skips this layer too (content.shields-reauthored 2026-10-04)
+      const kitAttackClausesMoved = kitAttackClausesExpected?.changed === true || shieldsReauthoredMoved
       // was: const unitTriggerWithTagMoved = unitTriggerWithTagExpected?.changed === true — a case fix.kit-attack-clauses moved skips this layer too (fix.kit-attack-clauses 2026-10-04)
       const unitTriggerWithTagMoved = unitTriggerWithTagExpected?.changed === true || kitAttackClausesMoved
       // was: const walkedUnitHasMovedMoved = walkedUnitHasMovedExpected?.changed === true — a case capability.unit-trigger-with-tag moved skips this layer too (capability.unit-trigger-with-tag 2026-10-04)
@@ -690,7 +700,14 @@ describe('resumable battle cursor', () => {
             battle.completeActionCycle(ctx)
           }
         } else result = battle.runBattle(ctx)
-        if (kitAttackClausesExpected) {
+        if (shieldsReauthoredExpected) {
+        expect(hash(ctx.events), 'full shields-reauthored events').toBe(shieldsReauthoredExpected.events)
+        expect(hash(ctx.state), 'full shields-reauthored state').toBe(shieldsReauthoredExpected.state)
+        expect(hash(ctx.rng.log), 'full shields-reauthored RNG').toBe(shieldsReauthoredExpected.rng)
+        expect(result).toEqual(shieldsReauthoredExpected.result)
+        }
+        // was: if (kitAttackClausesExpected) { — content.shields-reauthored (2026-10-04): a case it moved is checked above instead
+        if (kitAttackClausesExpected && !shieldsReauthoredMoved) {
         expect(hash(ctx.events), 'full kit-attack-clauses events').toBe(kitAttackClausesExpected.events)
         expect(hash(ctx.state), 'full kit-attack-clauses state').toBe(kitAttackClausesExpected.state)
         expect(hash(ctx.rng.log), 'full kit-attack-clauses RNG').toBe(kitAttackClausesExpected.rng)

@@ -1,0 +1,257 @@
+
+ RUN  v4.1.11 C:/Users/aring/Desktop/HBT-worker-engine/engine
+
+ ❯ test/shields-reauthored.test.ts (13 tests | 12 failed) 15ms
+     × Tower +10 Block, +20 Ranged Block, -5 Dodge, -1 max Stamina; Round +10/+10; Kite +20/+5; Knight +15/+10 5ms
+     × the Tower Shield: Brace (+20 Block, +10 Ranged Block, 1 Stamina) and Arrow Wall (+15 Block, +25 Ranged Block, +1 Armor, 2 Stamina, cooldown 1) 1ms
+     × the Round Shield has both powers: Shield Wall (2 Stamina) and Set Feet (+2 Armor, 1 Stamina) 0ms
+     × Shield Wall gives the holder and every adjacent ally +10 Block and +10 Ranged Block; an ally farther off gets nothing 4ms
+     × the Kite Shield: Raise Guard (+15 Block, +10 Ranged Block, +10 Luck, 1 Stamina) and Cover Ally (an adjacent ally gains 4 Protection) 0ms
+     × the Knight Shield is a fourth shield: Shield Slam (Strength -1, cooldown 2; on hit, 70%: Stun) and Guard (+15 Block, +10 Ranged Block) 0ms
+     × item.iron-round-shield: the plain shield with -5 Dodge always, a tier above it, each Block power giving +5 more Block 0ms
+     × item.iron-knight-shield: the plain shield with -5 Dodge always, a tier above it, each Block power giving +5 more Block 0ms
+     × item.iron-tower-shield: the plain shield with -5 Dodge always, a tier above it, each Block power giving +5 more Block 0ms
+     × item.iron-kite-shield: the plain shield with -5 Dodge always, a tier above it, each Block power giving +5 more Block 0ms
+     × no row grants a power the Ledger replaced 1ms
+     × the Codex rows, the published content and the pack say the same grants and the same numbers 1ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 12 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/shields-reauthored.test.ts > the four shields, as the Ledger rows read > Tower +10 Block, +20 Ranged Block, -5 Dodge, -1 max Stamina; Round +10/+10; Kite +20/+5; Knight +15/+10
+AssertionError: expected [ 15, 15, -10, -1 ] to deeply equal [ 10, 20, -5, -1 ]
+
+- Expected
++ Received
+
+  [
+-   10,
+-   20,
+-   -5,
++   15,
++   15,
++   -10,
+    -1,
+  ]
+
+ ❯ test/shields-reauthored.test.ts:37:25
+     35| describe('the four shields, as the Ledger rows read', () => {
+     36|   it('Tower +10 Block, +20 Ranged Block, -5 Dodge, -1 max Stamina; Rou…
+     37|     expect(held(TOWER)).toEqual([10, 20, -5, -1])
+       |                         ^
+     38|     expect(held(ROUND)).toEqual([10, 10, 0, 0])
+     39|     expect(held(KITE)).toEqual([20, 5, 0, 0])
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/12]⎯
+
+ FAIL  test/shields-reauthored.test.ts > the four shields, as the Ledger rows read > the Tower Shield: Brace (+20 Block, +10 Ranged Block, 1 Stamina) and Arrow Wall (+15 Block, +25 Ranged Block, +1 Armor, 2 Stamina, cooldown 1)
+AssertionError: expected [ 'power.tower-shield.cover', …(1) ] to deeply equal [ 'power.tower-shield.brace', …(1) ]
+
+- Expected
++ Received
+
+  [
+-   "power.tower-shield.brace",
+-   "power.tower-shield.arrow-wall",
++   "power.tower-shield.cover",
++   "power.tower-shield.stand-tall",
+  ]
+
+ ❯ test/shields-reauthored.test.ts:45:26
+     43|
+     44|   it('the Tower Shield: Brace (+20 Block, +10 Ranged Block, 1 Stamina)…
+     45|     expect(gives(TOWER)).toEqual(['power.tower-shield.brace', 'power.t…
+       |                          ^
+     46|     expect(ACTIONS['power.tower-shield.brace']).toMatchObject({ name: …
+     47|     expect(ACTIONS['power.tower-shield.arrow-wall']).toMatchObject({ n…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/12]⎯
+
+ FAIL  test/shields-reauthored.test.ts > the four shields, as the Ledger rows read > the Round Shield has both powers: Shield Wall (2 Stamina) and Set Feet (+2 Armor, 1 Stamina)
+AssertionError: expected [ …(2) ] to deeply equal [ …(2) ]
+
+- Expected
++ Received
+
+  [
+-   "power.round-shield.shield-wall",
+-   "power.round-shield.set-feet",
++   "power.round-shield.turn-aside",
++   "power.round-shield.brace",
+  ]
+
+ ❯ test/shields-reauthored.test.ts:51:26
+     49|
+     50|   it('the Round Shield has both powers: Shield Wall (2 Stamina) and Se…
+     51|     expect(gives(ROUND)).toEqual(['power.round-shield.shield-wall', 'p…
+       |                          ^
+     52|     const wall = ACTIONS['power.round-shield.shield-wall']!
+     53|     expect(wall).toMatchObject({ name: 'Shield Wall', staminaCost: 2, …
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/12]⎯
+
+ FAIL  test/shields-reauthored.test.ts > the four shields, as the Ledger rows read > Shield Wall gives the holder and every adjacent ally +10 Block and +10 Ranged Block; an ally farther off gets nothing
+AssertionError: expected [ 'attack.holy-texts.verse', …(6) ] to include 'power.round-shield.shield-wall'
+ ❯ test/shields-reauthored.test.ts:61:41
+     59|     // the holder on 85, an ally beside it on 86, an ally three hexes …
+     60|     const ctx = createCustomBattle([{ type: 'hero.base.priest-armored'…
+     61|     expect(ctx.state.units[0]!.actions).toContain('power.round-shield.…
+       |                                         ^
+     62|     const before = [0, 1, 2].map((i) => blockOf(ctx, i))
+     63|     activate(ctx, 1); activate(ctx, 2)   // the allies have acted this…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/12]⎯
+
+ FAIL  test/shields-reauthored.test.ts > the four shields, as the Ledger rows read > the Kite Shield: Raise Guard (+15 Block, +10 Ranged Block, +10 Luck, 1 Stamina) and Cover Ally (an adjacent ally gains 4 Protection)
+AssertionError: expected [ …(2) ] to deeply equal [ …(2) ]
+
+- Expected
++ Received
+
+  [
++   "power.kite-shield.shield-wall",
+    "power.kite-shield.raise-guard",
+-   "power.kite-shield.cover-ally",
+  ]
+
+ ❯ test/shields-reauthored.test.ts:82:25
+     80|
+     81|   it('the Kite Shield: Raise Guard (+15 Block, +10 Ranged Block, +10 L…
+     82|     expect(gives(KITE)).toEqual(['power.kite-shield.raise-guard', 'pow…
+       |                         ^
+     83|     expect(ACTIONS['power.kite-shield.raise-guard']).toMatchObject({ n…
+     84|     expect(ACTIONS['power.kite-shield.cover-ally']).toMatchObject({ na…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/12]⎯
+
+ FAIL  test/shields-reauthored.test.ts > the four shields, as the Ledger rows read > the Knight Shield is a fourth shield: Shield Slam (Strength -1, cooldown 2; on hit, 70%: Stun) and Guard (+15 Block, +10 Ranged Block)
+TypeError: Cannot read properties of undefined (reading 'grants')
+ ❯ gives test/shields-reauthored.test.ts:30:50
+     28| }
+     29| /** The powers and attacks a shield's row gives, in its order. */
+     30| const gives = (item: string) => [...ITEMS[item]!.grants, ...ITEMS[item…
+       |                                                  ^
+     31| /** One Activation of unit `id`, then its end - the ladder's own order…
+     32| function activate(ctx: Ctx, id: number, during?: () => void) { beginAc…
+ ❯ test/shields-reauthored.test.ts:96:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/12]⎯
+
+ FAIL  test/shields-reauthored.test.ts > Iron is a version of each > item.iron-round-shield: the plain shield with -5 Dodge always, a tier above it, each Block power giving +5 more Block
+AssertionError: item.iron-round-shield: expected undefined to be defined
+ ❯ test/shields-reauthored.test.ts:108:21
+    106|   it.each(Object.entries(IRON))('%s: the plain shield with -5 Dodge al…
+    107|     const i = ITEMS[iron]!, p = ITEMS[plain]!
+    108|     expect(i, iron).toBeDefined()
+       |                     ^
+    109|     expect(i.itemClass).toBe('shield')
+    110|     expect(i.tier).toBe(p.tier + 1)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/12]⎯
+
+ FAIL  test/shields-reauthored.test.ts > Iron is a version of each > item.iron-knight-shield: the plain shield with -5 Dodge always, a tier above it, each Block power giving +5 more Block
+AssertionError: item.iron-knight-shield: expected undefined to be defined
+ ❯ test/shields-reauthored.test.ts:108:21
+    106|   it.each(Object.entries(IRON))('%s: the plain shield with -5 Dodge al…
+    107|     const i = ITEMS[iron]!, p = ITEMS[plain]!
+    108|     expect(i, iron).toBeDefined()
+       |                     ^
+    109|     expect(i.itemClass).toBe('shield')
+    110|     expect(i.tier).toBe(p.tier + 1)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/12]⎯
+
+ FAIL  test/shields-reauthored.test.ts > Iron is a version of each > item.iron-tower-shield: the plain shield with -5 Dodge always, a tier above it, each Block power giving +5 more Block
+AssertionError: item.iron-tower-shield: expected undefined to be defined
+ ❯ test/shields-reauthored.test.ts:108:21
+    106|   it.each(Object.entries(IRON))('%s: the plain shield with -5 Dodge al…
+    107|     const i = ITEMS[iron]!, p = ITEMS[plain]!
+    108|     expect(i, iron).toBeDefined()
+       |                     ^
+    109|     expect(i.itemClass).toBe('shield')
+    110|     expect(i.tier).toBe(p.tier + 1)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/12]⎯
+
+ FAIL  test/shields-reauthored.test.ts > Iron is a version of each > item.iron-kite-shield: the plain shield with -5 Dodge always, a tier above it, each Block power giving +5 more Block
+AssertionError: item.iron-kite-shield: expected undefined to be defined
+ ❯ test/shields-reauthored.test.ts:108:21
+    106|   it.each(Object.entries(IRON))('%s: the plain shield with -5 Dodge al…
+    107|     const i = ITEMS[iron]!, p = ITEMS[plain]!
+    108|     expect(i, iron).toBeDefined()
+       |                     ^
+    109|     expect(i.itemClass).toBe('shield')
+    110|     expect(i.tier).toBe(p.tier + 1)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/12]⎯
+
+ FAIL  test/shields-reauthored.test.ts > the old powers are gone, the kits keep their shields, and the Codex, the published content and the pack agree > no row grants a power the Ledger replaced
+AssertionError: power.tower-shield.cover: expected { Object (id, name, ...) } to be undefined
+
+- Expected:
+undefined
+
++ Received:
+{
+  "cooldown": 4,
+  "effects": [
+    {
+      "kind": "statMod",
+      "stat": "block",
+      "until": "endOfNextActivation",
+      "value": 20,
+      "who": "self",
+    },
+    {
+      "kind": "statMod",
+      "stat": "rangedBlock",
+      "until": "endOfNextActivation",
+      "value": 20,
+      "who": "self",
+    },
+    {
+      "kind": "statMod",
+      "stat": "armor",
+      "until": "endOfNextActivation",
+      "value": 1,
+      "who": "self",
+    },
+  ],
+  "free": false,
+  "id": "power.tower-shield.cover",
+  "name": "Cover",
+  "range": 0,
+  "staminaCost": 2,
+  "target": {
+    "select": "self",
+    "side": "any",
+  },
+}
+
+ ❯ test/shields-reauthored.test.ts:130:35
+    128|   it('no row grants a power the Ledger replaced', () => {
+    129|     for (const gone of ['power.tower-shield.cover', 'power.tower-shiel…
+    130|       expect(ACTIONS[gone], gone).toBeUndefined()
+       |                                   ^
+    131|   })
+    132|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/12]⎯
+
+ FAIL  test/shields-reauthored.test.ts > the old powers are gone, the kits keep their shields, and the Codex, the published content and the pack agree > the Codex rows, the published content and the pack say the same grants and the same numbers
+AssertionError: gen/settled-items.json item.knight-shield: expected undefined to be defined
+ ❯ test/shields-reauthored.test.ts:149:35
+    147|       for (const id of [TOWER, ROUND, KITE, KNIGHT, ...Object.keys(IRO…
+    148|         const row = j.items.find((i) => i.id === id)!
+    149|         expect(row, `${f} ${id}`).toBeDefined()
+       |                                   ^
+    150|         expect(row.grants, `${f} ${id}`).toEqual(gives(id))
+    151|         expect(row.tier, `${f} ${id}`).toBe(ITEMS[id]!.tier)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/12]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  12 failed | 1 passed (13)
+   Start at  19:28:01
+   Duration  906ms (transform 597ms, setup 0ms, import 736ms, tests 15ms, environment 0ms)
+
