@@ -30415,3 +30415,68 @@ index b7174c5..ec53fe2 100644
      c.stash = [aside]
 ```
 </details>
+
+## capability.unit-trigger-with-tag — LANDED `cb5c885` **NEEDS REVIEW**
+2026-10-05 01:12
+
+  PASS  dependencies landed
+  WARN  not already decided — 1 candidate ruling(s) — READ BEFORE ASKING: SWITCHES.md:2262
+  PASS  typecheck
+  PASS  the item's own tests — test/battle-cursor.test.ts, test/unit-trigger-with-tag.test.ts
+  PASS  gate 1 — the id appears in a real battle — test.badge.melee-burn: 3 log lines, 3 fired, 1 changed state · item.rune-burning-touch: 3 log lines, 3 fired, 1 changed state · item.pharaohs-gauntlets: 3 log lines, 3 fired, 1 changed state
+  PASS  brought its own tests — test/battle-cursor.test.ts, test/fixtures/battle-cursor-unit-trigger-with-tag.json, test/unit-trigger-with-tag.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/battle-cursor.test.ts (-2) — will land FLAGGED for review
+  PASS  control battles unchanged
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — test.badge.melee-burn live · item.rune-burning-touch live · item.pharaohs-gauntlets live
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without test.badge.melee-burn,item.rune-burning-touch,item.pharaohs-gauntlets — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/battle-cursor.test.ts b/test/battle-cursor.test.ts
+index 69abb9c..98e6d11 100644
+--- a/test/battle-cursor.test.ts
++++ b/test/battle-cursor.test.ts
+@@ -402,4 +402,10 @@ const enchantTriggersOwnWeaponGolden = JSON.parse(readFileSync(new URL('./fixtur
+ // skips the older layers.
+ const walkedUnitHasMovedGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-walked-unit-has-moved.json', import.meta.url), 'utf8'))
++// capability.unit-trigger-with-tag (2026-10-04; DECISIONS.md 2026-10-04 'after the backlog run: ... a trigger on the hero with a tag requirement ...'),
++// Law 10: a trigger may name a tag requirement (onlyWithTag) and then fires only for an attack that carries the tag; the Bloodrune Burning Touch
++// (melee) and Pharaoh's Gauntlets (brawl) carry one. A unit's trigger list is part of the state, so a case that fields one of them moves.
++// Every case frozen here (tools/capture-unit-trigger-with-tag-cursor.mts), the new fielding test.trigger-with-tag among them (`added`). Moved -
++// exactly the cases that field one of the two rows: progression-surge-0/1/2. A `changed` case is checked here and skips the older layers.
++const unitTriggerWithTagGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-unit-trigger-with-tag.json', import.meta.url), 'utf8'))
+ const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
+ // Explicit rule migration, not regenerated historical hashes. These nine old
+@@ -538,5 +544,8 @@ describe('resumable battle cursor', () => {
+       const enchantTriggersOwnWeaponExpected = enchantTriggersOwnWeaponGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+       const walkedUnitHasMovedExpected = walkedUnitHasMovedGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+-      const walkedUnitHasMovedMoved = walkedUnitHasMovedExpected?.changed === true
++      const unitTriggerWithTagExpected = unitTriggerWithTagGolden.cases.find((row:{id:string})=>row.id===fixture.id)
++      const unitTriggerWithTagMoved = unitTriggerWithTagExpected?.changed === true
++      // was: const walkedUnitHasMovedMoved = walkedUnitHasMovedExpected?.changed === true — a case capability.unit-trigger-with-tag moved skips this layer too (capability.unit-trigger-with-tag 2026-10-04)
++      const walkedUnitHasMovedMoved = walkedUnitHasMovedExpected?.changed === true || unitTriggerWithTagMoved
+       // was: const enchantTriggersOwnWeaponMoved = enchantTriggersOwnWeaponExpected?.changed === true — a case rule.walked-unit-has-moved moved skips this layer too (rule.walked-unit-has-moved 2026-10-04)
+       const enchantTriggersOwnWeaponMoved = enchantTriggersOwnWeaponExpected?.changed === true || walkedUnitHasMovedMoved
+@@ -672,5 +681,12 @@ describe('resumable battle cursor', () => {
+           }
+         } else result = battle.runBattle(ctx)
+-        if (walkedUnitHasMovedExpected) {
++        if (unitTriggerWithTagExpected) {
++        expect(hash(ctx.events), 'full unit-trigger-with-tag events').toBe(unitTriggerWithTagExpected.events)
++        expect(hash(ctx.state), 'full unit-trigger-with-tag state').toBe(unitTriggerWithTagExpected.state)
++        expect(hash(ctx.rng.log), 'full unit-trigger-with-tag RNG').toBe(unitTriggerWithTagExpected.rng)
++        expect(result).toEqual(unitTriggerWithTagExpected.result)
++        }
++        // was: if (walkedUnitHasMovedExpected) { — capability.unit-trigger-with-tag (2026-10-04): a case it moved is checked above instead
++        if (walkedUnitHasMovedExpected && !unitTriggerWithTagMoved) {
+         expect(hash(ctx.events), 'full walked-unit-has-moved events').toBe(walkedUnitHasMovedExpected.events)
+         expect(hash(ctx.state), 'full walked-unit-has-moved state').toBe(walkedUnitHasMovedExpected.state)
+```
+</details>

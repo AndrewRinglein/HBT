@@ -5621,7 +5621,19 @@
   ],
   "spec": "Ruled 2026-10-04 (Andrew, engine DECISIONS.md 'after the backlog run: ...; a trigger on the hero with a tag requirement; ...'): 'There's also the ability to have a trigger on a hero itself. That trigger could have a tag requirement like melee, so you can add to burn to melee attacks on a hero, and then it only triggers when you're using something that has the tag melee.' Today a trigger is scoped to one attack id or not at all (engine src/core/trigger.ts `onlyWithAttack`; content's `attack: 'own'` compiles to that per attack), no tag requirement exists, and no badge carries a trigger (content badges: none). Build the capability: a trigger that belongs to the unit - brought by a badge, a specialty, a worn item (a bloodrune, a trinket) or the unit's own row - may name a tag requirement, and then fires only for an attack that carries that tag (the attack's own tags and kind, as the engine already has them: melee, ranged, and the weapon tags on the attack's item - grep the tag vocabulary first; one meaning of 'has the tag', recorded). With no requirement it fires for every attack of the unit, as a unit trigger does today. The requirement is one field on the trigger, validated at pack build (an unknown tag fails the build), read in the same place `onlyWithAttack` is; never a second trigger path. Prove it with content, a second instance costing no code: the Bloodrunes Burning Touch and Bleeding Strike and Pharaoh's Gauntlets, left as the unit's by fix.enchant-triggers-own-weapon - give each the requirement its Codex words mean (Burning Touch: 'every strike' - read its row; melee if its words say a strike in melee) and say what you chose; and a test badge that adds Burn to melee attacks, fielded on a hero holding a bow and a dagger. Read ENGINE-CONSTITUTION.md and COMBAT-SEQUENCE.md first (where triggers are gathered and filtered in the order of operations). The viewer's bar and panel print a trigger's requirement in words through the sheet (a viewer gap is reported, not built here). Check whether the control battles move before claiming changesBaseline.",
   "expect": "A hero carrying a trigger with the requirement melee applies its effect when it hits with a melee attack and not when it shoots a bow or casts; the same trigger with no requirement fires on both; an unknown tag fails the pack build; the Bloodrunes' and the Gauntlets' triggers fire for the attacks their words name; a test asserts each.",
-  "note": "Filed by the kingdom chat from Andrew's ruling, 2026-10-04. Shape is the filer's guess: check tools/gate.mjs's demands (variants: the second instance)."
+  "note": "Filed by the kingdom chat from Andrew's ruling, 2026-10-04. Shape is the filer's guess: check tools/gate.mjs's demands (variants: the second instance).",
+  "probeIds": [
+   "test.badge.melee-burn",
+   "item.rune-burning-touch",
+   "item.pharaohs-gauntlets"
+  ],
+  "variants": [
+   "test.badge.melee-burn",
+   "item.rune-burning-touch",
+   "item.pharaohs-gauntlets"
+  ],
+  "status": "done-needs-review",
+  "sha": "cb5c885"
  },
  {
   "id": "fix.kit-attack-clauses",

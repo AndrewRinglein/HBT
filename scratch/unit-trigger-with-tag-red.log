@@ -1,0 +1,185 @@
+
+ RUN  v4.1.11 C:/Users/aring/Desktop/HBT-worker-engine/engine
+
+ ❯ test/unit-trigger-with-tag.test.ts (12 tests | 10 failed) 50ms
+     × the test badge: Burn on a hit with a melee attack, none when the hero shoots - a bow in hand, the Punch its melee 13ms
+     × the same hero holding a crossbow in one hand and a dagger in the other: the Stab burns, the bolt does not 3ms
+     × nor when it casts: a mage with the badge burns with its fists, not with its staff 0ms
+     × the Burning Touch (worn): "flames lick from every strike" - a melee attack burns, a shot does not 1ms
+     × Pharaoh's Gauntlets: "both hands are the weapon" - Weak on every blow of the hands (the two strikes and a Punch: brawl), not on another melee attack 0ms
+     × they are fielded in a real battle: the scenario plays, and each requirement fires there 16ms
+     × an attack carries the tags of its row: its own Codex tags and its weapon's; a row that states none carries its kind 1ms
+     × the requirement is validated at load: a tag is a plain word; a burst's hook cannot carry one 1ms
+     × over the whole pack every requirement names a tag of the Codex's vocabulary, and an attack's tags are all of it too 10ms
+     × it joins an attack scope rather than replacing it, and a cause that is no attack never meets it 1ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 10 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/unit-trigger-with-tag.test.ts > a trigger on the hero with a tag requirement > the test badge: Burn on a hit with a melee attack, none when the hero shoots - a bow in hand, the Punch its melee
+AssertionError: attack.shortbow.short-shot: expected 1 to be +0 // Object.is equality
+
+- Expected
++ Received
+
+- 0
++ 1
+
+ ❯ test/unit-trigger-with-tag.test.ts:60:43
+     58|     for (const shot of ITEMS['item.shortbow']!.grants) {
+     59|       const ev = landed(f, shot, FAR)
+     60|       expect(rolls(ev, MELEE_BURN), shot).toBe(0)
+       |                                           ^
+     61|       expect(ev.some((e) => e.type === 'status.applied' && e['statusId…
+     62|     }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/10]⎯
+
+ FAIL  test/unit-trigger-with-tag.test.ts > a trigger on the hero with a tag requirement > the same hero holding a crossbow in one hand and a dagger in the other: the Stab burns, the bolt does not
+AssertionError: attack.hand-crossbow.snapshot: expected 1 to be +0 // Object.is equality
+
+- Expected
++ Received
+
+- 0
++ 1
+
+ ❯ test/unit-trigger-with-tag.test.ts:77:43
+     75|     for (const bolt of ITEMS['item.hand-crossbow']!.grants) {
+     76|       const ev = landed(f, bolt, FAR)
+     77|       expect(rolls(ev, MELEE_BURN), bolt).toBe(0)
+       |                                           ^
+     78|       expect(applied(ev, 'status.burn', 'trigger.test-melee-burn.burn'…
+     79|     }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/10]⎯
+
+ FAIL  test/unit-trigger-with-tag.test.ts > a trigger on the hero with a tag requirement > nor when it casts: a mage with the badge burns with its fists, not with its staff
+TypeError: carriesTag is not a function
+ ❯ test/unit-trigger-with-tag.test.ts:85:12
+     83|     const f: Field = { hero: 'hero.base.mage-fire', badges: [MELEE_BUR…
+     84|     const staff = ITEMS['item.fire-staff']!.grants[0]!
+     85|     expect(carriesTag(ACTIONS[staff], 'melee')).toBe(false)
+       |            ^
+     86|     expect(rolls(landed(f, staff, FAR), MELEE_BURN)).toBe(0)
+     87|     expect(rolls(landed(f, 'attack.punch', NEAR), MELEE_BURN)).toBe(1)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/10]⎯
+
+ FAIL  test/unit-trigger-with-tag.test.ts > the rows the Codex words name > the Burning Touch (worn): "flames lick from every strike" - a melee attack burns, a shot does not
+AssertionError: expected 1 to be +0 // Object.is equality
+
+- Expected
++ Received
+
+- 0
++ 1
+
+ ❯ test/unit-trigger-with-tag.test.ts:105:78
+    103|     expect(ITEMS[TOUCH]!.triggers.map((t) => [t.hook, t.onlyWithTag, t…
+    104|     const f: Field = { items: ['item.shortbow', TOUCH] }
+    105|     expect(rolls(landed(f, ITEMS['item.shortbow']!.grants[0]!, FAR), T…
+       |                                                                              ^
+    106|     const punch = landed(f, 'attack.punch', NEAR)
+    107|     expect(applied(punch, 'status.burn', 'trigger.rune-burning-touch.b…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/10]⎯
+
+ FAIL  test/unit-trigger-with-tag.test.ts > the rows the Codex words name > Pharaoh's Gauntlets: "both hands are the weapon" - Weak on every blow of the hands (the two strikes and a Punch: brawl), not on another melee attack
+TypeError: carriesTag is not a function
+ ❯ test/unit-trigger-with-tag.test.ts:123:14
+    121|     const f: Field = { items: [GAUNTLETS] }
+    122|     for (const a of [...ITEMS[GAUNTLETS]!.grants, 'attack.punch']) {
+    123|       expect(carriesTag(ACTIONS[a], 'brawl'), a).toBe(true)
+       |              ^
+    124|       expect(applied(landed(f, a, NEAR), 'status.weak', 'trigger.phara…
+    125|     }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/10]⎯
+
+ FAIL  test/unit-trigger-with-tag.test.ts > the rows the Codex words name > they are fielded in a real battle: the scenario plays, and each requirement fires there
+TypeError: carriesTag is not a function
+ ❯ test/unit-trigger-with-tag.test.ts:143:14
+    141|       if (e.type !== 'trigger.rolled' || !required.has(String(e.causeI…
+    142|       const cause = [...ctx.events.slice(0, i)].reverse().find((x) => …
+    143|       expect(carriesTag(ctx.actions[String(cause.causeId)], required.g…
+       |              ^
+    144|       checked++
+    145|     }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/10]⎯
+
+ FAIL  test/unit-trigger-with-tag.test.ts > what "carries the tag" means, and the field > an attack carries the tags of its row: its own Codex tags and its weapon's; a row that states none carries its kind
+AssertionError: expected undefined to deeply equal [ 'dagger', 'melee' ]
+
+- Expected:
+[
+  "dagger",
+  "melee",
+]
+
++ Received:
+undefined
+
+ ❯ test/unit-trigger-with-tag.test.ts:152:49
+    150| describe('what "carries the tag" means, and the field', () => {
+    151|   it('an attack carries the tags of its row: its own Codex tags and it…
+    152|     expect(ACTIONS['attack.dagger.stab']!.tags).toEqual(['dagger', 'me…
+       |                                                 ^
+    153|     expect(ACTIONS['attack.longsword.slash']!.tags).toEqual(['blade', …
+    154|     expect(carriesTag(ACTIONS['attack.longsword.slash'], 'blade')).toB…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/10]⎯
+
+ FAIL  test/unit-trigger-with-tag.test.ts > what "carries the tag" means, and the field > the requirement is validated at load: a tag is a plain word; a burst's hook cannot carry one
+AssertionError: expected [Function] to throw an error
+
+- Expected:
+null
+
++ Received:
+undefined
+
+ ❯ test/unit-trigger-with-tag.test.ts:172:127
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/10]⎯
+
+ FAIL  test/unit-trigger-with-tag.test.ts > what "carries the tag" means, and the field > over the whole pack every requirement names a tag of the Codex's vocabulary, and an attack's tags are all of it too
+AssertionError: expected 0 to be greater than 200
+ ❯ test/unit-trigger-with-tag.test.ts:184:20
+    182|     let tagged = 0
+    183|     for (const a of Object.values(ACTIONS)) for (const tag of a.tags ?…
+    184|     expect(tagged).toBeGreaterThan(200)
+       |                    ^
+    185|   })
+    186|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/10]⎯
+
+ FAIL  test/unit-trigger-with-tag.test.ts > what "carries the tag" means, and the field > it joins an attack scope rather than replacing it, and a cause that is no attack never meets it
+AssertionError: expected [ 'trigger.test-both', …(1) ] to deeply equal [ 'trigger.test-both' ]
+
+- Expected
++ Received
+
+  [
+    "trigger.test-both",
++   "trigger.test-wrong-tag",
+  ]
+
+ ❯ test/unit-trigger-with-tag.test.ts:201:26
+    199|     let from = ctx.events.length
+    200|     fireTriggers(ctx, 'onHit', { ownerId: 0, targetId: 1, causeId: 'at…
+    201|     expect(rolled(from)).toEqual(['trigger.test-both'])
+       |                          ^
+    202|     from = ctx.events.length
+    203|     fireTriggers(ctx, 'onHit', { ownerId: 0, targetId: 1, causeId: 'at…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/10]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  10 failed | 2 passed (12)
+   Start at  17:59:23
+   Duration  971ms (transform 644ms, setup 0ms, import 802ms, tests 50ms, environment 0ms)
+

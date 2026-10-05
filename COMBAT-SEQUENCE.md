@@ -365,6 +365,15 @@ a unit finishing its go is an Activation. On an eight-zombie board the two readi
 differ by sixteen firings a turn against one. *(`GAME-DESIGN.md` §5 still says
 `turnEnd` — it needs the same edit.)*
 
+**A trigger may be scoped, and the scope is read before anything rolls** (`trigger.ts fireTriggers`). `onlyWithAttack` (2026-08-20):
+it fires only when the cause IS that attack. `onlyWithTag` (capability.unit-trigger-with-tag, 2026-10-04; DECISIONS.md "after the
+backlog run: … a trigger on the hero with a tag requirement …": "it only triggers when you're using something that has the tag
+melee"): it fires only when the cause is an action that carries that tag — the tag is in the action row's `tags` (an attack's own
+Codex tags and its weapon's, written by the pack compiler), and a row that states none carries its kind, melee or ranged
+(`action.ts carriesTag`, the one reader). **Built: yes.** With both, both must hold; with neither, every attack of the unit, as
+always. A scoped trigger that does not apply is not rolled and logs nothing: it was never in question. On a cause that is no
+action (the end of an Activation, a death) a scoped trigger never fires.
+
 **A failed roll still logs.** `trigger.rolled` is emitted whether or not it fired.
 A 20% trigger that leaves no line when it misses is indistinguishable from one that
 was never wired in, and that ambiguity has already cost this project days once.

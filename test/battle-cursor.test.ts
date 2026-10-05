@@ -401,6 +401,12 @@ const enchantTriggersOwnWeaponGolden = JSON.parse(readFileSync(new URL('./fixtur
 // cases whose battle ends inside an Activation whose unit had walked: that unit still holds the fact. A `changed` case is checked here and
 // skips the older layers.
 const walkedUnitHasMovedGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-walked-unit-has-moved.json', import.meta.url), 'utf8'))
+// capability.unit-trigger-with-tag (2026-10-04; DECISIONS.md 2026-10-04 'after the backlog run: ... a trigger on the hero with a tag requirement ...'),
+// Law 10: a trigger may name a tag requirement (onlyWithTag) and then fires only for an attack that carries the tag; the Bloodrune Burning Touch
+// (melee) and Pharaoh's Gauntlets (brawl) carry one. A unit's trigger list is part of the state, so a case that fields one of them moves.
+// Every case frozen here (tools/capture-unit-trigger-with-tag-cursor.mts), the new fielding test.trigger-with-tag among them (`added`). Moved -
+// exactly the cases that field one of the two rows: progression-surge-0/1/2. A `changed` case is checked here and skips the older layers.
+const unitTriggerWithTagGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-unit-trigger-with-tag.json', import.meta.url), 'utf8'))
 const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
 // Explicit rule migration, not regenerated historical hashes. These nine old
 // cases contain Surge ledger/refresh changes or terminal markers corrected
@@ -537,7 +543,10 @@ describe('resumable battle cursor', () => {
       const longswordLosesStabExpected = longswordLosesStabGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const enchantTriggersOwnWeaponExpected = enchantTriggersOwnWeaponGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const walkedUnitHasMovedExpected = walkedUnitHasMovedGolden.cases.find((row:{id:string})=>row.id===fixture.id)
-      const walkedUnitHasMovedMoved = walkedUnitHasMovedExpected?.changed === true
+      const unitTriggerWithTagExpected = unitTriggerWithTagGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+      const unitTriggerWithTagMoved = unitTriggerWithTagExpected?.changed === true
+      // was: const walkedUnitHasMovedMoved = walkedUnitHasMovedExpected?.changed === true — a case capability.unit-trigger-with-tag moved skips this layer too (capability.unit-trigger-with-tag 2026-10-04)
+      const walkedUnitHasMovedMoved = walkedUnitHasMovedExpected?.changed === true || unitTriggerWithTagMoved
       // was: const enchantTriggersOwnWeaponMoved = enchantTriggersOwnWeaponExpected?.changed === true — a case rule.walked-unit-has-moved moved skips this layer too (rule.walked-unit-has-moved 2026-10-04)
       const enchantTriggersOwnWeaponMoved = enchantTriggersOwnWeaponExpected?.changed === true || walkedUnitHasMovedMoved
       // was: const longswordLosesStabMoved = longswordLosesStabExpected?.changed === true — a case fix.enchant-triggers-own-weapon moved skips this layer too (fix.enchant-triggers-own-weapon 2026-10-04)
@@ -671,7 +680,14 @@ describe('resumable battle cursor', () => {
             battle.completeActionCycle(ctx)
           }
         } else result = battle.runBattle(ctx)
-        if (walkedUnitHasMovedExpected) {
+        if (unitTriggerWithTagExpected) {
+        expect(hash(ctx.events), 'full unit-trigger-with-tag events').toBe(unitTriggerWithTagExpected.events)
+        expect(hash(ctx.state), 'full unit-trigger-with-tag state').toBe(unitTriggerWithTagExpected.state)
+        expect(hash(ctx.rng.log), 'full unit-trigger-with-tag RNG').toBe(unitTriggerWithTagExpected.rng)
+        expect(result).toEqual(unitTriggerWithTagExpected.result)
+        }
+        // was: if (walkedUnitHasMovedExpected) { — capability.unit-trigger-with-tag (2026-10-04): a case it moved is checked above instead
+        if (walkedUnitHasMovedExpected && !unitTriggerWithTagMoved) {
         expect(hash(ctx.events), 'full walked-unit-has-moved events').toBe(walkedUnitHasMovedExpected.events)
         expect(hash(ctx.state), 'full walked-unit-has-moved state').toBe(walkedUnitHasMovedExpected.state)
         expect(hash(ctx.rng.log), 'full walked-unit-has-moved RNG').toBe(walkedUnitHasMovedExpected.rng)
