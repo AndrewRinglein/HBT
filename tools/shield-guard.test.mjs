@@ -20,17 +20,26 @@ const json = p => JSON.parse(readFileSync(p, 'utf8'))
 const statics = json('generated/static.json'), units = statics.units
 const sha = p => createHash('sha256').update(readFileSync('../' + p)).digest('hex')
 const RAISE = /\/shield_blockleft\//                     // the raise-the-shield clip: the Oathblade body's shield_blockleft (ActorCore)
-const SIX = ['power.kite-shield.shield-wall', 'power.kite-shield.raise-guard', 'power.round-shield.turn-aside', 'power.round-shield.brace',
-  'power.tower-shield.cover', 'power.tower-shield.stand-tall']
+/* Law 10, 2026-10-04 — content.shields-reauthored (engine item; engine DECISIONS.md 2026-09-28 'counterattack, special free attacks, the opening six, shields, custom weapons' and the Armory Ledger approved that day): the shield powers were typed here by id —
+     const SIX = ['power.kite-shield.shield-wall', 'power.kite-shield.raise-guard', 'power.round-shield.turn-aside', 'power.round-shield.brace',
+       'power.tower-shield.cover', 'power.tower-shield.stand-tall']
+   — and the Ledger replaced all six, and added the Knight Shield and four Iron shields. A shield power is what a shield's row grants:
+   today's are read from the engine's own item rows (static.json items), and a RECORDED battle's are the ones its own unit.equipped
+   lines say its shields granted — the same reading the page makes (src/fold.js). Every check below is unchanged. */
+const shieldPowersNow = () => Object.entries(statics.items).filter(([id]) => statics.itemClasses[id] === 'shield').flatMap(([, row]) => row.abilities)
+const shieldPowersIn = battle => new Set(battle.events.filter(e => e.type === 'unit.equipped' && statics.itemClasses[e.itemId] === 'shield').flatMap(e => [...(e.abilities ?? []), ...(e.grants ?? [])]))
 const shieldItems = () => Object.keys(statics.itemClasses ?? {}).filter(i => statics.itemClasses[i] === 'shield')
 const holds = t => (units[t]?.defaultItems ?? []).some(i => statics.itemClasses?.[i] === 'shield')
 
-test('the engine\'s own item classes name the shields; the six shield powers are what the three shields grant', () => {
+test('the engine\'s own item classes name the shields; the shield powers are what the shields\' rows grant', () => {
   assert.ok(statics.itemClasses, 'static.json carries the engine\'s item classes')
   const shields = shieldItems()
   for (const i of ['item.kite-shield', 'item.round-shield', 'item.tower-shield']) assert.ok(shields.includes(i), `${i} is a shield`)
   assert.equal(statics.itemClasses['item.longsword'], 'weapon')
-  for (const p of SIX) assert.equal(statics.actionKinds[p], 'power', `${p} is a power`)
+  const now = shieldPowersNow()
+  assert.ok(now.length >= 6, 'the three starting shields grant two powers each, and there are more shields than three')
+  for (const i of ['item.kite-shield', 'item.round-shield', 'item.tower-shield']) assert.equal(statics.items[i].abilities.length, 2, `${i} grants two powers`)
+  for (const p of now) assert.equal(statics.actionKinds[p], 'power', `${p} is a power`)
   assert.ok(MOTIONS.includes('guard'), 'guard is one of the motion words, beside the others')
 })
 
@@ -98,6 +107,7 @@ async function playAt(P, i) {
 
 test('on the page each shield power\'s power.used raises the shield — guard, not the hit reaction; another power does not; a blow still plays the hit', async () => {
   const P = await boot('showcase.horrors.json'), played = []
+  const SIX = [...shieldPowersIn(P.battle)]   // the recording's own shield powers (the note at the top)
   const nameOf = id => P.V.S.U[id]?.name
   for (const [i, e] of P.battle.events.entries()) {
     if (e.type !== 'power.used' || !SIX.includes(e.causeId)) continue

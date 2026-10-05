@@ -76,7 +76,11 @@ test('an attack chosen: no hex wears the target ring; each unit that can be hit 
 
 test('a self power chosen: nothing on the hero\'s own hex - no ring, no mark', () => {
   const { v, V } = boot(), { me } = cast(V)
-  v.setPlay(facts({ slot: 'power.tower-shield.cover', targets: [me.hex], note: 'Cover: click it again, or the hero, to use it.' }))
+  /* Law 10, 2026-10-04 — content.shields-reauthored (engine item; engine DECISIONS.md 2026-09-28 'counterattack, special free attacks, the opening six, shields, custom weapons' and the Armory Ledger approved that day): the self power offered here was the Tower Shield's Cover
+     (slot: 'power.tower-shield.cover', note: 'Cover: click it again, or the hero, to use it.'), which the Ledger replaced. Any power aimed at
+     its holder serves; it is the Tower Shield's first, read from the page's own item rows. */
+  const STATIC = JSON.parse(readFileSync('generated/static.json', 'utf8')), selfPower = STATIC.items['item.tower-shield'].abilities[0]
+  v.setPlay(facts({ slot: selfPower, targets: [me.hex], note: STATIC.actions[selfPower].name + ': click it again, or the hero, to use it.' }))
   noRing(V, 'a self power chosen')
   assert.deepEqual(marked(V), [], 'the hero acting wears no target mark')
   assert.equal(V.layers.play.querySelectorAll('.ring').filter(n => +n.dataset.hex === me.hex).length, 0, 'no ring of any kind on the hero\'s own hex')

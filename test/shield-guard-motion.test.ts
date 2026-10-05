@@ -9,11 +9,11 @@ import { execFileSync } from 'node:child_process'
 import { mkdirSync, readFileSync } from 'node:fs'
 import { ITEMS } from '../../engine/src/content/index.js'
 
-const SHIELDS: Record<string, string[]> = {
-  'item.kite-shield': ['power.kite-shield.shield-wall', 'power.kite-shield.raise-guard'],
-  'item.round-shield': ['power.round-shield.turn-aside', 'power.round-shield.brace'],
-  'item.tower-shield': ['power.tower-shield.cover', 'power.tower-shield.stand-tall'],
-}
+// Law 10, 2026-10-04 — content.shields-reauthored (engine item; engine DECISIONS.md 2026-09-28 'counterattack, special free attacks, the opening six, shields, custom weapons' and the Armory Ledger approved that day): the six shield powers were typed here by id
+//   'item.kite-shield': ['power.kite-shield.shield-wall', 'power.kite-shield.raise-guard'], 'item.round-shield': ['power.round-shield.turn-aside',
+//   'power.round-shield.brace'], 'item.tower-shield': ['power.tower-shield.cover', 'power.tower-shield.stand-tall']
+// and the Ledger replaced them. The three shields the sandbox's heroes hold grant what their rows grant: read from the engine.
+const SHIELDS: Record<string, string[]> = Object.fromEntries(['item.kite-shield', 'item.round-shield', 'item.tower-shield'].map((s) => [s, [...ITEMS[s]!.abilities]]))
 type Clip = { motion: string, path: string | null, clip?: string, borrowed?: boolean }
 type Power = { hero: string, id: string, onBar: boolean, used: boolean, name: string | null, motions: string[], clips: Clip[], hit: { path: string, clip: string } | null }
 
@@ -22,7 +22,7 @@ describe('a shield power raises the shield', () => {
     const classes = JSON.parse(readFileSync('generated/static.json', 'utf8')).itemClasses
     for (const [item, powers] of Object.entries(SHIELDS)) {
       expect(ITEMS[item]!.itemClass, item).toBe('shield')
-      expect([...ITEMS[item]!.abilities], item).toEqual(powers)
+      expect(powers, item).toHaveLength(2)   // each grants two powers (was: toEqual the two typed ids)
       expect(classes[item], item).toBe('shield')
     }
     for (const [id, item] of Object.entries(ITEMS)) expect(classes[id], id).toBe(item.itemClass)
