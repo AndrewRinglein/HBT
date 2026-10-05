@@ -1401,3 +1401,16 @@ available if you were prone, and yes, it takes your move."). `src/ui/play-input.
 | `proneBarReadsTheEngine` | The engine still takes a downed unit's attacks and powers (engine SWITCHES proneNoCrawl, ruled 2026-09-24). Does the host refuse them? | **No: the fact names exactly what the engine's limits check refuses a unit that is down — its other movements today — and the host refuses those presses and no others.** Measured in battle 2: the Iron Dwarf down — Move and Leap wait; Chop, Heavy Chop, Punch, Brace and Arrow Wall stay lit. The Lumberjack's Wife down — Move waits; Stab and Punch stay lit. FOUND for the engine's queue: `rule.prone-only-stand-up` (proposed) — the limits check refuses a prone unit everything but its stand; the fact follows it with no change here. Other side: the host refuses them itself. | The item: "that is the engine's to change … rather than hide it in the bar." The computer's units play by the engine, not by the host. | Default — 2026-10-05 |
 | `proneAfterTheStand` | After the stand the engine still offers Move and Leap in the unit's primary action. | **Left as the engine says: `moveDone` names a move only when the engine lists no further use of it, so after a stand none is greyed.** FOUND for Andrew, as in the viewer's switch of the same name. | One reading for every move since 2026-10-03 (`moveDoneFact`). | Default — 2026-10-05 |
 | `proneRefusalLeavesTheStandArmed` | What does the screen show after a refused press? | **What it showed as the Activation began: the stand armed (the only movement the engine lists), no ghost, no aim — and the one line.** | Nothing was chosen, so nothing changes. | Default — 2026-10-05 |
+
+## viewer.item-card-in-battle — the host's half, 2026-10-05
+
+Engine DECISIONS.md 2026-10-05 'playtest post: …' (Andrew: "When you're focusing on a character, you need to be able to look at
+their items when you're in battle."). `src/ui/battle-item-card.ts`: `battleItemCard(itemId)` — the Equip screen's own card
+(`itemCardHtml` over `itemCardOf`, the item's own art), handed to the battle component as its `itemCard` option by `src/ui/battle-surface.ts`, the one place
+both screens mount a battle through. Probes: `test/item-card-in-battle.test.ts`, `tools/item-card-in-battle.verify.mjs`. The
+component's half and the switches on where the card stands are viewer SWITCHES.md, the same item.
+
+| Switch | Question | Default | Reason | Status |
+|---|---|---|---|---|
+| `battleCardIsTheEquipCard` | Which card does the battle screen show? | **The one card: for every item the engine knows (731 today) the markup handed to the battle is `itemCardHtml(itemCardOf(id), itemArtOf(id))`, character for character — held by the test. An id that is no item has no card (null).** Its styles are `after.css`'s `.itemcard`, already on both pages; the battle component only says where it stands. | "Use that card, do not write a second one." | Default — 2026-10-05 |
+| `battleCardOnEveryBattle` | Which battles get it? | **Every battle the kingdom mounts — the sandbox's (PLAY.html's battles) and the slice's — since both mount through `createBattleSurface`, which hands the function over unless a caller overrides it.** | One place, so a new screen that mounts a battle has the card without asking. | Default — 2026-10-05 |

@@ -1,5 +1,7 @@
 import { mountBattleViewer } from '../../../viewer/src/viewer.js'
 import type { BattleView } from '../view/battle.js'
+// viewer.item-card-in-battle: every battle mounted here hands the component the kingdom's one item card (battle-item-card.ts)
+import { battleItemCard } from './battle-item-card.js'
 
 /** One paused shared component, retained while the outcome controls rerender.
     layout.fill (viewer.battle-full-screen, engine DECISIONS.md 2026-09-30 "the battle is its own full screen"): while it
@@ -51,7 +53,7 @@ export function createBattleSurface(shared: Record<string, unknown>, options: Re
           atlasScene:view.atlasScene,
           atlasCatalog:view.atlasScene ? {library:view.atlasScene.catalog} : undefined,
           meta:{seed:view.viewerSeed,label:view.mapName},
-        },{...options,autoplay:false})
+        },{itemCard:battleItemCard,...options,autoplay:false})
         viewer.push(view.initialEvents);viewer.seek(view.initialEvents.length)
         current={key,outer,host,viewer};window.addEventListener('resize',fit)
       }
