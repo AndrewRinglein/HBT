@@ -5737,7 +5737,12 @@
   "shape": "data",
   "spec": "Ruled 2026-10-04 (Andrew, engine/DECISIONS.md 'his 28 reward weapons read back: the Elfbow shoots one target; the mechanics his own items need are wanted'): 'Elfpo is supposed to only shoot one target.' Today the Elfbow's Double Shot reads 'Precision -2, -5 Accuracy, 2 hits, range 4, 2 Stamina. Targets: up to 2 enemies within 4 hexes'. Correct the content row: Double Shot is two hits on ONE target - no choice of a second enemy, in the row, in its text, on the action bar and in the codex. Nothing else on the Elfbow changes (Elf Shot stays as it is). Content first, then the engine pack, the viewer dumps and the kingdom pages by their builders; the engine gate last.",
   "expect": "The Elfbow's Double Shot asks for one target, rolls two hits against it, and its text nowhere says 'up to 2 enemies'; a test holds that the attack row has one target; Elf Shot and every other bow are unchanged.",
-  "note": "Filed by the home chat 2026-10-04. 'Elfpo' is the Elfbow (dictation)."
+  "note": "Filed by the home chat 2026-10-04. 'Elfpo' is the Elfbow (dictation).",
+  "probeIds": [
+   "item.elfbow"
+  ],
+  "status": "done",
+  "sha": "e08e1d2"
  },
  {
   "id": "capability.effect-lasts-activations",

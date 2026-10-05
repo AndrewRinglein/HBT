@@ -1,0 +1,96 @@
+
+ RUN  v4.1.11 C:/Users/aring/Desktop/HBT-worker-engine/engine
+
+ ❯ test/elfbow-double-shot-one-target.test.ts (7 tests | 3 failed) 18ms
+     × the row: one enemy within 4 hexes, 2 hits — its numbers as they were 5ms
+     × its text nowhere says a second enemy: not the targets, the intent or a description, nor the Elfbow's own lines 1ms
+     × no line of the gap list names it: there is no clause of the row the engine does not field 1ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/elfbow-double-shot-one-target.test.ts > the Elfbow's Double Shot is two hits on one target > the row: one enemy within 4 hexes, 2 hits — its numbers as they were
+AssertionError: expected [ 'attack.elfbow.double-shot', …(9) ] to deeply equal [ 'attack.elfbow.double-shot', …(9) ]
+
+- Expected
++ Received
+
+@@ -6,7 +6,7 @@
+    -2,
+    2,
+    -5,
+    0,
+    2,
+-   "one enemy within 4 hexes",
++   "up to 2 enemies within 4 hexes",
+  ]
+
+ ❯ test/elfbow-double-shot-one-target.test.ts:26:38
+     24| describe('the Elfbow\'s Double Shot is two hits on one target', () => {
+     25|   it('the row: one enemy within 4 hexes, 2 hits — its numbers as they …
+     26|     expect(row(codexAttack(DOUBLE))).toEqual([DOUBLE, 'Double Shot', 4…
+       |                                      ^
+     27|   })
+     28|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  test/elfbow-double-shot-one-target.test.ts > the Elfbow's Double Shot is two hits on one target > its text nowhere says a second enemy: not the targets, the intent or a description, nor the Elfbow's own lines
+AssertionError: expected 'up to 2 enemies within 4 hexes' not to match /up to \d+ enem/i
+
+- Expected:
+/up to \d+ enem/i
+
++ Received:
+"up to 2 enemies within 4 hexes"
+
+ ❯ test/elfbow-double-shot-one-target.test.ts:32:24
+     30|     const a = codexAttack(DOUBLE), bow = CODEX.items.find((i) => i.id …
+     31|     for (const text of [a.targets, a.intent ?? '', a.description ?? ''…
+     32|       expect(text).not.toMatch(/up to \d+ enem/i)
+       |                        ^
+     33|       expect(text).not.toMatch(/\bspread\b|two targets|second (enemy|t…
+     34|     }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  test/elfbow-double-shot-one-target.test.ts > the Elfbow's Double Shot is two hits on one target > no line of the gap list names it: there is no clause of the row the engine does not field
+AssertionError: expected [ { …(3) }, { …(3) }, { …(3) } ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   {
++     "needs": "an attack at several chosen targets — engine capability.attack-several-targets",
++     "unit": "hero.base.ranger-ranger",
++     "what": "attack.elfbow.double-shot targets 'up to 2 enemies within 4 hexes' — lands SINGLE-TARGET",
++   },
++   {
++     "needs": "an attack at several chosen targets — engine capability.attack-several-targets",
++     "unit": "hero.base.ranger-scantily",
++     "what": "attack.elfbow.double-shot targets 'up to 2 enemies within 4 hexes' — lands SINGLE-TARGET",
++   },
++   {
++     "needs": "an attack at several chosen targets — engine capability.attack-several-targets",
++     "unit": "item.elfbow",
++     "what": "attack.elfbow.double-shot targets 'up to 2 enemies within 4 hexes' — lands SINGLE-TARGET",
++   },
++ ]
+
+ ❯ test/elfbow-double-shot-one-target.test.ts:38:57
+     36|
+     37|   it('no line of the gap list names it: there is no clause of the row …
+     38|     expect(GAPS.filter((g) => g.what.includes(DOUBLE))).toEqual([])
+       |                                                         ^
+     39|     expect(((ITEMS[BOW] as { gaps?: readonly string[] }).gaps ?? []).f…
+     40|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  3 failed | 4 passed (7)
+   Start at  22:44:22
+   Duration  964ms (transform 654ms, setup 0ms, import 828ms, tests 18ms, environment 0ms)
+
