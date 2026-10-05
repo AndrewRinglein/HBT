@@ -219,3 +219,20 @@ describe('in real battles — the two fieldings', () => {
     expect(ctx.events.some((e) => e.type === 'status.applied' && e['statusId'] === lentBy(SIGHT) && e['after'] === 3)).toBe(true)
   })
 })
+
+describe('a battle with a counted status in it saves and restores', () => {
+  // FOUND by the whole suite on the merged tree (2026-10-05): the snapshot's validator knew two roundings of a scaled value
+  // and refused the third ("Invalid battle snapshot: trigger scaling") - a battle whose unit carries the Fire Punch's rider
+  // could not be saved. It also checks the Activation a counted status notes.
+  it('the state round-trips with Stoke up, its count and the Activation it was put on in kept', async () => {
+    const { restoreBattle, saveBattle } = await import('../src/core/snapshot.js')
+    const { ctx, h } = rig([GAUNTLET]), id = lentBy(STOKE)
+    activation(ctx, h, () => usePower(ctx, h.id, h.id, STOKE))
+    activation(ctx, h)
+    const entry = h.statuses.find((s) => s.id === id)!
+    expect(entry).toMatchObject({ value: 2, since: expect.any(Number) })
+    const back = restoreBattle(saveBattle(ctx), ctx)
+    expect(back.state).toEqual(ctx.state)
+    expect(back.state.units[h.id]!.statuses.find((s) => s.id === id)).toEqual(entry)
+  })
+})
