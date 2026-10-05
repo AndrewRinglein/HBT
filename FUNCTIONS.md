@@ -11,7 +11,7 @@ When a rule fires. Twelve, plus `aura` and `passive` which are standing properti
 
 | Function | Uses | Notes |
 |---|---:|---|
-| `onHit` | 79 | after a hit lands, even if armour ate all of it |
+| `onHit` | 81 | after a hit lands, even if armour ate all of it |
 | `onKill` | 37 |  |
 | `startOfBattle` | 37 |  |
 | `onDamage` | 19 | only if damage actually landed |
@@ -32,14 +32,14 @@ When a rule fires. Twelve, plus `aura` and `passive` which are standing properti
 
 | Function | Uses |
 |---|---:|
-| `self` | 156 |
-| `one enemy in melee reach` | 96 |
+| `self` | 160 |
+| `one enemy in melee reach` | 98 |
 | `one enemy within N hexes` | 82 |
-| `one ally within N hexes` | 52 |
+| `one ally within N hexes` | 54 |
 | `allies within N hexes` | 32 |
 | `a hex within N hexes and every hex adjacent to it` | 17 |
 | `enemies within N hexes` | 16 |
-| `you and allies within N hexes` | 14 |
+| `you and allies within N hexes` | 16 |
 | `up to N enemies within N hexes` | 12 |
 | `a hex within N hexes` | 8 |
 | `one downed ally within N hexes` | 6 |
@@ -85,7 +85,7 @@ What a rule may DO.
 | Function | Uses |
 |---|---:|
 | `grant a stat for the Battle` | 173 |
-| `apply a status` | 138 |
+| `apply a status` | 140 |
 | `heal` | 84 |
 | `deal TRUE damage` | 56 |
 | `grant a stat until end of next Turn` | 48 |
@@ -126,10 +126,10 @@ What a rule may DO.
 | `burn` | 79 |
 | `bleed` | 64 |
 | `poison` | 51 |
-| `protection` | 41 |
+| `protection` | 43 |
 | `weak` | 39 |
+| `stun` | 23 |
 | `slow` | 21 |
-| `stun` | 21 |
 | `frost` | 14 |
 | `regeneration` | 7 |
 | `karma` | 6 |
@@ -140,23 +140,23 @@ What a rule may DO.
 |---|---:|
 | `health` | 97 |
 | `resist` | 59 |
+| `dodge` | 58 |
 | `strength` | 54 |
-| `dodge` | 54 |
 | `movement` | 49 |
 | `armor` | 43 |
 | `accuracy` | 34 |
 | `precision` | 30 |
 | `crit` | 29 |
-| `staminaMax` | 22 |
-| `block` | 21 |
+| `block` | 26 |
+| `staminaMax` | 23 |
 | `reach` | 20 |
 | `luck` | 19 |
 | `magic` | 17 |
 | `spirit` | 16 |
 | `itemSlots` | 14 |
+| `rangedBlock` | 8 |
 | `vision` | 7 |
 | `toughness` | 7 |
-| `rangedBlock` | 3 |
 | `fireResist` | 3 |
 | `poisonResist` | 3 |
 | `corruption` | 2 |

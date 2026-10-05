@@ -2,7 +2,7 @@
  "hooks": [
   {
    "name": "onHit",
-   "uses": 79,
+   "uses": 81,
    "ids": [
     "item.hammer-of-justice",
     "item.runed-crossbow",
@@ -318,7 +318,7 @@
  "shapes": [
   {
    "name": "self",
-   "uses": 156,
+   "uses": 160,
    "ids": [
     "item.loaded-dice-of-mirran",
     "item.mug-of-endless-dregs",
@@ -364,7 +364,7 @@
   },
   {
    "name": "one enemy in melee reach",
-   "uses": 96,
+   "uses": 98,
    "ids": [
     "attack.greatsword.hew",
     "attack.war-axe.chop",
@@ -456,7 +456,7 @@
   },
   {
    "name": "one ally within N hexes",
-   "uses": 52,
+   "uses": 54,
    "ids": [
     "item.saints-fingerbone",
     "item.medicine-belt",
@@ -585,7 +585,7 @@
   },
   {
    "name": "you and allies within N hexes",
-   "uses": 14,
+   "uses": 16,
    "ids": [
     "power.warchief.blood-oath",
     "power.sentinel.far-watch",
@@ -600,7 +600,9 @@
     "power.militia.take-the-wall",
     "power.porter.brace-the-line",
     "power.broodmother.screen",
-    "power.warbeast.harness"
+    "power.warbeast.harness",
+    "power.round-shield.lock-shields",
+    "power.iron-round-shield.lock-shields"
    ]
   },
   {
@@ -941,7 +943,7 @@
   },
   {
    "name": "apply a status",
-   "uses": 138,
+   "uses": 140,
    "ids": [
     "item.bloody-axe",
     "item.runed-crossbow",
@@ -1758,7 +1760,7 @@
   },
   {
    "name": "protection",
-   "uses": 41,
+   "uses": 43,
    "ids": [
     "item.battlemages-cuirass",
     "item.mystic-armor",
@@ -1791,15 +1793,15 @@
     "power.earth-staff.earth-shield",
     "power.staff-of-the-magi.power-ward",
     "power.benevolent-rod.restoration",
+    "power.kite-shield.cover-ally",
+    "power.iron-kite-shield.cover-ally",
     "power.shieldbearer.last-stand",
     "power.shieldbearer.resistance",
     "power.shieldbearer.shield-other",
     "power.recover",
     "enchant.divine-protection",
     "enchant.white-steel",
-    "specialty.divine-light",
-    "specialty.blessed-sufferer",
-    "specialty.holy-champion"
+    "specialty.divine-light"
    ]
   },
   {
@@ -1848,6 +1850,35 @@
    ]
   },
   {
+   "name": "stun",
+   "uses": 23,
+   "ids": [
+    "item.rune-bashing",
+    "item.bracer-of-courage",
+    "item.banner-of-resolve",
+    "attack.iron-mace.crush",
+    "attack.war-hammer.skullsplitter",
+    "attack.shepherds-sling.whirl",
+    "attack.holy-shield.shield-bash",
+    "attack.stormforged-halberd.thunderhead",
+    "attack.staff-of-the-destroyer.sundering",
+    "attack.knight-shield.shield-slam",
+    "attack.iron-knight-shield.shield-slam",
+    "power.bloodrage.unstoppable",
+    "power.guardian.stalwart",
+    "power.wayfinder.stunning-arrow",
+    "power.feral.pounce",
+    "power.mystic.hex",
+    "power.storm-caller.storm-surge",
+    "power.spirit-walker.ancestors-call",
+    "power.blessed-sufferer.unbent",
+    "power.grand-master.unyielding",
+    "power.exorcist.holy-shield",
+    "power.stalker.throat-hold",
+    "power.rod-of-imprisonment.imprison"
+   ]
+  },
+  {
    "name": "slow",
    "uses": 21,
    "ids": [
@@ -1872,33 +1903,6 @@
     "enchant.giant-slayer",
     "enchant.hobbling",
     "specialty.trapper"
-   ]
-  },
-  {
-   "name": "stun",
-   "uses": 21,
-   "ids": [
-    "item.rune-bashing",
-    "item.bracer-of-courage",
-    "item.banner-of-resolve",
-    "attack.iron-mace.crush",
-    "attack.war-hammer.skullsplitter",
-    "attack.shepherds-sling.whirl",
-    "attack.holy-shield.shield-bash",
-    "attack.stormforged-halberd.thunderhead",
-    "attack.staff-of-the-destroyer.sundering",
-    "power.bloodrage.unstoppable",
-    "power.guardian.stalwart",
-    "power.wayfinder.stunning-arrow",
-    "power.feral.pounce",
-    "power.mystic.hex",
-    "power.storm-caller.storm-surge",
-    "power.spirit-walker.ancestors-call",
-    "power.blessed-sufferer.unbent",
-    "power.grand-master.unyielding",
-    "power.exorcist.holy-shield",
-    "power.stalker.throat-hold",
-    "power.rod-of-imprisonment.imprison"
    ]
   },
   {
@@ -2041,6 +2045,52 @@
    ]
   },
   {
+   "name": "dodge",
+   "uses": 58,
+   "ids": [
+    "item.shadow-dagger",
+    "item.mirage-dagger",
+    "item.thick-hide",
+    "item.pilgrims-habit",
+    "item.peddlers-vest",
+    "item.silkweave-armor",
+    "item.brutes-harness",
+    "item.ghost-thread-cloak",
+    "item.wind-blessed-leather",
+    "item.wraithform-cloak",
+    "item.qi-wraps",
+    "item.gale-shroud",
+    "item.scorpion-carapace",
+    "item.battlemages-cuirass",
+    "item.cloudsteel-plate",
+    "item.armor-of-thorns",
+    "item.stoneskin-hauberk",
+    "item.cloak-of-ghostform",
+    "item.phantoms-mantle",
+    "item.skypriests-vestments",
+    "item.wind-dancers-cloak",
+    "item.drakescale-coat",
+    "item.aegis-of-the-fleet",
+    "item.patrocoleas-armor",
+    "item.chains-of-the-damned",
+    "item.storm-bastion",
+    "item.flowing-cloak",
+    "item.heavy-leather",
+    "item.creature-hide",
+    "item.plated-armor",
+    "item.tower-shield",
+    "item.iron-round-shield",
+    "item.iron-knight-shield",
+    "item.iron-tower-shield",
+    "item.iron-kite-shield",
+    "item.rangers-worn-boots",
+    "item.tome-of-forgotten-whispers",
+    "item.banner-of-the-lost-legion",
+    "item.dusty-map-case",
+    "item.eye-of-damnation"
+   ]
+  },
+  {
    "name": "strength",
    "uses": 54,
    "ids": [
@@ -2084,52 +2134,6 @@
     "specialty.wayfinder",
     "specialty.feral",
     "specialty.assassin"
-   ]
-  },
-  {
-   "name": "dodge",
-   "uses": 54,
-   "ids": [
-    "item.shadow-dagger",
-    "item.mirage-dagger",
-    "item.thick-hide",
-    "item.pilgrims-habit",
-    "item.peddlers-vest",
-    "item.silkweave-armor",
-    "item.brutes-harness",
-    "item.ghost-thread-cloak",
-    "item.wind-blessed-leather",
-    "item.wraithform-cloak",
-    "item.qi-wraps",
-    "item.gale-shroud",
-    "item.scorpion-carapace",
-    "item.battlemages-cuirass",
-    "item.cloudsteel-plate",
-    "item.armor-of-thorns",
-    "item.stoneskin-hauberk",
-    "item.cloak-of-ghostform",
-    "item.phantoms-mantle",
-    "item.skypriests-vestments",
-    "item.wind-dancers-cloak",
-    "item.drakescale-coat",
-    "item.aegis-of-the-fleet",
-    "item.patrocoleas-armor",
-    "item.chains-of-the-damned",
-    "item.storm-bastion",
-    "item.flowing-cloak",
-    "item.heavy-leather",
-    "item.creature-hide",
-    "item.plated-armor",
-    "item.tower-shield",
-    "item.rangers-worn-boots",
-    "item.tome-of-forgotten-whispers",
-    "item.banner-of-the-lost-legion",
-    "item.dusty-map-case",
-    "item.eye-of-damnation",
-    "item.crown-of-the-sand-king",
-    "power.wayfinder.switch-to-melee",
-    "enchant.bloodthirsty",
-    "enchant.stormward"
    ]
   },
   {
@@ -2336,36 +2340,8 @@
    ]
   },
   {
-   "name": "staminaMax",
-   "uses": 22,
-   "ids": [
-    "item.borrowed-vestments",
-    "item.guardians-mail",
-    "item.wind-blessed-leather",
-    "item.qi-wraps",
-    "item.troll-gut-vest",
-    "item.divine-bulwark",
-    "item.wind-dancers-cloak",
-    "item.chains-of-the-damned",
-    "item.ragged-hides",
-    "item.rusted-plate",
-    "item.destroyed-mail",
-    "item.barbarian-hide",
-    "item.heavy-leather",
-    "item.plated-armor",
-    "item.tower-shield",
-    "item.backpack",
-    "item.meditation-beads",
-    "item.quartermasters-manifest",
-    "enchant.silkweave",
-    "enchant.enduring",
-    "specialty.berserker",
-    "specialty.diviner"
-   ]
-  },
-  {
    "name": "block",
-   "uses": 21,
+   "uses": 26,
    "ids": [
     "item.greatsword",
     "item.raiders-cutlass",
@@ -2387,7 +2363,41 @@
     "item.dagger",
     "item.kite-shield",
     "item.round-shield",
-    "item.tower-shield"
+    "item.tower-shield",
+    "item.knight-shield",
+    "item.iron-round-shield",
+    "item.iron-knight-shield",
+    "item.iron-tower-shield",
+    "item.iron-kite-shield"
+   ]
+  },
+  {
+   "name": "staminaMax",
+   "uses": 23,
+   "ids": [
+    "item.borrowed-vestments",
+    "item.guardians-mail",
+    "item.wind-blessed-leather",
+    "item.qi-wraps",
+    "item.troll-gut-vest",
+    "item.divine-bulwark",
+    "item.wind-dancers-cloak",
+    "item.chains-of-the-damned",
+    "item.ragged-hides",
+    "item.rusted-plate",
+    "item.destroyed-mail",
+    "item.barbarian-hide",
+    "item.heavy-leather",
+    "item.plated-armor",
+    "item.tower-shield",
+    "item.iron-tower-shield",
+    "item.backpack",
+    "item.meditation-beads",
+    "item.quartermasters-manifest",
+    "enchant.silkweave",
+    "enchant.enduring",
+    "specialty.berserker",
+    "specialty.diviner"
    ]
   },
   {
@@ -2507,6 +2517,20 @@
    ]
   },
   {
+   "name": "rangedBlock",
+   "uses": 8,
+   "ids": [
+    "item.kite-shield",
+    "item.round-shield",
+    "item.tower-shield",
+    "item.knight-shield",
+    "item.iron-round-shield",
+    "item.iron-knight-shield",
+    "item.iron-tower-shield",
+    "item.iron-kite-shield"
+   ]
+  },
+  {
    "name": "vision",
    "uses": 7,
    "ids": [
@@ -2530,15 +2554,6 @@
     "specialty.serpent",
     "specialty.direbeast",
     "specialty.carrion"
-   ]
-  },
-  {
-   "name": "rangedBlock",
-   "uses": 3,
-   "ids": [
-    "item.kite-shield",
-    "item.round-shield",
-    "item.tower-shield"
    ]
   },
   {
