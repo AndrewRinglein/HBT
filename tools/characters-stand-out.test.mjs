@@ -137,7 +137,26 @@ test('no look at all (an empty list): the page is as it was — the standard zoo
   for (const b of [plain, disc, shadows]) b.v.dispose()
 })
 
-test('the size look: the board is shown at 0.9× — hexes 10% smaller — and never any white space: at load, every wheel step, every quarter turn, every edge', () => {
+/* Law 10, 2026-10-05 (viewer.zoom-stays; engine DECISIONS.md 2026-10-05 'the battle screen must feel smooth: … The wheel's zoom stays where it is left, far enough
+   out to see the whole board', Andrew: "2 yes" — "Overturns 2026-10-01 'snaps back to standard when you stop'. At the widest zoom the
+   whole board shows, so 2026-10-03's 'the camera never shows white space' gives way there by as much as showing the whole
+   board takes and no more"). The tests below held "the battle area shows only board" (noVoid) of
+   every frame of every wheel step OUT as well as in, and let the zoom spring back between ('springing back'). The rule now:
+   the zoom stays where the wheel leaves it, and pulled back past the fill the view shows past the board's edge — only as
+   much as showing more of the board takes: on each axis the battle area shows only board, or the whole of the board
+   (boardOrWhole, every frame of the ease too). At the standard zoom and nearer, "only board" is held exactly as before;
+   the wheel's button brings the standard zoom back where the spring did. */
+function boardOrWhole(V, what) {
+  const F = V.data.F, q = footprint(V), T = 1.5
+  assert.ok((q.l >= -T && q.r <= F.w + T) || (q.l <= T && q.r >= F.w - T), `${what}: across, the battle area shows only board or the whole of it — it sees x ${q.l.toFixed(1)}..${q.r.toFixed(1)} of ${F.w}`)
+  assert.ok((q.t >= -T && q.b <= F.h + T) || (q.t <= T && q.b >= F.h - T), `${what}: up and down, the battle area shows only board or the whole of it — it sees y ${q.t.toFixed(1)}..${q.b.toFixed(1)} of ${F.h}`)
+}
+/** let the wheel's ease run, a frame at a time, every frame showing only board or the whole of it */
+const ease = (w, V, ms, what) => { for (let t = 0; t < ms; t += 16) { w._flush(16); boardOrWhole(V, `${what}, ${t + 16} ms on`) } }
+/** the wheel's button: back to the standard zoom */
+const wheelButton = wrap => { fire(wrap, 'pointerdown', { button: 1 }); fire(wrap, 'pointerup', { button: 1 }) }
+
+test('the size look: the board is shown at 0.9× — hexes 10% smaller — and never any white space: at load, every wheel step in, every quarter turn, every edge; pulled back by the wheel, only board or the whole of it', () => {
   const plain = boot([]), size = boot(['size']), F = size.V.data.F
   const q0 = noVoid(plain.V, 'no look, at load'), q1 = noVoid(size.V, 'size, at load')
   const ratio = (q1.r - q1.l) / (q0.r - q0.l)
@@ -146,14 +165,17 @@ test('the size look: the board is shown at 0.9× — hexes 10% smaller — and n
   assert.ok(q1.r - q1.l < F.w - 40 && q1.b - q1.t < F.h - 40, 'still board to scroll to across and down')
   const { w, v, V } = size, wrap = V.dom.stage.parentNode
   settle(w, V, 200, 'at load')
-  for (let i = 0; i < 12; i++) { fire(wrap, 'wheel', { deltaY: 300 }); settle(w, V, 48, `wheel out, step ${i + 1}`) }
-  settle(w, V, 1800, 'springing back')
+  for (let i = 0; i < 12; i++) { fire(wrap, 'wheel', { deltaY: 300 }); ease(w, V, 48, `wheel out, step ${i + 1}`) }
+  ease(w, V, 1800, 'pulled back, at rest'); assert.ok(V.view.cam.zoom < 1, 'the zoom stays where the wheel left it: no spring back')
+  wheelButton(wrap); ease(w, V, 400, 'back to the standard zoom'); settle(w, V, 200, 'at the standard zoom again')
   for (let i = 0; i < 12; i++) { fire(wrap, 'wheel', { deltaY: -300 }); settle(w, V, 48, `wheel in, step ${i + 1}`) }
-  settle(w, V, 1800, 'springing back')
+  settle(w, V, 1800, 'nearest, at rest'); assert.ok(V.view.cam.zoom > 1, 'and stays nearer too')
+  wheelButton(wrap); settle(w, V, 400, 'back to the standard zoom from nearer')
   assert.ok(Math.abs(V.camera3d.userData.pose.zoom / plain.V.camera3d.userData.pose.zoom - STAND_OUT.BOARD) < 1e-3, 'and back at the 0.9× standard')
   for (const deg of [90, 90, 90, 90]) { v.turn(deg); settle(w, V, 1200, `turning to ${V.view.cam.yaw}°`)
-    for (let i = 0; i < 12; i++) { fire(wrap, 'wheel', { deltaY: 300 }); settle(w, V, 48, `turned to ${V.view.cam.yaw}°, wheel out ${i + 1}`) }
-    settle(w, V, 1800, `turned to ${V.view.cam.yaw}°, springing back`) }
+    for (let i = 0; i < 12; i++) { fire(wrap, 'wheel', { deltaY: 300 }); ease(w, V, 48, `turned to ${V.view.cam.yaw}°, wheel out ${i + 1}`) }
+    ease(w, V, 400, `turned to ${V.view.cam.yaw}°, pulled back`)
+    wheelButton(wrap); ease(w, V, 400, `turned to ${V.view.cam.yaw}°, back to the standard zoom`); settle(w, V, 200, `turned to ${V.view.cam.yaw}°, at the standard zoom again`) }
   v.pan(-1e5, -1e5); noVoid(V, 'a pan far up-left'); v.pan(1e5, 1e5); noVoid(V, 'and far down-right')
   let n = 0
   for (let i = 0; i < EV.length; i++) if (EV[i].type === 'activation.begin') { v.seek(i + 1); noVoid(V, `Activation at event ${i}`); n++ }

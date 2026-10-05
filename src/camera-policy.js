@@ -30,10 +30,15 @@ export const POLICY = Object.freeze({
   PAN_FREEDOM: 1.5,             // how fast the pan bound opens as the camera comes nearer than the fit
   EDGE_ROOM: 60,                // board px the pan may go past the first and last rows (a head above, a name and bars below)
   /* viewer.xcom-camera (engine DECISIONS.md 2026-10-01 'the XCOM-style camera'): one fixed angle and zoom — the Angled view
-     at the standard zoom — the wheel looks a little nearer or farther and springs back, the map scrolls at its edges */
+     at the standard zoom — the wheel looks a little nearer or farther and springs back (until 2026-10-05: it stays,
+     viewer.zoom-stays, below), the map scrolls at its edges */
   ZOOM_NEAR: 1.8,               // the wheel's nearest, against the standard zoom (was 1.4: "a little bit further", 2026-10-01)
-  ZOOM_FAR: .6,                 // the wheel's farthest (was .75)
-  ZOOM_REST_MS: 600,            // the wheel still this long: back to the standard zoom
+  /* viewer.zoom-stays (engine DECISIONS.md 2026-10-05 'the battle screen must feel smooth: … The wheel's zoom stays where it is
+     left, far enough out to see the whole board', Andrew: "2 yes" — overturning 2026-10-01 "snaps back to standard when you
+     stop"): there is no farthest factor and no rest timer any more (they were ZOOM_FAR .6 and ZOOM_REST_MS 600) — the wheel
+     pulls back as far as the whole board's fit (board.js applyCam) and the zoom stays where it is left. A notch eases over
+     about this long, keeping its speed from notch to notch (it restarted the 1,100 ms glide from rest). */
+  ZOOM_EASE_MS: 120,
   EDGE_SCROLL_PX: 36,           // the pointer within this of the board's edge scrolls the map that way (was 18)
   EDGE_WINDOW_PX: 14,           // or within this of the screen's edge while it is over the battle (viewer.xcom-camera-tuning)
   EDGE_SCROLL_SPEED: 700,       // board px a second

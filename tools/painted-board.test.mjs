@@ -95,7 +95,8 @@ test('the painted driver loads only the measured scene, lights it as reviewed, a
    the starting angled view". Andrew (engine DECISIONS.md 2026-10-01 'the XCOM-style camera'): "one fixed angle and zoom. No
    tilt, no free rotation. The arrow keys rotate 90 degrees." · "no grab-drag" · "The mouse wheel zooms a limited amount and
    snaps back". The turn, the zoom, the pan and the reset by call are kept (the hosts' and the tests' API); the tilt stays at
-   the fixed angle; no drag moves the camera; the wheel looks nearer (its spring back: tools/xcom-camera.test.mjs) */
+   the fixed angle; no drag moves the camera; the wheel looks nearer (its spring back: tools/xcom-camera.test.mjs — until
+   2026-10-05, when the zoom stays where it is left: tools/zoom-stays.test.mjs) */
 /* LAW 10 — 2026-10-05, viewer.map-drag-and-keys (engine DECISIONS.md 2026-10-05 'the battle screen must feel smooth: … the map
    drags and moves on W/A/S/D' — Andrew, asked "Should the map also move by dragging it and by W/A/S/D, alongside edge scroll
    (this overturns 'no grab-drag')?": "Yes"). This test was named "… moves for no drag …" and read

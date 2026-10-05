@@ -1,6 +1,7 @@
 // viewer.xcom-camera (engine backlog; engine DECISIONS.md 2026-10-01 'the XCOM-style camera'). Andrew: "I want to fully replace
 // the camera with an XCOM-style camera. So no tilt, no free rotation." Expect: "no tilt or free rotation; each arrow key turns
-// the view exactly 90 degrees; the wheel zooms and springs back to the standard zoom; the pointer at the screen edge scrolls;
+// the view exactly 90 degrees; the wheel zooms and springs back to the standard zoom [until 2026-10-05: the zoom stays,
+// viewer.zoom-stays — the test below is rewritten]; the pointer at the screen edge scrolls;
 // the first character is selected and centered at the start and the next in the bar, civilians included, after each
 // activation ends; a double-click on a card or a body selects that unit; the portrait sits lower left at the ability bar's
 // height; clicking an ability centers the actor; a wall or roof between camera and a character is see-through; End Turn is
@@ -34,7 +35,17 @@ const nearly = (a, b, tol, what) => assert.ok(Math.abs(a - b) <= tol, `${what}: 
 const fire = (node, type, extra = {}) => { for (const f of node.listeners[type] || []) f({ detail: 1, button: 0, stopPropagation() {}, preventDefault() {}, ...extra }) }
 const activations = battle1.events.map((e, i) => [e, i]).filter(([e]) => e.type === 'activation.begin')
 
-test('the wheel looks a little nearer or farther and springs back to the standard zoom once it is still', () => {
+/* Law 10, 2026-10-05 (viewer.zoom-stays; engine DECISIONS.md 2026-10-05 'the battle screen must feel smooth: … The wheel's zoom stays where it is left, far enough
+   out to see the whole board', Andrew: "2 yes" — "Overturns 2026-10-01 'snaps back to standard when you stop'. At the widest zoom the
+   whole board shows, so 2026-10-03's 'the camera never shows white space' gives way there by as much as showing the whole
+   board takes and no more"). This test read 'the wheel looks a little nearer or farther and springs back to
+   the standard zoom once it is still': after the wheel in, `w._flush(300); assert.ok(V.view.cam.zoom > 1, 'still while the wheel
+   turns (300 ms)')` then `w._flush(400); assert.equal(V.view.cam.zoom, 1, 'still for 600 ms: back to the standard zoom')`; after
+   the wheel out, `nearly(V.view.cam.zoom, Math.max(.6, 1 / (1.25 * STAND_OUT.BOARD)), 1e-9, 'farther, as far as the board fills
+   the view (and never past .6×)')` then `w._flush(700); assert.equal(V.view.cam.zoom, 1, 'and back')`. The rule now: the zoom
+   stays where the wheel leaves it; its nearest is unchanged; its farthest is the whole board in view, past the fill
+   (tools/zoom-stays.test.mjs reads the view itself: every hex whole, about the pointer, the ease). */
+test('the wheel looks nearer or farther and the zoom stays where it is left — out as far as the whole board', () => {
   const { w, v, V } = boot(), wrap = V.dom.stage.parentNode
   v.seek(activations[0][1] + 1)
   assert.equal(V.view.cam.zoom, 1, 'the standard zoom')
@@ -44,8 +55,10 @@ test('the wheel looks a little nearer or farther and springs back to the standar
      bit further than the 0.75 and 1.4"; now 1.8× and .6× (the board's own limits still hold inside them) */
   for (let i = 0; i < 20; i++) fire(wrap, 'wheel', { deltaY: -300 })
   assert.ok(V.view.cam.zoom > 1.4 && V.view.cam.zoom <= 1.8 + 1e-9, `nearer than 1.4×, never nearer than 1.8×: ${V.view.cam.zoom}`)
-  w._flush(300); assert.ok(V.view.cam.zoom > 1, 'still while the wheel turns (300 ms)')
-  w._flush(400); assert.equal(V.view.cam.zoom, 1, 'still for 600 ms: back to the standard zoom')
+  const nearest = V.view.cam.zoom
+  w._flush(300); assert.equal(V.view.cam.zoom, nearest, 'still while the wheel turns (300 ms)')
+  w._flush(400); assert.equal(V.view.cam.zoom, nearest, 'still for 600 ms: the zoom stays where the wheel left it')
+  w._flush(10000); assert.equal(V.view.cam.zoom, nearest, 'and ten seconds on')
   for (let i = 0; i < 20; i++) fire(wrap, 'wheel', { deltaY: 300 })
   /* Law 10 (viewer.camera-no-void, engine DECISIONS.md 2026-10-03 'the camera never shows white space', Andrew: "There's no
      reason to ever scroll into white space."): was 'farther than .75×, never past .6×' — the wheel now also stops where the
@@ -55,8 +68,11 @@ test('the wheel looks a little nearer or farther and springs back to the standar
      like the size change does it" · "yes"): the standard zoom is 0.9× the board's own by default (hexes 10% smaller), so the
      fill — where the wheel stops — is 1 / (1.25 × 0.9) of the standard; still never white space, never past .6×.
      was: nearly(V.view.cam.zoom, Math.max(.6, 1 / 1.25), 1e-9, …) */
-  nearly(V.view.cam.zoom, Math.max(.6, 1 / (1.25 * STAND_OUT.BOARD)), 1e-9, 'farther, as far as the board fills the view (and never past .6×)')
-  w._flush(700); assert.equal(V.view.cam.zoom, 1, 'and back')
+  const fill = 1 / (1.25 * STAND_OUT.BOARD), farthest = V.view.cam.zoom
+  assert.ok(farthest < fill - .2 && farthest > .2, `farther than where the board fills the view (${fill.toFixed(3)} of the standard) — out to the whole board: ${farthest.toFixed(3)}`)
+  fire(wrap, 'wheel', { deltaY: 300 }); assert.equal(V.view.cam.zoom, farthest, 'and no farther than that')
+  w._flush(700); assert.equal(V.view.cam.zoom, farthest, 'it stays there')
+  w._flush(10000); assert.equal(V.view.cam.zoom, farthest, 'ten seconds on as well')
   v.dispose()
 })
 

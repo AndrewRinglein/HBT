@@ -1448,13 +1448,24 @@ export function applyCam(V, opts = {}) {
   const fp1 = here && here.q, fillZ = here ? here.z : 0
   const [, nearT] = zoomLimits('tactical', fitZ, { w: VW, h: VH }, TOKEN_TOP)
   /* viewer.characters-stand-out: the size look shows the board at 0.9× of that standard (V.look.boardZoom, 1 when it is off); the
-     tactical camera still never pulls back past the fill (zlo, below), so no white space shows at any edge */
+     tactical camera still never pulls back past the fill (zfill, below) unless the wheel takes it there, so no white space shows at any edge */
   const std = (quarter ? Math.min(nearT, Math.max(1, quarter.z * POLICY.FILL_ROOM)) : 1) * (V.look?.boardZoom ?? 1), tactical = stance === 'tactical' && !!fp1
-  const zlo = tactical ? Math.max(zlo0, Math.min(fillZ, zhi)) : zlo0
+  const zfill = tactical ? Math.max(zlo0, Math.min(fillZ, zhi)) : zlo0
+  /* viewer.zoom-stays (engine DECISIONS.md 2026-10-05 'the battle screen must feel smooth: … The wheel's zoom stays where it is
+     left, far enough out to see the whole board', Andrew: "2 yes"; "At the widest zoom the whole board shows, so 2026-10-03's
+     'the camera never shows white space' gives way there by as much as showing the whole board takes and no more"). The fill
+     (zfill) was the floor of every tactical view; it is now the floor of the STANDARD zoom and of everything nearer — where
+     the game puts the view, no white space shows, as ruled. Only the player's wheel pulls the view back past it (view.pulled,
+     set by the wheel alone: a zoom by call keeps the fill for its floor, as it had), and there the view pulls back from the
+     standard as shown (sStd) as far as the whole board's fit (zlo0: boardFit, the whole-map view's own framing) and no
+     farther; the bound below centres the board on an axis the view has outgrown and holds the other to the
+     board's edge, so white space shows only where showing more of the board takes it. */
+  const sStd = Math.max(std, zfill), far = Math.min(1, zlo0 / sStd), out = !fit && !!view.pulled && cam.zoom < 1
   /* a turn keeps the zoom it turned with (the board's fill at a turn between the quarters is shown, not remembered), so
      turns come round to exactly the view they left */
-  if (!fit) { const zc = Math.min(zhi / std, Math.max((opts.turn ? zlo0 : zlo) / std, cam.zoom)); if (zc !== cam.zoom) cam.zoom = zc }
-  const s = fit ? fitZ : Math.max(cam.zoom * std, zlo)
+  if (!fit) { const zc = out ? Math.max(opts.turn ? 0 : far, cam.zoom) : Math.min(zhi / std, Math.max((opts.turn ? zlo0 : zfill) / std, cam.zoom)); if (zc !== cam.zoom) cam.zoom = zc }
+  const s = fit ? fitZ : out ? Math.max(cam.zoom * sStd, zlo0) : Math.max(cam.zoom * std, zfill)
+  view.zoomEnds = { fit: zlo0, std: sStd }                                           // (the glide's frames keep the same box: onBoard)
   const top = TOKEN_TOP / sq                          // the standee's overhang above its feet, in iso board-y
   const halfW = (VW / 2) / s, halfH = (VH / 2) / (s * sq)
   const M = 80
@@ -1483,8 +1494,7 @@ export function applyCam(V, opts = {}) {
        a held view stop at the bound. */
     if (tactical && !fit) {
       /* viewer.bubble-click-reveals: where the view's centre may go at this zoom and angle (iso px), kept for the reveal */
-      const box = (lo, hi) => lo <= hi ? [lo, hi] : [(lo + hi) / 2, (lo + hi) / 2]
-      const own = { x: box(-fp1.l / s, bw - fp1.r / s), y: box(-fp1.t / s * k, (F.h - fp1.b / s) * k) }
+      const own = ownBox(V, fp1, s, zlo0, sStd)
       view.boardBox = own; view.panBox = edgeBound(V, own, { yaw, tilt, zoom: s }, { w: VW, h: VH })
       const B = toBoard ? own : view.panBox
       f.x = Math.min(Math.max(f.x, B.x[0]), B.x[1]); f.y = Math.min(Math.max(f.y, B.y[0]), B.y[1]); return
@@ -1534,6 +1544,7 @@ export function applyCam(V, opts = {}) {
      (the player scrolled or a slide took it there: it is left there, at the bound) or 'subject' (the least slide that shows
      the unit in sight whole: worked out afresh each time, so the view comes back when the unit no longer needs it). A change
      of zoom or turn frames the view afresh. */
+  let anchored = null
   const beyond = () => { const o = view.boardBox; return !!o && tactical && !fit && (f.x < o.x[0] - 1e-6 || f.x > o.x[1] + 1e-6 || f.y < o.y[0] - 1e-6 || f.y > o.y[1] + 1e-6) }
   const shapeKey = yaw + '|' + s + '|' + VW + '|' + VH
   if (view.shapeKey !== shapeKey) { view.shapeKey = shapeKey; if (view.pastEdge === 'scroll' && !held && !opts.pan) view.pastEdge = null }
@@ -1541,6 +1552,17 @@ export function applyCam(V, opts = {}) {
   else if (opts.pan) { if (f.x == null) { f.x = bw / 2; f.y = bh / 2 } f.x += opts.pan.x; f.y += opts.pan.y * k; bound(); view.pastEdge = beyond() ? 'scroll' : null }
   else if (opts.focus) { f.x = opts.focus.px; f.y = opts.focus.py * k; bound(true); whole(hexOfPoint(opts.focus)); view.pastEdge = beyond() ? (view.looking ? 'scroll' : 'subject') : null }      // Focus selected unit: centred, on purpose — as near as the board's own box lets it, then its hex shown whole
   else if (opts.hold) bound()                                                        // a restored view (Overhead, Inspect off) is shown as it was
+  /* viewer.zoom-stays: the wheel zooms about the pointer — the ground under it (opts.about, board px) stays under it. The
+     camera zooms about the point it looks at, so what a place of the screen shows lies off that point by an offset that
+     shrinks as 1 / zoom: the new centre is the ground point, and the centre's offset from it scaled by old zoom / new. Worked
+     from the pose SHOWN (a notch may come mid-ease), then held to the same bound as any view the player put (below). */
+  else if (opts.about && V.camShown && V.camShown.yaw === yaw && V.camShown.tilt === tilt && V.camShown.zoom > 0) {
+    const a = V.camShown, g = opts.about, r = a.zoom / s
+    f.x = g.x + (a.x - g.x) * r; f.y = (g.y + (a.y - g.y) * r) * k
+    const want = { x: f.x, y: f.y }
+    bound(view.pastEdge !== 'scroll')
+    if (Math.abs(f.x - want.x) < 1e-6 && Math.abs(f.y - want.y) < 1e-6) anchored = g
+  }
   else if (f.x == null) { const p = pts[0] || { px: bw / 2, py: bh / 2 }; f.x = p.px; f.y = p.py; bound(true); if (pts.length === 1) { const u = S.U[barUnitOf(V)]; if (u) whole(u.hex) } view.pastEdge = beyond() ? 'subject' : null }
   else if (view.inspect) bound()                                                     // Inspect explores: selection never pulls the camera
   /* viewer.bubble-click-reveals: a view slid to show a unit off the screen stays where it was slid — the inclusion below
@@ -1586,6 +1608,7 @@ export function applyCam(V, opts = {}) {
   const cx = fit ? bw / 2 : f.x, cy = fit ? bh / 2 : f.y                             // a fit shows the whole board, centred
   if (!fit && !view.home && camF.x != null) view.home = { x: camF.x, y: camF.y }     // the starting view Reset returns to
   view.noVoid = tactical && !fit                                                     // the glide's frames keep to the board too
+  view.zoomAbout = anchored                                                         // (read by the wheel's ease, setPose)
   setPose(V, { x: cx, y: cy / k, yaw, tilt, zoom: s, past: !!view.pastEdge || (held && beyond()) })
   syncCamBar(V)
   /* the HUD says only what the camera is doing (Law 5: the export's outcome,
@@ -1594,7 +1617,7 @@ export function applyCam(V, opts = {}) {
   if (V.dom.hud) { const u = S.U[subjectOf(V)]
     const what = view.peek ? 'peek — whole board' : view.zoom === 'fit' ? 'fit'
       : (stance === 'inspect' ? 'Inspect · free exploration' : stance === 'overhead' ? 'Overhead' : 'Tactical camera · ' + Math.round(elevationOfTilt(tilt)) + '°') + (view.overview ? ' · whole map' : '')
-    V.dom.hud.textContent = what + ' · ←/→ or Q/E turn 90° · wheel to look closer · drag, W A S D or an edge to move the map' + (u ? ' · on ' + u.name : '') }
+    V.dom.hud.textContent = what + ' · ←/→ or Q/E turn 90° · wheel to zoom · drag, W A S D or an edge to move the map' + (u ? ' · on ' + u.name : '') }
 }
 /* ── the glide (the 1.1 s half-speed camera glide of 2026-09-01, which was the stage's CSS transition) is now the
    camera's own: the pose eases to its target and every frame of it is one real camera, so the 3D scene and the board
@@ -1614,6 +1637,20 @@ function setPose(V, pose) {
   V.camTarget = pose
   const from = V.camShown
   if (!from || !V.view.glide || V.view.dragging || V.view.scrolling || typeof requestAnimationFrame !== 'function') { V.camAnim = null; showPose(V, pose); return }
+  /* viewer.zoom-stays: the wheel's notch has an ease of its own — about POLICY.ZOOM_EASE_MS, and it KEEPS ITS SPEED from notch
+     to notch: the zoom follows its target as a critically damped spring (in the zoom's logarithm, so in and out feel alike),
+     and a notch that comes while it is still moving moves the target and leaves the speed as it is. (Every notch restarted
+     the 1.1 s glide from rest: ten notches a second never got going.) The new ease starts from the pose last shown, at the
+     moment it was shown and with the speed it had then, so nothing jumps. */
+  if (V.view.zooming) {
+    const prev = V.camAnim && V.camAnim.spring ? V.camAnim : null, now = clockOf(V)
+    if (!prev && samePose(from, pose)) { V.camAnim = null; showPose(V, pose); return }
+    /* (a notch at the zoom's own end, while a glide of the game's is on its way: nothing to ease — the glide goes on, below) */
+    if (prev || from.zoom !== pose.zoom) {
+    V.camAnim = { spring: true, from: { ...from }, to: pose, t0: prev ? prev.shownAt : now, v: prev ? prev.vShown : 0, shownAt: prev ? prev.shownAt : now, vShown: prev ? prev.vShown : 0, asked: now, about: V.view.zoomAbout || null }
+    if (V.camRaf == null) V.camRaf = requestAnimationFrame(() => glideFrame(V))
+    return }
+  }
   if (samePose(from, pose)) { if (!V.camAnim) showPose(V, pose); else V.camAnim.to = pose; return }
   /* viewer.camera-no-void: a glide already on its way to this very pose runs on — restarted every frame (a held edge at the
      board's edge asks for the same pose each frame) it crept and never arrived */
@@ -1622,27 +1659,69 @@ function setPose(V, pose) {
   V.camAnim = { from: { ...from }, to: pose, t0: clockOf(V), ms: V.view.turning ? POLICY.TURN_MS : GLIDE_MS }
   if (V.camRaf == null) V.camRaf = requestAnimationFrame(() => glideFrame(V))
 }
+/* the spring's stiffness: a critically damped spring is within 5% of its target after 4.74 / w seconds */
+const ZOOM_W = 4.74 / (POLICY.ZOOM_EASE_MS / 1000)
+/** viewer.zoom-stays: a frame of the wheel's ease. The zoom's logarithm y (its distance from the target's) and speed v obey
+    y'' = -2w y' - w² y, solved exactly for the time passed — so the frame rate changes nothing. The view's centre keeps the
+    ground under the pointer under it (A.about) at every frame; where the bound moved the target off that, the centre goes
+    with the zoom. It ends on the target exactly, once it is all but there or half as long again as the ease has passed
+    since the last notch. */
+function zoomFrame(V, A) {
+  const now = clockOf(V), a = A.from, b = A.to, t = Math.max(0, (now - A.t0) / 1000)
+  const y0 = Math.log(a.zoom / b.zoom), c = A.v + ZOOM_W * y0, e = Math.exp(-ZOOM_W * t)
+  const y = (y0 + c * t) * e, v = (A.v - ZOOM_W * c * t) * e
+  if (!(Math.abs(y0) > 1e-12) && !(Math.abs(A.v) > 1e-9) || now - A.asked >= POLICY.ZOOM_EASE_MS * 1.5 || (Math.abs(y) < 2e-4 && Math.abs(v) < 2e-2)) { V.camAnim = null; showPose(V, b); return }
+  const zoom = b.zoom * Math.exp(y), p = Math.abs(y0) > 1e-12 ? Math.min(1, Math.max(0, 1 - y / y0)) : 1
+  const turn = ((b.yaw - a.yaw) % 360 + 540) % 360 - 180
+  let yaw = a.yaw + turn * p; yaw = ((yaw + 180) % 360 + 360) % 360 - 180
+  const g = A.about, r = a.zoom / zoom
+  const mid = { ...b, x: g ? g.x + (a.x - g.x) * r : a.x + (b.x - a.x) * p, y: g ? g.y + (a.y - g.y) * r : a.y + (b.y - a.y) * p, yaw, tilt: a.tilt + (b.tilt - a.tilt) * p, zoom }
+  A.shownAt = now; A.vShown = v
+  showPose(V, V.view.noVoid ? onBoard(V, mid, !a.past && !b.past, Math.min(a.zoom, b.zoom)) : mid)
+  V.camRaf = requestAnimationFrame(() => glideFrame(V))
+}
 function glideFrame(V) {
   V.camRaf = null
   const A = V.camAnim; if (!A) return
+  if (A.spring) { zoomFrame(V, A); return }
   const t = Math.min(1, (clockOf(V) - A.t0) / (A.ms || GLIDE_MS)), e = EASE(t), a = A.from, b = A.to
   const turn = ((b.yaw - a.yaw) % 360 + 540) % 360 - 180                              // the short way round
   let yaw = a.yaw + turn * e; yaw = ((yaw + 180) % 360 + 360) % 360 - 180
   const mid = { x: a.x + (b.x - a.x) * e, y: a.y + (b.y - a.y) * e, yaw, tilt: a.tilt + (b.tilt - a.tilt) * e, zoom: a.zoom * Math.pow(b.zoom / a.zoom, e) }
-  showPose(V, t >= 1 ? b : V.view.noVoid ? onBoard(V, mid, !a.past && !b.past) : mid)
+  showPose(V, t >= 1 ? b : V.view.noVoid ? onBoard(V, mid, !a.past && !b.past, Math.min(a.zoom, b.zoom)) : mid)
   if (t < 1) V.camRaf = requestAnimationFrame(() => glideFrame(V)); else V.camAnim = null
+}
+/** the board's own box at a zoom (iso px): where the view's centre may stand so that the battle area shows only board. `fp` is
+    the ground the battle area shows at zoom 1 (camera3d.js groundFootprint; it shrinks as 1 / zoom). On an axis where the
+    board is the smaller even so, the view is centred — the ground seen, the same room either side (viewer SWITCHES
+    noVoidSmaller).
+    viewer.zoom-stays: the wheel now pulls back past the fill, as far as the whole board's fit (`fit`), so an axis the view
+    outgrows on the way is centred like that at first and comes, by the fit, to the board's own middle — where the whole-map
+    view stands, the board framed as that view frames it and every hex whole. (Centred on the ground seen all the way, the
+    far ground beyond the board's top took the room: the board sat in the top half of the screen.) `std` is the standard
+    zoom as shown: nothing nearer than it is moved. */
+function ownBox(V, fp, zoom, fit, std) {
+  const F = V.data.F, k = isoK(V)
+  const axis = (lo, hi, middle, outgrown) => {
+    if (lo <= hi) return [lo, hi]
+    const c = (lo + hi) / 2, from = Math.min(outgrown, std)
+    const part = from > fit ? Math.min(1, Math.max(0, (1 / zoom - 1 / from) / (1 / fit - 1 / from))) : zoom <= fit ? 1 : 0
+    const m = c + (middle - c) * part; return [m, m] }
+  return { x: axis(-fp.l / zoom, F.w - fp.r / zoom, F.w / 2, (fp.r - fp.l) / F.w), y: axis(-fp.t / zoom * k, (F.h - fp.b / zoom) * k, F.h * k / 2, (fp.b - fp.t) / F.h) }
 }
 /** viewer.camera-no-void: a glide's frame kept to the board — between two views that show only board, a frame part-way
     through a turn or a zoom may see past a corner; it comes as near as it must and is pinned as applyCam pins its views */
-function onBoard(V, pose, toBoard = false) {
+function onBoard(V, pose, toBoard = false, least = Infinity) {
   const { W, H } = viewportOf(V), F = V.data.F, fp = groundFootprint(boardAffine(V), { ...pose, zoom: 1 }, { w: W, h: H })
   if (!fp) return pose
-  const zoom = Math.max(pose.zoom, (fp.r - fp.l) / F.w, (fp.b - fp.t) / F.h)
+  /* (viewer.zoom-stays: a glide to or from a view the wheel pulled back past the fill is not brought nearer than its own
+     two ends — `least`, the farther of them — on the way) */
+  const zoom = Math.max(pose.zoom, Math.min(least, Math.max((fp.r - fp.l) / F.w, (fp.b - fp.t) / F.h)))
   /* viewer.camera-shows-edge-units: the frame is held to the same bound as every view — the board's own box at this frame's
      zoom and angle, grown as far as the outermost hexes need */
-  const k = isoK(V), box = (lo, hi) => lo <= hi ? [lo, hi] : [(lo + hi) / 2, (lo + hi) / 2]
+  const k = isoK(V), E = V.view.zoomEnds
   /* a glide between two views that show only board shows only board in every frame, as it always did */
-  const own = { x: box(-fp.l / zoom, F.w - fp.r / zoom), y: box(-fp.t / zoom * k, (F.h - fp.b / zoom) * k) }
+  const own = ownBox(V, fp, zoom, E ? E.fit : zoom, E ? E.std : zoom)
   const B = toBoard ? own : edgeBound(V, own, { yaw: pose.yaw, tilt: pose.tilt, zoom }, { w: W, h: H })
   const pin = (lo, hi, v) => Math.min(Math.max(v, lo), hi)
   return { ...pose, zoom, x: pin(B.x[0], B.x[1], pose.x), y: pin(B.y[0] / k, B.y[1] / k, pose.y) }
@@ -1713,6 +1792,7 @@ export function turnCam(V, { yaw = 0, tilt = 0, zoom = 1 } = {}) {
 export function resetCam(V) {
   V.view.cam = homeCam(); V.view.overhead = null; V.view.inspect = null; V.view.overview = false
   V.view.put = false                                   // viewer.view-stays-where-put: Reset is the player asking for the opening view
+  V.view.pulled = false                                // viewer.zoom-stays: and for the standard zoom
   V.view.camF = V.view.home ? { x: V.view.home.x, y: V.view.home.y } : { x: null, y: null }
   applyCam(V); drawEdges(V)
 }
@@ -1722,16 +1802,30 @@ export function centreOn(V, id) {
   V.view.overview = false; V.view.peek = false
   applyCam(V, { focus: V.data.POS[u.hex] }); drawEdges(V)
 }
-/** viewer.xcom-camera: the wheel looks nearer or farther, within POLICY.ZOOM_FAR..ZOOM_NEAR of the standard zoom, and
-    springs back to it once the wheel is still ("it snaps back to the standard zoom as soon as you stop pressing") */
-export function lookCloser(V, deltaY) {
-  const c = V.view.cam || (V.view.cam = homeCam()), std = homeCam().zoom
-  c.zoom = Math.min(std * POLICY.ZOOM_NEAR, Math.max(std * POLICY.ZOOM_FAR, c.zoom * Math.exp(-deltaY * CAM.WHEEL)))
+/** viewer.xcom-camera: the wheel looks nearer or farther.
+    viewer.zoom-stays (engine DECISIONS.md 2026-10-05 'the battle screen must feel smooth: … The wheel's zoom stays where it is
+    left, far enough out to see the whole board', Andrew: "2 yes" — overturning 2026-10-01 "it snaps back to the standard zoom
+    as soon as you stop pressing"): the zoom STAYS where the wheel leaves it — there is no timer — from POLICY.ZOOM_NEAR of the
+    standard zoom out to the whole board in view (applyCam holds the far end: the board's fit). It zooms about the pointer:
+    `at` is the point of the board's ground under it (board px), which stays under it; with none it zooms about the view's
+    centre. Shown through the wheel's own ease (setPose), never the 1.1 s glide. */
+export function lookCloser(V, deltaY, at = null) {
+  const c = V.view.cam || (V.view.cam = homeCam())
+  zoomTo(V, c.zoom * Math.exp(-deltaY * CAM.WHEEL), at)
+}
+/** viewer.zoom-stays: the wheel's button — back to the standard zoom, about the pointer as the wheel zooms (viewer SWITCHES
+    zoomWheelButton) */
+export function standardZoom(V, at = null) { zoomTo(V, homeCam().zoom, at) }
+function zoomTo(V, zoom, at) {
+  const c = V.view.cam || (V.view.cam = homeCam())
+  c.zoom = Math.min(homeCam().zoom * POLICY.ZOOM_NEAR, Math.max(1e-6, zoom))
+  V.view.pulled = c.zoom < homeCam().zoom              // the wheel has the view farther out than the standard zoom (applyCam)
   /* viewer.view-stays-where-put: the wheel is the player's hand on the view — it zooms where the view is, and stays */
   V.view.put = true
-  V.view.overview = false; applyCam(V); drawEdges(V)
-  if (V.zoomRest != null) clearTimeout(V.zoomRest)
-  V.zoomRest = setTimeout(() => { V.zoomRest = null; if (!V.view.cam) return; V.view.cam.zoom = std; applyCam(V); drawEdges(V) }, POLICY.ZOOM_REST_MS)
+  V.view.overview = false
+  V.view.zooming = true
+  try { applyCam(V, at ? { about: at } : {}) } finally { V.view.zooming = false }
+  drawEdges(V)
 }
 /** viewer.xcom-camera: the map scrolls toward the edge the pointer is at (dir: -1, 0 or 1 across and down the screen) for
     `dt` seconds ("When you mouse or point past the edge of a map, the map just scrolls") */
@@ -2170,7 +2264,9 @@ export function bindCamera(V) {
     drawEdges(V) }
   const up = e => { const released = drag; drag = null; wrap.style.cursor = ''
     /* viewer.play-input: a right-click that did not drag the map steps the plan back one stage (UI-BUILD-NOTES §5) */
-    if (e && e.button === 2 && released && !dragged && V.play) V.offerPlay({ kind: 'back' }) }
+    if (e && e.button === 2 && released && !dragged && V.play) V.offerPlay({ kind: 'back' })
+    /* viewer.zoom-stays: a press of the wheel's button that did not drag the map returns to the standard zoom */
+    if (e && e.button === 1 && released && !dragged) standardZoom(V, groundUnder(e)) }
   /* a click lands on what the camera's ray meets — a unit's body or a hex — at any angle (a keyboard press on a
      focused hex button is that button's own; a press on a control is the control's) */
   const click = e => {
@@ -2183,7 +2279,9 @@ export function bindCamera(V) {
   }
   /* the right button is the map's grab, never the browser's menu */
   const menu = e => { e.preventDefault() }
-  const wheel = e => { if (!e.deltaY) return; e.preventDefault(); lookCloser(V, e.deltaY) }
+  const wheel = e => { if (!e.deltaY) return; e.preventDefault(); lookCloser(V, e.deltaY, groundUnder(e)) }
+  /* viewer.zoom-stays: the wheel's button is the map's too (back to the standard zoom, on its release) — never the browser's scroll-anywhere */
+  const mouseDown = e => { if (e.button === 1 && e.preventDefault) e.preventDefault() }
   /* viewer.xcom-camera: a double-click on a unit's body chooses it to act next (the host decides whether it may) */
   const dbl = e => { if (!V.play || !V.inputActive()) return
     const at = pointerAt(V, e), hit = at ? pickAt(V, at.x, at.y) : null
@@ -2216,12 +2314,11 @@ export function bindCamera(V) {
     else return
     e.preventDefault()
   }
-  const bound = [['pointerdown',down],['pointermove',move],['pointerup',up],['pointerleave',leave],['pointerenter',enter],['contextmenu',menu],['wheel',wheel],['click',click],['dblclick',dbl]]
+  const bound = [['pointerdown',down],['pointermove',move],['pointerup',up],['pointerleave',leave],['pointerenter',enter],['contextmenu',menu],['wheel',wheel],['mousedown',mouseDown],['click',click],['dblclick',dbl]]
   for (const [type, fn] of bound) wrap.addEventListener(type, fn, type === 'wheel' ? { passive: false } : undefined)
   document.addEventListener('keydown', key); document.addEventListener('keyup', keyUp)
   if (typeof window !== 'undefined' && window.addEventListener) window.addEventListener('blur', keysOff)
   if (root && root.addEventListener) { root.addEventListener('pointermove', rootMove); root.addEventListener('pointerleave', rootLeave) }
   return () => { keysDown.clear(); keyed = null; edgeTo(null); document.removeEventListener && document.removeEventListener('keyup', keyUp); if (root && root.removeEventListener) { root.removeEventListener('pointermove', rootMove); root.removeEventListener('pointerleave', rootLeave) } if (edgeRaf != null && typeof cancelAnimationFrame === 'function') cancelAnimationFrame(edgeRaf)
-    if (V.zoomRest != null) { clearTimeout(V.zoomRest); V.zoomRest = null }
     document.removeEventListener('keydown', key); for (const [type, fn] of bound) wrap.removeEventListener(type, fn) }
 }

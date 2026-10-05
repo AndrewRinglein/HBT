@@ -309,6 +309,8 @@ test('Whole map fits the original board — every hex and a standing figure on i
       /* Law 10 (viewer.camera-no-void, engine DECISIONS.md 2026-10-03, Andrew: "There's no reason to ever scroll into white
          space."): was near(V.camTarget.zoom, fitZoom, …, 'the wheel stops at the fit') — the tactical camera now stops
          nearer, where the view just fills with board; kept: nothing zooms out past the whole-map fit */
+      /* (viewer.zoom-stays, 2026-10-05: the player's WHEEL now pulls back past the fill, as far as this fit — tools/zoom-stays.test.mjs
+         reads it. What is asserted here is the zoom by call, v.zoom, which keeps the fill for its floor: unchanged.) */
       v.zoom(.001); assert.ok(V.camTarget.zoom >= fitZoom * (1 - 1e-9), `the wheel never goes past the fit (${w}x${h}, ${yaw}°, ${elev}°)`)
       /* Law 10, 2026-10-04 (viewer.camera-shows-edge-units; engine DECISIONS.md 2026-10-04 'the view may slide past the board's
          edge to show a unit on an edge column'): was 'and stops where the view shows only board' of every view. At the
