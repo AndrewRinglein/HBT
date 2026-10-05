@@ -125,7 +125,14 @@ describe('kingdom.opening-hero-card-art — every screen that shows a hero shows
     expect(new Set(HERO_POOL.map((h) => portraitOf(h.id))).size).toBe(24)
   })
 
-  it('the first draft: three cards, each its hero\'s card art with the name, class and description — and still no number, no badge, no kit', () => {
+  // Law 10, 2026-10-05 (kingdom.first-hero-own-positives-negatives; engine/DECISIONS.md 2026-10-05 'the playtest post
+  // answered: …, the first hero's own positives and negatives' — Andrew: "It should show its positives and negatives compared to a
+  // standard hero of that type. It should say one line about what it is, like a ranger, and then … just about the positives and
+  // negatives it has, stats, and badges." — "This replaces 2026-10-03's 'no stats or badges shown, just a description'".) This test
+  // held each first-draft card as "stat-less — no number at all". The card now lists its own differences from its class's
+  // standard hero, which are numbers, so that line is rewritten as the rule now stands: no number BUT those. The art, the name,
+  // nothing carried as data and no kit: as they were.
+  it('the first draft: three cards, each its hero\'s card art with the name, class and description — no number but its own differences from its class\'s standard, no kit', () => {
     for (const seed of [5, 11, 15]) {
       const ctx = makeCtx(makeNewCampaign(seed))
       performAdvanceOpening(ctx, 'test')
@@ -137,7 +144,7 @@ describe('kingdom.opening-hero-card-art — every screen that shows a hero shows
         expect(id).toBe(offers[i]!.id)
         expect(imagesIn(card), `seed ${seed}: ${id}'s card shows its own art, once`).toEqual([uriOf(id)])
         expect(textOf(card), `seed ${seed}: ${id} is named`).toContain(offers[i]!.name)
-        expect(textOf(card), `seed ${seed}: ${id}: stat-less — no number at all`).not.toMatch(/\d/)
+        expect(textOf(card.replace(/<ul class="own"[^>]*>[\s\S]*?<\/ul>|<p class="own same"[^>]*>[\s\S]*?<\/p>/g, ' ')), `seed ${seed}: ${id}: no number but its own differences`).not.toMatch(/\d/)
         expect(card, `seed ${seed}: ${id} carries no stats, badges or rolls`).not.toMatch(/data-(stats|badges|rolls)=/)
         expect(textOf(card)).not.toMatch(/carries/i)
       }
