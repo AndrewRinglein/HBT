@@ -33,23 +33,42 @@ import { UNITS, levelTableOf, classOf } from '../engine.js'
  * table, then a row of that class from the pool, both on cup.reward keyed by
  * the Engagement and the card's ordinal (Law 4). Cards are distinct: a row
  * already dealt leaves the class pool for the next card.
+ *
+ * kingdom.rewards-only-authored (2026-10-04): the pool holds only the rows Andrew authored (src/content/rewards.ts), which
+ * leaves classes of the odds table with no row. A class with no row left to deal — none in the pool, or every one of its
+ * rows already dealt to this draw — is not rolled (rewardClassOf, below): never a throw, never an empty card. A draw the
+ * pool cannot fill deals the cards it has.
  */
 export function resolveRewardDraw(campaign: CampaignState, engagementId: string): string[] {
   const out: string[] = []
   for (let i = 0; i < rewardDrawOf(campaign); i++) {
-    const cls = classOfRoll(rollOf(campaign, CUP_IDS.reward, [engagementId, 'class', i]) % 100)
-    const pool = REWARDS.filter((r) => itemOf(r.id).itemClass === cls && !out.includes(r.id))
-    if (pool.length === 0) throw new Error(`resolveRewardDraw: the pool has no ${cls} row left to deal for card ${i + 1} of '${engagementId}'`)
+    const left = REWARDS.filter((r) => !out.includes(r.id))
+    const cls = rewardClassOf(rollOf(campaign, CUP_IDS.reward, [engagementId, 'class', i]), (c) => left.some((r) => itemOf(r.id).itemClass === c))
+    if (cls === null) continue
+    const pool = left.filter((r) => itemOf(r.id).itemClass === cls)
     out.push(pool[rollOf(campaign, CUP_IDS.reward, [engagementId, 'row', i]) % pool.length]!.id)
   }
   return out
 }
 
-/** A percent roll (0–99) against the odds table, in table order. */
-function classOfRoll(r: number): string {
+/**
+ * The class a card's roll lands on — the odds table walked in table order — or null for no card. `hasRow` says whether a
+ * class still has a row to deal. Every class has one: the roll is a percent (0–99) on the table as ruled, as it always was.
+ * Some have none (kingdom SWITCHES.md rewards.emptyClass): 'spread' rolls among the classes that have one, on the same
+ * table, so the empty classes' share goes to the rest in proportion to their own weights (integers: the roll is taken
+ * below the sum of the weights left); 'left-out' rolls the whole table and deals no card when the roll lands on an empty
+ * class. No class has a row: no card. Pure.
+ */
+export function rewardClassOf(roll: number, hasRow: (itemClass: string) => boolean, emptyClass: 'spread' | 'left-out' = SWITCHES.rewardsEmptyClass): string | null {
+  const whole = REWARD_ODDS.reduce((s, o) => s + o.pct, 0)
+  if (whole !== 100) throw new Error(`rewards odds sum to ${whole}, not 100`)
+  const table = emptyClass === 'spread' ? REWARD_ODDS.filter((o) => hasRow(o.itemClass)) : REWARD_ODDS
+  const total = table.reduce((s, o) => s + o.pct, 0)
+  if (total === 0) return null
+  const r = roll % total
   let at = 0
-  for (const o of REWARD_ODDS) { at += o.pct; if (r < at) return o.itemClass }
-  throw new Error(`rewards odds sum to ${at}, not 100`)
+  for (const o of table) { at += o.pct; if (r < at) return hasRow(o.itemClass) ? o.itemClass : null }
+  throw new Error(`rewardClassOf: roll ${roll} fell off a table of ${total}`)
 }
 
 /**
@@ -59,7 +78,7 @@ function classOfRoll(r: number): string {
  */
 export function resolveBattleOffer(campaign: CampaignState, engagementId: string): string[] | null {
   const offer = encounterRewardOf(engagementId)?.offer
-  if (!offer || offer.kind === 'draw') return resolveRewardDraw(campaign, engagementId)
+  if (!offer || offer.kind === 'draw') { const drawn = resolveRewardDraw(campaign, engagementId); return drawn.length ? drawn : null }   // a draw with no card to deal offers nothing — never an empty reward step
   if (offer.kind === 'none') return null
   return takersOf(campaign, offer.itemId, offer.takers).length ? [offer.itemId] : null
 }

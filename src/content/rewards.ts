@@ -4,9 +4,19 @@
 // weapons and armor come at tier 3, everything else at tier 1. The odds are a
 // TABLE the draw reads (REWARD_ODDS) and the pool is a FILTER over the generated
 // rows (G2) — never a second list. Prices are not here: gear is unpriced.
+//
+// kingdom.rewards-only-authored (2026-10-04). Ruled 2026-10-04 (Andrew, engine/DECISIONS.md 'reported on the Item Ledger:
+// items that do things the game has no mechanic for, authored by a chat and not by him': "I guess we could just ignore all
+// the items not authored by me to start with." — and, asked whether the set-aside items should also stop appearing as
+// battle rewards, "One yes. Stop appearing as battle rewards."). The pool is ALSO filtered by the list of the rows he
+// authored (src/content/authored-items.ts): a row that is not his is set aside — never drawn, so never on a reward card.
+// His: a row on the list, or — ruled the same day, "1 yes" (isOnRewardList, below) — one of his bases carrying one of his attributes.
+// Only the pool reads the list. Kits, enemies, the Forge, the Waystation, the items themselves and a save's own items do not.
+// A class of the odds table the list leaves with no row is the draw's to handle (src/core/rewards.ts rewardClassOf).
 
 import { ITEMS, itemOf, isShield, type ItemRow } from './items.js'
 import { SWITCHES } from './switches.js'
+import { AUTHORED_ITEMS, AUTHORSHIP_UNDECIDED } from './authored-items.js'
 
 export type RewardRow = { readonly id: string; readonly name: string; readonly tier: number; readonly slot: 'weapon' | 'armor' | 'off-hand' | 'trinket' }
 
@@ -29,20 +39,55 @@ export const REWARD_ODDS: readonly RewardOdds[] = [
   { itemClass: 'relic', pct: 10, tier: 1 },
 ]
 
-/** Is this row in the pool: a class the odds name, at that class's tier; the Waystation's catalog rows per the switch. */
-export const isRewardRow = (r: ItemRow): boolean => {
+/**
+ * Which rows beyond the list's own ids the pool takes — the two switches (kingdom SWITCHES.md rewards.hellTcgRowsOffered,
+ * rewards.derivedRowsOffered), as values, so the other side of each is a pool the same code builds.
+ */
+export type RewardListOptions = { readonly undecided: boolean; readonly derived: boolean }
+const LIST_AS_SWITCHED: RewardListOptions = { undecided: SWITCHES.rewardsHellTcgRowsOffered, derived: SWITCHES.rewardsDerivedRowsOffered }
+
+const AUTHORED: ReadonlySet<string> = new Set(AUTHORED_ITEMS.map((r) => r.id))
+const UNDECIDED: ReadonlySet<string> = new Set(AUTHORSHIP_UNDECIDED.map((r) => r.id))
+
+/**
+ * Is this row one the reward draw may deal by who authored it: its id is on the list. With `undecided`, the rows the
+ * review could not class count too; with `derived`, so does a row MADE of listed rows — a listed base CARRYING a listed
+ * attribute.
+ *
+ * kingdom.rewards-derived-rows-offered — ruled 2026-10-04 (Andrew, engine/DECISIONS.md 'rewards: one of his bases carrying
+ * one of his attributes is his; the Flaming Longsword stays battle 2's reward': asked "should a row made of one of your bases
+ * carrying one of your attributes count as yours" — "1 yes"): `derived` is on. A row whose base or whose attribute is not on
+ * the list is still not his, and neither is a base carrying no attribute (a masterwork): the ruling is of a base carrying
+ * an attribute.
+ */
+export const isOnRewardList = (r: ItemRow, o: RewardListOptions = LIST_AS_SWITCHED): boolean => {
+  const listed = (id: string): boolean => AUTHORED.has(id) || (o.undecided && UNDECIDED.has(id))
+  if (listed(r.id)) return true
+  return o.derived && r.base !== null && listed(r.base) && r.enchant !== null && listed(r.enchant)
+}
+
+/** Is this row of the pool's SHAPE: a class the odds name, at that class's tier; the Waystation's catalog rows per the switch. */
+const isOfRewardShape = (r: ItemRow): boolean => {
   const o = REWARD_ODDS.find((x) => x.itemClass === r.itemClass)
   if (!o || r.tier !== o.tier) return false
   if (r.waystationBand !== null && !SWITCHES.rewardsIncludeWaystation) return false
   return true
 }
 
-/** The pool — a filter over the generated rows, sorted by id (Law 6). */
-export const REWARDS: readonly RewardRow[] = ITEMS.filter(isRewardRow).map((r) => ({ id: r.id, name: r.name, tier: r.tier, slot: slotOf(r) })).sort((a, b) => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0))
+/** Is this row in the pool: of the pool's shape, and on the list of the rows Andrew authored (2026-10-04 — until then, the shape alone). */
+export const isRewardRow = (r: ItemRow): boolean => isOfRewardShape(r) && isOnRewardList(r)
+
+/** The pool for a reading of the list — a filter over the generated rows, sorted by id (Law 6). */
+export function rewardPoolOf(o: RewardListOptions): RewardRow[] {
+  return ITEMS.filter((r) => isOfRewardShape(r) && isOnRewardList(r, o)).map((r) => ({ id: r.id, name: r.name, tier: r.tier, slot: slotOf(r) })).sort((a, b) => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0))
+}
+
+/** The pool — the list as the switches stand today. */
+export const REWARDS: readonly RewardRow[] = rewardPoolOf(LIST_AS_SWITCHED)
 
 export function rewardOf(id: string): RewardRow {
   const row = REWARDS.find((r) => r.id === id)
-  if (!row) { itemOf(id); throw new Error(`'${id}' is an item but not in the reward pool (${REWARDS.length} rows: the odds table's classes at their tiers)`) }
+  if (!row) { itemOf(id); throw new Error(`'${id}' is an item but not in the reward pool (${REWARDS.length} rows: the odds table's classes at their tiers, of the rows on src/content/authored-items.ts)`) }
   return row
 }
 
