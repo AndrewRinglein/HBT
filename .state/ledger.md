@@ -31789,6 +31789,8 @@ index 9c5adab..2c02189 100644
   PASS  naming — no banned words invented
   PASS  kill switch — the tests fail without the content — tests fail without item.elfbow — they genuinely test it
 
+## viewer.prone-lies-down — LANDED `5761ea5`
+2026-10-05 08:34
 ## fix.stand-up-does-nothing — LANDED `43a5ab4`
 2026-10-05 06:58
 
@@ -31815,6 +31817,49 @@ index 9c5adab..2c02189 100644
   PASS  dependencies landed
   WARN  not already decided — 1 candidate ruling(s) — READ BEFORE ASKING: SWITCHES.md:1944
   PASS  typecheck
+  PASS  the item's own tests — test/viewer.prone-lies-down.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — viewer/test/viewer.prone-lies-down.test.ts
+  PASS  existing tests untouched
+  SKIPPED  control battles unchanged — engine code f48a625458 and the content pack are the ones the control battles last passed on (2026-10-05 06:05, gate content.elfbow-double-shot-one-target --land, in HBT-worker-engine) — not run
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+## viewer.unit-names-no-letters-or-numbers — LANDED `21a2930`
+2026-10-05 08:34
+
+  PASS  dependencies landed
+  WARN  not already decided — 3 candidate ruling(s) — READ BEFORE ASKING: SWITCHES.md:1944 · DECISIONS.md:5051
+  PASS  typecheck
+  PASS  the item's own tests — test/viewer.unit-names-no-letters-or-numbers.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — viewer/test/viewer.unit-names-no-letters-or-numbers.test.ts
+  PASS  existing tests untouched
+  SKIPPED  control battles unchanged — engine code f48a625458 and the content pack are the ones the control battles last passed on (2026-10-05 06:05, gate content.elfbow-double-shot-one-target --land, in HBT-worker-engine) — not run
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+## viewer.log-names-damage-cause — LANDED `18bf3fe`
+2026-10-05 08:34
+
+  PASS  dependencies landed
+  WARN  not already decided — 2 candidate ruling(s) — READ BEFORE ASKING: SWITCHES.md:2188 · SWITCHES.md:2263
+  PASS  typecheck
+  PASS  the item's own tests — test/viewer.log-names-damage-cause.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — viewer/test/viewer.log-names-damage-cause.test.ts
   PASS  the item's own tests — test/lumberjack-wife-top-card-art.test.ts
   PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
   PASS  brought its own tests — kingdom/test/lumberjack-wife-top-card-art.test.ts
