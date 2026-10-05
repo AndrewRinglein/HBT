@@ -187,6 +187,14 @@ html,body{margin:0;background:#08090b;color:var(--ink);
   font-size:9px;line-height:12px;text-align:center;font-weight:700;color:#0b0a08;
   padding:0 2px;border:1px solid rgba(0,0,0,.6)}
 .pip.sq{border-radius:2px}
+/* viewer.timed-effect-status-marks (2026-10-05): a status that GIVES — a timed effect (Stoke, Perfect Sight, Poison Coating) —
+   wears a buff's frame in its own hue (the badge's colour) with the square pip, never an affliction's bare shape: its glyph
+   from the shipped icon set sits inside the frame, or, where the table names none, a small square (the neutral buff mark) */
+.badge.buff{box-sizing:border-box;border:1px solid currentColor;border-radius:3px;background:rgba(8,7,5,.78)}
+.badge.buff .ra{position:absolute;left:2px;top:2px;font-size:13px}
+.badge.buff .gl{inset:4px}
+.uuIcons .badge.buff .ra{left:1px;top:1px;font-size:11px}
+.uuIcons .badge.buff .gl{inset:3px}
 
 /* bars */
 .hpbar{position:absolute;width:6px;border-radius:1px;background:rgba(8,8,6,.8);

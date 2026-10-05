@@ -3,7 +3,7 @@
    STATS ABOVE THE CARD → card art with STATUSES TO ITS RIGHT → KEYWORDS BELOW
    THE PICTURE. The action bar owns actions (§9.7). Split out 2026-09-02. */
 import { stStyle } from './theme.js'
-import { sgn, STATSHORT, modOf, effectWord, absorbOf, targetWords, unitTriggers, freeAttacksUp, FREE_ATTACK, tagRequirementWords } from './actions.js'
+import { sgn, STATSHORT, modOf, effectWord, absorbOf, targetWords, unitTriggers, freeAttacksUp, FREE_ATTACK, tagRequirementWords, statusLines } from './actions.js'
 import { raIcon } from './icons.js'
 import { subjectOf, barUnitOf } from './subject.js'
 import { itemsOf, SLOT_LABEL } from './items.js'
@@ -67,11 +67,19 @@ export function drawPanel(V) {
     return `<div class="freeUpRow" data-kind="${k}" style="display:flex;align-items:center;gap:8px;padding:6px 8px;margin-bottom:5px;background:${NOTE_HUE.aoo}12;border:1px solid ${NOTE_HUE.aoo}44;border-radius:3px">
         ${raIcon(F.glyph, 'font-size:14px;flex:0 0 14px;color:' + NOTE_HUE.aoo)}<span style="flex:1;font-size:12.5px;color:${NOTE_HUE.aoo};font-weight:600">${F.word}</span>
         <span class="mono" style="font-size:12px;font-weight:700;color:${NOTE_HUE.aoo}">up${acc ? ' · ' + sgn(acc) + ' ACC' : ''}</span></div>` }).join('')
+  /* viewer.timed-effect-status-marks: a status that GIVES (theme.js `buff`) is drawn with its glyph from the shipped icon set
+     where the table names one (a small framed square where it names none), and under its name says what it does and what is
+     left, a line per fact (actions.js statusLines — the status row's own fields); the same words are its hover. Every other
+     status row is what it was. */
   const stCol = upCol + (sts.length ? sts.map(([id, v]) => { const st = stStyle(id, V.data)
-    return `<div style="display:flex;align-items:center;gap:8px;padding:6px 8px;margin-bottom:5px;
+    const does = st.buff ? statusLines(id, v, V.data, SN) : [], hover = does.length ? ` title="${String([SN[id] || id, ...does].join(' — ')).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;')}"` : ''
+    const mark = st.glyph ? raIcon(st.glyph, 'font-size:14px;flex:0 0 14px;color:' + st.hue)
+      : st.buff ? `<i style="width:14px;height:14px;flex:0 0 14px;display:block;box-sizing:border-box;border:1px solid ${st.hue};border-radius:3px;background:linear-gradient(${st.hue},${st.hue}) center/6px 6px no-repeat"></i>`
+      : `<i style="width:14px;height:14px;flex:0 0 14px;display:block;clip-path:${st.gl};background:${st.hue}"></i>`
+    return `<div class="pStatus${st.buff ? ' buff' : ''}" data-status="${id}"${hover} style="display:flex;align-items:center;gap:8px;padding:6px 8px;margin-bottom:5px;
         background:${st.hue}12;border:1px solid ${st.hue}44;border-radius:3px">
-        <i style="width:14px;height:14px;flex:0 0 14px;display:block;clip-path:${st.gl};background:${st.hue}"></i>
-        <span style="flex:1;font-size:12.5px;color:${st.hue};font-weight:600">${SN[id] || id}</span>
+        ${mark}
+        <span style="flex:1;font-size:12.5px;color:${st.hue};font-weight:600">${SN[id] || id}${does.map(l => `<span class="pStatusDoes" style="display:block;font-size:11px;font-weight:400;color:#cfc8b6;line-height:1.3">${String(l).replace(/&/g, '&amp;').replace(/</g, '&lt;')}</span>`).join('')}</span>
         <span class="mono" style="font-size:14px;font-weight:700;color:${st.hue}">${v}</span></div>` }).join('')
     : upCol ? '' : '<div style="font-size:11.5px;color:#5f594c;padding:6px 2px">no status effects</div>')
   const now = V.clock()
