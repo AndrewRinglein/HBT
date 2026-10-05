@@ -179,7 +179,9 @@
   "shape": "plumbing",
   "spec": "Ruled 2026-10-05 (Andrew, engine/DECISIONS.md 'playtest post: notices, target lines, item cards, arrows, move costs on hexes, knocked down, bodies, cursed ground, the first hero's positives' and 'the playtest post answered'): 'When you're selecting items in the equipment phase, you need to be able to look at your items somehow. You need to be able to click on them, and then they pop up somewhere on the screen, to the right or somewhere, as a card with a description.' On the Equip screen (and the opening run's equip step, and Swap) clicking an item - in the inventory, in a hero's hand or slot, or on a reward card - shows that item's card at the right of the screen: its card art where it has one, name, kind and tier, what it gives while equipped, each attack and power it grants in the Codex's words, and a line of what it is. Clicking another item replaces it; clicking away closes it; looking at a card never equips or moves anything (equipping keeps its own gesture - if a single click equips today, the card opens on the click and equipping moves to its existing button or a second click; record the choice as a switch). Build the card's content as one function over the item data that the battle screen can use too (viewer.item-card-in-battle follows this item). Rebuild the pages.",
   "expect": "On the opening run's equip step clicking the Dagger shows a card at the right with its art, '+5 Block' and 'Stab' with its line; clicking a Tower Shield replaces it; clicking away closes it; nothing is equipped or moved by looking; the reward screen's cards open the same card.",
-  "note": "Filed by the home chat 2026-10-05."
+  "note": "Filed by the home chat 2026-10-05.",
+  "status": "done",
+  "sha": "e9bf7e3"
  },
  {
   "id": "kingdom.first-hero-own-positives-negatives",
