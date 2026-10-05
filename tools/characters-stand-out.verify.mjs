@@ -20,6 +20,7 @@
 //
 //   node tools/characters-stand-out.verify.mjs [review.html] [sandbox.html] [screenshot-dir]
 //   prints one line per check and `characters-stand-out: … passed`
+import {stillShot} from './still-shot.mjs'   // viewer.screenshot-time-out-under-load: the page's frame loop is held for the shot
 import '../../engine/tools/engine-modules.mjs'   // first: links engine/node_modules into a worker's copy (Andrew, 2026-10-01)
 import assert from 'node:assert/strict'
 import {createRequire} from 'node:module'
@@ -82,7 +83,7 @@ try{
       disc:getComputedStyle(V.layers.UEL.get(u.id).disc).visibility,discColour:getComputedStyle(V.layers.UEL.get(u.id).disc).backgroundColor}})}})
   assert.deepEqual(errors,[],`look "${look}": no page error, no shader error`);assert.equal(got.fault,'',`look "${look}": the battle runs`);assert.equal(got.failed,false,`look "${look}": the 3D map draws (${got.status})`)
   await page.evaluate(()=>window.__sandbox.viewer._V.dom.root.scrollIntoView())
-  await page.screenshot({path:resolve(SHOTS,shot),timeout:100000,animations:'disabled'});await page.close()
+  await stillShot(page,page,{path:resolve(SHOTS,shot),timeout:100000,animations:'disabled'});await page.close()
   return got
  }
  const plain=await open('','characters-stand-out-before.png')

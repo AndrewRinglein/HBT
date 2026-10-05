@@ -13,6 +13,7 @@
 // With a folder it also saves a screenshot of each over the Orphanage's board and the Cavern Trail's (the page's frame loop
 // held still for each shot); without one it takes none - the gate runs it so.
 // Prints one line per reading and `plates-banners-tooltip-gold-look: ... passed`.
+import {stillShot} from './still-shot.mjs'   // viewer.screenshot-time-out-under-load: the page's frame loop is held for the shot
 import assert from 'node:assert/strict'
 import {createRequire} from 'node:module'
 import {createServer} from 'node:net'
@@ -82,10 +83,9 @@ try{
  const shot=async(page,name)=>{if(!SHOTS)return
   await page.waitForFunction(()=>!document.querySelector('#terrainLoading'),null,{timeout:150000}).catch(()=>say('the 3D map was still loading at the screenshot'))
   await page.waitForTimeout(1500)
-  await page.evaluate(()=>{const real=window.requestAnimationFrame.bind(window),held=[];window.requestAnimationFrame=cb=>{held.push(cb);return 0};window.__letGo=()=>{window.requestAnimationFrame=real;for(const cb of held.splice(0))real(cb)}})
-  await page.waitForTimeout(80)
   const file=resolve(SHOTS,name+'.png');mkdirSync(SHOTS,{recursive:true})
-  await page.screenshot({path:file,timeout:100000});await page.evaluate(()=>window.__letGo());say('screenshot',relative(process.cwd(),file).replace(/\\/g,'/'))}
+  /* the frame loop held for the shot: tools/still-shot.mjs (viewer.screenshot-time-out-under-load) — was held here, inline */
+  await stillShot(page,page,{path:file,timeout:100000});say('screenshot',relative(process.cwd(),file).replace(/\\/g,'/'))}
 
  /** the six, measured on one page; `board` names the board for the shots */
  async function six(page,board){

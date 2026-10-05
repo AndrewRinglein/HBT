@@ -4,6 +4,7 @@
 // its target's edge, inside the screen; the notice across the board's centre, gold — then saves the screen for Andrew's eye.
 //
 //   node tools/tutorial-overlays.shot.mjs <page.html> <out-dir>     writes tutorial-overlays.png (and -look.png)
+import {stillShot} from './still-shot.mjs'   // viewer.screenshot-time-out-under-load: the page's frame loop is held for the shot
 import assert from 'node:assert/strict'
 import {createRequire} from 'node:module'
 import {createServer} from 'node:net'
@@ -63,11 +64,11 @@ try{
   assert.ok(touch<10,`${name}: the arrow's point is at the tip (${touch.toFixed(1)} px off, bobbing)`)
  }
  console.log(`  ${Object.keys(got.ptrs).length} pointers, each on its target's edge and inside the screen: ${Object.entries(got.ptrs).map(([k,p])=>k+' from the '+p.side).join(', ')}`)
- await page.screenshot({path:resolve(OUT,'tutorial-overlays.png'),timeout:100000,animations:'disabled'})
+ await stillShot(page,page,{path:resolve(OUT,'tutorial-overlays.png'),timeout:100000,animations:'disabled'})
  /* the look: to the civilians, nearer */
  await page.evaluate(()=>{const v=window.__sandbox.viewer,s=window.__sandbox.session.ctx;v.clearTell();v.unpoint();const civ=s.state.units.find(u=>/orphan/.test(u.typeId));v.point({unit:civ.id},{word:'Civilians'});v.look({unit:civ.id},{ms:60000})})
  await page.waitForTimeout(1500)
- await page.screenshot({path:resolve(OUT,'tutorial-overlays-look.png'),timeout:100000,animations:'disabled'})
+ await stillShot(page,page,{path:resolve(OUT,'tutorial-overlays-look.png'),timeout:100000,animations:'disabled'})
  assert.deepEqual(errors,[],'no page error')
  console.log('  screenshots: '+resolve(OUT,'tutorial-overlays.png')+' and '+resolve(OUT,'tutorial-overlays-look.png'))
 }finally{await browser.close();child.kill()}
