@@ -287,7 +287,10 @@ export function resolveTriggerChance(_ctx: Ctx, _owner: Unit, t: Trigger): Resol
 export function partySum(ctx: Ctx, side: Unit['side'], stat: 'magic' | 'spirit'): number {
   let n = 0
   for (const u of ctx.state.units) {
-    if (u.side === side && u.lifeState !== 'dead') n += u[stat]
+    // capability.set-bonus (2026-10-05): each member's Magic or Spirit AS IT STANDS - its own number and every mod on it (a
+    // set's +Magic, a drafted gift, a badge gained in the battle), read the one way every stat is read (stats.ts effective).
+    // This summed the stored number alone, so a unit mod of Magic or Spirit was on the Equip card and in no sum.
+    if (u.side === side && u.lifeState !== 'dead') n += effective(ctx, u, stat).value
   }
   return n
 }

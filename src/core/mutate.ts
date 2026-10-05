@@ -279,11 +279,6 @@ export function applyUnitMods(ctx: Ctx, id: number, mods: UnitMods): void {
       if (stat === 'maxHp') { u.maxHp += value; u.hp += value; pools['maxHp'] = u.maxHp; pools['hp'] = u.hp; continue }
       if (stat === 'maxStamina') { u.maxStamina += value; u.stamina += value; pools['maxStamina'] = u.maxStamina; pools['stamina'] = u.stamina; continue }
       if (stat === 'staminaRegen') { u.staminaRegen += value; pools['staminaRegen'] = u.staminaRegen; continue }
-      // capability.set-bonus (2026-10-05): Magic and Spirit are the PARTY's - the side's sum of each unit's own (trigger.ts
-      // partySum) - so a unit's mod of either is its own share, written to the unit as an item's plain +Magic is. As a unit
-      // mod read only through effective() it reached no sum: a set's +Magic, or a drafted gift of Magic or Spirit, was on
-      // the Equip card and not in the battle.
-      if (stat === 'magic' || stat === 'spirit') { u[stat] += value; pools[stat] = u[stat]; continue }
       u.mods.push({ stat: stat as import('./stats.js').StatName, op: 'add', value, source, scope: 'unit' })
     }
     if (attacks.length) u.weaponBonuses = [...(u.weaponBonuses ?? []), ...attacks.map((a) => ({ ...a, source }))]
