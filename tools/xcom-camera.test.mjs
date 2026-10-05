@@ -4,7 +4,8 @@
 // viewer.zoom-stays — the test below is rewritten]; the pointer at the screen edge scrolls;
 // the first character is selected and centered at the start and the next in the bar, civilians included, after each
 // activation ends; a double-click on a card or a body selects that unit; the portrait sits lower left at the ability bar's
-// height; clicking an ability centers the actor; a wall or roof between camera and a character is see-through; End Turn is
+// height; clicking an ability centers the actor [until 2026-10-05: it leaves the view, viewer.ability-click-keeps-view — the
+// test below is rewritten]; a wall or roof between camera and a character is see-through; End Turn is
 // visibly smaller than End Activation." The queue itself is the host's (kingdom test/xcom-queue.test.ts); the fixed angle and
 // the 90° turns are tools/true-3d-camera.test.mjs's. This asks the page (VIEWER_PAGE, else BATTLE-VIEWER.html) for the rest.
 import { test } from 'node:test'
@@ -186,7 +187,13 @@ test('the portrait in the lower-left corner is whose bar it is, as tall as the a
   v.dispose()
 })
 
-test('a double-click on a body offers that unit to the host to act next; an ability click centres the one acting', () => {
+/* Law 10, 2026-10-05 (viewer.ability-click-keeps-view; engine DECISIONS.md 2026-10-05 'the battle screen must feel smooth: … Clicking an
+   ability no longer re-centres the view on the acting unit', Andrew: "3 yes" — "Overturns 2026-10-01 'Clicking an ability
+   re-centers on the acting unit'. A new Activation still centres on the unit that begins."). This test read '… an ability click
+   centres the one acting': after `fire(row, 'click')`, `assert.ok(after < before, 'and the map comes back to the one acting:
+   …')`. The rule now: the click offers the ability and the view does not move; the way back to the one acting is the
+   portrait's click, which is what brings the map back below (tools/ability-click-keeps-view.test.mjs reads the rest). */
+test('a double-click on a body offers that unit to the host to act next; an ability click leaves the view where it is, and the portrait\'s click centres the one acting', () => {
   const { v, V, seen } = boot(), wrap = V.dom.stage.parentNode
   v.seek(activations[0][1] + 1)
   V.data.displayHeights = A.paintedHeights(V.data.atlas); v.render()
@@ -198,15 +205,19 @@ test('a double-click on a body offers that unit to the host to act next; an abil
   const at = { clientX: (p.x + 1) / 2 * vp.w * 100 / 1920, clientY: (1 - p.y) / 2 * vp.h * 100 / 1080, target: wrap }
   seen.length = 0; fire(wrap, 'dblclick', at)
   assert.deepEqual(seen.at(-1), { kind: 'choose', id: u.id }, 'the double-clicked body is offered')
-  /* the ability bar: its row offers the slot, and the map centres on whose bar it is */
+  /* the ability bar: its row offers the slot, and the map stays where it is; the portrait brings it back to whose bar it is */
   v.zoom(1.4); v.pan(400, 300)
   const row = V.dom.actionbar.querySelectorAll('.acRow').find(r => r.dataset.act)
   const who = V.S.U[V.S.activeId], before = Math.hypot(V.camTarget.x - V.data.POS[who.hex].px, V.camTarget.y - V.data.POS[who.hex].py)
   V.view.inspectId = null; v.render(); seen.length = 0
   fire(row, 'click')
   assert.equal(seen.at(-1)?.kind, 'slot', 'the ability is offered')
+  const stayed = Math.hypot(V.camTarget.x - V.data.POS[who.hex].px, V.camTarget.y - V.data.POS[who.hex].py)
+  assert.equal(stayed, before, `and the map does not move: ${before.toFixed(0)} px from the one acting, before and after`)
+  seen.length = 0; fire(V.dom.root.querySelector('#unitPortrait'), 'click')
   const after = Math.hypot(V.camTarget.x - V.data.POS[who.hex].px, V.camTarget.y - V.data.POS[who.hex].py)
-  assert.ok(after < before, `and the map comes back to the one acting: ${before.toFixed(0)} -> ${after.toFixed(0)} px`)
+  assert.ok(after < before, `the portrait's click brings the map back to the one acting: ${before.toFixed(0)} -> ${after.toFixed(0)} px`)
+  assert.deepEqual(seen, [], 'and asks nothing of the host')
   v.dispose()
 })
 

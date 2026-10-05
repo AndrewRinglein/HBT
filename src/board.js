@@ -1539,6 +1539,11 @@ export function applyCam(V, opts = {}) {
      which the view stays where that left it. This is the ONE hold a held view has (`held`): the player's own, a bubble's
      reveal and a host's look are three reasons for it, each over by its own rule (viewer SWITCHES viewPutHold). */
   if (view.put && (opts.focus || fit)) view.put = false
+  /* viewer.ability-click-keeps-view: a centring the PLAYER asked for (the portrait's click, a card's in the top bar: opts.stay)
+     is the player putting the view there — it stays on that unit, as a view scrolled there would, until the game has reason
+     to move it. Without this the next redraw brought the view back to the acting unit, and a card could not be used to look
+     at an enemy. */
+  if (opts.focus && opts.stay) view.put = true
   const held = (!!view.revealed || !!view.looking || (!!view.put && !S.AIM)) && !opts.pan
   /* viewer.camera-shows-edge-units: view.pastEdge says why the view stands past the board's own box, if it does — 'scroll'
      (the player scrolled or a slide took it there: it is left there, at the bound) or 'subject' (the least slide that shows
@@ -1550,7 +1555,7 @@ export function applyCam(V, opts = {}) {
   if (view.shapeKey !== shapeKey) { view.shapeKey = shapeKey; if (view.pastEdge === 'scroll' && !held && !opts.pan) view.pastEdge = null }
   if (fit) { /* the whole board, centred; the remembered camera is not touched */ }
   else if (opts.pan) { if (f.x == null) { f.x = bw / 2; f.y = bh / 2 } f.x += opts.pan.x; f.y += opts.pan.y * k; bound(); view.pastEdge = beyond() ? 'scroll' : null }
-  else if (opts.focus) { f.x = opts.focus.px; f.y = opts.focus.py * k; bound(true); whole(hexOfPoint(opts.focus)); view.pastEdge = beyond() ? (view.looking ? 'scroll' : 'subject') : null }      // Focus selected unit: centred, on purpose — as near as the board's own box lets it, then its hex shown whole
+  else if (opts.focus) { f.x = opts.focus.px; f.y = opts.focus.py * k; bound(true); whole(hexOfPoint(opts.focus)); view.pastEdge = beyond() ? (view.looking || opts.stay ? 'scroll' : 'subject') : null }      // Focus selected unit: centred, on purpose — as near as the board's own box lets it, then its hex shown whole
   else if (opts.hold) bound()                                                        // a restored view (Overhead, Inspect off) is shown as it was
   /* viewer.zoom-stays: the wheel zooms about the pointer — the ground under it (opts.about, board px) stays under it. The
      camera zooms about the point it looks at, so what a place of the screen shows lies off that point by an offset that
@@ -1797,11 +1802,13 @@ export function resetCam(V) {
   V.view.camF = V.view.home ? { x: V.view.home.x, y: V.view.home.y } : { x: null, y: null }
   applyCam(V); drawEdges(V)
 }
-/** viewer.xcom-camera: the map centred on a unit at the standard zoom (the proposed hero, an ability chosen) */
-export function centreOn(V, id) {
+/** viewer.xcom-camera: the map centred on a unit (the proposed hero; until 2026-10-05 an ability chosen as well —
+    viewer.ability-click-keeps-view: no longer). `stay`: the player asked for it (the portrait, a card in the top bar), so
+    the view stays there as one the player put (applyCam). */
+export function centreOn(V, id, { stay = false } = {}) {
   const u = V.S.U[id]; if (!u || u.life === 'dead' || !V.data.POS[u.hex]) return
   V.view.overview = false; V.view.peek = false
-  applyCam(V, { focus: V.data.POS[u.hex] }); drawEdges(V)
+  applyCam(V, stay ? { focus: V.data.POS[u.hex], stay: true } : { focus: V.data.POS[u.hex] }); drawEdges(V)
 }
 /** viewer.xcom-camera: the wheel looks nearer or farther.
     viewer.zoom-stays (engine DECISIONS.md 2026-10-05 'the battle screen must feel smooth: … The wheel's zoom stays where it is
