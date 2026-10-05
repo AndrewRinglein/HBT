@@ -1594,7 +1594,7 @@ export function applyCam(V, opts = {}) {
   if (V.dom.hud) { const u = S.U[subjectOf(V)]
     const what = view.peek ? 'peek — whole board' : view.zoom === 'fit' ? 'fit'
       : (stance === 'inspect' ? 'Inspect · free exploration' : stance === 'overhead' ? 'Overhead' : 'Tactical camera · ' + Math.round(elevationOfTilt(tilt)) + '°') + (view.overview ? ' · whole map' : '')
-    V.dom.hud.textContent = what + ' · ←/→ turn 90° · wheel to look closer · point at an edge to scroll' + (u ? ' · on ' + u.name : '') }
+    V.dom.hud.textContent = what + ' · ←/→ or Q/E turn 90° · wheel to look closer · drag, W A S D or an edge to move the map' + (u ? ' · on ' + u.name : '') }
 }
 /* ── the glide (the 1.1 s half-speed camera glide of 2026-09-01, which was the stage's CSS transition) is now the
    camera's own: the pose eases to its target and every frame of it is one real camera, so the 3D scene and the board
@@ -1618,13 +1618,14 @@ function setPose(V, pose) {
   /* viewer.camera-no-void: a glide already on its way to this very pose runs on — restarted every frame (a held edge at the
      board's edge asks for the same pose each frame) it crept and never arrived */
   if (V.camAnim && samePose(V.camAnim.to, pose)) return
-  V.camAnim = { from: { ...from }, to: pose, t0: clockOf(V) }
+  /* viewer.map-drag-and-keys: a quarter turn completes in about 300 ms (POLICY.TURN_MS), every other move in the glide's 1.1 s */
+  V.camAnim = { from: { ...from }, to: pose, t0: clockOf(V), ms: V.view.turning ? POLICY.TURN_MS : GLIDE_MS }
   if (V.camRaf == null) V.camRaf = requestAnimationFrame(() => glideFrame(V))
 }
 function glideFrame(V) {
   V.camRaf = null
   const A = V.camAnim; if (!A) return
-  const t = Math.min(1, (clockOf(V) - A.t0) / GLIDE_MS), e = EASE(t), a = A.from, b = A.to
+  const t = Math.min(1, (clockOf(V) - A.t0) / (A.ms || GLIDE_MS)), e = EASE(t), a = A.from, b = A.to
   const turn = ((b.yaw - a.yaw) % 360 + 540) % 360 - 180                              // the short way round
   let yaw = a.yaw + turn * e; yaw = ((yaw + 180) % 360 + 360) % 360 - 180
   const mid = { x: a.x + (b.x - a.x) * e, y: a.y + (b.y - a.y) * e, yaw, tilt: a.tilt + (b.tilt - a.tilt) * e, zoom: a.zoom * Math.pow(b.zoom / a.zoom, e) }
@@ -1703,7 +1704,9 @@ export function turnCam(V, { yaw = 0, tilt = 0, zoom = 1 } = {}) {
   if (yaw) c.yaw = turnedBy(c.yaw || 0, yaw)
   if (tilt) { const [lo, hi] = tiltLimits(camStance(V)); c.tilt = Math.min(hi, Math.max(lo, tiltOf(V) + tilt)) }
   if (zoom !== 1) c.zoom = c.zoom * zoom
-  applyCam(V, yaw && !tilt && zoom === 1 ? { turn: true } : {}); drawEdges(V)
+  V.view.turning = !!yaw && !tilt && zoom === 1
+  try { applyCam(V, yaw && !tilt && zoom === 1 ? { turn: true } : {}) } finally { V.view.turning = false }
+  drawEdges(V)
 }
 /** Reset: back to the starting angled view — 40° above the ground, no turn, 1× zoom, the camera where the battle opened;
     Overhead and Inspect are left */
@@ -2094,7 +2097,11 @@ export function bindCamera(V) {
   const tipAt = hex => { if (hex === tipped) return; tipped = hex; if (V.onPoint) V.onPoint(hex) }
   V.clickSuppressed = e => e.detail !== 0 && dragged
   const down = e => { if (e.button !== 0 && e.button !== 1 && e.button !== 2) return; dragged = false
-    drag = { x: e.clientX, y: e.clientY, originX: e.clientX, originY: e.clientY } }
+    drag = { x: e.clientX, y: e.clientY, originX: e.clientX, originY: e.clientY, ground: null } }
+  /* viewer.map-drag-and-keys: the point of the board's ground under the pointer, in board px (the camera's own ray to the plane) */
+  const groundUnder = e => { const at = pointerAt(V, e), cam = V.camera3d; if (!at || !cam) return null
+    const { o, d } = boardRay(boardAffine(V), cam, at.x, at.y); if (!(Math.abs(d.z) > 1e-9)) return null
+    const t = -o.z / d.z; return t > 0 ? { x: o.x + t * d.x, y: o.y + t * d.y } : null }
   /* the pointer over the board: point at what is under it (offered once per change), and say so with the cursor */
   const hover = e => {
     const at = pointerAt(V, e), hit = at ? pickAt(V, at.x, at.y) : null
@@ -2110,11 +2117,14 @@ export function bindCamera(V) {
      step uses the time that passed since the last (a quarter second at the most — it was capped at 50 ms, so at a low frame
      rate the map covered a third of its speed), and the scroll comes up to speed over about 150 ms instead of at once: the
      ground covered is the speed's own sum over the time the pointer has been at the edge (`ramp`), whatever the frames were. */
-  let edge = null, edgeRaf = null, edgeT = 0, edgeHeld = 0
+  let edge = null, keyed = null, edgeRaf = null, edgeT = 0, edgeHeld = 0
+  /* (viewer.map-drag-and-keys: the keys W A S D drive the same stepper — the way the map is asked to go is the pointer's edge
+     and the keys' together) */
+  const going = () => { const x = (edge ? edge.x : 0) + (keyed ? keyed.x : 0), y = (edge ? edge.y : 0) + (keyed ? keyed.y : 0); return x || y ? { x: Math.sign(x), y: Math.sign(y) } : null }
   const RAMP = POLICY.EDGE_SCROLL_RAMP_MS / 1000, ramp = t => t < RAMP ? t * t / (2 * RAMP) : RAMP / 2 + (t - RAMP)
-  const edgeStep = () => { edgeRaf = null; if (!edge) return
+  const edgeStep = () => { edgeRaf = null; const dir = going(); if (!dir) return
     const now = clockOf(V), dt = Math.min(POLICY.EDGE_STEP_MAX_MS / 1000, Math.max(0, (now - edgeT) / 1000)); edgeT = now
-    if (dt > 0) { edgeScroll(V, edge, ramp(edgeHeld + dt) - ramp(edgeHeld)); edgeHeld += dt }
+    if (dt > 0) { edgeScroll(V, dir, ramp(edgeHeld + dt) - ramp(edgeHeld)); edgeHeld += dt }
     edgeRaf = requestAnimationFrame(edgeStep) }
   const edgeAt = e => {
     if (!wrap.getBoundingClientRect) return null
@@ -2135,20 +2145,29 @@ export function bindCamera(V) {
      above the ability bar — so the board's band slid the map whenever the pointer travelled to a button, and a hex in the
      board's outer 36 px slid away as it was pointed at. A replay page, whose board has no screen edge of its own, keeps the
      board's band (viewer SWITCHES xcomEdge, changed). */
-  const rootMove = e => edgeTo((V.host ? null : edgeAt(e)) || edgeOfScreen(e))
+  const rootMove = e => edgeTo(drag && dragged ? null : (V.host ? null : edgeAt(e)) || edgeOfScreen(e))   // (a drag has the map: no edge scroll under it)
   /* leaving the battle stops it — unless it left through the screen's edge, where the pointer is still pointing past it */
   const rootLeave = e => { if (!edgeOfScreen(e)) edgeTo(null) }
-  const edgeTo = dir => { if (!dir || !edge) edgeHeld = 0                         // off the edge, or newly at it: the scroll starts gently again
-    edge = dir
-    if (edge && edgeRaf == null && typeof requestAnimationFrame === 'function') { edgeT = clockOf(V); edgeRaf = requestAnimationFrame(edgeStep) } }
+  const edgeTo = dir => { const was = going(); edge = dir; const now = going()
+    if (!now || !was) edgeHeld = 0                                                  // nothing asks, or it is newly asked: the scroll starts gently again
+    if (now && edgeRaf == null && typeof requestAnimationFrame === 'function') { edgeT = clockOf(V); edgeRaf = requestAnimationFrame(edgeStep) } }
   const move = e => { if (!drag) { hover(e); return }
     // Screen-pixel threshold from pointerdown: jitter is a click, a real drag
     // applies its full displacement once and then continues incrementally.
     const travel = Math.hypot(e.clientX - drag.originX, e.clientY - drag.originY)
-    /* viewer.xcom-camera (engine DECISIONS.md 2026-10-01): no grab-drag, no free turn or tilt — a press that wanders is
-       still not a click (4 px), and moves nothing */
-    if (!dragged && travel < 4) return
-    dragged = true }
+    /* viewer.map-drag-and-keys (engine DECISIONS.md 2026-10-05 'the battle screen must feel smooth: … the map drags and moves
+       on W/A/S/D', Andrew: "Yes" — overturning 2026-10-01 "no grab-drag"; the edge scroll stays). A press that travels less
+       than POLICY.DRAG_PX is a click exactly as it was; one that travels more is a drag — the map moves with the pointer, the
+       ground that was under it at the press staying under it, with the left button or the right — and is never also a
+       click. No press is swallowed with nothing happening: until now a press that wandered 4 px was no click and moved
+       nothing, which lost clicks made with the hand still moving. Shown as it goes (never through the glide), stopped at
+       the bound the edge scroll stops at, and left where it is put (view.put). */
+    if (!dragged && travel < POLICY.DRAG_PX) return
+    if (!dragged) { dragged = true; drag.ground = groundUnder({ clientX: drag.originX, clientY: drag.originY }); wrap.style.cursor = 'grabbing'; edgeTo(null) }
+    const g = groundUnder(e); if (!g || !drag.ground) return
+    V.view.dragging = true; V.view.put = true
+    try { applyCam(V, { pan: { x: drag.ground.x - g.x, y: drag.ground.y - g.y } }) } finally { V.view.dragging = false }
+    drawEdges(V) }
   const up = e => { const released = drag; drag = null; wrap.style.cursor = ''
     /* viewer.play-input: a right-click that did not drag the map steps the plan back one stage (UI-BUILD-NOTES §5) */
     if (e && e.button === 2 && released && !dragged && V.play) V.offerPlay({ kind: 'back' }) }
@@ -2173,13 +2192,24 @@ export function bindCamera(V) {
      focus — two viewers on one page must not both pan, and a host page keeps
      its arrow keys (review 2026-09-03) */
   let over = false
-  const enter = () => { over = true }, leave = () => { over = false; up(); pointed = undefined; tipAt(null); if (V.play) V.offerPlay({ kind: 'point', hex: null }) }
+  /* viewer.map-drag-and-keys: W, A, S and D move the view up, left, down and right on the screen while held — the edge
+     scroll's own stepping and speed, two at once for a diagonal — and stop when the key is let go, the pointer leaves the
+     battle, or the window loses the keys */
+  const MOVE_KEYS = { w: [0, -1], a: [-1, 0], s: [0, 1], d: [1, 0] }, keysDown = new Set()
+  const keyDir = () => { let x = 0, y = 0; for (const k of keysDown) { x += MOVE_KEYS[k][0]; y += MOVE_KEYS[k][1] } return x || y ? { x: Math.sign(x), y: Math.sign(y) } : null }
+  const keysTo = () => { keyed = keyDir(); edgeTo(edge) }
+  const keyUp = e => { const k = typeof e.key === 'string' ? e.key.toLowerCase() : ''; if (keysDown.delete(k)) keysTo() }
+  const keysOff = () => { if (keysDown.size) { keysDown.clear(); keysTo() } }
+  const enter = () => { over = true }, leave = () => { over = false; keysOff(); up(); pointed = undefined; tipAt(null); if (V.play) V.offerPlay({ kind: 'point', hex: null }) }
   const key = e => {
     if (e.target && /INPUT|TEXTAREA|SELECT/.test(e.target.tagName)) return
     if (!over && !(V.dom.root.contains && document.activeElement && V.dom.root.contains(document.activeElement))) return
-    /* viewer.xcom-camera: the arrow keys turn the view a quarter (Q / E as well); there is no tilt, pan key, peek or Reset */
+    /* viewer.xcom-camera: the arrow keys turn the view a quarter (Q / E as well); there is no tilt, peek or Reset.
+       viewer.map-drag-and-keys (2026-10-05): W, A, S and D move the map while held (keysDown, above) */
     const plain = !e.ctrlKey && !e.metaKey && !e.altKey
-    if ((e.key === 'ArrowLeft' || e.key === 'q' || e.key === 'Q') && plain && !e.repeat) cameraView(V, 'left')
+    const moveKey = plain && typeof e.key === 'string' && e.key.length === 1 && MOVE_KEYS[e.key.toLowerCase()] ? e.key.toLowerCase() : null
+    if (moveKey) { if (!keysDown.has(moveKey)) { keysDown.add(moveKey); keysTo() } }
+    else if ((e.key === 'ArrowLeft' || e.key === 'q' || e.key === 'Q') && plain && !e.repeat) cameraView(V, 'left')
     else if ((e.key === 'ArrowRight' || e.key === 'e' || e.key === 'E') && plain && !e.repeat) cameraView(V, 'right')
     else if (e.key === 'Escape' && V.play && !V.asking) V.offerPlay({ kind: 'back' })   /* ESC behaves as the right-click (UI-BUILD-NOTES §5) */
     else if (e.key === 'Escape' && V.asking) return   /* viewer.play-chrome: the End Turn pop-up takes its own Esc (chrome.js) */
@@ -2188,9 +2218,10 @@ export function bindCamera(V) {
   }
   const bound = [['pointerdown',down],['pointermove',move],['pointerup',up],['pointerleave',leave],['pointerenter',enter],['contextmenu',menu],['wheel',wheel],['click',click],['dblclick',dbl]]
   for (const [type, fn] of bound) wrap.addEventListener(type, fn, type === 'wheel' ? { passive: false } : undefined)
-  document.addEventListener('keydown', key)
+  document.addEventListener('keydown', key); document.addEventListener('keyup', keyUp)
+  if (typeof window !== 'undefined' && window.addEventListener) window.addEventListener('blur', keysOff)
   if (root && root.addEventListener) { root.addEventListener('pointermove', rootMove); root.addEventListener('pointerleave', rootLeave) }
-  return () => { edgeTo(null); if (root && root.removeEventListener) { root.removeEventListener('pointermove', rootMove); root.removeEventListener('pointerleave', rootLeave) } if (edgeRaf != null && typeof cancelAnimationFrame === 'function') cancelAnimationFrame(edgeRaf)
+  return () => { keysDown.clear(); keyed = null; edgeTo(null); document.removeEventListener && document.removeEventListener('keyup', keyUp); if (root && root.removeEventListener) { root.removeEventListener('pointermove', rootMove); root.removeEventListener('pointerleave', rootLeave) } if (edgeRaf != null && typeof cancelAnimationFrame === 'function') cancelAnimationFrame(edgeRaf)
     if (V.zoomRest != null) { clearTimeout(V.zoomRest); V.zoomRest = null }
     document.removeEventListener('keydown', key); for (const [type, fn] of bound) wrap.removeEventListener(type, fn) }
 }
