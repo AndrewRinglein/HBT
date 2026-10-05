@@ -4305,7 +4305,7 @@ export const UNIT_PACK = {
     },
     "attack.grappling-harpoon.brace": {
       "id": "attack.grappling-harpoon.brace",
-      "name": "Brace",
+      "name": "Braced Thrust",
       "kind": "melee",
       "damageType": "physical",
       "bonus": 1,
@@ -5598,6 +5598,7 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 8,
       "staminaCost": 3,
+      "cooldown": 3,
       "tags": [
         "destroyer",
         "magic",
@@ -5614,6 +5615,7 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 10,
       "staminaCost": 3,
+      "cooldown": 3,
       "tags": [
         "destroyer",
         "magic",
@@ -5631,6 +5633,7 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 8,
       "staminaCost": 4,
+      "cooldown": 5,
       "tags": [
         "destroyer",
         "magic",
@@ -5651,6 +5654,36 @@ export const UNIT_PACK = {
         "area",
         "chain",
         "holy"
+      ]
+    },
+    "attack.knight-shield.shield-slam": {
+      "id": "attack.knight-shield.shield-slam",
+      "name": "Shield Slam",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": -1,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 1,
+      "cooldown": 2,
+      "tags": [
+        "melee",
+        "shield"
+      ]
+    },
+    "attack.iron-knight-shield.shield-slam": {
+      "id": "attack.iron-knight-shield.shield-slam",
+      "name": "Shield Slam",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": -1,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 1,
+      "cooldown": 2,
+      "tags": [
+        "melee",
+        "shield"
       ]
     },
     "attack.greatsword.hew.heavy": {
@@ -7229,7 +7262,7 @@ export const UNIT_PACK = {
     },
     "attack.grappling-harpoon.brace.heavy": {
       "id": "attack.grappling-harpoon.brace.heavy",
-      "name": "Brace",
+      "name": "Braced Thrust",
       "kind": "melee",
       "damageType": "physical",
       "bonus": 2,
@@ -7260,7 +7293,7 @@ export const UNIT_PACK = {
     },
     "attack.grappling-harpoon.brace.keen": {
       "id": "attack.grappling-harpoon.brace.keen",
-      "name": "Brace",
+      "name": "Braced Thrust",
       "kind": "melee",
       "damageType": "physical",
       "bonus": 1,
@@ -7292,7 +7325,7 @@ export const UNIT_PACK = {
     },
     "attack.grappling-harpoon.brace.cruel": {
       "id": "attack.grappling-harpoon.brace.cruel",
-      "name": "Brace",
+      "name": "Braced Thrust",
       "kind": "melee",
       "damageType": "physical",
       "bonus": 1,
@@ -9181,12 +9214,12 @@ export const UNIT_PACK = {
         }
       ]
     },
-    "power.kite-shield.shield-wall": {
-      "id": "power.kite-shield.shield-wall",
-      "name": "Lock Shields",
+    "power.kite-shield.raise-guard": {
+      "id": "power.kite-shield.raise-guard",
+      "name": "Raise Guard",
       "free": false,
       "staminaCost": 1,
-      "cooldown": 3,
+      "cooldown": 0,
       "range": 0,
       "target": {
         "select": "self",
@@ -9202,47 +9235,45 @@ export const UNIT_PACK = {
         },
         {
           "kind": "statMod",
-          "stat": "armor",
-          "value": 1,
+          "stat": "rangedBlock",
+          "value": 10,
+          "until": "endOfNextActivation",
+          "who": "self"
+        },
+        {
+          "kind": "statMod",
+          "stat": "luck",
+          "value": 10,
           "until": "endOfNextActivation",
           "who": "self"
         }
       ]
     },
-    "power.kite-shield.raise-guard": {
-      "id": "power.kite-shield.raise-guard",
-      "name": "Raise Guard",
+    "power.kite-shield.cover-ally": {
+      "id": "power.kite-shield.cover-ally",
+      "name": "Cover Ally",
       "free": false,
       "staminaCost": 1,
-      "cooldown": 4,
-      "range": 0,
+      "cooldown": 0,
+      "range": 1,
       "target": {
-        "select": "self",
-        "side": "any"
+        "select": "unit",
+        "side": "ally"
       },
       "effects": [
         {
-          "kind": "statMod",
-          "stat": "block",
-          "value": 10,
-          "until": "endOfNextActivation",
-          "who": "self"
-        },
-        {
-          "kind": "statMod",
-          "stat": "rangedBlock",
-          "value": 10,
-          "until": "endOfNextActivation",
-          "who": "self"
+          "kind": "status.apply",
+          "statusId": "status.protection",
+          "value": 4
         }
       ]
     },
-    "power.tower-shield.cover": {
-      "id": "power.tower-shield.cover",
-      "name": "Cover",
+    "power.tower-shield.brace": {
+      "id": "power.tower-shield.brace",
+      "name": "Brace",
       "free": false,
-      "staminaCost": 2,
-      "cooldown": 4,
+      "staminaCost": 1,
+      "cooldown": 0,
       "range": 0,
       "target": {
         "select": "self",
@@ -9259,31 +9290,31 @@ export const UNIT_PACK = {
         {
           "kind": "statMod",
           "stat": "rangedBlock",
-          "value": 20,
-          "until": "endOfNextActivation",
-          "who": "self"
-        },
-        {
-          "kind": "statMod",
-          "stat": "armor",
-          "value": 1,
+          "value": 10,
           "until": "endOfNextActivation",
           "who": "self"
         }
       ]
     },
-    "power.tower-shield.stand-tall": {
-      "id": "power.tower-shield.stand-tall",
-      "name": "Stand Tall",
+    "power.tower-shield.arrow-wall": {
+      "id": "power.tower-shield.arrow-wall",
+      "name": "Arrow Wall",
       "free": false,
       "staminaCost": 2,
-      "cooldown": 5,
+      "cooldown": 1,
       "range": 0,
       "target": {
         "select": "self",
         "side": "any"
       },
       "effects": [
+        {
+          "kind": "statMod",
+          "stat": "block",
+          "value": 15,
+          "until": "endOfNextActivation",
+          "who": "self"
+        },
         {
           "kind": "statMod",
           "stat": "rangedBlock",
@@ -9294,7 +9325,7 @@ export const UNIT_PACK = {
         {
           "kind": "statMod",
           "stat": "armor",
-          "value": 2,
+          "value": 1,
           "until": "endOfNextActivation",
           "who": "self"
         }
@@ -9324,40 +9355,40 @@ export const UNIT_PACK = {
         }
       ]
     },
-    "power.round-shield.turn-aside": {
-      "id": "power.round-shield.turn-aside",
-      "name": "Turn Aside",
+    "power.round-shield.lock-shields": {
+      "id": "power.round-shield.lock-shields",
+      "name": "Lock Shields",
       "free": false,
-      "staminaCost": 1,
-      "cooldown": 2,
+      "staminaCost": 2,
+      "cooldown": 0,
       "range": 0,
       "target": {
-        "select": "self",
-        "side": "any"
+        "select": "area",
+        "side": "ally",
+        "radius": 1,
+        "origin": "self"
       },
       "effects": [
         {
           "kind": "statMod",
           "stat": "block",
           "value": 10,
-          "until": "endOfNextActivation",
-          "who": "self"
+          "until": "endOfNextActivation"
         },
         {
           "kind": "statMod",
           "stat": "rangedBlock",
           "value": 10,
-          "until": "endOfNextActivation",
-          "who": "self"
+          "until": "endOfNextActivation"
         }
       ]
     },
-    "power.round-shield.brace": {
-      "id": "power.round-shield.brace",
-      "name": "Bear Down",
+    "power.round-shield.set-feet": {
+      "id": "power.round-shield.set-feet",
+      "name": "Set Feet",
       "free": false,
       "staminaCost": 1,
-      "cooldown": 3,
+      "cooldown": 0,
       "range": 0,
       "target": {
         "select": "self",
@@ -9366,22 +9397,8 @@ export const UNIT_PACK = {
       "effects": [
         {
           "kind": "statMod",
-          "stat": "block",
-          "value": 5,
-          "until": "endOfNextActivation",
-          "who": "self"
-        },
-        {
-          "kind": "statMod",
-          "stat": "rangedBlock",
-          "value": 5,
-          "until": "endOfNextActivation",
-          "who": "self"
-        },
-        {
-          "kind": "statMod",
           "stat": "armor",
-          "value": 1,
+          "value": 2,
           "until": "endOfNextActivation",
           "who": "self"
         }
@@ -9406,6 +9423,228 @@ export const UNIT_PACK = {
             "base": 1,
             "mult": 2
           }
+        }
+      ]
+    },
+    "power.knight-shield.guard": {
+      "id": "power.knight-shield.guard",
+      "name": "Guard",
+      "free": false,
+      "staminaCost": 1,
+      "cooldown": 0,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [
+        {
+          "kind": "statMod",
+          "stat": "block",
+          "value": 15,
+          "until": "endOfNextActivation",
+          "who": "self"
+        },
+        {
+          "kind": "statMod",
+          "stat": "rangedBlock",
+          "value": 10,
+          "until": "endOfNextActivation",
+          "who": "self"
+        }
+      ]
+    },
+    "power.iron-round-shield.lock-shields": {
+      "id": "power.iron-round-shield.lock-shields",
+      "name": "Iron Lock Shields",
+      "free": false,
+      "staminaCost": 2,
+      "cooldown": 0,
+      "range": 0,
+      "target": {
+        "select": "area",
+        "side": "ally",
+        "radius": 1,
+        "origin": "self"
+      },
+      "effects": [
+        {
+          "kind": "statMod",
+          "stat": "block",
+          "value": 15,
+          "until": "endOfNextActivation"
+        },
+        {
+          "kind": "statMod",
+          "stat": "rangedBlock",
+          "value": 10,
+          "until": "endOfNextActivation"
+        }
+      ]
+    },
+    "power.iron-round-shield.set-feet": {
+      "id": "power.iron-round-shield.set-feet",
+      "name": "Iron Set Feet",
+      "free": false,
+      "staminaCost": 1,
+      "cooldown": 0,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [
+        {
+          "kind": "statMod",
+          "stat": "armor",
+          "value": 2,
+          "until": "endOfNextActivation",
+          "who": "self"
+        }
+      ]
+    },
+    "power.iron-knight-shield.guard": {
+      "id": "power.iron-knight-shield.guard",
+      "name": "Iron Guard",
+      "free": false,
+      "staminaCost": 1,
+      "cooldown": 0,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [
+        {
+          "kind": "statMod",
+          "stat": "block",
+          "value": 20,
+          "until": "endOfNextActivation",
+          "who": "self"
+        },
+        {
+          "kind": "statMod",
+          "stat": "rangedBlock",
+          "value": 10,
+          "until": "endOfNextActivation",
+          "who": "self"
+        }
+      ]
+    },
+    "power.iron-tower-shield.brace": {
+      "id": "power.iron-tower-shield.brace",
+      "name": "Iron Brace",
+      "free": false,
+      "staminaCost": 1,
+      "cooldown": 0,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [
+        {
+          "kind": "statMod",
+          "stat": "block",
+          "value": 25,
+          "until": "endOfNextActivation",
+          "who": "self"
+        },
+        {
+          "kind": "statMod",
+          "stat": "rangedBlock",
+          "value": 10,
+          "until": "endOfNextActivation",
+          "who": "self"
+        }
+      ]
+    },
+    "power.iron-tower-shield.arrow-wall": {
+      "id": "power.iron-tower-shield.arrow-wall",
+      "name": "Iron Arrow Wall",
+      "free": false,
+      "staminaCost": 2,
+      "cooldown": 1,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [
+        {
+          "kind": "statMod",
+          "stat": "block",
+          "value": 20,
+          "until": "endOfNextActivation",
+          "who": "self"
+        },
+        {
+          "kind": "statMod",
+          "stat": "rangedBlock",
+          "value": 25,
+          "until": "endOfNextActivation",
+          "who": "self"
+        },
+        {
+          "kind": "statMod",
+          "stat": "armor",
+          "value": 1,
+          "until": "endOfNextActivation",
+          "who": "self"
+        }
+      ]
+    },
+    "power.iron-kite-shield.raise-guard": {
+      "id": "power.iron-kite-shield.raise-guard",
+      "name": "Iron Raise Guard",
+      "free": false,
+      "staminaCost": 1,
+      "cooldown": 0,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [
+        {
+          "kind": "statMod",
+          "stat": "block",
+          "value": 20,
+          "until": "endOfNextActivation",
+          "who": "self"
+        },
+        {
+          "kind": "statMod",
+          "stat": "rangedBlock",
+          "value": 10,
+          "until": "endOfNextActivation",
+          "who": "self"
+        },
+        {
+          "kind": "statMod",
+          "stat": "luck",
+          "value": 10,
+          "until": "endOfNextActivation",
+          "who": "self"
+        }
+      ]
+    },
+    "power.iron-kite-shield.cover-ally": {
+      "id": "power.iron-kite-shield.cover-ally",
+      "name": "Iron Cover Ally",
+      "free": false,
+      "staminaCost": 1,
+      "cooldown": 0,
+      "range": 1,
+      "target": {
+        "select": "unit",
+        "side": "ally"
+      },
+      "effects": [
+        {
+          "kind": "status.apply",
+          "statusId": "status.protection",
+          "value": 4
         }
       ]
     },
@@ -15737,8 +15976,8 @@ export const UNIT_PACK = {
       },
       "grants": [],
       "abilities": [
-        "power.kite-shield.shield-wall",
-        "power.kite-shield.raise-guard"
+        "power.kite-shield.raise-guard",
+        "power.kite-shield.cover-ally"
       ],
       "triggers": []
     },
@@ -15755,8 +15994,8 @@ export const UNIT_PACK = {
       },
       "grants": [],
       "abilities": [
-        "power.round-shield.turn-aside",
-        "power.round-shield.brace"
+        "power.round-shield.lock-shields",
+        "power.round-shield.set-feet"
       ],
       "triggers": []
     },
@@ -15768,15 +16007,140 @@ export const UNIT_PACK = {
       "hands": 1,
       "slots": 1,
       "statModifiers": {
+        "block": 10,
+        "rangedBlock": 20,
+        "dodge": -5,
+        "maxStamina": -1
+      },
+      "grants": [],
+      "abilities": [
+        "power.tower-shield.brace",
+        "power.tower-shield.arrow-wall"
+      ],
+      "triggers": []
+    },
+    "item.knight-shield": {
+      "id": "item.knight-shield",
+      "name": "Knight Shield",
+      "itemClass": "shield",
+      "tier": 1,
+      "hands": 1,
+      "slots": 1,
+      "statModifiers": {
         "block": 15,
-        "rangedBlock": 15,
+        "rangedBlock": 10
+      },
+      "grants": [
+        "attack.knight-shield.shield-slam"
+      ],
+      "abilities": [
+        "power.knight-shield.guard"
+      ],
+      "triggers": [
+        {
+          "id": "trigger.knight-shield.shield-slam.stun",
+          "hook": "onHit",
+          "chance": 70,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.stun",
+            "value": 1
+          },
+          "source": "item.knight-shield",
+          "onlyWithAttack": "attack.knight-shield.shield-slam"
+        }
+      ]
+    },
+    "item.iron-round-shield": {
+      "id": "item.iron-round-shield",
+      "name": "Iron Round Shield",
+      "itemClass": "shield",
+      "tier": 2,
+      "hands": 1,
+      "slots": 1,
+      "statModifiers": {
+        "block": 10,
+        "rangedBlock": 10,
+        "dodge": -5
+      },
+      "grants": [],
+      "abilities": [
+        "power.iron-round-shield.lock-shields",
+        "power.iron-round-shield.set-feet"
+      ],
+      "triggers": []
+    },
+    "item.iron-knight-shield": {
+      "id": "item.iron-knight-shield",
+      "name": "Iron Knight Shield",
+      "itemClass": "shield",
+      "tier": 2,
+      "hands": 1,
+      "slots": 1,
+      "statModifiers": {
+        "block": 15,
+        "rangedBlock": 10,
+        "dodge": -5
+      },
+      "grants": [
+        "attack.iron-knight-shield.shield-slam"
+      ],
+      "abilities": [
+        "power.iron-knight-shield.guard"
+      ],
+      "triggers": [
+        {
+          "id": "trigger.iron-knight-shield.shield-slam.stun",
+          "hook": "onHit",
+          "chance": 70,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.stun",
+            "value": 1
+          },
+          "source": "item.iron-knight-shield",
+          "onlyWithAttack": "attack.iron-knight-shield.shield-slam"
+        }
+      ]
+    },
+    "item.iron-tower-shield": {
+      "id": "item.iron-tower-shield",
+      "name": "Iron Tower Shield",
+      "itemClass": "shield",
+      "tier": 2,
+      "hands": 1,
+      "slots": 1,
+      "statModifiers": {
+        "block": 10,
+        "rangedBlock": 20,
         "dodge": -10,
         "maxStamina": -1
       },
       "grants": [],
       "abilities": [
-        "power.tower-shield.cover",
-        "power.tower-shield.stand-tall"
+        "power.iron-tower-shield.brace",
+        "power.iron-tower-shield.arrow-wall"
+      ],
+      "triggers": []
+    },
+    "item.iron-kite-shield": {
+      "id": "item.iron-kite-shield",
+      "name": "Iron Kite Shield",
+      "itemClass": "shield",
+      "tier": 2,
+      "hands": 1,
+      "slots": 1,
+      "statModifiers": {
+        "block": 20,
+        "rangedBlock": 5,
+        "dodge": -5
+      },
+      "grants": [],
+      "abilities": [
+        "power.iron-kite-shield.raise-guard",
+        "power.iron-kite-shield.cover-ally"
       ],
       "triggers": []
     },
@@ -38071,15 +38435,15 @@ export const UNIT_PACK = {
       "hands": 1,
       "slots": 1,
       "statModifiers": {
-        "block": 15,
-        "rangedBlock": 15,
-        "dodge": -10,
+        "block": 10,
+        "rangedBlock": 20,
+        "dodge": -5,
         "maxStamina": -1
       },
       "grants": [],
       "abilities": [
-        "power.tower-shield.cover",
-        "power.tower-shield.stand-tall"
+        "power.tower-shield.brace",
+        "power.tower-shield.arrow-wall"
       ],
       "triggers": [],
       "base": "item.tower-shield",
@@ -45246,8 +45610,8 @@ export const UNIT_PACK = {
       },
       "grants": [],
       "abilities": [
-        "power.kite-shield.shield-wall",
-        "power.kite-shield.raise-guard"
+        "power.kite-shield.raise-guard",
+        "power.kite-shield.cover-ally"
       ],
       "triggers": [],
       "base": "item.kite-shield"
@@ -45266,8 +45630,8 @@ export const UNIT_PACK = {
       },
       "grants": [],
       "abilities": [
-        "power.round-shield.turn-aside",
-        "power.round-shield.brace"
+        "power.round-shield.lock-shields",
+        "power.round-shield.set-feet"
       ],
       "triggers": [],
       "base": "item.round-shield"
@@ -45280,18 +45644,53 @@ export const UNIT_PACK = {
       "hands": 1,
       "slots": 1,
       "statModifiers": {
-        "block": 15,
-        "rangedBlock": 15,
-        "dodge": -10,
+        "block": 10,
+        "rangedBlock": 20,
+        "dodge": -5,
         "maxStamina": 0
       },
       "grants": [],
       "abilities": [
-        "power.tower-shield.cover",
-        "power.tower-shield.stand-tall"
+        "power.tower-shield.brace",
+        "power.tower-shield.arrow-wall"
       ],
       "triggers": [],
       "base": "item.tower-shield"
+    },
+    "item.knight-shield.masterwork": {
+      "id": "item.knight-shield.masterwork",
+      "name": "Masterwork Knight Shield",
+      "itemClass": "shield",
+      "tier": 2,
+      "hands": 1,
+      "slots": 1,
+      "statModifiers": {
+        "block": 15,
+        "rangedBlock": 10,
+        "maxStamina": 1
+      },
+      "grants": [
+        "attack.knight-shield.shield-slam"
+      ],
+      "abilities": [
+        "power.knight-shield.guard"
+      ],
+      "triggers": [
+        {
+          "id": "trigger.knight-shield.shield-slam.stun",
+          "hook": "onHit",
+          "chance": 70,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.stun",
+            "value": 1
+          },
+          "source": "item.knight-shield",
+          "onlyWithAttack": "attack.knight-shield.shield-slam"
+        }
+      ],
+      "base": "item.knight-shield"
     }
   },
   "encounters": {
