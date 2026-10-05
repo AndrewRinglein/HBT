@@ -7,6 +7,8 @@ import {lens,orbitCamera} from './camera3d.js'
 import {subjectOf} from './subject.js'
 import {NO_LOOK} from './stand-out.js'
 import {hidersOf,hidersStats,readPieces} from './hiders.js'
+import {keptShadow} from './kept-shadow.js'
+export {keptShadow}
 export {hidersStats}
 // The units drawn as 3D models stand in the same scene (viewer.character-models, models.js): board px -> scene by the inverse of the scene's own map
 // Two scene sources behind one board: an Atlas layout (atlas.js) or a painted scene (painted.js, viewer.painted-board)
@@ -106,7 +108,7 @@ export function createDriver(V,onFailure,platform={}){
  const scene=new THREE.Scene(),affine=V.data.boardAffine||(V.data.boardAffine=painted(V.data.atlas)?paintedToCSS(V.data.atlas):worldToCSS(V.data.atlas,V.data.F))
  /* viewer.characters-stand-out: the looks the host named, as numbers (a bare V has none) */
  const look=V.look||NO_LOOK
- let disposed=false,built,removeEnvironment,raf=null,seen=-1,viewportKey='',dirty=true,last=null,effectTime=0,sawThrough=-Infinity,sawWhat=null,sawRuns=0,sawBuilt=null,key=null
+ let disposed=false,built,removeEnvironment,raf=null,seen=-1,viewportKey='',dirty=true,last=null,effectTime=0,sawThrough=-Infinity,sawWhat=null,sawRuns=0,sawBuilt=null,key=null,keeper,bodiesMoved=false,castSize=-1
  const faded=new Map()
  const clock=platform.now||(()=>performance.now())
  const onLost=e=>{e.preventDefault();onFailure(Error('WebGL context lost'))};canvas.addEventListener('webglcontextlost',onLost)
@@ -123,7 +125,10 @@ export function createDriver(V,onFailure,platform={}){
  }).then(()=>{if(!disposed)frame()})
  function frame(){if(disposed)return;try{
   const t=clock(),dt=last===null?0:Math.min(.1,Math.max(0,(t-last)/1000));last=t
-  if(V.cast){V.cast.frame(dt);if(V.cast.size)dirty=true}
+  if(V.cast){V.cast.frame(dt);if(V.cast.size)dirty=true
+   /* viewer.scenery-shadow-drawn-once: has a body moved or animated since the shadow was last drawn? Time passed with a body
+      on the board (it animates where it stands), or a body came or went */
+   if((V.cast.size&&dt>0)||V.cast.size!==castSize){castSize=V.cast.size;bodiesMoved=true}}
   /* viewer.caravan-scene: a scene whose fires and fog move draws every frame, camera and units still or not */
   if(built?.animated&&V.camera3d){effectTime+=dt;built.animate(effectTime,V.camera3d);dirty=true}
   const w=wrap.clientWidth,h=wrap.clientHeight
@@ -160,14 +165,29 @@ export function createDriver(V,onFailure,platform={}){
    if(B){const h=B.standingHeight(),p=B.stage.position,to=camera.position.clone().sub(p).setY(0);if(to.lengthSq()>1e-9)to.normalize()
     key.position.set(p.x+to.x*h*.6,p.y+h*1.25,p.z+to.z*h*.6)}}
   if(dirty&&camera&&w>0&&h>0){
-   /* viewer.characters-stand-out, the shadows look: the sun's shadow is taken again every drawn frame (the bodies move), and
-      the bodies stay in the scene's own pass so that shadow holds them — drawn there under the board's marks exactly where
-      their own canvas draws them over the marks; the subject's key light is that canvas's alone, never the ground's */
-   if(look.shadows&&renderer.shadowMap)renderer.shadowMap.needsUpdate=true
-   if(characters){const lit=key&&key.visible;characters.visible=look.shadows;if(key&&look.shadows)key.visible=false
-    renderer.render(scene,camera);characters.visible=true;if(key&&look.shadows)key.visible=lit;drawBodies(bodies,scene,camera,characters)}
-   else renderer.render(scene,camera)
+   /* viewer.characters-stand-out, the shadows look: the bodies stay in the scene's own pass so that the sun's shadow holds
+      them — drawn there under the board's marks exactly where their own canvas draws them over the marks; the subject's key
+      light is that canvas's alone, never the ground's */
+   const drawScene=()=>{if(characters){const lit=key&&key.visible;characters.visible=look.shadows;if(key&&look.shadows)key.visible=false
+     renderer.render(scene,camera);characters.visible=true;if(key&&look.shadows)key.visible=lit}else renderer.render(scene,camera)}
+   /* viewer.scenery-shadow-drawn-once (2026-10-05): the sun's shadow was taken again, whole, on every drawn frame. The
+      scenery never moves: its shadow is drawn once and kept (kept-shadow.js); a frame in which a body moved or animated
+      draws the bodies' shadows alone over the kept one; a frame in which nothing moved draws no shadow — the map holds the
+      last. Where it cannot be kept (a stand-in renderer, more than one shadow light) it is taken whole, as before. */
+   if(look.shadows&&renderer.shadowMap){
+    if(keeper===undefined){keeper=keptShadow(renderer,scene,()=>scene.getObjectByName('characters'))
+     /* read by the tests and tools/frame-cost.mjs: how often the scenery's shadow was drawn, and the shadow asked for whole
+        ('full' — as first written, the reference the kept one is held to) */
+     V.sceneryShadow=keeper?{get takes(){return keeper.takes},get mode(){return keeper.mode},set mode(v){keeper.mode=v;bodiesMoved=true;dirty=true}}:null}
+    if(keeper?.keeps()){
+     /* the scenery's shadow, alone, into the keeping: one pass more, once (and again only if the sun or the scenery changed) */
+     if(!keeper.valid()){const still=keeper.take();drawScene();if(keeper.taken(still))bodiesMoved=true}
+     if(!keeper.valid())renderer.shadowMap.needsUpdate=true
+     else if(bodiesMoved)keeper.over()}
+    else renderer.shadowMap.needsUpdate=true}
+   drawScene();keeper?.done();bodiesMoved=false
+   if(characters)drawBodies(bodies,scene,camera,characters)
    dirty=false}raf=requestAnimationFrame(frame)
  }catch(error){onFailure(error)}}
- return{ready,dispose(){if(disposed)return;disposed=true;V.seeThrough=null;for(const [o,solid] of faded){for(const m of [].concat(o.material))m.dispose();o.material=solid}faded.clear();if(raf!==null)window.cancelAnimationFrame(raf);V.cast?.dispose();V.cast=null;canvas.removeEventListener('webglcontextlost',onLost);built?.dispose();removeEnvironment?.();renderer.dispose();renderer.forceContextLoss();canvas.remove();if(bodies){const c=bodies.domElement;bodies.dispose();bodies.forceContextLoss?.();c?.remove()}}}
+ return{ready,dispose(){if(disposed)return;disposed=true;V.seeThrough=null;V.sceneryShadow=null;keeper?.dispose();for(const [o,solid] of faded){for(const m of [].concat(o.material))m.dispose();o.material=solid}faded.clear();if(raf!==null)window.cancelAnimationFrame(raf);V.cast?.dispose();V.cast=null;canvas.removeEventListener('webglcontextlost',onLost);built?.dispose();removeEnvironment?.();renderer.dispose();renderer.forceContextLoss();canvas.remove();if(bodies){const c=bodies.domElement;bodies.dispose();bodies.forceContextLoss?.();c?.remove()}}}
 }
