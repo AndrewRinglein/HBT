@@ -29,6 +29,7 @@ import { tickAssignments } from './assignments.js'
 import { CLASSES, groupOf } from '../content/classes.js'
 import { HERO_POOL, CIVILIANS, RESCUABLE_CIVILIANS, heroRowOf, assertKitted, type HeroRow } from '../content/heroes.js'
 import type { EngagementResult } from './seam.js'
+import { fieldedPreviewOf } from './seam.js'
 import { PROLOGUE, DRAFT_CADENCE, DRAFT_OFFER, OPENING_STRAIGHT_IN, DRAFT_MESSAGES, type PrologueRow } from '../content/prologue.js'
 import { TERRITORIES, REALM } from '../content/territories.js'
 import { CURRENCIES } from '../content/currencies.js'
@@ -136,13 +137,24 @@ function draftRollerOf(campaign: CampaignState, whose: readonly (string | number
  * A pool row's own value of a stat, in the Crucible's word: its engine row's number (the Crucible's `health` is the
  * row's maxHp), or — Item Slots, the campaign's own quantity the engine row does not carry — the hero row's.
  */
-function draftBaseOf(row: HeroRow): BaseOf {
+export function draftBaseOf(row: HeroRow): BaseOf {
   const unit = UNITS[row.unitType] as unknown as Readonly<Record<string, unknown>> | undefined
-  return (stat) => {
+  const base = ((stat: string) => {
     if (stat === 'itemSlots') return row.itemSlots
     const v = unit?.[crucibleStatOf(stat)]
     return typeof v === 'number' ? v : 0
+  }) as BaseOf & { fielded: (stat: string) => number }
+  // content.hero-origin-badges (engine item, 2026-10-05): the same hero AS FIELDED bare - the engine's own preview of the row,
+  // its kit and its row's badges folded (seam.ts fieldedPreviewOf, the number the draft's card shows). The engine's draft
+  // holds a rolled LOSS at the stat's floor against this too, so a hero whose kit and origin badges leave it little Health
+  // (the Forest Fey: 6 on her row, 2 fielded) is never rolled to a Health the engine refuses to field.
+  let bare: Readonly<Record<string, unknown>> | undefined
+  base.fielded = (stat) => {
+    if (stat === 'itemSlots') return row.itemSlots
+    const v = (bare ??= fieldedPreviewOf(row).now as unknown as Readonly<Record<string, unknown>>)[crucibleStatOf(stat)]
+    return typeof v === 'number' ? v : 0
   }
+  return base
 }
 
 /** The badges the party was drafted with — a hand's first badges are never one of these. */
