@@ -82,7 +82,7 @@ import { CRUCIBLE, FIRST_HERO, crucibleBadgeOf, crucibleStatOf, badgeLineOf, sta
 import { CLASSES, classLineOf } from '../content/classes.js'
 import { BADGE_LINES } from '../content/generated/progress.js'
 import { giftsOf, givenByRuleOf, type JoinedWith } from '../core/draft-modifiers.js'
-import { statLabelOf } from '../content/stat-labels.js'
+import { statChangeIsGain, statLabelOf, statWordsOf } from '../content/stat-labels.js'
 import { BADGES, RULE_BADGES, UNITS, type UnitDef } from '../engine.js'
 import { portraitOf } from './art.js'
 
@@ -147,7 +147,7 @@ type OwnLine = { pos: boolean; html: string }
 /** A badge as a line: its name and its one-line meaning; a flaw stands with the negatives. */
 const badgeLine = (b: string): OwnLine => ({ pos: !flawedBadge(b), html: `<li class="${flawedBadge(b) ? 'neg' : 'pos'}" data-own="badge:${esc(b)}"><b>${esc(BADGES[b]?.name ?? b)}</b> ${esc(ownBadgeWords(b))}</li>` })
 /** A stat change as a line: its amount and the stat's word ("+2 Health"); a loss stands with the negatives. */
-const statLine = (j: JoinedWith): OwnLine => ({ pos: j.amount! > 0, html: `<li class="${j.amount! > 0 ? 'pos' : 'neg'}" data-own="${esc(j.key)}" data-amount="${j.amount}">${sign(j.amount!)} ${esc(statLabelOf(crucibleStatOf(j.stat!)))}</li>` })
+const statLine = (j: JoinedWith): OwnLine => { const k = crucibleStatOf(j.stat!), pos = statChangeIsGain(k, j.amount!); return { pos, html: `<li class="${pos ? 'pos' : 'neg'}" data-own="${esc(j.key)}" data-amount="${j.amount}">${esc(statWordsOf(k, j.amount!))}</li>` } }
 const positivesFirst = (lines: readonly OwnLine[]) => [...lines.filter((l) => l.pos), ...lines.filter((l) => !l.pos)].map((l) => l.html).join('')
 
 /**
@@ -180,11 +180,15 @@ function firstOffer(h: HeroRow, mine: readonly JoinedWith[]): string {
   return `<div class="opt" data-act="draft" data-id="${esc(h.id)}" data-classes="${esc(h.classes.join(','))}">${cardArt(h.id)}<b>${esc(h.name)}</b>${whatItIs(h)}${classLine(h)}${ownList(h, mine)}${d ? `<p class="who">${esc(d.description)}</p>${d.quote ? `<p class="quote">“${esc(d.quote)}”</p>` : ''}` : ''}</div>`
 }
 
-/** What a badge does, in words: the stats the battle fields for it (the engine's row), and the item slots the campaign gives or takes. */
-function badgeWordsOf(id: string): string {
-  const parts = Object.entries(BADGES[id]?.statModifiers ?? {}).filter(([, n]) => n !== 0).map(([k, n]) => `${sign(n as number)} ${statLabelOf(k)}`)
+/**
+ * What a badge does, in words: the stats the battle fields for it (the engine's row), and the item slots the campaign gives or
+ * takes. Each as content/stat-labels.ts statWordsOf says a row's change — so a badge that changes what a swap costs (Fast
+ * Hands, Slow Hands) reads "Swap costs 0 Stamina", not a stat word and a number (kingdom.swap-cost-reads-as-stamina).
+ */
+export function badgeWordsOf(id: string): string {
+  const parts = Object.entries(BADGES[id]?.statModifiers ?? {}).filter(([, n]) => n !== 0).map(([k, n]) => statWordsOf(k, n as number))
   const slots = crucibleBadgeOf(id)?.stats[SLOTS] ?? 0
-  if (slots) parts.push(`${sign(slots)} ${statLabelOf(SLOTS)}`)
+  if (slots) parts.push(statWordsOf(SLOTS, slots))
   return parts.join(', ') || 'nothing in battle yet'
 }
 
@@ -203,7 +207,7 @@ function rolledOffer(row: HeroRow, h: Hero): string {
   const half = Math.ceil(rows.length / 2)
   // a rolled point the battle cannot take (the engine has no such unit mod) is said, not hidden; Item Slots is the campaign's and counts
   const idle = new Set(d.unfielded.filter((r) => r.stat !== SLOTS).map((r) => r.stat))
-  const rolled = d.rolls.map((r) => `<span class="delta ${r.amount > 0 ? 'won' : 'lost'}">${sign(r.amount)} ${esc(statLabelOf(crucibleStatOf(r.stat)))}${idle.has(r.stat) ? ' <i>(not counted in battle yet)</i>' : ''}</span>`).join(' ')
+  const rolled = d.rolls.map((r) => `<span class="delta ${statChangeIsGain(crucibleStatOf(r.stat), r.amount) ? 'won' : 'lost'}">${esc(statWordsOf(crucibleStatOf(r.stat), r.amount))}${idle.has(r.stat) ? ' <i>(not counted in battle yet)</i>' : ''}</span>`).join(' ')
   const badges = d.badges.map((b) => `<div class="badge ${CRUCIBLE.flawed.some((x) => x.id === b) ? 'flawed' : 'good'}" data-badge="${esc(b)}"><b>${esc(BADGES[b]?.name ?? b)}</b> <span>${esc(badgeWordsOf(b))}</span></div>`).join('')
   return `<div class="opt rolled" data-act="draft" data-id="${esc(h.id)}" data-classes="${esc(h.classes.join(','))}" data-badges="${esc(d.badges.join(','))}" data-rolls="${esc(d.rolls.map((r) => `${r.stat}:${r.amount}`).join(','))}" data-stats="${esc(values.map(([k, value]) => `${k}:${value}`).join(','))}">
     ${cardArt(h.id)}<b>${esc(h.name)}</b><small>${esc(classesOf(h))}</small>${classLine(row)}

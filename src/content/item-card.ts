@@ -22,7 +22,7 @@
 //                          the attribute's own line and triggers.
 
 import { itemOf, isShield, type ItemRow } from './items.js'
-import { statLabelOf } from './stat-labels.js'
+import { statLabelOf, statWordsOf } from './stat-labels.js'
 import { ITEM_WORDS, ATTRIBUTE_WORDS, GRANT_WORDS, type TriggerWords, type AttackWords, type PowerWords } from './generated/item-words.js'
 import { ACTIONS, isAttack } from '../engine.js'
 
@@ -131,7 +131,7 @@ export function itemCardOf(itemId: string): ItemCard {
   ].filter((x): x is string => x !== null)
   return {
     id: row.id, name: row.name, kind: kindOf(row), tier: row.tier, facts,
-    gives: Object.entries(row.statModifiers).map(([stat, amount]) => ({ stat, amount, words: `${sign(amount)} ${statLabelOf(stat)}` })),
+    gives: Object.entries(row.statModifiers).map(([stat, amount]) => ({ stat, amount, words: statWordsOf(stat, amount) })),
     lines: (own?.triggers ?? []).map(triggerLine),
     grants: row.grants.map((g) => grantOf(g, row)).filter((g): g is ItemCardGrant => g !== null),
     attribute: row.enchant ? { id: row.enchant, name: attribute?.name ?? row.enchant.replace('enchant.', ''), lines: [...(attribute?.line ? [attribute.line] : []), ...(attribute?.triggers ?? []).map(triggerLine)] } : null,
