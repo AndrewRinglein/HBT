@@ -34,13 +34,13 @@ When a rule fires. Twelve, plus `aura` and `passive` which are standing properti
 |---|---:|
 | `self` | 161 |
 | `one enemy in melee reach` | 98 |
-| `one enemy within N hexes` | 82 |
+| `one enemy within N hexes` | 83 |
 | `one ally within N hexes` | 54 |
 | `allies within N hexes` | 32 |
 | `a hex within N hexes and every hex adjacent to it` | 17 |
 | `enemies within N hexes` | 16 |
 | `you and allies within N hexes` | 16 |
-| `up to N enemies within N hexes` | 12 |
+| `up to N enemies within N hexes` | 11 |
 | `a hex within N hexes` | 8 |
 | `one downed ally within N hexes` | 6 |
 | `every enemy adjacent to you` | 6 |

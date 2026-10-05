@@ -92,16 +92,6 @@
    "needs": "trigger-effect: statMod before damage"
   },
   {
-   "unit": "hero.base.ranger-ranger",
-   "what": "attack.elfbow.double-shot targets 'up to 2 enemies within 4 hexes' — lands SINGLE-TARGET",
-   "needs": "an attack at several chosen targets — engine capability.attack-several-targets"
-  },
-  {
-   "unit": "hero.base.ranger-scantily",
-   "what": "attack.elfbow.double-shot targets 'up to 2 enemies within 4 hexes' — lands SINGLE-TARGET",
-   "needs": "an attack at several chosen targets — engine capability.attack-several-targets"
-  },
-  {
    "unit": "hero.base.priest-pauper",
    "what": "attack.holy-texts.verse addsStat: \"spirit\"",
    "needs": "damage from two stats — engine capability.damage-from-two-stats"
@@ -670,11 +660,6 @@
    "unit": "item.storm-bastion",
    "what": "aura: AURA radius 1 — an enemy that ends its movement in",
    "needs": "hook: aura (declared, engine never fires it)"
-  },
-  {
-   "unit": "item.elfbow",
-   "what": "attack.elfbow.double-shot targets 'up to 2 enemies within 4 hexes' — lands SINGLE-TARGET",
-   "needs": "an attack at several chosen targets — engine capability.attack-several-targets"
   },
   {
    "unit": "item.earth-staff",

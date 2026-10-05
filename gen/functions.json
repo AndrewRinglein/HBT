@@ -410,7 +410,7 @@
   },
   {
    "name": "one enemy within N hexes",
-   "uses": 82,
+   "uses": 83,
    "ids": [
     "item.poison-flask",
     "item.burning-oil",
@@ -607,13 +607,12 @@
   },
   {
    "name": "up to N enemies within N hexes",
-   "uses": 12,
+   "uses": 11,
    "ids": [
     "attack.throwing-knives.fan",
     "attack.poison-stars.venom-spread",
     "attack.poison-throwing-knives.venom-fan",
     "attack.demon-whip.hellcoil",
-    "attack.elfbow.double-shot",
     "power.bloodrage.frenzy",
     "power.winged-assassin.rapid-fire",
     "power.poison-master.hail-of-poison-knives",
