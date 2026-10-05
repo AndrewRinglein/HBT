@@ -34,3 +34,18 @@ export function scopeBattleCSS(source){
  const reset='.kingdom-battle button,.kingdom-battle input,.kingdom-battle select,.kingdom-battle table,.kingdom-battle th,.kingdom-battle td,.kingdom-battle h1,.kingdom-battle h2,.kingdom-battle h3,.kingdom-battle code{all:revert}\n'
  return reset+root.toString()+'\n.kingdom-battle-fit{width:100%;position:relative;overflow:hidden;margin:16px 0}\n'
 }
+/* viewer.notices-gold-low-no-backdrop (engine DECISIONS.md 2026-10-05 'the playtest post answered: every notice gold and low …',
+   Andrew: "I was imagining this as gold and bright text with no backdrop." · "I don't like the way it is for anything."; the
+   item: "The gold notices on the screens between battles (the kingdom's) take the same look … one style in one place"): the
+   notice's lettering is ONE rule of the viewer's stylesheet (between its NOTICE-LOOK marks). The battle screen wears it
+   scoped, like the rest; here the same rule is lifted, unchanged, for the kingdom's own notices outside the battle screen —
+   the gold line of a screen between battles (.lessonLine), a draft's message (.draftNotice) and the Skip tutorial question
+   (#skipAsk). KINGDOM_NOTICES is the list of them; the look itself is written nowhere in this package. The builders add
+   this rule AFTER the scoped stylesheet: scopeBattleCSS keeps every viewer selector under .kingdom-battle (tools/
+   atlas-surface.verify.mjs holds that), so the rule here names the kingdom's own selectors and no viewer class. */
+export const KINGDOM_NOTICES=['.lessonLine','.draftNotice','#skipAsk']
+export function noticeLook(source){
+ const m=source.match(/\/\* NOTICE-LOOK \*\/\s*([^{}]+)\{([^{}]*)\}\s*\/\* END NOTICE-LOOK \*\//)
+ if(!m)throw Error('The viewer stylesheet no longer marks the notice\'s look (NOTICE-LOOK … END NOTICE-LOOK): the kingdom\'s notices have none to take')
+ return `${KINGDOM_NOTICES.join(',')}{${m[2]}}\n`
+}

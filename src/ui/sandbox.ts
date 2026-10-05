@@ -117,8 +117,10 @@ function skipChrome(){
  if(show)el.removeAttribute('hidden');else el.setAttribute('hidden','')
  const state=!show?'':skipAsking?'ask':'offer';if(el.dataset.state===state)return
  el.dataset.state=state
- const button='background:#14110c;color:#e8c36a;border:1px solid #e8c36a;border-radius:4px;padding:5px 12px;margin-left:8px;font:inherit;cursor:pointer'
- el.innerHTML=!show?'':skipAsking?`<span id="skipAsk" role="alertdialog" style="background:#14110c;padding:6px 10px;border:1px solid #e8c36a;border-radius:4px">Skip every tutorial message for this run?<button type="button" data-skip="yes" style="${button}">Yes</button><button type="button" data-skip="no" style="${button}">No</button></span>`
+ /* viewer.notices-gold-low-no-backdrop: the question keeps its buttons and loses the box behind its words (the notice's one
+    lettering reaches #skipAsk through the builders' lifted rule); a button's own words are not outlined */
+ const button='background:#14110c;color:#e8c36a;border:1px solid #e8c36a;border-radius:4px;padding:5px 12px;margin-left:8px;font:inherit;font-weight:600;letter-spacing:0;text-shadow:none;cursor:pointer'
+ el.innerHTML=!show?'':skipAsking?`<span id="skipAsk" role="alertdialog" style="padding:6px 0">Skip every tutorial message for this run?<button type="button" data-skip="yes" style="${button}">Yes</button><button type="button" data-skip="no" style="${button}">No</button></span>`
   :`<button type="button" data-skip="ask" style="${button}">Skip tutorial</button>`
  el.querySelectorAll<HTMLElement>('[data-skip]').forEach(b=>b.addEventListener('click',(ev:Event)=>{ev?.stopPropagation?.();const what=b.dataset.skip
   if(what==='ask'){skipAsking=true;skipChrome()}else if(what==='no'){skipAsking=false;skipChrome()}else skipTutorial()}))

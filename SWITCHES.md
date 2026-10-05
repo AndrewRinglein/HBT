@@ -1290,6 +1290,20 @@ reward card chosen on the reward screen open that item's card at the right of th
 | `itemCardOnSwap` | "On the Equip screen (and the opening run's equip step, and Swap)". | **Equip (both pages that show it, so the opening run's equip step and the kingdom's Fit-gear) and the reward screen are done here. Swap is the battle screen's strip — the viewer's — and is `viewer.item-card-in-battle`, which follows this item and uses this card.** | The battle screen is another package's. | Open — the viewer's item — 2026-10-05 |
 | `itemCardRewardOpens` | "the reward screen's cards open the same card" — on which click? A reward card is turned by its first click and chosen by the next. | **On the click that chooses a turned card: its item's card opens beside the cards. Choosing another replaces it; a click away closes it and the reward stays chosen. A card still face down opens nothing.** | The reward's own two clicks are kept. | Default — 2026-10-05 |
 
+## viewer.notices-gold-low-no-backdrop — 2026-10-05 (the viewer's item; the kingdom's own notices)
+
+Engine DECISIONS.md 2026-10-05 'the playtest post answered: every notice gold and low …' (Andrew: "I was imagining this as gold and
+bright text with no backdrop. Also, let's drop it lower down on the screen so it's right above the bottom of the screen." · "I
+don't like the way it is for anything."); the item: "The gold notices on the screens between battles (the kingdom's) take the same
+look … one style in one place." The look is the viewer's one rule, lifted by the builders (`tools/battle-view-assets.mjs`
+`noticeLook`, `KINGDOM_NOTICES`); viewer SWITCHES.md, the section of this item's name, has the look and the battle screen's place.
+
+| Switch | Question | Default | Reason | Status |
+|---|---|---|---|---|
+| `noticeKingdomWhich` | Which of the kingdom's own words are notices? | **Three: the gold line of a screen between battles (`.lessonLine`), a draft's message (`.draftNotice`) and the Skip tutorial question (`#skipAsk`).** Each takes the lifted rule: the bright gold, the outline, nothing behind the letters. The gold line lost its box and its border; the question lost its box and keeps its Yes and No. | They are the kingdom's words to the player for a time, in gold. The other side: headings and card titles in the kingdom's gold are page furniture, not notices, and keep `--gold`. | Default — 2026-10-05 |
+| `noticeKingdomPlace` | Where do they stand? | **The gold line of a screen between battles: just above the bottom of the screen, centred (18 px up; was a boxed line at the top).** It takes no click, so what is under it still does. | "Right above the bottom of the screen"; no action bar is on those screens. The other side: above each screen's own bottom row of buttons, screen by screen. | Default — 2026-10-05 |
+| `noticeDraftMessagePlace` | A draft's message was ruled "above its offers — one line in the kingdom's gold" (kingdom.opening-draft-class-message). Does it move to the bottom too, and whose gold is it now? | **It stays a line of the page above its offers — it speaks of the cards under it — and takes the notice's lettering: the bright gold and the outline, in place of the kingdom's darker `--gold`.** `test/opening-draft-class-message.test.ts` is rewritten for the colour under Law 10; its place and its markup are held as before. | The newer ruling is about every notice's look ("I don't like the way it is for anything"); its place above the offers is part of what it says. The other side: at the bottom of the screen with the others. | Default — 2026-10-05 |
+
 ## kingdom.stand-up-one-press — 2026-10-05
 
 Engine DECISIONS.md 2026-10-05 'seven answers: the first hero's card shows only what is modified; origin badges go on the
