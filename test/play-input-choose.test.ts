@@ -29,7 +29,14 @@ describe('choosing what the hero does', () => {
     const { s, P, h } = acting(/warrior/)
     expect(P.facts().slot).toBe(moveSlotFirst(s, h.id))
   })
-  it('no action chosen, no arrow: pointing anywhere draws none; once its movement is spent it still draws none', () => {
+  /* Law 10, 2026-10-05 — kingdom.attack-one-armed-after-move (engine DECISIONS.md 2026-10-05 'the battle screen must feel smooth: …;
+     attack one is chosen after a move; …', Andrew: "after you move, we should auto-select your basic attack or your attack one …
+     so you don't have to select your attack to then start turning on the map."). This test was
+       'no action chosen, no arrow: pointing anywhere draws none; once its movement is spent it still draws none'
+     and ended  expect(P.facts().reach).toEqual([]); expect(P.facts().aim).toBeNull()  after the walk. "No action chosen, no
+     arrow" (2026-10-01) stands and is held as it was, before the walk and again once the choice is taken back; what the ruling
+     changes is that after the walk an action IS chosen — the unit's attack one — so its arrow is drawn. */
+  it('no action chosen, no arrow: pointing anywhere draws none; once it has moved its attack one is chosen by itself, and with that taken back pointing draws none again', () => {
     const { s, P, h } = acting(/warrior/)
     const far = s.ctx.state.units.find((u) => u.side === 'enemy')!.hex
     P.input({ kind: 'point', hex: far }); expect(P.facts().aim).toBeNull()
@@ -38,7 +45,11 @@ describe('choosing what the hero does', () => {
     P.input({ kind: 'hex', hex: step }); P.input({ kind: 'hex', hex: step })
     expect(s.ctx.state.units[h.id]!.hex).toBe(step)
     P.input({ kind: 'point', hex: far })
-    expect(P.facts().reach).toEqual([]); expect(P.facts().aim).toBeNull()
+    const one = s.ctx.state.units[h.id]!.actions.find((id) => isAttack(s.ctx.actions[id]!))!
+    expect(P.facts().reach).toEqual([]); expect(P.facts().slot, 'attack one is chosen by itself').toBe(one); expect(P.facts().aim, 'so its arrow is drawn').not.toBeNull()
+    /* taken back (a right-click): no action chosen, no arrow */
+    expect(P.input({ kind: 'back' })).toBe(true); P.input({ kind: 'point', hex: far })
+    expect(P.facts().slot).toBeNull(); expect(P.facts().aim).toBeNull()
   })
   it('an attack chosen, the arrow reaches no further than its reach — the engine\'s — toward the pointer', () => {
     const { s, P, h } = acting(/warrior/)
