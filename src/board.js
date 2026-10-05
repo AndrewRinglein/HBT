@@ -1263,6 +1263,15 @@ export function drawPlay(V) {
     n.dataset.hex = String(c.hex); n.dataset.cost = String(c.cost); n.textContent = String(c.cost)
     n.style.transform = `translate(-50%,-50%) translateZ(${heightOf(V, c.hex) + 2}px) rotateZ(var(--unspin, 0deg))`
     layer.appendChild(n) }
+  /* viewer.move-cost-on-hex (engine DECISIONS.md 2026-10-05, Andrew: "squares in your movement area that cost 2 or can't be walked
+     through" · an X: "6, yes"): the hexes bordering the area, by the host's word (play.js reachBorder — the engine's, for this
+     unit): its number on a hex that would cost more than one, an X on a hex that cannot be entered, nothing on one that costs
+     one. They lie on their hex like the grid's numbers and wear their look; no blue tile is under them. */
+  for (const c of P.reachBorder || []) { if (c.cost !== null && !(c.cost > 1)) continue
+    const p = POS[c.hex], n = el(c.cost === null ? 'playBlocked' : 'playCostNear', `left:${p.px}px;top:${p.py}px`)
+    n.dataset.hex = String(c.hex); n.textContent = c.cost === null ? 'X' : String(c.cost); if (c.cost !== null) n.dataset.cost = String(c.cost)
+    n.style.transform = `translate(-50%,-50%) translateZ(${heightOf(V, c.hex) + 2}px) rotateZ(var(--unspin, 0deg))`
+    layer.appendChild(n) }
   for (const h of P.zoc) tile(h, 'playZoc', `background:repeating-linear-gradient(45deg,${PLAY_HUE.zoc} 0 5px,transparent 5px 14px);${HEXCLIP}`)
   if (P.threat) {
     for (const h of P.threat.move) tile(h, 'playThreatMove', `background:${PLAY_HUE.threatMove};${HEXCLIP}`)
