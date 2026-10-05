@@ -14,7 +14,7 @@
 // Imports no page code.
 import { describe, it, expect } from 'vitest'
 import { execFileSync } from 'node:child_process'
-import { mkdirSync } from 'node:fs'
+import { frameCostOnThePage, rowOf, FRAME_COST_WAIT_MS } from './frame-cost-page.js'
 
 type Ms = { median: number; min: number; max: number }
 type Measure = { frames: number; ms: Ms; checks?: number }
@@ -28,10 +28,16 @@ describe('viewer.see-through-only-when-moved', () => {
   }, 170000)
 
   it('the built page, the Orphanage and the Lumberjack House: no check over 60 still frames; a still frame costs the same with the check due as without; one check under 4 ms; the same pieces as every triangle finds, at every view of a round', () => {
-    mkdirSync('../kingdom/scratch', { recursive: true })
-    execFileSync(process.execPath, ['tools/build-sandbox.mjs', 'scratch/see-through-only-when-moved.html'], { cwd: '../kingdom', stdio: 'pipe' })
-    const out = execFileSync(process.execPath, ['tools/frame-cost.mjs', 'orphanage', 'lumberjack', '--frames', '60', '--json', '--page', '../kingdom/scratch/see-through-only-when-moved.html'], { cwd: '../viewer', encoding: 'utf8', maxBuffer: 1 << 24, timeout: 560000 })
-    const rows = (JSON.parse(out) as { rows: Row[] }).rows
+    // LAW 10 — 2026-10-05 (found landing viewer.map-drag-and-keys; test/frame-cost-page.ts says why): this file ran the tool by
+    // itself —
+    //   mkdirSync('../kingdom/scratch', { recursive: true })
+    //   execFileSync(process.execPath, ['tools/build-sandbox.mjs', 'scratch/see-through-only-when-moved.html'], { cwd: '../kingdom', stdio: 'pipe' })
+    //   const out = execFileSync(process.execPath, ['tools/frame-cost.mjs', 'orphanage', 'lumberjack', '--frames', '60', '--json', '--page', …], { …, timeout: 560000 })
+    //   const rows = (JSON.parse(out) as { rows: Row[] }).rows
+    // — as three other test files did, each on a page of its own, all at once in the gate's checks. The tool is now run ONCE
+    // a test run, on one sandbox page built from the sources, for every file that reads it; this file reads its rows of
+    // that result. Every assertion on those rows below stands as written.
+    const got = frameCostOnThePage<Row>(), rows = [rowOf(got, 'encounter.opening.orphanage'), rowOf(got, 'encounter.opening.lumberjack')]
     expect(rows.map((r) => r.battle)).toEqual(['encounter.opening.orphanage', 'encounter.opening.lumberjack'])
     for (const r of rows) {
       const at = r.battle
@@ -62,5 +68,5 @@ describe('viewer.see-through-only-when-moved', () => {
       expect(r.seeThrough!.same, `${at}: views where both name the same pieces`).toBe(r.seeThrough!.views)
       expect(r.seeThrough!.withSomethingHiding, `${at}: and many of those views have a piece in the way — the two are not agreeing about nothing`).toBeGreaterThanOrEqual(r.seeThrough!.views / 4)
     }
-  }, 780000)
+  }, FRAME_COST_WAIT_MS)
 })

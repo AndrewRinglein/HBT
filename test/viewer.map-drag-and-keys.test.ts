@@ -16,7 +16,7 @@ describe('the map moves by dragging it and on W, A, S and D, beside the edge scr
   it('the numbers are the camera\'s policy: 6 px of travel makes a press a drag; a quarter turn takes 300 ms', () => {
     const src = readFileSync('src/camera-policy.js', 'utf8')
     const n = (name: string) => Number(src.match(new RegExp(name + ':\\s*([\\d.]+)'))?.[1])
-    expect(n('DRAG_PX')).toBe(6); expect(n('TURN_MS')).toBe(300)
+    expect(n('MAP_DRAG_PX')).toBe(6); expect(n('TURN_MS')).toBe(300)
     expect(n('EDGE_SCROLL_SPEED'), 'the keys move the map at the edge scroll\'s speed').toBe(700)
   })
   it('the viewer page, the Orphanage: the drag, the click that travels less than 6 px, the right button, W A S D, the 300 ms quarter turn, the HUD line', () => {

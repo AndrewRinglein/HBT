@@ -87,7 +87,7 @@ test('a press dragged 300 px left moves the board 300 px left under the pointer 
 
 test('a press that travels less than 6 px is a click exactly as before — 3 px, and the 5 px that used to be swallowed; one that travels more is a drag and is never also a click', () => {
   const { w, v, V, seen, wrap } = boot(), vp = V.camera3d.userData.viewport
-  assert.equal(POLICY.DRAG_PX, 6)
+  assert.equal(POLICY.MAP_DRAG_PX, 6)
   const x = vp.w / 2, y = vp.h / 2, c = client(V, x, y)
   for (const px of [0, 3, 5]) {
     seen.length = 0; const from = pose(V)

@@ -11,7 +11,7 @@
 // Imports no page code.
 import { describe, it, expect } from 'vitest'
 import { execFileSync } from 'node:child_process'
-import { mkdirSync } from 'node:fs'
+import { frameCostOnThePage, rowOf, FRAME_COST_WAIT_MS } from './frame-cost-page.js'
 
 type Pass = { all: number; shadow: number; scene: number; bodies: number }
 type Measure = { frames: number; draws: Pass; triangles: Pass }
@@ -25,10 +25,16 @@ describe('viewer.scenery-shadow-drawn-once', () => {
   }, 170000)
 
   it('the built page, the Orphanage: the shadow pass draws only the bodies on a frame where a body animates and nothing on a still frame, where it drew 916; the picture is the same, pixel for pixel, as with the shadow whole', () => {
-    mkdirSync('../kingdom/scratch', { recursive: true })
-    execFileSync(process.execPath, ['tools/build-sandbox.mjs', 'scratch/scenery-shadow-drawn-once.html'], { cwd: '../kingdom', stdio: 'pipe' })
-    const out = execFileSync(process.execPath, ['tools/frame-cost.mjs', 'orphanage', '--json', '--page', '../kingdom/scratch/scenery-shadow-drawn-once.html'], { cwd: '../viewer', encoding: 'utf8', maxBuffer: 1 << 24, timeout: 400000 })
-    const r = (JSON.parse(out) as { rows: Row[] }).rows[0]!
+    // LAW 10 — 2026-10-05 (found landing viewer.map-drag-and-keys; test/frame-cost-page.ts says why): this file ran the tool by
+    // itself —
+    //   mkdirSync('../kingdom/scratch', { recursive: true })
+    //   execFileSync(process.execPath, ['tools/build-sandbox.mjs', 'scratch/scenery-shadow-drawn-once.html'], { cwd: '../kingdom', stdio: 'pipe' })
+    //   const out = execFileSync(process.execPath, ['tools/frame-cost.mjs', 'orphanage', '--json', '--page', …], { …, timeout: 400000 })
+    //   const r = (JSON.parse(out) as { rows: Row[] }).rows[0]!
+    // — as three other test files did, each on a page of its own, all at once in the gate's checks. The tool is now run ONCE
+    // a test run, on one sandbox page built from the sources, for every file that reads it; this file reads its rows of
+    // that result. Every assertion on those rows below stands as written.
+    const r = rowOf(frameCostOnThePage<Row>(), 'encounter.opening.orphanage')
     expect(r.battle).toBe('encounter.opening.orphanage')
     expect(r.flat, r.note).toBeFalsy(); expect(r.pageErrors ?? []).toEqual([])
     // a frame where a body animates (the bodies idle where they stand): the bodies' shadows, and only theirs. The scenery's
@@ -55,5 +61,5 @@ describe('viewer.scenery-shadow-drawn-once', () => {
     expect(r.shadow!.worst, 'the most any pixel differs, of 255').toBeLessThanOrEqual(2)
     expect(r.shadow!.differing, `pixels that differ at the worst view, of ${r.shadow!.pixels} (two frames drawn the same way: ${r.shadow!.sameWay})`).toBeLessThanOrEqual(Math.max(40, 3 * r.shadow!.sameWay))
     expect(r.shadow!.same, 'and some views are the same in every pixel').toBeGreaterThan(0)
-  }, 600000)
+  }, FRAME_COST_WAIT_MS)
 })

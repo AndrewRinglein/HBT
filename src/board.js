@@ -2157,12 +2157,12 @@ export function bindCamera(V) {
     const travel = Math.hypot(e.clientX - drag.originX, e.clientY - drag.originY)
     /* viewer.map-drag-and-keys (engine DECISIONS.md 2026-10-05 'the battle screen must feel smooth: … the map drags and moves
        on W/A/S/D', Andrew: "Yes" — overturning 2026-10-01 "no grab-drag"; the edge scroll stays). A press that travels less
-       than POLICY.DRAG_PX is a click exactly as it was; one that travels more is a drag — the map moves with the pointer, the
+       than POLICY.MAP_DRAG_PX is a click exactly as it was; one that travels more is a drag — the map moves with the pointer, the
        ground that was under it at the press staying under it, with the left button or the right — and is never also a
        click. No press is swallowed with nothing happening: until now a press that wandered 4 px was no click and moved
        nothing, which lost clicks made with the hand still moving. Shown as it goes (never through the glide), stopped at
        the bound the edge scroll stops at, and left where it is put (view.put). */
-    if (!dragged && travel < POLICY.DRAG_PX) return
+    if (!dragged && travel < POLICY.MAP_DRAG_PX) return
     if (!dragged) { dragged = true; drag.ground = groundUnder({ clientX: drag.originX, clientY: drag.originY }); wrap.style.cursor = 'grabbing'; edgeTo(null) }
     const g = groundUnder(e); if (!g || !drag.ground) return
     V.view.dragging = true; V.view.put = true

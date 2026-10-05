@@ -44,7 +44,7 @@ export const POLICY = Object.freeze({
   /* viewer.map-drag-and-keys (2026-10-05, Andrew: "Yes" to the map moving by dragging it and by W/A/S/D): a press that travels
      this far on the screen is a drag and moves the map; one that travels less is a click exactly as it was. And a quarter
      turn takes this long, not the 1,100 ms glide. */
-  DRAG_PX: 6,
+  MAP_DRAG_PX: 6,               // (not DRAG_PX, above: that is the old Overhead drag's, 5 px)
   TURN_MS: 300,
   /* viewer.camera-no-void (engine DECISIONS.md 2026-10-03 'the camera never shows white space'): the standard zoom is this much
      nearer than the zoom at which the battle area just fills with board, so there is board beyond it on both axes to scroll
