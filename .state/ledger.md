@@ -31789,6 +31789,17 @@ index 9c5adab..2c02189 100644
   PASS  naming — no banned words invented
   PASS  kill switch — the tests fail without the content — tests fail without item.elfbow — they genuinely test it
 
+## fix.computer-reaches-class-power-past-shield-power — LANDED `ad291d9` **NEEDS REVIEW**
+2026-10-05 07:55
+
+  PASS  dependencies landed
+  WARN  not already decided — 4 candidate ruling(s) — READ BEFORE ASKING: SWITCHES.md:2304 · SWITCHES.md:2414
+  PASS  typecheck
+  PASS  the item's own tests — test/ability-effects.test.ts, test/battle-cursor.test.ts, test/computer-reaches-class-power.test.ts
+  PASS  gate 1 — the id appears in a real battle — power.sacred-shield.aegis: 5 log lines, 5 fired, 2 changed state
+  PASS  brought its own tests — test/ability-effects.test.ts, test/battle-cursor.test.ts, test/computer-reaches-class-power.test.ts, test/fixtures/battle-cursor-computer-reaches-class-power.json
+  WARN  existing tests untouched — DELETED LINES in test/ability-effects.test.ts (-8), test/battle-cursor.test.ts (-2) — will land FLAGGED for review
+  PASS  control battles unchanged
 ## viewer.prone-lies-down — LANDED `5761ea5`
 2026-10-05 08:34
 ## fix.stand-up-does-nothing — LANDED `43a5ab4`
@@ -31806,6 +31817,106 @@ index 9c5adab..2c02189 100644
   PASS  hardcode scan — core knows mechanisms, never names
   PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
   PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — power.sacred-shield.aegis live · power.tower-shield.arrow-wall live
+  PASS  naming — new content ids use declared kinds
+  WARN  naming — no banned words invented — 'buff/debuff' — say status — will land FLAGGED
+  PASS  kill switch — the tests fail without the content — tests fail without power.sacred-shield.aegis — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/ability-effects.test.ts b/test/ability-effects.test.ts
+index 54b766c..21b9414 100644
+--- a/test/ability-effects.test.ts
++++ b/test/ability-effects.test.ts
+@@ -106,11 +106,17 @@ describe('alive in a real battle', () => {
+   // shields - a fielding choice, as heroItems is for; every assertion below is as it was.
+   // was: const ctx = createBattle({ ...scenarioOptions(scenarioDef('showcase.assembled-party')), replicate: r })
+-  it('the assembled party uses its powers — a heal, a buff and an area blast all fire', () => {
++  // Law 10, 2026-10-05 — fix.computer-reaches-class-power-past-shield-power (SWITCHES.md aiPowerLongestCooldownFirst): the computer
++  // tries its power with the longest cooldown first now, so a shield's power no longer stands in front of the class's. The party is
++  // fielded with its FULL Codex kits again, as this test first had it (the line above), and Aegis and the blast are held there -
++  // Aegis was the power the shields hid. The heal is held in the fielding of 2026-10-04, the kits less their shields: with the
++  // Ledger's shields the party ends these fights in three or four Turns with nobody missing the four Health a 7-point Circle of
++  // Healing asks for (none in 20 replicates) - that is how hurt they are, not which power the computer reaches for, and
++  // test/computer-reaches-class-power.test.ts holds that she reaches for the Circle first when the circle holds someone hurt. So one
++  // test is two fieldings; no assertion is dropped, and Aegis is held on the harder one.
++  const played = (heroItems?: string[][]) => {
+     const used = new Set<string>(), bursts = new Set<string>()
+     const opts = scenarioOptions(scenarioDef('showcase.assembled-party'))
+-    const heroItems = opts.heroes!.map((h) => (UNITS[h]!.defaultItems ?? []).filter((i) => ITEMS[i]?.itemClass !== 'shield'))
+-    expect(heroItems.flat().length, 'three of the six leave a shield behind').toBe(opts.heroes!.flatMap((h) => UNITS[h]!.defaultItems ?? []).length - 3)
+     for (let r = 0; r < 3; r++) {
+-      const ctx = createBattle({ ...opts, heroItems, replicate: r })
++      const ctx = createBattle({ ...opts, ...(heroItems ? { heroItems } : {}), replicate: r })
+       runBattle(ctx)
+       for (const e of ctx.events) {
+@@ -119,9 +125,20 @@ describe('alive in a real battle', () => {
+       }
+     }
+-    expect(used.has(AEGIS)).toBe(true)
+-    expect(used.has(CIRCLE)).toBe(true)
++    return { used, bursts }
++  }
++  it('the assembled party uses its powers — a heal, a buff and an area blast all fire', () => {
++    const full = played()
++    expect(full.used.has(AEGIS)).toBe(true)
+     // V2 section 7 supersedes unit-centred power.used for the travelling blast.
+-    expect(bursts.has(FIREBALL)).toBe(true)
+-    expect(used.has(FIREBALL)).toBe(false)
++    expect(full.bursts.has(FIREBALL)).toBe(true)
++    expect(full.used.has(FIREBALL)).toBe(false)
++    const opts = scenarioOptions(scenarioDef('showcase.assembled-party'))
++    const heroItems = opts.heroes!.map((h) => (UNITS[h]!.defaultItems ?? []).filter((i) => ITEMS[i]?.itemClass !== 'shield'))
++    expect(heroItems.flat().length, 'three of the six leave a shield behind').toBe(opts.heroes!.flatMap((h) => UNITS[h]!.defaultItems ?? []).length - 3)
++    const bare = played(heroItems)
++    expect(bare.used.has(AEGIS)).toBe(true)
++    expect(bare.used.has(CIRCLE)).toBe(true)
++    expect(bare.bursts.has(FIREBALL)).toBe(true)
++    expect(bare.used.has(FIREBALL)).toBe(false)
+   })
+ })
+diff --git a/test/battle-cursor.test.ts b/test/battle-cursor.test.ts
+index 52e9b3f..0bdf006 100644
+--- a/test/battle-cursor.test.ts
++++ b/test/battle-cursor.test.ts
+@@ -453,4 +453,10 @@ const counterattackReplacedAndLostGolden = JSON.parse(readFileSync(new URL('./fi
+ // Every case frozen here (tools/capture-free-attack-accuracy-cursor.mts). Moved: showcase.alpha-team, showcase.assembled-party, showcase.eve-24-a, showcase.eve-24-b, showcase.gash-variant, showcase.horrors, showcase.item-powers, showcase.kiln, showcase.rime, test.back-flip, test.counterattack, test.flaming-longsword, test.opening-cathedral, test.opening-cavern-trail, test.opening-gates, test.swap, progression-surge-0, progression-surge-1, progression-surge-2. A `changed` case is checked here and skips the older layers.
+ const freeAttackAccuracyGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-free-attack-accuracy.json', import.meta.url), 'utf8'))
++// fix.computer-reaches-class-power-past-shield-power (2026-10-05; SWITCHES.md aiPowerLongestCooldownFirst), Law 10: the computer tries
++// a unit's powers longest cooldown first, the unit's own order breaking ties - it took the first its kit listed, so a shield's power
++// (no cooldown, listed before the class's) was raised every Activation and the class's never came up. A case moves where a
++// computer-played unit holds powers of different cooldowns and reaches for one: it now uses the class power it never reached.
++// Every case frozen here (tools/capture-computer-reaches-class-power-cursor.mts). Moved: showcase.assembled-party, showcase.eve-24-a, showcase.horrors, showcase.prologue-party, showcase.surrounded, progression-surge-0. A `changed` case is checked here and skips the older layers.
++const computerReachesClassPowerGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-computer-reaches-class-power.json', import.meta.url), 'utf8'))
+ const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
+ // Explicit rule migration, not regenerated historical hashes. These nine old
+@@ -596,5 +602,8 @@ describe('resumable battle cursor', () => {
+       const counterattackReplacedAndLostExpected = counterattackReplacedAndLostGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+       const freeAttackAccuracyExpected = freeAttackAccuracyGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+-      const freeAttackAccuracyMoved = freeAttackAccuracyExpected?.changed === true
++      const computerReachesClassPowerExpected = computerReachesClassPowerGolden.cases.find((row:{id:string})=>row.id===fixture.id)
++      const computerReachesClassPowerMoved = computerReachesClassPowerExpected?.changed === true
++      // was: const freeAttackAccuracyMoved = freeAttackAccuracyExpected?.changed === true — a case fix.computer-reaches-class-power-past-shield-power moved skips this layer too (fix.computer-reaches-class-power-past-shield-power 2026-10-04)
++      const freeAttackAccuracyMoved = freeAttackAccuracyExpected?.changed === true || computerReachesClassPowerMoved
+       // was: const counterattackReplacedAndLostMoved = counterattackReplacedAndLostExpected?.changed === true — a case capability.free-attack-accuracy moved skips this layer too (capability.free-attack-accuracy 2026-10-04)
+       const counterattackReplacedAndLostMoved = counterattackReplacedAndLostExpected?.changed === true || freeAttackAccuracyMoved
+@@ -744,5 +753,12 @@ describe('resumable battle cursor', () => {
+           }
+         } else result = battle.runBattle(ctx)
+-        if (freeAttackAccuracyExpected) {
++        if (computerReachesClassPowerExpected) {
++        expect(hash(ctx.events), 'full computer-reaches-class-power events').toBe(computerReachesClassPowerExpected.events)
++        expect(hash(ctx.state), 'full computer-reaches-class-power state').toBe(computerReachesClassPowerExpected.state)
++        expect(hash(ctx.rng.log), 'full computer-reaches-class-power RNG').toBe(computerReachesClassPowerExpected.rng)
++        expect(result).toEqual(computerReachesClassPowerExpected.result)
++        }
++        // was: if (freeAttackAccuracyExpected) { — fix.computer-reaches-class-power-past-shield-power (2026-10-04): a case it moved is checked above instead
++        if (freeAttackAccuracyExpected && !computerReachesClassPowerMoved) {
+         expect(hash(ctx.events), 'full free-attack-accuracy events').toBe(freeAttackAccuracyExpected.events)
+         expect(hash(ctx.state), 'full free-attack-accuracy state').toBe(freeAttackAccuracyExpected.state)
+```
+</details>
   PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
   PASS  naming — new content ids use declared kinds
   PASS  naming — no banned words invented
@@ -31874,6 +31985,17 @@ index 9c5adab..2c02189 100644
   PASS  naming — no banned words invented
   PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
 
+## content.orphanage-body-and-graves-cursed — LANDED `8fdaa09` **NEEDS REVIEW**
+2026-10-05 08:41
+
+  PASS  dependencies landed
+  WARN  not already decided — 3 candidate ruling(s) — READ BEFORE ASKING: SWITCHES.md:2427 · SWITCHES.md:2247
+  PASS  typecheck
+  PASS  the item's own tests — test/battle-cursor.test.ts, test/orphanage-body-and-graves-cursed.test.ts
+  PASS  gate 1 — the id appears in a real battle — encounter.opening.lumberjack: 17 log lines, 17 fired, 13 changed state
+  PASS  brought its own tests — test/battle-cursor.test.ts, test/fixtures/battle-cursor-lumberjack-graves-cursed.json, test/orphanage-body-and-graves-cursed.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/battle-cursor.test.ts (-2) — will land FLAGGED for review
+  PASS  control battles unchanged
 ## kingdom.first-hero-own-positives-negatives — LANDED `2dc0099` **NEEDS REVIEW**
 2026-10-05 08:24
 
@@ -31889,6 +32011,10 @@ index 9c5adab..2c02189 100644
   PASS  hardcode scan — core knows mechanisms, never names
   PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
   PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — shape 'data' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without encounter.opening.lumberjack — they genuinely test it
   PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
   PASS  naming — new content ids use declared kinds
   PASS  naming — no banned words invented
@@ -31897,6 +32023,59 @@ index 9c5adab..2c02189 100644
 <details><summary>Existing tests were edited — review this diff</summary>
 
 ```diff
+diff --git a/test/battle-cursor.test.ts b/test/battle-cursor.test.ts
+index 0bdf006..278c084 100644
+--- a/test/battle-cursor.test.ts
++++ b/test/battle-cursor.test.ts
+@@ -459,4 +459,10 @@ const freeAttackAccuracyGolden = JSON.parse(readFileSync(new URL('./fixtures/bat
+ // Every case frozen here (tools/capture-computer-reaches-class-power-cursor.mts). Moved: showcase.assembled-party, showcase.eve-24-a, showcase.horrors, showcase.prologue-party, showcase.surrounded, progression-surge-0. A `changed` case is checked here and skips the older layers.
+ const computerReachesClassPowerGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-computer-reaches-class-power.json', import.meta.url), 'utf8'))
++// content.orphanage-body-and-graves-cursed (2026-10-05; DECISIONS.md 2026-10-05 'playtest post: … bodies, cursed ground …' and 2026-09-28
++// 'cursed ground is the Weak ground layer, the one ground-status shape'), Law 10: the Lumberjack House's encounter paints its map's
++// cursed ground - layer.weak on the three graves and the body, four hexes - at setup. The one case that fields that battle moves: four
++// layer.painted lines at the start, and Weak on whoever enters or ends an Activation on one.
++// Every case frozen here (tools/capture-lumberjack-graves-cursed-cursor.mts). Moved: test.opening-lumberjack. A `changed` case is checked here and skips the older layers.
++const lumberjackGravesCursedGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-lumberjack-graves-cursed.json', import.meta.url), 'utf8'))
+ const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
+ // Explicit rule migration, not regenerated historical hashes. These nine old
+@@ -603,5 +609,8 @@ describe('resumable battle cursor', () => {
+       const freeAttackAccuracyExpected = freeAttackAccuracyGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+       const computerReachesClassPowerExpected = computerReachesClassPowerGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+-      const computerReachesClassPowerMoved = computerReachesClassPowerExpected?.changed === true
++      const lumberjackGravesCursedExpected = lumberjackGravesCursedGolden.cases.find((row:{id:string})=>row.id===fixture.id)
++      const lumberjackGravesCursedMoved = lumberjackGravesCursedExpected?.changed === true
++      // was: const computerReachesClassPowerMoved = computerReachesClassPowerExpected?.changed === true — a case content.orphanage-body-and-graves-cursed moved skips this layer too (content.orphanage-body-and-graves-cursed 2026-10-04)
++      const computerReachesClassPowerMoved = computerReachesClassPowerExpected?.changed === true || lumberjackGravesCursedMoved
+       // was: const freeAttackAccuracyMoved = freeAttackAccuracyExpected?.changed === true — a case fix.computer-reaches-class-power-past-shield-power moved skips this layer too (fix.computer-reaches-class-power-past-shield-power 2026-10-04)
+       const freeAttackAccuracyMoved = freeAttackAccuracyExpected?.changed === true || computerReachesClassPowerMoved
+@@ -753,5 +762,12 @@ describe('resumable battle cursor', () => {
+           }
+         } else result = battle.runBattle(ctx)
+-        if (computerReachesClassPowerExpected) {
++        if (lumberjackGravesCursedExpected) {
++        expect(hash(ctx.events), 'full lumberjack-graves-cursed events').toBe(lumberjackGravesCursedExpected.events)
++        expect(hash(ctx.state), 'full lumberjack-graves-cursed state').toBe(lumberjackGravesCursedExpected.state)
++        expect(hash(ctx.rng.log), 'full lumberjack-graves-cursed RNG').toBe(lumberjackGravesCursedExpected.rng)
++        expect(result).toEqual(lumberjackGravesCursedExpected.result)
++        }
++        // was: if (computerReachesClassPowerExpected) { — content.orphanage-body-and-graves-cursed (2026-10-04): a case it moved is checked above instead
++        if (computerReachesClassPowerExpected && !lumberjackGravesCursedMoved) {
+         expect(hash(ctx.events), 'full computer-reaches-class-power events').toBe(computerReachesClassPowerExpected.events)
+         expect(hash(ctx.state), 'full computer-reaches-class-power state').toBe(computerReachesClassPowerExpected.state)
+```
+</details>
+
+## capability.effect-lasts-activations — LANDED `dcece0b` **NEEDS REVIEW**
+2026-10-05 09:35
+
+  PASS  dependencies landed
+  WARN  not already decided — 1 candidate ruling(s) — READ BEFORE ASKING: SWITCHES.md:2282
+  PASS  typecheck
+  PASS  the item's own tests — test/battle-cursor.test.ts, test/pack-statuses.test.ts, test/effect-lasts-activations.test.ts
+  PASS  gate 1 — the id appears in a real battle — power.fire-gauntlet.stoke: 5 log lines, 5 fired, 3 changed state
+  PASS  brought its own tests — test/battle-cursor.test.ts, test/pack-statuses.test.ts, test/effect-lasts-activations.test.ts, test/fixtures/battle-cursor-effect-lasts-activations.json
+  WARN  existing tests untouched — DELETED LINES in test/battle-cursor.test.ts (-2), test/pack-statuses.test.ts (-1) — will land FLAGGED for review
+  PASS  control battles unchanged
 72c6723
 
 diff --git a/test/first-hero-own-positives-negatives.test.ts b/test/first-hero-own-positives-negatives.test.ts
@@ -32328,6 +32507,96 @@ index 80e8c47..8ac3c80 100644
   PASS  hardcode scan — core knows mechanisms, never names
   PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
   PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — power.fire-gauntlet.stoke live · power.staff-of-the-ultimate-destroyer.perfect-sight live
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without power.fire-gauntlet.stoke — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/battle-cursor.test.ts b/test/battle-cursor.test.ts
+index 278c084..4575a20 100644
+--- a/test/battle-cursor.test.ts
++++ b/test/battle-cursor.test.ts
+@@ -465,4 +465,10 @@ const computerReachesClassPowerGolden = JSON.parse(readFileSync(new URL('./fixtu
+ // Every case frozen here (tools/capture-lumberjack-graves-cursed-cursor.mts). Moved: test.opening-lumberjack. A `changed` case is checked here and skips the older layers.
+ const lumberjackGravesCursedGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-lumberjack-graves-cursed.json', import.meta.url), 'utf8'))
++// capability.effect-lasts-activations (2026-10-05; DECISIONS.md 2026-10-04 'his 28 reward weapons read back …': "We need: … time /
++// number of activations for a duration"), Law 10: two fieldings join the scenarios - test.stoke (a mage with the Fire Gauntlet stokes
++// it and his hits burn) and test.perfect-sight (a mage with the Staff of the Ultimate Destroyer takes Perfect Sight) - so each counted
++// status is live in a real battle. They are ADDED cases; no case that existed moves.
++// Every case frozen here (tools/capture-effect-lasts-activations-cursor.mts). Moved: none. A `changed` case is checked here and skips the older layers.
++const effectLastsActivationsGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-effect-lasts-activations.json', import.meta.url), 'utf8'))
+ const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
+ // Explicit rule migration, not regenerated historical hashes. These nine old
+@@ -610,5 +616,8 @@ describe('resumable battle cursor', () => {
+       const computerReachesClassPowerExpected = computerReachesClassPowerGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+       const lumberjackGravesCursedExpected = lumberjackGravesCursedGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+-      const lumberjackGravesCursedMoved = lumberjackGravesCursedExpected?.changed === true
++      const effectLastsActivationsExpected = effectLastsActivationsGolden.cases.find((row:{id:string})=>row.id===fixture.id)
++      const effectLastsActivationsMoved = effectLastsActivationsExpected?.changed === true
++      // was: const lumberjackGravesCursedMoved = lumberjackGravesCursedExpected?.changed === true — a case capability.effect-lasts-activations moved skips this layer too (capability.effect-lasts-activations 2026-10-04)
++      const lumberjackGravesCursedMoved = lumberjackGravesCursedExpected?.changed === true || effectLastsActivationsMoved
+       // was: const computerReachesClassPowerMoved = computerReachesClassPowerExpected?.changed === true — a case content.orphanage-body-and-graves-cursed moved skips this layer too (content.orphanage-body-and-graves-cursed 2026-10-04)
+       const computerReachesClassPowerMoved = computerReachesClassPowerExpected?.changed === true || lumberjackGravesCursedMoved
+@@ -762,5 +771,12 @@ describe('resumable battle cursor', () => {
+           }
+         } else result = battle.runBattle(ctx)
+-        if (lumberjackGravesCursedExpected) {
++        if (effectLastsActivationsExpected) {
++        expect(hash(ctx.events), 'full effect-lasts-activations events').toBe(effectLastsActivationsExpected.events)
++        expect(hash(ctx.state), 'full effect-lasts-activations state').toBe(effectLastsActivationsExpected.state)
++        expect(hash(ctx.rng.log), 'full effect-lasts-activations RNG').toBe(effectLastsActivationsExpected.rng)
++        expect(result).toEqual(effectLastsActivationsExpected.result)
++        }
++        // was: if (lumberjackGravesCursedExpected) { — capability.effect-lasts-activations (2026-10-04): a case it moved is checked above instead
++        if (lumberjackGravesCursedExpected && !effectLastsActivationsMoved) {
+         expect(hash(ctx.events), 'full lumberjack-graves-cursed events').toBe(lumberjackGravesCursedExpected.events)
+         expect(hash(ctx.state), 'full lumberjack-graves-cursed state').toBe(lumberjackGravesCursedExpected.state)
+diff --git a/test/pack-statuses.test.ts b/test/pack-statuses.test.ts
+index 4be5648..769797c 100644
+--- a/test/pack-statuses.test.ts
++++ b/test/pack-statuses.test.ts
+@@ -13,4 +13,5 @@ import { describe, expect, it } from 'vitest'
+ import { STATUSES } from '../src/content/statuses.js'
+ import { packStatuses } from '../src/content/pack.js'
++import { ABILITIES, ITEMS } from '../src/content/index.js'
+ import { createBattle, createCustomBattle } from '../src/core/setup.js'
+ import { runBattle } from '../src/core/battle.js'
+@@ -28,7 +29,21 @@ describe('the rows come from the Codex, and only from the Codex', () => {
+     const codexIds = new Set(codex.map((r) => r.id))
+     const gapIds = new Set(gaps().filter((g) => g.unit.startsWith('status.')).map((g) => g.unit))
++    // Law 10, 2026-10-05 — capability.effect-lasts-activations (DECISIONS.md 2026-10-04 'his 28 reward weapons read back …': "We
++    // need: … time / number of activations for a duration"): this read
++    //   expect(codexIds.has(id), `${id} is loaded but no Codex row says so`).toBe(true)
++    // for every loaded id - a status row of the Codex, and nothing else. A TIMED EFFECT is a status now: a power's or an item's
++    // own line ("for your next 3 Activations …") is compiled into a counted status the row LENDS through, whose id is that
++    // row's with the kind changed (power.fire-gauntlet.stoke -> status.fire-gauntlet.stoke). So a loaded status is a Codex
++    // status row, or it is made from a Codex power or item row that exists and applies it - still "from the Codex, and only
++    // from the Codex", held as exactly that.
++    const lentFrom = (id: string) => { const rest = id.replace(/^status\./, ''); return ['power.' + rest, 'item.' + rest].find((owner) => ABILITIES[owner] !== undefined || ITEMS[owner] !== undefined) }
+     for (const id of Object.keys(STATUSES)) {
+       if (id.startsWith('test.')) continue
+-      expect(codexIds.has(id), `${id} is loaded but no Codex row says so`).toBe(true)
++      if (codexIds.has(id)) continue
++      const owner = lentFrom(id)
++      expect(owner, `${id} is loaded but no Codex row says so`).toBeDefined()
++      expect(STATUSES[id]!.lends, `${id} is made from ${owner}: it lends what that row's line gives`).toBeDefined()
++      const appliers = owner!.startsWith('power.') ? [ABILITIES[owner!]!] : ITEMS[owner!]!.abilities.map((a) => ABILITIES[a]!)
++      expect(appliers.some((a) => a.effects?.some((e) => e.kind === 'status.apply' && e.statusId === id)), `${owner} applies ${id}`).toBe(true)
+     }
+     for (const r of codex) {
+@@ -77,4 +92,7 @@ describe('the rows come from the Codex, and only from the Codex', () => {
+     for (const [id, def] of Object.entries(STATUSES)) {
+       if (id.startsWith('test.')) continue
++      // Law 10, 2026-10-05 (the note in the test above): a status made from a power's or an item's timed line has no Codex status
++      // row to take a family word from; it is of the duration family. (was: every loaded id read byId.get(id)!.family)
++      if (!byId.has(id)) { expect((def as { family?: string }).family, id).toBe('duration'); expect(def.lends, id).toBeDefined(); continue }
+       expect((def as { family?: string }).family, id).toBe(byId.get(id)!.family ?? (byId.get(id) as { shape?: string }).shape)
+     }
+```
+</details>
   PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
   PASS  naming — new content ids use declared kinds
   PASS  naming — no banned words invented

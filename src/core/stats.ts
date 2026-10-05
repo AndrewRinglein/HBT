@@ -172,6 +172,15 @@ export function auraMods(ctx: Ctx, u: Unit): StatMod[] {
  */
 export function statusMods(ctx: Ctx, u: Unit): StatMod[] {
   const out: StatMod[] = []
+  // capability.effect-lasts-activations (2026-10-05): a held status's lent stat changes — flat ones, and a stat "doubled",
+  // which is that stat's own value (the unit's, as fielded: BASE, never effective() — a modifier may not read a resolved
+  // stat) added to it once. Derived, like the prone rule's Dodge below: the status goes and they go with it.
+  for (const s of u.statuses) {
+    const lent = s.value > 0 ? ctx.statuses[s.id]?.lends : undefined
+    if (!lent) continue
+    for (const m of lent.mods ?? []) out.push({ stat: m.stat, op: 'add', value: m.value, source: s.id, scope: 'unit' })
+    for (const stat of lent.doubles ?? []) { const own = BASE[stat](u); if (own) out.push({ stat, op: 'add', value: own, source: s.id, scope: 'unit' }) }
+  }
   for (const s of u.statuses) {
     const rule = s.value > 0 ? ctx.statuses[s.id]?.prone : undefined
     if (rule && rule.dodge) out.push({ stat: 'dodge', op: 'add', value: rule.dodge, source: s.id, scope: 'unit' })

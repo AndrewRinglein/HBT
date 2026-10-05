@@ -243,6 +243,16 @@ is not one of them.
   `reason` (`replaced`, `knocked-down`, `knocked-back`) and `lost` (the kind). A counterattack and a fend are two things:
   putting one up leaves the other; a knock takes both.
 
+**A timed effect is a status** (capability.effect-lasts-activations, 2026-10-05; DECISIONS.md 2026-10-04 'his 28 reward weapons
+read back …': "We need: … time / number of activations for a duration"). **Built: yes.** A status row may LEND its holder, while
+it is above 0: triggers (fired as the holder's own, after its own in the roll's slot order — a chance, a tag requirement and a
+scaled value as on any trigger), flat stat changes, and a stat DOUBLED — that stat's own value, as the unit was fielded, added
+to it once (an add; Law 7). And it may COUNT DOWN by something other than the Phase (such a row has no Phase decay): by its
+holder's Activations (rung 0 of End of Activation, below), or by its holder's attacks — 1 after each attack made, every hit of
+it resolved, and only an attack that carries the row's tag when it names one (`pipeline.ts performAttack`). A row with
+neither lasts the Battle. A power puts one on with the existing "apply a status" effect; renewed, it returns to its count
+(`stacking: 'highest'`). Nothing new is logged: `status.applied`, `status.reduced`, `status.expired`.
+
 ### Surge check
 
 | # | Rung | Built? |
@@ -260,6 +270,7 @@ movement-and-action cycle.
 
 | # | Rung | Built? |
 |---|---|---|
+| 0 | **The statuses counted by Activations lose one** — each status the unit holds whose row says `countsDown: 'activation'`, by 1, in status-id order; one put on (or renewed) during this very Activation is not counted ("your NEXT 3 Activations") | **yes** — capability.effect-lasts-activations, 2026-10-05. First of the rungs, so "until the end of your third Activation" ends exactly here. `status.ts countDownByActivation` |
 | 1 | Standing on a hex carrying a terrain status → **gain a stack** (strips first, then applies) | **yes** — the two-beat rhythm since 2026-08-20 |
 | 2 | `onActivationEnd` triggers fire | *not yet* — **the hook exists and is never called.** `fireTriggers(ctx, 'onActivationEnd', …)` appears nowhere in `src/` |
 | 3 | **THE STATUS TICK** — damage, healing, decay, expiry, per unit → **settle** | **yes** — RULED 2026-08-26, moved here from End of Phase. Runs after the terrain rungs (reach water and Burn is shed before it deals this activation's damage; stand on embers and you catch before you cook). A unit can die at the end of its own activation. When Surge lands, the whole ladder waits for the surge loop (2026-08-21): a surged unit never ticks twice |

@@ -452,6 +452,24 @@ const counterattackReplacedAndLostGolden = JSON.parse(readFileSync(new URL('./fi
 // counterattack its holder makes rolls 10 higher.
 // Every case frozen here (tools/capture-free-attack-accuracy-cursor.mts). Moved: showcase.alpha-team, showcase.assembled-party, showcase.eve-24-a, showcase.eve-24-b, showcase.gash-variant, showcase.horrors, showcase.item-powers, showcase.kiln, showcase.rime, test.back-flip, test.counterattack, test.flaming-longsword, test.opening-cathedral, test.opening-cavern-trail, test.opening-gates, test.swap, progression-surge-0, progression-surge-1, progression-surge-2. A `changed` case is checked here and skips the older layers.
 const freeAttackAccuracyGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-free-attack-accuracy.json', import.meta.url), 'utf8'))
+// fix.computer-reaches-class-power-past-shield-power (2026-10-05; SWITCHES.md aiPowerLongestCooldownFirst), Law 10: the computer tries
+// a unit's powers longest cooldown first, the unit's own order breaking ties - it took the first its kit listed, so a shield's power
+// (no cooldown, listed before the class's) was raised every Activation and the class's never came up. A case moves where a
+// computer-played unit holds powers of different cooldowns and reaches for one: it now uses the class power it never reached.
+// Every case frozen here (tools/capture-computer-reaches-class-power-cursor.mts). Moved: showcase.assembled-party, showcase.eve-24-a, showcase.horrors, showcase.prologue-party, showcase.surrounded, progression-surge-0. A `changed` case is checked here and skips the older layers.
+const computerReachesClassPowerGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-computer-reaches-class-power.json', import.meta.url), 'utf8'))
+// content.orphanage-body-and-graves-cursed (2026-10-05; DECISIONS.md 2026-10-05 'playtest post: … bodies, cursed ground …' and 2026-09-28
+// 'cursed ground is the Weak ground layer, the one ground-status shape'), Law 10: the Lumberjack House's encounter paints its map's
+// cursed ground - layer.weak on the three graves and the body, four hexes - at setup. The one case that fields that battle moves: four
+// layer.painted lines at the start, and Weak on whoever enters or ends an Activation on one.
+// Every case frozen here (tools/capture-lumberjack-graves-cursed-cursor.mts). Moved: test.opening-lumberjack. A `changed` case is checked here and skips the older layers.
+const lumberjackGravesCursedGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-lumberjack-graves-cursed.json', import.meta.url), 'utf8'))
+// capability.effect-lasts-activations (2026-10-05; DECISIONS.md 2026-10-04 'his 28 reward weapons read back …': "We need: … time /
+// number of activations for a duration"), Law 10: two fieldings join the scenarios - test.stoke (a mage with the Fire Gauntlet stokes
+// it and his hits burn) and test.perfect-sight (a mage with the Staff of the Ultimate Destroyer takes Perfect Sight) - so each counted
+// status is live in a real battle. They are ADDED cases; no case that existed moves.
+// Every case frozen here (tools/capture-effect-lasts-activations-cursor.mts). Moved: none. A `changed` case is checked here and skips the older layers.
+const effectLastsActivationsGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-effect-lasts-activations.json', import.meta.url), 'utf8'))
 const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
 // Explicit rule migration, not regenerated historical hashes. These nine old
 // cases contain Surge ledger/refresh changes or terminal markers corrected
@@ -595,7 +613,16 @@ describe('resumable battle cursor', () => {
       const enchantStatsOnWeaponExpected = enchantStatsOnWeaponGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const counterattackReplacedAndLostExpected = counterattackReplacedAndLostGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const freeAttackAccuracyExpected = freeAttackAccuracyGolden.cases.find((row:{id:string})=>row.id===fixture.id)
-      const freeAttackAccuracyMoved = freeAttackAccuracyExpected?.changed === true
+      const computerReachesClassPowerExpected = computerReachesClassPowerGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+      const lumberjackGravesCursedExpected = lumberjackGravesCursedGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+      const effectLastsActivationsExpected = effectLastsActivationsGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+      const effectLastsActivationsMoved = effectLastsActivationsExpected?.changed === true
+      // was: const lumberjackGravesCursedMoved = lumberjackGravesCursedExpected?.changed === true — a case capability.effect-lasts-activations moved skips this layer too (capability.effect-lasts-activations 2026-10-04)
+      const lumberjackGravesCursedMoved = lumberjackGravesCursedExpected?.changed === true || effectLastsActivationsMoved
+      // was: const computerReachesClassPowerMoved = computerReachesClassPowerExpected?.changed === true — a case content.orphanage-body-and-graves-cursed moved skips this layer too (content.orphanage-body-and-graves-cursed 2026-10-04)
+      const computerReachesClassPowerMoved = computerReachesClassPowerExpected?.changed === true || lumberjackGravesCursedMoved
+      // was: const freeAttackAccuracyMoved = freeAttackAccuracyExpected?.changed === true — a case fix.computer-reaches-class-power-past-shield-power moved skips this layer too (fix.computer-reaches-class-power-past-shield-power 2026-10-04)
+      const freeAttackAccuracyMoved = freeAttackAccuracyExpected?.changed === true || computerReachesClassPowerMoved
       // was: const counterattackReplacedAndLostMoved = counterattackReplacedAndLostExpected?.changed === true — a case capability.free-attack-accuracy moved skips this layer too (capability.free-attack-accuracy 2026-10-04)
       const counterattackReplacedAndLostMoved = counterattackReplacedAndLostExpected?.changed === true || freeAttackAccuracyMoved
       // was: const enchantStatsOnWeaponMoved = enchantStatsOnWeaponExpected?.changed === true — a case rule.counterattack-replaced-and-lost moved skips this layer too (rule.counterattack-replaced-and-lost 2026-10-04)
@@ -743,7 +770,28 @@ describe('resumable battle cursor', () => {
             battle.completeActionCycle(ctx)
           }
         } else result = battle.runBattle(ctx)
-        if (freeAttackAccuracyExpected) {
+        if (effectLastsActivationsExpected) {
+        expect(hash(ctx.events), 'full effect-lasts-activations events').toBe(effectLastsActivationsExpected.events)
+        expect(hash(ctx.state), 'full effect-lasts-activations state').toBe(effectLastsActivationsExpected.state)
+        expect(hash(ctx.rng.log), 'full effect-lasts-activations RNG').toBe(effectLastsActivationsExpected.rng)
+        expect(result).toEqual(effectLastsActivationsExpected.result)
+        }
+        // was: if (lumberjackGravesCursedExpected) { — capability.effect-lasts-activations (2026-10-04): a case it moved is checked above instead
+        if (lumberjackGravesCursedExpected && !effectLastsActivationsMoved) {
+        expect(hash(ctx.events), 'full lumberjack-graves-cursed events').toBe(lumberjackGravesCursedExpected.events)
+        expect(hash(ctx.state), 'full lumberjack-graves-cursed state').toBe(lumberjackGravesCursedExpected.state)
+        expect(hash(ctx.rng.log), 'full lumberjack-graves-cursed RNG').toBe(lumberjackGravesCursedExpected.rng)
+        expect(result).toEqual(lumberjackGravesCursedExpected.result)
+        }
+        // was: if (computerReachesClassPowerExpected) { — content.orphanage-body-and-graves-cursed (2026-10-04): a case it moved is checked above instead
+        if (computerReachesClassPowerExpected && !lumberjackGravesCursedMoved) {
+        expect(hash(ctx.events), 'full computer-reaches-class-power events').toBe(computerReachesClassPowerExpected.events)
+        expect(hash(ctx.state), 'full computer-reaches-class-power state').toBe(computerReachesClassPowerExpected.state)
+        expect(hash(ctx.rng.log), 'full computer-reaches-class-power RNG').toBe(computerReachesClassPowerExpected.rng)
+        expect(result).toEqual(computerReachesClassPowerExpected.result)
+        }
+        // was: if (freeAttackAccuracyExpected) { — fix.computer-reaches-class-power-past-shield-power (2026-10-04): a case it moved is checked above instead
+        if (freeAttackAccuracyExpected && !computerReachesClassPowerMoved) {
         expect(hash(ctx.events), 'full free-attack-accuracy events').toBe(freeAttackAccuracyExpected.events)
         expect(hash(ctx.state), 'full free-attack-accuracy state').toBe(freeAttackAccuracyExpected.state)
         expect(hash(ctx.rng.log), 'full free-attack-accuracy RNG').toBe(freeAttackAccuracyExpected.rng)

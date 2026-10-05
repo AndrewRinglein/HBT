@@ -181,6 +181,28 @@ export type StatusDef = {
    * reads the flag, never the id.
    */
   readonly kdbDown?: true
+  /**
+   * capability.effect-lasts-activations (2026-10-05; DECISIONS.md 2026-10-04 'his 28 reward weapons read back …': "We need: …
+   * time / number of activations for a duration"). A TIMED EFFECT is a status: shown on the unit with its count, like any other.
+   * While it is above 0 its row LENDS its holder:
+   *   triggers  fired as the holder's own (trigger.ts fireTriggers) — a chance, a tag requirement, a scaled value as on any trigger;
+   *   mods      flat stat changes (stats.ts statusMods — derived, never stored, as the prone rule's Dodge is);
+   *   doubles   each named stat's own value added to it once ("Precision added to Precision") — an add (Law 7: no multiply).
+   */
+  readonly lends?: {
+    readonly triggers?: readonly import('./trigger.js').Trigger[]
+    readonly mods?: readonly { readonly stat: import('./stats.js').StatName; readonly value: number }[]
+    readonly doubles?: readonly import('./stats.js').StatName[]
+  }
+  /**
+   * capability.effect-lasts-activations: what counts the status down, instead of the Phase (such a row has decayPerPhase 0).
+   * 'activation' — 1 at the end of each of its holder's Activations that BEGAN with it held ("for your next 3 Activations":
+   * the Activation it is put on in is not one of them). 'attack' — 1 after each attack its holder makes; with
+   * `countsAttackTag`, each attack that carries that tag ("your next two sword attacks"). Absent, with no Phase decay: it
+   * lasts the Battle.
+   */
+  readonly countsDown?: 'activation' | 'attack'
+  readonly countsAttackTag?: string
 }
 
 export type ProneRule = {
@@ -240,9 +262,12 @@ export function applyStatus(ctx: Ctx, unitId: number, id: string, value: number,
   const after = def.stacking === 'add' ? before + value
     : def.stacking === 'highest' ? Math.max(before, value)
     : value
-  if (existing) { existing.value = after; if (by !== undefined) existing.by = by }
+  // capability.effect-lasts-activations: a status counted by Activations notes the Activation it was put on (or renewed) in —
+  // that one's end does not count it down. Only such a row's entry carries the field.
+  const since = def.countsDown === 'activation' ? { since: u.activationOrdinal } : {}
+  if (existing) { existing.value = after; if (by !== undefined) existing.by = by; if (def.countsDown === 'activation') existing.since = u.activationOrdinal }
   else {
-    u.statuses.push({ id, value: after, ...(by !== undefined ? { by } : {}) })
+    u.statuses.push({ id, value: after, ...(by !== undefined ? { by } : {}), ...since })
     // Sorted, so iteration is never insertion order (Law 6).
     u.statuses.sort((a, b) => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0))
   }
@@ -459,4 +484,37 @@ export function forcedTargetOf(ctx: Ctx, u: Unit): number | null {
     if (t && t.lifeState === 'standing' && t.side !== u.side) return t.id
   }
   return null
+}
+
+/**
+ * capability.effect-lasts-activations (2026-10-05): the end of one of `unitId`'s Activations counts down every status it
+ * holds whose row says `countsDown: 'activation'` — by 1, in status-id order (Law 6), each a `status.reduced` line under
+ * the status's own id — except one put on (or renewed) during this very Activation: "your NEXT 3 Activations".
+ */
+export function countDownByActivation(ctx: Ctx, unitId: number): void {
+  const u = unit(ctx, unitId)
+  for (const s of [...u.statuses]) {
+    if (s.value <= 0 || ctx.statuses[s.id]?.countsDown !== 'activation' || s.since === u.activationOrdinal) continue
+    reduceStatus(ctx, unitId, s.id, 1, s.id)
+  }
+}
+/**
+ * … and one attack `unitId` has made — every hit of it resolved — counts down every status it holds whose row says
+ * `countsDown: 'attack'`: by 1, unless the row names a tag the attack does not carry (`carries` answers that; the caller
+ * owns the question of what an attack's tags are).
+ */
+export function countDownByAttack(ctx: Ctx, unitId: number, carries: (tag: string) => boolean): void {
+  const u = unit(ctx, unitId)
+  for (const s of [...u.statuses]) {
+    const def = ctx.statuses[s.id]
+    if (s.value <= 0 || def?.countsDown !== 'attack') continue
+    if (def.countsAttackTag !== undefined && !carries(def.countsAttackTag)) continue
+    reduceStatus(ctx, unitId, s.id, 1, s.id)
+  }
+}
+/** The triggers the statuses a unit holds lend it, in status-id order then the row's own (Law 6). */
+export function lentTriggers(ctx: Ctx, u: Unit): readonly import('./trigger.js').Trigger[] {
+  const out: import('./trigger.js').Trigger[] = []
+  for (const s of u.statuses) { const lent = s.value > 0 ? ctx.statuses[s.id]?.lends?.triggers : undefined; if (lent) out.push(...lent) }
+  return out
 }

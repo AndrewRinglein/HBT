@@ -14,6 +14,7 @@ import { formatOf, validBoard, MAX_BOARD_CELLS, type Board } from '../core/hex.j
 // previous order's uninitialized decoder binding; fresh native entry orders are tested too.
 import { decodeProps, decodeFloor } from '../core/props.js'
 import { validateTrigger } from '../core/trigger.js'
+import { isStatName } from '../core/stats.js'
 import { layerOfId } from './terrain.js'   // encounter.area-fall: a fall names its ground layer
 import type { StatusDef } from '../core/status.js'
 // plumbing.vocabulary-export (2026-09-28): the effect kinds and the stat names are the engine's
@@ -199,7 +200,9 @@ const STATUS_FLAGS = ['tickDamageType', 'decayPerPhase', 'reducesIncomingDamage'
   // ai.sight, 2026-09-27: out of every opposing AI's view while positive
   'hidesFromFoes',
   // capability.stealth, 2026-09-28: not a target of the other side; what breaks it
-  'untargetable', 'breaksOnAttack', 'breaksOnPower', 'breaksOnReveal'] as const
+  'untargetable', 'breaksOnAttack', 'breaksOnPower', 'breaksOnReveal',
+  // capability.effect-lasts-activations, 2026-10-05: what a held status lends, and what counts it down
+  'lends', 'countsDown', 'countsAttackTag'] as const
 const PRONE_NUMBERS = ['accuracyAgainst', 'dodge', 'damageAgainst', 'accuracy', 'damage'] as const
 export function packStatuses(): Readonly<Record<string, StatusDef>> {
   const raw = (UNIT_PACK as { statuses?: Readonly<Record<string, PackStatusRow>> }).statuses ?? {}
@@ -223,6 +226,19 @@ function statusRowsToDefs(raw: Readonly<Record<string, PackStatusRow>>, where: s
       if (typeof p['standAction'] !== 'string' || !/^power\./.test(p['standAction'])) throw Error(`${where}: prone.standAction on '${k}' is not a power id`)
     }
     if (r.kdbDown !== undefined && (r.kdbDown !== true || r.prone === undefined)) throw Error(`${where}: kdbDown on '${k}' must be true, on a prone status`)
+    // capability.effect-lasts-activations: a counted status has no Phase decay (one clock), a tag only on the attack count,
+    // and what it lends is the three lists and nothing else — each trigger whole, each stat one the engine resolves
+    if (r.countsDown !== undefined && r.countsDown !== 'activation' && r.countsDown !== 'attack') throw Error(`${where}: countsDown on '${k}' is 'activation' or 'attack'`)
+    if (r.countsDown !== undefined && r.decayPerPhase !== 0) throw Error(`${where}: '${k}' counts down by ${r.countsDown} and by the Phase — one clock only (decayPerPhase 0)`)
+    if (r.countsAttackTag !== undefined && (r.countsDown !== 'attack' || typeof r.countsAttackTag !== 'string' || !r.countsAttackTag)) throw Error(`${where}: countsAttackTag on '${k}' is a tag, on a status that counts down by attack`)
+    if (r.lends !== undefined) {
+      const l = r.lends as unknown as Record<string, unknown>
+      if (l === null || typeof l !== 'object' || Array.isArray(l) || !Object.keys(l).length) throw Error(`${where}: lends on '${k}' is { triggers?, mods?, doubles? }`)
+      for (const f of Object.keys(l)) if (!['triggers', 'mods', 'doubles'].includes(f)) throw Error(`${where}: lends.${f} on '${k}' is not read`)
+      for (const t of (l['triggers'] ?? []) as import('../core/trigger.js').Trigger[]) { validateTrigger(t); if (t.source !== k) throw Error(`${where}: status '${k}' lends a trigger sourced '${String(t.source)}'`) }
+      for (const m of (l['mods'] ?? []) as Record<string, unknown>[]) if (!isStatName(String(m['stat'])) || !Number.isSafeInteger(m['value'])) throw Error(`${where}: a stat change '${k}' lends is { stat, value }`)
+      for (const s of (l['doubles'] ?? []) as unknown[]) if (!isStatName(String(s))) throw Error(`${where}: '${k}' doubles '${String(s)}', which is no stat`)
+    }
     // ai.sight / capability.stealth: on or absent, never false or a number
     for (const f of ['hidesFromFoes', 'untargetable', 'breaksOnAttack', 'breaksOnPower', 'breaksOnReveal'] as const) if (r[f] !== undefined && r[f] !== true) throw Error(`${where}: ${f} on '${k}' must be true or absent`)
     if (r.tickDamageType!==undefined&&!isDamageType(r.tickDamageType))throw Error(`${where}: invalid tick damage type on '${k}'`)

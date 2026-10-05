@@ -102,6 +102,18 @@ const RAW_SCENARIOS: Readonly<Record<string, ScenarioDef>> = {
     id: 'test.fend', note: 'TEST: a warrior wearing test.badge.fender (grants power.test-fend: Fend until the end of his next Turn) against three zombies that must walk up to him. No campaign claim.',
     mapId: 'map.open', heroes: ['hero.base.warrior-iron'], heroHexes: [85], heroBadges: [['test.badge.fender']], enemies: ['unit.zombie', 'unit.zombie', 'unit.zombie'], enemyHexes: [91, 107, 75], replicate: 0,
   },
+  // capability.effect-lasts-activations (2026-10-05; Andrew 2026-10-04, DECISIONS.md 'his 28 reward weapons read back …': "We
+  // need: … time / number of activations for a duration"): the two counted statuses a power of his puts on its user, each live
+  // in a real battle. A mage with the Fire Gauntlet stokes it while the zombies walk up and his hits burn for three
+  // Activations; a mage with the Staff of the Ultimate Destroyer takes Perfect Sight. Fieldings, not balance claims.
+  'test.stoke': {
+    id: 'test.stoke', note: 'TEST: a mage holding the Fire Gauntlet (Stoke: for his next 3 Activations every hit applies Burn of half the Magic of the party) against one zombie that starts too far to reach, so he stokes first. No campaign claim.',
+    mapId: 'map.open', heroes: ['hero.base.mage-fire'], heroHexes: [85], heroItems: [['item.fire-gauntlet']], enemies: ['unit.zombie'], enemyHexes: [94], replicate: 0,
+  },
+  'test.perfect-sight': {
+    id: 'test.perfect-sight', note: 'TEST: a mage holding the Staff of the Ultimate Destroyer (Perfect Sight: Precision doubled until the end of his third Activation from then) against two zombies. No campaign claim.',
+    mapId: 'map.open', heroes: ['hero.base.mage-fire'], heroHexes: [85], heroItems: [['item.staff-of-the-ultimate-destroyer']], enemies: ['unit.zombie', 'unit.zombie'], enemyHexes: [91, 107], replicate: 0,
+  },
   // content.afflictions-revised (2026-09-29, Andrew, DECISIONS.md 'the four afflictions'): "when the
   // affliction of Vampirism happens, it grants both Cold Heart and Vampirism." A real battle in which a
   // Vampire's bite afflicts — replicate 7 is the first whose 20% roll succeeds (found, not tuned).

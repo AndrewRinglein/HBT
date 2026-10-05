@@ -9,13 +9,13 @@ import type { Geometry, HexId } from './hex.js'
 import { roll100 } from './rng.js'
 import type { AttackDef, Ctx, Unit, VsTargetRule } from './types.js'
 import { fireTriggers, HOOKS } from './trigger.js'
-import { applyStatus, decayOnKill, incomingAbsorb, incomingPhysicalBonus, outgoingBonus, outgoingPenalty, proneRulesOf, spendAbsorb, untargetableBy } from './status.js'
+import { applyStatus, decayOnKill, incomingAbsorb, incomingPhysicalBonus, outgoingBonus, outgoingPenalty, proneRulesOf, spendAbsorb, untargetableBy, countDownByAttack } from './status.js'
 import { rollCritEffect } from './crit.js'
 import { effective, stat } from './stats.js'
 import { SPECIAL_FREE_ATTACKS } from './special-free-attacks.js'
 import { accelerateBleedOut, applyAttackPackets, breakStatuses, damageProp, emit, unit, recordBlock } from './mutate.js'
 import { propsTouching } from './props.js'
-import { actionReady, isAttack, spendAction , resolveActionSlot } from './action.js'
+import { actionReady, isAttack, spendAction, resolveActionSlot , carriesTag } from './action.js'
 import { settle } from './settle.js'
 import { canSee } from './vision.js'
 import { attackLineClear } from './los.js'
@@ -649,6 +649,10 @@ function critChanceOf(ctx: Ctx, attacker: Unit, target: Unit, finalAcc: number, 
  */
 export function performAttack(ctx: Ctx, attackerId: number, targetId: number, attackId: string, mode?: AttackMode, as?: FreeAttackKind): AttackResult {
   const result = resolveAttack(ctx, attackerId, targetId, attackId, mode, as)
+  // capability.effect-lasts-activations (2026-10-05): the attack is made — every hit of it resolved, so each carried what a
+  // counted status lent — and the statuses its maker holds that last "your next N attacks" lose one (a tag-limited one only
+  // when this attack carries the tag)
+  if (unit(ctx, attackerId).lifeState !== 'dead') countDownByAttack(ctx, attackerId, (tag) => carriesTag(ctx.actions[attackId], tag))
   // a special free attack is never answered (no chains): only an attack made on the attacker's own Activation is
   if (mode !== 'reaction') counterattackAfter(ctx, attackerId, targetId, attackDef(ctx, attackId))
   return result
