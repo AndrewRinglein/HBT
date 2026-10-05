@@ -1047,6 +1047,12 @@ export type Unit = {
   deathbedFighting?: number
   /** v2.swap (COMBAT-V2 §11.2): the one swap of this activation is spent. Absent = not spent; cleared at activation start and by a Surge. */
   swapUsed?: boolean
+  /**
+   * rule.walked-unit-has-moved (2026-10-04): the unit has entered a hex with its walk (action.ts walkOf) in this action
+   * cycle, so no other movement is accepted from it until the cycle is over. Absent = it has not walked; cleared at
+   * activation start, at activation end and by a Surge.
+   */
+  walked?: boolean
   /** capability.auras: this unit's auras, own frozen copies (plain data). */
   auras: AuraDef[]
   /** capability.corpses: a raised or summoned unit leaves no corpse. */

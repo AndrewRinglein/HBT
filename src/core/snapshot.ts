@@ -116,6 +116,7 @@ export function restoreBattle(json: string, runtime: BattleRuntime): Ctx {
     for (const k of ['hp', 'maxHp', 'armor', 'resist', 'accuracy', 'dodge', 'strength', 'precision', 'magic', 'spirit', 'crit', 'luck', 'movement', 'reach', 'stamina', 'maxStamina', 'staminaRegen', 'bleedOut', 'toughness', 'surge', 'surgeChance', 'vision', 'movePointsLeft', 'activationOrdinal', 'attackOrdinal', 'deathbedOrdinal']) requireThat(integer(u[k]), `unit ${k}`)
     for (const key of ['fireResist', 'poisonResist', 'shadowResist', 'coldResist', 'block', 'rangedBlock', 'thorns', 'swapCost', 'bleedOutTurns', 'deathbedFighting', 'counterattack', 'counterattackAccuracy', 'fend', 'fendAccuracy']) requireThat(u[key] === undefined || integer(u[key]), `unit ${key}`)   // bleedOutTurns, deathbedFighting: fix.codex-numbers
     requireThat(u.swapUsed === undefined || typeof u.swapUsed === 'boolean', 'unit swapUsed')   // v2.swap
+    requireThat(u.walked === undefined || u.walked === true, 'unit walked')   // rule.walked-unit-has-moved
     if (u.loadout !== undefined) {   // v2.loadout: hands and stowed, item instances
       record(u.loadout)
       requireThat(Object.keys(u.loadout).every((k) => ['hands', 'stowed', 'worn'].includes(k)), 'unit loadout keys')

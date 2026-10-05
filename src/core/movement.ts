@@ -8,8 +8,8 @@ import type { AttackDef, Ctx, MoveDef, Unit } from './types.js'
 import { moveCostOf, terrainIdOf } from '../content/maps.js'
 import { blockingPropAt, passableHexes, type Passable } from './props.js'
 import { flatDamage } from './mitigation.js'
-import { addStatMod, applyCollisionDamage, emit, gainStamina, knockUnit, layerAt, loseMaxStamina, moveUnit, standUp, unit } from './mutate.js'
-import { actionReady, resolveActionSlot, isMove, movesOf, spendAction, staminaCostOf } from './action.js'
+import { addStatMod, applyCollisionDamage, emit, gainStamina, knockUnit, layerAt, loseMaxStamina, markWalked, moveUnit, standUp, unit } from './mutate.js'
+import { actionReady, closedByWalk, resolveActionSlot, isMove, movesOf, spendAction, staminaCostOf, walkOf } from './action.js'
 import { forcedTargetOf, hiddenFrom, incomingAbsorb, isBlocked, isProne, isRooted, spendAbsorb } from './status.js'
 import { FREE_ATTACK_STATS, performAttack, preview, type FreeAttackKind } from './pipeline.js'
 import { effective } from './stats.js'
@@ -137,6 +137,9 @@ function movementReason(ctx: Ctx, u: Unit, power: MoveDef, slot?: import('./type
   if (u.lifeState !== 'standing' || isBlocked(ctx, u)) return 'actor-cannot-act'
   if (!actionReady(ctx, u, power)) return 'action-not-ready'
   if (resolveActionSlot(ctx, u, power, slot) === null) return 'movement-slot-closed'
+  // rule.walked-unit-has-moved (2026-10-04): a unit that has walked takes no OTHER movement this action cycle — the same
+  // refusal a spent movement slot gives, because that is what it is: its move is done (the rest of the walk is not closed)
+  if (closedByWalk(ctx, u, power)) return 'movement-slot-closed'
   return null
 }
 
@@ -271,6 +274,8 @@ export function walkSteps(ctx: Ctx, unitId: number, path: HexId[], causeId: stri
     const cameFrom = u.hex
     moveUnit(ctx, unitId, hex, cost, causeId, terrainIdOf(terrainHere), bonusPaid)
     moved++
+    // rule.walked-unit-has-moved (2026-10-04): a hex entered with the unit's own walk — it has walked
+    if (causeId === walkOf(ctx, u)?.id) markWalked(ctx, unitId)
     // 4. traps — none in the baseline
     // 5. the ground's entry beat — one funnel for every way into a hex (core/ground.ts):
     //    water strips, burning ground sears, the painted layer, and the V2 hazard

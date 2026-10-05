@@ -545,6 +545,7 @@ export function transformUnit(ctx: Ctx, id: number, form: Unit, side: Side, badg
     // the change takes what is left of this Activation, if it is the unit's own (SWITCHES.md transformEndsActivation)
     moveUsed: true, primaryUsed: true, movePointsLeft: 0,
     ...(u.swapUsed !== undefined ? { swapUsed: u.swapUsed } : {}),
+    ...(u.walked !== undefined ? { walked: u.walked } : {}),
     summoned: u.summoned,
   }
   replaceUnit(u, { ...structuredClone(form), ...keep, transformed: { badgeId, into: form.typeId, original } })
@@ -569,6 +570,7 @@ export function revertUnit(ctx: Ctx, id: number, reason: 'fell' | 'battleEnd', c
     ...(u.burstOrdinal !== undefined ? { burstOrdinal: u.burstOrdinal } : {}),
     moveUsed: u.moveUsed, primaryUsed: u.primaryUsed, movePointsLeft: u.movePointsLeft,
     ...(u.swapUsed !== undefined ? { swapUsed: u.swapUsed } : {}),
+    ...(u.walked !== undefined ? { walked: u.walked } : {}),
   }
   replaceUnit(u, { ...t.original, ...carry, hp: reason === 'battleEnd' ? Math.max(1, t.original.maxHp) : 0 } as Unit)
   emit(ctx, 'unit.reverted', causeId, { actor: id, badgeId: t.badgeId, from: was.typeId, into: u.typeId, fromSide: was.side, side: u.side, reason, hp: u.hp, maxHp: u.maxHp })
@@ -613,6 +615,7 @@ export function beginActivation(ctx: Ctx, id: number, causeId: string): void {
   u.moveUsed = false
   u.primaryUsed = false
   delete u.swapUsed   // v2.swap: one swap per activation
+  delete u.walked     // rule.walked-unit-has-moved: a new Activation has not walked
   // Slow — and any status declaring reducesMovement: this Activation's points
   // are Movement minus the summed stack values, floored at 0 (the unit still
   // acts from where it stands; that is what separates Slow from Stun). Read
@@ -640,6 +643,7 @@ export function beginActivation(ctx: Ctx, id: number, causeId: string): void {
 }
 
 export function endActivation(ctx: Ctx, id: number, causeId: string): void {
+  delete unit(ctx, id).walked   // rule.walked-unit-has-moved: the fact is the Activation's, and ends with it
   emit(ctx, 'activation.end', causeId, { actor: id, hex: unit(ctx, id).hex })
 }
 
@@ -649,6 +653,7 @@ export function reopenSurgeCycle(ctx: Ctx, id: number, allowance: number, link: 
   u.moveUsed = false
   u.primaryUsed = false
   delete u.swapUsed   // v2.swap (COMBAT-V2 §11.2): "A Surge reopens everything, the swap included"
+  delete u.walked     // rule.walked-unit-has-moved: … and the movements a walk had closed (SWITCHES.md walkedSurgeReopens)
   const rooted = u.statuses.some(s => s.value > 0 && ctx.statuses[s.id]?.blocksMovement)
   u.movePointsLeft = rooted ? 0 : allowance
   // fix.surge-spend (2026-09-28): the Surge amount before the check and after the spend
@@ -656,6 +661,11 @@ export function reopenSurgeCycle(ctx: Ctx, id: number, allowance: number, link: 
 }
 
 export function markMoveUsed(ctx: Ctx, id: number): void { unit(ctx, id).moveUsed = true }
+/**
+ * rule.walked-unit-has-moved (2026-10-04): the unit has entered a hex with its walk. Like the two slot marks beside it,
+ * it writes no line of its own — the `moved` line just before it (its cause the walk) is the record (Law 3, Law 12).
+ */
+export function markWalked(ctx: Ctx, id: number): void { unit(ctx, id).walked = true }
 export function markPrimaryUsed(ctx: Ctx, id: number): void { unit(ctx, id).primaryUsed = true }
 
 export function setOutcome(ctx: Ctx, outcome: Ctx['state']['outcome'], causeId: string): void {

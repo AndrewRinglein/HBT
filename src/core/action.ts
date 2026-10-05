@@ -82,6 +82,24 @@ export function movesOf(ctx: Ctx, u: Unit): MoveDef[] {
   for (const id of grantedActionIds(ctx, u)) { const a = ctx.actions[id]; if (a && isMove(a) && !isCharge(a)) out.push(a) }
   return out
 }
+/**
+ * THE UNIT'S WALK — its first path-shaped movement, in its own order (rule.walked-unit-has-moved, 2026-10-04): the basic
+ * move of a unit that has one. A unit granted no path-shaped movement (a flier) has no walk. Whether it can pay for it
+ * now is not asked here.
+ */
+export function walkOf(ctx: Ctx, u: Unit): MoveDef | null {
+  for (const m of movesOf(ctx, u)) if (m.move.shape === 'path') return m
+  return null
+}
+/**
+ * rule.walked-unit-has-moved (ruled 2026-10-04, DECISIONS.md 'after the backlog run: … moves are refused once a unit has
+ * walked …'): once a unit has walked in its Activation — entered any hex with its walk — no OTHER movement is accepted
+ * from it for the rest of that action cycle. The walk itself is not closed: the rest of a walk cut short may still be
+ * walked. A movement used before any walk closes nothing here. Pure; read by the one movement legality (movement.ts).
+ */
+export function closedByWalk(ctx: Ctx, u: Unit, a: ActionDef): boolean {
+  return u.walked === true && isMove(a) && !isCharge(a) && a.id !== walkOf(ctx, u)?.id
+}
 /** The ids of the unit's attacks / powers / movements — for the code that indexes by id. */
 export const burstsOf = (ctx: Ctx, u: Unit): BurstDef[] => grantedActionIds(ctx, u).map(id => ctx.actions[id]).filter((a): a is BurstDef => !!a && isBurst(a))
 export const attackIdsOf = (ctx: Ctx, u: Unit): string[] => attacksOf(ctx, u).map((a) => a.id)
