@@ -2105,11 +2105,16 @@ export function bindCamera(V) {
     const hex = hit ? hit.hex : null
     if (hex !== pointed) { pointed = hex; V.offerPlay({ kind: 'point', hex }) }
   }
-  /* viewer.xcom-camera: the pointer at the board's edge scrolls the map that way, a frame at a time, until it leaves the edge */
-  let edge = null, edgeRaf = null, edgeT = 0
+  /* viewer.xcom-camera: the pointer at the board's edge scrolls the map that way, a frame at a time, until it leaves the edge.
+     viewer.edge-scroll-at-screen-edges (2026-10-05; engine DECISIONS.md 'the battle screen must feel smooth: … Scrolling'): the
+     step uses the time that passed since the last (a quarter second at the most — it was capped at 50 ms, so at a low frame
+     rate the map covered a third of its speed), and the scroll comes up to speed over about 150 ms instead of at once: the
+     ground covered is the speed's own sum over the time the pointer has been at the edge (`ramp`), whatever the frames were. */
+  let edge = null, edgeRaf = null, edgeT = 0, edgeHeld = 0
+  const RAMP = POLICY.EDGE_SCROLL_RAMP_MS / 1000, ramp = t => t < RAMP ? t * t / (2 * RAMP) : RAMP / 2 + (t - RAMP)
   const edgeStep = () => { edgeRaf = null; if (!edge) return
-    const now = clockOf(V), dt = Math.min(.05, Math.max(0, (now - edgeT) / 1000)); edgeT = now
-    if (dt > 0) edgeScroll(V, edge, dt)
+    const now = clockOf(V), dt = Math.min(POLICY.EDGE_STEP_MAX_MS / 1000, Math.max(0, (now - edgeT) / 1000)); edgeT = now
+    if (dt > 0) { edgeScroll(V, edge, ramp(edgeHeld + dt) - ramp(edgeHeld)); edgeHeld += dt }
     edgeRaf = requestAnimationFrame(edgeStep) }
   const edgeAt = e => {
     if (!wrap.getBoundingClientRect) return null
@@ -2125,10 +2130,16 @@ export function bindCamera(V) {
     const dx = e.clientX < B ? -1 : e.clientX > W - B ? 1 : 0, dy = e.clientY < B ? -1 : e.clientY > H - B ? 1 : 0
     return dx || dy ? { x: dx, y: dy } : null }
   const root = V.dom.root
-  const rootMove = e => edgeTo(edgeAt(e) || edgeOfScreen(e))
+  /* viewer.edge-scroll-at-screen-edges: in the battle screen (a host that plays) the map scrolls only at the SCREEN's own
+     edge. There three of the board's four edges are in the middle of the screen — under the hero bar, beside the panel,
+     above the ability bar — so the board's band slid the map whenever the pointer travelled to a button, and a hex in the
+     board's outer 36 px slid away as it was pointed at. A replay page, whose board has no screen edge of its own, keeps the
+     board's band (viewer SWITCHES xcomEdge, changed). */
+  const rootMove = e => edgeTo((V.host ? null : edgeAt(e)) || edgeOfScreen(e))
   /* leaving the battle stops it — unless it left through the screen's edge, where the pointer is still pointing past it */
   const rootLeave = e => { if (!edgeOfScreen(e)) edgeTo(null) }
-  const edgeTo = dir => { edge = dir
+  const edgeTo = dir => { if (!dir || !edge) edgeHeld = 0                         // off the edge, or newly at it: the scroll starts gently again
+    edge = dir
     if (edge && edgeRaf == null && typeof requestAnimationFrame === 'function') { edgeT = clockOf(V); edgeRaf = requestAnimationFrame(edgeStep) } }
   const move = e => { if (!drag) { hover(e); return }
     // Screen-pixel threshold from pointerdown: jitter is a click, a real drag

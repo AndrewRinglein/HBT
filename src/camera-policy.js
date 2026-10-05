@@ -37,6 +37,10 @@ export const POLICY = Object.freeze({
   EDGE_SCROLL_PX: 36,           // the pointer within this of the board's edge scrolls the map that way (was 18)
   EDGE_WINDOW_PX: 14,           // or within this of the screen's edge while it is over the battle (viewer.xcom-camera-tuning)
   EDGE_SCROLL_SPEED: 700,       // board px a second
+  /* viewer.edge-scroll-at-screen-edges (2026-10-05): the scroll comes up to that speed over this long instead of at once, and
+     a frame is never taken for more than this much time (it was 50 ms: at 7 frames a second the map covered a third of its speed) */
+  EDGE_SCROLL_RAMP_MS: 150,
+  EDGE_STEP_MAX_MS: 250,
   /* viewer.camera-no-void (engine DECISIONS.md 2026-10-03 'the camera never shows white space'): the standard zoom is this much
      nearer than the zoom at which the battle area just fills with board, so there is board beyond it on both axes to scroll
      to; the wheel pulls back no farther than that fill (viewer SWITCHES noVoidStandard) */
