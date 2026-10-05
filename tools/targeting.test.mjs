@@ -62,13 +62,23 @@ test('passive unit inspection stays available; disposed persistent callbacks are
 // camera', Andrew: "no grab-drag", "no tilt, no free rotation" — so the two camera assertions here (a right drag moved camF, a
 // left drag changed cam) now assert that it did NOT move. The rules kept, unweakened: a drag still suppresses the release's
 // selection; jitter under the threshold stays a click.
-test('a drag suppresses release selection/inspection and moves no camera; keyboard activation and next click work',()=>{
+// LAW 10 — 2026-10-05, viewer.map-drag-and-keys (engine DECISIONS.md 2026-10-05 'the battle screen must feel smooth: … the map
+// drags and moves on W/A/S/D' — Andrew, asked "Should the map also move by dragging it and by W/A/S/D, alongside edge scroll
+// (this overturns 'no grab-drag')?": "Yes"). The two camera assertions here read, since 2026-10-01,
+//   const before=structuredClone(v.view.camF);drag();assert.deepEqual(v.view.camF,before)        (a right drag did not move camF)
+//   … fire(wrap,'pointerup');assert.deepEqual(v.view.cam,cam)                                     (a left drag did not change cam)
+// and the test was named "… and moves no camera". By the ruling a drag — the right button's or the left's — moves the MAP
+// (camF) again: the first is turned back to assert that it moved. The second stands as written and is still the rule: a
+// drag never turns, tilts or zooms (cam); it is joined by the map having moved. The rules kept, unweakened: a drag still
+// suppresses the release's selection; jitter under the threshold stays a click.
+test('a drag moves the map and suppresses release selection/inspection; it never turns or tilts; keyboard activation and next click work',()=>{
  let calls=0;const {v}=boot('movement',{onHexClick:()=>{calls++;return true}});v.setTargeting(facts());const wrap=v._V.dom.stage.parentNode,drag=()=>{fire(wrap,'pointerdown',{button:2,clientX:10,clientY:10});fire(wrap,'pointermove',{clientX:30,clientY:20});fire(wrap,'pointerup')}
- const before=structuredClone(v.view.camF);drag();assert.deepEqual(v.view.camF,before);fire(button(v,84));assert.equal(calls,0)
+ const before=structuredClone(v.view.camF);drag();assert.notDeepEqual(v.view.camF,before,'a right drag moves the map');fire(button(v,84));assert.equal(calls,0)
  fire(button(v,84),'click',{detail:0});assert.equal(calls,1)
  drag();const img=v._V.layers.UEL.values().next().value.img;fire(img);assert.equal(v.view.inspectId,null);assert.equal(calls,1)
  fire(wrap,'pointerdown',{button:0,clientX:30,clientY:20});fire(wrap,'pointerup');fire(button(v,84));assert.equal(calls,2)
- const cam=structuredClone(v.view.cam);fire(wrap,'pointerdown',{button:0,clientX:10,clientY:10});fire(wrap,'pointermove',{clientX:30,clientY:20});fire(wrap,'pointerup');assert.deepEqual(v.view.cam,cam);fire(button(v,84));assert.equal(calls,2);v.dispose()
+ /* (the left drag goes back the way the right one came: on this small board the first took the view to its bound) */
+ const cam=structuredClone(v.view.cam),at=structuredClone(v.view.camF);fire(wrap,'pointerdown',{button:0,clientX:30,clientY:20});fire(wrap,'pointermove',{clientX:10,clientY:10});fire(wrap,'pointerup');assert.deepEqual(v.view.cam,cam);assert.notDeepEqual(v.view.camF,at,'a left drag moves the map too');fire(button(v,84));assert.equal(calls,2);v.dispose()
 })
 test('callback exceptions fault-lock host and all retained input callbacks',()=>{
  let error=null,calls=0;const failure=Error('host target failure'),{v}=boot('movement',{onHexClick(){calls++;throw failure},onError:e=>error=e});v.setTargeting(facts());const n=button(v,84);assert.throws(()=>fire(n),/host target failure/);assert.equal(v.invalid,failure);assert.equal(error,failure);assert.equal(v.playing,false);fire(n);assert.equal(calls,1);v.dispose()
@@ -79,10 +89,20 @@ test('footprint and shielding are copied even outside legal centres; no supplied
  assert.deepEqual(v._V.dom.stage.querySelectorAll('.targetHex').map(n=>+n.dataset.hex),[84]);assert.deepEqual(v._V.dom.stage.querySelectorAll('.targetFootprint').map(n=>+n.dataset.hex),[85,86]);assert.equal(v._V.dom.stage.querySelector('.targetShield').dataset.hex,'87');assert.equal(v._V.dom.stage.querySelector('.targetCentre'),null);v.dispose()
 })
 
+// LAW 10 — 2026-10-05, viewer.map-drag-and-keys (engine DECISIONS.md 2026-10-05 'the battle screen must feel smooth: … the map
+// drags and moves on W/A/S/D', Andrew: "Yes"; the item: "A press that travels less than 6 px is a click exactly as now … one
+// that travels more is a drag and is never also a click. No press is ever swallowed with nothing happening: today a press
+// that travels 4 px is no click and moves nothing … which loses clicks made with the hand still moving."). The second line
+// read
+//   fire(wrap,'pointerdown',{button:2,clientX:10,clientY:10});for(let x=11;x<=14;x++)fire(wrap,'pointermove',{clientX:x,clientY:10});fire(wrap,'pointerup');fire(button(v,84));assert.equal(calls,1);assert.deepEqual(v.view.camF,before)
+// — a press that wandered 4 px, a pixel at a time, was no click and moved nothing: the very swallowed press the ruling ends.
+// As the rule now stands the threshold is 6 px, still gathered from where the press began: 4 px gathered a pixel at a time
+// is a click (and moves nothing); 7 px gathered the same way is a drag — it moves the map and is not also a click.
 test('one-pixel click jitter remains a click; drag threshold accumulates from pointer origin',()=>{
  let calls=0;const {v}=boot('movement',{onHexClick:()=>{calls++;return true}});v.setTargeting(facts());const wrap=v._V.dom.stage.parentNode,before=structuredClone(v.view.camF)
  fire(wrap,'pointerdown',{button:0,clientX:10,clientY:10});fire(wrap,'pointermove',{clientX:11,clientY:10});fire(wrap,'pointerup');fire(button(v,84));assert.equal(calls,1);assert.deepEqual(v.view.camF,before)
- fire(wrap,'pointerdown',{button:2,clientX:10,clientY:10});for(let x=11;x<=14;x++)fire(wrap,'pointermove',{clientX:x,clientY:10});fire(wrap,'pointerup');fire(button(v,84));assert.equal(calls,1);assert.deepEqual(v.view.camF,before);v.dispose()
+ fire(wrap,'pointerdown',{button:2,clientX:10,clientY:10});for(let x=11;x<=14;x++)fire(wrap,'pointermove',{clientX:x,clientY:10});fire(wrap,'pointerup');fire(button(v,84));assert.equal(calls,2,'4 px gathered a pixel at a time: still a click');assert.deepEqual(v.view.camF,before)
+ fire(wrap,'pointerdown',{button:2,clientX:10,clientY:10});for(let x=11;x<=17;x++)fire(wrap,'pointermove',{clientX:x,clientY:10});fire(wrap,'pointerup');fire(button(v,84));assert.equal(calls,2,'7 px gathered a pixel at a time: a drag, never also a click');assert.notDeepEqual(v.view.camF,before,'and it moved the map');v.dispose()
 })
 test('host SELECT keeps arrow keys while board hovered; target buttons keep native Enter and Space',()=>{
  const {v,w}=boot(),wrap=v._V.dom.stage.parentNode;fire(wrap,'pointerenter');const before=structuredClone(v.view.camF),select=w.document.createElement('select');let prevented=0

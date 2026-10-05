@@ -17,7 +17,7 @@
 // Imports no page code.
 import { describe, it, expect, beforeAll } from 'vitest'
 import { execFileSync } from 'node:child_process'
-import { mkdirSync } from 'node:fs'
+import { frameCostOnThePage, rowOf, FRAME_COST_WAIT_MS } from './frame-cost-page.js'
 
 type Pass = { all: number; shadow: number; scene: number; bodies: number }
 type Measure = { frames: number; draws: Pass; triangles: Pass }
@@ -34,14 +34,21 @@ describe('viewer.still-frame-draws-nothing', () => {
   describe('the built page in real Chrome', () => {
     let orphanage: Row, caravan: Row
     beforeAll(() => {
-      mkdirSync('../kingdom/scratch', { recursive: true })
-      execFileSync(process.execPath, ['tools/build-sandbox.mjs', 'scratch/still-frame-draws-nothing.html'], { cwd: '../kingdom', stdio: 'pipe' })
-      const out = execFileSync(process.execPath, ['tools/frame-cost.mjs', 'orphanage', 'caravan-aftermath', '--json', '--page', '../kingdom/scratch/still-frame-draws-nothing.html'], { cwd: '../viewer', encoding: 'utf8', maxBuffer: 1 << 24, timeout: 560000 })
-      const rows = (JSON.parse(out) as { rows: Row[] }).rows
+    // LAW 10 — 2026-10-05 (found landing viewer.map-drag-and-keys; test/frame-cost-page.ts says why): this file ran the tool by
+    // itself —
+    //   mkdirSync('../kingdom/scratch', { recursive: true })
+    //   execFileSync(process.execPath, ['tools/build-sandbox.mjs', 'scratch/still-frame-draws-nothing.html'], { cwd: '../kingdom', stdio: 'pipe' })
+    //   const out = execFileSync(process.execPath, ['tools/frame-cost.mjs', 'orphanage', 'caravan-aftermath', '--json', '--page', …], { …, timeout: 560000 })
+    //   const rows = (JSON.parse(out) as { rows: Row[] }).rows
+    //   expect(rows.map((r) => r.battle)).toEqual(['encounter.opening.orphanage', 'encounter.caravan-aftermath'])
+    // — as three other test files did, each on a page of its own, all at once in the gate's checks. The tool is now run ONCE
+    // a test run, on one sandbox page built from the sources, for every file that reads it; this file reads its rows of
+    // that result. Every assertion on those rows below stands as written.
+      const got = frameCostOnThePage<Row>(), rows = [rowOf(got, 'encounter.opening.orphanage'), rowOf(got, 'encounter.caravan-aftermath')]
       expect(rows.map((r) => r.battle)).toEqual(['encounter.opening.orphanage', 'encounter.caravan-aftermath'])
       for (const r of rows) { expect(r.flat, r.note).toBeFalsy(); expect(r.pageErrors ?? [], r.battle).toEqual([]) }
       ;[orphanage, caravan] = rows as [Row, Row]
-    }, 780000)
+    }, FRAME_COST_WAIT_MS)
 
     it('the clock held and nothing live: a frame issues 0 draw calls — no scene pass, no shadow pass, no bodies\' canvas', () => {
       expect(orphanage.held.frames).toBeGreaterThanOrEqual(30)

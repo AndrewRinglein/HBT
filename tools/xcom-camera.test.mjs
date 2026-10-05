@@ -74,9 +74,22 @@ test('the pointer at the board\'s edge, or the screen\'s, scrolls the map that w
   const at = (x, y) => fire(root, 'pointermove', { clientX: x, clientY: y })
   at(50, 50); w._flush(200)
   const mid = { ...V.view.camF }
-  at(50, 99); w._flush(200)                                    /* the fake board is 100 px square: its bottom edge */
+  /* LAW 10 — 2026-10-05, viewer.edge-scroll-at-screen-edges (engine DECISIONS.md 2026-10-05 'the battle screen must feel smooth:
+     … Scrolling': in the battle screen three of the board's four edges are in the middle of the screen, "so the map slides
+     whenever the pointer travels to a button, and a hex in the board's outer 36 px slides away as it is pointed at" — "in the
+     battle screen (a host that plays) the map scrolls only while the pointer is at the screen's own edge … the board's inner
+     bands are gone there"). This test boots a host that plays, and read
+       at(50, 99); w._flush(200)                                    /* the fake board is 100 px square: its bottom edge * /
+       const down = { ...V.view.camF }
+       assert.ok(down.y > mid.y, `the bottom edge scrolls south at the standard zoom: …`); assert.equal(down.x, mid.x, 'and only south')
+       at(1, 50); w._flush(200)
+       assert.ok(V.view.camF.x < down.x, 'the left edge scrolls west')
+     — the board's own bottom edge scrolling the map. As the rule now stands that edge, in the middle of the screen, moves
+     nothing; (1, 50) is the SCREEN's left edge as well as the board's and scrolls west as it did. The board's band on a page
+     with no host is held by tools/edge-scroll-at-screen-edges.test.mjs. Everything after this stands as written. */
+  at(50, 99); w._flush(200)                                    /* the fake board is 100 px square: its bottom edge, in the middle of the screen */
   const down = { ...V.view.camF }
-  assert.ok(down.y > mid.y, `the bottom edge scrolls south at the standard zoom: ${mid.y} -> ${down.y}`); assert.equal(down.x, mid.x, 'and only south')
+  assert.deepEqual(down, mid, 'the board\'s own bottom edge scrolls nothing in the battle screen')
   at(1, 50); w._flush(200)
   assert.ok(V.view.camF.x < down.x, 'the left edge scrolls west')
   at(50, 50); const held = { ...V.view.camF }; w._flush(500)

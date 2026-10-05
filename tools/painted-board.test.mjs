@@ -96,7 +96,13 @@ test('the painted driver loads only the measured scene, lights it as reviewed, a
    tilt, no free rotation. The arrow keys rotate 90 degrees." · "no grab-drag" · "The mouse wheel zooms a limited amount and
    snaps back". The turn, the zoom, the pan and the reset by call are kept (the hosts' and the tests' API); the tilt stays at
    the fixed angle; no drag moves the camera; the wheel looks nearer (its spring back: tools/xcom-camera.test.mjs) */
-test('the camera turns, zooms and pans by call, holds its one angle, moves for no drag, looks nearer by the wheel, and resets', () => {
+/* LAW 10 — 2026-10-05, viewer.map-drag-and-keys (engine DECISIONS.md 2026-10-05 'the battle screen must feel smooth: … the map
+   drags and moves on W/A/S/D' — Andrew, asked "Should the map also move by dragging it and by W/A/S/D, alongside edge scroll
+   (this overturns 'no grab-drag')?": "Yes"). This test was named "… moves for no drag …" and read
+     assert.deepEqual(V.view.camF, before, 'a right drag does not grab the map')
+   By the ruling a drag grabs the map again and moves it: that line is turned back to assert it. What 2026-10-01 still
+   rules stands as written — no drag turns or tilts the camera ("No tilt, no free rotation"). */
+test('the camera turns, zooms and pans by call, holds its one angle, is moved but never turned or tilted by a drag, looks nearer by the wheel, and resets', () => {
   const w = boot('#map.opening.orphanage'), H = w.__battleView.harness, v = H.viewer, V = v._V, stage = V.dom.stage, wrap = stage.parentNode
   /* viewer.true-3d-camera (engine DECISIONS.md 2026-09-30 "a true 3D battle: an orbit camera"): the turn, the tilt and the zoom are
      the one camera's (V.camera3d), which the stage is drawn through — these read rotateX(49.3deg), rotateZ(30deg) and
@@ -118,13 +124,14 @@ test('the camera turns, zooms and pans by call, holds its one angle, moves for n
   v.tilt(-12); close(tiltNow(), 50, 'no tilt: the one fixed angle')
   const camF = { ...V.view.camF }; v.pan(60, 30); assert.notDeepEqual(V.view.camF, camF)
   assert.notEqual(stage.style.transform, start)
-  /* the pointer: no drag turns, tilts or moves the map; the wheel looks nearer; the right button opens no menu */
+  /* the pointer: no drag turns or tilts; a drag moves the map (2026-10-05); the wheel looks nearer; the right button opens no menu */
   const cam = { ...V.view.cam }
   fire(wrap, 'pointerdown', { button: 0, clientX: 100, clientY: 100 }); fire(wrap, 'pointermove', { clientX: 140, clientY: 90 }); fire(wrap, 'pointerup')
   assert.deepEqual(V.view.cam, cam, 'a left drag neither turns nor tilts')
   const before = { ...V.view.camF }
   fire(wrap, 'pointerdown', { button: 2, clientX: 100, clientY: 100 }); fire(wrap, 'pointermove', { clientX: 150, clientY: 130 }); fire(wrap, 'pointerup')
-  assert.deepEqual(V.view.camF, before, 'a right drag does not grab the map')
+  assert.notDeepEqual(V.view.camF, before, 'a right drag grabs the map and moves it')
+  assert.deepEqual(V.view.cam, cam, 'and neither turns nor tilts')
   v.resetView(); const z = V.view.cam.zoom; assert.equal(fire(wrap, 'wheel', { deltaY: -200 }), 1); assert.ok(V.view.cam.zoom > z, 'the wheel looks nearer (from the standard zoom)')
   assert.equal(fire(wrap, 'contextmenu'), 1)
   /* the reset, by call (there is no button) */
