@@ -5188,3 +5188,44 @@ The chat's own defaults, said to him and his to change in a line:
 
 - **The place loops are set aside, not deleted** - his question was "why would we have ambiance?", and the chat's answer was that under music they add little: they are what is heard when the music is turned down. The fifteen are on disk and off the listening page.
 - **He hears one take a sound, not three.** A measurement pass (`sound/tools/sift.mjs`) picks the cleanest take of each - it cannot tell whether a take sounds right, only that it starts at once, is one event, is not cut off and is not too faint - and the page plays a group through with one key to mark the one that is wrong. A voice shows only the six files that would play for each moment.
+
+## 2026-10-05 — the characters stand out, measured against XCOM 2: our heroes are darker and greyer than the ground they stand on; red on a hero is not a problem
+
+Andrew, in the root chat (the XCOM 2 study), in three messages:
+
+“Can you do research on the background colors and tiles of XCOM 2? I think they're mostly gray, and that makes the heroes stand out more. I'm trying to figure out how to make heroes stand out more against backdrops, and I want to use XCOM 2 as my study.”
+
+“one thing we could do is also paint the heroes brighter colors, red, blue.”
+
+“what colors do we use? I dont think red is a problem because of attack arrows”
+
+Measured the same morning. Lightness runs 0 (black) to 1 (white); colourfulness 0 is pure grey and 0.12 and up reads as a strong colour (both are OKLCH, the median of the pixels). Ours are read from the battle page itself - the bodies are drawn on their own layer, so hero pixels are exact and the ground is the ring around them - at each battle's opening view, with the default looks (size and shadows). XCOM 2 is one overhead community screenshot, a night slum map, the soldier boxed by hand; it is a small sample.
+
+| | unit lightness | ground beside it | unit colourfulness | ground beside it |
+|---|---|---|---|---|
+| XCOM 2 | 0.68 | 0.41 | 0.072 | 0.050 |
+| Orphanage | 0.40 | 0.56 | 0.027 | 0.085 |
+| Orphanage, with the `ground` look of 2026-10-03 | 0.40 | 0.52 | 0.027 | 0.049 |
+| Lumberjack | 0.38 | 0.61 | 0.03 | 0.10 |
+| Bridge | 0.39 | 0.64 | 0.03 | 0.10 |
+| Cavern Trail | 0.12 | 0.65 | 0.01 | 0.10 |
+| Cathedral | 0.25 | 0.77 | 0.022 | 0.048 |
+
+What it shows:
+
+- **XCOM 2's ground is muted, not grey, and strong colour is rationed**: 1 to 5% of the picture in five of six screenshots, most of it on the interface (red danger tiles and bars, a yellow move line, pale cyan rings). Its soldier is lighter and more colourful than the floor.
+- **Ours is the other way round on every board measured.** The heroes are darker than the ground and a third as colourful; 70 to 90% of hero pixels are near grey and none is a strong colour. Every board's ground is yellow to green (hue 60 to 120) and every body is brown (hue 55 to 70), the colour next to it.
+- **Why the `ground` look of 2026-10-03 "did not help that much"**: it left the ground still lighter than the heroes and almost twice as colourful. The ground alone would have to go to about 0.15 lightness to match XCOM 2's gap - the almost-black he found drab.
+- **The hero gold `#e0b95e` (hue 86) is the grass's own hue**; the enemy violet `#a964d8` (hue 310) is far from everything.
+- The Cavern Trail's three bodies read almost black (0.12). Not looked into: it may be the page still loading in a hidden pane, or the lighting there.
+- The Gates did not load in the chat's pane and is not measured.
+
+Ruled:
+
+- **Red on a hero is not a problem.** The chat had said the attack mark and the downed ring are already red; his answer is the third message above.
+
+Not ruled - his idea and the chat's proposal, his to pick:
+
+- **Painting the heroes brighter colours** is his idea ("one thing we could do"), red and blue the two he named. No outfit is repainted on this entry.
+- **The chat's proposal for which**: a scarlet `#e0483a` (lightness 0.61, colourfulness 0.19), a light blue `#4f9be8` (0.68, 0.14; kept toward sky blue, away from the enemy violet) and bone white `#ebe5d6` (0.92); a teal `#2bb3a3` if a fourth is wanted. Kept off the heroes: green, yellow, brown, orange and gold (the ground's) and violet, purple and pink (the enemies').
+- **The chat's proposal for the rest**: show every body brighter (about 0.60 lightness; today only the unit whose panel is shown has its own light, and the unlit outfits take no light at all), and grey only the plain ground (about 0.40 to 0.45 lightness, colourfulness under 0.05) - his own idea of the same day, which is so far only in the comments of `.scratch-ground-tones/index.html`. A board passes when hero lightness clears the ground beside it by 0.2 on either side.
