@@ -90,10 +90,13 @@ describe('a screenshot is taken of a still page: the frame loop is held, the pag
   })
   it('held twice is held once, and let go without a hold is nothing', async () => {
     const { holdFrames, letGo } = await helper(), { page, win, handed } = fakePage(), real = win.requestAnimationFrame
-    await letGo(page); expect(win.requestAnimationFrame).toBe(real)
+    await letGo(page); expect(win.requestAnimationFrame).toBe(real); expect(handed.length, 'a page that was not held is asked for nothing').toBe(0)
     await holdFrames(page); const held = win.requestAnimationFrame; await holdFrames(page); expect(win.requestAnimationFrame).toBe(held)
-    win.requestAnimationFrame(() => {}); expect(handed.length).toBe(0)
-    await letGo(page); expect(win.requestAnimationFrame).toBe(real); expect(handed.length).toBe(1)
+    const kept = () => {}
+    win.requestAnimationFrame(kept); expect(handed.length).toBe(0)
+    await letGo(page); expect(win.requestAnimationFrame).toBe(real); expect(handed.filter((cb) => cb === kept).length).toBe(1)
+    /* the page is handed back drawing: the helper waited for one frame of the page's own after giving the loop back */
+    expect(handed.length, 'the kept frame, and the one frame the helper waited on').toBe(2)
   })
   it('every screenshot the kingdom\'s and the viewer\'s tools take goes through the helper: none is taken directly', () => {
     const direct: string[] = [], through: string[] = []
