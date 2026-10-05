@@ -76,8 +76,12 @@ export type Rolled = { readonly stat: string; readonly amount: number }
  * fix.opening-draft-one-rule (2026-10-04): one procedure, whoever's dice.
  */
 export type DraftRoller = { below(n: number, ...keys: number[]): number; d100(...keys: number[]): number }
-/** A hero's own value of a stat, in the Crucible's word — what a rolled point is added to and floored against. */
-export type DraftBase = (stat: string) => number
+/**
+ * A hero's own value of a stat, in the Crucible's word — what a rolled point is added to and floored against (its row's number).
+ * `fielded`, where the caller has it, is the same hero's value AS FIELDED bare — its row, its own kit and its row's badges: a
+ * rolled LOSS is also held at the stat's floor against that (content.hero-origin-badges, 2026-10-05).
+ */
+export type DraftBase = ((stat: string) => number) & { readonly fielded?: (stat: string) => number }
 /** What a draft gives one hero: its badges, the stat points it rolled, those points as the battle takes them, and the points no engine stat takes. */
 export type DraftRolls = { readonly badges: string[]; readonly rolls: Rolled[]; readonly mods: UnitMods; readonly unfielded: Rolled[] }
 /** A drafted hero as the opening fields it: its row, what it rolled, and what the battle is handed. */
@@ -101,8 +105,20 @@ const isMelee = (id: string): boolean =>
   SCORE.meleeClasses.includes(classOfRow(id) ?? '') || UNITS[id]!.ai === 'melee-aggressive'
 const stepOf = (stat: string): number => STEP[stat] ?? STEP['default']!
 const floorOf = (stat: string): number => FLOOR[stat] ?? FLOOR['default']!
-/** A row's own value of a stat, in the Crucible's word — what a point is added to and floored against. */
-const baseOfRow = (id: string): DraftBase => (stat) => ((UNITS[id] as unknown as Record<string, number | undefined>)[STAT_OF[stat] ?? stat]) ?? 0
+/**
+ * A row's own value of a stat, in the Crucible's word — what a point is added to and floored against; and, as `fielded`, the
+ * same hero as the engine fields it bare (its row, its own kit and its row's badges — fieldedDef).
+ * content.hero-origin-badges (2026-10-05): the Forest Fey's row says Health 6 and she fields 2 (her Pilgrim's Habit, and
+ * Frail on her row), so a rolled loss of 2, held at the Crucible's floor of 1 against the ROW alone (6 → 4), left her at 0
+ * and the engine refused to field her. A loss is held against what she fields as well: she loses 1 and stands at 1.
+ */
+export const baseOfRow = (id: string): DraftBase => {
+  const row = UNITS[id] as unknown as Record<string, number | undefined>
+  let bare: Record<string, number | undefined> | undefined
+  const base = ((stat: string) => row[STAT_OF[stat] ?? stat] ?? 0) as DraftBase & { fielded: (stat: string) => number }
+  base.fielded = (stat) => ((bare ??= fieldedDef(id) as unknown as Record<string, number | undefined>)[STAT_OF[stat] ?? stat]) ?? 0
+  return base
+}
 /** The engine's own draft dice: its named 'draft' stream (Law 4), keyed by what the roll is. */
 const rollerOf = (rng: Rng): DraftRoller => ({ below: (n, ...keys) => rollBelow(rng, n, 'draft', ...keys), d100: (...keys) => roll100(rng, 'draft', ...keys) })
 
@@ -119,7 +135,9 @@ function rollStats(roller: DraftRoller, baseOf: DraftBase, gains: number, losses
       do { stat = CRUCIBLE.statPool[roller.below(CRUCIBLE.statPool.length, ...keys, sub, i, a)]!; a++ } while (used.has(stat) && a < CRUCIBLE.repeatAttempts)
       if (used.has(stat)) continue
       const was = now[stat] ?? baseOf(stat)
-      const is = Math.max(floorOf(stat), was + sign * stepOf(stat))
+      let is = Math.max(floorOf(stat), was + sign * stepOf(stat))
+      // a loss is held at the floor against the hero as fielded too: never more than the room the fielded hero has above it
+      if (sign < 0 && baseOf.fielded) is = Math.max(is, was - Math.max(0, baseOf.fielded(stat) - floorOf(stat)))
       now[stat] = is
       used.add(stat)
       if (is !== was) out.push({ stat, amount: is - was })
