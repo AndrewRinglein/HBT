@@ -1,0 +1,50 @@
+
+ RUN  v4.1.11 C:/Users/aring/Desktop/HBT-worker-engine/kingdom
+
+ ❯ test/free-attack-stat-labels.test.ts (2 tests | 2 failed) 6ms
+     × a kind's own Accuracy, the Accuracy on every special free attack, and the Dodge against them 4ms
+     × the two swords that carry one: every stat on the Longsword's and the Great Sword's rows reads as words, not as its id 1ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/free-attack-stat-labels.test.ts > the special free attacks' stats have words > a kind's own Accuracy, the Accuracy on every special free attack, and the Dodge against them
+AssertionError: expected 'counterattackAccuracy' to be 'Counterattack Accuracy' // Object.is equality
+
+Expected: "Counterattack Accuracy"
+Received: "counterattackAccuracy"
+
+ ❯ test/free-attack-stat-labels.test.ts:12:50
+     10| describe('the special free attacks\' stats have words', () => {
+     11|   it('a kind\'s own Accuracy, the Accuracy on every special free attac…
+     12|     expect(statLabelOf('counterattackAccuracy')).toBe('Counterattack A…
+       |                                                  ^
+     13|     expect(statLabelOf('fendAccuracy')).toBe('Fend Accuracy')
+     14|     expect(statLabelOf('freeAttackAccuracy')).toBe('Special Free Attac…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  test/free-attack-stat-labels.test.ts > the special free attacks' stats have words > the two swords that carry one: every stat on the Longsword's and the Great Sword's rows reads as words, not as its id
+AssertionError: item.longsword counterattackAccuracy: expected undefined to be truthy
+
+- Expected:
+true
+
++ Received:
+undefined
+
+ ❯ test/free-attack-stat-labels.test.ts:23:91
+     21|       expect(stats, sword).toContain('counterattackAccuracy')
+     22|       // a one-word stat's id IS its word (block reads "block"); a sta…
+     23|       for (const k of stats) expect(/[A-Z]/.test(k) ? STAT_LABEL[k] : …
+       |                                                                                           ^
+     24|     }
+     25|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed (2)
+   Start at  22:35:01
+   Duration  941ms (transform 645ms, setup 0ms, import 817ms, tests 6ms, environment 0ms)
+
