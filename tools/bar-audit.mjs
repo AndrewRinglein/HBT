@@ -52,6 +52,8 @@ function targetNeeds(t) {
   if (t.select === 'area') { out.push(word('every')); if (t.radius != null) out.push(num(t.radius)); if (t.excludeSelf) out.push(word('other')); if (t.origin === 'target') out.push(word('of the target')) }
   return out
 }
+/** capability.raise-lower-magic (engine item): a change to a side's party stat, field by field */
+const sideStatNeeds = c => [word(c.value < 0 ? 'lowers' : 'raises'), word(c.stat === 'power' ? 'Power' : c.stat === 'magic' ? 'Magic' : 'Spirit'), num(Math.abs(c.value)), word(c.until === 'battle' ? 'rest of the Battle' : 'Turn')]
 /** one effect (core/types.ts Effect), field by field */
 function effectNeeds(e, S) {
   const out = []
@@ -73,6 +75,7 @@ function effectNeeds(e, S) {
   if (e.kind === 'stamina.gain' || e.kind === 'stamina.drain') out.push(word('stamina'))
   if (e.kind === 'power.gain') out.push(word('power'))
   /* capability.summons (engine item, 2026-10-05): what is summoned, by the engine row's own name */
+  if (e.kind === 'side.stat') out.push(...sideStatNeeds(e))
   if (e.kind === 'summon') out.push(word('summon'), word(((S && S.units && S.units[e.unit]) || {}).name ?? e.unit))
   if (e.who === 'self') out.push(SELF)
   return out
@@ -117,7 +120,9 @@ export function actionNeeds(a, triggers, S) {
     need('burst shape', b.shape.kind === 'radius' ? [word('radius'), num(b.shape.radius)] : [word(b.shape.kind)])
     need('burst side ' + b.side, [word(b.side)])
     for (const t of b.requireTags ?? []) need('burst tag ' + t, [word(t)])
-    for (const k of b.packets) need('burst packet ' + k.id, [num(k.amount), word(k.damageType), ...(k.stat ? [word(statWord(k.stat))] : []), ...(k.powerScale != null ? [word('power'), num(k.powerScale)] : [])])
+    for (const k of b.packets) need('burst packet ' + k.id, [num(k.amount), word(k.damageType), ...(k.stat ? [word(statWord(k.stat))] : []), ...(k.statMult != null ? [num(k.statMult)] : []), ...(k.powerScale != null ? [word('power'), num(k.powerScale)] : [])])
+    /* capability.raise-lower-magic (engine item, 2026-10-05): what using the burst does to a side's party stats — which way, which stat, by how much, how long */
+    for (const c of b.sideStats ?? []) need('burst side stat ' + c.stat, sideStatNeeds(c))
     if (b.heal != null) need('burst heal ' + b.heal, [word('heal'), num(b.heal)])
     if (b.impact) need('burst impact ' + b.impact, [word('impact'), num(b.impact)])
     if (b.destroy) need('burst destroy ' + b.destroy, [word('destroy'), num(b.destroy)])

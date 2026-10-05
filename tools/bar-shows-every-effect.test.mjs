@@ -137,3 +137,22 @@ test('a summon is said: the bar names the unit and the empty hex; an attack says
   const unbinding = actionLines({ id: 'attack.staff-of-summoning.unbinding', ...STATIC.actions['attack.staff-of-summoning.unbinding'] }, {}, D, STATIC.statuses).join(' | ')
   assert.match(unbinding, /[+]15 Accuracy against anything summoned/)
 })
+
+/* capability.raise-lower-magic (engine item, 2026-10-05; engine DECISIONS.md 2026-10-04 'his 28 reward weapons read back …': "we need
+   to lower and raise magic"): a burst that counts its stat several times says so, and what using it does to the sides' party
+   stats is on its line; the fold knows the two lines. Read off the engine's own rows (generated/static.json). */
+test('a side\'s party stat changing is said: the Vortex reads Magic three times and what using it lowers; the fold knows side.stat.changed and side.stat.restored', async () => {
+  const { sideStatWords } = await import('../src/actions.js')
+  const { FOLDED_TYPES, createState, fold } = await import('../src/fold.js')
+  const vortex = STATIC.actions['power.staff-of-the-magi.vortex']
+  assert.ok(vortex && vortex.burst, 'the engine holds Vortex as a burst')
+  assert.deepEqual(vortex.burst.sideStats, [{ stat: 'magic', side: 'own', value: -1, until: 'battle' }, { stat: 'power', value: -1, until: 'battle' }])
+  assert.equal(sideStatWords(vortex.burst.sideStats[0]), "lowers the party's Magic by 1 for the rest of the Battle")
+  assert.equal(sideStatWords(vortex.burst.sideStats[1]), "lowers the enemy side's Power by 1 for the rest of the Battle")
+  assert.equal(sideStatWords({ stat: 'spirit', side: 'enemy', value: 2, until: 'endOfNextTurn' }), "raises the enemy side's Spirit by 2 until the end of the next Turn")
+  const lines = actionLines({ id: 'power.staff-of-the-magi.vortex', ...vortex, kind: 'burst' }, {}, D, STATIC.statuses).join(' | ')
+  assert.match(lines, /3 × MAG\w*/)
+  assert.match(lines, /using it lowers the party's Magic by 1 for the rest of the Battle/)
+  assert.match(lines, /using it lowers the enemy side's Power by 1 for the rest of the Battle/)
+  for (const t of ['side.stat.changed', 'side.stat.restored']) assert.ok(FOLDED_TYPES.includes(t), t)
+})
