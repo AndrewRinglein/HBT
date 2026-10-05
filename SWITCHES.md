@@ -1754,3 +1754,15 @@ parts of the map by just looking around on the map". Built: `src/board.js` (`app
 | `viewPutBound` | Where may a put view stand when the wheel pulls back from it? | **Inside the board's own box, as every view of the game's — the wheel must not open white space beside the board (2026-10-03 'the camera never shows white space'; `tools/camera-no-void.test.mjs` caught the first cut of this) — unless the player scrolled it past the board's edge to see an edge hex whole, where it is left at the bound as a scroll always was.** | Two rulings kept at once. | Default — 2026-10-05 |
 | `viewPutAbilityClick` | "…through re-draws, zooming, clicks that look at a unit, clicks on hexes, choosing an action…" | **Choosing an action redraws the board, and that redraw no longer moves the view. The host's own call that centres on the acting unit when an ability is clicked (2026-10-01 "Clicking an ability re-centers on the acting unit") is a view SENT to a unit, and still takes it — until `viewer.ability-click-keeps-view`, queued after this, which is that ruling's overturning (2026-10-05).** | One item at a time; the next one is filed for it. | Default — until that item — 2026-10-05 |
 | `viewPutWheelSpring` | The wheel's zoom springs back to the standard after 0.6 s (2026-10-01; overturned 2026-10-05, `viewer.zoom-stays`, queued). | **Left as it is here: the zoom springs back, about the view's own centre — the view does not go back to the acting unit with it.** | `viewer.zoom-stays` is its own item. | Default — until that item — 2026-10-05 |
+
+## kingdom.move-click-setting (kingdom item) — the control on the battle screen, 2026-10-05
+
+Engine DECISIONS.md 2026-10-05 'the battle screen must feel smooth: …; one click or two to move is a setting' (Andrew: "let's have a
+setting where it can be either way, so I can just play with it either way."). The item is the kingdom's; its control is this
+package's chrome: `src/play.js` (the optional play fact `moveClick`: 'one' · 'two'), `src/chrome.js` (`#playMoveClick`,
+`MOVE_CLICK_WORDS`), `src/styles.css`. Probes: `tools/move-click-setting.test.mjs`, `test/viewer.move-click-setting.test.ts`.
+What one click or two does to a move, and where the choice is kept, are the host's (kingdom SWITCHES.md, the same item).
+
+| Switch | Question | Default | Reason | Status |
+|---|---|---|---|---|
+| `moveClickControlDecidesNothing` | "The viewer draws the control from a fact the host hands it and offers the change back; it decides nothing." | **One button beside 2×, hidden until the host's facts carry `moveClick`; its words are that fact ("Move: 2 clicks" · "Move: 1 click"). Pressed, it offers `{kind:'move-click', clicks}` — the other way — and changes nothing itself: its words change only with the host's next facts. While the host takes no orders (its facts are null) it stays as it was and offers nothing. A fact that is neither way is refused like any malformed fact.** A replay (no host) has no play chrome and so no control. | The viewer computes nothing and keeps no setting. | Default — 2026-10-05 |
