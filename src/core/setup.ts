@@ -44,6 +44,8 @@ export function makeUnit(id: number, uid: number, name: string, def: UnitDef, he
     // capability.counterattack-and-fend: the same — absent on a bare body
     ...(def.counterattack ? { counterattack: def.counterattack } : {}), ...(def.counterattackAccuracy ? { counterattackAccuracy: def.counterattackAccuracy } : {}),
     ...(def.fend ? { fend: def.fend } : {}), ...(def.fendAccuracy ? { fendAccuracy: def.fendAccuracy } : {}),
+    // capability.free-attack-accuracy: the same — absent on a bare body
+    ...(def.freeAttackAccuracy ? { freeAttackAccuracy: def.freeAttackAccuracy } : {}), ...(def.freeAttackDodge ? { freeAttackDodge: def.freeAttackDodge } : {}),
     ...(def.swapCost !== undefined && def.swapCost !== 1 ? { swapCost: def.swapCost } : {}),   // v2.swap: absent = 1
     ...(def.bleedOutTurns ? { bleedOutTurns: def.bleedOutTurns } : {}), ...(def.deathbedFighting ? { deathbedFighting: def.deathbedFighting } : {}),   // fix.codex-numbers: absent = 0 (snapshots unchanged)
     auras: (def.auras ?? []).map((a) => ({ ...a })),

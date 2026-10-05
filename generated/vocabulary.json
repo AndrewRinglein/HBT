@@ -32,7 +32,9 @@
   "counterattack",
   "counterattackAccuracy",
   "fend",
-  "fendAccuracy"
+  "fendAccuracy",
+  "freeAttackAccuracy",
+  "freeAttackDodge"
  ],
  "statBase": {
   "swapCost": 1
@@ -72,7 +74,9 @@
   "counterattack",
   "counterattackAccuracy",
   "fend",
-  "fendAccuracy"
+  "fendAccuracy",
+  "freeAttackAccuracy",
+  "freeAttackDodge"
  ],
  "hooks": [
   "onAttack",

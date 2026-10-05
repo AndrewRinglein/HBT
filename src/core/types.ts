@@ -946,6 +946,9 @@ export type UnitDef = {
   readonly counterattackAccuracy?: number
   readonly fend?: number
   readonly fendAccuracy?: number
+  /** capability.free-attack-accuracy (2026-10-04): Accuracy on every special free attack the row makes, and Dodge against any made on it; folded like the four above. Absent = 0. */
+  readonly freeAttackAccuracy?: number
+  readonly freeAttackDodge?: number
   /** v2.swap (COMBAT-V2 §11.2, 2026-09-24): the loadout swap's stamina cost. Absent = 1 (the rule's default). */
   readonly swapCost?: number
   /**
@@ -1045,6 +1048,9 @@ export type Unit = {
   counterattackAccuracy?: number
   fend?: number
   fendAccuracy?: number
+  /** capability.free-attack-accuracy: the folded Accuracy on special free attacks and Dodge against them; absent on a bare body (read through the stats of the same names). */
+  freeAttackAccuracy?: number
+  freeAttackDodge?: number
   /** v2.swap: the folded swap cost; absent = 1 (read through the `swapCost` stat). */
   swapCost?: number
   /** fix.codex-numbers: the folded bleed-out addition (see UnitDef); absent = 0. Not `bleedOut`, which is the running counter. */

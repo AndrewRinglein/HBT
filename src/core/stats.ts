@@ -42,6 +42,14 @@ export type StatName =
    * that free attack's roll on top of the ruled −20 ("counterattack with +10 Accuracy").
    */
   | 'counterattack' | 'counterattackAccuracy' | 'fend' | 'fendAccuracy'
+  /**
+   * capability.free-attack-accuracy (2026-10-04; DECISIONS.md 2026-09-28, the Armory Ledger's rules: "Bonuses 'to special
+   * attacks' and 'Dodge against special attacks' apply to all three."). `freeAttackAccuracy`: added to the roll of every
+   * special free attack its holder makes — a counterattack, a fend, an attack of opportunity — on top of the ruled −20 and of
+   * the kind's own Accuracy stat. `freeAttackDodge`: added to its holder's Dodge against any of the three, and against no
+   * other attack. 0 on every body; gear, badges and timed modifiers lend them, like any stat.
+   */
+  | 'freeAttackAccuracy' | 'freeAttackDodge'
 
 /**
  * `add` sums. `set` overrides and wins outright (disarm, petrify).
@@ -104,6 +112,8 @@ const BASE: Record<StatName, (u: Unit) => number> = {
   counterattackAccuracy: (u) => u.counterattackAccuracy ?? 0,
   fend: (u) => u.fend ?? 0,
   fendAccuracy: (u) => u.fendAccuracy ?? 0,
+  freeAttackAccuracy: (u) => u.freeAttackAccuracy ?? 0,
+  freeAttackDodge: (u) => u.freeAttackDodge ?? 0,
 }
 
 /** The same stat vocabulary used by resolution, for external data validation. */

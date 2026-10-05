@@ -223,11 +223,23 @@ export function resolveAccuracy(ctx: Ctx, attacker: Unit, target: Unit, a: Attac
     const bonus = effective(ctx, attacker, FREE_ATTACK_STATS[as].accuracy).value
     if (bonus) v = step(ledger, ACC.SITUATIONAL, 'FREE_ATTACK_BONUS', FREE_ATTACK_STATS[as].cause, v, v + bonus)
   }
+  // capability.free-attack-accuracy (2026-10-04; "Bonuses 'to special attacks' … apply to all three"): the attacker's
+  // Accuracy on EVERY special free attack — the counterattack, the fend and the attack of opportunity — its own named row
+  if (mode === 'reaction') {
+    const all = effective(ctx, attacker, 'freeAttackAccuracy').value
+    if (all) v = step(ledger, ACC.SITUATIONAL, 'FREE_ATTACK_ACCURACY', FREE_ATTACK_CAUSE, v, v + all)
+  }
   if (a.attack.kind === 'ranged' && hasLowCover(ctx,attacker.hex,target.hex)) v = step(ledger,ACC.COVER,'COVER','cover',v,v-LOW_COVER_ACCURACY)
   const dodge = effective(ctx, target, 'dodge')
   v = step(ledger, ACC.TARGET_DODGE, 'TARGET_DODGE', `unit.${target.typeId}`, v, v - dodge.value)
   // the house's +5 Dodge against that enemy — its own row, naming the house (Law 12)
   if (guard?.dodge) v = step(ledger, ACC.TARGET_DODGE, 'TARGET_DODGE', guard.id, v, v - guard.dodge)
+  // capability.free-attack-accuracy (2026-10-04; "'Dodge against special attacks' applies to all three"): the target's
+  // Dodge against a special free attack, and against nothing else — its own row, naming the unit that has it
+  if (mode === 'reaction') {
+    const slip = effective(ctx, target, 'freeAttackDodge').value
+    if (slip) v = step(ledger, ACC.TARGET_DODGE, 'FREE_ATTACK_DODGE', `unit.${target.typeId}`, v, v - slip)
+  }
   return { value: v, ledger, absorbed: 0 }
 }
 
