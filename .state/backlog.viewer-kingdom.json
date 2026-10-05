@@ -29,7 +29,9 @@
   ],
   "spec": "Ruled 2026-10-05 (Andrew, engine/DECISIONS.md 'gifts: the word; each first-hero choice rolls its own; the plates, banners, tooltip and pop-up take the gold look'): told that viewer.notices-gold-low-no-backdrop left the Deathbed and injury plates, the phase and wave banners, the hex tooltip and the affliction pop-up as they were (viewer SWITCHES noticeWhichAreNotices) and asked whether any should take the gold no-backdrop look too - 'One, yes.' Wanted: each of those four kinds takes the notices' look - bright gold letters with the black outline, nothing drawn behind them - from the one style viewer.notices-gold-low-no-backdrop made (do not write a second). Where each sits: the phase and wave banners and the Deathbed and injury plates announce a moment, so they keep their own place and timing on the screen and change only their look; the hex tooltip stays at the pointer; the affliction pop-up stays where it opens. A plate or pop-up that carries a picture, an icon row or buttons keeps those and loses only the box behind the words; if one cannot be read without its backdrop over a busy board (check over the Orphanage and the Cavern Trail), give its letters a stronger outline rather than put the box back, and say so. The gear panel was not asked about and stays. Mark noticeWhichAreNotices updated with his words. Land by the viewer landing order (viewer sources, the viewer gate's parts and land, the page, the kingdom's pages rebuilt, the engine gate last).",
   "expect": "A phase banner, a wave banner, a Deathbed plate, an injury plate, the hex tooltip and the affliction pop-up each show gold outlined letters with nothing drawn behind the words, readable over the Orphanage and the Cavern Trail (measured as the notices were); their places and timings are what they were; the gear panel is unchanged.",
-  "note": "Filed by the home chat 2026-10-05."
+  "note": "Filed by the home chat 2026-10-05.",
+  "status": "done",
+  "sha": "dd6fd44"
  },
  {
   "id": "kingdom.stand-up-one-press",
@@ -194,7 +196,9 @@
   ],
   "spec": "Ruled 2026-10-05 (Andrew, engine/DECISIONS.md 'playtest post: notices, target lines, item cards, arrows, move costs on hexes, knocked down, bodies, cursed ground, the first hero's positives' and 'the playtest post answered'): 'Then, if you are downed, when it's that character's next turn, everything needs to be grayed out except \"stand up\".' and 'Stand-up is a special move that is only available if you were prone, and yes, it takes your move.' Wanted on the action bar (and the kingdom's play input, which reads the same rule): (1) Stand Up is offered only to a unit that is prone - a standing unit's bar has no Stand Up at all; (2) at the start of a prone unit's Activation every other action on its bar is greyed and cannot be chosen, Stand Up alone is lit; (3) standing takes the unit's move - once it has stood, its move actions are greyed as after any move, and what the rules still allow it (its attacks, its powers) lights up. What the engine allows is read from the engine (legal actions), never worked out in the viewer: if the engine today lets a prone unit do something other than stand, or does not charge the move for standing, that is the engine's to change - name it in the report and re-file it as an engine item rather than hide it in the bar. Depends on fix.stand-up-does-nothing (Stand Up must work first). Land by the viewer landing order (viewer sources, the viewer gate's parts and land, the page, the kingdom's pages rebuilt by their builders, the engine gate last). No art is needed unless the spec says so.",
   "expect": "A prone hero's bar at the start of its Activation shows Stand Up lit and every other action greyed and unpressable; after Stand Up its move actions are greyed and its attacks are lit; a standing hero's bar has no Stand Up; the kingdom's PLAY page behaves the same in the opening's battle 2 with the Lumberjack's Wife.",
-  "note": "Filed by the home chat 2026-10-05."
+  "note": "Filed by the home chat 2026-10-05.",
+  "status": "done",
+  "sha": "2dd731d"
  },
  {
   "id": "viewer.friend-line-green-heal-glows",
@@ -242,7 +246,9 @@
   "shape": "plumbing",
   "spec": "Ruled 2026-10-05 (Andrew, engine/DECISIONS.md 'playtest post: notices, target lines, item cards, arrows, move costs on hexes, knocked down, bodies, cursed ground, the first hero's positives' and 'the playtest post answered'): 'The bodies on the terrain are smaller than they should be. They should be larger.' - 'The body should be the size of living units lying down, yes.' The bodies that lie on a map as terrain or props (the Orphanage's body, the caravan's corpses, the Cathedral's remains where they are drawn as bodies) are drawn smaller than a unit. Wanted: each is the size a living unit of that kind is when lying down - the same scale the board gives a dead or prone unit. Find where the prop's scale is set (the map's prop table, the atlas scene, the model's import scale) and fix it at its home; a prop baked into an authored Atlas scene image that cannot be scaled without re-authoring the scene is listed in the report and its art need filed by name rather than faked.",
   "expect": "On the Orphanage's board the body prop is as long as a prone hero beside it (the verify measures both on screen, within 10%); the same for the caravan's corpses; the report lists any body that could not be scaled and why.",
-  "note": "Filed by the home chat 2026-10-05."
+  "note": "Filed by the home chat 2026-10-05.",
+  "status": "done",
+  "sha": "e29f661"
  },
  {
   "id": "viewer.item-card-in-battle",
@@ -309,7 +315,9 @@
   "shape": "plumbing",
   "spec": "Found by the engine worker landing rule.counterattack-replaced-and-lost (2026-10-05; ruled 2026-10-04, engine/DECISIONS.md 'after the backlog run: ...' - a counterattack used again replaces the old one, and being knocked down or knocked to another hex loses it). The engine's line for a counterattack that ends carries why (`reason`: replaced, lost) but the battle log words every one as 'counterattack +1 ends' (viewer SWITCHES counterattackLostLine). Wanted: the log says what happened in plain words from the engine's reason, never worked out in the viewer - a counterattack lost to a knockdown or a knockback reads as lost and says to what ('<unit> loses its counterattack - knocked down'), one replaced by a newer one reads as replaced, and one that runs out reads as it does today. Read GLOSSARY.md for the words. No art is needed.",
   "expect": "In a battle where a hero holding a counterattack is knocked down, the log line says the counterattack is lost and that the knockdown did it; where it is knocked to another hex, that the knockback did it; where the hero uses the power again, that the old one is replaced; where it runs out, the line is what it was before. A battle with no counterattack reads the same log as before.",
-  "note": "Filed by the home chat 2026-10-05 from the engine worker's report. Not art-dependent."
+  "note": "Filed by the home chat 2026-10-05 from the engine worker's report. Not art-dependent.",
+  "status": "done-needs-review",
+  "sha": "89064fe"
  },
  {
   "id": "kingdom.stat-labels-missing-words",
