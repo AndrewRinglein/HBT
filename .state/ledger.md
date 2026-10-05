@@ -35987,3 +35987,96 @@ index 0000000..c7e414f
   PASS  naming — new content ids use declared kinds
   PASS  naming — no banned words invented
   PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+## viewer.view-stays-where-put — LANDED `8097122` **NEEDS REVIEW**
+2026-10-05 18:11
+
+  PASS  dependencies landed
+  WARN  not already decided — 2 candidate ruling(s) — READ BEFORE ASKING: ..\ATLAS-COMBAT-INTEGRATION.md:222 · DECISIONS.md:3734
+  PASS  typecheck
+  PASS  the item's own tests — test/viewer.see-through-only-when-moved.test.ts, test/viewer.view-stays-where-put.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — viewer/test/viewer.see-through-only-when-moved.test.ts, viewer/test/viewer.view-stays-where-put.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/viewer.see-through-only-when-moved.test.ts (-1) — will land FLAGGED for review
+  SKIPPED  control battles unchanged — engine code 6067b2a8be and the content pack are the ones the control battles last passed on (2026-10-05 12:38, gate capability.damage-from-two-stats --land, in HBT-worker-engine) — not run
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+3e2684d
+
+diff --git a/test/viewer.see-through-only-when-moved.test.ts b/test/viewer.see-through-only-when-moved.test.ts
+index 9481bbf..0d8d35c 100644
+--- a/test/viewer.see-through-only-when-moved.test.ts
++++ b/test/viewer.see-through-only-when-moved.test.ts
+@@ -44,5 +44,12 @@ describe('viewer.see-through-only-when-moved', () => {
+       const a = r.still.withCheck.ms.median, b = r.still.withoutCheck.ms.median
+       expect(Math.abs(a - b), `${at}: a still frame with the check due ${a} ms, without ${b} ms`).toBeLessThanOrEqual(Math.max(4, .5 * Math.max(a, b)))
+-      expect(a, `${at}: and nowhere near the 54–90 ms it was`).toBeLessThan(45)
++      // LAW 10 — 2026-10-05 (found landing viewer.still-frame-draws-nothing): this read
++      //   expect(a, `${at}: and nowhere near the 54–90 ms it was`).toBeLessThan(45)
++      // — a number of milliseconds, which measures the machine as much as the page: beside three other real-browser tests in
++      // the gate's checks the Lumberjack House's still frame read 60.8 ms with the check NOT running (0 runs counted, and the
++      // frame without the check as slow). The claim is that the still frame no longer carries the check's cost, and it is
++      // held against that cost as measured in the same run, under the same load (one check the old way: every triangle of
++      // every tall piece): what the frame costs with the check due, over what it costs without, is a small part of it.
++      expect(a - b, `${at}: a still frame with the check due costs ${a} ms, without ${b} ms — the old check alone was ${r.seeThrough!.plainMs.median} ms`).toBeLessThan(Math.max(4, r.seeThrough!.plainMs.median / 2))
+       // while the view scrolls the check does run — the camera moves on every frame
+       expect(r.scrolling.withCheck.checks!, `${at}: while scrolling`).toBeGreaterThan(30)
+diff --git a/test/viewer.view-stays-where-put.test.ts b/test/viewer.view-stays-where-put.test.ts
+new file mode 100644
+index 0000000..22278f9
+--- /dev/null
++++ b/test/viewer.view-stays-where-put.test.ts
+@@ -0,0 +1,41 @@
++// viewer.view-stays-where-put (engine backlog; engine DECISIONS.md 2026-10-05 'the battle screen must feel smooth: … the view
++// goes back to the acting unit'). Andrew: "It's awkward to try to roll the map around … Things are not on the screen." Found
++// on the Bridge: after the player scrolls the view away from the acting unit, the next thing that draws the board again — a
++// notch of the wheel, a click on any unit or on its card, the 3D scene finishing its load — brought the view straight back
++// until the acting unit was 80 px inside it. Ruled 2026-10-01: "You can look at different parts of the map by just looking
++// around on the map". Expect: "On the built page's Bridge, scrolled a screen away from the acting hero: a wheel notch zooms
++// where the view is and the hero stays off the screen; clicking an enemy there shows its panel and the view does not move;
++// pointing at hexes and clicking one does not move it; ending the Activation centres on the next hero; an enemy's attack on
++// a hero off the screen brings both ends into view as now; a page test reads each."
++// The engine's side — nothing is asked of it: looking around is no command. The Bridge is the board the fault was measured
++// on (40 columns: wider than the battle area shows). The viewer's half (../viewer/tools/view-stays-where-put.test.mjs) drives
++// the page on the Bridge's recording as a player does — the pointer at the screen's edge, the wheel, clicks; the sandbox's
++// half (../kingdom/tools/view-stays-where-put.verify.mjs) plays the built BATTLE-SANDBOX.html and reads the engine's battle
++// before and after. Imports no page code.
++import { describe, it, expect } from 'vitest'
++import { execFileSync } from 'node:child_process'
++import { mkdirSync } from 'node:fs'
++import { createBattle } from '../../engine/src/core/setup.js'
++import { scenarioDef, scenarioOptions } from '../../engine/src/content/scenarios.js'
++
++describe('the view the player put somewhere stays there until the game has reason to move it', () => {
++  it('the engine: the Bridge is wider than a screen, and its heroes begin far from its enemies — a board the player scrolls', () => {
++    const ctx = createBattle(scenarioOptions(scenarioDef('test.opening-bridge'), 1)), g = ctx.geo
++    expect(g.board.width).toBeGreaterThanOrEqual(30)
++    const heroes = ctx.state.units.filter((u) => u.side === 'hero'), enemies = ctx.state.units.filter((u) => u.side === 'enemy')
++    expect(heroes.length).toBeGreaterThan(0); expect(enemies.length).toBeGreaterThan(0)
++    const spread = Math.max(...ctx.state.units.map((u) => g.colOf(u.hex))) - Math.min(...ctx.state.units.map((u) => g.colOf(u.hex)))
++    expect(spread, 'columns between the westmost and the eastmost unit at the opening').toBeGreaterThan(5)
++  })
++  it('the viewer page, the Bridge\'s recording: scrolled away it stays through a redraw, the scene\'s load, a look at another unit, a wheel notch, pointing and clicking; a new Activation, the player\'s own centre and Reset take it; an attack off the screen is brought into view', () => {
++    const out = execFileSync(process.execPath, ['--test', '--test-reporter=tap', 'tools/view-stays-where-put.test.mjs'], { cwd: '../viewer', encoding: 'utf8', maxBuffer: 1 << 24, env: { ...process.env, VIEWER_PAGE: process.env.VIEWER_PAGE ?? '' } })
++    expect(out).toMatch(/# pass 5/); expect(out).toMatch(/# fail 0/)
++  }, 170000)
++  it('the sandbox: the expect line, on the built BATTLE-SANDBOX.html (the Bridge) — and the engine\'s battle is untouched by looking', () => {
++    mkdirSync('../kingdom/scratch', { recursive: true })
++    execFileSync(process.execPath, ['tools/build-sandbox.mjs', 'scratch/view-stays-where-put.html'], { cwd: '../kingdom', stdio: 'pipe' })
++    const out = execFileSync(process.execPath, ['tools/view-stays-where-put.verify.mjs', 'scratch/view-stays-where-put.html'], { cwd: '../kingdom', encoding: 'utf8', maxBuffer: 1 << 26 })
++    expect(out).toMatch(/view-stays-where-put: .*passed/)
++    for (const n of [1, 2, 3, 4, 5, 6]) expect(out, `step ${n}`).toMatch(new RegExp(`^  ${n} `, 'm'))
++  }, 300000)
++})
+```
+</details>
