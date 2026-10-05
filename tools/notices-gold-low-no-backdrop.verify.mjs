@@ -14,6 +14,7 @@
 // the page's frame loop is held still for each shot (a full-page shot of a 3D scene redrawing on software GL takes many
 // seconds a frame). Without one it takes none: the gate runs it so (viewer SWITCHES noticeShots).
 // Prints one line per reading and `notices-gold-low-no-backdrop: ... passed`.
+import {stillShot} from './still-shot.mjs'   // viewer.screenshot-time-out-under-load: the page's frame loop is held for the shot
 import assert from 'node:assert/strict'
 import {createRequire} from 'node:module'
 import {createServer} from 'node:net'
@@ -64,10 +65,9 @@ try{
  const shot=async(page,name)=>{if(!SHOTS)return
   await page.waitForFunction(()=>!document.querySelector('#terrainLoading'),null,{timeout:150000}).catch(()=>say('the 3D map was still loading at the screenshot'))
   await page.waitForTimeout(2500)
-  await page.evaluate(()=>{const real=window.requestAnimationFrame.bind(window),held=[];window.requestAnimationFrame=cb=>{held.push(cb);return 0};window.__letGo=()=>{window.requestAnimationFrame=real;for(const cb of held.splice(0))real(cb)}})
-  await page.waitForTimeout(80)
   const file=resolve(SHOTS,name+'.png');mkdirSync(SHOTS,{recursive:true})
-  await page.screenshot({path:file,timeout:100000});await page.evaluate(()=>window.__letGo());say('screenshot',relative(process.cwd(),file).replace(/\\/g,'/'))}
+  /* the frame loop held for the shot: tools/still-shot.mjs (viewer.screenshot-time-out-under-load) — was held here, inline */
+  await stillShot(page,page,{path:file,timeout:100000});say('screenshot',relative(process.cwd(),file).replace(/\\/g,'/'))}
 
  const page=await open('encounter.opening.orphanage')
  const frame=await read(page,'#boardwrap'),bar=await read(page,'#barrow'),stack0=await read(page,'#noticeStack')

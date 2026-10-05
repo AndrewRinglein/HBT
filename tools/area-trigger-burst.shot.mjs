@@ -4,6 +4,7 @@
 // same marks, the same explosion at the same reach) and saves the screen with the explosion held at three moments of its time
 // - for Andrew's eye: is it an explosion of fire over the hexes within 2 of the imp?
 //   node tools/area-trigger-burst.shot.mjs <page.html> <out-dir>     writes area-burst-0_1.png, -0_3, -0_55
+import {stillShot} from './still-shot.mjs'   // viewer.screenshot-time-out-under-load: the page's frame loop is held for the shot
 import {createRequire} from 'node:module'
 import {createServer} from 'node:net'
 import {spawn} from 'node:child_process'
@@ -51,7 +52,7 @@ try{
    const d=ctx.getImageData(0,0,c.width,c.height).data;let n=0;for(let i=3;i<d.length;i+=16)if(d[i]>8)n++;return n},t)
   console.log(`  held at ${t}: ${n} pixels`)
   await page.waitForTimeout(1500)
-  await page.screenshot({path:resolve(OUT,`area-burst-${String(t).replace('.','_')}.png`),timeout:90000,clip:{x:0,y:60,width:1448,height:740}})
+  await stillShot(page,page,{path:resolve(OUT,`area-burst-${String(t).replace('.','_')}.png`),timeout:90000,clip:{x:0,y:60,width:1448,height:740}})
  }
  console.log('  page errors:',JSON.stringify(errors))
 }finally{clearTimeout(deadline);await browser.close();child.kill()}

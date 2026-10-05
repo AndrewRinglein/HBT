@@ -17,6 +17,7 @@
 // acting none.
 //
 //   node tools/no-target-ring.shot.mjs <page.html> <out-dir> <before|after>
+import {stillShot} from './still-shot.mjs'   // viewer.screenshot-time-out-under-load: the page's frame loop is held for the shot
 import assert from 'node:assert/strict'
 import {createRequire} from 'node:module'
 import {createServer} from 'node:net'
@@ -63,8 +64,8 @@ try{
   const x0=Math.max(0,Math.min(...bs.map(r=>r.left))-pad),y0=Math.max(0,Math.min(...bs.map(r=>r.top))-pad),x1=Math.min(innerWidth,Math.max(...bs.map(r=>r.right))+pad),y1=Math.min(innerHeight,Math.max(...bs.map(r=>r.bottom))+pad)
   return x1>x0&&y1>y0?{x:x0,y:y0,width:x1-x0,height:y1-y0}:null},[hexes,pad])
  const shoot=async(name,hexes)=>{await page.waitForTimeout(700)
-  await page.screenshot({path:resolve(OUT,`${WHEN}-${name}.png`)})
-  const clip=await around(hexes);if(clip)await page.screenshot({path:resolve(OUT,`${WHEN}-${name}-close.png`),clip})
+  await stillShot(page,page,{path:resolve(OUT,`${WHEN}-${name}.png`)})
+  const clip=await around(hexes);if(clip)await stillShot(page,page,{path:resolve(OUT,`${WHEN}-${name}-close.png`),clip})
   say(`  saved ${WHEN}-${name}.png${clip?` and ${WHEN}-${name}-close.png`:''}`)}
  /* an order offered to the page's own play input; the board is let settle and the host's facts awaited (a hero begun plays its
     beginning first, and the facts are handed back after it) */

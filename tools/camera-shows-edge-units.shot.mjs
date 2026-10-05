@@ -6,6 +6,7 @@
 // box the view stands.
 //
 //   node tools/camera-shows-edge-units.shot.mjs <page.html> <out-dir>     writes camera-edge-left.png, -right, -top, -bottom
+import {stillShot} from './still-shot.mjs'   // viewer.screenshot-time-out-under-load: the page's frame loop is held for the shot
 import assert from 'node:assert/strict'
 import {createRequire} from 'node:module'
 import {createServer} from 'node:net'
@@ -42,7 +43,7 @@ try{
   assert.ok(got.onBound,`scrolled ${name}: the view stands on its bound`)
   /* the 3D scene is drawn a frame behind the camera, and software GL under load takes seconds a frame: let it catch up */
   await page.waitForTimeout(6000)
-  await page.screenshot({path:resolve(OUT,`camera-edge-${name}.png`),timeout:100000,animations:'disabled'})
+  await stillShot(page,page,{path:resolve(OUT,`camera-edge-${name}.png`),timeout:100000,animations:'disabled'})
   console.log(`  ${name}: the view stands ${Math.round(got.over.x)} px across and ${Math.round(got.over.y)} px down past the board's own box (board px) — saved camera-edge-${name}.png`)
  }
  assert.deepEqual(errors,[],'no page error')

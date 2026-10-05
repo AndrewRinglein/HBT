@@ -4,6 +4,7 @@
 // anchors the board uses) and saves the screen round the hero with the slash held at three moments of its time - for
 // Andrew's eye: is it a red slash across the target?
 //   node tools/hit-slash.shot.mjs <page.html> <out-dir>     writes slash-on-target-0_15.png, -0_35, -0_6
+import {stillShot} from './still-shot.mjs'   // viewer.screenshot-time-out-under-load: the page's frame loop is held for the shot
 import {createRequire} from 'node:module'
 import {createServer} from 'node:net'
 import {spawn} from 'node:child_process'
@@ -54,7 +55,7 @@ try{
    return {n,box:n?[x0/dpr+r.left,y0/dpr+r.top,x1/dpr+r.left,y1/dpr+r.top]:null}},t)
   console.log(`  held at ${t}: ${box.n} pixels, box ${JSON.stringify(box.box?.map(Math.round))}`)
   const cx=facts.T.x+facts.canvas[0],cy=facts.T.y+facts.canvas[1]-80
-  await page.screenshot({path:resolve(OUT,`slash-on-target-${String(t).replace('.','_')}.png`),timeout:90000,clip:{x:Math.max(0,cx-300),y:Math.max(0,cy-230),width:600,height:460}})
+  await stillShot(page,page,{path:resolve(OUT,`slash-on-target-${String(t).replace('.','_')}.png`),timeout:90000,clip:{x:Math.max(0,cx-300),y:Math.max(0,cy-230),width:600,height:460}})
  }
  console.log('  page errors:',JSON.stringify(errors))
 }finally{clearTimeout(deadline);await browser.close();child.kill()}

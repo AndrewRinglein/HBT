@@ -9,6 +9,7 @@
 // server, closes the pop-up with the real mouse and saves a screenshot of the pop-up it checked.
 //
 //   node tools/affliction-pop-up.verify.mjs <page.html> [screenshot.png]   prints one line per check and `affliction-pop-up: … passed`
+import {stillShot} from './still-shot.mjs'   // viewer.screenshot-time-out-under-load: the page's frame loop is held for the shot
 import assert from 'node:assert/strict'
 import {createRequire} from 'node:module'
 import {createServer} from 'node:net'
@@ -120,7 +121,7 @@ try{
  assert.ok(p.held&&p.playing&&p.busy,'the pump is held, the battle waits');assert.equal(p.cursor,s.gain+1,'held right after the gain')
  await page.waitForTimeout(2500);assert.equal((await read()).cursor,p.cursor,'2.5 s on, the battle has not moved')
  say('the pop-up checked; taking its picture')
- await page.screenshot({path:(mkdirSync(dirname(SHOT),{recursive:true}),SHOT),timeout:100000,animations:'disabled'})   /* software GL under a loaded gate: a frame can take long */
+ await stillShot(page,page,{path:(mkdirSync(dirname(SHOT),{recursive:true}),SHOT),timeout:100000,animations:'disabled'})   /* software GL under a loaded gate: a frame can take long */
  // closed with the mouse, the battle resumes: what was left of the Enemy Phase plays out and the next hero may be begun
  await page.mouse.click(p.close.l+p.close.w/2,p.close.t+p.close.h/2)
  await page.waitForFunction(()=>!document.querySelector('#afflPop'),null,{timeout:5000})
