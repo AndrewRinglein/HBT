@@ -99,7 +99,9 @@
    "viewer.frame-cost-measured"
   ],
   "spec": "Found 2026-10-05 (Andrew, engine/DECISIONS.md 'the battle screen must feel smooth'). The sun's shadow map (4096x4096) is drawn again on every drawn frame (src/terrain3d.js line 149: renderer.shadowMap.needsUpdate=true whenever the shadows look is on, and it is the default): on the Orphanage 916 draw calls and 3.06 million triangles a frame, though the scenery never moves and only the bodies do. Ruled 2026-10-03 'shadows are kept' - kept. Wanted: the scenery's shadow is drawn when the scene is built, and again only if the sun or the scenery changes; a frame in which a body moved or animated draws the bodies' shadows alone over the kept scenery shadow; a frame in which nothing moved draws no shadow at all. The picture is unchanged: a body still casts on the ground and on scenery, and scenery still shades a body standing in its shadow.",
-  "expect": "frame-cost's shadow-pass column on the Orphanage reads only the bodies' draw calls on a frame where a body animates, and none on a still frame, where it read 916; the shadows look reads as before in the characters-stand-out page's test and its screenshot; a body walked under the Orphanage's tree is shaded as before; the commit message carries frame-cost's table before and after."
+  "expect": "frame-cost's shadow-pass column on the Orphanage reads only the bodies' draw calls on a frame where a body animates, and none on a still frame, where it read 916; the shadows look reads as before in the characters-stand-out page's test and its screenshot; a body walked under the Orphanage's tree is shaded as before; the commit message carries frame-cost's table before and after.",
+  "status": "done",
+  "sha": "3b248f1"
  },
  {
   "id": "viewer.scene-drawn-in-few-calls",
