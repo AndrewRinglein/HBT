@@ -7,7 +7,7 @@
 // each name the column they bring down. This test runs it on ONE battle (the Bridge, the lightest) and reads every column.
 // Imports no page code.
 import { describe, it, expect } from 'vitest'
-import { execFileSync } from 'node:child_process'
+import { frameCostOnThePage, rowOf, FRAME_COST_PAGE, FRAME_COST_WAIT_MS } from './frame-cost-page.js'
 import { existsSync, readFileSync } from 'node:fs'
 
 type Pass = { all: number; shadow: number; scene: number; bodies: number; other?: number }
@@ -23,13 +23,22 @@ describe('viewer.frame-cost-measured — the tool that says what a frame costs',
 
   it('run on the Bridge it prints one row, and every column of it reads: draw calls and triangles by pass, script ms with the see-through check and without, still and scrolling, each over 30 frames or more', () => {
     expect(existsSync(PAGE), 'the built page the tool opens').toBe(true)
-    const out = execFileSync(process.execPath, ['tools/frame-cost.mjs', 'bridge', '--json'], { encoding: 'utf8', maxBuffer: 1 << 24, timeout: 280000 })
-    const got = JSON.parse(out) as { page: string; window: { w: number; h: number }; frames: number; rows: Row[] }
-    expect(got.page).toBe('kingdom/BATTLE-SANDBOX.html')
+    // LAW 10 — 2026-10-05 (found landing viewer.map-drag-and-keys; test/frame-cost-page.ts says why): this file ran the tool by
+    // itself —
+    //   const out = execFileSync(process.execPath, ['tools/frame-cost.mjs', 'bridge', '--json'], { …, timeout: 280000 })
+    //   expect(got.page).toBe('kingdom/BATTLE-SANDBOX.html')
+    //   expect(got.rows.map((r) => r.battle), 'the short name is its encounter').toEqual(['encounter.opening.bridge'])
+    //   const row = got.rows[0]!
+    // — as three other test files did, each on a page of its own, all at once in the gate's checks. The tool is now run ONCE
+    // a test run, on one sandbox page built from the sources, for every file that reads it; this file reads its rows of
+    // that result. Every assertion on those rows below stands as written.
+    // (the page is the one built from the sources, not the kingdom's committed one; the Bridge's row is one of the run's)
+    const got = frameCostOnThePage<Row>()
+    expect(got.page).toBe(FRAME_COST_PAGE)
     expect(got.window).toEqual({ w: 1920, h: 1080 })
     expect(got.frames).toBeGreaterThanOrEqual(30)
-    expect(got.rows.map((r) => r.battle), 'the short name is its encounter').toEqual(['encounter.opening.bridge'])
-    const row = got.rows[0]!
+    expect(got.rows.map((r) => r.battle), 'the short name is its encounter').toContain('encounter.opening.bridge')
+    const row = rowOf(got, 'encounter.opening.bridge')
     expect(row.flat, row.note).toBeFalsy()
     expect(row.pageErrors ?? [], 'no page error while it measured').toEqual([])
     expect(row.board.w).toBeGreaterThan(0); expect(row.board.h).toBeGreaterThan(0)
@@ -57,5 +66,5 @@ describe('viewer.frame-cost-measured — the tool that says what a frame costs',
     expect(row.scrolling.withoutCheck.draws.scene).toBeGreaterThan(0)
     expect(row.scrolling.withoutCheck.draws.bodies).toBeGreaterThan(0)
     expect(row.scrolling.withoutCheck.triangles.all).toBeGreaterThan(100000)
-  }, 290000)
+  }, FRAME_COST_WAIT_MS)
 })

@@ -724,6 +724,9 @@ html,body{margin:0;background:#08090b;color:var(--ink);
    mount; its button is the top bar's last, at its right end, beside the panel (viewer SWITCHES barLogPlace); open, the log
    drops over the top of the right-hand panel — never over the board */
 #playLogBtn{margin-left:auto;flex:0 0 auto;padding:7px 12px;font-size:12px}
+/* kingdom.move-click-setting: the setting's control, beside 2× — small, and wide enough for either of its two lines so the
+   strip does not shift when it is changed */
+#playMoveClick{min-width:124px;padding:7px 10px;font-size:12px;white-space:nowrap}
 #playLog{position:absolute;right:0;top:76px;z-index:65;width:472px;height:430px;overflow-y:auto;padding:8px 12px;
   background:rgba(12,11,9,.96);border:1px solid var(--brass);border-right:none;border-radius:2px 0 0 2px;box-shadow:0 14px 34px rgba(0,0,0,.75);
   font:12px/1.45 ui-monospace,SFMono-Regular,Menlo,monospace}

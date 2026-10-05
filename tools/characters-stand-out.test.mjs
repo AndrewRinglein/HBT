@@ -238,14 +238,18 @@ test('the ground look: the painted scene\'s own materials are drawn darker and l
 /* 2026-10-05, viewer.scenery-shadow-drawn-once: "takes the sun's shadow again every drawn frame" is held here with a renderer
    that stands in for three's and cannot keep a shadow — and for such a renderer it still stands, as written. three's own
    renderer no longer takes the shadow whole on every drawn frame: the scenery's is drawn once and kept, the bodies' drawn
-   over it when a body moved (tools/scenery-shadow-drawn-once.test.mjs). No assertion below is changed. */
+   over it when a body moved (tools/scenery-shadow-drawn-once.test.mjs). No assertion below is changed.
+   LAW 10 — 2026-10-05, viewer.still-frame-draws-nothing ("A frame in which nothing changed … draws nothing"): this test's
+   clock stood still (now: () => 1000) and its second frame was drawn all the same, a body being on the board. A frame in
+   which no time passed and nothing changed is no longer drawn, so the clock now moves 16 ms a reading — the second frame is
+   one in which a body may have animated — and every assertion below stands as written. */
 test('the driver: the ground look reaches the scene\'s load; the shadows look takes the sun\'s shadow again every drawn frame with the bodies in the scene\'s pass and the key light out of it; without them, as before', async () => {
   const fields = JSON.parse(readFileSync('generated/fields.json', 'utf8')), field = fields['map.opening.orphanage']
   const b = A.paintedBinding('map.opening.orphanage', field, (await import('./painted-scenes.mjs')).packPaintedScenes(fields))
   const w = makeWindow(); globalThis.document = w.document; globalThis.window = w; const frames = []; globalThis.requestAnimationFrame = f => { frames.push(f); return frames.length }; w.cancelAnimationFrame = () => {}
   async function drive(look) {
     const wrap = w.document.createElement('div'), stage = w.document.createElement('div'), stageTop = w.document.createElement('div'); wrap.appendChild(stage); wrap.appendChild(stageTop)
-    const log = []; let tone = 'unasked', key = null, main = null
+    const log = []; let tone = 'unasked', key = null, main = null, clock = 1000
     class Renderer { constructor(o) { this.shadowMap = {}; this.canvas = o.canvas; main = main || this } setPixelRatio() {} setSize() {}
       render(scene) { const c = scene.getObjectByName('characters'); log.push({ main: true, bodies: !!c && c.visible, key: !!key && key.visible, again: this.shadowMap.needsUpdate === true }); this.shadowMap.needsUpdate = false } dispose() {} forceContextLoss() {} }
     class BodyRenderer extends Renderer { clear() {} render() { log.push({ main: false, key: !!key && key.visible }) } }
@@ -253,7 +257,7 @@ test('the driver: the ground look reaches the scene\'s load; the shadows look ta
       const add = g.add.bind(g); g.add = o => { if (o.name === 'subject-key') key = o; return add(o) }
       return { size: 1, frame() {}, dispose() {}, body: id => id === 7 ? { standingHeight: () => 1.7, stage: { position: new THREE.Vector3(2, 0, 3) } } : null } }
     const V = { look: look && standOut(look), dom: { stage, stageTop }, data: { F: field, atlas: b, models: {} }, S: { U: { 7: { id: 7, life: 'standing' } }, subjectId: 7, activeId: 7 }, view: { inspectId: null } }
-    const driver = A.createDriver(V, e => { throw e }, { Renderer, BodyRenderer, loadPainted: async (_, platform) => { tone = platform.tone; return { group: new THREE.Group(), dispose() {} } }, createCast, now: () => 1000 })
+    const driver = A.createDriver(V, e => { throw e }, { Renderer, BodyRenderer, loadPainted: async (_, platform) => { tone = platform.tone; return { group: new THREE.Group(), dispose() {} } }, createCast, now: () => (clock += 16) })
     await driver.ready; const first = log.splice(0)
     frames.pop()(); const second = log.splice(0); driver.dispose()
     return { tone, first, second }

@@ -63,6 +63,12 @@ async function driven({ looks = ['shadows'], lights = 0 } = {}) {
   return { V, driver, frame, first: log.splice(0), group, setSize: n => { size = n }, casting: () => { const out = []; group.parent.traverse(o => { if (o.isMesh && o.castShadow) out.push(o.name) }); return out.sort() } }
 }
 const passes = f => f.filter(e => e.shadow).map(e => e.shadow.join(' '))
+/* LAW 10 — 2026-10-05, the item after this one (viewer.still-frame-draws-nothing: "A frame in which nothing changed - camera
+   still, no body animating, the scene not an animated one - draws nothing"). Three tests below drew a frame with the clock
+   held (frame(0)) and read what its shadow pass did, on the footing that such a frame is still DRAWN — true when they were
+   written: any frame with a body on the board was. It is not drawn at all now, so "no shadow in a frame where nothing moved"
+   would pass for the wrong reason. As the rule now stands each of those frames is one that IS drawn with no body moved — the
+   camera moved, the clock held — and what its shadow pass does is held exactly as before. */
 
 test('when the scene is built the scenery\'s shadow is drawn once, alone, and kept; the bodies\' are then drawn over the kept one — and the picture\'s pass is drawn with both', async () => {
   const { first, V, driver, casting } = await driven()
@@ -85,10 +91,11 @@ test('a frame in which a body animated draws the bodies\' shadows alone over the
     assert.deepEqual(passes(f), ['body-a body-b'], 'time passed with bodies on the board: their shadows, and only theirs')
     assert.deepEqual(f.filter(e => e.copy).map(e => e.copy), ['kept -> map'], 'over the kept scenery shadow')
     assert.equal(f.filter(e => e.scene).length, 1, 'and the picture once') }
-  for (let i = 0; i < 5; i++) { const f = frame(0)
-    assert.deepEqual(passes(f), [], 'the clock held — nothing animated: no shadow pass')
+  for (let i = 0; i < 5; i++) { V.camVersion++; const f = frame(0)
+    assert.deepEqual(passes(f), [], 'the camera moved, the clock held — no body animated: no shadow pass')
     assert.deepEqual(f.filter(e => e.copy || e.clear), [], 'the map is left holding the last shadow')
-    assert.equal(f.filter(e => e.scene).length, 1) }
+    assert.equal(f.filter(e => e.scene).length, 1, 'and the picture is drawn, with that shadow') }
+  assert.deepEqual(frame(0), [], 'nothing changed at all: nothing is drawn (the next item\'s rule)')
   /* a body came or went, with no time passed: its shadow comes or goes */
   setSize(1); assert.deepEqual(passes(frame(0)), ['body-a body-b'], 'the cast changed: the bodies\' shadows drawn again')
   assert.deepEqual(passes(frame(0)), [])
@@ -108,7 +115,7 @@ test('the scenery\'s shadow is drawn again only if the sun or the scenery change
   /* the shadow whole on every drawn frame — the reference the tool compares the kept one with */
   V.sceneryShadow.whole = true
   assert.deepEqual(casting(), ['body-a', 'body-b', 'house', 'tree'], 'everything casts again')
-  for (const ms of [16, 0, 16]) { const f = frame(ms); assert.deepEqual(passes(f), ['body-a body-b house tree'], 'one pass, everything in it, every drawn frame'); assert.deepEqual(f.filter(e => e.copy), []) }
+  for (const ms of [16, 0, 16]) { V.camVersion++; const f = frame(ms); assert.deepEqual(passes(f), ['body-a body-b house tree'], 'one pass, everything in it, every drawn frame'); assert.deepEqual(f.filter(e => e.copy), []) }
   V.sceneryShadow.whole = false
   assert.deepEqual(passes(frame(0)), ['house tree', 'body-a body-b'], 'kept again: taken afresh'); assert.equal(V.sceneryShadow.takes, 3)
   driver.dispose()
@@ -118,7 +125,7 @@ test('where a shadow cannot be kept it is drawn whole, as before: a scene with a
   const two = await driven({ lights: 1 })
   assert.deepEqual(passes(two.first).map(p => p), ['body-a body-b house tree', 'body-a body-b house tree'], 'two lights cast: each map takes everything (the sun\'s and the torch\'s)')
   assert.deepEqual(two.first.filter(e => e.copy), [])
-  assert.deepEqual(passes(two.frame(0)).length, 2, 'and again every drawn frame')
+  two.V.camVersion++; assert.deepEqual(passes(two.frame(0)).length, 2, 'and again every drawn frame')
   two.driver.dispose()
   const off = await driven({ looks: [] })
   assert.equal(passes(off.first).length, 1, 'no shadows look: the sun\'s shadow once, at load'); assert.deepEqual(passes(off.frame(16)), [])

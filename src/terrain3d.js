@@ -73,21 +73,85 @@ export function seeThrough(group,camera,aims,faded=new Map()){
    unfaded*). A host that cannot have a second canvas (a test's renderer) draws the bodies with the scene, as before. */
 export const KEY_LIGHT={color:0xfff1d8,intensity:9,distance:5}
 const DEPTH_ONLY=new THREE.MeshBasicMaterial({colorWrite:false})
+/* viewer.still-frame-draws-nothing (2026-10-05; engine DECISIONS.md 'the battle screen must feel smooth: the speed first; …').
+   drawBodies walked the whole scene twice on every frame, built a Set of the bodies' objects each time, and its depth pass drew
+   EVERY solid piece of the scene again (461 of the Orphanage's draw calls) so that a wall hides a body behind it. As it now
+   stands: what the scene holds besides its bodies is listed once (the scenery does not change; the bodies' own group is not
+   walked at all); and the depth pass may be handed the pieces that CAN hide a body in this view (`hiding`, a Set — couldHide,
+   below) and draws those alone. Handed none it draws every solid piece, as it was first written. */
+const sceneries=new WeakMap()
+const drawable=o=>o.isMesh||o.isPoints||o.isLine||o.isSprite
+/** everything the scene draws that is not one of the bodies, listed once for a scene and its bodies' group (listed again if
+    the scene's own children change): each with its box in the scene — the scenery stands still */
+export function sceneryOf(scene,characters){
+ let L=sceneries.get(scene)
+ if(L&&L.characters===characters&&L.children===scene.children.length)return L
+ const all=[];scene.updateMatrixWorld(true)
+ const walk=o=>{if(o===characters)return;if(drawable(o))all.push({o,box:o.isMesh?new THREE.Box3().setFromObject(o,false):null,view:new Float32Array(5),seen:-1});for(const c of o.children)walk(c)}
+ walk(scene)
+ L={characters,children:scene.children.length,all};sceneries.set(scene,L);return L
+}
+/** a piece that writes no depth hides nothing: what the scene, or the see-through rule, draws see-through */
+const glass=o=>{const m=o.material;if(Array.isArray(m)){for(const x of m)if(x.transparent||x.depthWrite===false)return true;return false}return !!m&&(m.transparent||m.depthWrite===false)}
 /** draw the bodies over the board: the scene's solid depth first, then the characters and the lights alone */
-export function drawBodies(renderer,scene,camera,characters){
- const off=[],hide=o=>{if(o.visible){o.visible=false;off.push(o)}}
+export function drawBodies(renderer,scene,camera,characters,hiding=null){
+ const all=sceneryOf(scene,characters).all,off=[]
  const bg=scene.background;scene.background=null
  renderer.clear()
- hide(characters)
- scene.traverse(o=>{if(o.isMesh&&o.visible&&[].concat(o.material).some(m=>m.transparent||m.depthWrite===false))hide(o)})
+ /* the depth of what can hide a body: the solid pieces only, and of those only the ones handed in */
+ characters.visible=false
+ for(const p of all){const o=p.o;if(!o.visible||!o.isMesh)continue;if(glass(o)||(hiding&&!hiding.has(o))){o.visible=false;off.push(o)}}
  scene.overrideMaterial=DEPTH_ONLY;renderer.render(scene,camera);scene.overrideMaterial=null
- for(const o of off.splice(0))o.visible=true
+ for(const o of off)o.visible=true
+ off.length=0;characters.visible=true
  /* then the bodies alone: every drawable but theirs put away, every light (the map's torches among them) left on */
- const theirs=new Set();characters.traverse(o=>theirs.add(o))
- scene.traverse(o=>{if((o.isMesh||o.isPoints||o.isLine||o.isSprite)&&!theirs.has(o))hide(o)})
+ for(const p of all){const o=p.o;if(o.visible){o.visible=false;off.push(o)}}
  renderer.render(scene,camera)
  for(const o of off)o.visible=true
  scene.background=bg
+}
+/* how far past its own models' boxes a body may reach, as a part of their largest side: a body lying down, a lunge, what it
+   holds swung out (viewer SWITCHES bodiesDepthReach) */
+export const BODY_REACH=1.25
+const _corner=new THREE.Vector3(),_view=new THREE.Matrix4(),_bodyBox=new THREE.Box3(),_piece=new THREE.Box3(),_size=new THREE.Vector3(),_centre=new THREE.Vector3()
+/**
+ * The solid pieces of the scene that CAN hide a body in this view: those whose place on the screen meets a body's and that
+ * reach nearer the camera than the body's far side. Never fewer than can: a piece is taken by its whole box, a body by a
+ * ball about its models' boxes grown by BODY_REACH — so the depth drawn from these alone leaves the bodies' picture exactly
+ * as the depth of every solid piece does. `version`: the camera's (a piece's place on the screen is worked out once a pose).
+ */
+export function couldHide(scene,camera,characters,version,out=new Set()){
+ out.clear();camera.updateMatrixWorld()
+ const all=sceneryOf(scene,characters).all,e=camera.matrixWorldInverse.elements,pr=camera.projectionMatrix.elements
+ /* the bodies: each child of their group that draws, as a ball — on the screen a square about its middle; its far side */
+ const balls=[]
+ for(const b of characters.children){
+  /* its models' own boxes where they stand (a body's bones move it inside and beyond them: the reach is for that) */
+  _bodyBox.makeEmpty();b.traverse(o=>{if(!o.isMesh||!o.geometry)return;const g=o.geometry;if(g.boundingBox===null)g.computeBoundingBox();_bodyBox.union(_piece.copy(g.boundingBox).applyMatrix4(o.matrixWorld))})
+  if(_bodyBox.isEmpty())continue
+  _bodyBox.getSize(_size);_bodyBox.getCenter(_centre);const r=Math.max(_size.x,_size.y,_size.z)*BODY_REACH
+  const x=_centre.x,y=_centre.y,z=_centre.z,vx=e[0]*x+e[4]*y+e[8]*z+e[12],vy=e[1]*x+e[5]*y+e[9]*z+e[13],d=-(e[2]*x+e[6]*y+e[10]*z+e[14])
+  const near=d-r,far=d+r   // how far in front of the camera its near side and its far side are
+  if(near<=1e-3){balls.push(null);continue}          // about the camera itself: every piece may hide it
+  /* on the screen (-1..1) the ball lies inside the square its sides make at its near and far depths, whichever is wider */
+  const lo=v=>Math.min(v/near,v/far),hi=v=>Math.max(v/near,v/far)
+  balls.push({x0:pr[0]*lo(vx-r),x1:pr[0]*hi(vx+r),y0:pr[5]*lo(vy-r),y1:pr[5]*hi(vy+r),far})}
+ if(!balls.length)return out
+ const whole=balls.includes(null)
+ for(const p of all){const o=p.o;if(!p.box||!o.visible||glass(o))continue
+  if(whole){out.add(o);continue}
+  if(p.seen!==version){p.seen=version
+   /* its box's eight corners on the screen, and its nearest; a corner behind the camera: the whole screen */
+   let x0=Infinity,y0=Infinity,x1=-Infinity,y1=-Infinity,near=Infinity,behind=false;const b=p.box
+   for(let k=0;k<8;k++){const x=k&1?b.max.x:b.min.x,y=k&2?b.max.y:b.min.y,z=k&4?b.max.z:b.min.z
+    const vx=e[0]*x+e[4]*y+e[8]*z+e[12],vy=e[1]*x+e[5]*y+e[9]*z+e[13],d=-(e[2]*x+e[6]*y+e[10]*z+e[14])
+    if(d<near)near=d
+    if(d<=1e-3){behind=true;continue}
+    const px=pr[0]*vx/d,py=pr[5]*vy/d;if(px<x0)x0=px;if(px>x1)x1=px;if(py<y0)y0=py;if(py>y1)y1=py}
+   const v=p.view;if(behind){v[0]=-Infinity;v[1]=-Infinity;v[2]=Infinity;v[3]=Infinity}else{v[0]=x0;v[1]=y0;v[2]=x1;v[3]=y1}v[4]=near}
+  const v=p.view
+  for(const B of balls)if(v[4]<B.far&&v[0]<=B.x1&&v[2]>=B.x0&&v[1]<=B.y1&&v[3]>=B.y0){out.add(o);break}}
+ return out
 }
 export function createDriver(V,onFailure,platform={}){
  if(!platform.Renderer&&typeof window.WebGL2RenderingContext==='undefined')throw Error('WebGL 2 unavailable')
@@ -108,8 +172,8 @@ export function createDriver(V,onFailure,platform={}){
  const scene=new THREE.Scene(),affine=V.data.boardAffine||(V.data.boardAffine=painted(V.data.atlas)?paintedToCSS(V.data.atlas):worldToCSS(V.data.atlas,V.data.F))
  /* viewer.characters-stand-out: the looks the host named, as numbers (a bare V has none) */
  const look=V.look||NO_LOOK
- let disposed=false,built,removeEnvironment,raf=null,seen=-1,viewportKey='',dirty=true,last=null,effectTime=0,sawThrough=-Infinity,sawWhat=null,sawRuns=0,sawBuilt=null,key=null,keeper,bodiesMoved=false,castSize=-1
- const faded=new Map()
+ let disposed=false,built,removeEnvironment,raf=null,seen=-1,viewportKey='',dirty=true,last=null,effectTime=0,sawThrough=-Infinity,sawWhat=null,sawRuns=0,sawBuilt=null,key=null,keeper,bodiesMoved=false,castSize=-1,depthWhole=false,depthDrawn=0,subjectDrawn,cursorDrawn
+ const faded=new Map(),couldHiding=new Set()
  const clock=platform.now||(()=>performance.now())
  const onLost=e=>{e.preventDefault();onFailure(Error('WebGL context lost'))};canvas.addEventListener('webglcontextlost',onLost)
  const load=painted(V.data.atlas)?(platform.loadPainted||loadPaintedScene):(platform.loadAssembly||loadAtlasAssembly)
@@ -125,10 +189,21 @@ export function createDriver(V,onFailure,platform={}){
  }).then(()=>{if(!disposed)frame()})
  function frame(){if(disposed)return;try{
   const t=clock(),dt=last===null?0:Math.min(.1,Math.max(0,(t-last)/1000));last=t
-  if(V.cast){V.cast.frame(dt);if(V.cast.size)dirty=true
-   /* viewer.scenery-shadow-drawn-once: has a body moved or animated since the shadow was last drawn? Time passed with a body
-      on the board (it animates where it stands), or a body came or went */
-   if((V.cast.size&&dt>0)||V.cast.size!==castSize){castSize=V.cast.size;bodiesMoved=true}}
+  /* viewer.scenery-shadow-drawn-once: has a body moved or animated since the shadow was last drawn? Time passed with a body
+     on the board (it animates where it stands), or a body came or went.
+     viewer.still-frame-draws-nothing: and only then is the frame drawn again for the bodies' sake — until now any frame with
+     a body on the board was drawn, moved or not. "A frame in which nothing changed - camera still, no body animating, the
+     scene not an animated one - draws nothing." (Whose panel it is carries the key light: a change of it is drawn too.)
+     THE PAGE NEVER SHOWS A STALE FRAME: everything that can move a pixel of these two canvases is one of the changes read
+     here or just below — the camera and the viewport, time passed with a body on the board (in a played battle that is
+     every frame), a body come or gone, the log moved on, whose panel it is, an animated scene's fires and fog, a piece
+     turned see-through, the shadow or the depth asked for whole. What is drawn elsewhere — an effect, a notice, a mark, a
+     hover's tip — has its own layer and its own frames, and never waited on this one (viewer SWITCHES stillFrameNothingStale). */
+  if(V.cast){V.cast.frame(dt)
+   if((V.cast.size&&dt>0)||V.cast.size!==castSize){castSize=V.cast.size;bodiesMoved=true;dirty=true}
+   const subject=bodies&&V.cast.size?subjectOf(V):null;if(subject!==subjectDrawn){subjectDrawn=subject;dirty=true}
+   /* and the board's own state: the log moved on (a body may stand elsewhere, have fallen, hold something else) */
+   if(V.cursor!==cursorDrawn){cursorDrawn=V.cursor;dirty=true}}
   /* viewer.caravan-scene: a scene whose fires and fog move draws every frame, camera and units still or not */
   if(built?.animated&&V.camera3d){effectTime+=dt;built.animate(effectTime,V.camera3d);dirty=true}
   const w=wrap.clientWidth,h=wrap.clientHeight
@@ -186,8 +261,14 @@ export function createDriver(V,onFailure,platform={}){
      else if(bodiesMoved)keeper.over()}
     else renderer.shadowMap.needsUpdate=true}
    drawScene();keeper?.done();bodiesMoved=false
-   if(characters)drawBodies(bodies,scene,camera,characters)
+   /* viewer.still-frame-draws-nothing: the bodies' canvas takes the scene's depth from the pieces that can hide a body in
+      this view — a few dozen — not from every solid piece. V.bodiesDepth.whole asks for every piece, as first written: the
+      reference tools/frame-cost.mjs holds this to, pixel for pixel. */
+   if(characters){
+    if(!V.bodiesDepth)V.bodiesDepth={get whole(){return depthWhole},set whole(v){depthWhole=!!v;dirty=true},get pieces(){return depthDrawn}}
+    const hiding=depthWhole?null:couldHide(scene,camera,characters,seen+'|'+viewportKey,couldHiding);depthDrawn=hiding?hiding.size:-1
+    drawBodies(bodies,scene,camera,characters,hiding)}
    dirty=false}raf=requestAnimationFrame(frame)
  }catch(error){onFailure(error)}}
- return{ready,dispose(){if(disposed)return;disposed=true;V.seeThrough=null;V.sceneryShadow=null;keeper?.dispose();for(const [o,solid] of faded){for(const m of [].concat(o.material))m.dispose();o.material=solid}faded.clear();if(raf!==null)window.cancelAnimationFrame(raf);V.cast?.dispose();V.cast=null;canvas.removeEventListener('webglcontextlost',onLost);built?.dispose();removeEnvironment?.();renderer.dispose();renderer.forceContextLoss();canvas.remove();if(bodies){const c=bodies.domElement;bodies.dispose();bodies.forceContextLoss?.();c?.remove()}}}
+ return{ready,dispose(){if(disposed)return;disposed=true;V.seeThrough=null;V.sceneryShadow=null;V.bodiesDepth=null;keeper?.dispose();for(const [o,solid] of faded){for(const m of [].concat(o.material))m.dispose();o.material=solid}faded.clear();if(raf!==null)window.cancelAnimationFrame(raf);V.cast?.dispose();V.cast=null;canvas.removeEventListener('webglcontextlost',onLost);built?.dispose();removeEnvironment?.();renderer.dispose();renderer.forceContextLoss();canvas.remove();if(bodies){const c=bodies.domElement;bodies.dispose();bodies.forceContextLoss?.();c?.remove()}}}
 }

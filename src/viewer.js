@@ -1080,7 +1080,8 @@ export function mountBattleViewer(root, data, opts = {}) {
     get playing() { return V.playing }, get view() { return V.view }, get invalid() { return V.invalid },
     get speedValue() { return V.speed }, get dom() { return { slots: dom.slots, actionbar: dom.actionbar } }, get art() { return V.data.ARTMAP }, get assets() { return V.data.ASSETS },
     peek(on) { V.view.peek = !!on; applyCam(V); drawEdges(V) },
-    pan(dx, dy) { applyCam(V, { pan: { x: dx, y: dy } }); drawEdges(V) },
+    /* (viewer.view-stays-where-put: a pan by hand is the view put there — it stays until the game has reason to move it) */
+    pan(dx, dy) { V.view.put = true; applyCam(V, { pan: { x: dx, y: dy } }); drawEdges(V) },
     /* viewer.painted-board: turn (degrees about the view centre), tilt (degrees), zoom (a factor), Reset */
     turn(deg) { turnCam(V, { yaw: deg }) }, tilt(deg) { turnCam(V, { tilt: deg }) }, zoom(f) { turnCam(V, { zoom: f }) },
     resetView() { resetCam(V) },
