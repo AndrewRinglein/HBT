@@ -36,7 +36,7 @@
 // draw), the input sends the engine's own end-cycle, the command End activation sends, and the host puts the notice on the
 // screen. A unit that has not acted, or that can still do anything, is left alone (kingdom SWITCHES autoEnd*).
 import {sandboxChoices,sandboxActivationChoices,sandboxSwapChoices,sandboxSwapRefusals,type Sandbox,type SandboxChoice,type SandboxSwapOffer} from '../core/sandbox.js'
-import {controllerOf,validateBattleCommand,forecastFrom,previewFrom,preview,threatOf,zocHoldersAt,heroesYetToAct,isAttack,isMove,isBurst,actionReach,stepCost} from '../engine.js'
+import {controllerOf,validateBattleCommand,forecastFrom,previewFrom,preview,threatOf,zocHoldersAt,heroesYetToAct,isAttack,isMove,isBurst,actionReach,stepCost,grantedActionIds} from '../engine.js'
 import {refusalLine,switchLine,type SwitchRefusal} from './refusals.js'
 import {shownName} from '../../../viewer/src/names.js'
 import type {BattleCommand,Forecast} from '../engine.js'
@@ -436,7 +436,10 @@ export function createPlayInput(session:()=>Sandbox|null,run:(command:BattleComm
     if(!begin(s,e.unit,q))return false;actor=sync(session()!);if(actor===null)return true}
    if(e.unit!==actor)return false
    const u=s.ctx.state.units[actor]!
-   if(!u.actions.includes(e.actionId)||!s.ctx.actions[e.actionId])return false
+   /* fix.stand-up-does-nothing (2026-10-05, Andrew: "The stand-up button doesn't seem to work."): the action pressed is one the
+      ENGINE grants the unit now (grantedActionIds: its own list, and Stand Up while it holds the prone status). This asked the
+      unit's stored list, which never holds a status's action, so the press on Stand Up was dropped here without a word. */
+   if(!grantedActionIds(s.ctx,u).includes(e.actionId)||!s.ctx.actions[e.actionId])return false
    const a=s.ctx.actions[e.actionId]!
    if(isMove(a)){
     /* a power that goes nowhere is used from the bar: chosen, it is planned on the hero's own hex at once; chosen again (or
