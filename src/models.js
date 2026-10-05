@@ -67,7 +67,7 @@ export function equippedLook(binding, unit) {
         ...(own ? { socket: own.socket, grasp: own.grasp, reverse: true } : {}) })
     }
   }
-  const look = { ...base, id: base.id + ':equipment:' + JSON.stringify(items), props, unheld }
+  const look = { ...base, cacheKey: base.id + ':equipment:' + JSON.stringify(items), props, unheld }
   cache.set(key, look); return look
 }
 
@@ -532,9 +532,10 @@ export function createCast(V, scene, toWorld, platform = {}) {
     return headLoads.get(ref.path)
   }
   function want(look) {
-    let entry = looks.get(look.id)
+    const key = look.cacheKey || look.id
+    let entry = looks.get(key)
     if (entry) return entry
-    entry = { state: 'loading', loaded: null, error: null }; looks.set(look.id, entry)
+    entry = { state: 'loading', loaded: null, error: null }; looks.set(key, entry)
     /* done: settles when the look is in or has failed (viewer.bodies-before-board: the board waits on it) */
     entry.done = Promise.resolve().then(() => load(look)).then(l => { if (disposed) return; entry.state = 'ready'; entry.loaded = l },
       err => { if (disposed) return; entry.state = 'failed'; entry.error = err; platform.onError?.(look, err) })

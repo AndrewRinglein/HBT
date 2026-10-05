@@ -20,7 +20,8 @@ test('folded hands choose exact models and remove stowed equipment without chang
   unit.hands = [{ instanceId: 'b', itemId: 'item.elfbow' }]
   const swapped = A.equippedLook(binding, unit)
   assert.deepEqual(swapped.props.map(p => [p.item, p.path, p.hand]), [['item.elfbow', 'elfbow.glb', 'L']])
-  assert.notEqual(swapped.id, armed.id)
+  assert.equal(swapped.id, base.id, 'equipment changes preserve the body identity used by grasp records')
+  assert.notEqual(swapped.cacheKey, armed.cacheKey)
   unit.hands = []
   assert.deepEqual(A.equippedLook(binding, unit).props, [])
   delete unit.hands
