@@ -122,9 +122,13 @@ export function draftMessageOf(campaign: CampaignState): { readonly draft: numbe
 // heroes with the same modifiers, and the hero that joins is the hero that was shown. Once taken, the modifiers are
 // WRITTEN on the hero (hero.drafted, hero.badges, hero.itemSlots) and never rolled again.
 
-/** The run's dice for a draft's modifiers: cup.reveal, keyed by what the roll is. */
-function draftRollerOf(campaign: CampaignState): Roller {
-  const below = (n: number, keys: readonly number[]) => rollBelowOf(campaign, CUP_IDS.reveal, ['draft', 'modifiers', ...keys], n)
+/**
+ * The run's dice for a draft's modifiers: cup.reveal, keyed by what the roll is. `whose`: further keys naming whose roll it is —
+ * the offered first hero's own id (kingdom.first-hero-each-rolls-own-gifts, below); none for a later draft, whose hand is rolled
+ * as one (the engine keys each offered hero inside it).
+ */
+function draftRollerOf(campaign: CampaignState, whose: readonly (string | number)[] = []): Roller {
+  const below = (n: number, keys: readonly number[]) => rollBelowOf(campaign, CUP_IDS.reveal, ['draft', 'modifiers', ...whose, ...keys], n)
   return { below: (n, ...keys) => below(n, keys), d100: (...keys) => below(100, keys) + 1 }
 }
 
@@ -163,10 +167,17 @@ export function draftedHeroOf(campaign: CampaignState, heroId: HeroId): Hero {
   const offer = campaign.cursor.draftOffer ?? []
   const j = offer.indexOf(heroId)
   if (campaign.cursor.step !== 'draft' || j < 0) throw new Error(`draftedHeroOf refused: '${heroId}' is not on offer at step '${campaign.cursor.step}' — ${offer.join(', ') || 'nothing is'}`)
-  const rows = offer.map(heroRowOf), ordinal = draftedCountOf(campaign), roller = draftRollerOf(campaign)
+  const rows = offer.map(heroRowOf), ordinal = draftedCountOf(campaign)
+  // kingdom.first-hero-each-rolls-own-gifts (2026-10-05, Andrew, engine/DECISIONS.md 'gifts: the word; each first-hero choice
+  // rolls its own; …': asked whether each of the three first-hero choices should roll its own gifts instead of one roll shared
+  // by all three — "Yeah, they each roll their own gifts."): the first hero's roll is keyed by WHO is offered (Law 4: what the
+  // roll is — this hero's gifts as the first hero), so each of the three rolls its own, the same hero rolls the same wherever
+  // it stands in the offer, and a saved run shows the same three again. Until then all three were rolled on one key — one roll
+  // for the pick (kingdom SWITCHES.md firstHeroGiftsOnce, overturned). What the rule gives without a roll (Leadership, the
+  // Health) is the same for all three as before.
   const drafted = ordinal === 0
-    ? firstHeroDraftedOf(roller, draftBaseOf(rows[j]!))
-    : handDraftedOf(roller, rows.map(draftBaseOf), ordinal, draftedBadgesOf(campaign))[j]!
+    ? firstHeroDraftedOf(draftRollerOf(campaign, ['first-hero', rows[j]!.id]), draftBaseOf(rows[j]!))
+    : handDraftedOf(draftRollerOf(campaign), rows.map(draftBaseOf), ordinal, draftedBadgesOf(campaign))[j]!
   return heroWithDraft(rows[j]!, drafted)
 }
 

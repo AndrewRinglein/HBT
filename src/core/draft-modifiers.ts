@@ -79,3 +79,25 @@ export function joinsWithOf(drafted: Drafted, healthSource: string): JoinedWith[
     ...drafted.rolls.map((r) => ({ key: `point:${r.stat}`, stat: r.stat, amount: r.amount })),
   ]
 }
+
+// ---------- gifts (kingdom.first-hero-each-rolls-own-gifts, 2026-10-05) ----------
+// GLOSSARY.md 'Settled, 2026-10-05' (Andrew, engine/DECISIONS.md 'gifts: the word; each first-hero choice rolls its own; …':
+// "the random modifiers that are applied to a hero are called gifts. That includes the random badges and random stats."): a
+// GIFT is a random modifier applied to a hero — a random badge or a random stat change. What the first hero's rule gives EVERY
+// first hero whoever it is — its badges (Leadership: 'Leadership is given to every first hero, not rolled', "Every first hero
+// choice gets leadership. They don't roll it, they just get it.") and its Health (2026-09-28: "+2 health", a fixed amount under
+// the rule's own source) — is not rolled and is not a gift. The record a hero keeps (Drafted) holds both; these two readings
+// tell them apart by what the rule names, handed in by the caller (this file reads no table). A later draft's hero has nothing
+// of the first hero's rule, so every thing its draft gave it is a gift. Field and id names are not renamed for the word.
+
+/** The first hero's rule, as far as telling its givens from gifts needs: the badges it gives, and the source its Health mod names. */
+export type FirstHeroRule = { readonly badges: readonly string[]; readonly healthSource: string }
+const byRule = (j: JoinedWith, rule: FirstHeroRule): boolean => (j.badge !== undefined ? rule.badges.includes(j.badge) : j.key === 'health')
+/** What the first hero's rule gave this hero, not rolled: the rule's badges it carries, and the rule's Health. In the record's order. */
+export function givenByRuleOf(drafted: Drafted, rule: FirstHeroRule): JoinedWith[] {
+  return joinsWithOf(drafted, rule.healthSource).filter((j) => byRule(j, rule))
+}
+/** The hero's GIFTS: what the dice decided — its random badges and its random stat changes. In the record's order. */
+export function giftsOf(drafted: Drafted, rule: FirstHeroRule): JoinedWith[] {
+  return joinsWithOf(drafted, rule.healthSource).filter((j) => !byRule(j, rule))
+}

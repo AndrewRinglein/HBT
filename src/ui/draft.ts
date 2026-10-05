@@ -58,6 +58,17 @@
 // (an origin badge — read from the row, never from a list here; no row carries one until content.hero-origin-badges). Nothing
 // is worked out by looking at another hero. A hero with nothing of its own says so in one plain line.
 //
+// kingdom.first-hero-each-rolls-own-gifts (2026-10-05, Andrew, engine/DECISIONS.md 'gifts: the word; each first-hero choice
+// rolls its own; …': "Yeah, they each roll their own gifts. … the random modifiers that are applied to a hero are called gifts.
+// That includes the random badges and random stats."; 'Leadership is given to every first hero, not rolled': "Every first hero
+// choice gets leadership. They don't roll it, they just get it."). GLOSSARY.md 'Settled, 2026-10-05': GIFT. Each of the three
+// first-hero cards lists ITS OWN gifts — its random badges with their one-line meaning and its random stat changes — under the
+// small heading "Gifts" (giftsBlock; core/draft-modifiers.ts giftsOf; the roll is each hero's own, core/opening.ts). What the
+// rule gives every first hero without a roll — Leadership, and the +2 Health — is not a gift: it is said once for the pick,
+// above the cards (givenByRuleOf), and that line no longer holds anything rolled. A later draft's cards say "Gifts" over the
+// stat points and badges the Crucible rolled; so does the hero sheet (ui/roster.ts). The word replaces "modifiers" wherever a
+// screen says it; ids, classes and field names are not renamed.
+//
 // kingdom.opening-draft-class-message (2026-10-04, Andrew, engine/DECISIONS.md 'the opening's tutorial: the first hero's class line, no map before battle 1, …':
 // "The second time you are drafting a hero, there should be a message …" — his sentence is the content's row,
 // content/prologue.ts DRAFT_MESSAGES, and is not repeated here): a draft whose content row gives it words (core/opening.ts draftMessageOf —
@@ -70,7 +81,7 @@ import { UNKITTED_HEROES, heroDescriptionOf, type HeroRow, type UnkittedHero } f
 import { CRUCIBLE, FIRST_HERO, crucibleBadgeOf, crucibleStatOf, badgeLineOf, statLineOf } from '../content/crucible.js'
 import { CLASSES, classLineOf } from '../content/classes.js'
 import { BADGE_LINES } from '../content/generated/progress.js'
-import { joinsWithOf, type JoinedWith } from '../core/draft-modifiers.js'
+import { giftsOf, givenByRuleOf, type JoinedWith } from '../core/draft-modifiers.js'
 import { statLabelOf } from '../content/stat-labels.js'
 import { BADGES, RULE_BADGES, UNITS, type UnitDef } from '../engine.js'
 import { portraitOf } from './art.js'
@@ -112,18 +123,6 @@ function pickLines(given: readonly JoinedWith[]): JoinLine[] {
   }
   return lines
 }
-const sameGiven = (a: JoinedWith, b: JoinedWith) => a.key === b.key && a.amount === b.amount
-
-/**
- * What the first draft's offers were given, split: `pick` — what is said once for the pick, above the cards — and `own`,
- * per offer in offer order, what is that hero's alone and goes on its card. A thing every one of the offers was given alike
- * is the pick's; anything else is the hero's own. Pure.
- */
-export function splitGiven(perOffer: readonly (readonly JoinedWith[])[]): { pick: JoinedWith[]; own: JoinedWith[][] } {
-  const first = perOffer[0] ?? []
-  const pick = first.filter((j) => perOffer.every((other) => other.some((x) => sameGiven(x, j))))
-  return { pick, own: perOffer.map((given) => given.filter((j) => !pick.some((x) => sameGiven(x, j)))) }
-}
 
 /** The hero's class as the content names it, in plain words: "A ranger." — the first of its classes that has a row. */
 function whatItIs(h: HeroRow): string {
@@ -143,26 +142,38 @@ function rowBadgesOf(h: HeroRow): string[] {
   return [...new Set([...unit, ...h.badges])].filter((b) => !rule.has(b)).sort()
 }
 
+const flawedBadge = (b: string) => CRUCIBLE.flawed.some((x) => x.id === b)
+type OwnLine = { pos: boolean; html: string }
+/** A badge as a line: its name and its one-line meaning; a flaw stands with the negatives. */
+const badgeLine = (b: string): OwnLine => ({ pos: !flawedBadge(b), html: `<li class="${flawedBadge(b) ? 'neg' : 'pos'}" data-own="badge:${esc(b)}"><b>${esc(BADGES[b]?.name ?? b)}</b> ${esc(ownBadgeWords(b))}</li>` })
+/** A stat change as a line: its amount and the stat's word ("+2 Health"); a loss stands with the negatives. */
+const statLine = (j: JoinedWith): OwnLine => ({ pos: j.amount! > 0, html: `<li class="${j.amount! > 0 ? 'pos' : 'neg'}" data-own="${esc(j.key)}" data-amount="${j.amount}">${sign(j.amount!)} ${esc(statLabelOf(crucibleStatOf(j.stat!)))}</li>` })
+const positivesFirst = (lines: readonly OwnLine[]) => [...lines.filter((l) => l.pos), ...lines.filter((l) => !l.pos)].map((l) => l.html).join('')
+
 /**
- * What is MODIFIED on this hero, and nothing else: `mine` — what its own draft gave it and is not said once for the pick —
- * and the badges its row carries. Each stat change as its amount and the stat's word ("+2 Health"); each badge as its name
- * and its one-line meaning; a good thing with the positives, a flaw or a loss with the negatives; positives first. A hero
- * with nothing of its own says so in one plain line. Each line names the thing it is said of (data-own: the draft's own key —
- * badge:<id>, health, point:<stat> — or badge:<id> for a badge of the row).
+ * A hero's GIFTS under their small heading: each random badge by name with its one-line meaning, each random stat change as
+ * its amount and the stat's word; positives first. Each line names the gift it is said of (data-own: the draft's own key —
+ * badge:<id>, point:<stat>). Nothing for a hero with no gift. Used by the first-hero cards and the hero sheet.
  */
-function ownList(h: HeroRow, mine: readonly JoinedWith[]): string {
-  const flawed = (b: string) => CRUCIBLE.flawed.some((x) => x.id === b)
-  const badge = (b: string) => ({ pos: !flawed(b), html: `<li class="${flawed(b) ? 'neg' : 'pos'}" data-own="badge:${esc(b)}"><b>${esc(BADGES[b]?.name ?? b)}</b> ${esc(ownBadgeWords(b))}</li>` })
-  const stat = (j: JoinedWith) => ({ pos: j.amount! > 0, html: `<li class="${j.amount! > 0 ? 'pos' : 'neg'}" data-own="${esc(j.key)}" data-amount="${j.amount}">${sign(j.amount!)} ${esc(statLabelOf(crucibleStatOf(j.stat!)))}</li>` })
-  const lines = [...mine.map((j) => (j.badge ? badge(j.badge) : stat(j))), ...rowBadgesOf(h).filter((b) => !mine.some((j) => j.badge === b)).map(badge)]
-  if (!lines.length) return '<p class="own same" data-own="none">No extra stats and no badges of its own.</p>'
-  return `<ul class="own">${[...lines.filter((l) => l.pos), ...lines.filter((l) => !l.pos)].map((l) => l.html).join('')}</ul>`
+export function giftsBlock(gifts: readonly JoinedWith[]): string {
+  if (!gifts.length) return ''
+  return `<div class="gifts" data-gifts="${gifts.length}"><h4 class="gifts-h">Gifts</h4><ul class="own">${positivesFirst(gifts.map((j) => (j.badge ? badgeLine(j.badge) : statLine(j))))}</ul></div><!--gifts-->`
+}
+
+/**
+ * What is MODIFIED on this hero, and nothing else: the badges its own row carries (an origin badge — not a gift: the row
+ * always carries it), then its gifts under their heading. A hero with neither says so in one plain line.
+ */
+function ownList(h: HeroRow, gifts: readonly JoinedWith[]): string {
+  const origin = rowBadgesOf(h).filter((b) => !gifts.some((j) => j.badge === b))
+  if (!gifts.length && !origin.length) return '<p class="own same" data-own="none">No extra stats and no badges of its own.</p>'
+  return `${origin.length ? `<ul class="own origin">${positivesFirst(origin.map(badgeLine))}</ul>` : ''}${giftsBlock(gifts)}`
 }
 
 /**
  * One offer of the first draft: its card art, name, one line of what it is, the class's sentence, what is modified on THIS
- * hero (`mine`: what its own draft gave it that the pick's line above the cards does not already say; and its row's own
- * badges), and the codex's description. No kit.
+ * hero (its row's own badges, and `gifts`: what the dice decided for it — the pick's line above the cards says what the rule
+ * gives every first hero), and the codex's description. No kit.
  */
 function firstOffer(h: HeroRow, mine: readonly JoinedWith[]): string {
   const d = heroDescriptionOf(h.id)
@@ -197,8 +208,10 @@ function rolledOffer(row: HeroRow, h: Hero): string {
   return `<div class="opt rolled" data-act="draft" data-id="${esc(h.id)}" data-classes="${esc(h.classes.join(','))}" data-badges="${esc(d.badges.join(','))}" data-rolls="${esc(d.rolls.map((r) => `${r.stat}:${r.amount}`).join(','))}" data-stats="${esc(values.map(([k, value]) => `${k}:${value}`).join(','))}">
     ${cardArt(h.id)}<b>${esc(h.name)}</b><small>${esc(classesOf(h))}</small>${classLine(row)}
     <div class="stats"><div class="stCols"><div>${rows.slice(0, half).join('')}</div><div>${rows.slice(half).join('')}</div></div></div>
+    <div class="gifts" data-gifts="${d.rolls.length + d.badges.length}"><h4 class="gifts-h">Gifts</h4>
     <div class="rolls"><span class="k">Rolled</span> ${rolled || '<span class="none">no stat points</span>'}</div>
     <div class="badges">${badges || '<span class="none">no badge</span>'}</div>
+    </div><!--gifts-->
   </div>`
 }
 
@@ -215,12 +228,13 @@ export function draftScreen(c: CampaignState, leftOut: readonly UnkittedHero[] =
   const notice = said ? `\n    <p class="draftNotice" data-draft-notice="${said.draft}" role="note">${esc(said.text)}</p>` : ''
   // kingdom.first-hero-own-positives-negatives: what the first hero is given is the PICK's — the lines every one of the three
   // would join with are said once, above the cards; a line only one of them would get stays under that one
-  const given = first ? splitGiven(offers.map((h) => joinsWithOf(draftedHeroOf(c, h.id).drafted!, FIRST_HERO.healthSource))) : { pick: [], own: [] }
-  const shared = pickLines(given.pick)
+  // the first draft: each offered hero as it would join — its own roll. What the rule gives every first hero is said once.
+  const per = first ? offers.map((h) => draftedHeroOf(c, h.id).drafted!) : []
+  const shared = pickLines(per.length ? givenByRuleOf(per[0]!, FIRST_HERO) : [])
   const gifts = shared.length ? `\n    <p class="firstGifts" data-first-gifts="${shared.length}">Whoever you choose leads the party and also gets: ${shared.map((l) => `<span data-joins="${esc(l.of.join(' '))}">${esc(l.words)}</span>`).join(' · ')}.</p>` : ''
   return `<h2>The draft — ${first ? 'your first hero' : `hero ${draftedCountOf(c) + 1} of six`}</h2>
     <p class="meta">${first
-      ? 'Three come to the fire. Each card says what the hero is and what is its own — its extra stats and its badges. Choose the one who will lead.'
-      : 'Three come to the fire, each as the Crucible made them: their numbers, the points they rolled against their kind, and their badges. Take the one you want.'}${owed}</p>${notice}${gifts}
-    <div class="card"><div class="pick${first ? '' : ' draft-rolled'}">${offers.map((h, i) => (first ? firstOffer(h, given.own[i]!) : rolledOffer(h, draftedHeroOf(c, h.id)))).join('')}</div></div>${leftOut.length ? `<p class="meta">Not at the fire — no kit in the content: ${leftOut.map((h) => `<span data-unkitted="${esc(h.id)}">${esc(h.name)}</span>`).join(', ')}.</p>` : ''}`
+      ? 'Three come to the fire. Each card says what the hero is and its gifts — the badges and the stat changes it alone rolled. Choose the one who will lead.'
+      : 'Three come to the fire, each as the Crucible made them: their numbers and their gifts — the stat points and the badges each one rolled. Take the one you want.'}${owed}</p>${notice}${gifts}
+    <div class="card"><div class="pick${first ? '' : ' draft-rolled'}">${offers.map((h, i) => (first ? firstOffer(h, giftsOf(per[i]!, FIRST_HERO)) : rolledOffer(h, draftedHeroOf(c, h.id)))).join('')}</div></div>${leftOut.length ? `<p class="meta">Not at the fire — no kit in the content: ${leftOut.map((h) => `<span data-unkitted="${esc(h.id)}">${esc(h.name)}</span>`).join(', ')}.</p>` : ''}`
 }
