@@ -87,3 +87,4 @@
 {"suite":"kingdom","stamp":"3bb9ef351e","failed":true,"at":"2026-10-05T12:08:57.123Z","by":"gate --shard 4/4","in":"HBT-worker-kingdom"}
 {"suite":"kingdom","stamp":"3bb9ef351e","with":{"engine":"f48a625458","content":"3ce22151fa","viewer":"ca9a60620d","kingdom":"3bb9ef351e"},"at":"2026-10-05T12:19:36.301Z","by":"gate --shard (4 of 4)","in":"HBT-worker-kingdom"}
 {"suite":"kingdom","stamp":"3bb9ef351e","with":{"engine":"c5f16f0991","content":"8de9847058","viewer":"e1f81e1c82","kingdom":"3bb9ef351e"},"at":"2026-10-05T10:54:14.242Z","by":"suites --run","in":"HBT-worker-engine"}
+{"suite":"kingdom","stamp":"3bb9ef351e","with":null,"at":"2026-10-05T12:44:19.087Z","by":"gate --shard (4 of 4)","in":"HBT-worker-kingdom"}
