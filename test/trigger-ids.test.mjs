@@ -244,3 +244,23 @@ test('the phrase is exact: a stat the engine cannot modify, or other words, comp
  assert.equal(run.status,0,run.stderr);
  assert.deepEqual(run.pack.items['item.iron-mace'].triggers.filter(t=>t.onlyWithAttack==='attack.iron-mace.crush'),[]);
 });
+
+// engine content.shields-reauthored (2026-10-04; the Armory Ledger, approved for now 2026-09-28): the two shield sentences the
+// compiler learned, and a weapon attack's own cooldown — each a shape the engine had, reaching it through the pack.
+test('Lock Shields lends its Block to every ally within 1 of the holder; Cover Ally puts Protection on one adjacent ally; a sentence the compiler does not read compiles nothing',()=>{
+ const A=live.pack.authoredAbilities;
+ assert.deepEqual([A['power.round-shield.lock-shields'].target,A['power.round-shield.lock-shields'].effects],[{select:'area',side:'ally',radius:1,origin:'self'},[{kind:'statMod',stat:'block',value:10,until:'endOfNextActivation'},{kind:'statMod',stat:'rangedBlock',value:10,until:'endOfNextActivation'}]]);
+ assert.deepEqual(A['power.iron-round-shield.lock-shields'].effects.map(e=>[e.stat,e.value]),[['block',15],['rangedBlock',10]]);
+ assert.deepEqual([A['power.kite-shield.cover-ally'].range,A['power.kite-shield.cover-ally'].target,A['power.kite-shield.cover-ally'].effects],[1,{select:'unit',side:'ally'},[{kind:'status.apply',statusId:'status.protection',value:4}]]);
+ const odd=candidate(edit=>edit('gen/settled-items.json',data=>{data.powers.find(p=>p.id==='power.kite-shield.cover-ally').description='An adjacent ally gains 4 Protection and a pat on the back.'}));
+ assert.equal(odd.status,0,odd.stderr);
+ assert.equal(odd.pack.authoredAbilities['power.kite-shield.cover-ally'],undefined);
+ assert.ok(!odd.pack.items['item.kite-shield'].abilities.includes('power.kite-shield.cover-ally'));
+});
+test('a weapon attack\'s own cooldown reaches the pack: the Knight Shield\'s Shield Slam, and the staffs whose rows always said one',()=>{
+ const A=live.pack.authoredAttacks;
+ assert.equal(A['attack.knight-shield.shield-slam'].cooldown,2);assert.equal(A['attack.iron-knight-shield.shield-slam'].cooldown,2);
+ assert.equal(A['attack.staff-of-the-destroyer.ruin'].cooldown,3);assert.equal(A['attack.staff-of-the-ultimate-destroyer.annihilation'].cooldown,5);
+ assert.equal(A['attack.longsword.slash'].cooldown,undefined);
+ assert.deepEqual(live.pack.items['item.knight-shield'].triggers.map(t=>[t.id,t.hook,t.chance,t.onlyWithAttack,t.effect]),[['trigger.knight-shield.shield-slam.stun','onHit',70,'attack.knight-shield.shield-slam',{kind:'status.apply',statusId:'status.stun',value:1}]]);
+});

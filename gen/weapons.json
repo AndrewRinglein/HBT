@@ -2226,7 +2226,7 @@
   },
   {
    "id": "attack.grappling-harpoon.brace",
-   "name": "Brace",
+   "name": "Braced Thrust",
    "range": "melee",
    "stat": "strength",
    "damage": 1,
@@ -2240,7 +2240,8 @@
     "melee"
    ],
    "triggers": [],
-   "slayer": null
+   "slayer": null,
+   "source": "2026-10-04: display name Brace -> Braced Thrust. The Tower Shield's power is Brace by the Armory Ledger (approved for now 2026-09-28), and an attack and a power may not share a display name; the id is unchanged (engine item content.shields-reauthored; engine SWITCHES.md shieldPowerNames)."
   },
   {
    "id": "attack.grappling-harpoon.hurl",

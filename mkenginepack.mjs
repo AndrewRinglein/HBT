@@ -1160,6 +1160,27 @@ function compiledPowerOf(p, unitId) {
     }
     return { ...base, range: 0, target: { select: 'self', side: 'any' }, effects };
   }
+  // engine content.shields-reauthored (2026-10-04; the Armory Ledger, approved for now 2026-09-28): two more sentences, each a
+  // second instance of a shape the engine has, no engine code.
+  //   Shield Wall: "You and every adjacent ally gain +N Stat[ and +N Stat] until the end of your next Activation." on the
+  //     vocabulary's own shape "you and allies within 1 hex" -> the same stat modifiers as the sentence above, landing on every
+  //     ally within 1 of the one acting, itself among them (the engine's area targeting: the actor is one of its own allies).
+  //     The lifetime is each holder's own next Activation - the only Activation lifetime the engine has (engine SWITCHES.md
+  //     shieldWallAllyLifetime names what waits).
+  //   Cover Ally:  "An adjacent ally gains N Protection." on "one ally within 1 hex" -> the Protection status on that ally.
+  if ((m = desc.match(/^You and every adjacent ally gain (\+\d+ [A-Z][A-Za-z]*(?: [A-Z][a-z]+)?(?:(?:, | and )\+\d+ [A-Z][A-Za-z]*(?: [A-Z][a-z]+)?)*) until the end of your next Activation\.$/)) && tgt === 'you and allies within 1 hex') {
+    const STAT = { Block: 'block', 'Ranged Block': 'rangedBlock', Armor: 'armor', Dodge: 'dodge', Resist: 'resist', Luck: 'luck' };
+    const effects = [];
+    for (const part of m[1].split(/, | and /)) {
+      const pm = part.match(/^\+(\d+) (.+)$/);
+      if (!pm || !STAT[pm[2]]) return null;
+      effects.push({ kind: 'statMod', stat: STAT[pm[2]], value: +pm[1], until: 'endOfNextActivation' });
+    }
+    return { ...base, range: 0, target: { select: 'area', side: 'ally', radius: 1, origin: 'self' }, effects };
+  }
+  if ((m = desc.match(/^An adjacent ally gains (\d+) Protection\.$/)) && tgt === 'one ally within 1 hex') {
+    return { ...base, range: 1, target: { select: 'unit', side: 'ally' }, effects: [{ kind: 'status.apply', statusId: 'status.protection', value: +m[1] }] };
+  }
   // engine capability.counterattack-and-fend (2026-10-04; engine DECISIONS.md 2026-09-28 'counterattack, special free
   // attacks …'): "Gain Counterattack[ with +N Accuracy] until the end of your next Turn." / "Gain Fend[ …]" — the stat
   // the engine reads as that special free attack being up, and its own Accuracy stat, as two self statMods with the
@@ -1242,6 +1263,7 @@ for (const id of PARTY) {
         ...(a.crit ? { crit: a.crit } : {}), // station.crit 2026-08-27
         ...(a.accuracy ? { accuracy: a.accuracy } : {}),   // station.accuracy-field, 2026-09-03
         ...(a.hits > 1 ? { hits: a.hits } : {}),   // attack.multihit, 2026-09-03
+    ...(a.cooldown ? { cooldown: a.cooldown } : {}),   // engine content.shields-reauthored (2026-10-04): the row's own cooldown — it was dropped, silently, on every weapon attack
       };
       attackIds.push(a.id);
       kitTriggers.push(...settledAttackExtras(a, id));
@@ -1341,6 +1363,7 @@ const alphaTeam = [];
         ...(a.crit ? { crit: a.crit } : {}), // station.crit, 2026-08-27
         ...(a.accuracy ? { accuracy: a.accuracy } : {}),   // station.accuracy-field, 2026-09-03
         ...(a.hits > 1 ? { hits: a.hits } : {}),   // attack.multihit, 2026-09-03
+    ...(a.cooldown ? { cooldown: a.cooldown } : {}),   // engine content.shields-reauthored (2026-10-04): the row's own cooldown — it was dropped, silently, on every weapon attack
       };
       attackIds.push(a.id);
       const extras = settledAttackExtras(a, id);
@@ -1448,6 +1471,7 @@ for (const id of CIVILIANS) {
         ...(a.crit ? { crit: a.crit } : {}), // station.crit 2026-08-27
         ...(a.accuracy ? { accuracy: a.accuracy } : {}),   // station.accuracy-field, 2026-09-03
         ...(a.hits > 1 ? { hits: a.hits } : {}),   // attack.multihit, 2026-09-03
+    ...(a.cooldown ? { cooldown: a.cooldown } : {}),   // engine content.shields-reauthored (2026-10-04): the row's own cooldown — it was dropped, silently, on every weapon attack
       };
       attackIds.push(a.id);
       civTriggers.push(...settledAttackExtras(a, id));
@@ -1586,6 +1610,7 @@ function takeItemAttack(a) {
     ...(a.crit ? { crit: a.crit } : {}),
     ...(a.accuracy ? { accuracy: a.accuracy } : {}),   // station.accuracy-field, 2026-09-03
     ...(a.hits > 1 ? { hits: a.hits } : {}),   // attack.multihit, 2026-09-03
+    ...(a.cooldown ? { cooldown: a.cooldown } : {}),   // engine content.shields-reauthored (2026-10-04): the row's own cooldown — it was dropped, silently, on every weapon attack
   };
 }
 // ── ITEM ACTIVES (capability.charges, 2026-09-03) ───────────────────────────

@@ -951,8 +951,8 @@
     "shield"
    ],
    "grants": [
-    "power.kite-shield.shield-wall",
-    "power.kite-shield.raise-guard"
+    "power.kite-shield.raise-guard",
+    "power.kite-shield.cover-ally"
    ],
    "statModifiers": {
     "block": 20,
@@ -960,7 +960,7 @@
    },
    "triggers": [],
    "intent": "Long and pointed, built for the melee line: +20 against blades, little against arrows.",
-   "source": "V2-SHIELDS-AND-WEAPONS-2026-09-20.md, ruled 2026-09-20"
+   "source": "V2-SHIELDS-AND-WEAPONS-2026-09-20.md, ruled 2026-09-20 | Armory Ledger (CONTENT-DRAFTS/2026-09-28-armory-ledger/ledger-rows.json), approved for now 2026-09-28 (engine/DECISIONS.md ‘counterattack, special free attacks, the opening six, shields, custom weapons’: \"Shields: the sixth-pass numbers stand, except Kite is +20 Block / +5 Ranged Block; Tower keeps −1 max Stamina … The Knight shield is a fourth shield. The Round shield has both powers. Iron is a version of each\"; ‘the Armory Ledger is approved for now’), never landed until the weapon audit of 2026-10-04; authored by engine item content.shields-reauthored — row kite-shield: \"+20 Block · +5 Ranged Block\" | the numbers stand; its powers were Lock Shields and the old Raise Guard (+10 / +10, cooldown 4) (2026-09-20)."
   },
   {
    "id": "item.round-shield",
@@ -974,8 +974,8 @@
     "shield"
    ],
    "grants": [
-    "power.round-shield.turn-aside",
-    "power.round-shield.brace"
+    "power.round-shield.lock-shields",
+    "power.round-shield.set-feet"
    ],
    "statModifiers": {
     "block": 10,
@@ -983,7 +983,7 @@
    },
    "triggers": [],
    "intent": "Even on every side and cheap to use.",
-   "source": "V2-SHIELDS-AND-WEAPONS-2026-09-20.md, ruled 2026-09-20"
+   "source": "V2-SHIELDS-AND-WEAPONS-2026-09-20.md, ruled 2026-09-20 | Armory Ledger (CONTENT-DRAFTS/2026-09-28-armory-ledger/ledger-rows.json), approved for now 2026-09-28 (engine/DECISIONS.md ‘counterattack, special free attacks, the opening six, shields, custom weapons’: \"Shields: the sixth-pass numbers stand, except Kite is +20 Block / +5 Ranged Block; Tower keeps −1 max Stamina … The Knight shield is a fourth shield. The Round shield has both powers. Iron is a version of each\"; ‘the Armory Ledger is approved for now’), never landed until the weapon audit of 2026-10-04; authored by engine item content.shields-reauthored — row round-shield: \"+10 Block · +10 Ranged Block\" | the numbers stand; its powers were Turn Aside and Bear Down (2026-09-20)."
   },
   {
    "id": "item.tower-shield",
@@ -997,18 +997,138 @@
     "shield"
    ],
    "grants": [
-    "power.tower-shield.cover",
-    "power.tower-shield.stand-tall"
+    "power.tower-shield.brace",
+    "power.tower-shield.arrow-wall"
+   ],
+   "statModifiers": {
+    "block": 10,
+    "rangedBlock": 20,
+    "dodge": -5,
+    "staminaMax": -1
+   },
+   "triggers": [],
+   "intent": "The arrow wall: little against a blade for its size, the most there is against a shot, paid for in Dodge and Stamina.",
+   "source": "V2-SHIELDS-AND-WEAPONS-2026-09-20.md, ruled 2026-09-20; fifth pass: re-authors item.tower-shield in place | Armory Ledger (CONTENT-DRAFTS/2026-09-28-armory-ledger/ledger-rows.json), approved for now 2026-09-28 (engine/DECISIONS.md ‘counterattack, special free attacks, the opening six, shields, custom weapons’: \"Shields: the sixth-pass numbers stand, except Kite is +20 Block / +5 Ranged Block; Tower keeps −1 max Stamina … The Knight shield is a fourth shield. The Round shield has both powers. Iron is a version of each\"; ‘the Armory Ledger is approved for now’), never landed until the weapon audit of 2026-10-04; authored by engine item content.shields-reauthored — row tower-shield: \"+10 Block · +20 Ranged Block · −5 Dodge · −1 max Stamina\" | was +15 / +15, −10 Dodge, −1 max Stamina with Cover and Stand Tall (2026-09-20)."
+  },
+  {
+   "id": "item.knight-shield",
+   "name": "Knight Shield",
+   "itemClass": "shield",
+   "tier": 1,
+   "hands": 1,
+   "slots": 1,
+   "classRestriction": null,
+   "tags": [
+    "shield"
+   ],
+   "grants": [
+    "attack.knight-shield.shield-slam",
+    "power.knight-shield.guard"
    ],
    "statModifiers": {
     "block": 15,
-    "rangedBlock": 15,
+    "rangedBlock": 10
+   },
+   "triggers": [],
+   "intent": "The shield that hits back: a little less cover than the kite, and an edge to drive into a face.",
+   "source": "Armory Ledger (CONTENT-DRAFTS/2026-09-28-armory-ledger/ledger-rows.json), approved for now 2026-09-28 (engine/DECISIONS.md ‘counterattack, special free attacks, the opening six, shields, custom weapons’: \"Shields: the sixth-pass numbers stand, except Kite is +20 Block / +5 Ranged Block; Tower keeps −1 max Stamina … The Knight shield is a fourth shield. The Round shield has both powers. Iron is a version of each\"; ‘the Armory Ledger is approved for now’), never landed until the weapon audit of 2026-10-04; authored by engine item content.shields-reauthored — row knight-shield: \"+15 Block · +10 Ranged Block\" | Ledger flags: \"Retired 2026-09-20; back as a fourth shield tonight.\" \"Stamina costs of Slam and Guard not stated.\" \"Power names proposed.\" Tier 1, as the other three shields."
+  },
+  {
+   "id": "item.iron-round-shield",
+   "name": "Iron Round Shield",
+   "itemClass": "shield",
+   "tier": 2,
+   "hands": 1,
+   "slots": 1,
+   "classRestriction": null,
+   "tags": [
+    "shield"
+   ],
+   "grants": [
+    "power.iron-round-shield.lock-shields",
+    "power.iron-round-shield.set-feet"
+   ],
+   "statModifiers": {
+    "block": 10,
+    "rangedBlock": 10,
+    "dodge": -5
+   },
+   "triggers": [],
+   "intent": "The Round Shield in iron: heavier on the arm, and every time it is raised it stops a little more.",
+   "source": "Armory Ledger (CONTENT-DRAFTS/2026-09-28-armory-ledger/ledger-rows.json), approved for now 2026-09-28 (engine/DECISIONS.md ‘counterattack, special free attacks, the opening six, shields, custom weapons’: \"Shields: the sixth-pass numbers stand, except Kite is +20 Block / +5 Ranged Block; Tower keeps −1 max Stamina … The Knight shield is a fourth shield. The Round shield has both powers. Iron is a version of each\"; ‘the Armory Ledger is approved for now’), never landed until the weapon audit of 2026-10-04; authored by engine item content.shields-reauthored — row iron-shields: \"Iron Round · Iron Knight · Iron Tower · Iron Kite — As the plain shield, −5 Dodge always · Iron: Each of the shield's Block powers gives +5 more Block\" | Ledger flag: \"One row for the four iron versions. Tier not stated.\" Tier 2: the plain shield's tier + 1 (engine SWITCHES.md ironShieldTier). Each of its powers is its own row: the plain shield's, with +5 Block where the power gives Block and nothing else changed."
+  },
+  {
+   "id": "item.iron-knight-shield",
+   "name": "Iron Knight Shield",
+   "itemClass": "shield",
+   "tier": 2,
+   "hands": 1,
+   "slots": 1,
+   "classRestriction": null,
+   "tags": [
+    "shield"
+   ],
+   "grants": [
+    "attack.iron-knight-shield.shield-slam",
+    "power.iron-knight-shield.guard"
+   ],
+   "statModifiers": {
+    "block": 15,
+    "rangedBlock": 10,
+    "dodge": -5
+   },
+   "triggers": [],
+   "intent": "The Knight Shield in iron: heavier on the arm, and every time it is raised it stops a little more.",
+   "source": "Armory Ledger (CONTENT-DRAFTS/2026-09-28-armory-ledger/ledger-rows.json), approved for now 2026-09-28 (engine/DECISIONS.md ‘counterattack, special free attacks, the opening six, shields, custom weapons’: \"Shields: the sixth-pass numbers stand, except Kite is +20 Block / +5 Ranged Block; Tower keeps −1 max Stamina … The Knight shield is a fourth shield. The Round shield has both powers. Iron is a version of each\"; ‘the Armory Ledger is approved for now’), never landed until the weapon audit of 2026-10-04; authored by engine item content.shields-reauthored — row iron-shields: \"Iron Round · Iron Knight · Iron Tower · Iron Kite — As the plain shield, −5 Dodge always · Iron: Each of the shield's Block powers gives +5 more Block\" | Ledger flag: \"One row for the four iron versions. Tier not stated.\" Tier 2: the plain shield's tier + 1 (engine SWITCHES.md ironShieldTier). Each of its powers is its own row: the plain shield's, with +5 Block where the power gives Block and nothing else changed."
+  },
+  {
+   "id": "item.iron-tower-shield",
+   "name": "Iron Tower Shield",
+   "itemClass": "shield",
+   "tier": 2,
+   "hands": 1,
+   "slots": 1,
+   "classRestriction": null,
+   "tags": [
+    "shield"
+   ],
+   "grants": [
+    "power.iron-tower-shield.brace",
+    "power.iron-tower-shield.arrow-wall"
+   ],
+   "statModifiers": {
+    "block": 10,
+    "rangedBlock": 20,
     "dodge": -10,
     "staminaMax": -1
    },
    "triggers": [],
-   "intent": "Better at everything, paid for in Dodge and Stamina.",
-   "source": "V2-SHIELDS-AND-WEAPONS-2026-09-20.md, ruled 2026-09-20; fifth pass: re-authors item.tower-shield in place"
+   "intent": "The Tower Shield in iron: heavier on the arm, and every time it is raised it stops a little more.",
+   "source": "Armory Ledger (CONTENT-DRAFTS/2026-09-28-armory-ledger/ledger-rows.json), approved for now 2026-09-28 (engine/DECISIONS.md ‘counterattack, special free attacks, the opening six, shields, custom weapons’: \"Shields: the sixth-pass numbers stand, except Kite is +20 Block / +5 Ranged Block; Tower keeps −1 max Stamina … The Knight shield is a fourth shield. The Round shield has both powers. Iron is a version of each\"; ‘the Armory Ledger is approved for now’), never landed until the weapon audit of 2026-10-04; authored by engine item content.shields-reauthored — row iron-shields: \"Iron Round · Iron Knight · Iron Tower · Iron Kite — As the plain shield, −5 Dodge always · Iron: Each of the shield's Block powers gives +5 more Block\" | Ledger flag: \"One row for the four iron versions. Tier not stated.\" Tier 2: the plain shield's tier + 1 (engine SWITCHES.md ironShieldTier). Each of its powers is its own row: the plain shield's, with +5 Block where the power gives Block and nothing else changed."
+  },
+  {
+   "id": "item.iron-kite-shield",
+   "name": "Iron Kite Shield",
+   "itemClass": "shield",
+   "tier": 2,
+   "hands": 1,
+   "slots": 1,
+   "classRestriction": null,
+   "tags": [
+    "shield"
+   ],
+   "grants": [
+    "power.iron-kite-shield.raise-guard",
+    "power.iron-kite-shield.cover-ally"
+   ],
+   "statModifiers": {
+    "block": 20,
+    "rangedBlock": 5,
+    "dodge": -5
+   },
+   "triggers": [],
+   "intent": "The Kite Shield in iron: heavier on the arm, and every time it is raised it stops a little more.",
+   "source": "Armory Ledger (CONTENT-DRAFTS/2026-09-28-armory-ledger/ledger-rows.json), approved for now 2026-09-28 (engine/DECISIONS.md ‘counterattack, special free attacks, the opening six, shields, custom weapons’: \"Shields: the sixth-pass numbers stand, except Kite is +20 Block / +5 Ranged Block; Tower keeps −1 max Stamina … The Knight shield is a fourth shield. The Round shield has both powers. Iron is a version of each\"; ‘the Armory Ledger is approved for now’), never landed until the weapon audit of 2026-10-04; authored by engine item content.shields-reauthored — row iron-shields: \"Iron Round · Iron Knight · Iron Tower · Iron Kite — As the plain shield, −5 Dodge always · Iron: Each of the shield's Block powers gives +5 more Block\" | Ledger flag: \"One row for the four iron versions. Tier not stated.\" Tier 2: the plain shield's tier + 1 (engine SWITCHES.md ironShieldTier). Each of its powers is its own row: the plain shield's, with +5 Block where the power gives Block and nothing else changed."
   }
  ],
  "attacks": [
@@ -1717,6 +1837,60 @@
    "slayer": null,
    "description": "Damage equals 1 plus the party's Spirit, to everything within 3 hexes. As an area effect it does not roll and cannot crit.",
    "source": "Ruled 2026-09-02b, dictated: the priest and mage ladder above tier 3, and the sets it hangs on. | The dictated line is \"1+spirit\" with no Precision term, which makes this the ONLY attack in the codex still scaling on Spirit alone -- every other priest attack was moved to precision + 1/2 spirit in the same pass. Kept as dictated; it is the two-handed area weapon, so paying entirely in the party stat is the trade."
+  },
+  {
+   "id": "attack.knight-shield.shield-slam",
+   "name": "Shield Slam",
+   "range": "melee",
+   "stat": "strength",
+   "damage": -1,
+   "stamina": 1,
+   "accuracy": 0,
+   "crit": 0,
+   "hits": 1,
+   "cooldown": 2,
+   "targets": "one enemy in melee reach",
+   "damageType": "physical",
+   "tags": [
+    "shield",
+    "melee"
+   ],
+   "triggers": [
+    {
+     "hook": "onHit",
+     "chance": 70,
+     "effect": "apply 1 Stun"
+    }
+   ],
+   "slayer": null,
+   "source": "Armory Ledger (CONTENT-DRAFTS/2026-09-28-armory-ledger/ledger-rows.json), approved for now 2026-09-28 (engine/DECISIONS.md ‘counterattack, special free attacks, the opening six, shields, custom weapons’: \"Shields: the sixth-pass numbers stand, except Kite is +20 Block / +5 Ranged Block; Tower keeps −1 max Stamina … The Knight shield is a fourth shield. The Round shield has both powers. Iron is a version of each\"; ‘the Armory Ledger is approved for now’), never landed until the weapon audit of 2026-10-04; authored by engine item content.shields-reauthored — row knight-shield: \"Shield Slam — Strength −1, cooldown 2. On hit: 70% chance of Stun\" | The row states no Stamina cost: 1, the default for an unstated cost (engine SWITCHES.md shieldUnstatedCosts). \"70% chance of Stun\" is 1 Stun, the least there is (engine SWITCHES.md shieldSlamStun). Ledger flags: \"Retired 2026-09-20; back as a fourth shield tonight.\" \"Stamina costs of Slam and Guard not stated.\" \"Power names proposed.\""
+  },
+  {
+   "id": "attack.iron-knight-shield.shield-slam",
+   "name": "Shield Slam",
+   "range": "melee",
+   "stat": "strength",
+   "damage": -1,
+   "stamina": 1,
+   "accuracy": 0,
+   "crit": 0,
+   "hits": 1,
+   "cooldown": 2,
+   "targets": "one enemy in melee reach",
+   "damageType": "physical",
+   "tags": [
+    "shield",
+    "melee"
+   ],
+   "triggers": [
+    {
+     "hook": "onHit",
+     "chance": 70,
+     "effect": "apply 1 Stun"
+    }
+   ],
+   "slayer": null,
+   "source": "Armory Ledger (CONTENT-DRAFTS/2026-09-28-armory-ledger/ledger-rows.json), approved for now 2026-09-28 (engine/DECISIONS.md ‘counterattack, special free attacks, the opening six, shields, custom weapons’: \"Shields: the sixth-pass numbers stand, except Kite is +20 Block / +5 Ranged Block; Tower keeps −1 max Stamina … The Knight shield is a fourth shield. The Round shield has both powers. Iron is a version of each\"; ‘the Armory Ledger is approved for now’), never landed until the weapon audit of 2026-10-04; authored by engine item content.shields-reauthored — row iron-shields: \"Iron Round · Iron Knight · Iron Tower · Iron Kite — As the plain shield, −5 Dodge always · Iron: Each of the shield's Block powers gives +5 more Block\" | Ledger flag: \"One row for the four iron versions. Tier not stated.\" Tier 2: the plain shield's tier + 1 (engine SWITCHES.md ironShieldTier). Each of its powers is its own row: the plain shield's, with +5 Block where the power gives Block and nothing else changed. The plain Knight Shield's Shield Slam: it gives no Block, so nothing in it changes."
   }
  ],
  "powers": [
@@ -2146,58 +2320,256 @@
    "intent": "You stop being a threat and you stop being a target. It is the button you press when the answer is to survive the Turn."
   },
   {
-   "id": "power.round-shield.turn-aside",
-   "name": "Turn Aside",
+   "id": "power.round-shield.lock-shields",
+   "name": "Lock Shields",
    "specialty": null,
    "owner": "item.round-shield",
-   "stamina": 1,
-   "cooldown": 2,
+   "stamina": 2,
+   "cooldown": 0,
    "warmup": 0,
    "free": false,
-   "targets": "self",
+   "targets": "you and allies within 1 hex",
    "tags": [
     "defence-power"
    ],
-   "description": "Gain +10 Block and +10 Ranged Block until the end of your next Activation.",
-   "intent": "The cheap even guard: lift the rim and let it glance.",
+   "description": "You and every adjacent ally gain +10 Block and +10 Ranged Block until the end of your next Activation.",
+   "intent": "The line closes up: your shield covers the shoulder next to it.",
    "triggers": [],
-   "source": "V2-SHIELDS-AND-WEAPONS-2026-09-20.md, ruled 2026-09-20, fourth pass — provisional numbers, engine/SWITCHES.md shieldPowerNumbers; to be corrected from battles"
+   "source": "Armory Ledger (CONTENT-DRAFTS/2026-09-28-armory-ledger/ledger-rows.json), approved for now 2026-09-28 (engine/DECISIONS.md ‘counterattack, special free attacks, the opening six, shields, custom weapons’: \"Shields: the sixth-pass numbers stand, except Kite is +20 Block / +5 Ranged Block; Tower keeps −1 max Stamina … The Knight shield is a fourth shield. The Round shield has both powers. Iron is a version of each\"; ‘the Armory Ledger is approved for now’), never landed until the weapon audit of 2026-10-04; authored by engine item content.shields-reauthored — row round-shield: \"Shield Wall — You and every adjacent ally gain +10 Block and +10 Ranged Block until the end of your next activation. 2 Stamina\" | The Ledger proposes the name Shield Wall (flag: \"Power names proposed.\"); the class power of the Shieldbearer is Shield Wall already and two things may not share a display name, so this one is Lock Shields (engine SWITCHES.md shieldPowerNames). On an ally the engine ends it at the end of that ally's own next Activation, not the holder's (engine SWITCHES.md shieldWallAllyLifetime)."
   },
   {
-   "id": "power.round-shield.brace",
-   "name": "Bear Down",
+   "id": "power.round-shield.set-feet",
+   "name": "Set Feet",
    "specialty": null,
    "owner": "item.round-shield",
    "stamina": 1,
-   "cooldown": 3,
+   "cooldown": 0,
    "warmup": 0,
    "free": false,
    "targets": "self",
    "tags": [
     "defence-power"
    ],
-   "description": "Gain +5 Block, +5 Ranged Block and +1 Armor until the end of your next Activation.",
+   "description": "Gain +2 Armor until the end of your next Activation.",
    "intent": "Plant the feet behind the boss and take it.",
    "triggers": [],
-   "source": "V2-SHIELDS-AND-WEAPONS-2026-09-20.md, ruled 2026-09-20, fourth pass — provisional numbers, engine/SWITCHES.md shieldPowerNumbers; to be corrected from battles"
+   "source": "Armory Ledger (CONTENT-DRAFTS/2026-09-28-armory-ledger/ledger-rows.json), approved for now 2026-09-28 (engine/DECISIONS.md ‘counterattack, special free attacks, the opening six, shields, custom weapons’: \"Shields: the sixth-pass numbers stand, except Kite is +20 Block / +5 Ranged Block; Tower keeps −1 max Stamina … The Knight shield is a fourth shield. The Round shield has both powers. Iron is a version of each\"; ‘the Armory Ledger is approved for now’), never landed until the weapon audit of 2026-10-04; authored by engine item content.shields-reauthored — row round-shield: \"Set Feet — +2 Armor until the end of your next activation. 1 Stamina\" | Power name proposed by the Ledger."
   },
   {
-   "id": "power.kite-shield.shield-wall",
-   "name": "Lock Shields",
+   "id": "power.kite-shield.raise-guard",
+   "name": "Raise Guard",
    "specialty": null,
    "owner": "item.kite-shield",
    "stamina": 1,
-   "cooldown": 3,
+   "cooldown": 0,
    "warmup": 0,
    "free": false,
    "targets": "self",
    "tags": [
     "defence-power"
    ],
-   "description": "Gain +15 Block and +1 Armor until the end of your next Activation.",
-   "intent": "The melee line's answer to the melee line.",
+   "description": "Gain +15 Block, +10 Ranged Block and +10 Luck until the end of your next Activation.",
+   "intent": "The long shield brought up: everything it has, and a little fortune behind it.",
    "triggers": [],
-   "source": "V2-SHIELDS-AND-WEAPONS-2026-09-20.md, ruled 2026-09-20, fourth pass — provisional numbers, engine/SWITCHES.md shieldPowerNumbers; to be corrected from battles"
+   "source": "Armory Ledger (CONTENT-DRAFTS/2026-09-28-armory-ledger/ledger-rows.json), approved for now 2026-09-28 (engine/DECISIONS.md ‘counterattack, special free attacks, the opening six, shields, custom weapons’: \"Shields: the sixth-pass numbers stand, except Kite is +20 Block / +5 Ranged Block; Tower keeps −1 max Stamina … The Knight shield is a fourth shield. The Round shield has both powers. Iron is a version of each\"; ‘the Armory Ledger is approved for now’), never landed until the weapon audit of 2026-10-04; authored by engine item content.shields-reauthored — row kite-shield: \"Raise Guard — +15 Block, +10 Ranged Block, +10 Luck until the end of your next activation. 1 Stamina\""
+  },
+  {
+   "id": "power.kite-shield.cover-ally",
+   "name": "Cover Ally",
+   "specialty": null,
+   "owner": "item.kite-shield",
+   "stamina": 1,
+   "cooldown": 0,
+   "warmup": 0,
+   "free": false,
+   "targets": "one ally within 1 hex",
+   "tags": [
+    "defence-power"
+   ],
+   "description": "An adjacent ally gains 4 Protection.",
+   "intent": "The shield goes over somebody else.",
+   "triggers": [],
+   "source": "Armory Ledger (CONTENT-DRAFTS/2026-09-28-armory-ledger/ledger-rows.json), approved for now 2026-09-28 (engine/DECISIONS.md ‘counterattack, special free attacks, the opening six, shields, custom weapons’: \"Shields: the sixth-pass numbers stand, except Kite is +20 Block / +5 Ranged Block; Tower keeps −1 max Stamina … The Knight shield is a fourth shield. The Round shield has both powers. Iron is a version of each\"; ‘the Armory Ledger is approved for now’), never landed until the weapon audit of 2026-10-04; authored by engine item content.shields-reauthored — row kite-shield: \"Cover Ally — An adjacent ally gains 4 Protection\" | The row states no Stamina cost: 1, the default for an unstated cost (engine SWITCHES.md shieldUnstatedCosts). Ledger flag: \"Cover Ally's stamina cost not stated.\""
+  },
+  {
+   "id": "power.tower-shield.brace",
+   "name": "Brace",
+   "specialty": null,
+   "owner": "item.tower-shield",
+   "stamina": 1,
+   "cooldown": 0,
+   "warmup": 0,
+   "free": false,
+   "targets": "self",
+   "tags": [
+    "defence-power"
+   ],
+   "description": "Gain +20 Block and +10 Ranged Block until the end of your next Activation.",
+   "intent": "A wall you happen to be carrying, set down.",
+   "triggers": [],
+   "source": "Armory Ledger (CONTENT-DRAFTS/2026-09-28-armory-ledger/ledger-rows.json), approved for now 2026-09-28 (engine/DECISIONS.md ‘counterattack, special free attacks, the opening six, shields, custom weapons’: \"Shields: the sixth-pass numbers stand, except Kite is +20 Block / +5 Ranged Block; Tower keeps −1 max Stamina … The Knight shield is a fourth shield. The Round shield has both powers. Iron is a version of each\"; ‘the Armory Ledger is approved for now’), never landed until the weapon audit of 2026-10-04; authored by engine item content.shields-reauthored — row tower-shield: \"Brace — +20 Block, +10 Ranged Block until the end of your next activation. 1 Stamina\""
+  },
+  {
+   "id": "power.tower-shield.arrow-wall",
+   "name": "Arrow Wall",
+   "specialty": null,
+   "owner": "item.tower-shield",
+   "stamina": 2,
+   "cooldown": 1,
+   "warmup": 0,
+   "free": false,
+   "targets": "self",
+   "tags": [
+    "defence-power"
+   ],
+   "description": "Gain +15 Block, +25 Ranged Block and +1 Armor until the end of your next Activation.",
+   "intent": "Doubles down on what the tower is for.",
+   "triggers": [],
+   "source": "Armory Ledger (CONTENT-DRAFTS/2026-09-28-armory-ledger/ledger-rows.json), approved for now 2026-09-28 (engine/DECISIONS.md ‘counterattack, special free attacks, the opening six, shields, custom weapons’: \"Shields: the sixth-pass numbers stand, except Kite is +20 Block / +5 Ranged Block; Tower keeps −1 max Stamina … The Knight shield is a fourth shield. The Round shield has both powers. Iron is a version of each\"; ‘the Armory Ledger is approved for now’), never landed until the weapon audit of 2026-10-04; authored by engine item content.shields-reauthored — row tower-shield: \"Arrow Wall — +15 Block, +25 Ranged Block, +1 Armor until the end of your next activation. 2 Stamina, cooldown 1\""
+  },
+  {
+   "id": "power.knight-shield.guard",
+   "name": "Guard",
+   "specialty": null,
+   "owner": "item.knight-shield",
+   "stamina": 1,
+   "cooldown": 0,
+   "warmup": 0,
+   "free": false,
+   "targets": "self",
+   "tags": [
+    "defence-power"
+   ],
+   "description": "Gain +15 Block and +10 Ranged Block until the end of your next Activation.",
+   "intent": "Behind the shield, properly.",
+   "triggers": [],
+   "source": "Armory Ledger (CONTENT-DRAFTS/2026-09-28-armory-ledger/ledger-rows.json), approved for now 2026-09-28 (engine/DECISIONS.md ‘counterattack, special free attacks, the opening six, shields, custom weapons’: \"Shields: the sixth-pass numbers stand, except Kite is +20 Block / +5 Ranged Block; Tower keeps −1 max Stamina … The Knight shield is a fourth shield. The Round shield has both powers. Iron is a version of each\"; ‘the Armory Ledger is approved for now’), never landed until the weapon audit of 2026-10-04; authored by engine item content.shields-reauthored — row knight-shield: \"Guard — +15 Block, +10 Ranged Block until the end of your next activation\" | The row states no Stamina cost: 1, the default for an unstated cost (engine SWITCHES.md shieldUnstatedCosts). Ledger flags: \"Retired 2026-09-20; back as a fourth shield tonight.\" \"Stamina costs of Slam and Guard not stated.\" \"Power names proposed.\""
+  },
+  {
+   "id": "power.iron-round-shield.lock-shields",
+   "name": "Iron Lock Shields",
+   "specialty": null,
+   "owner": "item.iron-round-shield",
+   "stamina": 2,
+   "cooldown": 0,
+   "warmup": 0,
+   "free": false,
+   "targets": "you and allies within 1 hex",
+   "tags": [
+    "defence-power"
+   ],
+   "description": "You and every adjacent ally gain +15 Block and +10 Ranged Block until the end of your next Activation.",
+   "intent": "The line closes up: your shield covers the shoulder next to it.",
+   "triggers": [],
+   "source": "Armory Ledger (CONTENT-DRAFTS/2026-09-28-armory-ledger/ledger-rows.json), approved for now 2026-09-28 (engine/DECISIONS.md ‘counterattack, special free attacks, the opening six, shields, custom weapons’: \"Shields: the sixth-pass numbers stand, except Kite is +20 Block / +5 Ranged Block; Tower keeps −1 max Stamina … The Knight shield is a fourth shield. The Round shield has both powers. Iron is a version of each\"; ‘the Armory Ledger is approved for now’), never landed until the weapon audit of 2026-10-04; authored by engine item content.shields-reauthored — row iron-shields: \"Iron Round · Iron Knight · Iron Tower · Iron Kite — As the plain shield, −5 Dodge always · Iron: Each of the shield's Block powers gives +5 more Block\" | Ledger flag: \"One row for the four iron versions. Tier not stated.\" Tier 2: the plain shield's tier + 1 (engine SWITCHES.md ironShieldTier). Each of its powers is its own row: the plain shield's, with +5 Block where the power gives Block and nothing else changed. The plain shield's Lock Shields with +5 more Block."
+  },
+  {
+   "id": "power.iron-round-shield.set-feet",
+   "name": "Iron Set Feet",
+   "specialty": null,
+   "owner": "item.iron-round-shield",
+   "stamina": 1,
+   "cooldown": 0,
+   "warmup": 0,
+   "free": false,
+   "targets": "self",
+   "tags": [
+    "defence-power"
+   ],
+   "description": "Gain +2 Armor until the end of your next Activation.",
+   "intent": "Plant the feet behind the boss and take it.",
+   "triggers": [],
+   "source": "Armory Ledger (CONTENT-DRAFTS/2026-09-28-armory-ledger/ledger-rows.json), approved for now 2026-09-28 (engine/DECISIONS.md ‘counterattack, special free attacks, the opening six, shields, custom weapons’: \"Shields: the sixth-pass numbers stand, except Kite is +20 Block / +5 Ranged Block; Tower keeps −1 max Stamina … The Knight shield is a fourth shield. The Round shield has both powers. Iron is a version of each\"; ‘the Armory Ledger is approved for now’), never landed until the weapon audit of 2026-10-04; authored by engine item content.shields-reauthored — row iron-shields: \"Iron Round · Iron Knight · Iron Tower · Iron Kite — As the plain shield, −5 Dodge always · Iron: Each of the shield's Block powers gives +5 more Block\" | Ledger flag: \"One row for the four iron versions. Tier not stated.\" Tier 2: the plain shield's tier + 1 (engine SWITCHES.md ironShieldTier). Each of its powers is its own row: the plain shield's, with +5 Block where the power gives Block and nothing else changed. The plain shield's Set Feet: it gives no Block, so nothing in it changes."
+  },
+  {
+   "id": "power.iron-knight-shield.guard",
+   "name": "Iron Guard",
+   "specialty": null,
+   "owner": "item.iron-knight-shield",
+   "stamina": 1,
+   "cooldown": 0,
+   "warmup": 0,
+   "free": false,
+   "targets": "self",
+   "tags": [
+    "defence-power"
+   ],
+   "description": "Gain +20 Block and +10 Ranged Block until the end of your next Activation.",
+   "intent": "Behind the shield, properly.",
+   "triggers": [],
+   "source": "Armory Ledger (CONTENT-DRAFTS/2026-09-28-armory-ledger/ledger-rows.json), approved for now 2026-09-28 (engine/DECISIONS.md ‘counterattack, special free attacks, the opening six, shields, custom weapons’: \"Shields: the sixth-pass numbers stand, except Kite is +20 Block / +5 Ranged Block; Tower keeps −1 max Stamina … The Knight shield is a fourth shield. The Round shield has both powers. Iron is a version of each\"; ‘the Armory Ledger is approved for now’), never landed until the weapon audit of 2026-10-04; authored by engine item content.shields-reauthored — row iron-shields: \"Iron Round · Iron Knight · Iron Tower · Iron Kite — As the plain shield, −5 Dodge always · Iron: Each of the shield's Block powers gives +5 more Block\" | Ledger flag: \"One row for the four iron versions. Tier not stated.\" Tier 2: the plain shield's tier + 1 (engine SWITCHES.md ironShieldTier). Each of its powers is its own row: the plain shield's, with +5 Block where the power gives Block and nothing else changed. The plain shield's Guard with +5 more Block."
+  },
+  {
+   "id": "power.iron-tower-shield.brace",
+   "name": "Iron Brace",
+   "specialty": null,
+   "owner": "item.iron-tower-shield",
+   "stamina": 1,
+   "cooldown": 0,
+   "warmup": 0,
+   "free": false,
+   "targets": "self",
+   "tags": [
+    "defence-power"
+   ],
+   "description": "Gain +25 Block and +10 Ranged Block until the end of your next Activation.",
+   "intent": "A wall you happen to be carrying, set down.",
+   "triggers": [],
+   "source": "Armory Ledger (CONTENT-DRAFTS/2026-09-28-armory-ledger/ledger-rows.json), approved for now 2026-09-28 (engine/DECISIONS.md ‘counterattack, special free attacks, the opening six, shields, custom weapons’: \"Shields: the sixth-pass numbers stand, except Kite is +20 Block / +5 Ranged Block; Tower keeps −1 max Stamina … The Knight shield is a fourth shield. The Round shield has both powers. Iron is a version of each\"; ‘the Armory Ledger is approved for now’), never landed until the weapon audit of 2026-10-04; authored by engine item content.shields-reauthored — row iron-shields: \"Iron Round · Iron Knight · Iron Tower · Iron Kite — As the plain shield, −5 Dodge always · Iron: Each of the shield's Block powers gives +5 more Block\" | Ledger flag: \"One row for the four iron versions. Tier not stated.\" Tier 2: the plain shield's tier + 1 (engine SWITCHES.md ironShieldTier). Each of its powers is its own row: the plain shield's, with +5 Block where the power gives Block and nothing else changed. The plain shield's Brace with +5 more Block."
+  },
+  {
+   "id": "power.iron-tower-shield.arrow-wall",
+   "name": "Iron Arrow Wall",
+   "specialty": null,
+   "owner": "item.iron-tower-shield",
+   "stamina": 2,
+   "cooldown": 1,
+   "warmup": 0,
+   "free": false,
+   "targets": "self",
+   "tags": [
+    "defence-power"
+   ],
+   "description": "Gain +20 Block, +25 Ranged Block and +1 Armor until the end of your next Activation.",
+   "intent": "Doubles down on what the tower is for.",
+   "triggers": [],
+   "source": "Armory Ledger (CONTENT-DRAFTS/2026-09-28-armory-ledger/ledger-rows.json), approved for now 2026-09-28 (engine/DECISIONS.md ‘counterattack, special free attacks, the opening six, shields, custom weapons’: \"Shields: the sixth-pass numbers stand, except Kite is +20 Block / +5 Ranged Block; Tower keeps −1 max Stamina … The Knight shield is a fourth shield. The Round shield has both powers. Iron is a version of each\"; ‘the Armory Ledger is approved for now’), never landed until the weapon audit of 2026-10-04; authored by engine item content.shields-reauthored — row iron-shields: \"Iron Round · Iron Knight · Iron Tower · Iron Kite — As the plain shield, −5 Dodge always · Iron: Each of the shield's Block powers gives +5 more Block\" | Ledger flag: \"One row for the four iron versions. Tier not stated.\" Tier 2: the plain shield's tier + 1 (engine SWITCHES.md ironShieldTier). Each of its powers is its own row: the plain shield's, with +5 Block where the power gives Block and nothing else changed. The plain shield's Arrow Wall with +5 more Block."
+  },
+  {
+   "id": "power.iron-kite-shield.raise-guard",
+   "name": "Iron Raise Guard",
+   "specialty": null,
+   "owner": "item.iron-kite-shield",
+   "stamina": 1,
+   "cooldown": 0,
+   "warmup": 0,
+   "free": false,
+   "targets": "self",
+   "tags": [
+    "defence-power"
+   ],
+   "description": "Gain +20 Block, +10 Ranged Block and +10 Luck until the end of your next Activation.",
+   "intent": "The long shield brought up: everything it has, and a little fortune behind it.",
+   "triggers": [],
+   "source": "Armory Ledger (CONTENT-DRAFTS/2026-09-28-armory-ledger/ledger-rows.json), approved for now 2026-09-28 (engine/DECISIONS.md ‘counterattack, special free attacks, the opening six, shields, custom weapons’: \"Shields: the sixth-pass numbers stand, except Kite is +20 Block / +5 Ranged Block; Tower keeps −1 max Stamina … The Knight shield is a fourth shield. The Round shield has both powers. Iron is a version of each\"; ‘the Armory Ledger is approved for now’), never landed until the weapon audit of 2026-10-04; authored by engine item content.shields-reauthored — row iron-shields: \"Iron Round · Iron Knight · Iron Tower · Iron Kite — As the plain shield, −5 Dodge always · Iron: Each of the shield's Block powers gives +5 more Block\" | Ledger flag: \"One row for the four iron versions. Tier not stated.\" Tier 2: the plain shield's tier + 1 (engine SWITCHES.md ironShieldTier). Each of its powers is its own row: the plain shield's, with +5 Block where the power gives Block and nothing else changed. The plain shield's Raise Guard with +5 more Block."
+  },
+  {
+   "id": "power.iron-kite-shield.cover-ally",
+   "name": "Iron Cover Ally",
+   "specialty": null,
+   "owner": "item.iron-kite-shield",
+   "stamina": 1,
+   "cooldown": 0,
+   "warmup": 0,
+   "free": false,
+   "targets": "one ally within 1 hex",
+   "tags": [
+    "defence-power"
+   ],
+   "description": "An adjacent ally gains 4 Protection.",
+   "intent": "The shield goes over somebody else.",
+   "triggers": [],
+   "source": "Armory Ledger (CONTENT-DRAFTS/2026-09-28-armory-ledger/ledger-rows.json), approved for now 2026-09-28 (engine/DECISIONS.md ‘counterattack, special free attacks, the opening six, shields, custom weapons’: \"Shields: the sixth-pass numbers stand, except Kite is +20 Block / +5 Ranged Block; Tower keeps −1 max Stamina … The Knight shield is a fourth shield. The Round shield has both powers. Iron is a version of each\"; ‘the Armory Ledger is approved for now’), never landed until the weapon audit of 2026-10-04; authored by engine item content.shields-reauthored — row iron-shields: \"Iron Round · Iron Knight · Iron Tower · Iron Kite — As the plain shield, −5 Dodge always · Iron: Each of the shield's Block powers gives +5 more Block\" | Ledger flag: \"One row for the four iron versions. Tier not stated.\" Tier 2: the plain shield's tier + 1 (engine SWITCHES.md ironShieldTier). Each of its powers is its own row: the plain shield's, with +5 Block where the power gives Block and nothing else changed. The plain shield's Cover Ally: it gives no Block, so nothing in it changes."
   },
   {
    "id": "power.longsword.counterattack",
@@ -2216,60 +2588,6 @@
    "intent": "The sword answers. Until your next Turn is over, an enemy that swings at you from the next hex gets your basic attack back when its own attacks are done — free, at the free attack’s −20, less this power’s +10.",
    "triggers": [],
    "source": "2026-09-28 (engine/DECISIONS.md ‘counterattack, special free attacks, the opening six, shields, custom weapons’): \"Counterattack is set off by being attacked, not by being hit, blocked, or dodged.\" \"You can counterattack once per enemy action, so if that enemy action is three attacks, all three of their attacks will resolve, and then you will get your one counterattack.\" \"Until the end of next turn.\" \"The counter strike is with +10 accuracy. That's the one it has. Costs 2 stamina.\" Ruled there: ‘The longsword’s second power: counterattack with +10 Accuracy, until the end of your next turn, 2 Stamina.’ A counterattack is a special free attack: the basic attack, no Stamina, −20 Accuracy. Row added 2026-10-04 by engine item capability.counterattack-and-fend. The Longsword kept Stab at first (engine SWITCHES.md longswordKeepsStab); ruled 2026-10-04 (engine/DECISIONS.md ‘after the backlog run: … the Longsword loses Stab …’, \"3 yes\"): the Stab is gone and this is the Longsword’s second thing (engine item content.longsword-loses-stab)."
-  },
-  {
-   "id": "power.kite-shield.raise-guard",
-   "name": "Raise Guard",
-   "specialty": null,
-   "owner": "item.kite-shield",
-   "stamina": 1,
-   "cooldown": 4,
-   "warmup": 0,
-   "free": false,
-   "targets": "self",
-   "tags": [
-    "defence-power"
-   ],
-   "description": "Gain +10 Block and +10 Ranged Block until the end of your next Activation.",
-   "intent": "Buys back the arrows the long shield leaves open.",
-   "triggers": [],
-   "source": "V2-SHIELDS-AND-WEAPONS-2026-09-20.md, ruled 2026-09-20, fourth pass — provisional numbers, engine/SWITCHES.md shieldPowerNumbers; to be corrected from battles"
-  },
-  {
-   "id": "power.tower-shield.cover",
-   "name": "Cover",
-   "specialty": null,
-   "owner": "item.tower-shield",
-   "stamina": 2,
-   "cooldown": 4,
-   "warmup": 0,
-   "free": false,
-   "targets": "self",
-   "tags": [
-    "defence-power"
-   ],
-   "description": "Gain +20 Block, +20 Ranged Block and +1 Armor until the end of your next Activation.",
-   "intent": "A wall you happen to be carrying, set down.",
-   "triggers": [],
-   "source": "V2-SHIELDS-AND-WEAPONS-2026-09-20.md, ruled 2026-09-20, fourth pass — provisional numbers, engine/SWITCHES.md shieldPowerNumbers; to be corrected from battles"
-  },
-  {
-   "id": "power.tower-shield.stand-tall",
-   "name": "Stand Tall",
-   "specialty": null,
-   "owner": "item.tower-shield",
-   "stamina": 2,
-   "cooldown": 5,
-   "warmup": 0,
-   "free": false,
-   "targets": "self",
-   "tags": [
-    "defence-power"
-   ],
-   "description": "Gain +25 Ranged Block and +2 Armor until the end of your next Activation.",
-   "intent": "Doubles down on the arrow wall.",
-   "triggers": [],
-   "source": "V2-SHIELDS-AND-WEAPONS-2026-09-20.md, ruled 2026-09-20, fourth pass — provisional numbers, engine/SWITCHES.md shieldPowerNumbers; to be corrected from battles"
   }
  ],
  "enchants": [
