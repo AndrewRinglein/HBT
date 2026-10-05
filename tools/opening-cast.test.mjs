@@ -63,8 +63,12 @@ test('battles 2 and 3: every enemy, every drafted hero and every civilian is a m
   assert.deepEqual(typesIn(battle3), ['hero.base.priest-armored', 'hero.base.ranger-scantily', 'hero.base.rogue-rose', 'unit.fire-imp', 'unit.imp'])
   assert.deepEqual(DRAFTED4, ['hero.base.priest-armored', 'hero.base.ranger-scantily', 'hero.base.rogue-rose', 'hero.base.warrior-fearsome'], 'battle 4 fields four drafted heroes: the three, and the fourth')
   for (const t of [...new Set([...typesIn(battle2), ...typesIn(battle3), ...DRAFTED4])]) {
-    /* "a model or its token": every unit has its token under it (the Soldier its own art, the Lumberjack's Wife the ART PENDING standee) */
+    /* "a model or its token": every unit has its token under it (the Soldier its own art; the Lumberjack's Wife, since
+       kingdom.lumberjack-wife-top-card-art, 2026-10-05, her own body's render — until then the ART PENDING standee) */
     assert.ok(artmap[t]?.token, `${t} has its token`)
+    /* kingdom.lumberjack-wife-top-card-art (Andrew, 2026-10-05: "… in the top card, just has LW and not her art, when there
+       clearly is her art."): none of the opening's units that has a body is drawn as the lettered standee */
+    assert.ok(!artmap[t].token.startsWith('ph-'), `${t} has art of its own, not the lettered ART PENDING standee`)
     const b = A.modelBinding(t, pack)
     /* Law 10 (viewer.every-model, 2026-10-01): was `hero.fixed.* -> null, its token`. Andrew 2026-09-30 (engine
        DECISIONS.md 'a true 3D battle'): "none stands as a 2D token" — the Lumberjack and his Wife wear their own bodies */
