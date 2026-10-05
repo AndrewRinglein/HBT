@@ -40,11 +40,13 @@ export const REWARD_ODDS: readonly RewardOdds[] = [
 ]
 
 /**
- * Which rows beyond the list's own ids the pool takes — the two switches (kingdom SWITCHES.md rewards.hellTcgRowsOffered,
- * rewards.derivedRowsOffered), as values, so the other side of each is a pool the same code builds.
+ * Which rows beyond the list's own ids the pool takes — the two switches (kingdom SWITCHES.md rewards.unknownAuthorRowsOffered,
+ * rewards.derivedRowsOffered), as values, so the other side of each is a pool the same code builds. `undecided` is the three
+ * relics with no known author (until 2026-10-04 also the six Hell-TCG items — ruled his that day, and rows of the list since:
+ * kingdom.rewards-hell-tcg-rows-his).
  */
 export type RewardListOptions = { readonly undecided: boolean; readonly derived: boolean }
-const LIST_AS_SWITCHED: RewardListOptions = { undecided: SWITCHES.rewardsHellTcgRowsOffered, derived: SWITCHES.rewardsDerivedRowsOffered }
+const LIST_AS_SWITCHED: RewardListOptions = { undecided: SWITCHES.rewardsUnknownAuthorRowsOffered, derived: SWITCHES.rewardsDerivedRowsOffered }
 
 const AUTHORED: ReadonlySet<string> = new Set(AUTHORED_ITEMS.map((r) => r.id))
 const UNDECIDED: ReadonlySet<string> = new Set(AUTHORSHIP_UNDECIDED.map((r) => r.id))

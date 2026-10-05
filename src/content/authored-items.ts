@@ -8,7 +8,8 @@
 // THIS IS THE REVIEW'S READING OF WHO AUTHORED EACH ROW, NOT ANDREW'S MARKING. It was copied on 2026-10-04 from the item
 // review of that day (CONTENT-DRAFTS/2026-10-04-item-review/authorship.json — a draft folder, not in git): the rows the
 // review classed as in the game and his, 98 of the 316 it read as in the game, each with the review's own 'why' line beside
-// it. He marks rows on the Item Ledger (https://claude.ai/artifact/MD6dZGa5TDCv9YxTWfdc5q), and ANDREW'S WORD MOVES A ROW ON
+// it. Since then, by his word: +6 on 2026-10-04 (the six Hell-TCG items, the last group of the list) — 104 ids.
+// He marks rows on the Item Ledger (https://claude.ai/artifact/MD6dZGa5TDCv9YxTWfdc5q), and ANDREW'S WORD MOVES A ROW ON
 // OR OFF THIS LIST — a row is added or taken out here, by hand, with the date and his words in its 'why'. Nothing
 // regenerates this file.
 //
@@ -128,20 +129,27 @@ export const AUTHORED_ITEMS: readonly AuthoredRow[] = [
   { id: 'enchant.might', why: '“settled content”: it is listed in your 2026-08-09 content dump (“All stated, none inferred”)' },
   { id: 'enchant.enduring', why: '“settled content”: it is listed in your 2026-08-09 content dump (“All stated, none inferred”)' },
   { id: 'enchant.regeneration', why: '“settled content”: it is listed in your 2026-08-09 content dump (“All stated, none inferred”)' },
+  // from Hell-TCG as it was — ruled his 2026-10-04 (kingdom.rewards-hell-tcg-rows-his) — 6: three weapons, three armor.
+  // The review had kept these apart as rows it could not class; his word moved them on.
+  { id: 'item.shadow-dagger', why: 'from Hell-TCG as it was; ruled his 2026-10-04 (Andrew, asked whether the six Hell-TCG items that came over unchanged count as his: "1. Yes" — "So all of these are in.") — the review: “Hell-TCG name reused (Rogue, Shadow Dagger — on-kill Dodge kept)”' },
+  { id: 'item.twin-talon-bow', why: 'from Hell-TCG as it was; ruled his 2026-10-04 (Andrew, asked whether the six Hell-TCG items that came over unchanged count as his: "1. Yes" — "So all of these are in.") — the review: “Hell-TCG name reused (Ranger, Twin Talon Bow — on-damage Bleed kept)”' },
+  { id: 'item.pharaohs-gauntlets', why: 'from Hell-TCG as it was; ruled his 2026-10-04 (Andrew, asked whether the six Hell-TCG items that came over unchanged count as his: "1. Yes" — "So all of these are in.") — the review: “Hell-TCG name reused (Pharaoh\'s Gauntlets — on-attack Weak kept)”' },
+  { id: 'item.silkweave-armor', why: 'from Hell-TCG as it was; ruled his 2026-10-04 (Andrew, asked whether the six Hell-TCG items that came over unchanged count as his: "1. Yes" — "So all of these are in.") — the review: “Hell-TCG name reused (Ebony Mask, Silkweave Armor — +1 Armor / -2 Health kept almost verbatim)”' },
+  { id: 'item.scorpion-carapace', why: 'from Hell-TCG as it was; ruled his 2026-10-04 (Andrew, asked whether the six Hell-TCG items that came over unchanged count as his: "1. Yes" — "So all of these are in.") — the review: “Hell-TCG name reused (Scorpion Carapace — the on-hit thorns-and-poison kept as the trigger)”' },
+  { id: 'item.wraithform-cloak', why: 'from Hell-TCG as it was; ruled his 2026-10-04 (Andrew, asked whether the six Hell-TCG items that came over unchanged count as his: "1. Yes" — "So all of these are in.") — the review: “Hell-TCG name reused (Priest, Wraithform Cloak — +2 Resist / +2 Dodge / −2 Ranged kept as the shape)”' },
 ]
 
 /**
- * Off the list until he says (kingdom SWITCHES.md rewards.hellTcgRowsOffered, off): the rows the review could not class as
- * his or a chat's — 6 that came from Hell-TCG unchanged and 3 relics with no known author. The reward draw deals none of
- * them while the switch is off; they are kept here, apart, so that his word is one edit: move the row up, or delete it.
+ * Off the list until he says (kingdom SWITCHES.md rewards.unknownAuthorRowsOffered, off): the rows the review could not
+ * class as his or a chat's — 3 relics with no known author. The reward draw deals none of them while the switch is off;
+ * they are kept here, apart, so that his word is one edit: move the row up, or delete it.
+ *
+ * Until 2026-10-04 this also held the 6 rows that came from Hell-TCG unchanged, under one switch for both groups
+ * (rewards.hellTcgRowsOffered). He ruled the six his the same day ("1. Yes" — "So all of these are in."; engine/DECISIONS.md
+ * 'every dead line on his items is a feature that is needed; his items stay in rewards; the six Hell-TCG items are his'), so
+ * they are rows of the list above; the relics were not asked about and stay here.
  */
 export const AUTHORSHIP_UNDECIDED: readonly AuthoredRow[] = [
-  { id: 'item.shadow-dagger', why: 'from Hell-TCG unchanged — “Hell-TCG name reused (Rogue, Shadow Dagger — on-kill Dodge kept)”' },
-  { id: 'item.twin-talon-bow', why: 'from Hell-TCG unchanged — “Hell-TCG name reused (Ranger, Twin Talon Bow — on-damage Bleed kept)”' },
-  { id: 'item.pharaohs-gauntlets', why: 'from Hell-TCG unchanged — “Hell-TCG name reused (Pharaoh\'s Gauntlets — on-attack Weak kept)”' },
-  { id: 'item.silkweave-armor', why: 'from Hell-TCG unchanged — “Hell-TCG name reused (Ebony Mask, Silkweave Armor — +1 Armor / -2 Health kept almost verbatim)”' },
-  { id: 'item.scorpion-carapace', why: 'from Hell-TCG unchanged — “Hell-TCG name reused (Scorpion Carapace — the on-hit thorns-and-poison kept as the trigger)”' },
-  { id: 'item.wraithform-cloak', why: 'from Hell-TCG unchanged — “Hell-TCG name reused (Priest, Wraithform Cloak — +2 Resist / +2 Dodge / −2 Ranged kept as the shape)”' },
   { id: 'item.trackers-eyeglass', why: 'no known author — “Replaces that row, whose name described a trait rather than an object. Same numbers.”' },
   { id: 'item.censer-of-the-high-choir', why: 'no known author — “Replaces that row Same numbers, an unambiguously object name.”' },
   { id: 'item.gravediggers-lantern', why: 'no known author — “Replaces that row, whose name described a person rather than an object. Same numbers.”' },

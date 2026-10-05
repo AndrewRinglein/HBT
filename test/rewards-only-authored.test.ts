@@ -75,13 +75,20 @@ describe('kingdom.rewards-only-authored — the list', () => {
     for (const r of AUTHORED_ITEMS) expect(r.why.trim().length, `${r.id} has the review's why line`).toBeGreaterThan(0)
   })
 
-  it('the rows the review could not class (Hell-TCG\'s, the ones with no known author) are in the game, are kept apart, and are not on the list', () => {
+  // Law 10, 2026-10-04 (kingdom.rewards-hell-tcg-rows-his; engine/DECISIONS.md 2026-10-04 'every dead line on his items is a
+  // feature that is needed; his items stay in rewards; the six Hell-TCG items are his' — Andrew, asked whether the six Hell-TCG
+  // items that came over unchanged count as his: "1. Yes" — "So all of these are in."). This test held the rows the review
+  // could not class — Hell-TCG's six and the three relics with no known author — as kept apart and off the list, under the one
+  // switch rewards.hellTcgRowsOffered. That pinned the six as off the list, so it is stale by the ruling: the six are rows of
+  // the list (held by test/rewards-hell-tcg-rows-his.test.ts), and what is still kept apart is the three relics, which were
+  // not asked about, under the switch that is left — rewards.unknownAuthorRowsOffered, off. The same assertions, on those rows.
+  it('the rows the review could not class and he has not ruled on (the relics with no known author) are in the game, are kept apart, and are not on the list', () => {
     expect(AUTHORSHIP_UNDECIDED.length).toBeGreaterThan(0)
     for (const r of AUTHORSHIP_UNDECIDED) {
       expect(ITEMS.some((x) => x.id === r.id), `${r.id} is an item`).toBe(true)
       expect(LISTED.has(r.id), `${r.id} is not on the list`).toBe(false)
     }
-    expect(SWITCHES.rewardsHellTcgRowsOffered).toBe(false)
+    expect(SWITCHES.rewardsUnknownAuthorRowsOffered).toBe(false)
   })
 })
 
