@@ -75,3 +75,8 @@
 {"suite":"kingdom","stamp":"f46f65327b","with":{"engine":"f48a625458","content":"3ce22151fa","viewer":"e0d1779ebc","kingdom":"f46f65327b"},"at":"2026-10-05T10:19:57.014Z","by":"gate --shard (4 of 4)","in":"HBT-worker-kingdom"}
 {"suite":"kingdom","stamp":"91cfd14efb","with":{"engine":"f48a625458","content":"3ce22151fa","viewer":"403b9daa6e","kingdom":"91cfd14efb"},"at":"2026-10-05T10:06:43.763Z","by":"gate --shard (4 of 4)","in":"HBT-worker-content"}
 {"suite":"kingdom","stamp":"3bb9ef351e","with":{"engine":"f48a625458","content":"3ce22151fa","viewer":"403b9daa6e","kingdom":"3bb9ef351e"},"at":"2026-10-05T10:27:09.431Z","by":"gate --shard (4 of 4)","in":"HBT-worker-kingdom"}
+{"suite":"kingdom","stamp":"3bb9ef351e","with":null,"at":"2026-10-05T12:00:53.952Z","by":"gate --shard (4 of 4)","in":"HBT-worker-kingdom"}
+{"suite":"kingdom","stamp":"3bb9ef351e","failed":true,"at":"2026-10-05T12:04:56.946Z","by":"gate --shard 3/4","in":"HBT-worker-kingdom"}
+{"suite":"kingdom","stamp":"3bb9ef351e","with":null,"at":"2026-10-05T12:06:57.382Z","by":"gate --shard (4 of 4)","in":"HBT-worker-kingdom"}
+{"suite":"kingdom","stamp":"3bb9ef351e","failed":true,"at":"2026-10-05T12:08:57.123Z","by":"gate --shard 4/4","in":"HBT-worker-kingdom"}
+{"suite":"kingdom","stamp":"3bb9ef351e","with":{"engine":"f48a625458","content":"3ce22151fa","viewer":"ca9a60620d","kingdom":"3bb9ef351e"},"at":"2026-10-05T12:19:36.301Z","by":"gate --shard (4 of 4)","in":"HBT-worker-kingdom"}
