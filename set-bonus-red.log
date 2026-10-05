@@ -1,0 +1,239 @@
+
+ RUN  v4.1.11 C:/Users/aring/Desktop/HBT-worker-engine/kingdom
+
+ ❯ test/isc-062.test.ts (5 tests | 2 failed) 14ms
+     × per-other: the Chains of the Wrathful pay +1 Precision per OTHER chain item worn; the stash counts for nothing 9ms
+     × this-weapon damage: two Destroyer staffs each pay the other +1 damage on ITS attacks, not on the unit 2ms
+ ❯ test/isc-063.test.ts (3 tests | 3 failed) 16ms
+     × the prep view lists the triggered set per deployed hero with its number 11ms
+     × the roster deltas carry the same numbers, on top of what the items themselves modify 2ms
+     × the fielding carries the resolved numbers as plain data — the battle is handed numbers, never set logic 2ms
+ ❯ test/equip-screen.test.ts (3 tests | 1 failed) 28ms
+     × deltas go red and green with the gear; the set line names the bonus when it triggers 16ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 6 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/equip-screen.test.ts > the Equip screen > deltas go red and green with the gear; the set line names the bonus when it triggers
+AssertionError: expected '<div class="equip">\n    <div class="…' to contain 'chain set bonus from Chains of the Wr…'
+
+- Expected
++ Received
+
+- chain set bonus from Chains of the Wrathful: +2 precision (2 other chain items)
++ <div class="equip">
++     <div class="heroes"><div class="herocard">
++     <div class="stats"><div class="stCols"><div><div class="stRow"><span class="stN">Move</span><span class="stV down"><em>-1</em>4</span></div><div class="stRow"><span class="stN">Armor</span><span class="stV">0</span></div><div class="stRow"><span class="stN">Resist</span><span class="stV">0</span></div><div class="stRow"><span class="stN">Dodge</span><span class="stV down"><em>-10</em>-10%</span></div><div class="stRow"><span class="stN">Max HP</span><span class="stV up"><em>+3</em>9</span></div><div class="stRow"><span class="stN">Accuracy</span><span class="stV">80%</span></div></div><div><div class="stRow"><span class="stN">Crit</span><span class="stV">0%</span></div><div class="stRow"><span class="stN">Strength</span><span class="stV">2</span></div><div class="stRow"><span class="stN">Precision</span><span class="stV">5</span></div><div class="stRow"><span class="stN">Stam Regen</span><span class="stV">1</span></div><div class="stRow"><span class="stN">Thorns</span><span class="stV">0</span></div></div></div></div>
++     <div class="art"><div class="noart"></div><div class="plate"><b>Hunter</b><span>ranger · L1</span></div></div>
++     <div class="slots"><div class="slot full" data-slot="hand-r" data-hero="hero.base.ranger-aggressive" data-act="look" data-id="item.longbow" data-holds="item.longbow" title="both hands">
++       <span class="k">both hands</span>
++       <span class="v">Longbow<button class="quiet x" data-act="unequip" data-id="hero.base.ranger-aggressive" data-item="item.longbow" title="off, into the stash">×</button></span>
++     </div><div class="slot full" data-slot="armor" data-hero="hero.base.ranger-aggressive" data-act="look" data-id="item.thick-hide" data-holds="item.thick-hide" title="armor">
++       <span class="k">armor</span>
++       <span class="v">Thick Hide<button class="quiet x" data-act="unequip" data-id="hero.base.ranger-aggressive" data-item="item.thick-hide" title="off, into the stash">×</button></span>
++     </div><div class="slot" data-slot="item-0" data-hero="hero.base.ranger-aggressive" title="slot 1">
++       <span class="k">slot 1</span>
++       <span class="v meta">—</span>
++     </div></div>
++   </div><div class="herocard">
++     <div class="stats"><div class="stCols"><div><div class="stRow"><span class="stN">Move</span><span class="stV down"><em>-1</em>4</span></div><div class="stRow"><span class="stN">Armor</span><span class="stV up"><em>+2</em>4</span></div><div class="stRow"><span class="stN">Resist</span><span class="stV">0</span></div><div class="stRow"><span class="stN">Dodge</span><span class="stV">0%</span></div><div class="stRow"><span class="stN">Max HP</span><span class="stV up"><em>+2</em>9</span></div><div class="stRow"><span class="stN">Accuracy</span><span class="stV">80%</span></div></div><div><div class="stRow"><span class="stN">Crit</span><span class="stV">0%</span></div><div class="stRow"><span class="stN">Strength</span><span class="stV down"><em>-1</em>1</span></div><div class="stRow"><span class="stN">Precision</span><span class="stV up"><em>+3</em>6</span></div><div class="stRow"><span class="stN">Stam Regen</span><span class="stV">1</span></div><div class="stRow"><span class="stN">Thorns</span><span class="stV">0</span></div></div></div><div class="meta">Priest Chain stowed — carried into battle, grants nothing until swapped into a hand</div></div>
++     <div class="art"><div class="noart"></div><div class="plate"><b>Battle Chaplain</b><span>priest · L1</span></div></div>
++     <div class="slots"><div class="slot full" data-slot="hand-r" data-hero="hero.base.priest-armored" data-act="look" data-id="item.chains-of-the-wrathful" data-holds="item.chains-of-the-wrathful" title="both hands">
++       <span class="k">both hands</span>
++       <span class="v">Chains of the Wrathful<button class="quiet x" data-act="unequip" data-id="hero.base.priest-armored" data-item="item.chains-of-the-wrathful" title="off, into the stash">×</button></span>
++     </div><div class="slot full" data-slot="armor" data-hero="hero.base.priest-armored" data-act="look" data-id="item.chains-of-the-faithful" data-holds="item.chains-of-the-faithful" title="armor">
++       <span class="k">armor</span>
++       <span class="v">Chains of the Faithful<button class="quiet x" data-act="unequip" data-id="hero.base.priest-armored" data-item="item.chains-of-the-faithful" title="off, into the stash">×</button></span>
++     </div><div class="slot full" data-slot="item-0" data-hero="hero.base.priest-armored" data-act="look" data-id="item.priest-chain" data-holds="item.priest-chain" title="slot 1">
++       <span class="k">slot 1 <i>spare</i></span>
++       <span class="v">Priest Chain<button class="quiet x" data-act="unequip" data-id="hero.base.priest-armored" data-item="item.priest-chain" title="off, into the stash">×</button></span>
++     </div></div>
++   </div></div>
++     <p class="meta">Click an item to look at it — its card opens at the right. Click an item below, then a slot, to put it on — or drag it onto the slot. × takes an item off, into the stash.</p>
++     <div class="stash"><div class="section"><h3>Idols</h3><div class="items"><div class="item" draggable="true" data-act="pick" data-id="item.pilgrims-warding-stone" title="fits Hunter, Battle Chaplain">
++         <b>Pilgrim's Warding Stone</b>
++         <small>tier 1 · 1 faith to equip</small>
++       </div></div></div><div class="section"><h3>Bloodrunes</h3><div class="items"><div class="item" draggable="true" data-act="pick" data-id="item.rune-bashing" title="fits Hunter, Battle Chaplain">
++         <b>Bashing</b>
++         <small>tier 1 · 3 mana to equip · +1 strength</small>
++       </div></div></div><div class="section"><h3>Relics</h3><div class="items"><div class="item" draggable="true" data-act="pick" data-id="item.meditation-beads" title="fits Hunter, Battle Chaplain">
++         <b>Meditation Beads</b>
++         <small>tier 1 · +1 max stamina -1 movement</small>
++       </div></div></div><div class="section"><h3>Weapons</h3><div class="items"><div class="item" draggable="true" data-act="pick" data-id="item.shortbow" title="fits Hunter">
++         <b>Shortbow</b>
++         <small>tier 1 · 2-hand</small>
++       </div><div class="item" draggable="true" data-act="pick" data-id="item.holy-texts" title="fits Battle Chaplain">
++         <b>Holy Texts</b>
++         <small>tier 1 · 1-hand · priest only</small>
++       </div></div></div><div class="section"><h3>Armor</h3><div class="items"><div class="item" draggable="true" data-act="pick" data-id="item.basic-armor" title="fits Hunter, Battle Chaplain">
++         <b>Basic Armor</b>
++         <small>tier 0 · +1 health</small>
++       </div><div class="item" draggable="true" data-act="pick" data-id="item.pilgrims-habit" title="fits Hunter, Battle Chaplain">
++         <b>Pilgrim's Habit</b>
++         <small>tier 0 · -5 dodge -2 health +1 movement</small>
++       </div></div></div><div class="section"><h3>Trinkets</h3><div class="items"><div class="item" draggable="true" data-act="pick" data-id="item.backpack" title="fits Hunter, Battle Chaplain">
++         <b>Backpack</b>
++         <small>tier 0 · +2 item slot -1 max stamina -1 movement</small>
++       </div></div></div><div class="section"><h3>shield</h3><div class="items"><div class="item" draggable="true" data-act="pick" data-id="item.round-shield" title="fits Hunter, Battle Chaplain">
++         <b>Round Shield</b>
++         <small>tier 1 · +10 block +10 ranged block</small>
++       </div></div></div></div>
++     
++     <div class="card setline"><b>Set bonuses when you leave</b> <table><tr><td>Battle Chaplain</td><td class="meta">chain set bonus from Chains of the Wrathful: +3 precision (3 chain items carried)</td></tr></table></div>
++   </div>
+
+ ❯ test/equip-screen.test.ts:56:18
+     54|     performEquip(ctx, CHAPLAIN, 'item.priest-chain', 'test')
+     55|     const html = equipScreen(ctx.campaign, [HUNTER, CHAPLAIN], { where…
+     56|     expect(html).toContain('chain set bonus from Chains of the Wrathfu…
+       |                  ^
+     57|     // the card's stat block is the viewer's: the Precision row carrie…
+     58|     expect(html).toMatch(/<span class="stN">Precision<\/span><span cla…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/6]⎯
+
+ FAIL  test/isc-062.test.ts > ISC-062 — sets resolve over what is equipped > per-other: the Chains of the Wrathful pay +1 Precision per OTHER chain item worn; the stash counts for nothing
+AssertionError: expected { tag: 'chain', …(2) } to deeply equal { Object (tag, each) }
+
+- Expected
++ Received
+
+  {
+    "each": {
+      "precision": 1,
+    },
+    "tag": "chain",
++   "withItself": true,
+  }
+
+ ❯ test/isc-062.test.ts:27:37
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/6]⎯
+
+ FAIL  test/isc-062.test.ts > ISC-062 — sets resolve over what is equipped > this-weapon damage: two Destroyer staffs each pay the other +1 damage on ITS attacks, not on the unit
+AssertionError: expected [ { …(6) }, { …(6) } ] to deeply equal [ { …(6) }, { …(6) } ]
+
+- Expected
++ Received
+
+  [
+    {
+-     "attackDamage": 1,
+-     "count": 1,
++     "attackDamage": 2,
++     "count": 2,
+      "itemId": "item.staff-of-the-destroyer",
+-     "shape": "per-other",
++     "shape": "for-every",
+      "stats": {},
+      "tag": "destroyer",
+    },
+    {
+-     "attackDamage": 1,
+-     "count": 1,
++     "attackDamage": 2,
++     "count": 2,
+      "itemId": "item.staff-of-the-ultimate-destroyer",
+-     "shape": "per-other",
++     "shape": "for-every",
+      "stats": {},
+      "tag": "destroyer",
+    },
+  ]
+
+ ❯ test/isc-062.test.ts:43:19
+     41|   it('this-weapon damage: two Destroyer staffs each pay the other +1 d…
+     42|     const lines = resolveSetsOf([itemOf('item.staff-of-the-destroyer')…
+     43|     expect(lines).toEqual([
+       |                   ^
+     44|       { itemId: 'item.staff-of-the-destroyer', tag: 'destroyer', shape…
+     45|       { itemId: 'item.staff-of-the-ultimate-destroyer', tag: 'destroye…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/6]⎯
+
+ FAIL  test/isc-063.test.ts > ISC-063 — resolved at fielding, shown before the battle > the prep view lists the triggered set per deployed hero with its number
+AssertionError: expected [ { …(6) } ] to deeply equal [ { …(6) } ]
+
+- Expected
++ Received
+
+  [
+    {
+      "attackDamage": 0,
+-     "count": 2,
++     "count": 3,
+      "itemId": "item.chains-of-the-wrathful",
+-     "shape": "per-other",
++     "shape": "for-every",
+      "stats": {
+-       "precision": 2,
++       "precision": 3,
+      },
+      "tag": "chain",
+    },
+  ]
+
+ ❯ test/isc-063.test.ts:32:30
+     30|     const v = viewCombatPrep(ctx.campaign)
+     31|     expect(v.step).toBe('equip')
+     32|     expect(v.sets[CHAPLAIN]).toEqual([{ itemId: CHAINS, tag: 'chain', …
+       |                              ^
+     33|     expect(v.sets[DWARF]).toEqual([])
+     34|     expect(Object.keys(v.sets).sort()).toEqual([...v.deployed].sort())…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/6]⎯
+
+ FAIL  test/isc-063.test.ts > ISC-063 — resolved at fielding, shown before the battle > the roster deltas carry the same numbers, on top of what the items themselves modify
+AssertionError: expected { precision: 3 } to deeply equal { precision: 2 }
+
+- Expected
++ Received
+
+  {
+-   "precision": 2,
++   "precision": 3,
+  }
+
+ ❯ test/isc-063.test.ts:43:20
+     41|     for (const r of worn) for (const [k, n] of Object.entries(r.statMo…
+     42|     expect(d.items).toEqual(fromItems)
+     43|     expect(d.sets).toEqual({ precision: 2 })
+       |                    ^
+     44|     expect(d.total['precision']).toBe((fromItems['precision'] ?? 0) + …
+     45|     for (const [k, n] of Object.entries(fromItems)) if (k !== 'precisi…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/6]⎯
+
+ FAIL  test/isc-063.test.ts > ISC-063 — resolved at fielding, shown before the battle > the fielding carries the resolved numbers as plain data — the battle is handed numbers, never set logic
+AssertionError: expected {} to deeply equal { stats: [ { …(3) } ] }
+
+- Expected
++ Received
+
+- {
+-   "stats": [
+-     {
+-       "add": 2,
+-       "source": "item.chains-of-the-wrathful",
+-       "stat": "precision",
+-     },
+-   ],
+- }
++ {}
+
+ ❯ test/isc-063.test.ts:58:32
+     56|        shape now (BattleOptions.heroMods — each stat naming the item t…
+     57|        the sets are fought, not only shown. The claim — resolved numbe…
+     58|     expect(spec.heroMods![at]).toEqual({ stats: [{ stat: 'precision', …
+       |                                ^
+     59|     expect(spec.heroMods![e.deployed.indexOf(DWARF)]).toEqual({})
+     60|     expect(JSON.parse(JSON.stringify(spec.heroMods))).toEqual(spec.her…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/6]⎯
+
+
+ Test Files  3 failed (3)
+      Tests  6 failed | 5 passed (11)
+   Start at  12:16:07
+   Duration  5.07s (transform 10.23s, setup 0ms, import 14.43s, tests 59ms, environment 0ms)
+

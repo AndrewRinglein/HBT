@@ -53,7 +53,11 @@ describe('the Equip screen', () => {
     performEquip(ctx, CHAPLAIN, 'item.chains-of-the-faithful', 'test', 'item.pilgrims-habit')
     performEquip(ctx, CHAPLAIN, 'item.priest-chain', 'test')
     const html = equipScreen(ctx.campaign, [HUNTER, CHAPLAIN], { where: 'prep', picked: null })
-    expect(html).toContain('chain set bonus from Chains of the Wrathful: +2 precision (2 other chain items)')
+    /* Law 10, 2026-10-05 — capability.set-bonus (engine item; engine/DECISIONS.md 2026-10-04 'his 28 reward weapons read back …': "We need: … set bonus"): this read
+         expect(html).toContain('chain set bonus from Chains of the Wrathful: +2 precision (2 other chain items)')
+       The Chains' sentence is "for every CHAIN item you carry" and the Chains are one: three carried, +3, and the line says
+       the count it is at in those terms. */
+    expect(html).toContain('chain set bonus from Chains of the Wrathful: +3 precision (3 chain items carried)')
     // the card's stat block is the viewer's: the Precision row carries the set's +2 in front of the engine's fielded number
     expect(html).toMatch(/<span class="stN">Precision<\/span><span class="stV up"><em>\+\d+<\/em>\d+<\/span>/)
     expect(html).toContain('<i>spare</i>')                    // the priest chain rides in the item slot as a spare

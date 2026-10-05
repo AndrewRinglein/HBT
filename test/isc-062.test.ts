@@ -24,27 +24,47 @@ describe('ISC-062 — sets resolve over what is equipped', () => {
   it('per-other: the Chains of the Wrathful pay +1 Precision per OTHER chain item worn; the stash counts for nothing', () => {
     /* Law 10, 2026-10-03 (content.unfielded-tier0-weapons-cut): the Cart Chain was cut (engine DECISIONS.md 'eleven tier 0 weapons nobody fields are cut'); the chain item left in the stash is the Boarding Hook now. The claim is unchanged. */
     const ctx = toEquip(loadFixture((c) => { c.stash = [CHAINS, CHAIN_ARMOR, PRIEST_CHAIN, 'item.boarding-hook'] }), [CHAPLAIN, DWARF])
-    expect(itemOf(CHAINS).setBonus).toEqual({ tag: 'chain', each: { precision: 1 } })
+    /* Law 10, 2026-10-05 — capability.set-bonus (engine item; engine/DECISIONS.md 2026-10-04 'his 28 reward weapons read back …': "We need: … set bonus"): the four lines of this test that held the Chains as a PER-OTHER set read
+         expect(itemOf(CHAINS).setBonus).toEqual({ tag: 'chain', each: { precision: 1 } })
+         expect(resolveSets(ctx.campaign, CHAPLAIN)).toEqual([])                    // alone: no other chain item, nothing paid
+         … toEqual([{ itemId: CHAINS, tag: 'chain', shape: 'per-other', count: 1, stats: { precision: 1 }, attackDamage: 0 }])
+         … toEqual([{ itemId: CHAINS, tag: 'chain', shape: 'per-other', count: 2, stats: { precision: 2 }, attackDamage: 0 }])
+       The row's own sentence is "+1 Precision for every CHAIN item you carry" and the Chains are a chain item: every member
+       carried is counted, the carrier among them (the row's `withItself`; engine SWITCHES.md setBonusForEvery). The per-other
+       wording (GEAR-DESIGN §5: "three slaying weapons → +2 each") is held on its own rows in the test added below. Counted
+       over what is equipped, the spare in the item slot too, the stash never: unchanged. */
+    expect(itemOf(CHAINS).setBonus).toEqual({ tag: 'chain', each: { precision: 1 }, withItself: true })
     // the Chaplain's hands and armor make way
     /* Law 10, 2026-09-23 (v2.shields): the Knight Shield retired with V2 R1; this hero's kit carries the Round Shield now. The claim is unchanged. */ performUnequip(ctx, CHAPLAIN, 'item.round-shield', 'test')
     performUnequip(ctx, CHAPLAIN, 'item.holy-texts', 'test')
     performEquip(ctx, CHAPLAIN, CHAINS, 'test')
-    expect(resolveSets(ctx.campaign, CHAPLAIN)).toEqual([])                    // alone: no other chain item, nothing paid
+    expect(resolveSets(ctx.campaign, CHAPLAIN)).toEqual([{ itemId: CHAINS, tag: 'chain', shape: 'for-every', count: 1, stats: { precision: 1 }, attackDamage: 0 }])   // alone: one chain item carried, itself
     performEquip(ctx, CHAPLAIN, CHAIN_ARMOR, 'test', 'item.pilgrims-habit')   // a chain armor: one other
-    expect(resolveSets(ctx.campaign, CHAPLAIN)).toEqual([{ itemId: CHAINS, tag: 'chain', shape: 'per-other', count: 1, stats: { precision: 1 }, attackDamage: 0 }])
+    expect(resolveSets(ctx.campaign, CHAPLAIN)).toEqual([{ itemId: CHAINS, tag: 'chain', shape: 'for-every', count: 2, stats: { precision: 2 }, attackDamage: 0 }])
     performEquip(ctx, CHAPLAIN, PRIEST_CHAIN, 'test')                          // a spare chain weapon in the item slot: two others
-    expect(resolveSets(ctx.campaign, CHAPLAIN)).toEqual([{ itemId: CHAINS, tag: 'chain', shape: 'per-other', count: 2, stats: { precision: 2 }, attackDamage: 0 }])
+    expect(resolveSets(ctx.campaign, CHAPLAIN)).toEqual([{ itemId: CHAINS, tag: 'chain', shape: 'for-every', count: 3, stats: { precision: 3 }, attackDamage: 0 }])
     expect(itemOf('item.boarding-hook').sets).toEqual(['chain'])
     expect(ctx.campaign.stash).toContain('item.boarding-hook')                 // a chain item in the stash — not counted
     expect(resolveSets(ctx.campaign, DWARF)).toEqual([])                       // another hero's gear never counts
   })
-  it('this-weapon damage: two Destroyer staffs each pay the other +1 damage on ITS attacks, not on the unit', () => {
+  /* Law 10, 2026-10-05 — capability.set-bonus (engine item; engine/DECISIONS.md 2026-10-04 'his 28 reward weapons read back …': "We need: … set bonus"): this test was titled "two Destroyer staffs each pay the other +1 damage on ITS attacks" and read
+       { itemId: 'item.staff-of-the-destroyer', tag: 'destroyer', shape: 'per-other', count: 1, stats: {}, attackDamage: 1 }, (and the Ultimate's the same)
+       expect(resolveSetsOf([itemOf('item.staff-of-the-destroyer')])).toEqual([])
+     Their sentence is "+1 damage for every DESTROYER item you carry" and each is one: alone a staff pays itself +1, and with
+     both carried each pays +2. On ITS attacks, not on the unit: unchanged. */
+  it('this-weapon damage: a Destroyer staff pays +1 damage on ITS attacks for every destroyer item carried, itself among them - not on the unit', () => {
     const lines = resolveSetsOf([itemOf('item.staff-of-the-destroyer'), itemOf('item.staff-of-the-ultimate-destroyer')])
     expect(lines).toEqual([
-      { itemId: 'item.staff-of-the-destroyer', tag: 'destroyer', shape: 'per-other', count: 1, stats: {}, attackDamage: 1 },
-      { itemId: 'item.staff-of-the-ultimate-destroyer', tag: 'destroyer', shape: 'per-other', count: 1, stats: {}, attackDamage: 1 },
+      { itemId: 'item.staff-of-the-destroyer', tag: 'destroyer', shape: 'for-every', count: 2, stats: {}, attackDamage: 2 },
+      { itemId: 'item.staff-of-the-ultimate-destroyer', tag: 'destroyer', shape: 'for-every', count: 2, stats: {}, attackDamage: 2 },
     ])
-    expect(resolveSetsOf([itemOf('item.staff-of-the-destroyer')])).toEqual([])
+    expect(resolveSetsOf([itemOf('item.staff-of-the-destroyer')])).toEqual([{ itemId: 'item.staff-of-the-destroyer', tag: 'destroyer', shape: 'for-every', count: 1, stats: {}, attackDamage: 1 }])
+  })
+  it('per-other (GEAR-DESIGN §5: "three slaying weapons → +2 each"): a row worded for the OTHER members pays nothing alone and per other member worn', () => {
+    const slaying = { tag: 'slaying', each: { attackDamage: 1 } }
+    const three = [row('test.item.slaying-bow', ['slaying'], slaying, 'weapon'), row('test.item.slaying-sword', ['slaying'], slaying, 'weapon'), row('test.item.slaying-dagger', ['slaying'], slaying, 'weapon')]
+    expect(resolveSetsOf([three[0]!])).toEqual([])
+    expect(resolveSetsOf(three).map((l) => [l.itemId, l.shape, l.count, l.attackDamage])).toEqual(three.map((r) => [r.id, 'per-other', 2, 2]))
   })
   it('at-count: three shadows items pay +20 Crit once, including the item that carries the bonus; two pay nothing', () => {
     const cloak = row('test.item.cloak', ['shadows'], { tag: 'shadows', at: 3, once: { crit: 20 } }, 'armor')
