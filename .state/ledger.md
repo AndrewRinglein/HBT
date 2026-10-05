@@ -32621,3 +32621,2855 @@ index 4be5648..769797c 100644
   PASS  naming — new content ids use declared kinds
   PASS  naming — no banned words invented
   PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+## kingdom.stand-up-one-press — LANDED `6008e0e` **NEEDS REVIEW**
+2026-10-05 10:20
+
+  PASS  dependencies landed
+  WARN  not already decided — 2 candidate ruling(s) — READ BEFORE ASKING: SWITCHES.md:2247 · SWITCHES.md:1944
+  PASS  typecheck
+  PASS  the item's own tests — test/stand-up-does-nothing.test.ts, test/stand-up-one-press.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — kingdom/test/stand-up-does-nothing.test.ts, kingdom/test/stand-up-one-press.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/stand-up-does-nothing.test.ts (-7) — will land FLAGGED for review
+  SKIPPED  control battles unchanged — engine code f48a625458 and the content pack are the ones the control battles last passed on (2026-10-05 06:05, gate content.elfbow-double-shot-one-target --land, in HBT-worker-engine) — not run
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+aa606cd
+d2d9e2f
+
+diff --git a/test/stand-up-does-nothing.test.ts b/test/stand-up-does-nothing.test.ts
+index 03f1a86..76b4338 100644
+--- a/test/stand-up-does-nothing.test.ts
++++ b/test/stand-up-does-nothing.test.ts
+@@ -48,5 +48,10 @@ const engineLists = (s: Sandbox, id: number) => [...new Set(legalActions(s.ctx,
+ const hostLists = (s: Sandbox) => [...new Set(sandboxChoices(s).map((c) => aimOf(c.command)))].sort()
+ 
+-/** Press Stand Up on the bar and confirm it, as a move that goes nowhere is used: chosen, then chosen again. */
++// Law 10, 2026-10-05 (kingdom.stand-up-one-press; engine/DECISIONS.md 2026-10-05 'seven answers: …; Stand Up is one press; …' —
++// Andrew: "stand up one press."). This helper pressed Stand Up, and — while the unit was still down — held the move as planned
++// on its hex with "Stand Up: click it again, or the hero, to use it." and pressed again (kingdom SWITCHES.md
++// standUpIsUsedLikeAMoveThatGoesNowhere, overturned). As the rule now stands, ONE press stands the unit: the helper presses
++// once and the unit is standing, with nothing planned and no second press asked for.
++/** Press Stand Up on the bar, once: the unit stands. */
+ function standsByTheBar(k: ReturnType<typeof knockedDown>) {
+   const { s, u, P, stand } = k
+@@ -63,10 +68,7 @@ function standsByTheBar(k: ReturnType<typeof knockedDown>) {
+   // the press on the bar: taken
+   expect(P.input({ kind: 'slot', actionId: stand, unit: u.id }), 'the press on Stand Up is taken').toBe(true)
+-  if (k.isProne()) {
+-    // a move that goes nowhere is planned on the unit's own hex and used by the next press (kingdom SWITCHES playInputStandStill)
+-    expect(P.facts().ghost).toEqual({ unit: u.id, hex })
+-    expect(P.facts().note).toBe('Stand Up: click it again, or the hero, to use it.')
+-    expect(P.input({ kind: 'slot', actionId: stand, unit: u.id })).toBe(true)
+-  }
++  expect(k.isProne(), 'one press stands the unit').toBe(false)
++  expect(P.facts().ghost, 'nothing is planned on its hex').toBeNull()
++  expect(P.facts().note ?? '', 'no second press is asked for').not.toMatch(/click it again/)
+   const since = s.ctx.events.slice(from)
+   // the engine logs the stand; the prone status is gone
+diff --git a/test/stand-up-one-press.test.ts b/test/stand-up-one-press.test.ts
+new file mode 100644
+index 0000000..5f3e3f1
+--- /dev/null
++++ b/test/stand-up-one-press.test.ts
+@@ -0,0 +1,105 @@
++// kingdom.stand-up-one-press — ruled 2026-10-05 (Andrew, engine/DECISIONS.md 'seven answers: the first hero's card shows only
++// what is modified; origin badges go on the heroes; Stand Up is one press; …': asked whether Stand Up should stand the unit on
++// one press instead of two — "stand up one press.").
++//
++// Expect: "In the opening's battle 2 a knocked-down Lumberjack's Wife stands on ONE press of Stand Up; the engine logs the
++// stand; her move is spent; Back Flip and the other moves keep the gesture they had; the page verify presses once and finds her
++// standing."
++//
++// It overturns kingdom SWITCHES.md standUpIsUsedLikeAMoveThatGoesNowhere (fix.stand-up-does-nothing, the same day), for Stand
++// Up alone: the other moves that go nowhere (Devotion, Focus) keep their two presses (SWITCHES.md standUpAloneIsOnePress).
++// Which move is the stand is the engine's answer (standsUp: a movement whose effects stand the unit), never an id typed here.
++import { describe, it, expect } from 'vitest'
++import { execFileSync } from 'node:child_process'
++import { createSandbox, advanceSandbox, commandSandbox, sandboxChoices, type Sandbox } from '../src/core/sandbox.js'
++import { SANDBOX_DEFAULT } from '../src/content/sandbox.js'
++import { createPlayInput } from '../src/ui/play-input.js'
++import { encounterDef, staminaCostOf, isMove, isAttack, type BattleCommand } from '../src/engine.js'
++import { applyStatus } from '../../engine/src/core/status.js'
++import { kdbDownStatus } from '../../engine/src/core/kdb.js'
++import { standsUp } from '../../engine/src/core/action.js'
++
++const LUMBERJACK = 'encounter.opening.lumberjack'
++type U = Sandbox['ctx']['state']['units'][number]
++function battle2() {
++  const s = createSandbox({ mapId: encounterDef(LUMBERJACK).mapId!, heroes: [...SANDBOX_DEFAULT.heroes], enemies: [], seed: 1, encounterId: LUMBERJACK })
++  advanceSandbox(s)
++  const P = createPlayInput(() => s, (c: BattleCommand) => commandSandbox(s, c))
++  const begin = (u: U) => { P.input({ kind: 'choose', id: u.id }); P.input({ kind: 'unit', id: u.id, hex: u.hex }); expect(s.ctx.battleCursor, `${u.name}'s Activation`).toMatchObject({ at: 'acting', actor: u.id }) }
++  return { s, P, begin }
++}
++/** `u` knocked down by a Zombie — the status the engine's own knockdown roll applies, put on by the engine's own mutator. */
++function knockDown(s: Sandbox, u: U) {
++  const prone = kdbDownStatus(s.ctx)!, enemy = s.ctx.state.units.find((x) => x.side === 'enemy' && x.lifeState === 'standing')!
++  applyStatus(s.ctx, u.id, prone, 1, 'kingdom.stand-up-one-press', enemy.id)
++  return { prone, stand: s.ctx.statuses[prone]!.prone!.standAction!, isProne: () => u.statuses.some((x) => x.id === prone && x.value > 0) }
++}
++
++describe('kingdom.stand-up-one-press — one press of Stand Up stands the unit', () => {
++  it('battle 2: the knocked-down Lumberjack\'s Wife stands on ONE press — the engine logs the stand, her move is spent, nothing waits for a second press', () => {
++    const { s, P, begin } = battle2()
++    const wife = s.ctx.state.units.find((x) => x.typeId === 'hero.fixed.lumberjacks-wife')!
++    const k = knockDown(s, wife); begin(wife)
++    const row = s.ctx.actions[k.stand]!
++    expect(row.name).toBe('Stand Up'); expect(standsUp(row), 'the engine says this move is the stand').toBe(true)
++    const from = s.ctx.events.length, stamina = wife.stamina, hex = wife.hex
++    expect(P.input({ kind: 'slot', actionId: k.stand, unit: wife.id }), 'the press is taken').toBe(true)
++    // one press: she stands
++    expect(k.isProne(), 'she is standing after ONE press').toBe(false)
++    expect(s.ctx.events.slice(from).filter((e) => e.type === 'unit.stood').map((e) => e['actor']), 'the engine logs the stand').toEqual([wife.id])
++    // it still takes her move and costs what the engine charges; the primary action is hers yet
++    expect(wife.moveUsed, 'her move is spent').toBe(true); expect(wife.primaryUsed).toBe(false)
++    expect(stamina - wife.stamina).toBe(staminaCostOf(wife, row)); expect(wife.hex).toBe(hex)
++    // nothing is left planned or said: no ghost on her hex, no "click it again"
++    expect(P.facts().ghost, 'nothing planned').toBeNull()
++    expect(P.facts().note ?? '', 'no second press is asked for').not.toMatch(/click it again/)
++    // and one press is all it took: the engine heard one command
++    expect(s.ctx.events.slice(from).filter((e) => e.type === 'unit.stood').length).toBe(1)
++  })
++
++  it('a knocked-down hero stands on one press too', () => {
++    const { s, P, begin } = battle2()
++    const hero = s.ctx.state.units.find((x) => s.setup.heroUids!.includes(x.uid))!
++    const k = knockDown(s, hero); begin(hero)
++    expect(P.input({ kind: 'slot', actionId: k.stand, unit: hero.id })).toBe(true)
++    expect(k.isProne()).toBe(false); expect(hero.moveUsed).toBe(true); expect(hero.primaryUsed).toBe(false)
++  })
++
++  it('the other moves keep the gesture they had: a move that goes nowhere is still pressed twice, and a move that goes somewhere still waits for its hex', () => {
++    const { s, P, begin } = battle2()
++    // a hero with a move that goes nowhere and is not the stand (Devotion, Focus): its only destination is its own hex
++    const nowhere = (u: U) => u.actions.find((id) => { const a = s.ctx.actions[id]!; return isMove(a) && !isAttack(a) && !standsUp(a) && (a as { move?: { stepRange?: number } }).move?.stepRange === 0 })
++    const u = s.ctx.state.units.find((x) => s.setup.heroUids!.includes(x.uid) && nowhere(x))!
++    expect(u, 'a hero of the party has a move that goes nowhere').toBeTruthy()
++    const still = nowhere(u)!
++    begin(u)
++    const from = s.ctx.events.length
++    expect(P.input({ kind: 'slot', actionId: still, unit: u.id })).toBe(true)
++    // the first press plans it on the hero's own hex and says how to use it; nothing has happened yet
++    expect(P.facts().ghost).toEqual({ unit: u.id, hex: u.hex })
++    expect(P.facts().note).toBe(`${s.ctx.actions[still]!.name}: click it again, or the hero, to use it.`)
++    expect(s.ctx.events.length, 'nothing happened on the first press').toBe(from)
++    expect(u.moveUsed).toBe(false)
++    // the second press uses it
++    expect(P.input({ kind: 'slot', actionId: still, unit: u.id })).toBe(true)
++    expect(s.ctx.events.length).toBeGreaterThan(from)
++    // a move that goes somewhere (the walk; Back Flip, Leap, Side Roll are chosen the same way): pressed, it shows where it can go and waits for the hex
++    const b = battle2(), walker = b.s.ctx.state.units.find((x) => b.s.setup.heroUids!.includes(x.uid))!
++    b.begin(walker)
++    const moves = walker.actions.filter((id) => { const a = b.s.ctx.actions[id]!; return isMove(a) && !isAttack(a) && (a as { move?: { stepRange?: number } }).move?.stepRange !== 0 })
++    expect(moves.length).toBeGreaterThan(0)
++    for (const id of moves) {
++      const seq = b.s.ctx.events.length
++      b.P.input({ kind: 'slot', actionId: id, unit: walker.id })
++      expect(b.s.ctx.events.length, `${b.s.ctx.actions[id]!.name}: pressing it moves nobody`).toBe(seq)
++      if (sandboxChoices(b.s).some((c) => c.command.actionId === id)) expect(b.P.facts().reach.length, `${b.s.ctx.actions[id]!.name} shows where it can go`).toBeGreaterThan(0)
++      b.P.input({ kind: 'back' })
++    }
++  })
++
++  it('the page: on the built battle screen, battle 2, each knocked-down unit stands on one press of its Stand Up button', () => {
++    const out = execFileSync(process.execPath, ['tools/stand-up.verify.mjs', 'BATTLE-SANDBOX.html'], { cwd: '../kingdom', encoding: 'utf8', maxBuffer: 1 << 24 })
++    expect(out).toMatch(/stand-up: .* each stood on ONE press of the Stand Up button .* passed/)
++    expect(out).not.toMatch(/pressed twice/)
++  }, 240000)
++})
+```
+</details>
+
+## kingdom.first-hero-card-only-what-is-modified — LANDED `8435aca` **NEEDS REVIEW**
+2026-10-05 10:20
+
+  PASS  dependencies landed
+  WARN  not already decided — 1 candidate ruling(s) — READ BEFORE ASKING: ..\GLOSSARY.md:416
+  PASS  typecheck
+  PASS  the item's own tests — test/first-hero-card-only-what-is-modified.test.ts, test/first-hero-own-positives-negatives.test.ts, test/opening-first-hero-class-line.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — kingdom/test/first-hero-card-only-what-is-modified.test.ts, kingdom/test/first-hero-own-positives-negatives.test.ts, kingdom/test/opening-first-hero-class-line.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/first-hero-own-positives-negatives.test.ts (-137), test/opening-first-hero-class-line.test.ts (-1) — will land FLAGGED for review
+  SKIPPED  control battles unchanged — engine code f48a625458 and the content pack are the ones the control battles last passed on (2026-10-05 06:05, gate content.elfbow-double-shot-one-target --land, in HBT-worker-engine) — not run
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+3fd2ba7
+
+diff --git a/test/first-hero-card-only-what-is-modified.test.ts b/test/first-hero-card-only-what-is-modified.test.ts
+new file mode 100644
+index 0000000..587ae96
+--- /dev/null
++++ b/test/first-hero-card-only-what-is-modified.test.ts
+@@ -0,0 +1,150 @@
++// kingdom.first-hero-card-only-what-is-modified — ruled 2026-10-05 (Andrew, engine/DECISIONS.md 'seven answers: the first
++// hero's card shows only what is modified; origin badges go on the heroes; …': told that the first-hero card compares each
++// hero, stat by stat, with the value most of its class's four base heroes have, and asked whether that is the comparison he
++// wants — "No, it's just the things that get modified: the extra stats and the badges.").
++//
++// Expect: "A first-hero card shows its art, 'A ranger.', and only the extra stats and badges that hero itself carries; no line
++// on any card comes from comparing the hero with other heroes of its class (the test fails if the majority standard is
++// consulted); a hero with no modification reads one plain line; the gifts line shows once for the pick; when a hero's row
++// carries an origin badge the card shows it with its meaning."
++//
++// What is modified on a hero is (1) what its draft gave it — the record the run keeps on the hero (Hero.drafted: its badges,
++// its stat changes) — and (2) the origin badges its own row carries, read from the row and never from a list in the kingdom
++// (none is on a row until content.hero-origin-badges). The majority-of-four "standard" of kingdom.first-hero-own-positives-
++// negatives is gone (kingdom SWITCHES.md firstHeroStandard, overturned). These hold whichever way the first hero's draft is
++// rolled — one roll for the pick, or one for each of the three (kingdom.first-hero-each-rolls-own-gifts): what is said once
++// for the pick is never on a card, and everything the hero's draft gave it is said exactly once.
++import { describe, it, expect } from 'vitest'
++import { execFileSync } from 'node:child_process'
++import { readFileSync, readdirSync, existsSync } from 'node:fs'
++import { makeNewCampaign, performAdvanceOpening, listDraftOffers, draftedHeroOf } from '../src/core/opening.js'
++import { makeCtx, type Ctx } from '../src/core/mutate.js'
++import { joinsWithOf } from '../src/core/draft-modifiers.js'
++import { HERO_POOL } from '../src/content/heroes.js'
++import { CLASSES } from '../src/content/classes.js'
++import { CRUCIBLE, FIRST_HERO, crucibleStatOf } from '../src/content/crucible.js'
++import { BADGE_LINES } from '../src/content/generated/progress.js'
++import { statLabelOf } from '../src/content/stat-labels.js'
++import { draftScreen } from '../src/ui/draft.js'
++import { BADGES, RULE_BADGES, UNITS } from '../src/engine.js'
++
++const SEEDS = [1, 2, 3, 5, 8, 11, 13, 15, 21, 34, 42, 55]
++const text = (html: string) => html.replace(/<[^>]*>/g, ' ').replace(/&amp;/g, '&').replace(/\s+/g, ' ').trim()
++function offersOn(html: string): { id: string; html: string }[] {
++  const starts = [...html.matchAll(/<div class="opt[^"]*" data-act="draft" data-id="([^"]+)"/g)]
++  return starts.map((m, i) => ({ id: m[1]!, html: html.slice(m.index!, i + 1 < starts.length ? starts[i + 1]!.index! : html.length) }))
++}
++/** the lines a card lists as the hero's own: which thing each is said of, its side, its words */
++const ownOn = (html: string) => [...html.matchAll(/<li class="(pos|neg)" data-own="([^"]+)"[^>]*>(.*?)<\/li>/g)].map((m) => ({ side: m[1]!, of: m[2]!, words: text(m[3]!) }))
++/** the things said once for the pick, above the cards: which thing(s) each line is said of */
++const pickLineOn = (html: string) => { const block = html.match(/<p class="firstGifts"[^>]*>([\s\S]*?)<\/p>/); return block ? [...block[1]!.matchAll(/<span data-joins="([^"]+)">([^<]*)<\/span>/g)].flatMap((m) => m[1]!.split(' ')) : [] }
++function atFirstDraft(seed: number, offer?: readonly string[]): Ctx {
++  const ctx = makeCtx(makeNewCampaign(seed)); performAdvanceOpening(ctx, 'test')
++  if (offer) ctx.campaign.cursor.draftOffer = [...offer]
++  return ctx
++}
++/** What the hero's draft gave it, each thing by the draft's own key (joinsWithOf: badge:<id>, health, point:<stat>), as the card would word it. */
++function draftedThings(ctx: Ctx, heroId: string): Record<string, { side: string; words?: string }> {
++  const out: Record<string, { side: string; words?: string }> = {}
++  for (const j of joinsWithOf(draftedHeroOf(ctx.campaign, heroId).drafted!, FIRST_HERO.healthSource)) {
++    if (j.badge) out[j.key] = { side: CRUCIBLE.flawed.some((b) => b.id === j.badge) ? 'neg' : 'pos' }
++    else out[j.key] = { side: j.amount! > 0 ? 'pos' : 'neg', words: `${j.amount! > 0 ? '+' : ''}${j.amount} ${statLabelOf(crucibleStatOf(j.stat!))}` }
++  }
++  return out
++}
++const keyOnCard = (joinKey: string) => joinKey
++
++describe('kingdom.first-hero-card-only-what-is-modified — no standard hero', () => {
++  it('the majority-of-four standard is gone: no source file holds it, names it or reads it', () => {
++    expect(existsSync('src/content/class-standard.ts'), 'src/content/class-standard.ts').toBe(false)
++    const files = (dir: string): string[] => readdirSync(dir, { withFileTypes: true }).flatMap((d) => (d.isDirectory() ? files(`${dir}/${d.name}`) : d.name.endsWith('.ts') ? [`${dir}/${d.name}`] : []))
++    // (a comment may still say what was removed; what must not be there is the thing itself: its import, or a call of it)
++    const naming = files('src').filter((f) => /from '[^']*class-standard|classStandardOf\(|ownDifferencesOf\(|classHeroesOf\(/.test(readFileSync(f, 'utf8')))
++    expect(naming, 'source files that still consult a class standard').toEqual([])
++  })
++
++  it('no line on a card comes from comparing the hero with the others of its class: heroes the old standard set apart list no such stat', () => {
++    // the Hunter read "+1 Precision, +1 Reach" and the Iron Dwarf "+2 Health" against their classes' majority — neither is a modification
++    const three = ['hero.base.ranger-aggressive', 'hero.base.warrior-iron', 'hero.base.priest-pauper']
++    for (const seed of [3, 11]) {
++      const ctx = atFirstDraft(seed, three), cards = offersOn(draftScreen(ctx.campaign))
++      expect(cards.map((c) => c.id)).toEqual(three)
++      for (const c of cards) {
++        expect(c.html, `${c.id}: nothing "against" a class`).not.toMatch(/data-against=|standard/)
++        const drafted = draftedThings(ctx, c.id)
++        for (const x of ownOn(c.html)) expect(Object.keys(drafted), `${c.id}: "${x.words}" is a thing its own draft gave it`).toContain(x.of)
++      }
++    }
++  })
++})
++
++describe('kingdom.first-hero-card-only-what-is-modified — the card', () => {
++  it('each card: its art, "A ranger.", and only what is modified on that hero — what its draft gave it and is not said once for the pick, and its row\'s own badges', () => {
++    for (const seed of SEEDS) {
++      const ctx = atFirstDraft(seed), c = ctx.campaign, html = draftScreen(c), cards = offersOn(html), pick = pickLineOn(html).map(keyOnCard)
++      expect(cards.length).toBe(3)
++      for (const card of cards) {
++        const who = `seed ${seed}: ${card.id}`, row = listDraftOffers(c).find((h) => h.id === card.id)!
++        expect(card.html, `${who}: its card art`).toMatch(/^<div class="opt[^>]*><div class="art">/)
++        const className = CLASSES.find((k) => k.id === row.classes[0])!.name.toLowerCase()
++        expect(card.html, `${who}: one line of what it is`).toContain(`<small class="whatitis" data-what="${row.classes[0]}">${/^[aeiou]/.test(className) ? 'An' : 'A'} ${className}.</small>`)
++        const drafted = draftedThings(ctx, card.id), own = ownOn(card.html)
++        // nothing on the card but what its own draft gave it (no row carries an origin badge today)
++        for (const x of own) {
++          expect(Object.keys(drafted), `${who}: "${x.words}" (${x.of}) is its own`).toContain(x.of)
++          expect(x.side, `${who}: ${x.of}`).toBe(drafted[x.of]!.side)
++          if (drafted[x.of]!.words) expect(x.words, `${who}: ${x.of}`).toBe(drafted[x.of]!.words)
++          expect(pick, `${who}: ${x.of} is on the card, so it is not said again for the pick`).not.toContain(x.of)
++        }
++        // and everything its draft gave it is said exactly once — on its card, or once for the pick
++        expect([...own.map((x) => x.of), ...pick.filter((k) => k in drafted)].sort(), `${who}: every thing its draft gave it, each once`).toEqual(Object.keys(drafted).sort())
++        // positives before negatives
++        expect(own.map((x) => x.side).join(' ')).toMatch(/^(pos ?)*(neg ?)*$/)
++        // a hero with nothing of its own says so in one plain line, and lists nothing
++        const none = card.html.match(/<p class="own same" data-own="none">([^<]*)<\/p>/)
++        if (own.length === 0) expect(none?.[1], `${who}: says nothing is modified`).toBe('No extra stats and no badges of its own.')
++        else expect(none, `${who}: lists what is modified, so does not say nothing is`).toBeNull()
++      }
++    }
++  })
++
++  it('what is said for the pick is said once, above the three cards, and is on no card', () => {
++    for (const seed of SEEDS) {
++      const html = draftScreen(atFirstDraft(seed).campaign)
++      expect(html.match(/class="firstGifts"/g)?.length, `seed ${seed}: one line for the pick`).toBe(1)
++      expect(html.indexOf('class="firstGifts"')).toBeLessThan(html.indexOf('data-act="draft"'))
++      for (const card of offersOn(html)) expect(card.html, `seed ${seed}: ${card.id}`).not.toMatch(/data-joins=|class="joins"/)
++    }
++  })
++
++  it('a badge the hero\'s own row carries is shown on its card with its meaning — a good one with the positives, a flaw with the negatives; the badge every hero carries is not', () => {
++    const GOOD = 'badge.mystic', FLAW = CRUCIBLE.flawed.find((b) => BADGES[b.id])!.id
++    const ctx = atFirstDraft(11), c = ctx.campaign, offered = listDraftOffers(c)[0]!
++    const row = HERO_POOL.find((h) => h.id === offered.id)! as unknown as { badges: string[] }
++    // every hero's engine row carries the engine's own rule badge (a hero is a hero) — that is not an origin badge
++    expect(((UNITS[offered.unitType] as unknown as { badges?: string[] }).badges ?? [])).toContain(RULE_BADGES.hero)
++    const before = ownOn(offersOn(draftScreen(c)).find((x) => x.id === offered.id)!.html)
++    expect(before.some((x) => x.of === `badge:${RULE_BADGES.hero}`), 'the rule badge is not listed').toBe(false)
++    const was = [...row.badges]
++    try {
++      row.badges.push(FLAW, GOOD)   // as content.hero-origin-badges will put them on the row
++      const card = offersOn(draftScreen(c)).find((x) => x.id === offered.id)!, own = ownOn(card.html)
++      const good = own.find((x) => x.of === `badge:${GOOD}`)!, flaw = own.find((x) => x.of === `badge:${FLAW}`)!
++      expect(good, 'the good badge is on the card').toBeTruthy(); expect(flaw, 'the flaw is on the card').toBeTruthy()
++      expect([good.side, flaw.side]).toEqual(['pos', 'neg'])
++      expect(good.words, 'its name and its one-line meaning — the content\'s words').toBe(`${BADGES[GOOD]!.name} ${BADGE_LINES[GOOD]}`)
++      expect(flaw.words.startsWith(`${BADGES[FLAW]!.name} `) && flaw.words.length > BADGES[FLAW]!.name!.length + 1, `the flaw's name and meaning: "${flaw.words}"`).toBe(true)
++      expect(own.findIndex((x) => x.of === `badge:${GOOD}`)).toBeLessThan(own.findIndex((x) => x.of === `badge:${FLAW}`))
++      expect(card.html).not.toMatch(/data-own="none"/)
++      // the other two cards are untouched by it
++      for (const other of offersOn(draftScreen(c)).filter((x) => x.id !== offered.id)) expect(ownOn(other.html).some((x) => x.of === `badge:${GOOD}` || x.of === `badge:${FLAW}`)).toBe(false)
++    } finally { row.badges.length = 0; row.badges.push(...was) }
++    expect(ownOn(offersOn(draftScreen(c)).find((x) => x.id === offered.id)!.html)).toEqual(before)
++  })
++
++  it('the page: a new run\'s first draft shows each card\'s own modifications and nothing worked out against its class', () => {
++    const out = execFileSync(process.execPath, ['tools/opening-loop-three.verify.mjs', 'BATTLE-SANDBOX.html'], { cwd: '../kingdom', encoding: 'utf8', maxBuffer: 1 << 24 })
++    expect(out).toMatch(/the first draft's three cards each said what it is in one line and listed only what is modified on that hero \([^)]*\)/)
++    expect(out).not.toMatch(/standard hero/)
++  }, 600000)
++})
+diff --git a/test/first-hero-own-positives-negatives.test.ts b/test/first-hero-own-positives-negatives.test.ts
+index 269353c..0cdc833 100644
+--- a/test/first-hero-own-positives-negatives.test.ts
++++ b/test/first-hero-own-positives-negatives.test.ts
+@@ -6,13 +6,23 @@
+ // to what you have there, but just about the positives and negatives it has, stats, and badges.").
+ //
+-// Expect: "On a new run each of the three first-hero cards shows its art, a one-line 'what it is', and only its own differences
+-// from its class's standard hero - a test builds the three cards and fails if any line on a card belongs to another hero or if
+-// a stat equal to the standard is listed; two different heroes show two different lists; the report names the cause of the
+-// six-positives fault."
++// The fault: each card listed what the FIRST HERO is given — Leadership, a positive badge, +2 Health, a stat point — the same
++// lines under each of the three, none of them told apart as that hero's own.
+ //
+-// The fault: each card listed what the FIRST HERO is given — Leadership, a positive badge, +2 Health, a stat point — which is
+-// rolled once for the pick and is the same whichever of the three is taken. So every card showed the same five or six lines,
+-// and none of them was that hero's. Those gifts are now said once, for the pick, above the three cards; under each card are
+-// its own differences from the standard hero of its class (src/content/class-standard.ts).
++// LAW 10 — REWRITTEN 2026-10-05, the same day, by kingdom.first-hero-card-only-what-is-modified (engine/DECISIONS.md 2026-10-05
++// 'seven answers: the first hero's card shows only what is modified; …' — Andrew, told that the card compares each hero, stat
++// by stat, with the value most of its class's four base heroes have, and asked whether that is the comparison he wants: "No,
++// it's just the things that get modified: the extra stats and the badges."). This file held, as this item first landed it:
++//   · "the standard hero of a class" — stat by stat, the value most of the class's base heroes have, a tie to the lower
++//     (src/content/class-standard.ts classStandardOf), and a hero's "own differences" from it (ownDifferencesOf);
++//   · each card listing exactly those differences ("+1 Precision" for the Hunter, "+2 Health" for the Iron Dwarf), three
++//     heroes that differ showing three different lists, and a hero equal to the standard saying "The same as a standard
++//     paladin in everything.";
++//   · what the first hero is given as one roll, the same for each of the three, all of it said once above the cards.
++// The first two pinned a comparison he did not mean, and are gone with the standard itself. The third is not this file's to
++// pin any more: whether a thing is said once for the pick or on a hero's own card follows how the first hero is rolled
++// (kingdom.first-hero-each-rolls-own-gifts). What a card lists now — only what is modified on that hero — is held by
++// test/first-hero-card-only-what-is-modified.test.ts. What still stands of this item, and is held here as it was: each card
++// says in one line what the hero is; the line said once for the pick is above the three cards, in the content's plain words,
++// Leadership first, and says nothing that any of the three was not given; and the later drafts are as they were.
+ import { describe, it, expect } from 'vitest'
+ import { execFileSync } from 'node:child_process'
+@@ -20,31 +30,11 @@ import { makeNewCampaign, performAdvanceOpening, performDraft, performOpeningStr
+ import { makeCtx, setCursor, type Ctx } from '../src/core/mutate.js'
+ import { joinsWithOf } from '../src/core/draft-modifiers.js'
+-import { HERO_POOL, type HeroRow } from '../src/content/heroes.js'
+ import { CLASSES } from '../src/content/classes.js'
+ import { FIRST_HERO, badgeLineOf, statLineOf } from '../src/content/crucible.js'
+-import { STAT_LABEL } from '../src/content/stat-labels.js'
+ import { ABBOTOWN_MAP } from '../src/content/conquest.js'
+-import { classStandardOf, ownDifferencesOf } from '../src/content/class-standard.js'
+ import { draftScreen } from '../src/ui/draft.js'
+-import { UNITS, encounterDef } from '../src/engine.js'
++import { encounterDef } from '../src/engine.js'
+ 
+ const SEEDS = [1, 2, 3, 5, 8, 11, 13, 15, 21, 34, 42, 55]
+-const HERO_CLASSES = CLASSES.filter((c) => c.group === 'hero').map((c) => c.id)
+-const text = (html: string) => html.replace(/<[^>]*>/g, ' ').replace(/&amp;/g, '&').replace(/\s+/g, ' ').trim()
+-const sign = (n: number) => `${n > 0 ? '+' : ''}${n}`
+-
+-// ── the standard, worked out here from the engine's rows and the pool — not through the code under test ──
+-const unit = (h: HeroRow) => UNITS[h.unitType] as unknown as Record<string, unknown>
+-const value = (h: HeroRow, stat: string): number => (stat === 'itemSlots' ? h.itemSlots : typeof unit(h)[stat] === 'number' ? (unit(h)[stat] as number) : 0)
+-const ofClass = (classId: string) => HERO_POOL.filter((h) => h.classes.includes(classId))
+-const statsOfClass = (classId: string) => [...new Set(['itemSlots', ...ofClass(classId).flatMap((h) => Object.entries(unit(h)).filter(([, v]) => typeof v === 'number').map(([k]) => k))])]
+-function standardOf(classId: string, stat: string): number {
+-  const values = ofClass(classId).map((h) => value(h, stat)), times = (v: number) => values.filter((x) => x === v).length
+-  const most = Math.max(...values.map(times))
+-  return Math.min(...values.filter((v) => times(v) === most))
+-}
+-/** A hero's own differences, as the card's words: "+1 Precision", "-1 Health" — keyed by stat. */
+-const differencesOf = (h: HeroRow): Record<string, number> =>
+-  Object.fromEntries(statsOfClass(h.classes[0]!).map((s): [string, number] => [s, value(h, s) - standardOf(h.classes[0]!, s)]).filter(([, n]) => n !== 0))
+ 
+ // ── the screen ──
+@@ -53,10 +43,7 @@ function offersOn(html: string): { id: string; html: string }[] {
+   return starts.map((m, i) => ({ id: m[1]!, html: html.slice(m.index!, i + 1 < starts.length ? starts[i + 1]!.index! : html.length) }))
+ }
+-const ownOn = (html: string) => [...html.matchAll(/<li class="(pos|neg)" data-own="([^"]+)"[^>]*>(.*?)<\/li>/g)].map((m) => ({ side: m[1]!, of: m[2]!, words: text(m[3]!) }))
+-const giftsOn = (html: string) => { const block = html.match(/<p class="firstGifts"[^>]*>(.*?)<\/p>/s); return block ? [...block[1]!.matchAll(/<span data-joins="([^"]+)">([^<]*)<\/span>/g)].map((m) => ({ of: m[1]!.split(' '), words: m[2]! })) : null }
+-function atFirstDraft(seed: number, offer?: readonly string[]): Ctx {
+-  const ctx = makeCtx(makeNewCampaign(seed)); performAdvanceOpening(ctx, 'test')
+-  if (offer) ctx.campaign.cursor.draftOffer = [...offer]
+-  return ctx
++const pickLineOn = (html: string) => { const block = html.match(/<p class="firstGifts"[^>]*>(.*?)<\/p>/s); return block ? [...block[1]!.matchAll(/<span data-joins="([^"]+)">([^<]*)<\/span>/g)].map((m) => ({ of: m[1]!.split(' '), words: m[2]! })) : null }
++function atFirstDraft(seed: number): Ctx {
++  const ctx = makeCtx(makeNewCampaign(seed)); performAdvanceOpening(ctx, 'test'); return ctx
+ }
+ function atSecondDraft(seed: number): Ctx {
+@@ -71,34 +58,6 @@ function atSecondDraft(seed: number): Ctx {
+ }
+ 
+-describe('kingdom.first-hero-own-positives-negatives — the standard hero of a class', () => {
+-  it('stat by stat, the standard is the value most of the class\'s base heroes have; a tie goes to the lower', () => {
+-    expect(HERO_CLASSES.length).toBe(6)
+-    for (const classId of HERO_CLASSES) {
+-      expect(ofClass(classId).length, `${classId} has base heroes`).toBeGreaterThan(1)
+-      const standard = classStandardOf(classId)
+-      expect(Object.keys(standard).sort(), `${classId}: every stat its heroes carry`).toEqual(statsOfClass(classId).sort())
+-      for (const stat of statsOfClass(classId)) expect(standard[stat], `${classId} ${stat} (${ofClass(classId).map((h) => value(h, stat)).join(', ')})`).toBe(standardOf(classId, stat))
+-    }
+-  })
+-
+-  it('a hero\'s own differences are its stats above and below that standard — never one equal to it — and the badges only it carries', () => {
+-    let differing = 0, same = 0
+-    for (const h of HERO_POOL) {
+-      const own = ownDifferencesOf(h)
+-      expect(own.classId).toBe(h.classes[0])
+-      expect(Object.fromEntries(own.stats.map((d) => [d.stat, d.amount])), h.id).toEqual(differencesOf(h))
+-      for (const d of own.stats) expect(d.amount, `${h.id} ${d.stat}: a stat equal to the standard is not a difference`).not.toBe(0)
+-      // a badge every hero of the class carries is the standard's too, and is not this hero's own
+-      const everyones = ofClass(h.classes[0]!).map((x) => (unit(x)['badges'] as string[] | undefined) ?? [])
+-      for (const b of own.badges) expect(everyones.every((list) => list.includes(b)), `${h.id}: ${b} is not carried by every ${h.classes[0]}`).toBe(false)
+-      if (own.stats.length || own.badges.length) differing++; else same++
+-    }
+-    expect(differing).toBeGreaterThan(0); expect(same, 'some base hero IS its class\'s standard').toBeGreaterThan(0)
+-  })
+-})
+-
+ describe('kingdom.first-hero-own-positives-negatives — the three cards of the first draft', () => {
+-  it('each card: its art, one line of what it is, then only its own differences from its class\'s standard — positives, then negatives', () => {
+-    let positives = 0, negatives = 0
++  it('each card: its art, then one line of what it is — its class in plain words', () => {
+     for (const seed of SEEDS) {
+       const ctx = atFirstDraft(seed), c = ctx.campaign, offers = offersOn(draftScreen(c))
+@@ -107,87 +66,31 @@ describe('kingdom.first-hero-own-positives-negatives — the three cards of the
+       for (const o of offers) {
+         const who = `seed ${seed}: ${o.id}`, row = listDraftOffers(c).find((h) => h.id === o.id)!
+-        // the card art's place, first on the card
+         expect(o.html, `${who}: its card art`).toMatch(/^<div class="opt[^>]*><div class="art">/)
+-        // one line of what it is: its class in plain words
+         const what = [...o.html.matchAll(/<small class="whatitis" data-what="([^"]+)">([^<]*)<\/small>/g)]
+         expect(what.length, `${who}: one line of what it is`).toBe(1)
+         const className = CLASSES.find((k) => k.id === row.classes[0])!.name.toLowerCase()
+         expect([what[0]![1], what[0]![2]], who).toEqual([row.classes[0], `${/^[aeiou]/.test(className) ? 'An' : 'A'} ${className}.`])
+-        // its own differences, and nothing else
+-        const want = differencesOf(row), own = ownOn(o.html)
+-        expect(own.filter((x) => x.of.startsWith('stat:')).map((x) => x.of.slice(5)).sort(), `${who}: exactly its own stats that differ from a standard ${className}`).toEqual(Object.keys(want).sort())
+-        for (const x of own.filter((y) => y.of.startsWith('stat:'))) {
+-          const stat = x.of.slice(5), amount = want[stat]!
+-          expect(amount, `${who}: ${stat} equals the standard and must not be listed`).not.toBe(0)
+-          expect(x.words, `${who}: ${stat}`).toBe(`${sign(amount)} ${STAT_LABEL[stat] ?? stat}`)
+-          expect(x.side, `${who}: ${x.words} is a ${amount > 0 ? 'positive' : 'negative'}`).toBe(amount > 0 ? 'pos' : 'neg')
+-          if (amount > 0) positives++; else negatives++
+-        }
+-        expect(own.filter((x) => x.of.startsWith('badge:')).map((x) => x.of.slice(6)).sort(), `${who}: exactly its own badges`).toEqual([...ownDifferencesOf(row).badges].sort())
+-        // positives stand before negatives
+-        expect(own.map((x) => x.side).join(' '), `${who}: positives, then negatives`).toMatch(/^(pos ?)*(neg ?)*$/)
+-        // a hero equal to the standard in everything says so, in a line — and lists nothing
+-        const sameLine = o.html.match(/<p class="own same" data-own="same">([^<]*)<\/p>/)
+-        if (own.length === 0) expect(sameLine?.[1], `${who}: says it is the standard`).toBe(`The same as a standard ${className} in everything.`)
+-        else expect(sameLine, `${who}: differs, so does not say it is the standard`).toBeNull()
+-        // no line of what the FIRST HERO is given is under a card: those are nobody's own
+-        expect(o.html, `${who}: the first hero's gifts are not listed under a card`).not.toMatch(/data-joins=|class="joins"/)
+-        for (const j of joinsWithOf(draftedHeroOf(c, o.id).drafted!, FIRST_HERO.healthSource)) {
+-          const words = j.badge ? badgeLineOf(j.badge) : statLineOf(j.stat!)
+-          expect(text(o.html).includes(words), `${who}: "${words}" is the pick's, not this card's`).toBe(false)
+-        }
+       }
+     }
+-    expect(positives, 'the seeds show positives').toBeGreaterThan(0); expect(negatives, 'and negatives').toBeGreaterThan(0)
+   })
+ 
+-  it('no line on a card belongs to another hero: three heroes that differ show three different lists', () => {
+-    // three heroes of three classes, each with differences of its own, put on the offer
+-    const pick = (classId: string, of: (d: Record<string, number>) => boolean) => HERO_POOL.find((h) => h.classes[0] === classId && of(differencesOf(h)))!
+-    const some = (d: Record<string, number>) => Object.keys(d).length > 0
+-    const three = [pick('class.ranger', some), pick('class.warrior', some), pick('class.priest', (d) => Object.values(d).some((n) => n < 0))]
+-    expect(three.every(Boolean)).toBe(true)
+-    const ctx = atFirstDraft(11, three.map((h) => h.id)), offers = offersOn(draftScreen(ctx.campaign))
+-    const lists = offers.map((o) => ownOn(o.html).map((x) => `${x.of}=${x.words}`).join('; '))
+-    expect(new Set(lists).size, `three different lists: ${lists.join(' | ')}`).toBe(3)
+-    for (const [i, o] of offers.entries()) {
+-      const mine = differencesOf(three[i]!)
+-      for (const x of ownOn(o.html)) expect(x.words, `${o.id}: "${x.words}" is its own`).toBe(`${sign(mine[x.of.slice(5)]!)} ${STAT_LABEL[x.of.slice(5)] ?? x.of.slice(5)}`)
+-    }
+-    // and across the seeds: whenever two offered heroes differ from their standards differently, their cards differ
++  it('what is said once for the pick is above the three cards, in the content\'s plain words, Leadership first — and says nothing any of the three was not given', () => {
+     for (const seed of SEEDS) {
+-      const c = atFirstDraft(seed).campaign, cards = offersOn(draftScreen(c))
+-      for (const a of cards) for (const b of cards) {
+-        if (a.id >= b.id) continue
+-        const A = listDraftOffers(c).find((h) => h.id === a.id)!, B = listDraftOffers(c).find((h) => h.id === b.id)!
+-        const differ = JSON.stringify(Object.entries(differencesOf(A)).sort()) !== JSON.stringify(Object.entries(differencesOf(B)).sort())
+-        expect(JSON.stringify(ownOn(a.html)) !== JSON.stringify(ownOn(b.html)), `seed ${seed}: ${a.id} and ${b.id}`).toBe(differ)
+-      }
+-    }
+-  })
+-
+-  it('a hero that is its class\'s standard in everything says so in one line', () => {
+-    const standard = HERO_POOL.find((h) => Object.keys(differencesOf(h)).length === 0 && ownDifferencesOf(h).badges.length === 0)!
+-    expect(standard, 'a base hero that is the standard').toBeTruthy()
+-    const others = HERO_POOL.filter((h) => h.classes[0] !== standard.classes[0]).slice(0, 2)
+-    const o = offersOn(draftScreen(atFirstDraft(5, [standard.id, ...others.map((h) => h.id)]).campaign)).find((x) => x.id === standard.id)!
+-    const className = CLASSES.find((k) => k.id === standard.classes[0])!.name.toLowerCase()
+-    expect(text(o.html)).toContain(`The same as a standard ${className} in everything.`)
+-    expect(ownOn(o.html)).toEqual([])
+-  })
+-
+-  it('what the first hero is given — whichever of the three it is — is said once, for the pick, above the three cards', () => {
+-    for (const seed of SEEDS) {
+-      const c = atFirstDraft(seed).campaign, html = draftScreen(c), gifts = giftsOn(html)
+-      expect(gifts, `seed ${seed}: one line for the pick`).not.toBeNull()
++      const c = atFirstDraft(seed).campaign, html = draftScreen(c), pick = pickLineOn(html)
++      expect(pick, `seed ${seed}: one line for the pick`).not.toBeNull()
+       expect(html.match(/class="firstGifts"/g)!.length).toBe(1)
+       expect(html.indexOf('class="firstGifts"'), 'above the three cards').toBeLessThan(html.indexOf('data-act="draft"'))
+-      // the same things for all three, each said once, in the content's plain words — Leadership first
+       const per = listDraftOffers(c).map((h) => joinsWithOf(draftedHeroOf(c, h.id).drafted!, FIRST_HERO.healthSource))
+-      for (const other of per) expect(other.map((j) => j.key), `seed ${seed}: the gifts are the pick's — the same for each of the three`).toEqual(per[0]!.map((j) => j.key))
+-      expect(gifts!.flatMap((g) => g.of).sort()).toEqual(per[0]!.map((j) => j.key).sort())
+-      for (const j of per[0]!) expect(gifts!.filter((g) => g.of.includes(j.key)).map((g) => g.words), `seed ${seed}: ${j.key}`).toEqual([j.badge ? badgeLineOf(j.badge) : statLineOf(j.stat!)])
+-      expect(new Set(gifts!.map((g) => g.words)).size, 'no line twice').toBe(gifts!.length)
+-      expect(gifts![0]!.words).toBe('Born leader')
++      for (const line of pick!) for (const key of line.of) {
++        for (const given of per) {
++          const j = given.find((x) => x.key === key)
++          expect(j, `seed ${seed}: ${key} is said for the pick, so each of the three was given it`).toBeTruthy()
++          expect(line.words, `seed ${seed}: ${key} in the content's plain words`).toBe(j!.badge ? badgeLineOf(j!.badge) : statLineOf(j!.stat!))
++        }
++      }
++      expect(new Set(pick!.map((g) => g.words)).size, 'no line twice').toBe(pick!.length)
++      expect(pick![0]!.words).toBe('Born leader')
++      // no card repeats a thing said for the pick
++      for (const o of offersOn(html)) expect(o.html, `seed ${seed}: ${o.id}`).not.toMatch(/data-joins=|class="joins"/)
+     }
+   })
+@@ -198,5 +101,5 @@ describe('kingdom.first-hero-own-positives-negatives — the three cards of the
+       expect(offers.length).toBe(3)
+       expect(html).not.toMatch(/class="firstGifts"|class="whatitis"|data-own=/)
+-      for (const o of offers) expect(o.html).toMatch(/data-stats="[^"]+" *>|data-stats="/)
++      for (const o of offers) expect(o.html).toMatch(/data-stats="/)
+       // the later drafts never shared the fault: each offer shows its own rolled modifiers
+       const rolled = offers.map((o) => { const d = draftedHeroOf(c, o.id).drafted!; return JSON.stringify([d.badges, d.rolls]) })
+@@ -206,7 +109,8 @@ describe('kingdom.first-hero-own-positives-negatives — the three cards of the
+   })
+ 
+-  it('the page: a new run\'s first draft shows each card\'s own differences and the pick\'s gifts once', () => {
++  it('the page: a new run\'s first draft shows each card\'s one line of what it is, and the pick\'s line once above the three', () => {
+     const out = execFileSync(process.execPath, ['tools/opening-loop-three.verify.mjs', 'BATTLE-SANDBOX.html'], { cwd: '../kingdom', encoding: 'utf8', maxBuffer: 1 << 24 })
+-    expect(out).toMatch(/the first draft's three cards each said what it is in one line and listed only its own differences from its class's standard hero \([^)]*\); what the first hero is given was said once, above the three \([^)]*\)/)
++    expect(out).toMatch(/the first draft's three cards each said what it is in one line/)
++    expect(out).toMatch(/said once, above the three \([^)]*\)/)
+   }, 600000)
+ })
+diff --git a/test/opening-first-hero-class-line.test.ts b/test/opening-first-hero-class-line.test.ts
+index 00d3be4..368e3e6 100644
+--- a/test/opening-first-hero-class-line.test.ts
++++ b/test/opening-first-hero-class-line.test.ts
+@@ -235,5 +235,7 @@ describe('kingdom.opening-first-hero-class-line — the first draft says what th
+     const out = execFileSync(process.execPath, ['tools/opening-loop-three.verify.mjs', 'BATTLE-SANDBOX.html'], { cwd: '../kingdom', encoding: 'utf8', maxBuffer: 1 << 24 })
+     expect(out).toMatch(/every draft card showed the class line of its own class \(9 cards\); /)
+-    expect(out).toMatch(/what the first hero is given was said once, above the three \(\d+ plain lines — one per badge, the Health as "Tougher than most", each rolled point — no stat table\)/)
++    // (Law 10, 2026-10-05, kingdom.first-hero-card-only-what-is-modified: the sentence named "what the first hero is given" — all of it;
++    // what is said for the pick is what every one of the three is given, however the first hero is rolled)
++    expect(out).toMatch(/what every one of the three is given was said once, above the three \(\d+ plain lines, "Born leader" first — no stat table\)/)
+   }, 600000)
+ })
+```
+</details>
+
+## kingdom.first-hero-each-rolls-own-gifts — LANDED `1c0bc33` **NEEDS REVIEW**
+2026-10-05 10:21
+
+  PASS  dependencies landed
+  WARN  not already decided — 2 candidate ruling(s) — READ BEFORE ASKING: ..\GLOSSARY.md:416 · SWITCHES.md:2188
+  PASS  typecheck
+  PASS  the item's own tests — test/opening-draft-modifiers.test.ts, test/first-hero-each-rolls-own-gifts.test.ts, test/opening-first-hero-class-line.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — kingdom/test/fixtures/opening-draft-each-rolls-own.json, kingdom/test/opening-draft-modifiers.test.ts, kingdom/test/first-hero-each-rolls-own-gifts.test.ts, kingdom/test/opening-first-hero-class-line.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/opening-draft-modifiers.test.ts (-9), test/opening-first-hero-class-line.test.ts (-7) — will land FLAGGED for review
+  SKIPPED  control battles unchanged — engine code f48a625458 and the content pack are the ones the control battles last passed on (2026-10-05 06:05, gate content.elfbow-double-shot-one-target --land, in HBT-worker-engine) — not run
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+dbbaf6a
+
+diff --git a/test/fixtures/opening-draft-each-rolls-own.json b/test/fixtures/opening-draft-each-rolls-own.json
+new file mode 100644
+index 0000000..6188145
+--- /dev/null
++++ b/test/fixtures/opening-draft-each-rolls-own.json
+@@ -0,0 +1,1659 @@
++{
++ "sourceCommit": "kingdom.first-hero-each-rolls-own-gifts (2026-10-05): each offered first hero rolls its own gifts",
++ "note": "draftedHeroOf for every offered hero at the first draft and (the first offer taken) at the draft after it, per run seed.",
++ "runs": [
++  {
++   "seed": 1,
++   "first": [
++    {
++     "id": "hero.base.priest-scantily",
++     "badges": [
++      "badge.leadership",
++      "badge.marksman"
++     ],
++     "itemSlots": 1,
++     "drafted": {
++      "badges": [
++       "badge.leadership",
++       "badge.marksman"
++      ],
++      "rolls": [
++       {
++        "stat": "precision",
++        "amount": 1
++       },
++       {
++        "stat": "toughness",
++        "amount": 1
++       }
++      ],
++      "mods": [
++       {
++        "stat": "maxHp",
++        "add": 2,
++        "source": "rule.opening-first-hero"
++       },
++       {
++        "stat": "precision",
++        "add": 1,
++        "source": "rule.crucible-roll"
++       }
++      ],
++      "unfielded": [
++       {
++        "stat": "toughness",
++        "amount": 1
++       }
++      ]
++     }
++    },
++    {
++     "id": "hero.base.paladin-dark",
++     "badges": [
++      "badge.leadership",
++      "badge.killer-instinct"
++     ],
++     "itemSlots": 2,
++     "drafted": {
++      "badges": [
++       "badge.leadership",
++       "badge.killer-instinct"
++      ],
++      "rolls": [
++       {
++        "stat": "staminaMax",
++        "amount": 1
++       },
++       {
++        "stat": "precision",
++        "amount": 1
++       }
++      ],
++      "mods": [
++       {
++        "stat": "maxHp",
++        "add": 2,
++        "source": "rule.opening-first-hero"
++       },
++       {
++        "stat": "maxStamina",
++        "add": 1,
++        "source": "rule.crucible-roll"
++       },
++       {
++        "stat": "precision",
++        "add": 1,
++        "source": "rule.crucible-roll"
++       }
++      ],
++      "unfielded": []
++     }
++    },
++    {
++     "id": "hero.base.paladin-shiney",
++     "badges": [
++      "badge.leadership",
++      "badge.night-vision"
++     ],
++     "itemSlots": 2,
++     "drafted": {
++      "badges": [
++       "badge.leadership",
++       "badge.night-vision"
++      ],
++      "rolls": [
++       {
++        "stat": "precision",
++        "amount": 1
++       },
++       {
++        "stat": "dodge",
++        "amount": 5
++       }
++      ],
++      "mods": [
++       {
++        "stat": "maxHp",
++        "add": 2,
++        "source": "rule.opening-first-hero"
++       },
++       {
++        "stat": "precision",
++        "add": 1,
++        "source": "rule.crucible-roll"
++       },
++       {
++        "stat": "dodge",
++        "add": 5,
++        "source": "rule.crucible-roll"
++       }
++      ],
++      "unfielded": []
++     }
++    }
++   ],
++   "second": [
++    {
++     "id": "hero.base.rogue-skull",
++     "badges": [
++      "badge.killer-instinct",
++      "badge.clumsy"
++     ],
++     "itemSlots": 3,
++     "drafted": {
++      "badges": [
++       "badge.killer-instinct",
++       "badge.clumsy"
++      ],
++      "rolls": [
++       {
++        "stat": "magic",
++        "amount": 1
++       },
++       {
++        "stat": "itemSlots",
++        "amount": 1
++       }
++      ],
++      "mods": [
++       {
++        "stat": "magic",
++        "add": 1,
++        "source": "rule.crucible-roll"
++       }
++      ],
++      "unfielded": [
++       {
++        "stat": "itemSlots",
++        "amount": 1
++       }
++      ]
++     }
++    },
++    {
++     "id": "hero.base.paladin-shiney",
++     "badges": [
++      "badge.spiritual"
++     ],
++     "itemSlots": 2,
++     "drafted": {
++      "badges": [
++       "badge.spiritual"
++      ],
++      "rolls": [
++       {
++        "stat": "precision",
++        "amount": 1
++       }
++      ],
++      "mods": [
++       {
++        "stat": "precision",
++        "add": 1,
++        "source": "rule.crucible-roll"
++       }
++      ],
++      "unfielded": []
++     }
++    },
++    {
++     "id": "hero.base.rogue-rose",
++     "badges": [
++      "badge.fearful",
++      "badge.scarred-hide"
++     ],
++     "itemSlots": 2,
++     "drafted": {
++      "badges": [
++       "badge.fearful",
++       "badge.scarred-hide"
++      ],
++      "rolls": [
++       {
++        "stat": "reach",
++        "amount": -1
++       }
++      ],
++      "mods": [
++       {
++        "stat": "reach",
++        "add": -1,
++        "source": "rule.crucible-roll"
++       }
++      ],
++      "unfielded": []
++     }
++    }
++   ]
++  },
++  {
++   "seed": 2,
++   "first": [
++    {
++     "id": "hero.base.priest-robes",
++     "badges": [
++      "badge.leadership",
++      "badge.strong"
++     ],
++     "itemSlots": 2,
++     "drafted": {
++      "badges": [
++       "badge.leadership",
++       "badge.strong"
++      ],
++      "rolls": [
++       {
++        "stat": "itemSlots",
++        "amount": 1
++       }
++      ],
++      "mods": [
++       {
++        "stat": "maxHp",
++        "add": 2,
++        "source": "rule.opening-first-hero"
++       }
++      ],
++      "unfielded": [
++       {
++        "stat": "itemSlots",
++        "amount": 1
++       }
++      ]
++     }
++    },
++    {
++     "id": "hero.base.paladin-smug",
++     "badges": [
++      "badge.leadership",
++      "badge.veteran"
++     ],
++     "itemSlots": 2,
++     "drafted": {
++      "badges": [
++       "badge.leadership",
++       "badge.veteran"
++      ],
++      "rolls": [
++       {
++        "stat": "health",
++        "amount": 2
++       }
++      ],
++      "mods": [
++       {
++        "stat": "maxHp",
++        "add": 2,
++        "source": "rule.opening-first-hero"
++       },
++       {
++        "stat": "maxHp",
++        "add": 2,
++        "source": "rule.crucible-roll"
++       }
++      ],
++      "unfielded": []
++     }
++    },
++    {
++     "id": "hero.base.ranger-aggressive",
++     "badges": [
++      "badge.leadership",
++      "badge.night-vision"
++     ],
++     "itemSlots": 1,
++     "drafted": {
++      "badges": [
++       "badge.leadership",
++       "badge.night-vision"
++      ],
++      "rolls": [
++       {
++        "stat": "health",
++        "amount": 2
++       }
++      ],
++      "mods": [
++       {
++        "stat": "maxHp",
++        "add": 2,
++        "source": "rule.opening-first-hero"
++       },
++       {
++        "stat": "maxHp",
++        "add": 2,
++        "source": "rule.crucible-roll"
++       }
++      ],
++      "unfielded": []
++     }
++    }
++   ],
++   "second": [
++    {
++     "id": "hero.base.mage-thinking",
++     "badges": [
++      "badge.dim-sighted"
++     ],
++     "itemSlots": 1,
++     "drafted": {
++      "badges": [
++       "badge.dim-sighted"
++      ],
++      "rolls": [
++       {
++        "stat": "dodge",
++        "amount": 5
++       }
++      ],
++      "mods": [
++       {
++        "stat": "dodge",
++        "add": 5,
++        "source": "rule.crucible-roll"
++       }
++      ],
++      "unfielded": []
++     }
++    },
++    {
++     "id": "hero.base.rogue-raven",
++     "badges": [
++      "badge.scarred-hide",
++      "badge.heavy-footed"
++     ],
++     "itemSlots": 2,
++     "drafted": {
++      "badges": [
++       "badge.scarred-hide",
++       "badge.heavy-footed"
++      ],
++      "rolls": [],
++      "mods": [],
++      "unfielded": []
++     }
++    },
++    {
++     "id": "hero.base.paladin-shiney",
++     "badges": [
++      "badge.thick-skinned"
++     ],
++     "itemSlots": 2,
++     "drafted": {
++      "badges": [
++       "badge.thick-skinned"
++      ],
++      "rolls": [
++       {
++        "stat": "movement",
++        "amount": 1
++       },
++       {
++        "stat": "precision",
++        "amount": 1
++       }
++      ],
++      "mods": [
++       {
++        "stat": "movement",
++        "add": 1,
++        "source": "rule.crucible-roll"
++       },
++       {
++        "stat": "precision",
++        "add": 1,
++        "source": "rule.crucible-roll"
++       }
++      ],
++      "unfielded": []
++     }
++    }
++   ]
++  },
++  {
++   "seed": 3,
++   "first": [
++    {
++     "id": "hero.base.mage-fireaura",
++     "badges": [
++      "badge.leadership",
++      "badge.veteran",
++      "badge.killer-instinct"
++     ],
++     "itemSlots": 1,
++     "drafted": {
++      "badges": [
++       "badge.leadership",
++       "badge.veteran",
++       "badge.killer-instinct"
++      ],
++      "rolls": [
++       {
++        "stat": "precision",
++        "amount": 1
++       }
++      ],
++      "mods": [
++       {
++        "stat": "maxHp",
++        "add": 2,
++        "source": "rule.opening-first-hero"
++       },
++       {
++        "stat": "precision",
++        "add": 1,
++        "source": "rule.crucible-roll"
++       }
++      ],
++      "unfielded": []
++     }
++    },
++    {
++     "id": "hero.base.mage-thinking",
++     "badges": [
++      "badge.leadership",
++      "badge.huge"
++     ],
++     "itemSlots": 2,
++     "drafted": {
++      "badges": [
++       "badge.leadership",
++       "badge.huge"
++      ],
++      "rolls": [
++       {
++        "stat": "itemSlots",
++        "amount": 1
++       }
++      ],
++      "mods": [
++       {
++        "stat": "maxHp",
++        "add": 2,
++        "source": "rule.opening-first-hero"
++       }
++      ],
++      "unfielded": [
++       {
++        "stat": "itemSlots",
++        "amount": 1
++       }
++      ]
++     }
++    },
++    {
++     "id": "hero.base.paladin-hunk",
++     "badges": [
++      "badge.leadership",
++      "badge.mystic",
++      "badge.uncanny"
++     ],
++     "itemSlots": 2,
++     "drafted": {
++      "badges": [
++       "badge.leadership",
++       "badge.mystic",
++       "badge.uncanny"
++      ],
++      "rolls": [
++       {
++        "stat": "staminaMax",
++        "amount": 1
++       }
++      ],
++      "mods": [
++       {
++        "stat": "maxHp",
++        "add": 2,
++        "source": "rule.opening-first-hero"
++       },
++       {
++        "stat": "maxStamina",
++        "add": 1,
++        "source": "rule.crucible-roll"
++       }
++      ],
++      "unfielded": []
++     }
++    }
++   ],
++   "second": [
++    {
++     "id": "hero.base.rogue-raven",
++     "badges": [
++      "badge.scarred-hide"
++     ],
++     "itemSlots": 2,
++     "drafted": {
++      "badges": [
++       "badge.scarred-hide"
++      ],
++      "rolls": [],
++      "mods": [],
++      "unfielded": []
++     }
++    },
++    {
++     "id": "hero.base.ranger-nature",
++     "badges": [
++      "badge.dim-sighted",
++      "badge.resolve",
++      "badge.hunter"
++     ],
++     "itemSlots": 1,
++     "drafted": {
++      "badges": [
++       "badge.dim-sighted",
++       "badge.resolve",
++       "badge.hunter"
++      ],
++      "rolls": [
++       {
++        "stat": "vision",
++        "amount": 1
++       }
++      ],
++      "mods": [
++       {
++        "stat": "vision",
++        "add": 1,
++        "source": "rule.crucible-roll"
++       }
++      ],
++      "unfielded": []
++     }
++    },
++    {
++     "id": "hero.base.ranger-aggressive",
++     "badges": [
++      "badge.born-archer"
++     ],
++     "itemSlots": 1,
++     "drafted": {
++      "badges": [
++       "badge.born-archer"
++      ],
++      "rolls": [
++       {
++        "stat": "reach",
++        "amount": 1
++       },
++       {
++        "stat": "strength",
++        "amount": 1
++       }
++      ],
++      "mods": [
++       {
++        "stat": "reach",
++        "add": 1,
++        "source": "rule.crucible-roll"
++       },
++       {
++        "stat": "strength",
++        "add": 1,
++        "source": "rule.crucible-roll"
++       }
++      ],
++      "unfielded": []
++     }
++    }
++   ]
++  },
++  {
++   "seed": 5,
++   "first": [
++    {
++     "id": "hero.base.ranger-scantily",
++     "badges": [
++      "badge.leadership",
++      "badge.accurate"
++     ],
++     "itemSlots": 1,
++     "drafted": {
++      "badges": [
++       "badge.leadership",
++       "badge.accurate"
++      ],
++      "rolls": [
++       {
++        "stat": "magic",
++        "amount": 1
++       }
++      ],
++      "mods": [
++       {
++        "stat": "maxHp",
++        "add": 2,
++        "source": "rule.opening-first-hero"
++       },
++       {
++        "stat": "magic",
++        "add": 1,
++        "source": "rule.crucible-roll"
++       }
++      ],
++      "unfielded": []
++     }
++    },
++    {
++     "id": "hero.base.ranger-nature",
++     "badges": [
++      "badge.leadership",
++      "badge.born-archer"
++     ],
++     "itemSlots": 1,
++     "drafted": {
++      "badges": [
++       "badge.leadership",
++       "badge.born-archer"
++      ],
++      "rolls": [
++       {
++        "stat": "armor",
++        "amount": 1
++       }
++      ],
++      "mods": [
++       {
++        "stat": "maxHp",
++        "add": 2,
++        "source": "rule.opening-first-hero"
++       },
++       {
++        "stat": "armor",
++        "add": 1,
++        "source": "rule.crucible-roll"
++       }
++      ],
++      "unfielded": []
++     }
++    },
++    {
++     "id": "hero.base.warrior-iron",
++     "badges": [
++      "badge.leadership",
++      "badge.thick-skinned"
++     ],
++     "itemSlots": 2,
++     "drafted": {
++      "badges": [
++       "badge.leadership",
++       "badge.thick-skinned"
++      ],
++      "rolls": [
++       {
++        "stat": "health",
++        "amount": 2
++       },
++       {
++        "stat": "spirit",
++        "amount": 1
++       }
++      ],
++      "mods": [
++       {
++        "stat": "maxHp",
++        "add": 2,
++        "source": "rule.opening-first-hero"
++       },
++       {
++        "stat": "maxHp",
++        "add": 2,
++        "source": "rule.crucible-roll"
++       },
++       {
++        "stat": "spirit",
++        "add": 1,
++        "source": "rule.crucible-roll"
++       }
++      ],
++      "unfielded": []
++     }
++    }
++   ],
++   "second": [
++    {
++     "id": "hero.base.rogue-skull",
++     "badges": [
++      "badge.mystic"
++     ],
++     "itemSlots": 2,
++     "drafted": {
++      "badges": [
++       "badge.mystic"
++      ],
++      "rolls": [
++       {
++        "stat": "health",
++        "amount": 2
++       },
++       {
++        "stat": "staminaMax",
++        "amount": -1
++       }
++      ],
++      "mods": [
++       {
++        "stat": "maxHp",
++        "add": 2,
++        "source": "rule.crucible-roll"
++       },
++       {
++        "stat": "maxStamina",
++        "add": -1,
++        "source": "rule.crucible-roll"
++       }
++      ],
++      "unfielded": []
++     }
++    },
++    {
++     "id": "hero.base.warrior-brawler",
++     "badges": [
++      "badge.veteran"
++     ],
++     "itemSlots": 2,
++     "drafted": {
++      "badges": [
++       "badge.veteran"
++      ],
++      "rolls": [
++       {
++        "stat": "dodge",
++        "amount": 5
++       },
++       {
++        "stat": "health",
++        "amount": 2
++       }
++      ],
++      "mods": [
++       {
++        "stat": "dodge",
++        "add": 5,
++        "source": "rule.crucible-roll"
++       },
++       {
++        "stat": "maxHp",
++        "add": 2,
++        "source": "rule.crucible-roll"
++       }
++      ],
++      "unfielded": []
++     }
++    },
++    {
++     "id": "hero.base.priest-robes",
++     "badges": [
++      "badge.uncanny"
++     ],
++     "itemSlots": 1,
++     "drafted": {
++      "badges": [
++       "badge.uncanny"
++      ],
++      "rolls": [
++       {
++        "stat": "dodge",
++        "amount": 5
++       },
++       {
++        "stat": "precision",
++        "amount": 1
++       },
++       {
++        "stat": "strength",
++        "amount": -1
++       }
++      ],
++      "mods": [
++       {
++        "stat": "dodge",
++        "add": 5,
++        "source": "rule.crucible-roll"
++       },
++       {
++        "stat": "precision",
++        "add": 1,
++        "source": "rule.crucible-roll"
++       },
++       {
++        "stat": "strength",
++        "add": -1,
++        "source": "rule.crucible-roll"
++       }
++      ],
++      "unfielded": []
++     }
++    }
++   ]
++  },
++  {
++   "seed": 11,
++   "first": [
++    {
++     "id": "hero.base.mage-sexy",
++     "badges": [
++      "badge.leadership",
++      "badge.resolve"
++     ],
++     "itemSlots": 2,
++     "drafted": {
++      "badges": [
++       "badge.leadership",
++       "badge.resolve"
++      ],
++      "rolls": [
++       {
++        "stat": "itemSlots",
++        "amount": 1
++       }
++      ],
++      "mods": [
++       {
++        "stat": "maxHp",
++        "add": 2,
++        "source": "rule.opening-first-hero"
++       }
++      ],
++      "unfielded": [
++       {
++        "stat": "itemSlots",
++        "amount": 1
++       }
++      ]
++     }
++    },
++    {
++     "id": "hero.base.warrior-brawler",
++     "badges": [
++      "badge.leadership",
++      "badge.accurate"
++     ],
++     "itemSlots": 2,
++     "drafted": {
++      "badges": [
++       "badge.leadership",
++       "badge.accurate"
++      ],
++      "rolls": [
++       {
++        "stat": "accuracy",
++        "amount": 5
++       }
++      ],
++      "mods": [
++       {
++        "stat": "maxHp",
++        "add": 2,
++        "source": "rule.opening-first-hero"
++       },
++       {
++        "stat": "accuracy",
++        "add": 5,
++        "source": "rule.crucible-roll"
++       }
++      ],
++      "unfielded": []
++     }
++    },
++    {
++     "id": "hero.base.warrior-fearsome",
++     "badges": [
++      "badge.leadership",
++      "badge.strong"
++     ],
++     "itemSlots": 2,
++     "drafted": {
++      "badges": [
++       "badge.leadership",
++       "badge.strong"
++      ],
++      "rolls": [
++       {
++        "stat": "strength",
++        "amount": 1
++       },
++       {
++        "stat": "armor",
++        "amount": 1
++       }
++      ],
++      "mods": [
++       {
++        "stat": "maxHp",
++        "add": 2,
++        "source": "rule.opening-first-hero"
++       },
++       {
++        "stat": "strength",
++        "add": 1,
++        "source": "rule.crucible-roll"
++       },
++       {
++        "stat": "armor",
++        "add": 1,
++        "source": "rule.crucible-roll"
++       }
++      ],
++      "unfielded": []
++     }
++    }
++   ],
++   "second": [
++    {
++     "id": "hero.base.warrior-iron",
++     "badges": [
++      "badge.mystic"
++     ],
++     "itemSlots": 2,
++     "drafted": {
++      "badges": [
++       "badge.mystic"
++      ],
++      "rolls": [
++       {
++        "stat": "accuracy",
++        "amount": 5
++       },
++       {
++        "stat": "crit",
++        "amount": 2
++       }
++      ],
++      "mods": [
++       {
++        "stat": "accuracy",
++        "add": 5,
++        "source": "rule.crucible-roll"
++       },
++       {
++        "stat": "crit",
++        "add": 2,
++        "source": "rule.crucible-roll"
++       }
++      ],
++      "unfielded": []
++     }
++    },
++    {
++     "id": "hero.base.rogue-raven",
++     "badges": [
++      "badge.born-archer",
++      "badge.slow"
++     ],
++     "itemSlots": 2,
++     "drafted": {
++      "badges": [
++       "badge.born-archer",
++       "badge.slow"
++      ],
++      "rolls": [
++       {
++        "stat": "staminaMax",
++        "amount": 1
++       },
++       {
++        "stat": "reach",
++        "amount": 1
++       },
++       {
++        "stat": "toughness",
++        "amount": -1
++       }
++      ],
++      "mods": [
++       {
++        "stat": "maxStamina",
++        "add": 1,
++        "source": "rule.crucible-roll"
++       },
++       {
++        "stat": "reach",
++        "add": 1,
++        "source": "rule.crucible-roll"
++       }
++      ],
++      "unfielded": [
++       {
++        "stat": "toughness",
++        "amount": -1
++       }
++      ]
++     }
++    },
++    {
++     "id": "hero.base.warrior-barbarian",
++     "badges": [
++      "badge.veteran"
++     ],
++     "itemSlots": 2,
++     "drafted": {
++      "badges": [
++       "badge.veteran"
++      ],
++      "rolls": [
++       {
++        "stat": "dodge",
++        "amount": 5
++       },
++       {
++        "stat": "vision",
++        "amount": 1
++       }
++      ],
++      "mods": [
++       {
++        "stat": "dodge",
++        "add": 5,
++        "source": "rule.crucible-roll"
++       },
++       {
++        "stat": "vision",
++        "add": 1,
++        "source": "rule.crucible-roll"
++       }
++      ],
++      "unfielded": []
++     }
++    }
++   ]
++  },
++  {
++   "seed": 15,
++   "first": [
++    {
++     "id": "hero.base.paladin-hunk",
++     "badges": [
++      "badge.leadership",
++      "badge.lightning-fast"
++     ],
++     "itemSlots": 2,
++     "drafted": {
++      "badges": [
++       "badge.leadership",
++       "badge.lightning-fast"
++      ],
++      "rolls": [
++       {
++        "stat": "magic",
++        "amount": 1
++       }
++      ],
++      "mods": [
++       {
++        "stat": "maxHp",
++        "add": 2,
++        "source": "rule.opening-first-hero"
++       },
++       {
++        "stat": "magic",
++        "add": 1,
++        "source": "rule.crucible-roll"
++       }
++      ],
++      "unfielded": []
++     }
++    },
++    {
++     "id": "hero.base.ranger-scantily",
++     "badges": [
++      "badge.leadership",
++      "badge.hunter"
++     ],
++     "itemSlots": 1,
++     "drafted": {
++      "badges": [
++       "badge.leadership",
++       "badge.hunter"
++      ],
++      "rolls": [
++       {
++        "stat": "luck",
++        "amount": 2
++       }
++      ],
++      "mods": [
++       {
++        "stat": "maxHp",
++        "add": 2,
++        "source": "rule.opening-first-hero"
++       },
++       {
++        "stat": "luck",
++        "add": 2,
++        "source": "rule.crucible-roll"
++       }
++      ],
++      "unfielded": []
++     }
++    },
++    {
++     "id": "hero.base.warrior-iron",
++     "badges": [
++      "badge.leadership",
++      "badge.lightning-fast"
++     ],
++     "itemSlots": 2,
++     "drafted": {
++      "badges": [
++       "badge.leadership",
++       "badge.lightning-fast"
++      ],
++      "rolls": [
++       {
++        "stat": "precision",
++        "amount": 1
++       }
++      ],
++      "mods": [
++       {
++        "stat": "maxHp",
++        "add": 2,
++        "source": "rule.opening-first-hero"
++       },
++       {
++        "stat": "precision",
++        "add": 1,
++        "source": "rule.crucible-roll"
++       }
++      ],
++      "unfielded": []
++     }
++    }
++   ],
++   "second": [
++    {
++     "id": "hero.base.rogue-raven",
++     "badges": [
++      "badge.veteran",
++      "badge.heavy-footed"
++     ],
++     "itemSlots": 2,
++     "drafted": {
++      "badges": [
++       "badge.veteran",
++       "badge.heavy-footed"
++      ],
++      "rolls": [
++       {
++        "stat": "dodge",
++        "amount": 5
++       }
++      ],
++      "mods": [
++       {
++        "stat": "dodge",
++        "add": 5,
++        "source": "rule.crucible-roll"
++       }
++      ],
++      "unfielded": []
++     }
++    },
++    {
++     "id": "hero.base.priest-scantily",
++     "badges": [
++      "badge.slow"
++     ],
++     "itemSlots": 0,
++     "drafted": {
++      "badges": [
++       "badge.slow"
++      ],
++      "rolls": [
++       {
++        "stat": "precision",
++        "amount": 1
++       },
++       {
++        "stat": "itemSlots",
++        "amount": -1
++       }
++      ],
++      "mods": [
++       {
++        "stat": "precision",
++        "add": 1,
++        "source": "rule.crucible-roll"
++       }
++      ],
++      "unfielded": [
++       {
++        "stat": "itemSlots",
++        "amount": -1
++       }
++      ]
++     }
++    },
++    {
++     "id": "hero.base.priest-armored",
++     "badges": [
++      "badge.fearful",
++      "badge.strong"
++     ],
++     "itemSlots": 1,
++     "drafted": {
++      "badges": [
++       "badge.fearful",
++       "badge.strong"
++      ],
++      "rolls": [
++       {
++        "stat": "precision",
++        "amount": -1
++       }
++      ],
++      "mods": [
++       {
++        "stat": "precision",
++        "add": -1,
++        "source": "rule.crucible-roll"
++       }
++      ],
++      "unfielded": []
++     }
++    }
++   ]
++  },
++  {
++   "seed": 21,
++   "first": [
++    {
++     "id": "hero.base.paladin-smug",
++     "badges": [
++      "badge.leadership",
++      "badge.many-pockets"
++     ],
++     "itemSlots": 3,
++     "drafted": {
++      "badges": [
++       "badge.leadership",
++       "badge.many-pockets"
++      ],
++      "rolls": [
++       {
++        "stat": "health",
++        "amount": 2
++       }
++      ],
++      "mods": [
++       {
++        "stat": "maxHp",
++        "add": 2,
++        "source": "rule.opening-first-hero"
++       },
++       {
++        "stat": "maxHp",
++        "add": 2,
++        "source": "rule.crucible-roll"
++       }
++      ],
++      "unfielded": []
++     }
++    },
++    {
++     "id": "hero.base.rogue-skull",
++     "badges": [
++      "badge.leadership",
++      "badge.spiritual"
++     ],
++     "itemSlots": 2,
++     "drafted": {
++      "badges": [
++       "badge.leadership",
++       "badge.spiritual"
++      ],
++      "rolls": [
++       {
++        "stat": "health",
++        "amount": 2
++       }
++      ],
++      "mods": [
++       {
++        "stat": "maxHp",
++        "add": 2,
++        "source": "rule.opening-first-hero"
++       },
++       {
++        "stat": "maxHp",
++        "add": 2,
++        "source": "rule.crucible-roll"
++       }
++      ],
++      "unfielded": []
++     }
++    },
++    {
++     "id": "hero.base.priest-armored",
++     "badges": [
++      "badge.leadership",
++      "badge.killer-instinct",
++      "badge.huge"
++     ],
++     "itemSlots": 1,
++     "drafted": {
++      "badges": [
++       "badge.leadership",
++       "badge.killer-instinct",
++       "badge.huge"
++      ],
++      "rolls": [
++       {
++        "stat": "health",
++        "amount": 2
++       }
++      ],
++      "mods": [
++       {
++        "stat": "maxHp",
++        "add": 2,
++        "source": "rule.opening-first-hero"
++       },
++       {
++        "stat": "maxHp",
++        "add": 2,
++        "source": "rule.crucible-roll"
++       }
++      ],
++      "unfielded": []
++     }
++    }
++   ],
++   "second": [
++    {
++     "id": "hero.base.rogue-skull",
++     "badges": [
++      "badge.frail",
++      "badge.veteran",
++      "badge.huge"
++     ],
++     "itemSlots": 2,
++     "drafted": {
++      "badges": [
++       "badge.frail",
++       "badge.veteran",
++       "badge.huge"
++      ],
++      "rolls": [
++       {
++        "stat": "crit",
++        "amount": -2
++       }
++      ],
++      "mods": [
++       {
++        "stat": "crit",
++        "add": -2,
++        "source": "rule.crucible-roll"
++       }
++      ],
++      "unfielded": []
++     }
++    },
++    {
++     "id": "hero.base.ranger-ranger",
++     "badges": [
++      "badge.hunter",
++      "badge.feeble"
++     ],
++     "itemSlots": 3,
++     "drafted": {
++      "badges": [
++       "badge.hunter",
++       "badge.feeble"
++      ],
++      "rolls": [
++       {
++        "stat": "reach",
++        "amount": 1
++       },
++       {
++        "stat": "health",
++        "amount": -2
++       }
++      ],
++      "mods": [
++       {
++        "stat": "reach",
++        "add": 1,
++        "source": "rule.crucible-roll"
++       },
++       {
++        "stat": "maxHp",
++        "add": -2,
++        "source": "rule.crucible-roll"
++       }
++      ],
++      "unfielded": []
++     }
++    },
++    {
++     "id": "hero.base.rogue-rose",
++     "badges": [
++      "badge.dodger",
++      "badge.thick-skinned",
++      "badge.many-pockets"
++     ],
++     "itemSlots": 3,
++     "drafted": {
++      "badges": [
++       "badge.dodger",
++       "badge.thick-skinned",
++       "badge.many-pockets"
++      ],
++      "rolls": [
++       {
++        "stat": "armor",
++        "amount": 1
++       },
++       {
++        "stat": "strength",
++        "amount": 1
++       }
++      ],
++      "mods": [
++       {
++        "stat": "armor",
++        "add": 1,
++        "source": "rule.crucible-roll"
++       },
++       {
++        "stat": "strength",
++        "add": 1,
++        "source": "rule.crucible-roll"
++       }
++      ],
++      "unfielded": []
++     }
++    }
++   ]
++  },
++  {
++   "seed": 42,
++   "first": [
++    {
++     "id": "hero.base.paladin-smug",
++     "badges": [
++      "badge.leadership",
++      "badge.dodger"
++     ],
++     "itemSlots": 2,
++     "drafted": {
++      "badges": [
++       "badge.leadership",
++       "badge.dodger"
++      ],
++      "rolls": [
++       {
++        "stat": "armor",
++        "amount": 1
++       }
++      ],
++      "mods": [
++       {
++        "stat": "maxHp",
++        "add": 2,
++        "source": "rule.opening-first-hero"
++       },
++       {
++        "stat": "armor",
++        "add": 1,
++        "source": "rule.crucible-roll"
++       }
++      ],
++      "unfielded": []
++     }
++    },
++    {
++     "id": "hero.base.rogue-skull",
++     "badges": [
++      "badge.leadership",
++      "badge.many-pockets"
++     ],
++     "itemSlots": 4,
++     "drafted": {
++      "badges": [
++       "badge.leadership",
++       "badge.many-pockets"
++      ],
++      "rolls": [
++       {
++        "stat": "itemSlots",
++        "amount": 1
++       },
++       {
++        "stat": "health",
++        "amount": 2
++       }
++      ],
++      "mods": [
++       {
++        "stat": "maxHp",
++        "add": 2,
++        "source": "rule.opening-first-hero"
++       },
++       {
++        "stat": "maxHp",
++        "add": 2,
++        "source": "rule.crucible-roll"
++       }
++      ],
++      "unfielded": [
++       {
++        "stat": "itemSlots",
++        "amount": 1
++       }
++      ]
++     }
++    },
++    {
++     "id": "hero.base.mage-fireaura",
++     "badges": [
++      "badge.leadership",
++      "badge.mystic",
++      "badge.strong"
++     ],
++     "itemSlots": 1,
++     "drafted": {
++      "badges": [
++       "badge.leadership",
++       "badge.mystic",
++       "badge.strong"
++      ],
++      "rolls": [
++       {
++        "stat": "dodge",
++        "amount": 5
++       }
++      ],
++      "mods": [
++       {
++        "stat": "maxHp",
++        "add": 2,
++        "source": "rule.opening-first-hero"
++       },
++       {
++        "stat": "dodge",
++        "add": 5,
++        "source": "rule.crucible-roll"
++       }
++      ],
++      "unfielded": []
++     }
++    }
++   ],
++   "second": [
++    {
++     "id": "hero.base.warrior-fearsome",
++     "badges": [
++      "badge.uncanny"
++     ],
++     "itemSlots": 2,
++     "drafted": {
++      "badges": [
++       "badge.uncanny"
++      ],
++      "rolls": [],
++      "mods": [],
++      "unfielded": []
++     }
++    },
++    {
++     "id": "hero.base.mage-sexy",
++     "badges": [
++      "badge.marksman"
++     ],
++     "itemSlots": 0,
++     "drafted": {
++      "badges": [
++       "badge.marksman"
++      ],
++      "rolls": [
++       {
++        "stat": "itemSlots",
++        "amount": -1
++       }
++      ],
++      "mods": [],
++      "unfielded": [
++       {
++        "stat": "itemSlots",
++        "amount": -1
++       }
++      ]
++     }
++    },
++    {
++     "id": "hero.base.ranger-nature",
++     "badges": [
++      "badge.resolve",
++      "badge.slow"
++     ],
++     "itemSlots": 0,
++     "drafted": {
++      "badges": [
++       "badge.resolve",
++       "badge.slow"
++      ],
++      "rolls": [
++       {
++        "stat": "itemSlots",
++        "amount": -1
++       }
++      ],
++      "mods": [],
++      "unfielded": [
++       {
++        "stat": "itemSlots",
++        "amount": -1
++       }
++      ]
++     }
++    }
++   ]
++  }
++ ]
++}
+diff --git a/test/opening-draft-modifiers.test.ts b/test/opening-draft-modifiers.test.ts
+index 83d16f1..e2c9659 100644
+--- a/test/opening-draft-modifiers.test.ts
++++ b/test/opening-draft-modifiers.test.ts
+@@ -15,5 +15,6 @@
+ // them through src/engine.ts on the run's own stream, and src/core/draft-modifiers.ts rolls nothing itself (kingdom
+ // SWITCHES.md openingDraftRuleKingdomSide, answered). The first test here holds that: the kingdom's draft is the engine's
+-// function — and a run shows what it showed before the procedure moved (test/fixtures/opening-draft-one-rule.json).
++// function — and a run shows what it showed before the procedure moved (test/fixtures/opening-draft-one-rule.json), as far
++// as the ruling of 2026-10-05 leaves it (each first hero rolls its own gifts: the Law 10 note at that test).
+ // The page half is tools/opening-run-six.verify.mjs (test/opening-run-six.test.ts), on the built BATTLE-SANDBOX.html.
+ import { describe, it, expect } from 'vitest'
+@@ -126,14 +127,46 @@ describe('kingdom.opening-draft-modifiers — the first hero by description, lat
+   })
+ 
+-  it('a run shows what it showed before the procedure moved: the same first-hero bonuses and the same later-draft offers for the same run seed (seed 11 is the page test\'s)', () => {
+-    const frozen = JSON.parse(readFileSync('test/fixtures/opening-draft-one-rule.json', 'utf8')) as { runs: { seed: number; first: unknown[]; second: unknown[] }[] }
+-    expect(frozen.runs.map((r) => r.seed)).toEqual(SEEDS)
++  // LAW 10 — 2026-10-05, kingdom.first-hero-each-rolls-own-gifts (engine/DECISIONS.md 'gifts: the word; each first-hero choice
++  // rolls its own; …' — Andrew, asked whether each of the three first-hero choices should roll its own gifts instead of one
++  // roll shared by all three: "Yeah, they each roll their own gifts."). This test read 'a run shows what it showed before the
++  // procedure moved: the same first-hero bonuses and the same later-draft offers for the same run seed', and held every offered
++  // hero at the first draft and at the draft after it, whole, to the file frozen before fix.opening-draft-one-rule
++  // (test/fixtures/opening-draft-one-rule.json) — in which the three first heroes carry ONE roll, the same badges and points
++  // under each. That is what the ruling ends, so the file is stale for the first hero's rolled things, and for a later hero's
++  // badges where the first hero now carries a different badge (a later hero's first badge is unlike every badge the party
++  // carries). As the rule now stands, in two halves:
++  //   · everything the ruling did NOT change is still held to the file frozen then, untouched: the same three heroes offered at
++  //     each draft, what the rule gives every first hero without a roll (Leadership first, the +2 Health), each first hero's
++  //     item slots but for a rolled one, and the later draft's rolled stat points;
++  //   · what a run shows from this item on is held, whole, to the file frozen on the tree it landed on
++  //     (test/fixtures/opening-draft-each-rolls-own.json, the same capture: tools/capture-opening-draft-one-rule.mts) — so a
++  //     run's draft cannot move again unseen.
++  it('a run shows what it showed before, as far as the ruling of 2026-10-05 leaves it — the same heroes offered, the same givens, the same later-draft points — and, whole, what was frozen when each first hero began to roll its own gifts (seed 11 is the page test\'s)', () => {
++    type Offer = { id: string; badges: string[]; itemSlots: number; drafted: Drafted }
++    const fileOf = (name: string) => JSON.parse(readFileSync(`test/fixtures/${name}.json`, 'utf8')) as { runs: { seed: number; first: Offer[]; second: Offer[] }[] }
++    const before = fileOf('opening-draft-one-rule'), frozen = fileOf('opening-draft-each-rolls-own')
++    expect(before.runs.map((r) => r.seed)).toEqual(SEEDS); expect(frozen.runs.map((r) => r.seed)).toEqual(SEEDS)
+     const handOf = (ctx: Ctx) => listDraftOffers(ctx.campaign).map((row) => { const h = draftedHeroOf(ctx.campaign, row.id); return { id: row.id, badges: h.badges, itemSlots: h.itemSlots, drafted: h.drafted } })
+-    for (const run of frozen.runs) {
+-      const first = atFirstDraft(run.seed)
+-      expect(JSON.parse(JSON.stringify(handOf(first))), `seed ${run.seed}: the three first heroes as each would join`).toEqual(run.first)
+-      const second = atSecondDraft(run.seed)
+-      expect(JSON.parse(JSON.stringify(handOf(second))), `seed ${run.seed}: the draft after it`).toEqual(run.second)
++    const ruleHealth = (o: Offer) => o.drafted.mods.filter((m) => m.source === FIRST.healthSource)
++    for (const [n, run] of frozen.runs.entries()) {
++      const was = before.runs[n]!
++      const first = JSON.parse(JSON.stringify(handOf(atFirstDraft(run.seed)))) as Offer[]
++      const second = JSON.parse(JSON.stringify(handOf(atSecondDraft(run.seed)))) as Offer[]
++      // whole, as frozen under the rule that now stands
++      expect(first, `seed ${run.seed}: the three first heroes as each would join`).toEqual(run.first)
++      expect(second, `seed ${run.seed}: the draft after it`).toEqual(run.second)
++      // and, of the file frozen before the procedure moved, everything the ruling left alone
++      expect(first.map((o) => o.id), `seed ${run.seed}: the same three first heroes offered`).toEqual(was.first.map((o) => o.id))
++      expect(second.map((o) => o.id), `seed ${run.seed}: the same three offered after it`).toEqual(was.second.map((o) => o.id))
++      for (const [k, o] of first.entries()) {
++        expect(o.drafted.badges.slice(0, FIRST.badges.length), `seed ${run.seed}: ${o.id}: the rule's badges, first`).toEqual(was.first[k]!.drafted.badges.slice(0, FIRST.badges.length))
++        expect(ruleHealth(o), `seed ${run.seed}: ${o.id}: the rule's Health`).toEqual(ruleHealth(was.first[k]!))
++      }
++      expect(second.map((o) => o.drafted.rolls), `seed ${run.seed}: the later draft's rolled points`).toEqual(was.second.map((o) => o.drafted.rolls))
++      // the file frozen before held ONE roll under all three; each of the three now carries its own
++      expect(new Set(was.first.map((o) => JSON.stringify([o.drafted.badges, o.drafted.rolls]))).size, `seed ${run.seed}: before, one roll for the three`).toBe(1)
+     }
++    // over the eight seeds the three are not one roll any more (each seed's three are told apart in test/first-hero-each-rolls-own-gifts.test.ts)
++    expect(frozen.runs.filter((r) => new Set(r.first.map((o) => JSON.stringify([o.drafted.badges, o.drafted.rolls]))).size > 1).length).toBe(SEEDS.length)
+   })
+ 
+7657fa9
+
+diff --git a/test/first-hero-each-rolls-own-gifts.test.ts b/test/first-hero-each-rolls-own-gifts.test.ts
+new file mode 100644
+index 0000000..5bdcc56
+--- /dev/null
++++ b/test/first-hero-each-rolls-own-gifts.test.ts
+@@ -0,0 +1,173 @@
++// kingdom.first-hero-each-rolls-own-gifts — ruled 2026-10-05 (Andrew, engine/DECISIONS.md 'gifts: the word; each first-hero
++// choice rolls its own; …': asked whether each of the three first-hero choices should roll its own gifts instead of one roll
++// shared by all three — "Yeah, they each roll their own gifts." and "the random modifiers that are applied to a hero are called
++// gifts. That includes the random badges and random stats."; and 'Leadership is given to every first hero, not rolled': "Every
++// first hero choice gets leadership. They don't roll it, they just get it."). GLOSSARY.md 'Settled, 2026-10-05': Gift.
++//
++// Expect: "On a new run the three first-hero cards show three separately rolled sets of gifts (a test over 50 seeds finds the
++// three sets differ on most seeds and never read from one shared roll); the hero taken has exactly the gifts its card showed;
++// reloading the saved run shows the same three cards; the heading on the cards and the hero sheet reads 'Gifts'; what is not
++// rolled is said once for the pick."
++//
++// A GIFT is what the dice decide: a random badge, a random stat change. What the first hero's rule gives every first hero
++// whoever it is — Leadership, and the +2 Health (2026-09-28: "You get the leadership badge. … +2 health.") — is not rolled, is
++// not a gift, and is said once for the pick. It overturns kingdom SWITCHES.md firstHeroGiftsOnce (one roll for the pick).
++import { describe, it, expect } from 'vitest'
++import { execFileSync } from 'node:child_process'
++import { makeNewCampaign, performAdvanceOpening, performDraft, performOpeningStraightIn, performResolvePrologue, listDraftOffers, draftedHeroOf } from '../src/core/opening.js'
++import { makeCtx, setCursor, type Ctx } from '../src/core/mutate.js'
++import { campaignOf, saveOf } from '../src/core/campaign.js'
++import * as DRAFT from '../src/core/draft-modifiers.js'
++import { joinsWithOf, type JoinedWith, type Drafted } from '../src/core/draft-modifiers.js'
++import { CRUCIBLE, FIRST_HERO, crucibleStatOf, badgeLineOf, statLineOf } from '../src/content/crucible.js'
++import { statLabelOf } from '../src/content/stat-labels.js'
++import { ABBOTOWN_MAP } from '../src/content/conquest.js'
++import { draftScreen } from '../src/ui/draft.js'
++import { heroRosterCard } from '../src/ui/roster.js'
++import { BADGES, encounterDef } from '../src/engine.js'
++
++const giftsOf = (DRAFT as unknown as { giftsOf?: (d: Drafted, rule: { badges: readonly string[]; healthSource: string }) => JoinedWith[] }).giftsOf!
++const text = (html: string) => html.replace(/<[^>]*>/g, ' ').replace(/&amp;/g, '&').replace(/\s+/g, ' ').trim()
++function offersOn(html: string): { id: string; html: string }[] {
++  const starts = [...html.matchAll(/<div class="opt[^"]*" data-act="draft" data-id="([^"]+)"/g)]
++  return starts.map((m, i) => ({ id: m[1]!, html: html.slice(m.index!, i + 1 < starts.length ? starts[i + 1]!.index! : html.length) }))
++}
++/** the gifts a card lists, under its Gifts heading: which thing each line is said of, and its words */
++function giftsOn(card: string): { of: string; words: string }[] | null {
++  const block = card.match(/<div class="gifts"[^>]*><h4 class="gifts-h">([^<]*)<\/h4>([\s\S]*?)<\/div><!--gifts-->/)
++  if (!block) return null
++  expect(block[1], 'the heading').toBe('Gifts')
++  return [...block[2]!.matchAll(/<li class="(?:pos|neg)" data-own="([^"]+)"[^>]*>(.*?)<\/li>/g)].map((m) => ({ of: m[1]!, words: text(m[2]!) }))
++}
++const pickLineOn = (html: string) => { const block = html.match(/<p class="firstGifts"[^>]*>([\s\S]*?)<\/p>/); return block ? [...block[1]!.matchAll(/<span data-joins="([^"]+)">([^<]*)<\/span>/g)].map((m) => ({ of: m[1]!.split(' '), words: m[2]! })) : null }
++function atFirstDraft(seed: number): Ctx { const ctx = makeCtx(makeNewCampaign(seed)); performAdvanceOpening(ctx, 'test'); return ctx }
++function atSecondDraft(seed: number): Ctx {
++  const ctx = atFirstDraft(seed), id = ABBOTOWN_MAP.sections[0]!.encounterId
++  performDraft(ctx, listDraftOffers(ctx.campaign)[0]!.id, 'test')
++  performOpeningStraightIn(ctx, { id, mapId: encounterDef(id).mapId!, kind: ABBOTOWN_MAP.engagementKind }, 'test')
++  setCursor(ctx, { step: 'open', engagement: null, prepStep: null, battle: null, equipSession: null }, 'test')
++  performResolvePrologue(ctx, true, 'test', true)
++  performAdvanceOpening(ctx, 'test')
++  return ctx
++}
++/** What the dice decided for a first hero: every badge but the rule's, and every stat point — by the draft's own keys. */
++const rolledOf = (d: Drafted) => joinsWithOf(d, FIRST_HERO.healthSource).filter((j) => (j.badge ? !FIRST_HERO.badges.includes(j.badge) : j.key !== 'health'))
++const sig = (d: Drafted) => JSON.stringify(rolledOf(d).map((j) => [j.key, j.amount ?? null]))
++
++describe('kingdom.first-hero-each-rolls-own-gifts — three rolls, not one', () => {
++  it('over 50 seeds the three offered first heroes\' gifts differ on most seeds — never one shared roll', () => {
++    let allThreeAlike = 0, allThreeDiffer = 0
++    for (let seed = 1; seed <= 50; seed++) {
++      const c = atFirstDraft(seed).campaign, three = listDraftOffers(c).map((h) => sig(draftedHeroOf(c, h.id).drafted!))
++      expect(three.length).toBe(3)
++      const distinct = new Set(three).size
++      if (distinct === 1) allThreeAlike++
++      if (distinct === 3) allThreeDiffer++
++    }
++    // one roll shared by the three made all three alike on every seed
++    expect(allThreeAlike, 'seeds where all three rolled the same gifts').toBeLessThan(5)
++    expect(allThreeDiffer, 'seeds where the three sets all differ').toBeGreaterThan(25)
++  })
++
++  it('the roll is the hero\'s own: the same hero offered in another place, or beside other heroes, rolls the same gifts', () => {
++    const c = atFirstDraft(7).campaign, [a, b, x] = c.cursor.draftOffer!
++    const was = Object.fromEntries([a!, b!, x!].map((id) => [id, sig(draftedHeroOf(c, id).drafted!)]))
++    c.cursor.draftOffer = [x!, a!, b!]
++    for (const id of [a!, b!, x!]) expect(sig(draftedHeroOf(c, id).drafted!), `${id}, offered in another place`).toBe(was[id])
++  })
++
++  it('what is not rolled is every first hero\'s: Leadership first among its badges and +2 Health by the rule — the same for each of the three', () => {
++    for (let seed = 1; seed <= 20; seed++) {
++      const c = atFirstDraft(seed).campaign
++      for (const h of listDraftOffers(c)) {
++        const d = draftedHeroOf(c, h.id).drafted!
++        expect(d.badges.slice(0, FIRST_HERO.badges.length), `seed ${seed}: ${h.id}`).toEqual([...FIRST_HERO.badges])
++        expect(d.mods[0], `seed ${seed}: ${h.id}`).toEqual({ stat: 'maxHp', add: FIRST_HERO.health, source: FIRST_HERO.healthSource })
++        // its gifts are exactly what the dice decided: positive badges and stat points — never the rule's own
++        const gifts = giftsOf(d, FIRST_HERO)
++        expect(gifts.map((g) => g.key)).toEqual(rolledOf(d).map((j) => j.key))
++        expect(gifts.some((g) => g.badge !== undefined && FIRST_HERO.badges.includes(g.badge)), 'Leadership is not a gift').toBe(false)
++        expect(gifts.some((g) => g.key === 'health'), 'the rule\'s Health is not a gift').toBe(false)
++        expect(gifts.filter((g) => g.badge).length).toBeGreaterThanOrEqual(FIRST_HERO.positiveBadges)
++        expect(gifts.filter((g) => !g.badge).length).toBeGreaterThanOrEqual(FIRST_HERO.statPoints)
++      }
++    }
++  })
++
++  it('the hero taken has exactly the gifts its card showed, and a run saved on the pick and opened again shows the same three cards', () => {
++    for (const seed of [2, 11, 23, 41]) {
++      const ctx = atFirstDraft(seed), c = ctx.campaign, html = draftScreen(c), cards = offersOn(html)
++      // saved and opened again: the same three cards, gift for gift
++      const again = draftScreen(campaignOf(saveOf(c)))
++      expect(again, `seed ${seed}: the reopened run's draft`).toBe(html)
++      for (const [take, card] of cards.entries()) {
++        const run = atFirstDraft(seed), shown = giftsOn(card.html)!
++        expect(shown, `seed ${seed}: ${card.id} lists its gifts`).not.toBeNull()
++        performDraft(run, listDraftOffers(run.campaign)[take]!.id, 'test')
++        const hero = run.campaign.roster[card.id]!
++        expect(giftsOf(hero.drafted!, FIRST_HERO).map((g) => g.key).sort(), `seed ${seed}: ${card.id} joined with the gifts its card showed`).toEqual(shown.map((x) => x.of).sort())
++        expect(hero.badges.slice(0, FIRST_HERO.badges.length)).toEqual([...FIRST_HERO.badges])
++      }
++    }
++  })
++})
++
++describe('kingdom.first-hero-each-rolls-own-gifts — the word on the screens: Gifts', () => {
++  it('each first-hero card lists ITS OWN gifts under the heading "Gifts": its random badges by name with their meaning, its random stat changes; the pick\'s line keeps only what is not rolled', () => {
++    for (const seed of [1, 2, 3, 5, 8, 11, 13, 21, 34, 55]) {
++      const c = atFirstDraft(seed).campaign, html = draftScreen(c), pick = pickLineOn(html)!
++      // said once for the pick: what every first hero gets by rule — Leadership, and the rule's Health — and nothing rolled
++      expect(pick.flatMap((p) => p.of).sort(), `seed ${seed}: the pick's line`).toEqual([...FIRST_HERO.badges.map((b) => `badge:${b}`), 'health'].sort())
++      expect(pick.map((p) => p.words)).toEqual([...FIRST_HERO.badges.map(badgeLineOf), statLineOf('health')])
++      for (const card of offersOn(html)) {
++        const who = `seed ${seed}: ${card.id}`, d = draftedHeroOf(c, card.id).drafted!, shown = giftsOn(card.html)
++        expect(shown, `${who}: a Gifts block`).not.toBeNull()
++        expect(shown!.map((x) => x.of).sort(), `${who}: exactly its own gifts`).toEqual(rolledOf(d).map((j) => j.key).sort())
++        for (const j of rolledOf(d)) {
++          const line = shown!.find((x) => x.of === j.key)!
++          if (j.badge) expect(line.words.startsWith(`${BADGES[j.badge]!.name} `), `${who}: ${j.badge} by name, with its meaning — "${line.words}"`).toBe(true)
++          else expect(line.words, `${who}: ${j.key}`).toBe(`+${j.amount} ${statLabelOf(crucibleStatOf(j.stat!))}`)
++        }
++        // Leadership is on no card
++        for (const b of FIRST_HERO.badges) expect(text(card.html).includes(BADGES[b]!.name!) || text(card.html).includes(badgeLineOf(b)), `${who}: ${b} is the pick's, not a gift`).toBe(false)
++      }
++    }
++  })
++
++  it('a later draft\'s cards say "Gifts" over the stat points and badges the Crucible rolled for each hero', () => {
++    for (const seed of [3, 11, 21]) {
++      const c = atSecondDraft(seed).campaign, html = draftScreen(c)
++      expect(c.cursor.step).toBe('draft')
++      expect(text(html), 'the draft says what the cards show, in his word').toMatch(/gifts/)
++      expect(text(html)).not.toMatch(/modifier/i)
++      for (const card of offersOn(html)) {
++        const head = card.html.match(/<div class="gifts"[^>]*><h4 class="gifts-h">([^<]*)<\/h4>/)
++        expect(head?.[1], `seed ${seed}: ${card.id}: the heading`).toBe('Gifts')
++        // the rolled points and the badges stand under it
++        expect(card.html.indexOf('<div class="rolls">')).toBeGreaterThan(card.html.indexOf('class="gifts-h"'))
++        expect(card.html.indexOf('<div class="badges">')).toBeGreaterThan(card.html.indexOf('class="gifts-h"'))
++      }
++    }
++  })
++
++  it('the hero sheet — the roster\'s card — lists a drafted hero\'s gifts under "Gifts"; a hero that rolled none has no such block', () => {
++    const ctx = atFirstDraft(11), offered = listDraftOffers(ctx.campaign)[0]!
++    performDraft(ctx, offered.id, 'test')
++    const c = ctx.campaign, hero = c.roster[offered.id]!, card = heroRosterCard(c, offered.id)
++    const block = card.match(/<div class="gifts"[^>]*><h4 class="gifts-h">([^<]*)<\/h4>([\s\S]*?)<\/div><!--gifts-->/)
++    expect(block?.[1], 'the hero sheet\'s heading').toBe('Gifts')
++    const listed = [...block![2]!.matchAll(/data-own="([^"]+)"/g)].map((m) => m[1]!)
++    expect(listed.sort()).toEqual(giftsOf(hero.drafted!, FIRST_HERO).map((g) => g.key).sort())
++    for (const g of giftsOf(hero.drafted!, FIRST_HERO)) if (g.badge) expect(text(block![2]!)).toContain(BADGES[g.badge]!.name!)
++    // a hero with no draft record (a civilian, a recruit) has no Gifts block
++    const plain = structuredClone(hero); delete (plain as { drafted?: unknown }).drafted; c.roster[offered.id] = plain
++    expect(heroRosterCard(c, offered.id)).not.toMatch(/class="gifts"/)
++    expect(CRUCIBLE.favourable.length).toBeGreaterThan(0)
++  })
++
++  it('the page: a new run\'s first draft shows three cards each with its own gifts under "Gifts", and the hero taken joins with exactly those', () => {
++    const out = execFileSync(process.execPath, ['tools/opening-loop-three.verify.mjs', 'BATTLE-SANDBOX.html'], { cwd: '../kingdom', encoding: 'utf8', maxBuffer: 1 << 24 })
++    expect(out).toMatch(/each of the three first-hero cards listed its own gifts under "Gifts" \(\d+ gifts over the three\)/)
++    expect(out).toMatch(/what every one of the three is given was said once, above the three \(2 plain lines, "Born leader" first — no stat table\)/)
++  }, 600000)
++})
+diff --git a/test/opening-first-hero-class-line.test.ts b/test/opening-first-hero-class-line.test.ts
+index 368e3e6..c2bd3bf 100644
+--- a/test/opening-first-hero-class-line.test.ts
++++ b/test/opening-first-hero-class-line.test.ts
+@@ -156,5 +156,15 @@ describe('kingdom.opening-first-hero-class-line — the first draft says what th
+   // class word is the card's one line of what it is ("A ranger."); and the card shows no number and names no badge BUT its own
+   // differences from its class's standard. The class line, its place, no stat table, no kit: as they were.
+-  it('each offer of the first draft: the class line of its own class under the line of what it is; what the first hero joins with is said once above the cards, one plain line for each thing — no stat table, and on the card no number and no badge named but its own differences', () => {
++  //
++  // Law 10, 2026-10-05, the same day again (kingdom.first-hero-each-rolls-own-gifts; engine/DECISIONS.md 'gifts: the word; each
++  // first-hero choice rolls its own; …' — Andrew: "Yeah, they each roll their own gifts. … the random modifiers that are applied
++  // to a hero are called gifts. That includes the random badges and random stats."; 'Leadership is given to every first hero, not
++  // rolled': "Every first hero choice gets leadership. They don't roll it, they just get it."). Block (2) held the ONE line above
++  // the cards to every thing the hero joins with — each of its badges, the Health, each rolled point — which was true while the
++  // three shared one roll. Each of the three now rolls its own, so as the rule stands: the line above the cards holds what the
++  // RULE gives every first hero without a roll (its badges — Leadership, first — and the Health), in the content's plain words,
++  // one line each, and nothing rolled; what the hero ROLLED — its gifts — is on its own card (under "Gifts": held by
++  // test/first-hero-each-rolls-own-gifts.test.ts) and on no other line; and every thing it joins with is still said exactly once.
++  it('each offer of the first draft: the class line of its own class under the line of what it is; what the rule gives every first hero is said once above the cards, one plain line for each thing, and what the hero rolled is on its own card — no stat table, and on the card no number and no badge named but its own', () => {
+     const badgeNames = [...FIRST.badges, ...FAVOURABLE, ...FLAWED].map((id) => BADGES[id]!.name)
+     for (const seed of SEEDS) {
+@@ -175,20 +185,27 @@ describe('kingdom.opening-first-hero-class-line — the first draft says what th
+         expect(html.indexOf('<p class="firstGifts"'), 'above the three cards').toBeLessThan(html.indexOf('data-act="draft"'))
+         expect(o.html, `${who}: none of it under the card`).not.toMatch(/data-joins=|<ul class="joins">/)
++        const ownKeys = [...o.html.matchAll(/<li class="(?:pos|neg)" data-own="([^"]+)"/g)].map((m) => m[1]!)
+         for (const b of d.badges) {
+           const mine = joins.filter((j) => j.of.includes('badge:' + b))
++          if (!FIRST.badges.includes(b)) { // rolled: a gift — on its own card, not said for the pick
++            expect(mine.length, `${who}: ${b} was rolled, so it is not said for the pick`).toBe(0)
++            expect(ownKeys.filter((k) => k === 'badge:' + b).length, `${who}: ${b} on its own card, once`).toBe(1)
++            continue
++          }
+           expect(mine.length, `${who}: one plain line for ${b}`).toBe(1)
+           expect(mine[0]!.words, `${who}: ${b} in the content's plain words`).toBe(CODEX.badges.find((x) => x.id === b)!.playerLine)
+         }
+-        expect(joins.filter((j) => j.of.some((k) => k.startsWith('badge:'))).length, `${who}: one line per badge, no more`).toBe(d.badges.length)
++        expect(joins.filter((j) => j.of.some((k) => k.startsWith('badge:'))).length, `${who}: one line per badge the rule gives, no more`).toBe(FIRST.badges.length)
+         expect(d.badges[0]).toBe(FIRST.badges[0])
+         expect(joins[0]!.words, `${who}: Leadership first — "Born leader"`).toBe('Born leader')
+         const health = joins.filter((j) => j.of.includes('health'))
+         expect(health.map((j) => j.words), `${who}: the +${FIRST.health} Health, as words`).toEqual(['Tougher than most'])
+-        for (const r of d.rolls) {
+-          const mine = joins.filter((j) => j.of.includes('point:' + r.stat))
+-          expect(mine.map((j) => j.words), `${who}: its rolled point of ${r.stat}, as words`).toEqual([CODEX.stats.find((s) => s.id === r.stat)!.playerLine])
++        for (const r of d.rolls) { // rolled: a gift — on its own card, not said for the pick
++          expect(joins.filter((j) => j.of.includes('point:' + r.stat)).length, `${who}: its rolled point of ${r.stat} is not said for the pick`).toBe(0)
++          expect(ownKeys.filter((k) => k === 'point:' + r.stat).length, `${who}: its rolled point of ${r.stat} on its own card, once`).toBe(1)
+         }
+-        // every thing is said once, and two things with the same words share one line
+-        expect(joins.flatMap((j) => j.of).sort(), `${who}: every thing it joins with, each once`).toEqual([...d.badges.map((b) => 'badge:' + b), 'health', ...d.rolls.map((r) => 'point:' + r.stat)].sort())
++        // every thing is said once — for the pick or on its own card — and two things with the same words share one line
++        const all = [...d.badges.map((b) => 'badge:' + b), 'health', ...d.rolls.map((r) => 'point:' + r.stat)]
++        expect([...joins.flatMap((j) => j.of), ...ownKeys.filter((k) => all.includes(k))].sort(), `${who}: every thing it joins with, each once`).toEqual([...all].sort())
+         expect(new Set(joins.map((j) => j.words)).size, `${who}: no line twice`).toBe(joins.length)
+         // never as a stat table — and still no number, no badge by name, no kit (2026-10-03, as far as it stands)
+```
+</details>
+
+## kingdom.swap-cost-reads-as-stamina — LANDED `fdcc1a2` **NEEDS REVIEW**
+2026-10-05 10:21
+## viewer.move-cost-on-hex — LANDED `954ce6f`
+2026-10-05 10:09
+
+  PASS  dependencies landed
+  PASS  not already decided — no existing ruling matches
+  PASS  typecheck
+  PASS  the item's own tests — test/stat-labels-missing-words.test.ts, test/swap-cost-reads-as-stamina.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — kingdom/test/stat-labels-missing-words.test.ts, kingdom/test/swap-cost-reads-as-stamina.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/stat-labels-missing-words.test.ts (-5) — will land FLAGGED for review
+  PASS  the item's own tests — test/viewer.move-cost-on-hex.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — viewer/test/viewer.move-cost-on-hex.test.ts
+  PASS  existing tests untouched
+  SKIPPED  control battles unchanged — engine code f48a625458 and the content pack are the ones the control battles last passed on (2026-10-05 06:05, gate content.elfbow-double-shot-one-target --land, in HBT-worker-engine) — not run
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+217c22e
+
+diff --git a/test/stat-labels-missing-words.test.ts b/test/stat-labels-missing-words.test.ts
+index 8ece1a7..13e7009 100644
+--- a/test/stat-labels-missing-words.test.ts
++++ b/test/stat-labels-missing-words.test.ts
+@@ -9,8 +9,15 @@
+ // The words are ones the game's documents and its battle screen ALREADY say — taken, not invented; each is cited in the table
+ // and in kingdom SWITCHES.md statLabelWords. A stat nobody has named stays raw and is listed (STATS_WITHOUT_A_WORD) for Andrew.
++//
++// LAW 10 — 2026-10-05, kingdom.swap-cost-reads-as-stamina (engine/DECISIONS.md 'seven answers: …' — Andrew, asked what swapCost
++// should be called on screen: "4 cost 1 stam"; read as a plain sentence of what a swap costs, in Stamina). This file held
++// swapCost as THE stat nobody has named — on the no-word list, shown raw — and let every row's check pass for it through that
++// exception (the item's Expect: "the stat-label test covers swapCost without an exception"). As the rule now stands: the no-word
++// list is empty; a stat a row carries has a label in the table OR a sentence (stat-labels.ts statHasWords), and swapCost has its
++// sentence; nothing passes by being listed. The other checks stand as written.
+ import { describe, it, expect } from 'vitest'
+ import { ITEMS, itemOf } from '../src/content/items.js'
+ import * as LABELS from '../src/content/stat-labels.js'
+-import { STAT_LABEL, statLabelOf } from '../src/content/stat-labels.js'
++import { STAT_LABEL, statHasWords, statLabelOf, statWordsOf } from '../src/content/stat-labels.js'
+ import { BADGES, LEVELS, SPECIALTIES } from '../src/engine.js'
+ import { makeNewCampaign } from '../src/core/opening.js'
+@@ -38,12 +45,19 @@ describe('kingdom.stat-labels-missing-words — the words', () => {
+   })
+ 
+-  it('a stat nobody has named stays raw and is on the list for Andrew — swapCost — and nothing on that list has a word', () => {
+-    expect(NO_WORD).toEqual(['swapCost'])
+-    for (const k of NO_WORD) { expect(k in STAT_LABEL, `${k} is on the no-word list and in the table`).toBe(false); expect(statLabelOf(k)).toBe(k) }
++  // (Law 10, 2026-10-05, above: this read "a stat nobody has named stays raw and is on the list for Andrew — swapCost", with
++  // expect(NO_WORD).toEqual(['swapCost']) and statLabelOf('swapCost') held to the raw name)
++  it('no stat is left without words: the no-word list is empty, and swapCost — which stood on it — reads as the sentence of what a swap costs', () => {
++    expect(NO_WORD).toEqual([])
++    expect('swapCost' in STAT_LABEL, 'not a stat word with a signed number').toBe(false)
++    expect(statHasWords('swapCost')).toBe(true)
++    expect(statWordsOf('swapCost', 0)).toMatch(/^Swap costs \d+ Stamina$/)
++    expect(statWordsOf('swapCost', 1)).not.toMatch(/swapCost|swapcost/)
+   })
+ })
+ 
+ describe('kingdom.stat-labels-missing-words — no row can show a raw stat again', () => {
+-  const unnamed = (keys: Iterable<string>) => [...new Set(keys)].filter((k) => !(k in STAT_LABEL) && !NO_WORD.includes(k)).sort()
++  // (Law 10, 2026-10-05, above: a stat passed here by being in the table or ON THE NO-WORD LIST; it passes now only by having
++  // words — a label or a sentence. The list is kept in the check so that a stat put back on it would still be named below.)
++  const unnamed = (keys: Iterable<string>) => [...new Set(keys)].filter((k) => !statHasWords(k) && !NO_WORD.includes(k)).sort()
+ 
+   it('every stat an item row in the game carries — what it gives, and what its set pays — has a label or is on the no-word list', () => {
+@@ -69,4 +83,6 @@ describe('kingdom.stat-labels-missing-words — no row can show a raw stat again
+     // the no-word list holds nothing that no row carries: a stat leaves it the day it is named
+     for (const k of NO_WORD) expect([...badges, ...levels, ...specialties, ...ITEMS.flatMap((r) => Object.keys(r.statModifiers))].includes(k), `${k} is carried by a row`).toBe(true)
++    // swapCost is carried (the Fast Hands and Slow Hands badges) and is covered by its sentence, not by an exception
++    expect(badges).toContain('swapCost'); expect(NO_WORD).not.toContain('swapCost')
+   })
+ 
+diff --git a/test/swap-cost-reads-as-stamina.test.ts b/test/swap-cost-reads-as-stamina.test.ts
+new file mode 100644
+index 0000000..f8e67d2
+--- /dev/null
++++ b/test/swap-cost-reads-as-stamina.test.ts
+@@ -0,0 +1,139 @@
++// kingdom.swap-cost-reads-as-stamina — ruled 2026-10-05 (Andrew, engine/DECISIONS.md 'seven answers: the first hero's card
++// shows only what is modified; origin badges go on the heroes; Stand Up is one press; …': asked what the stat swapCost (on the
++// Fast Hands and Slow Hands badges) should be called on screen — "4 cost 1 stam". Read, and said to him the same day: the line
++// says what swapping costs, in Stamina, as a plain sentence — "Swap costs 1 Stamina" with the badge's own number — not a stat
++// word and a signed number).
++//
++// Expect: "The Fast Hands and Slow Hands badges each read as a sentence giving the Stamina a swap costs with that badge; no
++// screen shows 'swapcost'; the stat-label test covers swapCost without an exception."
++//
++// What a swap costs with nothing on the unit is the ENGINE's (core/items.ts FOLD_BASE.swapCost, read through the kingdom's
++// door), and what the two badges change is their rows' — both read here, neither assumed.
++import { describe, it, expect } from 'vitest'
++import { readFileSync } from 'node:fs'
++import * as LABELS from '../src/content/stat-labels.js'
++import * as ENGINE from '../src/engine.js'
++import { BADGES } from '../src/engine.js'
++import { ITEMS, itemOf } from '../src/content/items.js'
++import { itemCardOf } from '../src/content/item-card.js'
++import { makeNewCampaign } from '../src/core/opening.js'
++import { makeCtx } from '../src/core/mutate.js'
++import { HERO_POOL } from '../src/content/heroes.js'
++import { equipPage, deltasOf, setLineOf } from '../src/ui/equip.js'
++import { rewardsScreen } from '../src/ui/after.js'
++import * as DRAFT from '../src/ui/draft.js'
++
++const statWordsOf = (LABELS as unknown as { statWordsOf?: (k: string, n: number, o?: { lower?: boolean }) => string }).statWordsOf
++const BASE = (ENGINE as unknown as { FOLD_BASE?: Record<string, number> }).FOLD_BASE?.['swapCost']
++const FAST = 'test.badge.fast-hands', SLOW = 'test.badge.slow-hands'
++const changeOf = (badge: string) => (BADGES[badge]!.statModifiers as Record<string, number>)['swapCost']!
++const text = (html: string) => html.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ')
++const NO_FIELD = /swap ?cost(?!s)/i   // "swapcost", "swapCost", "swap cost" — never the sentence's own "Swap costs"
++
++describe('kingdom.swap-cost-reads-as-stamina — the sentence', () => {
++  it('what a swap costs is the engine\'s, and what the two badges change is their rows\'', () => {
++    expect(typeof BASE, 'the engine\'s base swap cost, through the kingdom\'s door').toBe('number')
++    expect(typeof changeOf(FAST)).toBe('number'); expect(typeof changeOf(SLOW)).toBe('number')
++    expect(changeOf(FAST)).toBeLessThan(0); expect(changeOf(SLOW)).toBeGreaterThan(0)
++  })
++
++  it('a change to the swap cost reads as what a swap then costs, in Stamina — the engine\'s base and the row\'s change — never below 0', () => {
++    expect(typeof statWordsOf).toBe('function')
++    expect(statWordsOf!('swapCost', changeOf(FAST))).toBe(`Swap costs ${BASE! + changeOf(FAST)} Stamina`)
++    expect(statWordsOf!('swapCost', changeOf(SLOW))).toBe(`Swap costs ${BASE! + changeOf(SLOW)} Stamina`)
++    expect(statWordsOf!('swapCost', 0)).toBe(`Swap costs ${BASE!} Stamina`)
++    expect(statWordsOf!('swapCost', -BASE! - 3), 'as the engine holds it (core/swap.ts swapCostOf)').toBe('Swap costs 0 Stamina')
++    // the examples the item names, as the numbers stand today
++    expect([statWordsOf!('swapCost', changeOf(FAST)), statWordsOf!('swapCost', 0), statWordsOf!('swapCost', changeOf(SLOW))]).toEqual(['Swap costs 0 Stamina', 'Swap costs 1 Stamina', 'Swap costs 2 Stamina'])
++    // where a screen writes its stat words small, the sentence is left as it is
++    expect(statWordsOf!('swapCost', changeOf(FAST), { lower: true })).toBe('Swap costs 0 Stamina')
++  })
++
++  it('every other stat reads as it did: its signed amount and its word', () => {
++    expect(statWordsOf!('maxHp', 2)).toBe('+2 Health')
++    expect(statWordsOf!('armor', -1)).toBe('-1 Armor')
++    expect(statWordsOf!('rangedBlock', 5)).toBe('+5 Ranged Block')
++    expect(statWordsOf!('rangedBlock', 5, { lower: true })).toBe('+5 ranged block')
++    expect(statWordsOf!('itemSlots', 1)).toBe('+1 Item Slot')
++  })
++
++  it('the stat-label table has no exception left: nothing is on the no-word list, and swapCost is worded', () => {
++    expect((LABELS as unknown as { STATS_WITHOUT_A_WORD: readonly string[] }).STATS_WITHOUT_A_WORD).toEqual([])
++    expect((LABELS as unknown as { statHasWords?: (k: string) => boolean }).statHasWords?.('swapCost')).toBe(true)
++    expect((LABELS as unknown as { statHasWords?: (k: string) => boolean }).statHasWords?.('aStatNobodyNamed')).toBe(false)
++  })
++})
++
++describe('kingdom.swap-cost-reads-as-stamina — on the screens', () => {
++  it('the Fast Hands and Slow Hands badges each read as the sentence, with that badge\'s own cost', () => {
++    const giftsBlock = (DRAFT as unknown as { giftsBlock: (g: readonly { key: string; badge?: string }[]) => string }).giftsBlock
++    const badgeWordsOf = (DRAFT as unknown as { badgeWordsOf?: (id: string) => string }).badgeWordsOf
++    expect(typeof badgeWordsOf, 'the words a draft card says for a badge').toBe('function')
++    for (const [badge, cost] of [[FAST, BASE! + changeOf(FAST)], [SLOW, BASE! + changeOf(SLOW)]] as const) {
++      expect(badgeWordsOf!(badge), badge).toBe(`Swap costs ${cost} Stamina`)
++      const line = text(giftsBlock([{ key: 'badge:' + badge, badge }]))
++      expect(line, `${badge}: as a hero's gift`).toContain(`${BADGES[badge]!.name} Swap costs ${cost} Stamina`)
++      expect(line).not.toMatch(NO_FIELD)
++    }
++  })
++
++  /** An item row made to carry a change to the swap cost for the length of one check (no row in the game carries one today). */
++  function withSwapCostOn<T>(itemId: string, change: number, run: () => T): T {
++    const mods = itemOf(itemId).statModifiers as Record<string, number>, had = 'swapCost' in mods
++    expect(had, `${itemId} carries no swap cost of its own`).toBe(false)
++    mods['swapCost'] = change
++    try { return run() } finally { delete mods['swapCost'] }
++  }
++  const SHIELD = 'item.tower-shield'
++  function atEquip() {
++    const ctx = makeCtx(makeNewCampaign(11)), c = ctx.campaign
++    const row = HERO_POOL.find((h) => h.equipped.includes(SHIELD))!
++    c.roster[row.id] = structuredClone(row); c.stash = [SHIELD]
++    return { c, hero: row.id }
++  }
++
++  it('an item that changed the swap cost would read the same on its card, its Equip tile, what the hero\'s gear gives, and a reward card', () => {
++    withSwapCostOn(SHIELD, 1, () => {
++      const want = `Swap costs ${BASE! + 1} Stamina`
++      // its card
++      const gives = itemCardOf(SHIELD).gives.find((g) => g.stat === 'swapCost')!
++      expect(gives.words).toBe(want)
++      // Equip: the stash tile, and the line of what the hero's gear gives
++      const { c, hero } = atEquip(), html = equipPage(c, [hero], { where: 'prep', picked: null })
++      const tile = html.slice(html.indexOf(`data-act="pick" data-id="${SHIELD}"`)), small = text(tile.slice(0, tile.indexOf('</small>')))
++      expect(small, 'the stash tile').toContain(want)
++      expect(small).not.toMatch(NO_FIELD)
++      const deltas = [...deltasOf(c, hero).matchAll(/<span class="delta (won|lost)">([^<]*)<\/span>/g)].map((m) => ({ side: m[1]!, words: m[2]! }))
++      const mine = deltas.find((d) => /^Swap costs/.test(d.words))!
++      expect(mine, `the gear's lines: ${deltas.map((d) => d.words).join(' · ')}`).toBeTruthy()
++      expect(mine.words).toBe(want)
++      expect(mine.side, 'a swap that costs more is a loss').toBe('lost')
++      expect(deltas.map((d) => d.words).join(' ')).not.toMatch(NO_FIELD)
++      // a reward card
++      c.cursor.step = 'rewards'; c.cursor.rewardOffer = [SHIELD]
++      const card = rewardsScreen(c, [], null), words = text(card.slice(card.indexOf('class="reward-description"')).split('</div>')[0]!)
++      expect(words).toContain(want)
++      expect(words).not.toMatch(NO_FIELD)
++    })
++    withSwapCostOn(SHIELD, -1, () => {
++      const { c, hero } = atEquip()
++      const mine = [...deltasOf(c, hero).matchAll(/<span class="delta (won|lost)">([^<]*)<\/span>/g)].map((m) => ({ side: m[1]!, words: m[2]! })).find((d) => /^Swap costs/.test(d.words))!
++      expect([mine.words, mine.side], 'a swap that costs less is a gain').toEqual([`Swap costs ${BASE! - 1} Stamina`, 'won'])
++    })
++  })
++
++  it('a set that paid in swap cost would say the sentence too', () => {
++    const row = ITEMS.find((r) => r.setBonus)!
++    const line = setLineOf({ itemId: row.id, tag: 'chain', shape: 'per-other', count: 2, stats: { swapCost: -1, precision: 2 }, attackDamage: 0 } as unknown as Parameters<typeof setLineOf>[0])
++    expect(line).toContain(`Swap costs ${BASE! - 1} Stamina`)
++    expect(line).toContain('+2 precision')
++    expect(line).not.toMatch(NO_FIELD)
++  })
++
++  it('no screen words a row\'s stat change any other way: every place goes through the one function', () => {
++    for (const f of ['src/ui/after.ts', 'src/ui/draft.ts', 'src/ui/equip.ts', 'src/content/item-card.ts', 'src/ui/roster.ts']) {
++      const src = readFileSync(f, 'utf8').split('\n').filter((l) => !/^\s*(\/\/|\*|\/\*)/.test(l)).join('\n')
++      expect(src, `${f}: a signed amount beside a stat's label, put together by hand`).not.toMatch(/sign\([^)]*\)\}\s*\$\{(?:esc\()?(?:statLabelOf|label)\(/)
++    }
++  })
++})
+```
+</details>
+## viewer.shots-fly-straight — LANDED `6a969bb`
+2026-10-05 10:09
+
+  PASS  dependencies landed
+  WARN  not already decided — 1 candidate ruling(s) — READ BEFORE ASKING: SWITCHES.md:1944
+  PASS  typecheck
+  PASS  the item's own tests — test/viewer.shots-fly-straight.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — viewer/test/viewer.shots-fly-straight.test.ts
+  PASS  existing tests untouched
+  SKIPPED  control battles unchanged — engine code f48a625458 and the content pack are the ones the control battles last passed on (2026-10-05 06:05, gate content.elfbow-double-shot-one-target --land, in HBT-worker-engine) — not run
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable

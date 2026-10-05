@@ -5110,3 +5110,60 @@ Ruled:
 - **A unit that has walked loses every move-class action for that Activation** - Focus and Devotion among them: "7, yes. Everything that is categorized as a move class action, because there are other things that are that too". As `rule.walked-unit-has-moved` built it.
 - **swapCost on screen:** "4 cost 1 stam". The chat reads it as: the line says what swapping costs, in Stamina - "Swap costs 1 Stamina" with the badge's own number - rather than a stat word and a number (said to him the same day; one line to change). Filed: `kingdom.swap-cost-reads-as-stamina`.
 - **All the remaining items go to this chat's workers, on different workers at once** ("can you continue all the remaining items by different workers?"; "I'd like to get it done without spending a day") - the eleven 'feel smooth' items the root chat filed among them, since he did not say the root chat builds them. Said to him: the root chat should not start workers on those eleven while these run.
+
+## 2026-10-05 — gifts: the word; each first-hero choice rolls its own; the plates, banners, tooltip and pop-up take the gold look
+
+Andrew, in the kingdom chat, answering two questions (1 should any of the things the viewer worker left alone - the Deathbed and injury plates, the phase and wave banners, the hex tooltip, the affliction pop-up - take the gold no-backdrop look too; 2 should each of the three first-hero choices roll its own gifts, instead of one roll shared by all three):
+
+“One, yes.   Yeah, they each roll their own gifts.  Oh, I like that term. Let's standardize on that term. Basically, the random modifiers that are applied to a hero are called gifts. That includes the random badges and random stats.”
+
+Ruled:
+
+- **Gift is the word** for a random modifier applied to a hero - a random badge or a random stat change; a hero's gifts are all of them. GLOSSARY.md 'Settled, 2026-10-05'. It replaces 'draft modifier' and 'what the first hero is given' where a player or a document reads them; ids and field names are not renamed.
+- **Each of the three first-hero choices rolls its own gifts** - not one roll shared by all three. So each card shows its own, and the one line said once for the pick goes. Folded into `kingdom.first-hero-card-only-what-is-modified` if it has not landed, else filed as `kingdom.first-hero-each-rolls-own-gifts`.
+- **The Deathbed and injury plates, the phase and wave banners, the hex tooltip and the affliction pop-up take the gold, no-backdrop look too** ("One, yes"). Filed: `viewer.plates-banners-tooltip-gold-look`. The gear panel was not asked about and stays.
+
+## 2026-10-05 — Leadership is given to every first hero, not rolled
+
+Andrew, in the kingdom chat, asked whether Leadership is a gift that each first-hero choice rolls, or something every first hero gets by rule:
+
+“I don't really understand what you're saying about one. Every first hero choice gets leadership. They don't roll it, they just get it.”
+
+Ruled: **every first hero gets Leadership; it is not rolled, so it is not a gift.** It is said once for the pick; each card's own gifts are its random badges and random stats.
+
+## 2026-10-05 — sound: planned and made apart from the game first; the effects are generated, not taken from the other game; the other game's music and the voice pack are used; settings, and music that dips
+
+Andrew, in the root chat (sound), over six messages the same morning:
+
+“I want to add sound to this game. I have a number of voices I downloaded in a giant voice pack, and then I have 11 labs.   I think we can do some voices from the voice pack for different male and female attacks and taking damage, and then there are just lots of things that need sound effects. I also have some music that I really like from Dungeon Slays You or Hell-TCG, so I'd like to bring that music over. I think there are two or three music tracks.   Can you plan all this out?”
+
+“We also need settings. We need music that dips when sound effects happen.”
+
+“No, don't use the DSY sounds as first picks.  Some of the sounds are fucked up.   I do want to use the music.   And I do want to use the voice pack. [...] I don't know what the tracks were. I just know that the tracks for music in the other game are good.   That is the right voice pack, yes. I have 300,000 credits in Eleven Labs.   For, I think grunts, shouts, and cries are fine.  I also think anything from that voice pack is probably fine.”
+
+“I want you to do research. I want you to not build into the app, but build a plan and plan out all of the sound files. Let's get all of the sound going. We can do it separately before we merge it in.”
+
+“Let's run this separately.”
+
+Ruled:
+
+- **Sound is started** - ROADMAP B4 (Sound), B5 (Music) and B6 (Sound controller) stood at 'someday' with nothing on disk.
+- **It is planned and made apart from the game first.** Every sound file is planned and made in its own folder; nothing is built into the battle page or the kingdom until he says to merge it in. So no sound item is filed in the viewer-and-kingdom queue yet, and no worker takes one.
+- **The effects are not taken from the other game** ("don't use the DSY sounds as first picks. Some of the sounds are fucked up"). The chat reads 'the DSY sounds' as every effect in that game's folders - its monster sounds and its interface clicks among them - and makes the effects with ElevenLabs instead (his 300,000 credits; 40 credits a second of sound). Said to him the same day; one line to change.
+- **The other game's music is used.** He does not know the track names: "the tracks for music in the other game are good". That game's own list (`DSY/src/shared/audioManager.js`) names 21.
+- **The voice pack is used**: `hell-tcg/_unused/assets/audio/sfx/human-vocalizations` (four male voices, three female, 1,034 files) - "That is the right voice pack, yes"; "anything from that voice pack is probably fine". Heroes grunt, shout and cry out; nobody speaks words.
+- **There are settings, and the music dips when sound effects happen.**
+
+The chat's own defaults, said to him and his to change in a line: the music dips under voices and the big sounds (a hit, a spell, a death) and not under footsteps and clicks, so it does not pump; each hero has one fixed voice, a man's or a woman's by the `gender` the content pack already records for that hero; three takes are made of each generated effect and he keeps the one he likes.
+
+## 2026-10-05 — sound: a correction to the entry above, and where the work is
+
+The entry "sound: planned and made apart from the game first" says sound stood "with nothing on disk". That is the roadmap's line, and it is not true of the kingdom. The chat told Andrew "the battle viewer and the kingdom have no sound code" after searching only the viewer; a helper's read of `kingdom/` the same morning found otherwise, and he was told.
+
+What exists: the kingdom's recap, rewards and level-up screens play sounds and one music track copied from Hell-TCG (`kingdom/tools/prep-after.py`, the ids in its table; `kingdom/src/ui/sound.ts`), with a sound on/off button that is not remembered between pages; the farming prototype plays its own tones (`prototypes/farming/audio.js`). The battle viewer has none. There is no settings screen, and the browser keeps saves only, no preferences.
+
+Under the ruling ("don't use the DSY sounds as first picks") the kingdom's copied sounds are replaced by made ones when sound is merged in, and not before: they stay as they are until he says to merge.
+
+Where the work is: `sound/` at the root, declared in `DOCS.md` - `sound/SOUND-PLAN.md` (the plan and what the merge needs), the list of every made sound, the voice pack's roles and each hero's voice, the 21 tracks and their places, the tools that make the takes, and the page he listens on. Nothing in a package reads it.
+
+His ElevenLabs account, read through the key he made the same day: the Creator plan, 300,000 credits. A made sound was charged 10 credits a second, not the 40 the entry above took from ElevenLabs' page.

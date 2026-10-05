@@ -1,11 +1,37 @@
 [
  {
+  "id": "kingdom.first-hero-each-rolls-own-gifts",
+  "kind": "kingdom",
+  "shape": "plumbing",
+  "needs": [
+   "kingdom.first-hero-card-only-what-is-modified"
+  ],
+  "spec": "Ruled 2026-10-05 (Andrew, engine/DECISIONS.md 'gifts: the word; each first-hero choice rolls its own; the plates, banners, tooltip and pop-up take the gold look'): asked whether each of the three first-hero choices should roll its own gifts instead of one roll shared by all three - 'Yeah, they each roll their own gifts.' and 'the random modifiers that are applied to a hero are called gifts. That includes the random badges and random stats.' (GLOSSARY.md 'Settled, 2026-10-05': Gift). Today the first hero's gifts - Leadership, a positive badge, +2 Health, a stat point or two - are rolled once for the pick and are the same whichever of the three is taken (kingdom/src/core/opening.ts draftedHeroOf; kingdom SWITCHES firstHeroGiftsOnce). Wanted: (1) each of the three offered first heroes rolls its own gifts, on the run's dice so a saved run shows the same three again, and the hero taken keeps exactly the gifts its card showed; what every first hero gets by rule and not by roll (Leadership, if the rules give it to the first hero whoever it is - read engine/DECISIONS.md 2026-10-03 on the first hero) is not a gift and is said once for the pick; (2) each card lists its own gifts - its random badges with their one-line meaning and its random stat changes - under the one line of what it is, and the shared line above the three cards keeps only what is not rolled; (3) the word on every screen that names these is 'gifts' ('Gifts' as the card's small heading) - the first-hero pick, the later drafts' cards, the hero sheet - replacing 'modifiers' or whatever each says today; ids and field names are not renamed. Mark firstHeroGiftsOnce overturned with his words. Rebuild the pages. RULED the same day: Leadership is given to every first hero and is not rolled (engine/DECISIONS.md 'Leadership is given to every first hero, not rolled': 'Every first hero choice gets leadership. They don't roll it, they just get it.') - so Leadership is not a gift: it is said once for the pick, and each card's gifts are its random badges and random stat changes alone.",
+  "expect": "On a new run the three first-hero cards show three separately rolled sets of gifts (a test over 50 seeds finds the three sets differ on most seeds and never read from one shared roll); the hero taken has exactly the gifts its card showed; reloading the saved run shows the same three cards; the heading on the cards and the hero sheet reads 'Gifts'; what is not rolled is said once for the pick.",
+  "note": "Filed by the home chat 2026-10-05.",
+  "status": "done-needs-review",
+  "sha": "1c0bc33"
+ },
+ {
+  "id": "viewer.plates-banners-tooltip-gold-look",
+  "kind": "viewer",
+  "shape": "plumbing",
+  "needs": [
+   "viewer.notices-gold-low-no-backdrop"
+  ],
+  "spec": "Ruled 2026-10-05 (Andrew, engine/DECISIONS.md 'gifts: the word; each first-hero choice rolls its own; the plates, banners, tooltip and pop-up take the gold look'): told that viewer.notices-gold-low-no-backdrop left the Deathbed and injury plates, the phase and wave banners, the hex tooltip and the affliction pop-up as they were (viewer SWITCHES noticeWhichAreNotices) and asked whether any should take the gold no-backdrop look too - 'One, yes.' Wanted: each of those four kinds takes the notices' look - bright gold letters with the black outline, nothing drawn behind them - from the one style viewer.notices-gold-low-no-backdrop made (do not write a second). Where each sits: the phase and wave banners and the Deathbed and injury plates announce a moment, so they keep their own place and timing on the screen and change only their look; the hex tooltip stays at the pointer; the affliction pop-up stays where it opens. A plate or pop-up that carries a picture, an icon row or buttons keeps those and loses only the box behind the words; if one cannot be read without its backdrop over a busy board (check over the Orphanage and the Cavern Trail), give its letters a stronger outline rather than put the box back, and say so. The gear panel was not asked about and stays. Mark noticeWhichAreNotices updated with his words. Land by the viewer landing order (viewer sources, the viewer gate's parts and land, the page, the kingdom's pages rebuilt, the engine gate last).",
+  "expect": "A phase banner, a wave banner, a Deathbed plate, an injury plate, the hex tooltip and the affliction pop-up each show gold outlined letters with nothing drawn behind the words, readable over the Orphanage and the Cavern Trail (measured as the notices were); their places and timings are what they were; the gear panel is unchanged.",
+  "note": "Filed by the home chat 2026-10-05."
+ },
+ {
   "id": "kingdom.stand-up-one-press",
   "kind": "kingdom",
   "shape": "plumbing",
   "spec": "Ruled 2026-10-05 (Andrew, engine/DECISIONS.md 'seven answers: the first hero's card shows only what is modified; origin badges go on the heroes; Stand Up is one press; an X on a hex that cannot be walked; a walk closes every move-class action'): asked whether Stand Up should stand the unit on one press instead of two - 'stand up one press.' Today (fix.stand-up-does-nothing; kingdom SWITCHES standUpIsUsedLikeAMoveThatGoesNowhere) the first press shows 'Stand Up: click it again, or the hero, to use it.' and the second stands the unit. Wanted: one press of Stand Up on a prone unit's bar stands it at once - no second press, no click on the hero. It still takes the unit's move and costs what the engine charges. Mark the switch overturned with his words. Other moves that go nowhere keep their two presses - this ruling is Stand Up's alone (record that reading as a switch). Rebuild the pages.",
   "expect": "In the opening's battle 2 a knocked-down Lumberjack's Wife stands on ONE press of Stand Up; the engine logs the stand; her move is spent; Back Flip and the other moves keep the gesture they had; the page verify presses once and finds her standing.",
-  "note": "Filed by the home chat 2026-10-05."
+  "note": "Filed by the home chat 2026-10-05.",
+  "status": "done-needs-review",
+  "sha": "6008e0e"
  },
  {
   "id": "kingdom.first-hero-card-only-what-is-modified",
@@ -16,7 +42,9 @@
   ],
   "spec": "Ruled 2026-10-05 (Andrew, engine/DECISIONS.md 'seven answers: the first hero's card shows only what is modified; origin badges go on the heroes; Stand Up is one press; an X on a hex that cannot be walked; a walk closes every move-class action'): told that the first-hero card compares each hero, stat by stat, with the value most of its class's four base heroes have, and asked whether that is the comparison he wants - 'No, it's just the things that get modified: the extra stats and the badges.' So kingdom.first-hero-own-positives-negatives (landed 2026-10-05; kingdom SWITCHES firstHeroStandard, firstHeroOwnBadges, firstHeroGiftsOnce) read 'compared to a standard hero of that type' too widely. Wanted: a first-hero card lists only what is MODIFIED on that hero - the extra stats it carries beyond its own row ('+1 Precision', '-1 Health') and its badges, good ones as positives and bad ones as negatives, each badge with its one-line meaning - and nothing worked out by comparing it with the other heroes of its class. The majority-of-four 'standard' is removed. Find where a drafted hero's modifications live (the draft's rolled modifiers - test/opening-draft-modifiers; the hero's own origin badges once content.hero-origin-badges puts them on the rows - read them from the row if they are there, show none if they are not, never from a list in the kingdom). The gifts every first hero gets are still said once for the pick (firstHeroGiftsOnce stands) unless the rules give each of the three its own roll - if they do, each card shows its own. A hero with nothing modified says so in one line. The one line of what it is ('A ranger.') and the art stay. Mark firstHeroStandard overturned with his words. Rebuild the pages.",
   "expect": "A first-hero card shows its art, 'A ranger.', and only the extra stats and badges that hero itself carries; no line on any card comes from comparing the hero with other heroes of its class (the test fails if the majority standard is consulted); a hero with no modification reads one plain line; the gifts line shows once for the pick; when a hero's row carries an origin badge the card shows it with its meaning.",
-  "note": "Filed by the home chat 2026-10-05. Still open with Andrew: the first hero's gifts are rolled once and are the same whichever of the three is taken - whether each of the three should roll its own."
+  "note": "Filed by the home chat 2026-10-05. Still open with Andrew: the first hero's gifts are rolled once and are the same whichever of the three is taken - whether each of the three should roll its own.",
+  "status": "done-needs-review",
+  "sha": "8435aca"
  },
  {
   "id": "kingdom.swap-cost-reads-as-stamina",
@@ -27,7 +55,9 @@
   ],
   "spec": "Ruled 2026-10-05 (Andrew, engine/DECISIONS.md 'seven answers: the first hero's card shows only what is modified; origin badges go on the heroes; Stand Up is one press; an X on a hex that cannot be walked; a walk closes every move-class action'): asked what the stat swapCost (on the Fast Hands and Slow Hands badges) should be called on screen - '4 cost 1 stam'. The chat's reading (said to him; one line to change): the line says what swapping costs, in Stamina, as a plain sentence - not a stat word with a signed number. kingdom.stat-labels-missing-words left swapCost raw (kingdom SWITCHES statsWithoutAWord). Wanted: wherever a badge, an item or a level row that carries swapCost is described (the badge's line on a card, Equip, the reward and draft cards, the battle panel if it lists it), it reads as the cost of a swap in Stamina worked out from the engine's base swap cost and the row's change - 'Swap costs 1 Stamina', 'Swap costs 0 Stamina', 'Swap costs 2 Stamina' - never 'swapcost +1'. Read what a swap costs today from the engine (do not assume 1) and what Fast Hands and Slow Hands change. The test that every stat on a row has a label now passes for swapCost through this sentence. Rebuild the pages.",
   "expect": "The Fast Hands and Slow Hands badges each read as a sentence giving the Stamina a swap costs with that badge; no screen shows 'swapcost'; the stat-label test covers swapCost without an exception.",
-  "note": "Filed by the home chat 2026-10-05."
+  "note": "Filed by the home chat 2026-10-05.",
+  "status": "done-needs-review",
+  "sha": "fdcc1a2"
  },
  {
   "id": "viewer.frame-cost-measured",
@@ -184,7 +214,9 @@
   "shape": "plumbing",
   "spec": "Ruled 2026-10-05 (Andrew, engine/DECISIONS.md 'playtest post: notices, target lines, item cards, arrows, move costs on hexes, knocked down, bodies, cursed ground, the first hero's positives' and 'the playtest post answered'): 'When you are in the movement phase, if there are squares in your movement area that cost 2 or can't be walked through, that number needs to be on the square.' Asked what shows on a hex that cannot be walked, his sentence broke off ('If you can't walk through an index'); the chat reads it as 'an X' (record as a viewer switch, the other side 'nothing'). Wanted: while a unit's move is being chosen and its movement area is shown, every hex in or bordering that area whose cost to enter for THIS unit is more than 1 shows the number on the hex (2, 3); a hex the unit cannot enter at all (impassable ground, a blocking prop - not a hex merely out of reach, and not a hex another unit stands on) shows an X; hexes that cost 1 show nothing. The cost is the engine's for that unit (a flier or a unit that ignores terrain sees no 2s) - read from the engine's move query, never worked out in the viewer. The marks go when the move is made or the action is dropped. Land by the viewer landing order (viewer sources, the viewer gate's parts and land, the page, the kingdom's pages rebuilt by their builders, the engine gate last). No art is needed unless the spec says so. RULED 2026-10-05: the X is right (engine/DECISIONS.md 'seven answers ...': asked 'is an X right for a hex you can't walk through' - '6, yes') - it is no longer the chat's reading; record it as ruled, not as a switch.",
   "expect": "In a battle with rough ground, choosing a walking hero's move shows 2 on each cost-2 hex in its area and an X on an impassable hex beside it, and nothing on plain hexes; a flying unit's area shows no numbers; the marks clear when the move is made.",
-  "note": "Filed by the home chat 2026-10-05."
+  "note": "Filed by the home chat 2026-10-05.",
+  "status": "done",
+  "sha": "954ce6f"
  },
  {
   "id": "viewer.shots-fly-straight",
@@ -192,7 +224,9 @@
   "shape": "plumbing",
   "spec": "Ruled 2026-10-05 (Andrew, engine/DECISIONS.md 'playtest post: notices, target lines, item cards, arrows, move costs on hexes, knocked down, bodies, cursed ground, the first hero's positives' and 'the playtest post answered'): 'Arrows fly in an overhead arc to hit an enemy. They should be a straight line from where the bow is pointed.' - asked whether thrown weapons keep their arc: 'No, everything should go straight for 4.' Every projectile the board draws - arrows, bolts, thrown weapons (javelin, rocks, knives, axes), magic bolts - flies in a straight line from where it leaves the attacker (the bow's or the hand's place on the model where the body gives one, else the unit's chest height) to the target's body, with no lobbed arc. The 2026-10-03 attack-impact timing stays: the hit, the recoil and the red slash still land when the projectile arrives. A shot over a blocker or from a height flies straight all the same. Land by the viewer landing order (viewer sources, the viewer gate's parts and land, the page, the kingdom's pages rebuilt by their builders, the engine gate last). No art is needed unless the spec says so.",
   "expect": "A Longbow shot, a Javelin throw and a Pile of Rocks throw each travel a straight line from the attacker to the target (the verify samples the projectile's path at three points and finds them on one line within a small tolerance); the impact still lands when the projectile arrives.",
-  "note": "Filed by the home chat 2026-10-05."
+  "note": "Filed by the home chat 2026-10-05.",
+  "status": "done",
+  "sha": "6a969bb"
  },
  {
   "id": "viewer.bodies-life-size",
