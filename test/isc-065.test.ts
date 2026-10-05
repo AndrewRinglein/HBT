@@ -22,9 +22,18 @@ const TIER: Record<string, number> = { weapon: 3, armor: 3, trinket: 1, idol: 1,
 // a row exactly when the list gives it one, and a class with none is not rolled — its share of the odds goes to the classes
 // that have a row, in proportion (kingdom SWITCHES.md rewards.emptyClass). The table itself, the tiers, the three distinct
 // cards and the 2-point tolerance are as they were.
+//
+// Law 10, 2026-10-04, later the same day (kingdom.rewards-derived-rows-offered; engine/DECISIONS.md 2026-10-04 'rewards: one of
+// his bases carrying one of his attributes is his; …' — Andrew, asked "should a row made of one of your bases carrying one of
+// your attributes count as yours": "1 yes"). The rewrite above read "on his list" as the row's own id being listed, which left
+// armor with no row and held every pool row as a listed id. That pinned his bases carrying his attributes as set aside, so it
+// is stale by this ruling: a row is his when its id is on the list or its base and its attribute both are (HIS). Armor has
+// rows again, and the same two tests hold the pool and the odds on that reading.
 const LISTED = new Set(AUTHORED_ITEMS.map((r) => r.id))
-/** The classes of the odds table the list gives a row to — read from the items and the list, not from the pool. */
-const WITH_A_ROW = Object.keys(RULED).filter((cls) => ITEMS.some((r) => r.itemClass === cls && r.tier === TIER[cls] && r.waystationBand === null && LISTED.has(r.id)))
+/** Is this row his: on the list, or one of his bases carrying one of his attributes. */
+const HIS = (r: { id: string; base: string | null; enchant: string | null }): boolean => LISTED.has(r.id) || (r.base !== null && LISTED.has(r.base) && r.enchant !== null && LISTED.has(r.enchant))
+/** The classes of the odds table he has a row in — read from the items and the list, not from the pool. */
+const WITH_A_ROW = Object.keys(RULED).filter((cls) => ITEMS.some((r) => r.itemClass === cls && r.tier === TIER[cls] && r.waystationBand === null && HIS(r)))
 
 describe('ISC-065 — the tiered draw', () => {
   it('the odds table is the ruled one and the pool is shaped by it: tier-3 weapons and armor, tier-1 everything else — of the rows Andrew authored', () => {
@@ -36,9 +45,10 @@ describe('ISC-065 — the tiered draw', () => {
       const row = itemOf(r.id)                                        // the codex's rows, not a hand list: every pool row is an item row
       expect(TIER[row.itemClass]).toBeDefined()
       expect(row.tier).toBe(TIER[row.itemClass])
-      expect(LISTED.has(r.id), `${r.id} is on the list`).toBe(true)
+      expect(HIS(row), `${r.id} is his: on the list, or his base carrying his attribute`).toBe(true)
     }
     expect(WITH_A_ROW.length).toBeGreaterThan(0)
+    expect(WITH_A_ROW, 'weapons and armor, the two tier-3 classes of the table, both have rows of his').toEqual(expect.arrayContaining(['weapon', 'armor']))
     for (const cls of Object.keys(RULED)) expect(REWARDS.some((r) => itemOf(r.id).itemClass === cls), `${cls} has a row in the pool exactly when the list gives it one`).toBe(WITH_A_ROW.includes(cls))
   })
   it('over 4000 draws the classes that have a row fall at the ruled odds, the empty classes\' share spread in proportion, within 2 points; a class with no row is never dealt; every drawn row is at its class tier', () => {

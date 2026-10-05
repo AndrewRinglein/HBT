@@ -114,8 +114,14 @@ export const ITEM_ART_SEEN={rewardArt:0,rewardPlain:0,equipArt:0,equipPlain:0,sw
    showed, counted as on the list of the rows he authored (the sources' src/content/authored-items.ts) or as the battle's
    own named reward (its row's item — left as it is); a card that is neither fails where it is shown (takeReward).
    POOL_COSTS_TO_EQUIP: the rows of the sources' reward pool that cost Faith or Mana to equip — idols, bloodrunes */
-export const REWARD_CARDS_SEEN={listed:0,named:[]}
+/* Law 10, 2026-10-04 (kingdom.rewards-derived-rows-offered; engine DECISIONS.md 2026-10-04 'rewards: one of his bases carrying
+   one of his attributes is his; …' — Andrew, asked "should a row made of one of your bases carrying one of your attributes
+   count as yours": "1 yes"): a card was held to an id on the list alone, which pinned his bases carrying his attributes as
+   set aside. As the rule now stands a card is his when its id is on the list (`listed`) or its base and its attribute are
+   both on it (`made`); a card that is neither, and is not the battle's own named reward, still fails where it is shown */
+export const REWARD_CARDS_SEEN={listed:0,made:0,named:[]}
 const AUTHORED_IDS=new Set(E.AUTHORED.AUTHORED_ITEMS.map(r=>r.id))
+const madeOfHis=id=>{const r=E.ITEMS.itemOf(id);return r.base!==null&&AUTHORED_IDS.has(r.base)&&r.enchant!==null&&AUTHORED_IDS.has(r.enchant)}
 export const POOL_COSTS_TO_EQUIP=E.REWARD_POOL.REWARDS.filter(r=>Object.keys(E.ITEMS.itemOf(r.id).equipCost).length>0).map(r=>r.id)
 const FLAMING_LONGSWORD='item.longsword.flaming'
 /* kingdom.opening-specialty-three (engine DECISIONS.md 2026-10-03 'card art on the level-up and reward screens; the specialty
@@ -749,14 +755,14 @@ export function openingPage(page,search,store){
  function takeReward(index,label){
   const row=byId('rw-row'),card=row.querySelectorAll('.reward-card')[index]
   assert.ok(card,label+': a reward card to take')
-  /* kingdom.rewards-only-authored: the screen shows only items on the list of the rows Andrew authored — or the one item
-     the battle's own row names */
+  /* kingdom.rewards-only-authored, kingdom.rewards-derived-rows-offered: the screen shows only his items — on the list of
+     the rows Andrew authored, or one of his bases carrying one of his attributes — or the one item the battle's own row names */
   const own=(o=>o?.kind==='item'?o.itemId:null)(E.REWARD_ROWS.encounterRewardOf(camp().cursor.engagement?.id??'')?.offer)
   for(const shownCard of row.querySelectorAll('.reward-card')){
    const id=shownCard.dataset.id
    if(id===own){REWARD_CARDS_SEEN.named.push(id);continue}
-   assert.ok(AUTHORED_IDS.has(id),`${label}: the reward screen shows ${id} (${E.ITEMS.itemOf(id).name}), which is not on the list of the items Andrew authored and is not this battle's named reward`)
-   REWARD_CARDS_SEEN.listed++
+   assert.ok(AUTHORED_IDS.has(id)||madeOfHis(id),`${label}: the reward screen shows ${id} (${E.ITEMS.itemOf(id).name}), which is not on the list of the items Andrew authored, is not one of his bases carrying one of his attributes, and is not this battle's named reward`)
+   if(AUTHORED_IDS.has(id))REWARD_CARDS_SEEN.listed++;else REWARD_CARDS_SEEN.made++
   }
   fire(row,'click',card);wait(1500);fire(row,'click',card);fire(byId('rw-confirm'),'click');wait(300)
   return card.dataset.id

@@ -137,6 +137,8 @@ describe('kingdom.opening-free-equip — idols and bloodrunes equip free during 
     const inPool = REWARDS.some((r) => IDOLS.includes(r.id) || RUNES.includes(r.id))
     if (inPool) expect(six).toMatch(/(an? (idol|bloodrune) kept as a battle reward \([^)]+\) went onto [^;]+ at Equip free — shown as free to equip, nothing taken from the purse — and was fielded in the next battle|no idol or bloodrune was offered before the last battle)/)
     else expect(six).toContain('no idol or bloodrune is in the reward pool (none is on the list of the items Andrew authored), so none was kept as a battle reward')
-    expect(six).toMatch(/every reward screen showed only items on that list or the battle's own named reward \(\d+ listed cards; named: item\.longsword\.flaming\)/)
+    // Law 10, 2026-10-04 (kingdom.rewards-derived-rows-offered; Andrew, "1 yes": one of his bases carrying one of his attributes is
+    // his): this line read "only items on that list … (N listed cards …)", which held a card to an id on the list alone.
+    expect(six).toMatch(/every reward screen showed only his items — on that list, or one of his bases carrying one of his attributes — or the battle's own named reward \(\d+ drawn cards: \d+ on the list, \d+ made of listed rows; named: item\.longsword\.flaming\)/)
   }, 1800000)
 })

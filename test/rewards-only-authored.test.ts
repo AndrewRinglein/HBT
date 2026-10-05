@@ -36,6 +36,17 @@ import { rewardsScreen } from '../src/ui/after.js'
 import { UNITS, ITEMS as ENGINE_ITEMS } from '../src/engine.js'
 
 const LISTED = new Set(AUTHORED_ITEMS.map((r) => r.id))
+// Law 10, 2026-10-04 (kingdom.rewards-derived-rows-offered; engine/DECISIONS.md 2026-10-04 'rewards: one of his bases carrying
+// one of his attributes is his; the Flaming Longsword stays battle 2's reward' — Andrew, asked "should a row made of one of
+// your bases carrying one of your attributes count as yours": "1 yes"). As this item landed, a row was his only when its own
+// id was on the list, and the tests below held the pool as exactly those rows (8), every dealt card and every card on a
+// reward screen as an id on the list, and the switch rewards.derivedRowsOffered as off. All of that pinned his bases carrying
+// his attributes as set aside, so it is stale by the ruling and is rewritten as the rule now stands: a row is his when its id
+// is on the list OR its base and its attribute are both on the list (HIS, below), and the switch is on. Nothing else is
+// changed: a row whose base or attribute is off the list is still set aside, the classes he has no row in are still not
+// rolled, and what the list does not touch is still untouched. The ruling's own probe is test/rewards-derived-rows-offered.test.ts.
+/** Is this row his: on the list, or one of his bases carrying one of his attributes. */
+const HIS = (id: string): boolean => { const r = itemOf(id); return LISTED.has(id) || (r.base !== null && LISTED.has(r.base) && r.enchant !== null && LISTED.has(r.enchant)) }
 const classOf = (id: string) => itemOf(id).itemClass
 /** The class a card's roll lands on when every class of the odds table is rolled — the draw as it stood before this item. */
 const classOnFullTable = (c: CampaignState, engagementId: string, i: number): string => {
@@ -52,7 +63,7 @@ const runDrawing = (seed: number, size: number): CampaignState => {
   return c
 }
 /** A set-aside row the pool would hold but for the list: of the odds table's class and tier, and not his. */
-const SET_ASIDE = ITEMS.filter((r) => REWARD_ODDS.some((o) => o.itemClass === r.itemClass && o.tier === r.tier) && r.waystationBand === null && !LISTED.has(r.id))
+const SET_ASIDE = ITEMS.filter((r) => REWARD_ODDS.some((o) => o.itemClass === r.itemClass && o.tier === r.tier) && r.waystationBand === null && !HIS(r.id))
 
 describe('kingdom.rewards-only-authored — the list', () => {
   it('every id on the list is in the game — an item, or an Enchantment or attribute some item carries; no id twice, each with the review\'s why', () => {
@@ -75,8 +86,8 @@ describe('kingdom.rewards-only-authored — the list', () => {
 })
 
 describe('kingdom.rewards-only-authored — the pool', () => {
-  it('the pool is the listed rows of the odds table\'s classes at their tiers, and nothing else', () => {
-    const want = ITEMS.filter((r) => LISTED.has(r.id) && REWARD_ODDS.some((o) => o.itemClass === r.itemClass && o.tier === r.tier) && (r.waystationBand === null || SWITCHES.rewardsIncludeWaystation)).map((r) => r.id).sort()
+  it('the pool is his rows of the odds table\'s classes at their tiers — on the list, or one of his bases carrying one of his attributes — and nothing else', () => {
+    const want = ITEMS.filter((r) => HIS(r.id) && REWARD_ODDS.some((o) => o.itemClass === r.itemClass && o.tier === r.tier) && (r.waystationBand === null || SWITCHES.rewardsIncludeWaystation)).map((r) => r.id).sort()
     expect(REWARDS.map((r) => r.id)).toEqual(want)
     expect(REWARDS.length).toBeGreaterThan(0)
     expect(SET_ASIDE.length, 'there are set-aside rows to keep out').toBeGreaterThan(0)
@@ -84,26 +95,31 @@ describe('kingdom.rewards-only-authored — the pool', () => {
     for (const r of AUTHORSHIP_UNDECIDED) expect(REWARDS.some((x) => x.id === r.id), `${r.id} waits for his word`).toBe(false)
   })
 
-  it('the other side of each list switch is a pool the same code builds: the unclassed rows offered; a listed base carrying a listed attribute offered', () => {
+  it('each list switch is a pool the same code builds: the unclassed rows offered (off); a listed base carrying a listed attribute offered (ruled on) — and its other side, the list\'s own ids alone', () => {
     const poolOfList = (POOL as unknown as { rewardPoolOf?: (o: { undecided: boolean; derived: boolean }) => { id: string }[] }).rewardPoolOf
     expect(typeof poolOfList, 'src/content/rewards.ts rewardPoolOf').toBe('function')
-    expect(poolOfList!({ undecided: false, derived: false }).map((r) => r.id)).toEqual(REWARDS.map((r) => r.id))
-    const undecided = poolOfList!({ undecided: true, derived: false }).map((r) => r.id).filter((id) => !REWARDS.some((r) => r.id === id))
+    expect(poolOfList!({ undecided: false, derived: true }).map((r) => r.id)).toEqual(REWARDS.map((r) => r.id))
+    // the other side of rewards.derivedRowsOffered, as this item landed it: only the rows whose own id is on the list
+    const listOnly = poolOfList!({ undecided: false, derived: false }).map((r) => r.id)
+    expect(listOnly.length).toBeGreaterThan(0)
+    for (const id of listOnly) expect(LISTED.has(id), `${id} is on the list`).toBe(true)
+    expect(listOnly).toEqual(REWARDS.map((r) => r.id).filter((id) => LISTED.has(id)))
+    const undecided = poolOfList!({ undecided: true, derived: false }).map((r) => r.id).filter((id) => !listOnly.includes(id))
     expect(undecided.length).toBeGreaterThan(0)
     for (const id of undecided) expect(AUTHORSHIP_UNDECIDED.some((r) => r.id === id), `${id} is one of the unclassed rows`).toBe(true)
-    const derived = poolOfList!({ undecided: false, derived: true }).map((r) => r.id).filter((id) => !REWARDS.some((r) => r.id === id))
+    const derived = poolOfList!({ undecided: false, derived: true }).map((r) => r.id).filter((id) => !listOnly.includes(id))
     expect(derived.length).toBeGreaterThan(0)
     for (const id of derived) {
       const row = itemOf(id)
       expect(row.base !== null && LISTED.has(row.base), `${id}: its base ${row.base} is listed`).toBe(true)
-      expect(row.enchant === null || LISTED.has(row.enchant), `${id}: its attribute ${row.enchant} is listed`).toBe(true)
+      expect(row.enchant !== null && LISTED.has(row.enchant), `${id}: its attribute ${row.enchant} is listed`).toBe(true)
     }
-    expect(SWITCHES.rewardsDerivedRowsOffered).toBe(false)
+    expect(SWITCHES.rewardsDerivedRowsOffered).toBe(true)
   })
 })
 
 describe('kingdom.rewards-only-authored — the draw', () => {
-  it('across 200 seeded draws at each size of the draw (3, 4, 5) every card dealt is on the list, at its class\'s tier, no card twice, and no draw throws', () => {
+  it('across 200 seeded draws at each size of the draw (3, 4, 5) every card dealt is his — on the list, or his base carrying his attribute — at its class\'s tier, no card twice, and no draw throws', () => {
     const seenClass = new Set<string>(), seenTier = new Set<number>()
     for (const size of [REWARD_DRAW, REWARD_DRAW + 1, REWARD_DRAW + 2]) {
       for (let seed = 1; seed <= 200; seed++) {
@@ -113,19 +129,19 @@ describe('kingdom.rewards-only-authored — the draw', () => {
         expect(drawn.length, `seed ${seed}: ${size} cards dealt (${drawn.join(', ')})`).toBe(Math.min(size, REWARDS.length))
         expect(new Set(drawn).size).toBe(drawn.length)
         for (const id of drawn) {
-          expect(LISTED.has(id), `seed ${seed}, ${size} cards: ${id} is not on the list`).toBe(true)
+          expect(HIS(id), `seed ${seed}, ${size} cards: ${id} is not on the list and is not made of a listed base and a listed attribute`).toBe(true)
           const row = itemOf(id)
           expect(row.tier).toBe(REWARD_ODDS.find((o) => o.itemClass === row.itemClass)!.tier)
           seenClass.add(row.itemClass); seenTier.add(row.tier)
         }
       }
     }
-    // every tier of the odds table that has a listed row was dealt, and every class that has one
+    // every tier of the odds table that has a row of his was dealt, and every class that has one
     expect([...seenTier].sort()).toEqual([...new Set(REWARDS.map((r) => r.tier))].sort())
     expect([...seenClass].sort()).toEqual([...new Set(REWARDS.map((r) => classOf(r.id)))].sort())
   })
 
-  it('a card whose roll lands on a class with no listed row is dealt from another class — one that has a row', () => {
+  it('a card whose roll lands on a class with no row of his is dealt from another class — one that has a row', () => {
     const live = new Set<string>(REWARDS.map((r) => classOf(r.id)))
     const empty = REWARD_ODDS.map((o) => o.itemClass as string).filter((cls) => !live.has(cls))
     expect(empty.length, 'the list leaves a class of the odds table with no row').toBeGreaterThan(0)
@@ -138,7 +154,7 @@ describe('kingdom.rewards-only-authored — the draw', () => {
         if (!empty.includes(classOnFullTable(c, id, i))) return
         landedOnEmpty++
         expect(live.has(classOf(card)), `seed ${seed}, card ${i + 1}: the roll lands on ${classOnFullTable(c, id, i)}, which has no row; dealt ${card}`).toBe(true)
-        expect(LISTED.has(card)).toBe(true)
+        expect(HIS(card)).toBe(true)
       })
     }
     expect(landedOnEmpty, 'the 200 draws rolled an empty class at least once').toBeGreaterThan(0)
@@ -182,7 +198,7 @@ describe('kingdom.rewards-only-authored — the reward screen after an opening b
   const run = (seed: number) => { const c = makeNewCampaign(seed); c.roster[WARRIOR.id] = structuredClone(WARRIOR); return c }
   const cardsOn = (html: string) => [...html.matchAll(/class="reward-card face-down"[^>]*\bdata-id="([^"]+)"/g)].map((m) => m[1]!)
 
-  it('a battle paid by the draw shows only listed items; a battle that names its own reward shows that item, as its row says', () => {
+  it('a battle paid by the draw shows only his items; a battle that names its own reward shows that item, as its row says', () => {
     const drawRows = ENCOUNTER_REWARDS.filter((r) => r.offer.kind === 'draw'), named = ENCOUNTER_REWARDS.filter((r) => r.offer.kind === 'item')
     expect(drawRows.length).toBeGreaterThan(0); expect(named.length).toBeGreaterThan(0)
     for (let seed = 1; seed <= 20; seed++) {
@@ -192,7 +208,7 @@ describe('kingdom.rewards-only-authored — the reward screen after an opening b
         c.cursor.step = 'rewards'; c.cursor.rewardOffer = [...offer]
         const shown = cardsOn(rewardsScreen(c, [], null))
         expect(shown).toEqual(offer)
-        for (const id of shown) expect(LISTED.has(id), `${row.encounterId}, seed ${seed}: the screen shows ${id}, which is not on the list`).toBe(true)
+        for (const id of shown) expect(HIS(id), `${row.encounterId}, seed ${seed}: the screen shows ${id}, which is not on the list and is not made of a listed base and a listed attribute`).toBe(true)
         expect(listRewardOffers(c).map((o) => o.id)).toEqual(offer)
       }
       for (const row of named) {
@@ -205,11 +221,12 @@ describe('kingdom.rewards-only-authored — the reward screen after an opening b
     }
   })
 
-  it('the named (not drawn) rewards that are not on the list are left as they are — and are these, for Andrew\'s word', () => {
+  it('the named (not drawn) rewards that are not his are left as they are — and are these: the Flaming Longsword, which he ruled stays', () => {
     const named = ENCOUNTER_REWARDS.flatMap((r) => (r.offer.kind === 'item' ? [{ battle: r.encounterId, itemId: r.offer.itemId }] : []))
     for (const n of named) expect(ITEMS.some((r) => r.id === n.itemId), `${n.itemId} is still an item`).toBe(true)
     // the whole of the landing note's list: one battle, one item. A new named reward off the list fails here until it is named there too.
-    expect(named.filter((n) => !LISTED.has(n.itemId))).toEqual([{ battle: 'encounter.opening.lumberjack', itemId: 'item.longsword.flaming' }])
+    // ruled 2026-10-04 (Andrew, asked "does the Flaming Longsword stay as battle 2's reward": "2 yes") — its attribute is his, its base a chat's row
+    expect(named.filter((n) => !HIS(n.itemId))).toEqual([{ battle: 'encounter.opening.lumberjack', itemId: 'item.longsword.flaming' }])
     // a quest names no item: its reward is currencies
     for (const q of QUESTS) for (const k of Object.keys(q.reward)) expect(k.startsWith('currency.'), `${q.id} pays ${k}`).toBe(true)
   })
@@ -226,13 +243,13 @@ describe('kingdom.rewards-only-authored — what the list does not touch', () =>
     const kits = [...HERO_POOL, ...CIVILIANS, ...RESCUABLE_CIVILIANS].flatMap((h) => h.equipped)
     expect(kits.length).toBeGreaterThan(0)
     for (const id of kits) expect(() => itemOf(id), `${id} in a kit`).not.toThrow()
-    expect(kits.some((id) => !LISTED.has(id)), 'a kit holds a set-aside item').toBe(true)
+    expect(kits.some((id) => !HIS(id)), 'a kit holds a set-aside item').toBe(true)
     // the engine's own rows — the kit a unit row is fielded with, hero or enemy — are the engine's; the kingdom's items are still every one of them
     expect(ITEMS.length).toBe(Object.keys(ENGINE_ITEMS).length)
     const fieldedWith = Object.values(UNITS).flatMap((u) => [...(u.defaultItems ?? [])])
     expect(fieldedWith.length).toBeGreaterThan(0)
     for (const id of fieldedWith) expect(id in ENGINE_ITEMS, `${id} on a unit row`).toBe(true)
-    expect(fieldedWith.some((id) => !LISTED.has(id)), 'a unit row is fielded with a set-aside item').toBe(true)
+    expect(fieldedWith.some((id) => !HIS(id)), 'a unit row is fielded with a set-aside item').toBe(true)
   })
 
   it('the Forge\'s shelf, its trade-in and the Waystation\'s catalog are as they were: they sell and pay out rows that are not on the list', () => {
@@ -247,12 +264,12 @@ describe('kingdom.rewards-only-authored — what the list does not touch', () =>
     const shelf: string[] = []
     for (let week = 1; week <= 6; week++) shelf.push(...listShopItems(loadFixture((c) => { forge(c); c.week = week }).campaign).map((r) => r.id))
     expect(shelf.length).toBeGreaterThan(0)
-    expect(shelf.some((id) => !LISTED.has(id)), `the shelf over six Weeks sells a set-aside item (${[...new Set(shelf)].join(', ')})`).toBe(true)
+    expect(shelf.some((id) => !HIS(id)), `the shelf over six Weeks sells a set-aside item (${[...new Set(shelf)].join(', ')})`).toBe(true)
     // the trade-in pays from every row of the category at the tier, listed or not
     for (const o of REWARD_ODDS.filter((x) => x.itemClass === 'weapon' || x.itemClass === 'armor')) {
       const pays = poolOf(o.itemClass, o.tier).map((r) => r.id)
       expect(pays).toEqual(ITEMS.filter((r) => tradeCategoryOf(r) === o.itemClass && r.tier === o.tier).map((r) => r.id).sort())
-      expect(pays.some((id) => !LISTED.has(id)), `the trade-in's tier-${o.tier} ${o.itemClass} rows hold a set-aside item`).toBe(true)
+      expect(pays.some((id) => !HIS(id)), `the trade-in's tier-${o.tier} ${o.itemClass} rows hold a set-aside item`).toBe(true)
     }
     const catalog = listCatalog(loadFixture(forge).campaign).map((r) => r.id)
     expect(catalog.length).toBeGreaterThan(0)
@@ -262,7 +279,7 @@ describe('kingdom.rewards-only-authored — what the list does not touch', () =>
   it('a save that already holds a set-aside item keeps it: in the stash, on a hero, and on a reward step already offered', () => {
     const aside = SET_ASIDE[0]!.id, other = SET_ASIDE[1]!.id
     const ctx = makeCtx(makeNewCampaign(9)), c = ctx.campaign
-    const hero = structuredClone(HERO_POOL.find((h) => h.equipped.some((id) => !LISTED.has(id)))!)
+    const hero = structuredClone(HERO_POOL.find((h) => h.equipped.some((id) => !HIS(id)))!)
     c.roster[hero.id] = hero
     c.stash = [aside]
     c.cursor.step = 'rewards'; c.cursor.rewardOffer = [other, REWARDS[0]!.id]

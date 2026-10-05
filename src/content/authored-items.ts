@@ -15,7 +15,8 @@
 // Who reads it: src/content/rewards.ts, and nothing else — the reward pool is filtered by it. What a hero or an enemy is
 // fielded with, what the Forge or the Waystation sells, the items themselves and what a save already holds do not read it.
 // The ids are item ids and, for the Forge's Enchantments and the tier-3 attributes, the engine's 'enchant.' ids (an
-// attribute is not an item; the items that carry it are — kingdom SWITCHES.md rewards.derivedRowsOffered).
+// attribute is not an item; the items that carry it are — kingdom SWITCHES.md rewards.derivedRowsOffered, ruled on
+// 2026-10-04: a row made of a base on this list carrying an attribute on this list is his too, and is dealt).
 // test/rewards-only-authored.test.ts names any id here that is not in the game.
 
 export type AuthoredRow = { readonly id: string; readonly why: string }

@@ -9,7 +9,8 @@
 // items that do things the game has no mechanic for, authored by a chat and not by him': "I guess we could just ignore all
 // the items not authored by me to start with." — and, asked whether the set-aside items should also stop appearing as
 // battle rewards, "One yes. Stop appearing as battle rewards."). The pool is ALSO filtered by the list of the rows he
-// authored (src/content/authored-items.ts): a row that is not on it is set aside — never drawn, so never on a reward card.
+// authored (src/content/authored-items.ts): a row that is not his is set aside — never drawn, so never on a reward card.
+// His: a row on the list, or — ruled the same day, "1 yes" (isOnRewardList, below) — one of his bases carrying one of his attributes.
 // Only the pool reads the list. Kits, enemies, the Forge, the Waystation, the items themselves and a save's own items do not.
 // A class of the odds table the list leaves with no row is the draw's to handle (src/core/rewards.ts rewardClassOf).
 
@@ -50,13 +51,19 @@ const UNDECIDED: ReadonlySet<string> = new Set(AUTHORSHIP_UNDECIDED.map((r) => r
 
 /**
  * Is this row one the reward draw may deal by who authored it: its id is on the list. With `undecided`, the rows the
- * review could not class count too; with `derived`, so does a row MADE of listed rows — a listed base, and the attribute
- * it carries (if it carries one) listed too.
+ * review could not class count too; with `derived`, so does a row MADE of listed rows — a listed base CARRYING a listed
+ * attribute.
+ *
+ * kingdom.rewards-derived-rows-offered — ruled 2026-10-04 (Andrew, engine/DECISIONS.md 'rewards: one of his bases carrying
+ * one of his attributes is his; the Flaming Longsword stays battle 2's reward': asked "should a row made of one of your bases
+ * carrying one of your attributes count as yours" — "1 yes"): `derived` is on. A row whose base or whose attribute is not on
+ * the list is still not his, and neither is a base carrying no attribute (a masterwork): the ruling is of a base carrying
+ * an attribute.
  */
 export const isOnRewardList = (r: ItemRow, o: RewardListOptions = LIST_AS_SWITCHED): boolean => {
   const listed = (id: string): boolean => AUTHORED.has(id) || (o.undecided && UNDECIDED.has(id))
   if (listed(r.id)) return true
-  return o.derived && r.base !== null && listed(r.base) && (r.enchant === null || listed(r.enchant))
+  return o.derived && r.base !== null && listed(r.base) && r.enchant !== null && listed(r.enchant)
 }
 
 /** Is this row of the pool's SHAPE: a class the odds name, at that class's tier; the Waystation's catalog rows per the switch. */
