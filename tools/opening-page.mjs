@@ -421,10 +421,13 @@ export function openingPage(page,search,store){
        assert.match(under.map(x=>x.pos?'p':'n').join(''),/^p*n*$/,who+': its gifts, positives then negatives')
        LINES_SEEN.gifts+=mine.length;LINES_SEEN.giftHeadings++}}
      const rule=Object.values(E.RULE_BADGES),rowBadges=[...new Set([...(E.UNITS[row.unitType].badges??[]),...row.badges])].filter(b=>!rule.includes(b)&&!mine.some(g=>g.badge===b))
-     const lines=o.querySelectorAll('[data-own]').filter(li=>li.dataset.own!=='none').map(li=>({of:li.dataset.own,words:li.textContent,pos:li.className.split(/\s+/).includes('pos')}))
+     const lines=o.querySelectorAll('[data-own]').filter(li=>li.dataset.own!=='none').map(li=>({of:li.dataset.own,words:li.textContent,named:li.querySelectorAll('b').map(b=>b.textContent),pos:li.className.split(/\s+/).includes('pos')}))
      assert.deepEqual(lines.map(x=>x.of).sort(),[...mine.map(g=>g.key),...rowBadges.map(b=>'badge:'+b)].sort(),who+': exactly what is modified on this hero, and nothing else')
      for(const g of mine){const said=lines.find(x=>x.of===g.key)
-      if(g.badge){assert.ok(said.words.startsWith(E.BADGES[g.badge].name+' ')&&said.words.length>E.BADGES[g.badge].name.length+1,`${who}: ${g.badge} by name, with its meaning`);assert.equal(said.pos,!FLAWED_BADGES.includes(g.badge),`${who}: ${g.badge} on the right side`);LINES_SEEN.badgeLines++}
+      /* (the line is the badge's name in bold, then its meaning; the page tool's DOM gives an element's own words before its
+          children's, so the name is read from the bold and the meaning as the rest — first exercised on the page by
+          kingdom.first-hero-each-rolls-own-gifts, 2026-10-05: until each hero rolled its own, no card of the page's run held a badge) */
+      if(g.badge){const name=E.BADGES[g.badge].name;assert.deepEqual(said.named,[name],`${who}: ${g.badge} by name`);assert.ok(said.words.replace(name,'').trim().length>3,`${who}: ${g.badge} with its meaning`);assert.equal(said.pos,!FLAWED_BADGES.includes(g.badge),`${who}: ${g.badge} on the right side`);LINES_SEEN.badgeLines++}
       else{assert.equal(said.words,`${g.amount>0?'+':''}${g.amount} ${E.STAT_WORDS.statLabelOf(PARTY.crucible.statOf[g.stat]??g.stat)}`,`${who}: its ${g.stat}, as its amount and the stat's word`);assert.equal(said.pos,g.amount>0)}}
      /* (Law 10, 2026-10-05, kingdom.first-hero-each-rolls-own-gifts: this held ALL the card's lines to positives-then-negatives as
         one list; the row's own badges and the gifts are two lists now, each held so — the gifts above, the row's here) */
