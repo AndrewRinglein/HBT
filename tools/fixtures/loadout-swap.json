@@ -1,6 +1,6 @@
 {
  "note": "Captured from the engine by its tools/capture-loadout-swap.mts: showcase.prologue-party options, one Iron Dwarf (uid 501) holding item.longsword with item.kite-shield stowed, human-controlled; select-activation, then the engine swap command { hands: [\"501/1\"] }. Every event the engine emitted, in order.",
- "engineCommit": "f5f83ae354",
+ "engineCommit": "e52e1601cd",
  "events": [
   {
    "seq": 0,
