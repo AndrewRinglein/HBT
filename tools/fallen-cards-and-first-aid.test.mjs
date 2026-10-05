@@ -12,6 +12,18 @@ import { readFileSync } from 'node:fs'
 import { makeWindow } from './fakedom.mjs'
 const orphanage = JSON.parse(readFileSync('battles/test.opening-orphanage.json', 'utf8'))
 const bridge = JSON.parse(readFileSync('battles/test.opening-bridge.json', 'utf8'))
+/* Law 10, 2026-10-04 — fix.kit-attack-clauses (engine item; engine DECISIONS.md 2026-10-04 'the weapon audit: ...': the base-kit weapons' dropped clauses reach the engine, so the opening's battles are other fights and their six recordings were re-exported - viewer SWITCHES kitClausesOpeningSeeds): the two tests of the downed read
+     const { v, V, EV } = boot(bridge)   …   'heroes go down on the Bridge'   …   'a hero stands at the Deathbed on the Bridge'
+   — the Bridge's recording, where heroes went down, bled out, and one stood at the Deathbed. The Bridge is won in its recording
+   now: two heroes go down and neither bleeds out, and nobody stands at the Deathbed. The scenes are found by their KIND among the
+   opening's six recordings, in the library's order: the first in which a hero goes down and its bleed-out count is read at three
+   steps or more, and the first in which a hero stands at the Deathbed. Every check is unchanged. */
+const SIX = ['orphanage', 'lumberjack', 'bridge', 'cavern-trail', 'gates', 'cathedral'].map(n => JSON.parse(readFileSync(`battles/test.opening-${n}.json`, 'utf8')))
+const count = (b, type) => b.events.filter(e => e.type === type).length
+const downedBattle = SIX.find(b => count(b, 'life.downed') >= 1 && count(b, 'bleedout.tick') >= 3)
+const deathbedBattle = SIX.find(b => count(b, 'deathbed.stood') >= 1 && count(b, 'life.downed') >= 1) ?? SIX.find(b => count(b, 'deathbed.stood') >= 1)
+assert.ok(downedBattle, 'an opening recording holds a hero that goes down and bleeds for three Turns or more')
+assert.ok(deathbedBattle, 'an opening recording holds a hero that stands at the Deathbed')
 const html = readFileSync(process.env.VIEWER_PAGE || 'BATTLE-VIEWER.html', 'utf8')
 
 function boot(battle, opts = {}) {
@@ -56,8 +68,8 @@ test('an enemy that goes down has no card any more, and a hero that dies has non
 })
 
 test('a downed hero keeps its card, with a first-aid mark in its upper right-hand corner and the turns left the board shows over the body', () => {
-  const { v, V, EV } = boot(bridge)
-  const downs = at(EV, e => e.type === 'life.downed'); assert.ok(downs.length >= 1, 'heroes go down on the Bridge')
+  const { v, V, EV } = boot(downedBattle)
+  const downs = at(EV, e => e.type === 'life.downed'); assert.ok(downs.length >= 1, 'heroes go down in the battle found')
   let numbered = 0
   for (const i of downs) { const id = EV[i].target
     assert.equal(V.S.U[id]?.side ?? EV.find(e => e.type === 'unit.enter' && e.actor === id).side, 'hero')
@@ -79,7 +91,7 @@ test('a downed hero keeps its card, with a first-aid mark in its upper right-han
 })
 
 test('the mark sits in the card\'s upper right-hand corner; a hero that stands at the Deathbed has none; an enemy never has one', () => {
-  const { v, V, EV } = boot(bridge)
+  const { v, V, EV } = boot(deathbedBattle)
   const css = html.match(/<style>([\s\S]*?)<\/style>/)[1], rule = (css.match(/\.railaid\{[^}]*\}/) || [''])[0]
   assert.ok(rule, 'the stylesheet draws .railaid')
   assert.match(rule, /position:absolute/); assert.match(rule, /top:-?\d/); assert.match(rule, /right:-?\d/); assert.doesNotMatch(rule, /left:|bottom:/)
@@ -89,7 +101,7 @@ test('the mark sits in the card\'s upper right-hand corner; a hero that stands a
   for (const i of stood) { const id = EV[i].target; v.seek(i + 3)
     if (V.S.U[id].life !== 'standing') continue
     assert.ok(chip(V, id)); assert.ok(!aid(chip(V, id)), 'a hero stood back up has no mark') }
-  assert.ok(stood.length >= 1, 'a hero stands at the Deathbed on the Bridge')
+  assert.ok(stood.length >= 1, 'a hero stands at the Deathbed in the battle found')
   /* through the whole battle: only a downed unit of the heroes' side wears the mark */
   const points = at(EV, e => /^life\.|^bleedout\.|^deathbed\./.test(e.type))
   for (const i of points) { v.seek(i + 1)

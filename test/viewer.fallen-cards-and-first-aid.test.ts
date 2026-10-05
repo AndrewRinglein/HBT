@@ -18,7 +18,14 @@ import { engineVocabulary } from '../../engine/src/core/vocabulary.js'
 
 type E = { type: string; target?: number; actor?: number; side?: string; bleedOut?: number; reason?: string }
 describe('the cards above the battle: the fallen leave, a downed hero\'s card wears a first-aid mark and the turns left', () => {
-  const EV: E[] = JSON.parse(readFileSync('../viewer/battles/test.opening-bridge.json', 'utf8')).events
+  // Law 10, 2026-10-04 — fix.kit-attack-clauses (engine item; engine DECISIONS.md 2026-10-04 'the weapon audit: ...': the base-kit weapons' dropped clauses reach the engine, so the opening's battles are other fights and their six recordings were re-exported - viewer SWITCHES kitClausesOpeningSeeds): this read
+  //   const EV: E[] = JSON.parse(readFileSync('../viewer/battles/test.opening-bridge.json', 'utf8')).events
+  // - "the engine's own recording of the Bridge", where a hero bled out. The Bridge is won in its recording now and nobody
+  // bleeds out there. The log is found by its KIND: the first of the opening's six recordings, in the library's order, in
+  // which a hero goes down and bleeds out. Every assertion below is unchanged.
+  const SIX = ['orphanage', 'lumberjack', 'bridge', 'cavern-trail', 'gates', 'cathedral'].map((n) => JSON.parse(readFileSync(`../viewer/battles/test.opening-${n}.json`, 'utf8')).events as E[])
+  const EV: E[] = SIX.find((ev) => ev.some((e) => e.type === 'life.downed') && ev.some((e) => e.type === 'life.dead' && e.reason === 'bledOut'))!
+  it('an opening recording holds a hero that goes down and bleeds out', () => { expect(EV).toBeDefined() })
   const heroes = new Set(EV.filter((e) => e.type === 'unit.enter' && e.side === 'hero').map((e) => e.actor))
   it('the engine\'s log: a downed hero is given a bleed-out count, it steps down by one, and the hero dies when it runs out', () => {
     const downs = EV.map((e, i) => (e.type === 'life.downed' ? i : -1)).filter((i) => i >= 0)

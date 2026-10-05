@@ -299,8 +299,16 @@ test('a unit killed by a blow starts its death at that blow, and one shot dead a
     v.pause(); v.dispose()
     console.log(`# a ranged kill (Hunter): arrow -> the death starts ${((seen.reaction.wall - arrow.wall) / 1000).toFixed(3)} s`) }
   /* a unit brought down (downed) falls at the blow the same way */
-  const d = findAttack(cathedral.events, { type: 'unit.zombie', kind: 'melee', result: 'hit', falls: 'downed' }); assert.ok(d, 'a Zombie downs a hero in the Cathedral')
-  { const { seen, rec, look, v } = await watch(cathedral, d), mo = look.moments.attack
+  /* Law 10, 2026-10-04 — fix.kit-attack-clauses (engine item; engine DECISIONS.md 2026-10-04 'the weapon audit: ...': the base-kit weapons' dropped clauses reach the engine, so the opening's battles are other fights and their six recordings were re-exported - viewer SWITCHES kitClausesOpeningSeeds): this read
+       const d = findAttack(cathedral.events, { type: 'unit.zombie', kind: 'melee', result: 'hit', falls: 'downed' }); assert.ok(d, 'a Zombie downs a hero in the Cathedral')
+       { const { seen, rec, look, v } = await watch(cathedral, d), …
+     — the Cathedral's recording, where a Zombie's claw downed a hero. The heroes win the Cathedral in its recording now and no
+     Zombie downs one. The scene is found by its KIND, as the priest's cast above is: the first of the painted recordings in
+     which a melee blow that hits brings its target down. Every check below is unchanged. */
+  const downScene = PAINTED.map(b => ({ battle: b, a: findAttack(b.events, { type: null, kind: 'melee', result: 'hit', falls: 'downed' }) })).find(s => s.a)
+  assert.ok(downScene, 'a painted recording of the opening holds a melee blow that downs its target')
+  const d = downScene.a
+  { const { seen, rec, look, v } = await watch(downScene.battle, d), mo = look.moments.attack
     assert.equal(seen.reaction.as, 'death'); near(seen.reaction.clip, mo.at, 'the fall starts at the blow'); assert.equal(rec.falls, 'downed')
     v.pause(); v.dispose() }
 })
