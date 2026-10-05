@@ -1,6 +1,6 @@
 {
- "note": "Captured from the engine by a one-off script outside the tree: showcase.prologue-party options, one Iron Dwarf (uid 501) holding item.longsword with item.kite-shield stowed, human-controlled; select-activation, then the engine swap command { hands: [\"501/1\"] }. Every event the engine emitted, in order.",
- "engineCommit": "af5241d",
+ "note": "Captured from the engine by tools/capture-loadout-swap.mts: showcase.prologue-party options, one Iron Dwarf (uid 501) holding item.longsword with item.kite-shield stowed, human-controlled; select-activation, then the engine swap command { hands: [\"501/1\"] }. Every event the engine emitted, in order.",
+ "engineCommit": "6c94aa26bd",
  "events": [
   {
    "seq": 0,
@@ -39,10 +39,11 @@
    "itemId": "item.longsword",
    "instanceId": "501/0",
    "grants": [
-    "attack.longsword.slash",
-    "attack.longsword.stab"
+    "attack.longsword.slash"
    ],
-   "abilities": [],
+   "abilities": [
+    "power.longsword.counterattack"
+   ],
    "mods": {
     "block": 5
    }
@@ -236,8 +237,8 @@
    "instanceId": "501/1",
    "grants": [],
    "abilities": [
-    "power.kite-shield.shield-wall",
-    "power.kite-shield.raise-guard"
+    "power.kite-shield.raise-guard",
+    "power.kite-shield.cover-ally"
    ],
    "mods": {
     "block": 20,

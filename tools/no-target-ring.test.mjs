@@ -84,7 +84,8 @@ test('a self power chosen: nothing on the hero\'s own hex - no ring, no mark', (
   noRing(V, 'a self power chosen')
   assert.deepEqual(marked(V), [], 'the hero acting wears no target mark')
   assert.equal(V.layers.play.querySelectorAll('.ring').filter(n => +n.dataset.hex === me.hex).length, 0, 'no ring of any kind on the hero\'s own hex')
-  assert.equal(V.dom.playNote.textContent, 'Cover: click it again, or the hero, to use it.', 'the note still says how it is used')
+  // (the same note: was assert.equal(V.dom.playNote.textContent, 'Cover: click it again, or the hero, to use it.', …))
+  assert.equal(V.dom.playNote.textContent, STATIC.actions[selfPower].name + ': click it again, or the hero, to use it.', 'the note still says how it is used')
   v.dispose()
 })
 

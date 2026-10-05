@@ -334,9 +334,20 @@ test('a miss and a block happen at the blow too: the word at the moment, no hit 
      engine's own tool on seed 1 — seeds read from 0 upward for the first whose battle holds a blocked shot (seed 0 holds
      none; on seed 1 an Imp's shot is blocked by the priest). Read for the KIND of line, as the Gates' replicate is in the
      engine's own test; nothing here asks who wins. Every check below is unchanged. */
-  const bridgeNow = exportOf('test.opening-bridge', 1)
-  const blockedScene = { battle: bridgeNow, a: findAttack(bridgeNow.events, { type: null, kind: 'ranged', result: 'block' }) }
-  assert.ok(blockedScene.a, 'the Bridge, fought on seed 1, has a blocked shot')
+  /* Law 10, 2026-10-04 — content.shields-reauthored (engine item; engine DECISIONS.md 2026-09-28 'counterattack, special free attacks,
+     the opening six, shields, custom weapons'): this read
+       const bridgeNow = exportOf('test.opening-bridge', 1)
+       const blockedScene = { battle: bridgeNow, a: findAttack(bridgeNow.events, { type: null, kind: 'ranged', result: 'block' }) }
+       assert.ok(blockedScene.a, 'the Bridge, fought on seed 1, has a blocked shot')
+     — the seed typed. The Bridge's third hero holds the Ledger's Round Shield now and the Bridge is another fight; seed 1 holds no
+     blocked shot. The rule the note above states is what is kept, and the test now does the reading itself: seeds from 0 upward,
+     the first whose battle holds a blocked shot (a bound of 12 seeds, so a Bridge with none anywhere fails here by name). */
+  let blockedScene = null
+  for (let seed = 0; seed < 12 && !blockedScene; seed++) {
+    const battle = exportOf('test.opening-bridge', seed), a = findAttack(battle.events, { type: null, kind: 'ranged', result: 'block' })
+    if (a) blockedScene = { battle, a, seed }
+  }
+  assert.ok(blockedScene, 'the Bridge, fought on seeds 0 to 11, has a blocked shot on one of them')
   const blocked = blockedScene.a
   { const { seen, rec, look, v, EV } = await watch(blockedScene.battle, blocked), m = seen.motion.motion, mo = look.moments[m], fx = seen.fx.find(f => f.dur === FLIGHTS.arrow.ms)
     assert.ok(fx, 'a blocked shot flies: it was not drawn at all before'); near(fx.clip, mo.at, 'it leaves at the release')

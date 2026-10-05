@@ -61,7 +61,12 @@ test('the fold plays both lines: they are folded types, and both battles hold th
   assert.equal(turns(cavern.events).length, 1, 'the Cavern Trail\'s recording holds a transformation'); /* Law 10, combine 2026-10-04 (the note at the Cavern Trail's own test, below): was assert.equal(cavern.seed.replicate, 0, 'on seed 0') —
      master's recorded seed; on the combined tree nobody is turned on seed 0, and the recording is on the lowest seed whose
      battle turns a hero, the seed the library records */
-  assert.equal(cavern.seed.replicate, load('battles/library.json').battles.find(r => r.file === 'test.opening-cavern-trail.json').seed, 'on the seed the library records'); assert.equal(cavern.seed.replicate, 17)
+  assert.equal(cavern.seed.replicate, load('battles/library.json').battles.find(r => r.file === 'test.opening-cavern-trail.json').seed, 'on the seed the library records')
+  /* Law 10, 2026-10-04 — content.shields-reauthored (engine item; engine DECISIONS.md 2026-09-28 'counterattack, special free attacks, the
+     opening six, shields, custom weapons'): this read assert.equal(cavern.seed.replicate, 17). The shields are the Armory Ledger's now,
+     the Cavern Trail is another fight, and by the same rule (the lowest seed whose battle turns a hero — viewer SWITCHES
+     combineTurnedSeed, shieldsOpeningSeeds) the recording is on seed 11. */
+  assert.equal(cavern.seed.replicate, 11)
 })
 
 test('before, during and after: at the turn the unit is its form — type, side, Health, the form\'s attacks, no hero gear — keeping its hex and its statuses; at the revert it is itself, whole', () => {
@@ -175,7 +180,7 @@ test('seek, step and replay land on the same state: the whole battle played by t
      … assert.equal(V.S.U[id].typeId, 'hero.base.priest-armored')
    — master's recording, five heroes at the Cavern Trail on seed 0, where the Battle Chaplain is bitten at 0 Health and turns
    at once. By the ruling four heroes fight there, and on seed 0 nobody is turned. The recording is the Cavern Trail on the
-   lowest seed whose battle turns a hero (17: seeds read from 0 upward for that KIND of line — viewer SWITCHES
+   lowest seed whose battle turns a hero (17 then, 11 since the shields were re-authored 2026-10-04: seeds read from 0 upward for that KIND of line — viewer SWITCHES
    combineTurnedSeed); in it the Barbarian is bitten, fights on, and turns when a later blow takes him to 0 Health. What
    the test holds is unchanged and said of whichever hero the recording turns: the bite's pop-up stands and is closed
    before the turn is shown, the hero turns into the form his affliction names, on the enemy's side, and is himself again
