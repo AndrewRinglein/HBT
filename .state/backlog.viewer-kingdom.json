@@ -196,7 +196,9 @@
   ],
   "spec": "Ruled 2026-10-05 (Andrew, engine/DECISIONS.md 'playtest post: notices, target lines, item cards, arrows, move costs on hexes, knocked down, bodies, cursed ground, the first hero's positives' and 'the playtest post answered'): 'Then, if you are downed, when it's that character's next turn, everything needs to be grayed out except \"stand up\".' and 'Stand-up is a special move that is only available if you were prone, and yes, it takes your move.' Wanted on the action bar (and the kingdom's play input, which reads the same rule): (1) Stand Up is offered only to a unit that is prone - a standing unit's bar has no Stand Up at all; (2) at the start of a prone unit's Activation every other action on its bar is greyed and cannot be chosen, Stand Up alone is lit; (3) standing takes the unit's move - once it has stood, its move actions are greyed as after any move, and what the rules still allow it (its attacks, its powers) lights up. What the engine allows is read from the engine (legal actions), never worked out in the viewer: if the engine today lets a prone unit do something other than stand, or does not charge the move for standing, that is the engine's to change - name it in the report and re-file it as an engine item rather than hide it in the bar. Depends on fix.stand-up-does-nothing (Stand Up must work first). Land by the viewer landing order (viewer sources, the viewer gate's parts and land, the page, the kingdom's pages rebuilt by their builders, the engine gate last). No art is needed unless the spec says so.",
   "expect": "A prone hero's bar at the start of its Activation shows Stand Up lit and every other action greyed and unpressable; after Stand Up its move actions are greyed and its attacks are lit; a standing hero's bar has no Stand Up; the kingdom's PLAY page behaves the same in the opening's battle 2 with the Lumberjack's Wife.",
-  "note": "Filed by the home chat 2026-10-05."
+  "note": "Filed by the home chat 2026-10-05.",
+  "status": "done",
+  "sha": "2dd731d"
  },
  {
   "id": "viewer.friend-line-green-heal-glows",
