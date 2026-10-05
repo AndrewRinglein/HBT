@@ -21,7 +21,9 @@
   ],
   "spec": "Ruled 2026-10-05 (Andrew, engine/DECISIONS.md 'gifts: the word; each first-hero choice rolls its own; the plates, banners, tooltip and pop-up take the gold look'): told that viewer.notices-gold-low-no-backdrop left the Deathbed and injury plates, the phase and wave banners, the hex tooltip and the affliction pop-up as they were (viewer SWITCHES noticeWhichAreNotices) and asked whether any should take the gold no-backdrop look too - 'One, yes.' Wanted: each of those four kinds takes the notices' look - bright gold letters with the black outline, nothing drawn behind them - from the one style viewer.notices-gold-low-no-backdrop made (do not write a second). Where each sits: the phase and wave banners and the Deathbed and injury plates announce a moment, so they keep their own place and timing on the screen and change only their look; the hex tooltip stays at the pointer; the affliction pop-up stays where it opens. A plate or pop-up that carries a picture, an icon row or buttons keeps those and loses only the box behind the words; if one cannot be read without its backdrop over a busy board (check over the Orphanage and the Cavern Trail), give its letters a stronger outline rather than put the box back, and say so. The gear panel was not asked about and stays. Mark noticeWhichAreNotices updated with his words. Land by the viewer landing order (viewer sources, the viewer gate's parts and land, the page, the kingdom's pages rebuilt, the engine gate last).",
   "expect": "A phase banner, a wave banner, a Deathbed plate, an injury plate, the hex tooltip and the affliction pop-up each show gold outlined letters with nothing drawn behind the words, readable over the Orphanage and the Cavern Trail (measured as the notices were); their places and timings are what they were; the gear panel is unchanged.",
-  "note": "Filed by the home chat 2026-10-05."
+  "note": "Filed by the home chat 2026-10-05.",
+  "status": "done",
+  "sha": "dd6fd44"
  },
  {
   "id": "kingdom.stand-up-one-press",
