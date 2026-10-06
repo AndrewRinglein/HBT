@@ -40,7 +40,8 @@ describe('the battle\'s unit panel lists what the unit is equipped with', () => 
   })
   it('the viewer page: the items section under the character — hands, armor, slots, stowed, by name, with what each gives', () => {
     const out = execFileSync(process.execPath, ['--test', '--test-reporter=tap', 'tools/panel-lists-items.test.mjs'], { cwd: '../viewer', encoding: 'utf8', maxBuffer: 1 << 24, env: { ...process.env, VIEWER_PAGE: process.env.VIEWER_PAGE ?? '' } })
-    expect(out).toMatch(/# pass 5/); expect(out).toMatch(/# fail 0/)
+    // 2026-10-05, content.dwarf-elf-fey-badges-act (engine item): a sixth test (the panel says what a badge does); this read /# pass 5/.
+    expect(out).toMatch(/# pass 6/); expect(out).toMatch(/# fail 0/)
   }, 170000)
   it('the sandbox: the expect line, read against the engine\'s loadout on the built BATTLE-SANDBOX.html (the Orphanage)', () => {
     mkdirSync('../kingdom/scratch', { recursive: true })

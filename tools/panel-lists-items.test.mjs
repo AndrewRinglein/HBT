@@ -118,3 +118,32 @@ test('the swap moves an item between the hands and what is stowed: the rows foll
   const arrived = EV.find((e, n) => n > at && e.type === 'unit.equipped' && e.actor === hero)
   for (const g of [...arrived.grants, ...arrived.abilities]) assert.ok(rs.find(r => r.item === arrived.itemId).gives.includes(STATIC.actions[g].name), 'what came to hand gives what the log says')
 })
+
+/* content.dwarf-elf-fey-badges-act (engine item, 2026-10-05; engine DECISIONS.md 2026-10-05 'a prone unit only stands; … Dwarf, Elf
+   and Fey act; …': "6. They should act."): "the badge's line on the panel … says what it does". Under the badge chips the panel
+   says each badge whose row changes a stat, in the engine row's own numbers, and the chip's hover says the same; a badge that
+   changes none has its chip and no line. On the library's battle of the Banner of Courage, whose warrior is the Iron Dwarf. */
+test('the panel says what a badge does from the engine\'s row: the Dwarf\'s line under the Iron Dwarf\'s chips, and on the chip\'s hover', async () => {
+  const { badgeWords } = await import('../src/actions.js')
+  const battle = JSON.parse(readFileSync('battles/test.banner-courage.json', 'utf8'))
+  const { v, V, L } = boot(battle)
+  const dwarf = Object.values(V.S.U).find(u => u.typeId === 'hero.base.warrior-iron')
+  assert.ok(dwarf, 'the battle fields the Iron Dwarf'); assert.ok(dwarf.badges.includes('badge.dwarf'))
+  const row = L.static.badges['badge.dwarf']
+  assert.deepEqual(row.statModifiers, { movement: -1, maxHp: 2 }, 'the engine\'s row carries the numbers')
+  assert.equal(badgeWords(row), 'MOVE -1 · MAX HEALTH +2')
+  assert.equal(badgeWords(L.static.badges['badge.elf']), 'VISION +3 · LUCK +2')
+  assert.equal(badgeWords(L.static.badges['badge.fey']), 'SURGE +10')
+  assert.equal(badgeWords(L.static.badges['badge.hero']), '', 'a badge that changes no stat has no line')
+  v.inspect(dwarf.id)
+  const line = V.dom.panel.querySelectorAll('.badgeline').find(n => n.dataset.badgeLine === 'badge.dwarf')
+  assert.ok(line, 'the Dwarf badge\'s line is on the panel')
+  /* the line as written: the badge's name in bold, then its numbers (the test page's textContent does not keep that order) */
+  assert.match(text(V.dom.panel.innerHTML), /data-badge-line="badge\.dwarf"[^>]*><b[^>]*>Dwarf<\/b> MOVE -1 · MAX HEALTH \+2<\/div>/)
+  // one line for each of the unit's badges that changes a stat, and none for the others
+  const withNumbers = dwarf.badges.filter(id => badgeWords(L.static.badges[id]))
+  assert.deepEqual(V.dom.panel.querySelectorAll('.badgeline').map(n => n.dataset.badgeLine), withNumbers)
+  assert.equal(withNumbers.includes('badge.hero'), false)
+  assert.match(V.dom.panel.innerHTML, /title="Dwarf — MOVE -1 · MAX HEALTH \+2" data-badge="badge\.dwarf"/)
+  v.dispose()
+})

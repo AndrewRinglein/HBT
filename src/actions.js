@@ -354,6 +354,9 @@ const STAT_WORD = { ...STATSHORT, maxHp: 'MAX HEALTH', maxStamina: 'MAX STAMINA'
   /* viewer.free-attack-kind-words: the free attacks' own words, not their stat ids in capitals */
   counterattack: 'Counterattack', counterattackAccuracy: 'Counterattack Accuracy', fend: 'Fend', fendAccuracy: 'Fend Accuracy' }
 const statWord = k => STAT_WORD[k] || String(k).replace(/([A-Z])/g, ' $1').toUpperCase()
+/** content.dwarf-elf-fey-badges-act (engine item, 2026-10-05): what a badge does, in its row's own numbers — each stat it
+    changes, as the engine's row holds it ("MOVEMENT −1 · MAX HEALTH +2"); '' for a row that changes none. */
+export const badgeWords = row => Object.entries((row && row.statModifiers) || {}).filter(([, v]) => v).map(([k, v]) => statWord(k) + ' ' + sgn(v)).join(' · ')
 const hexes = n => n + ' hex' + (n === 1 ? '' : 'es')
 const HOOK_WORD = { onHit: 'On hit', onAttack: 'On attack', onDamage: 'On damage', onKill: 'On kill', onMiss: 'On miss', onCrit: 'On crit', onBlock: 'On block',
   onTakingDamage: 'When hit', onDeath: 'On death', onBurst: 'On burst', startOfBattle: 'At the start of the battle', onActivationEnd: 'At the end of its Activation' }

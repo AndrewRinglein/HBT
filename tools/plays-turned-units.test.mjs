@@ -169,7 +169,8 @@ test('seek, step and replay land on the same state: the whole battle played by t
      battle moved: a knocked-down unit no longer attacks from the floor, the fight runs on differently, and on Turn 5 a hero who
      did not carry it is bitten and gains Lycanthropy (badge.gained) — so the first-affliction pop-up now stands in this battle
      too and holds the pump, as it does in the Cavern Trail's recording below. The loop closes it, as that test's does, and
-     holds that it stood once for each such line. What the test asks is unchanged: the battle plays to its end with no fault
+     holds that it stood once for each such line. (Combine, 2026-10-06: engine content.dwarf-elf-fey-badges-act moved this battle
+     as well - its Iron Dwarf and Forest Elf fight with their badges' numbers - and had closed the pop-up the same way; one loop.) What the test asks is unchanged: the battle plays to its end with no fault
      and the board is the engine's. The loop was:
        for (let n = 0; n < 2000000 && v.cursor < EV.length; n++) { w._flush(FRAME); while (c < v.cursor) order.push(c++) } */
   let popped = 0
@@ -226,7 +227,12 @@ test('the log says each in a sentence, and the turn floats its word over the uni
   const formName = statics.units[e.into].name, heroName = shownName(EV.find(x => x.type === 'unit.enter' && x.actor === e.actor).name)
   const t = lineOf(i), r = lineOf(back)
   assert.ok(t && t.includes(heroName) && t.includes(formName), `the turn's sentence names the hero and the form: ${t}`)
-  assert.ok(t.includes('Lycanthropy'), 'and the affliction'); assert.ok(/enem/i.test(t), 'and the side it now fights for')
+  /* Law 10, 2026-10-05 - engine content.dwarf-elf-fey-badges-act: the first hero turned in the fixture's battle was turned by
+     Lycanthropy, and this line asked for that word. The battle is another now and its first turn may be either affliction's;
+     the claim is unchanged - the sentence names the affliction - and the affliction is the line's own (its badgeId), by the
+     name the engine's badge row gives it.
+     was: assert.ok(t.includes('Lycanthropy'), 'and the affliction'); assert.ok(/enem/i.test(t), 'and the side it now fights for') */
+  assert.ok(t.includes(statics.badges[e.badgeId].name), 'and the affliction'); assert.ok(/enem/i.test(t), 'and the side it now fights for')
   assert.ok(r && r.includes(heroName) && /again/i.test(r), `the revert's sentence: ${r}`)
   /* the turned unit's own lines are the enemy's from the turn on (the log colours a line by its unit's side at that line) */
   const act = EV.findIndex((x, k) => k > i && x.type === 'activation.begin' && x.actor === e.actor); assert.equal(lines.find(l => l.i === act).cls, 'enemy')
