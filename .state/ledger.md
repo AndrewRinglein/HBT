@@ -38581,3 +38581,23 @@ Andrew 2026-10-06: 'We don't need an attack with several chosen targets. This we
   PASS  naming — new content ids use declared kinds
   PASS  naming — no banned words invented
   PASS  kill switch — the tests fail without the content — tests fail without power.bear-trap.use,power.test-snare — they genuinely test it
+
+## rule.one-move-action-one-primary-action — LANDED `ecf934e`
+2026-10-06 23:17
+
+  PASS  dependencies landed
+  WARN  not already decided — 4 candidate ruling(s) — READ BEFORE ASKING: DECISIONS.md:5588 · SWITCHES.md:2690
+  PASS  typecheck
+  PASS  the item's own tests — test/authored-slots.test.ts, test/battle-commands.test.ts, test/battle-cursor.test.ts, test/charge.test.ts, test/movement-plans.test.ts, test/one-move-action-one-primary-action.test.ts, test/prone-only-stand-up.test.ts, test/walked-unit-has-moved.test.ts
+  PASS  gate 1 — the id appears in a real battle — power.leap: 6 log lines, 6 fired, 2 changed state · power.move: 40 log lines, 40 fired, 24 changed state
+  PASS  brought its own tests — test/authored-slots.test.ts, test/battle-commands.test.ts, test/battle-cursor.test.ts, test/charge.test.ts, test/fixtures/battle-cursor-one-move-action-one-primary-action.json, test/movement-plans.test.ts, test/one-move-action-one-primary-action.test.ts, test/prone-only-stand-up.test.ts, test/walked-unit-has-moved.test.ts
+  PASS  existing tests untouched
+  PASS  control battles unchanged
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — power.leap live · power.side-roll live
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without power.leap,power.move — they genuinely test it

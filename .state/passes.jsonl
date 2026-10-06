@@ -103,3 +103,4 @@
 {"suite":"engine","stamp":"852b05fc95","with":{"engine":"852b05fc95","content":"3a7dd56661","viewer":"42ad19d70c","kingdom":"b4c76a9b46"},"at":"2026-10-06T19:58:02.901Z","by":"gate --shard (1 of 1)","in":"Heroes of Blight and Tragic","tests":3137}
 {"suite":"engine","stamp":"38619508f5","failed":true,"at":"2026-10-06T22:12:52.598Z","by":"gate --shard 4/4","in":"HBT-worker-content"}
 {"suite":"engine","stamp":"1809956828","with":{"engine":"1809956828","content":"3a7dd56661","viewer":"91edbdfe6e","kingdom":"a284674119"},"at":"2026-10-06T23:01:50.979Z","by":"gate --shard (4 of 4)","in":"HBT-worker-content"}
+{"suite":"control","stamp":"1809956828","pack":"4bc8583765","golden":"b4deeaba50","at":"2026-10-06T23:17:31.669Z","by":"gate rule.one-move-action-one-primary-action --land","in":"HBT-worker-content","moved":null}

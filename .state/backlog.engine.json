@@ -32,7 +32,9 @@
   "variants": [
    "power.leap",
    "power.side-roll"
-  ]
+  ],
+  "status": "done",
+  "sha": "ecf934e"
  },
  {
   "id": "rule.special-moves-unlock-at-level-two",
