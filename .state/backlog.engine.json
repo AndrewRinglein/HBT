@@ -53,7 +53,10 @@
   "variants": [
    "power.side-roll",
    "power.leap"
-  ]
+  ],
+  "attempts": 1,
+  "status": "done-needs-review",
+  "sha": "a012b28"
  },
  {
   "id": "fix.bandaged-hero-dies-at-zero",
