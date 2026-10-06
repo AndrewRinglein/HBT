@@ -5678,3 +5678,11 @@ Ruled:
 
 - **At the zoom's far end a little room is kept above the far row, enough for a figure standing there and its name to show whole.** The whole map and no further still holds on the other three sides (viewer SWITCHES zoomEndNoRoom: the other side taken).
 - **No enemy counts as a boss or a named enemy yet.** `viewer.new-enemy-close-up` builds the plain close-up; the longer one waits for content that marks one, and nothing is invented to mark it.
+
+## 2026-10-06 — the held-weapon art and the lanterns: what he believes is in, and what the disk shows
+
+Andrew, in the kingdom chat, read the list of what waits on art:
+
+“The art for the held weapons should all be in.   I believe lanterns are done.”
+
+What the disk shows the same minute (read, not judged): `assets/characters/equipment-v2/` is there and the art chat's `viewer.equipment-v2` is landed in the viewer and the kingdom (2026-10-06); lantern PROPS are made - `assets/terrain-3d/map-lanterns/props/` holds `lantern-post.glb`, `lantern-sconce.glb` and three textures - but no lantern is placed in any of the six accepted scenes (`assets/terrain-3d/colour-template-review/run.json`: "lanterns remain separate queue work"; no lantern node in the six scene files when they were scoped that morning). So the seven viewer items filed as waiting on art (`viewer.enemy-held-weapons` above all) and `art.map-lanterns` are to be read again against what now exists before anyone calls them blocked: the next chat's first read. Nothing is filed from this entry.
