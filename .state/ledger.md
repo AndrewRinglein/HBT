@@ -37436,6 +37436,16 @@ index cafa136..3b81571 100644
   PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
   PASS  brought its own tests — viewer/test/viewer.zoom-stays.test.ts, viewer/test/xcom-camera-tuning.test.ts
   WARN  existing tests untouched — DELETED LINES in test/xcom-camera-tuning.test.ts (-1) — will land FLAGGED for review
+## viewer.frame-time-tests-hold-under-load — LANDED `99d2f8c` **NEEDS REVIEW**
+2026-10-05 22:57
+
+  PASS  dependencies landed
+  WARN  not already decided — 3 candidate ruling(s) — READ BEFORE ASKING: SWITCHES.md:2188 · SWITCHES.md:1944
+  PASS  typecheck
+  PASS  the item's own tests — test/viewer.frame-cost-measured.test.ts, test/viewer.frame-time-tests-hold-under-load.test.ts, test/viewer.see-through-only-when-moved.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — viewer/test/viewer.frame-cost-measured.test.ts, viewer/test/viewer.frame-time-tests-hold-under-load.test.ts, viewer/test/viewer.see-through-only-when-moved.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/viewer.frame-cost-measured.test.ts (-3), test/viewer.see-through-only-when-moved.test.ts (-16) — will land FLAGGED for review
   SKIPPED  control battles unchanged — engine code f9fdfb5dde and the content pack are the ones the control battles last passed on (2026-10-05 17:45, gate capability.summons --land, in HBT-worker-engine) — not run
   PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
   PASS  hardcode scan — core knows mechanisms, never names
@@ -37528,3 +37538,219 @@ index 620e879..0bc871b 100644
   PASS  naming — new content ids use declared kinds
   PASS  naming — no banned words invented
   PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+2bd856e
+
+diff --git a/test/viewer.frame-cost-measured.test.ts b/test/viewer.frame-cost-measured.test.ts
+index 629f490..a46f486 100644
+--- a/test/viewer.frame-cost-measured.test.ts
++++ b/test/viewer.frame-cost-measured.test.ts
+@@ -12,5 +12,5 @@ import { existsSync, readFileSync } from 'node:fs'
+ 
+ type Pass = { all: number; shadow: number; scene: number; bodies: number; other?: number }
+-type Measure = { frames: number; ms: { median: number; min: number; max: number }; draws: Pass; triangles: Pass; checks?: number }
++type Measure = { frames: number; ms: { median: number; min: number; max: number; total: number }; wallMs: number; draws: Pass; triangles: Pass; checks?: number }
+ type Row = { battle: string; flat?: boolean; note?: string; board: { w: number; h: number }; gpu: string; loadMs: number; still: { withCheck: Measure; withoutCheck: Measure }; scrolling: { withCheck: Measure; withoutCheck: Measure }; pageErrors?: string[] }
+ const PAGE = '../kingdom/BATTLE-SANDBOX.html'
+@@ -42,7 +42,18 @@ describe('viewer.frame-cost-measured — the tool that says what a frame costs',
+         expect(m.frames, at).toBeGreaterThanOrEqual(30)
+         // script ms: a number of milliseconds, its lowest and highest about its median
+-        expect(m.ms.median, at).toBeGreaterThan(0)
++        // LAW 10 — 2026-10-05, viewer.frame-time-tests-hold-under-load: the two lines
++        //   expect(m.ms.median, at).toBeGreaterThan(0)
++        //   expect(m.ms.max, `${at}: one frame's script, in ms`).toBeLessThan(60000)
++        // held "it is a time, and in milliseconds" against two fixed numbers of milliseconds. The same is held with none: every
++        // one is a number, in order, and the frames' script time added up is part — and no more than the whole — of the time
++        // the tool's own clock counted over those frames (tools/frame-cost.mjs wallMs): a column in another unit, or one
++        // that was never measured, cannot be both.
++        for (const k of ['min', 'median', 'max', 'total'] as const) expect(Number.isFinite(m.ms[k]), `${at}: ms.${k} = ${m.ms[k]}`).toBe(true)
+         expect(m.ms.min, at).toBeLessThanOrEqual(m.ms.median); expect(m.ms.max, at).toBeGreaterThanOrEqual(m.ms.median)
+-        expect(m.ms.max, `${at}: one frame's script, in ms`).toBeLessThan(60000)
++        expect(m.ms.total, `${at}: the frames' script time added up is no less than its largest frame`).toBeGreaterThanOrEqual(m.ms.max)
++        expect(Number.isFinite(m.wallMs), `${at}: the tool's own clock over the measured frames`).toBe(true)
++        const part = m.ms.total / m.wallMs
++        expect(part, `${at}: the frames' script time (${m.ms.total}) as a part of the time the measuring took (${m.wallMs})`).toBeGreaterThan(0)
++        expect(part, `${at}: and never more than all of it`).toBeLessThanOrEqual(1)
+         // draw calls and triangles, split by pass, and the passes add up
+         for (const [what, p] of [['draw calls', m.draws], ['triangles', m.triangles]] as const) {
+diff --git a/test/viewer.frame-time-tests-hold-under-load.test.ts b/test/viewer.frame-time-tests-hold-under-load.test.ts
+new file mode 100644
+index 0000000..d9e6c63
+--- /dev/null
++++ b/test/viewer.frame-time-tests-hold-under-load.test.ts
+@@ -0,0 +1,100 @@
++// viewer.frame-time-tests-hold-under-load (engine backlog; found 2026-10-05, twice: the page test of
++// viewer.see-through-only-when-moved failed inside the gate's checks part when the machine was busy — "a still frame with the
++// check due costs 47.6 ms, without 30.5 ms … expected 17.1 to be less than 7.75" — and passed on the rerun both times).
++//
++// The four real-Chrome frame tests (test/viewer.frame-cost-measured, .see-through-only-when-moved, .scenery-shadow-drawn-once,
++// .still-frame-draws-nothing) each prove their claim by a count load cannot move wherever one exists — the see-through check's
++// runs, the draw calls of a pass, the pixels that differ — and, where a time is asserted, by a ratio of medians taken in the
++// same run with the frames turn about; never by a fixed number of milliseconds (viewer SWITCHES.md, this item's section, lists
++// what each asserts). This file holds that it stays so, without opening a browser:
++//   · no assertion in the four compares a time with a number written in the test — a time may be compared with another time
++//     of the same run, or divided by one and the RATIO compared with a number;
++//   · the tool they read (tools/frame-cost.mjs) takes its paired frames turn about and its two askings back to back, and gives
++//     the tests the tool's own clock beside the frames' script time;
++//   · the counts that are each test's pass or fail are still asserted (none was dropped for a ratio).
++// The proof under load — ten passes beside a four-thread busy loop, and each test seen red with its guard undone — was run by
++// hand under the gate lock and is recorded in the switches; it is not run in the gate (four browsers ten times over).
++import { describe, it, expect } from 'vitest'
++import { readFileSync } from 'node:fs'
++
++const TESTS = ['test/viewer.frame-cost-measured.test.ts', 'test/viewer.see-through-only-when-moved.test.ts', 'test/viewer.scenery-shadow-drawn-once.test.ts', 'test/viewer.still-frame-draws-nothing.test.ts']
++/** the file with its comments taken out (a line's // tail and /* … *​/ blocks), so only what runs is read */
++const code = (f: string) => readFileSync(f, 'utf8').replace(/\/\*[\s\S]*?\*\//g, '').split('\n').map((l) => l.replace(/^\s*\/\/.*$/, '').replace(/([;{}(),]\s*)\/\/.*$/, '$1')).join('\n')
++/** every `expect(subject[, message]).matcher(argument)` of a file: the subject's own text, the matcher, its argument */
++function expectations(src: string) {
++  const out: { subject: string; matcher: string; arg: string }[] = []
++  for (let i = src.indexOf('expect('); i >= 0; i = src.indexOf('expect(', i + 1)) {
++    let depth = 0, k = i + 6, inStr: string | null = null
++    const end = (from: number) => { depth = 0; for (k = from; k < src.length; k++) { const c = src[k]!
++      if (inStr) { if (c === '\\') k++; else if (c === inStr) inStr = null; continue }
++      if (c === '\'' || c === '"' || c === '`') { inStr = c; continue }
++      if (c === '(') depth++; else if (c === ')') { depth--; if (depth === 0) return k } } return -1 }
++    const close = end(i + 6); if (close < 0) continue
++    const inside = src.slice(i + 7, close), m = /^\s*\.\s*(?:not\s*\.\s*)?([A-Za-z]+)\s*\(/.exec(src.slice(close + 1)); if (!m) continue
++    const argOpen = close + 1 + m[0].length - 1, argClose = end(argOpen); if (argClose < 0) continue
++    /* the subject is the first argument of expect(): up to the first comma that is not inside brackets or a string */
++    let d = 0, s: string | null = null, cut = inside.length
++    for (let j = 0; j < inside.length; j++) { const c = inside[j]!
++      if (s) { if (c === '\\') j++; else if (c === s) s = null; continue }
++      if (c === '\'' || c === '"' || c === '`') { s = c; continue }
++      if ('([{'.includes(c)) d++; else if (')]}'.includes(c)) d--; else if (c === ',' && d === 0) { cut = j; break } }
++    out.push({ subject: inside.slice(0, cut).trim(), matcher: m[1]!, arg: src.slice(argOpen + 1, argClose).trim() })
++  }
++  return out
++}
++/** does this expression read a time the tool measured? (its ms columns, the paired medians, the tool's own clock) */
++const readsATime = (x: string) => /\.ms\b|\bms\.|Ms\b|\bwithCheck\b(?!\.(checks|draws|triangles|frames))|\bwithoutCheck\b(?!\.(checks|draws|triangles|frames))/.test(x)
++const COMPARES = new Set(['toBeLessThan', 'toBeLessThanOrEqual', 'toBeGreaterThan', 'toBeGreaterThanOrEqual', 'toBe', 'toEqual', 'toBeCloseTo'])
++const aNumber = (x: string) => /^[-+]?(\d+\.?\d*|\.\d+)(e[-+]?\d+)?$/i.test(x.replace(/_/g, '')) || /^Math\.(max|min)\([^a-zA-Z]*\)$/.test(x)
++
++describe('the frame tests hold under load: no time is compared with a number of milliseconds', () => {
++  it('in none of the four tests is a time the tool measured compared with a number written in the test — only with another time of the same run, or as a ratio', () => {
++    let read = 0, ratios = 0
++    for (const f of TESTS) for (const e of expectations(code(f))) {
++      if (COMPARES.has(e.matcher) && /\.ratio\b|^part$/.test(e.subject)) { ratios++; continue }   // a ratio the tool or the test already made
++      if (!COMPARES.has(e.matcher) || !readsATime(e.subject)) continue
++      read++
++      const isRatio = /\//.test(e.subject)           // a time divided by a time: the ratio is what is compared
++      if (isRatio) { ratios++; continue }
++      expect(aNumber(e.arg), `${f}: expect(${e.subject}).${e.matcher}(${e.arg}) compares a time with a fixed number`).toBe(false)
++      expect(/\b\d+(\.\d+)?\b/.test(e.arg.replace(/\[[^\]]*\]|\.[A-Za-z_]\w*/g, '').replace(/[A-Za-z_]\w*/g, '')), `${f}: expect(${e.subject}).${e.matcher}(${e.arg}) has a number of milliseconds in its bound`).toBe(false)
++    }
++    expect(read, 'the tests do read times').toBeGreaterThan(3); expect(ratios, 'and hold some as ratios').toBeGreaterThanOrEqual(5)
++  })
++  it('the reader above does catch the lines that failed in the gate: each of the old assertions is refused by it', () => {
++    const old = [
++      'expect(Math.abs(a - b), `x`).toBeLessThanOrEqual(Math.max(4, .5 * Math.max(a, b)))',
++      'expect(a - b, `x`).toBeLessThan(Math.max(4, r.seeThrough!.plainMs.median / 2))',
++      'expect(r.seeThrough!.ms.median, `one check, ms`).toBeLessThan(4)',
++      'expect(m.ms.max, `one frame\'s script, in ms`).toBeLessThan(60000)',
++      'expect(m.ms.median, at).toBeGreaterThan(0)',
++    ]
++    const refused = (line: string) => { const src = 'const a = r.still.withCheck.ms.median, b = r.still.withoutCheck.ms.median\n' + line
++      return expectations(src).some((e) => { const subject = e.subject.replace(/\ba\b/g, 'r.still.withCheck.ms.median').replace(/\bb\b/g, 'r.still.withoutCheck.ms.median')
++        if (!COMPARES.has(e.matcher) || !readsATime(subject) || /\//.test(subject)) return false
++        return aNumber(e.arg) || /\b\d+(\.\d+)?\b/.test(e.arg.replace(/\[[^\]]*\]|\.[A-Za-z_]\w*/g, '').replace(/[A-Za-z_]\w*/g, '')) }) }
++    for (const line of old) expect(refused(line), line).toBe(true)
++    /* and the lines as they are now are let through */
++    for (const line of ['expect(p!.ratio, `x`).toBeLessThan(1.25)', 'expect((p!.withCheck - p!.withoutCheck) / t.plainMs.median, `x`).toBeLessThan(.5)', 'expect(m.ms.min, at).toBeLessThanOrEqual(m.ms.median)', 'expect(r.still.withCheck.checks, `x`).toBe(0)']) expect(refused(line), line).toBe(false)
++  })
++  it('the tool gives the tests frames taken turn about, the two askings back to back, and its own clock beside the script time', () => {
++    const tool = readFileSync('tools/frame-cost.mjs', 'utf8')
++    // turn about: one frame with the check due, the next without, in one loop
++    expect(tool).toMatch(/const A=await page\.evaluate\(tick,WITH_CHECK_MS\),B=await page\.evaluate\(tick,WITHOUT_CHECK_MS\)/)
++    expect(tool).toMatch(/row\.stillPaired=await stillPaired\(page\)/)
++    // back to back: the structure's asking and every triangle's, timed in the same call
++    expect(tool).toMatch(/const a=S\.realNow\(\),fast=s\.hiding\(\),b=S\.realNow\(\),plain=s\.hiding\('plain'\),c=S\.realNow\(\)/)
++    expect(tool).toMatch(/pairs:views\.length,ratio:round\(median\(ms\)\/median\(plain\),4\)/)
++    expect(tool).toMatch(/out\.wallMs=Date\.now\(\)-wall0\+1/); expect(tool).toMatch(/total:round\(ms\.reduce/)
++    // the printed table keeps its milliseconds: it is a report
++    expect(tool).toMatch(/script ms, still: with the check \/ without/)
++  })
++  it('the counts that are each test\'s pass or fail are still asserted: the check\'s runs, the shadow pass\'s draw calls, a still frame\'s draw calls, the pixels that differ', () => {
++    const [cost, see, shadow, still] = TESTS.map(code) as [string, string, string, string]
++    expect(see).toMatch(/expect\(r\.still\.withCheck\.checks,[^)]*\)\.toBe\(0\)/); expect(see).toMatch(/expect\(p!\.checks,[^)]*\)\.toBe\(0\)/)
++    expect(see).toMatch(/expect\(r\.scrolling\.withCheck\.checks!,[^)]*\)\.toBeGreaterThan\(30\)/); expect(see).toMatch(/expect\(r\.seeThrough!\.same,[^)]*\)\.toBe\(r\.seeThrough!\.views\)/)
++    expect(shadow).toMatch(/expect\(m\.draws\.shadow,[^)]*\)\.toBeLessThan\(120\)/); expect(shadow).toMatch(/expect\(r\.held\.draws\.shadow,[^)]*\)\.toBe\(0\)/); expect(shadow).toMatch(/expect\(r\.shadow!\.worst,[^)]*\)\.toBeLessThanOrEqual\(2\)/)
++    expect(still).toMatch(/expect\(orphanage\.held\.draws\)\.toEqual\(\{ all: 0, shadow: 0, scene: 0, bodies: 0 \}\)/); expect(still).toMatch(/expect\(orphanage\.live\.afterCamera,[^)]*\)\.toBe\(0\)/)
++    expect(cost).toMatch(/expect\(p\.all,[^)]*\)\.toBe\(p\.shadow \+ p\.scene \+ p\.bodies \+ \(p\.other \?\? 0\)\)/)
++  })
++})
+diff --git a/test/viewer.see-through-only-when-moved.test.ts b/test/viewer.see-through-only-when-moved.test.ts
+index 0d8d35c..2019d5e 100644
+--- a/test/viewer.see-through-only-when-moved.test.ts
++++ b/test/viewer.see-through-only-when-moved.test.ts
+@@ -20,5 +20,7 @@ type Ms = { median: number; min: number; max: number }
+ type Measure = { frames: number; ms: Ms; checks?: number }
+ type Row = { battle: string; flat?: boolean; note?: string; still: { withCheck: Measure; withoutCheck: Measure }; scrolling: { withCheck: Measure; withoutCheck: Measure }
+-  seeThrough?: { views: number; same: number; withSomethingHiding: number; ms: { median: number; max: number }; plainMs: { median: number; max: number } }; pageErrors?: string[] }
++  /* still frames taken turn about, one with the check due and one without: the median of each kind, their ratio, the check's runs over them */
++  stillPaired?: { pairs: number; withCheck: number; withoutCheck: number; ratio: number; checks?: number }
++  seeThrough?: { views: number; same: number; withSomethingHiding: number; ms: { median: number; max: number }; plainMs: { median: number; max: number }; pairs: number; ratio: number }; pageErrors?: string[] }
+ 
+ describe('viewer.see-through-only-when-moved', () => {
+@@ -28,5 +30,5 @@ describe('viewer.see-through-only-when-moved', () => {
+   }, 170000)
+ 
+-  it('the built page, the Orphanage and the Lumberjack House: no check over 60 still frames; a still frame costs the same with the check due as without; one check under 4 ms; the same pieces as every triangle finds, at every view of a round', () => {
++  it('the built page, the Orphanage and the Lumberjack House: no check over 60 still frames; a still frame costs the same with the check due as without (frames taken turn about); one check under a quarter of what the old check cost; the same pieces as every triangle finds, at every view of a round', () => {
+     mkdirSync('../kingdom/scratch', { recursive: true })
+     execFileSync(process.execPath, ['tools/build-sandbox.mjs', 'scratch/see-through-only-when-moved.html'], { cwd: '../kingdom', stdio: 'pipe' })
+@@ -41,20 +43,39 @@ describe('viewer.see-through-only-when-moved', () => {
+       expect(r.still.withCheck.checks, `${at}: the check's runs over 60 still frames`).toBe(0)
+       expect(r.still.withoutCheck.checks, at).toBe(0)
+-      // so a still frame costs the same whether or not the check was due (the same within the run-to-run spread of one frame)
+-      const a = r.still.withCheck.ms.median, b = r.still.withoutCheck.ms.median
+-      expect(Math.abs(a - b), `${at}: a still frame with the check due ${a} ms, without ${b} ms`).toBeLessThanOrEqual(Math.max(4, .5 * Math.max(a, b)))
+-      // LAW 10 — 2026-10-05 (found landing viewer.still-frame-draws-nothing): this read
+-      //   expect(a, `${at}: and nowhere near the 54–90 ms it was`).toBeLessThan(45)
+-      // — a number of milliseconds, which measures the machine as much as the page: beside three other real-browser tests in
+-      // the gate's checks the Lumberjack House's still frame read 60.8 ms with the check NOT running (0 runs counted, and the
+-      // frame without the check as slow). The claim is that the still frame no longer carries the check's cost, and it is
+-      // held against that cost as measured in the same run, under the same load (one check the old way: every triangle of
+-      // every tall piece): what the frame costs with the check due, over what it costs without, is a small part of it.
+-      expect(a - b, `${at}: a still frame with the check due costs ${a} ms, without ${b} ms — the old check alone was ${r.seeThrough!.plainMs.median} ms`).toBeLessThan(Math.max(4, r.seeThrough!.plainMs.median / 2))
++      // LAW 10 — 2026-10-05, viewer.frame-time-tests-hold-under-load (found twice the same day: this test went red in a loaded
++      // gate on "a still frame with the check due costs 47.6 ms, without 30.5 ms … expected 17.1 to be less than 7.75", and
++      // passed on the rerun). The three lines below compared times taken at DIFFERENT moments of the run, two of them with a
++      // number of milliseconds for a floor, and so measured the machine:
++      //   const a = r.still.withCheck.ms.median, b = r.still.withoutCheck.ms.median
++      //   expect(Math.abs(a - b), …).toBeLessThanOrEqual(Math.max(4, .5 * Math.max(a, b)))
++      //   expect(a - b, …).toBeLessThan(Math.max(4, r.seeThrough!.plainMs.median / 2))      (itself a Law 10 rewrite of
++      //     expect(a, `…nowhere near the 54–90 ms it was`).toBeLessThan(45), found landing viewer.still-frame-draws-nothing)
++      //   expect(r.seeThrough!.ms.median, `${at}: one check, ms`).toBeLessThan(4)
++      // Every claim is kept, and none is held by a number of milliseconds any more:
++      //   · "nothing moving: the check does not run" is the COUNT above (0 runs over the still frames) and the same count over
++      //     the frames taken turn about below — the pass or fail, and what goes red when the check is made to run every frame;
++      //   · "a still frame costs the same whether or not the check was due" and "it no longer carries the check's cost" are
++      //     RATIOS of medians taken in the same run with the frames turn about (one with the check due, one without, sixty of
++      //     each: tools/frame-cost.mjs stillPaired), so whatever slows the machine slows both alike;
++      //   · "one run costs under 4 ms" is the RATIO of the check's cost to the old check's (every triangle of every tall
++      //     piece), the two askings made back to back at each of the round's views: 4 ms was a quarter of the old check on the
++      //     cheapest battle measured (the Lumberjack House, 13 to 16 ms), so the bound is a quarter.
++      const p = r.stillPaired
++      expect(p, `${at}: the tool takes still frames turn about`).toBeTruthy()
++      expect(p!.pairs, `${at}: frames of each kind, turn about`).toBeGreaterThanOrEqual(60)
++      expect(p!.checks, `${at}: the check's runs over those frames`).toBe(0)
++      // so a still frame costs the same whether or not the check was due: neither kind's median is more than a quarter over the other's
++      expect(p!.ratio, `${at}: a still frame with the check due over one without, medians of ${p!.pairs} frames each taken turn about`).toBeLessThan(1.25)
++      expect(p!.ratio, `${at}: and the other way`).toBeGreaterThan(1 / 1.25)
++      // and it carries nothing like the old check's cost: what the check being due adds to a still frame is under half of what
++      // one check the old way costs in the same run
++      expect(r.seeThrough, `${at}: the page says what a check finds`).toBeTruthy()
++      const t = r.seeThrough!
++      expect((p!.withCheck - p!.withoutCheck) / t.plainMs.median, `${at}: what the check being due adds to a still frame, as a part of the old check's cost (same run)`).toBeLessThan(.5)
+       // while the view scrolls the check does run — the camera moves on every frame
+       expect(r.scrolling.withCheck.checks!, `${at}: while scrolling`).toBeGreaterThan(30)
+-      // (2) one run costs under 4 ms
+-      expect(r.seeThrough, `${at}: the page says what a check finds`).toBeTruthy()
+-      expect(r.seeThrough!.ms.median, `${at}: one check, ms`).toBeLessThan(4)
++      // (2) one run costs a small part of what the old check cost: under a quarter, the two asked back to back at every view
++      expect(t.pairs, `${at}: views at which both were asked`).toBeGreaterThanOrEqual(30)
++      expect(t.ratio, `${at}: one check over one check the old way, medians of ${t.pairs} askings each made back to back`).toBeLessThan(.25)
+       // (3) what is drawn see-through is unchanged: at every view of the round — four quarters, scrolled at each — the pieces
+       // hiding a body are the pieces the rule as first written finds (every triangle of every tall piece)
+```
+</details>
