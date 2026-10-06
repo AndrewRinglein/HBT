@@ -5922,3 +5922,63 @@ Added the same hour. Andrew: “Am I running out of these six streams out of one
 - **One lander chat** - the home chat - merges every stream's commits, builds the pages, lands the items, runs the twice-daily suites and holds the queue. A stream he is not steering runs as a builder under the lander chat, from its queue.
 - Why not one chat for all six: he could not talk to a builder directly; one chat's memory would fill several times a day; and when the app's session stops, every builder under it stops with it. With a chat per stream a stopped chat stops one stream.
 - A ruling he makes in a stream chat is written by that chat, in its copy, and reaches the main folder with its next merge.
+
+## 2026-10-06 — the one-use rules: most are cut or reworded onto rules the engine already has; a handful are built
+
+Andrew, in a root chat, answering a review of the content for rules that are used in exactly one place and that the engine has nothing for (about 45: 25 class powers, 11 items, 8 on enemies and encounters, the badges; and 7 used exactly twice).
+
+“A ton of these things can be done in other ways that fit within our mechanics.” “We don't need every condition to have different ways to apply. We can reuse the things we already have.” “So probably about 60% of these have another way to do it with the mechanics that we already have.”
+
+Ruled:
+
+- **Class powers - the one-use rule goes from each of:** Soul Barrier, Take Root, Overwatch, Take the Blow, Long Knife, Life Drain, Guidance, Ancestral Anchor, Bear the Flame, Succor of the Faithful, Foresee the Blow, Sever the Channel, Iron and Salt, Hunt, Close Ranks, Drop the Pack, Aim, Escape, Identify, Enlighten, Flare, and the Magical Friend's companion (“Magical friends companion cut it.”). His replacements, where he gave one:
+  - Take Root: “the idea is that you don't move and you get a bonus. What we do instead is we give -5 move and a bonus until the end of your next activation.”
+  - Succor of the Faithful: “We can have things like take damage and cleanse. We don't have to have them be conditional on one another.”
+  - Bear the Flame: “remove 2 burn and poison from an ally and gain 2 bleed.”
+  - Exsanguinate: “a good idea, but again, we don't need a mechanic specifically for this. We do have a mechanic that says, "Hey, add to damage equal to bleed," and that accomplishes much of the same thing and is a mechanic that we're already adding.”
+  - Guidance: “a mechanic that adds to magic on attack, but not to allies, so let's cut that”.
+  - Where he gave none, the content item rewrites the power onto rules that are built, keeps its name and its place in the specialty, and records each choice as a switch (the chat's reading, under his standing "decide content details").
+- **Impersonation stays, as a badge.** “Impersonation is something we want. However, this also needs the class power. I think it gives you a badge, so I think we turn this into a badge, and this class power gives that badge.”
+- **Hallowed Ground stays; consecrated ground is a new ground.** “a type of ground consecrated. Let's have that. We need both the ground in our distant backlog and then the ability to create that ground. What that ground does is undead take 2 damage upon stepping on it, and demons take 1 damage.”
+- **Items.**
+  - Divine Bulwark: “Just add one stun. At combat start”.
+  - Drakescale Coat: “Give it 2 fire resistance.”
+  - Wayfinder's Compass: “just give a bonus to vision.”
+  - Rune of the Perfect Hunter: “Just get rid of that.”
+  - Rune of Hell's Chosen: “There's some kind of use case for an aura that hits you and your allies. I thought we needed something like that, so I think we should have that.”
+  - Death Bow, The Last Arrow: “Free shot at a different enemy isn't a thing we have and has complexity to it, so I don't think we ever want that. We have something similar in a lot of places, which is on a kill: gain surge. A way that I would do something that was trying to be the last arrow is I would have on kill gain 70 surge and take -3 precision. Means you need to change out to melee after you kill with this.”
+  - Storm Bastion: “we don't need that.” Blink Ring: “I don't think we need teleportation, so no in the Blink Ring.” Brass Spyglass: “we don't need that.”
+  - Banner of Mystic Power: “I do think that an aura that grants a bonus to magic attack seems in line with other things that we're doing with auras.”
+  - Banner of Heroism: “it could be done by everybody who's in range. Gains on miss. Gain surge, but not everyone gives everyone the modifier. That seems like a double stacked thing that we don't need.”
+- **Enemies and encounters.**
+  - Pull: “Pull, we're going to add”.
+  - Eyeblight's Gaze: “I think an attack with flat damage is fine, although that's probably just a typo. It should not have flat damage. It should be based on its stat.”
+  - Werewolf, Claw Frenzy: “the ordering, I don't really care about”.
+  - Iron Colossus's hint and the Supper's follower: “AI hasn't really been designed yet, so I don't worry about that. Supper is the same thing.”
+  - The Last Company: “Shades, we are going to build that functionality.”
+  - Prologue 4, The Curse: “Scheduled events that apply statuses are going to happen all the time. That is not any kind of exception.”
+  - Pray: “let's keep prey.”
+- **Badges all stay, and they are not one-use.** “we're going to keep all those badge ones, and there's a lot more. I feel like a lot is missing if those are the only ones you mentioned. Badges being a place where something is not really ever one-use because it can be applied to a lot of different people or monsters”. One exception: “We don't need to remember what killed someone, so we can get rid of that.” (Giant-Killer, Grudge-Bearer).
+- **The rules used exactly twice.**
+  - “accuracy against anyone but you. Yeah, we can cut that. We can turn that. I know it's meant for tanking, but we can just turn it into a -accuracy.” (No Way Past, Holy Shield)
+  - “We can remove the status that ticks twice.” (Creeping Dose, the Tainted Blood enchantment)
+  - “We can remove damage to enemies you run past.” (Fel Rush, Trample)
+  - “We can remove "cannot be healed".” (Soul Thief, Death Bow)
+  - “We can remove "an item slot gained during battle".” (Paid in Full, the Porter's passive)
+  - The Daggers' +50 Surge: “If there's a dagger that gives +50 surge, it's supposed to be one time, not every turn. Because that's like half of a free action.”
+  - The crit chart's -50 Surge (the row Knocked Sprawling): “I don't know what that is.” Open - asked.
+
+What this changes among the earlier rulings and the queue (the chat's reading, found when filing):
+
+- **2026-10-04 'every dead line on his items is a feature that is needed'** stands for every item not named above. For the items named above the newer words win: their dead line is reworded or removed, not built.
+- **`capability.banner-heroism-on-miss` (pending) asks for what he has now turned down** - every ally in the banner's reach gaining Surge Chance when any one of them misses. It is replaced by `content.banner-heroism-own-miss`: each ally in reach gains it on its own miss, which a planted object can already lend. Taking the old item out of the queue is the lander chat's.
+- **Already in the queue, nothing new filed:** the bonus to magic attacks in a banner (`capability.banner-mystic-magic-attacks`), a trigger that moves a unit's Surge amount once (`capability.trigger-moves-surge` - the Daggers' +50; its Knocked Sprawling half waits on his answer below), damage that adds the target's own status (`capability.damage-adds-target-status` - what Exsanguinate becomes).
+- **Pull has a second user in the queue**, the Ledger's Whip (`content.ledger-new-weapons`: 'range 3, 70% pull'), and no item built it; filed as `capability.pull`.
+- **Filed, at the end of each list, consecrated ground last:** `content.one-use-class-powers-reworded`, `content.one-use-items-reworded`, `content.used-twice-rules-removed`, `content.banner-heroism-own-miss`, `content.impersonation-badge`, `capability.pull`, `capability.aura-reaches-everyone`, `capability.scheduled-event-applies-status`, `capability.faith-gained-in-battle`, `capability.consecrated-ground`. Not filed: the Iron Colossus's hint and the Supper's follower (they wait on the design of the enemy's thinking), the Shade (an owed monster row), and the badges (the whole list of badge rules the game does not read is owed to him first).
+- **The Werewolf's Claw Frenzy:** since the order does not matter to him, its Strength counts from the attack after the one that granted it, which needs nothing new (the content item records the switch).
+
+Corrected by him in his next message, the same hour:
+
+- **The Last Company's Shades are a monster's definition, not a feature of their own.** “So you're misunderstanding the last company shades. Corpses are normally there at setup anyway, and we're just talking about the definition of a monster. This is not some expressly different work than the work needed to support a monster.” No separate build item: the Shade is an owed monster row, and Embody is that monster's ability.
+- **The Magical Friend's companion is a summoned ally and nothing more.** “Magical friendly just summoned an ally.” The three special parts (it does not attack, it shares Vision, it moves before Succor) go.
+- **Knocked Sprawling's -50 Surge is not his and does not stand as written.** Shown the row (“pushed 1 hex, gain 2 Slow, -50 Surge”, `COMBAT-DESIGN.md` crit table, mirrored in `content/settled.json` critChart; rows 7-10 are recorded as added 2026-08-27): “I didn't author that. That doesn't make any fucking sense. ... The problem with a -5 to surge, and it's called knock sprawling: why wouldn't it be knocked down? You don't necessarily have surge, and enemies don't have surge. That's a stupid critical.” What the row becomes: asked.
