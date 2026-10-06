@@ -3,7 +3,8 @@
 // for-every pays `each` per member carried, the carrier among them when it bears the
 // tag ("+1 Precision for every CHAIN item you carry"); per-other pays `each` per OTHER
 // member (three slaying weapons → +2 each); at-count pays `once` when `at` members
-// are carried, the carrier included. An item belongs to every set its tags name.
+// are carried, the carrier included. An item belongs to every set its tags name, and to
+// those its row says it is a member of without the tag (`sets` holds both).
 //
 // capability.set-bonus (engine item, 2026-10-05; engine/DECISIONS.md 2026-10-04 'his 28
 // reward weapons read back …': "We need: … set bonus"): THE COUNT IS THE ENGINE'S
@@ -33,7 +34,9 @@ export type SetLine = {
 
 /** Pure: the sets that pay over a list of carried rows, in carried order (Law 6: order is placement) — the engine's count. */
 export function resolveSetsOf(worn: readonly ItemRow[]): SetLine[] {
-  return setLinesOf(worn.map((r) => ({ id: r.id, setTags: r.tags, ...(r.setBonus ? { setBonus: r.setBonus } : {}) })))
+  // `sets`, not `tags` (content.sets-count-holy-texts-and-heavy-chain, 2026-10-06): a row is counted in the sets its tags name AND
+  // in those it says it is a member of without bearing the tag (Holy Texts a book, Heavy Chain a chain item - the Forge reads tags).
+  return setLinesOf(worn.map((r) => ({ id: r.id, setTags: r.sets, ...(r.setBonus ? { setBonus: r.setBonus } : {}) })))
 }
 
 /** The triggered sets on one hero — over `equipped` and nothing else. */
