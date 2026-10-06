@@ -77,8 +77,17 @@ describe('a hero still turned when a battle is lost is lost', () => {
     // of seeds 0 to 39 that fights it out is 22. The lines were:
     //   // seed 2: heroClear — hero 3 turned, was beaten down in its own form; the rest never left
     //   const won = battle(2).result
-    // seed 22: heroClear — hero 3 turned, was beaten down in its own form; the rest never left
-    const fought = battle(22), won = fought.result
+    // Law 10, 2026-10-06 — engine rule.surge-is-at-least-level (engine DECISIONS.md 2026-10-06 'everyone gains Surge equal to its
+    // level at the least, and rolls the Surge check every Activation'): the four test warriors have a hero class, so each has
+    // Surge 1 and rolls the check after every Activation - every seed is another fight. Seed 22 is still won, but nobody turns
+    // and is beaten down in it any more. The case is unchanged and so is every assertion below; only the seed that fights it out
+    // is read again, from 0 upward: none of 0 to 52 does (the won ones - 15, 17, 18, 22, 30, 32 - have no hero beaten down in
+    // its other form), 53 is the first (66 the next). Found, not tuned; the lost battle above is still seed 4. Found by the
+    // group's kingdom suite (the failed run stays in the record). The lines were:
+    //   // seed 22: heroClear — hero 3 turned, was beaten down in its own form; the rest never left
+    //   const fought = battle(22), won = fought.result
+    // seed 53: heroClear — hero 3 turned and was beaten down
+    const fought = battle(53), won = fought.result
     expect(fought.events.some((e) => e.type === 'unit.reverted' && e['reason'] === 'fell'), 'a hero turned and was beaten down in this battle').toBe(true)
     expect(won.outcome).toBe('heroClear')
     expect(won.units.some((u) => u.turned)).toBe(false)
