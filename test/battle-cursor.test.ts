@@ -552,9 +552,10 @@ const dwarfElfFeyBadgesActGolden = JSON.parse(readFileSync(new URL('./fixtures/b
 // content.sets-count-holy-texts-and-heavy-chain (Holy Texts a book, Heavy Chain a chain item for sets - by a set membership the Forge
 // does not read), content.resistance-to-weak-and-vigil-party-spirit (the word; the Banner of the Vigil heals by the party's Spirit) and
 // rule.computer-avoids-own-traps (ruled 2026-10-05: "Computers should avoid their own traps." - a unit the computer plays will not
-// enter a hex holding its own side's trap). No battle fought before moves: no case fields the Book of Karma or the Chains of the
+// enter a hex holding its own side's trap). No battle fought before moves: no case fielded the Book of Karma or the Chains of the
 // Wrathful with either row, none plants the Vigil's banner, and in the one case with traps (test.bear-traps) no hero walked onto a
-// hero's trap. test.snarer-traps is ADDED: a trap an enemy places, on its own side's way.
+// hero's trap. Two cases are ADDED: test.sets-counted (the two set rows counted in a real battle) and test.snarer-traps (a trap an
+// enemy places, on its own side's way).
 // Every case frozen here (tools/capture-computer-avoids-own-traps-cursor.mts). Moved: none. A `changed` case is checked here and skips the older layers.
 const computerAvoidsOwnTrapsGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-computer-avoids-own-traps.json', import.meta.url), 'utf8'))
 const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')

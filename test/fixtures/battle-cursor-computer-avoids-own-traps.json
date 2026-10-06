@@ -1267,6 +1267,19 @@
       "changed": false
     },
     {
+      "id": "test.sets-counted",
+      "events": "4eaf6af4b7b3e0ac2f6200d8fda83241369683e02a64a4cb6c1b396978585480",
+      "state": "4018c31a560ad93134425a0915f45f525c0eab739786130521eced0244ea0351",
+      "rng": "99f4a502f9e73302d2bf577270bc4e3bdc4f941660ec433f62c528b2d5c0a3c7",
+      "result": {
+        "outcome": "capped",
+        "turns": 25,
+        "usesSpent": []
+      },
+      "changed": false,
+      "added": true
+    },
+    {
       "id": "test.sight-a",
       "events": "0e6aa21e823c3b68620f1d56b7d733caa55e43755bf415cb8059f1c019711fbc",
       "state": "3f42149b17d404a8b9b738e04cd7dbdf2f15ce82f9718883cb09cb6ec6901f09",
