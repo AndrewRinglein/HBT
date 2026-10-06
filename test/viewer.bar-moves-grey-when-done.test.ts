@@ -52,7 +52,17 @@ describe('the moves grey once the move is done: what the engine does to a unit\'
     expect(validateBattleCommand(ctx, policy, { kind: 'action', actor: 0, actionId: 'power.move', destination: 84, expectedSeq: ctx.state.seq })).toMatchObject({ ok: false, reason: 'not-acting' })
     expect(advanceBattle(ctx, policy)).toEqual({ kind: 'selecting', unitUids: [101] })
   })
-  it('a walk cut short: the movement action is spent, the movement left over is still offered — as the primary action, which ends the Activation', () => {
+  // Law 10, 2026-10-06 — engine rule.one-move-action-one-primary-action (Andrew, engine/DECISIONS.md 'an Activation is one move action and
+  // one primary action, in that order; …': "All the player units get two actions: a move action and a primary action, in that order, every
+  // time they get activated."; the item: "a walk begun and cut short may still be finished … since that is the same move action"). This test
+  // held what the engine did before the ruling — "the movement left over is still offered — as the primary action, which ends the
+  // Activation". Its last three lines were:
+  //   expect(validateBattleCommand(ctx, policy, { kind: 'action', actor: 0, actionId: 'power.move', slot: 'movement', destination: rest[0]!, expectedSeq: ctx.state.seq }).ok).toBe(false)   // not as a second movement action
+  //   expect(act(ctx, { actionId: 'power.move', slot: 'primary', destination: rest[0]! })).toEqual({ ok: true })
+  //   expect(me.primaryUsed).toBe(true); expect(ctx.battleCursor!.at).not.toBe('acting')
+  // The rule now: the rest of the walk is the SAME move action — the primary action never takes it (refused with the movement-slot reason),
+  // it is taken as the move action, and it costs the hero neither its primary action nor its Activation.
+  it('a walk cut short: the movement action is spent, the movement left over is still offered — as the same move action; the primary action never takes it', () => {
     const ctx = field(15), me = ctx.state.units[0]!, budget = me.movePointsLeft
     const near = destinations(ctx, 'power.move').find((d) => ctx.geo.distance(me.hex, d) === 1)!
     expect(act(ctx, { actionId: 'power.move', destination: near })).toEqual({ ok: true })
@@ -60,9 +70,9 @@ describe('the moves grey once the move is done: what the engine does to a unit\'
     expect(me.movePointsLeft).toBeGreaterThan(0); expect(me.movePointsLeft).toBeLessThan(budget)
     expect(ctx.battleCursor).toMatchObject({ at: 'acting', actor: 0 })
     const rest = destinations(ctx, 'power.move'); expect(rest.length).toBeGreaterThan(0)   // the engine still takes the basic move
-    expect(validateBattleCommand(ctx, policy, { kind: 'action', actor: 0, actionId: 'power.move', slot: 'movement', destination: rest[0]!, expectedSeq: ctx.state.seq }).ok).toBe(false)   // not as a second movement action
-    expect(act(ctx, { actionId: 'power.move', slot: 'primary', destination: rest[0]! })).toEqual({ ok: true })
-    expect(me.primaryUsed).toBe(true); expect(ctx.battleCursor!.at).not.toBe('acting')
+    expect(validateBattleCommand(ctx, policy, { kind: 'action', actor: 0, actionId: 'power.move', slot: 'primary', destination: rest[0]!, expectedSeq: ctx.state.seq })).toMatchObject({ ok: false, reason: 'movement-slot-closed' })   // never as the primary action
+    expect(act(ctx, { actionId: 'power.move', slot: 'movement', destination: rest[0]! })).toEqual({ ok: true })                                  // the rest of the walk: the same move action
+    expect(me).toMatchObject({ hex: rest[0]!, moveUsed: true, primaryUsed: false }); expect(ctx.battleCursor).toMatchObject({ at: 'acting', actor: 0 })   // its primary action and its Activation are still its own
   })
   // Law 10, 2026-10-04 — rule.walked-unit-has-moved (the note at the top): the test held "Leap is still taken, as the primary action" - what
   // the engine did before the ruling. The rule now: a hero that has walked takes no other movement, after one hex or after them all.

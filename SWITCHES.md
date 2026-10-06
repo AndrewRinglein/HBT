@@ -2137,3 +2137,15 @@ disappearing — "One, yes." Code: `src/actions.js` (`actionsOf` keeps the row, 
 |---|---|---|---|---|
 | `usedUpIsTheLogsLine` | How does the bar know a power is used up, with no engine change? | **From the engine's own line: `power.exhausted` (the last use spent — the fold has kept it since capability.charges, to drop the row). The row now keeps its place in the list, greyed with the look of a row that cannot be paid for, marked disabled, its uses reading 0, saying "Used: once per Battle." (a row with one use) or "No uses left." on hover.** The engine still takes the action off the unit's list (its rule is unchanged); only the bar keeps showing it. The Banner of Courage after it is planted and an item's last use (Bandages) are the same line and read the same. | "Stays on the bar, greyed." | Default — 2026-10-06 |
 | `usedUpHostHasTheLastWord` | "It does not light again that battle unless the rules give a use back, and then it lights at once." No line of the log says a use came back. | **Where a host plays the unit acting, the host's word decides: it names the used-up action in `cantPay` (from the engine's own record of uses spent, while the engine does not grant the action); the moment the engine grants it again the host stops naming it and the row is lit. In a replay the log's line stands for the rest of the battle.** FOUND for the engine's queue: no rule gives a use back today, and no line would say so. | The engine knows; the page asks it. | Default — 2026-10-06 |
+
+## rule.one-move-action-one-primary-action (engine item) — the viewer's half, 2026-10-06
+
+Ruled 2026-10-06 (Andrew, engine DECISIONS.md 'an Activation is one move action and one primary action, in that order; …'): "All
+the player units get two actions: a move action and a primary action, in that order, every time they get activated." The rule
+is the engine's (`engine/SWITCHES.md`, the section of the same name). No source line of the viewer changed: the bar greys what a
+host names as done, and the host reads the engine. The page check is the kingdom's
+(`kingdom/tools/one-move-action-one-primary-action.verify.mjs`).
+
+| Switch | Question | Default | Reason | Status |
+|---|---|---|---|---|
+| `restOfAWalkPinnedAsPrimary` | `test/viewer.bar-moves-grey-when-done.test.ts` held, of the engine, that the movement left over after a walk cut short "is still offered — as the primary action, which ends the Activation". Found by the viewer gate's checks part at the group's chain (the failed run stays in the record). | **Restated in place with a dated note (Law 10), the old three lines quoted: the rest of the walk is the same move action — refused as the primary action with `movement-slot-closed`, taken in the movement slot, and the hero's primary action and Activation are still its own.** The six opening recordings re-exported on the rule are event for event what they were. | The engine's rule moved; the test says the rule. | Default — 2026-10-06 |
