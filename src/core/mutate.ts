@@ -35,7 +35,7 @@ export const EVENT_TYPES = [
   'status.applied', 'status.cancelled', 'status.expired', 'status.reduced', 'surge.checked',
   'surge.hit', 'thorns.reflected', 'trigger.fired', 'trigger.rolled', 'turn.begin', 'turn.end',
   'unit.badged', 'unit.enter', 'unit.equipped', 'unit.grown', 'unit.modified', 'unit.obliterated',
-  'side.stat.changed', 'side.stat.restored', 'unit.dismissed', 'unit.proned', 'unit.raised', 'unit.reverted', 'unit.shunted', 'unit.stood', 'unit.summoned', 'unit.transformed', 'zoc.ignored',
+  'side.stat.changed', 'side.stat.restored', 'object.planted', 'status.warded', 'surge.gained', 'unit.dismissed', 'unit.proned', 'unit.raised', 'unit.reverted', 'unit.shunted', 'unit.stood', 'unit.summoned', 'unit.transformed', 'zoc.ignored',
 ] as const
 export type EventType = (typeof EVENT_TYPES)[number] | `life.${LifeState}`
 
@@ -798,6 +798,28 @@ export function placeCorpse(ctx: Ctx, hex: HexId, typeId: string, side: Side, ui
   const id = pushCorpse(ctx, hex, typeId, side, uid)
   emit(ctx, 'corpse.created', causeId, { corpse: id, hex, of: null, typeId, side, remains })
 }
+/**
+ * capability.his-weapons-small-clauses (2026-10-05): "On kill: the corpse is destroyed". The mark an onKill trigger leaves on
+ * the unit its attack has just brought to 0 Health (the trigger.fired line names it), and what settle does with it: the body
+ * is made where the unit fell and removed at once, so the log shows a death, a corpse and its destruction, and the board
+ * never holds a corpse anything could raise, eat or consume. The mark lasts the settling of that attack and no longer.
+ */
+export function markCorpseDestroyed(ctx: Ctx, id: number, by: number, causeId: string): void {
+  unit(ctx, id).corpseDestroyed = { by, cause: causeId }
+}
+/** A dead unit's body: none for a summon; made and at once destroyed for a unit marked by markCorpseDestroyed; a corpse otherwise. */
+export function leaveCorpse(ctx: Ctx, u: Unit, causeId: string): void {
+  if (u.summoned) return   // capability.corpses: summons leave none
+  createCorpse(ctx, u, causeId)
+  const mark = u.corpseDestroyed
+  if (!mark) return
+  const body = (ctx.state.corpses ?? []).find((c) => c.uid === u.uid && c.hex === u.hex)
+  if (body) removeCorpse(ctx, body.id, mark.cause, 'destroyed', mark.by)
+}
+/** The marks last one settling: whoever did not die of that attack leaves a corpse when it does die. */
+export function clearCorpseMarks(ctx: Ctx): void {
+  for (const u of ctx.state.units) if (u.corpseDestroyed) delete u.corpseDestroyed
+}
 export function removeCorpse(ctx: Ctx, corpseId: number, causeId: string, how: 'raised' | 'eaten' | 'consumed' | 'destroyed', actor: number): void {
   const list = ctx.state.corpses ?? []
   const i = list.findIndex((c) => c.id === corpseId)
@@ -809,6 +831,34 @@ export function removeCorpse(ctx: Ctx, corpseId: number, causeId: string, how: '
 export function corpsesNear(ctx: Ctx, hex: HexId, radius: number): { id: number; hex: number; typeId: string; side: 'hero' | 'enemy'; uid: number }[] {
   return (ctx.state.corpses ?? []).filter((c) => ctx.geo.distance(c.hex, hex) <= radius)
     .sort((a, b) => ctx.geo.distance(a.hex, hex) - ctx.geo.distance(b.hex, hex) || a.id - b.id)
+}
+
+// ── PLANTED OBJECTS — capability.planted-banners (2026-10-05) ───────────────
+// A power plants an object on its user's hex. Plain data on the state, ids by count; it stays for the rest of the Battle.
+export function plantObject(ctx: Ctx, actorId: number, def: import('./types.js').PlantedDef, causeId: string): void {
+  const u = unit(ctx, actorId)
+  const list = ctx.state.planted ?? (ctx.state.planted = [])
+  const id = list.length ? Math.max(...list.map((p) => p.id)) + 1 : 1
+  const mods = def.mods && Object.keys(def.mods).length ? { ...def.mods } : undefined
+  const wards = def.wards && Object.keys(def.wards).length ? { ...def.wards } : undefined
+  const lends = def.lends?.length ? def.lends.map((t) => ({ ...t, effect: { ...t.effect } })) : undefined
+  list.push({ id, hex: u.hex, side: u.side, by: actorId, source: causeId, radius: def.radius, ...(mods ? { mods } : {}), ...(wards ? { wards } : {}), ...(lends ? { lends } : {}) })
+  emit(ctx, 'object.planted', causeId, { actor: actorId, object: id, hex: u.hex, side: u.side, radius: def.radius, ...(mods ? { mods } : {}), ...(wards ? { wards } : {}), ...(lends ? { lends: lends.map((t) => t.id) } : {}) })
+}
+/** The planted objects a unit stands within reach of — its own side's, lowest id first (Law 6). */
+export function plantedOver(ctx: Ctx, u: Unit): import('./types.js').Planted[] {
+  return (ctx.state.planted ?? []).filter((p) => p.side === u.side && ctx.geo.distance(p.hex, u.hex) <= p.radius).sort((a, b) => a.id - b.id)
+}
+/**
+ * capability.planted-banners: Surge Chance gained — "added to the pool once, never added to the Surge stat". The amount the
+ * Surge check rolls against (Unit.surgeChance) rises; the unit's Surge, which that check adds every Activation, does not.
+ */
+export function gainSurgeChance(ctx: Ctx, id: number, amount: number, causeId: string): void {
+  if (amount <= 0) return
+  const u = unit(ctx, id)
+  const before = u.surgeChance
+  u.surgeChance = before + amount
+  emit(ctx, 'surge.gained', causeId, { target: id, amount, before, after: u.surgeChance })
 }
 
 // ── GROUND LAYERS — capability.ground-layers (2026-09-03) ────────────────────

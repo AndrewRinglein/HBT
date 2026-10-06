@@ -495,10 +495,10 @@
     "item.benevolent-rod"
    ],
    "action": "power.benevolent-rod.restoration",
-   "name": "power.benevolent-rod.restoration",
-   "kind": null,
-   "engine": "no",
-   "bar": null,
+   "name": "Mending Light",
+   "kind": "power",
+   "engine": "yes",
+   "bar": "power",
    "motion": null,
    "bodies": {
     "Ancient Elf": null,
@@ -524,9 +524,14 @@
     "The Skull": null
    },
    "motionStatus": "missing",
-   "selected": null,
+   "selected": {
+    "key": "spell",
+    "label": "Casting / power gesture",
+    "clip": "Spell_Simple_Shoot",
+    "record": "assets/characters/oathblade-armor/rebuild/free-motion-study/selections.json"
+   },
    "ruling": null,
-   "note": "the pack names it; the engine has no row (item power — shape unparsed)",
+   "note": null,
    "variants": 0
   },
   {
@@ -7560,10 +7565,10 @@
     "item.banner-assassin"
    ],
    "action": "power.banner-assassin.plant",
-   "name": "power.banner-assassin.plant",
-   "kind": null,
-   "engine": "no",
-   "bar": null,
+   "name": "Plant the Assassin’s Banner",
+   "kind": "power",
+   "engine": "yes",
+   "bar": "power",
    "motion": null,
    "bodies": {
     "Ancient Elf": null,
@@ -7589,9 +7594,14 @@
     "The Skull": null
    },
    "motionStatus": "missing",
-   "selected": null,
+   "selected": {
+    "key": "consume",
+    "label": "Drink or consume",
+    "clip": "Consume",
+    "record": "assets/characters/oathblade-armor/rebuild/free-motion-study/selections.json"
+   },
    "ruling": null,
-   "note": "the pack names it; the engine has no row (item power — shape unparsed)",
+   "note": null,
    "variants": 0
   },
   {
@@ -7600,10 +7610,10 @@
     "item.banner-courage"
    ],
    "action": "power.banner-courage.plant",
-   "name": "power.banner-courage.plant",
-   "kind": null,
-   "engine": "no",
-   "bar": null,
+   "name": "Plant the Courage Banner",
+   "kind": "power",
+   "engine": "yes",
+   "bar": "power",
    "motion": null,
    "bodies": {
     "Ancient Elf": null,
@@ -7629,9 +7639,14 @@
     "The Skull": null
    },
    "motionStatus": "missing",
-   "selected": null,
+   "selected": {
+    "key": "consume",
+    "label": "Drink or consume",
+    "clip": "Consume",
+    "record": "assets/characters/oathblade-armor/rebuild/free-motion-study/selections.json"
+   },
    "ruling": null,
-   "note": "the pack names it; the engine has no row (item power — shape unparsed)",
+   "note": null,
    "variants": 0
   },
   {
@@ -7640,10 +7655,10 @@
     "item.banner-heroism"
    ],
    "action": "power.banner-heroism.plant",
-   "name": "power.banner-heroism.plant",
-   "kind": null,
-   "engine": "no",
-   "bar": null,
+   "name": "Plant the Heroic Banner",
+   "kind": "power",
+   "engine": "yes",
+   "bar": "power",
    "motion": null,
    "bodies": {
     "Ancient Elf": null,
@@ -7669,9 +7684,14 @@
     "The Skull": null
    },
    "motionStatus": "missing",
-   "selected": null,
+   "selected": {
+    "key": "consume",
+    "label": "Drink or consume",
+    "clip": "Consume",
+    "record": "assets/characters/oathblade-armor/rebuild/free-motion-study/selections.json"
+   },
    "ruling": null,
-   "note": "the pack names it; the engine has no row (item power — shape unparsed)",
+   "note": null,
    "variants": 0
   },
   {
@@ -7765,10 +7785,10 @@
     "item.banner-vigil"
    ],
    "action": "power.banner-vigil.plant",
-   "name": "power.banner-vigil.plant",
-   "kind": null,
-   "engine": "no",
-   "bar": null,
+   "name": "Plant the Vigil Banner",
+   "kind": "power",
+   "engine": "yes",
+   "bar": "power",
    "motion": null,
    "bodies": {
     "Ancient Elf": null,
@@ -7794,9 +7814,14 @@
     "The Skull": null
    },
    "motionStatus": "missing",
-   "selected": null,
+   "selected": {
+    "key": "consume",
+    "label": "Drink or consume",
+    "clip": "Consume",
+    "record": "assets/characters/oathblade-armor/rebuild/free-motion-study/selections.json"
+   },
    "ruling": null,
-   "note": "the pack names it; the engine has no row (item power — shape unparsed)",
+   "note": null,
    "variants": 0
   },
   {
@@ -22694,10 +22719,10 @@
  "counts": {
   "rows": 521,
   "missing": 352,
-  "noEngine": 32,
+  "noEngine": 27,
   "inert": 239,
   "noMotion": 352,
-  "selectedUnbound": 313,
+  "selectedUnbound": 318,
   "partial": 81
  }
 }

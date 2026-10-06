@@ -165,6 +165,21 @@ export function auraMods(ctx: Ctx, u: Unit): StatMod[] {
 }
 
 /**
+ * capability.planted-banners (2026-10-05): modifiers LENT by the planted objects whose reach this unit stands in — its own
+ * side's only. DERIVED, never stored, as an aura's are; but measured from the OBJECT's hex, which does not move: the planter
+ * may walk away and the reach stays where it was planted. Each under the name of the power that planted it. (The list is
+ * read off the state here rather than through mutate.ts, which imports this file.)
+ */
+export function plantedMods(ctx: Ctx, u: Unit): StatMod[] {
+  const out: StatMod[] = []
+  for (const p of [...(ctx.state.planted ?? [])].sort((a, b) => a.id - b.id)) {
+    if (!p.mods || p.side !== u.side || ctx.geo.distance(p.hex, u.hex) > p.radius) continue
+    for (const [stat, value] of Object.entries(p.mods)) if (value) out.push({ stat: stat as StatName, op: 'add', value, source: p.source, scope: 'unit' })
+  }
+  return out
+}
+
+/**
  * Modifiers a held status lends — v2.prone (COMBAT-V2-DESIGN §10): "the prone
  * unit −10 dodge", the number on the status row. DERIVED, never stored, like
  * terrain and auras: standing removes the status and the mod goes with it.
@@ -194,7 +209,7 @@ export function modsFor(ctx: Ctx, u: Unit, own = false): StatMod[] {
   // Spirit — "every spell cast after it is smaller" — each under the name of the effect that made it. `own` leaves them
   // out: the party's sum counts a side's change once, not once a member (trigger.ts partySum).
   const side = own ? [] : (ctx.state.sideMods ?? []).filter((m) => m.side === u.side && m.stat !== 'power').map((m): StatMod => ({ stat: m.stat as StatName, op: 'add', value: m.value, source: m.source, scope: 'unit' }))
-  const all = [...stored, ...terrainMods(ctx, u), ...auraMods(ctx, u), ...statusMods(ctx, u), ...side]
+  const all = [...stored, ...terrainMods(ctx, u), ...auraMods(ctx, u), ...plantedMods(ctx, u), ...statusMods(ctx, u), ...side]
   // Sorted so resolution never depends on the order things happened to be added.
   // `set` last, because an override is meaningless before the adds it replaces.
   return all.sort((a, b) =>

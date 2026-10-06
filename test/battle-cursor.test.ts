@@ -504,6 +504,20 @@ const setBonusGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor
 // fought before moves (nothing in them changed a party stat); test.vortex is ADDED: the Staff of the Magi's Vortex live in a real battle.
 // Every case frozen here (tools/capture-raise-lower-magic-cursor.mts). Moved: test.set-bonus. A `changed` case is checked here and skips the older layers.
 const raiseLowerMagicGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-raise-lower-magic.json', import.meta.url), 'utf8'))
+// capability.his-weapons-small-clauses (2026-10-05; DECISIONS.md 2026-10-04 'his 28 reward weapons read back …': "Everything else in
+// here seems like something we need."), Law 10: an attack's on-kill may destroy the corpse of what it kills (the Staff of the
+// Destroyer's Ruin and Sundering, the artifact attribute Destroying), and a power removes points of a named status by a stat's
+// amount (the Benevolent Rod's Mending Light). A case that was fought before moves only if a unit in it holds one of those rows;
+// test.corpse-destroyed and test.mending-light are ADDED: each clause live in a real battle.
+// Every case frozen here (tools/capture-his-weapons-small-clauses-cursor.mts). Moved: test.set-bonus. A `changed` case is checked here and skips the older layers.
+const hisWeaponsSmallClausesGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-his-weapons-small-clauses.json', import.meta.url), 'utf8'))
+// capability.planted-banners (2026-10-05; DECISIONS.md 2026-10-04 'every dead line on his items is a feature that is needed …': "All of
+// those deadlines need to be added in as features that we need."), Law 10: a power plants an object on its user's hex that stays
+// for the rest of the Battle and gives the planter's side, within its radius of that hex, stats, a ward against a status and lent
+// triggers (his Banners of Courage, of the Assassin, of the Vigil and of Heroism). No case that was fought before moves (no unit
+// in them carries a banner); test.banner-courage is ADDED: the Banner of Courage live in a real battle.
+// Every case frozen here (tools/capture-planted-banners-cursor.mts). Moved: none. A `changed` case is checked here and skips the older layers.
+const plantedBannersGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-planted-banners.json', import.meta.url), 'utf8'))
 const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
 // Explicit rule migration, not regenerated historical hashes. These nine old
 // cases contain Surge ledger/refresh changes or terminal markers corrected
@@ -655,7 +669,13 @@ describe('resumable battle cursor', () => {
       const summonsExpected = summonsGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const setBonusExpected = setBonusGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const raiseLowerMagicExpected = raiseLowerMagicGolden.cases.find((row:{id:string})=>row.id===fixture.id)
-      const raiseLowerMagicMoved = raiseLowerMagicExpected?.changed === true
+      const hisWeaponsSmallClausesExpected = hisWeaponsSmallClausesGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+      const plantedBannersExpected = plantedBannersGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+      const plantedBannersMoved = plantedBannersExpected?.changed === true
+      // was: const hisWeaponsSmallClausesMoved = hisWeaponsSmallClausesExpected?.changed === true — a case capability.planted-banners moved skips this layer too (capability.planted-banners 2026-10-04)
+      const hisWeaponsSmallClausesMoved = hisWeaponsSmallClausesExpected?.changed === true || plantedBannersMoved
+      // was: const raiseLowerMagicMoved = raiseLowerMagicExpected?.changed === true — a case capability.his-weapons-small-clauses moved skips this layer too (capability.his-weapons-small-clauses 2026-10-04)
+      const raiseLowerMagicMoved = raiseLowerMagicExpected?.changed === true || hisWeaponsSmallClausesMoved
       // was: const setBonusMoved = setBonusExpected?.changed === true — a case capability.raise-lower-magic moved skips this layer too (capability.raise-lower-magic 2026-10-04)
       const setBonusMoved = setBonusExpected?.changed === true || raiseLowerMagicMoved
       // was: const summonsMoved = summonsExpected?.changed === true — a case capability.set-bonus moved skips this layer too (capability.set-bonus 2026-10-04)
@@ -819,7 +839,21 @@ describe('resumable battle cursor', () => {
             battle.completeActionCycle(ctx)
           }
         } else result = battle.runBattle(ctx)
-        if (raiseLowerMagicExpected) {
+        if (plantedBannersExpected) {
+        expect(hash(ctx.events), 'full planted-banners events').toBe(plantedBannersExpected.events)
+        expect(hash(ctx.state), 'full planted-banners state').toBe(plantedBannersExpected.state)
+        expect(hash(ctx.rng.log), 'full planted-banners RNG').toBe(plantedBannersExpected.rng)
+        expect(result).toEqual(plantedBannersExpected.result)
+        }
+        // was: if (hisWeaponsSmallClausesExpected) { — capability.planted-banners (2026-10-04): a case it moved is checked above instead
+        if (hisWeaponsSmallClausesExpected && !plantedBannersMoved) {
+        expect(hash(ctx.events), 'full his-weapons-small-clauses events').toBe(hisWeaponsSmallClausesExpected.events)
+        expect(hash(ctx.state), 'full his-weapons-small-clauses state').toBe(hisWeaponsSmallClausesExpected.state)
+        expect(hash(ctx.rng.log), 'full his-weapons-small-clauses RNG').toBe(hisWeaponsSmallClausesExpected.rng)
+        expect(result).toEqual(hisWeaponsSmallClausesExpected.result)
+        }
+        // was: if (raiseLowerMagicExpected) { — capability.his-weapons-small-clauses (2026-10-04): a case it moved is checked above instead
+        if (raiseLowerMagicExpected && !hisWeaponsSmallClausesMoved) {
         expect(hash(ctx.events), 'full raise-lower-magic events').toBe(raiseLowerMagicExpected.events)
         expect(hash(ctx.state), 'full raise-lower-magic state').toBe(raiseLowerMagicExpected.state)
         expect(hash(ctx.rng.log), 'full raise-lower-magic RNG').toBe(raiseLowerMagicExpected.rng)

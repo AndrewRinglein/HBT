@@ -121,6 +121,32 @@ const RAW_SCENARIOS: Readonly<Record<string, ScenarioDef>> = {
     id: 'test.force-blast', note: 'TEST: two mages, one holding the Force Staff (Force Blast: Precision plus half the Magic of the party, as magic damage), against two zombies. No campaign claim.',
     mapId: 'map.open', heroes: ['hero.base.mage-fire', 'hero.base.mage-thinking'], heroHexes: [85, 101], heroItems: [['item.force-staff'], ['item.frost-staff']], enemies: ['unit.zombie', 'unit.zombie'], enemyHexes: [91, 107], replicate: 0,
   },
+  // capability.planted-banners (2026-10-05; DECISIONS.md 2026-10-04 'every dead line on his items is a feature that is needed …':
+  // "All of those deadlines need to be added in as features that we need."): the Banner of Courage live in a real battle - a
+  // warrior carrying it beside a priest, against a Necromancer (whose bolt leaves Weak) and a zombie too far to reach on the
+  // first Turn, so the computer plants the banner where the warrior stops. The warrior carries his mail and his axe but not
+  // his Tower Shield: the computer raises the power with the longer cooldown first (SWITCHES.md aiPowerLongestCooldownFirst),
+  // the shield's costs the Stamina the banner needs, and it would never plant. A fielding, not a balance claim.
+  'test.banner-courage': {
+    id: 'test.banner-courage', note: 'TEST: a warrior carrying the Banner of Courage (plant it: allies within 2 hexes of that hex have +1 Resist, take 2 less of each Weak, and gain 10 Surge Chance at the end of each Activation) and a priest, against a Necromancer and a zombie. No campaign claim.',
+    mapId: 'map.open', heroes: ['hero.base.warrior-iron', 'hero.base.priest-robes'], heroHexes: [85, 101], heroItems: [['item.destroyed-mail', 'item.war-axe', 'item.banner-courage'], undefined], enemies: ['unit.necromancer', 'unit.zombie'], enemyHexes: [95, 94], replicate: 0,
+  },
+  // capability.his-weapons-small-clauses (2026-10-05; DECISIONS.md 2026-10-04 'his 28 reward weapons read back …': "Everything
+  // else in here seems like something we need."): "On kill: the corpse is destroyed" live in a real battle, twice over - a mage
+  // holding the Staff of the Destroyer (Ruin, Sundering) and a warrior holding a Longsword of Destroying (the artifact
+  // attribute), against four zombies. Replicate 1 is the first, read from 0 upward, in which a shot of the staff kills (found,
+  // not tuned: on 0 the mage's three shots all miss and every kill is the sword's). A fielding, not a balance claim.
+  'test.corpse-destroyed': {
+    id: 'test.corpse-destroyed', note: 'TEST: a mage holding the Staff of the Destroyer and a warrior holding a Longsword of Destroying (on kill: the corpse is destroyed) against four zombies. No campaign claim.',
+    mapId: 'map.open', heroes: ['hero.base.mage-fire', 'test-warrior'], heroHexes: [85, 101], heroItems: [['item.staff-of-the-destroyer'], ['item.longsword.destroying']], enemies: ['unit.zombie', 'unit.zombie', 'unit.zombie', 'unit.zombie'], enemyHexes: [89, 90, 105, 106], replicate: 1,
+  },
+  // … and the Benevolent Rod's Mending Light - "… and remove Weak equal to your Spirit" - a priest holding nothing else, far
+  // behind a warrior who meets a Necromancer (whose bolt leaves Weak) and its zombie: on Turn 2 the priest cannot reach an
+  // enemy, the warrior is hurt and Weak, and the computer casts it. A fielding, not a balance claim.
+  'test.mending-light': {
+    id: 'test.mending-light', note: 'TEST: a priest holding the Benevolent Rod (Mending Light: heal, Protection, and remove Weak equal to Spirit) far behind a warrior, against a Necromancer whose bolt leaves Weak and a zombie. No campaign claim.',
+    mapId: 'map.open', heroes: ['hero.base.priest-robes', 'hero.base.warrior-iron'], heroHexes: [80, 92], heroItems: [['item.benevolent-rod'], undefined], enemies: ['unit.necromancer', 'unit.zombie'], enemyHexes: [95, 94], replicate: 0,
+  },
   // capability.raise-lower-magic (2026-10-05; DECISIONS.md 2026-10-04 'his 28 reward weapons read back …': "we need to lower and
   // raise magic"): the Staff of the Magi's Vortex live in a real battle - a mage holding it and a second mage, so the party's
   // Magic is more than the caster's own, against four zombies standing together within its reach. A fielding, not a balance claim.

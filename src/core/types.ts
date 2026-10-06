@@ -252,8 +252,12 @@ type EffectBody =
   | { readonly kind: 'damage'; readonly amount: import('./trigger.js').ValueSpec; readonly damageType: DamageType }
   | { readonly kind: 'heal'; readonly amount: import('./trigger.js').ValueSpec }
   | { readonly kind: 'status.apply'; readonly statusId: string; readonly value: import('./trigger.js').ValueSpec }
-  /** Every point of the status, or `value` points of it ("remove 1 Poison") — from any source. */
-  | { readonly kind: 'status.remove'; readonly statusId: string; readonly value?: number }
+  /**
+   * Every point of the status, or `value` points of it ("remove 1 Poison") — from any source.
+   * capability.his-weapons-small-clauses (2026-10-05): `value` is a ValueSpec like every other amount — a flat number or a
+   * stat's amount ("remove Weak equal to your Spirit"); an amount of 0 removes nothing.
+   */
+  | { readonly kind: 'status.remove'; readonly statusId: string; readonly value?: import('./trigger.js').ValueSpec }
   | {
       readonly kind: 'statMod'
       readonly stat: import('./stats.js').StatName
@@ -298,6 +302,21 @@ type EffectBody =
    * it needs, and nothing else hands it one.
    */
   | { readonly kind: 'summon'; readonly unit: string }
+  /**
+   * capability.his-weapons-small-clauses (2026-10-05): "On kill: the corpse is destroyed" — the unit this attack has just
+   * brought to 0 Health leaves no corpse if it dies of it: the body is made where it fell and removed at once ('destroyed'),
+   * so nothing can raise, eat or consume it. Only on a trigger on the attacker's onKill aimed at the target (content/pack.ts
+   * refuses it anywhere else); the mark it leaves (Unit.corpseDestroyed) is read where death is decided and lasts that settling.
+   */
+  | { readonly kind: 'corpse.destroy' }
+  /**
+   * capability.planted-banners (2026-10-05): plant an object on the hex of the one acting. It stays there for the rest of the
+   * Battle — it does not block the hex, cannot be attacked, and stays when its planter walks away or dies — and gives the
+   * planter's side what PlantedDef says, within its radius of that hex. Only on a power aimed at its own user.
+   */
+  | ({ readonly kind: 'plant' } & PlantedDef)
+  /** capability.planted-banners: add `value` to the unit's Surge Chance — the amount the Surge check rolls against — once; its Surge stat is untouched. */
+  | { readonly kind: 'surge.gain'; readonly value: number }
   /** capability.corpses: remove every corpse within `radius`, healing the one acting `healPer` each (Consume the Fallen). */
   | { readonly kind: 'corpse.consume'; readonly radius: number; readonly healPer: number }
   /** capability.corpses: eat one corpse within `radius` — heal and battle-long stat gains to the eater. Refused (canUsePower) when none is in reach. */
@@ -491,6 +510,21 @@ export type SideStatChange = { readonly stat: 'magic' | 'spirit' | 'power'; read
 /** One change standing on a side (state.sideMods): what it changes, by how much it actually changed it, whose effect it was, and the Turn it ends with. */
 export type SideMod = { side: Side; stat: 'magic' | 'spirit' | 'power'; value: number; source: string; expiresAtTurn?: number }
 
+/**
+ * capability.planted-banners (2026-10-05): what a planted object gives the units of its planter's side that stand within
+ * `radius` of ITS hex — not of its planter, who may walk away: stats while inside (`mods`, lent as an aura's are), points of
+ * each application of a named status that do not land while inside (`wards`), and triggers that fire as the unit's own while
+ * it is inside (`lends` — each aimed at the unit itself).
+ */
+export type PlantedDef = {
+  readonly radius: number
+  readonly mods?: Readonly<Partial<Record<import('./stats.js').StatName, number>>>
+  readonly wards?: Readonly<Record<string, number>>
+  readonly lends?: readonly import('./trigger.js').Trigger[]
+}
+/** One planted object on the board (state.planted): its hex, the side it serves, the unit that planted it and the power that did. */
+export type Planted = PlantedDef & { id: number; hex: number; side: Side; by: number; source: string }
+
 /** Bursts freeze these authored source packets at declaration. */
 export type BurstProfile = {
   readonly shape: { readonly kind: 'arc' } | { readonly kind: 'radius'; readonly radius: number }
@@ -639,7 +673,7 @@ export type MoveDef = ActionDef & { readonly move: MoveProfile }
 export type AbilityDef = ActionDef
 
 /** plumbing.vocabulary-export: every effect kind, checked against the union by tsc — snapshot validation, pack validation and the exported vocabulary read it, never a copy. */
-export const EFFECT_KINDS = ['statDamage', 'damage', 'heal', 'status.apply', 'status.remove', 'statMod', 'stamina.gain', 'stamina.drain', 'loseMaxStamina', 'loseMaxHp', 'stand', 'knockback', 'badge.grant', 'power.gain', 'corpse.raise', 'summon', 'side.stat', 'corpse.consume', 'corpse.eat', 'layer.paint', 'reveal', 'burstScale'] as const satisfies readonly Effect['kind'][]
+export const EFFECT_KINDS = ['statDamage', 'damage', 'heal', 'status.apply', 'status.remove', 'statMod', 'stamina.gain', 'stamina.drain', 'loseMaxStamina', 'loseMaxHp', 'stand', 'knockback', 'badge.grant', 'power.gain', 'corpse.raise', 'summon', 'side.stat', 'corpse.destroy', 'plant', 'surge.gain', 'corpse.consume', 'corpse.eat', 'layer.paint', 'reveal', 'burstScale'] as const satisfies readonly Effect['kind'][]
 export type EffectKindsCovered = Assert<Covers<Effect['kind'], typeof EFFECT_KINDS>>
 
 
@@ -1181,6 +1215,13 @@ export type Unit = {
    */
   consumedBy?: string
   /**
+   * capability.his-weapons-small-clauses (2026-10-05): an attack whose onKill says "the corpse is destroyed" has brought this
+   * unit to 0 Health — who struck and by which trigger. Written only by markCorpseDestroyed (the trigger.fired line says it —
+   * Law 3), read where death is decided (settle: the body is made and removed at once, 'destroyed'), and cleared when that
+   * settling ends: a hero who stands on its Deathbed roll, or goes down and bleeds out later, was not killed by that attack.
+   */
+  corpseDestroyed?: { readonly by: number; readonly cause: string }
+  /**
    * v2.loadout (COMBAT-V2 §11.1, ruled 2026-09-07): the weapons and shields in
    * this hero's hands and those stowed in its item slots. Only the hands grant;
    * the stowed are swap fodder. Absent on a unit fielded with no items (enemies).
@@ -1262,6 +1303,8 @@ export type State = {
   power?: number
   /** capability.raise-lower-magic (2026-10-05): the changes standing on the sides' party stats — absent until an effect makes one. */
   sideMods?: SideMod[]
+  /** capability.planted-banners (2026-10-05): the objects planted on the board — absent until a power plants one. */
+  planted?: Planted[]
   /** One entry per HexId. Plain array so State stays JSON-round-trippable (Law 5b). */
   terrain: number[]
   /** Canonical obstruction state; authored x is normalized at map decode. */

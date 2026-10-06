@@ -1,5 +1,24 @@
 [
  {
+  "id": "kingdom.gift-roll-leaves-out-own-badges",
+  "kind": "kingdom",
+  "shape": "plumbing",
+  "needs": [
+   "content.hero-origin-badges"
+  ],
+  "spec": "Ruled 2026-10-05 (Andrew, engine/DECISIONS.md 'a prone unit only stands; Stand Up is its one move; a set counts everything carried; Dwarf, Elf and Fey act; no gift doubles a hero's own badge; what cannot be paid is greyed; the player moves a summon; Resistance to Weak; the Vigil heals by the party's Spirit'): told that the draft can roll a hero a gift badge its row already has (the Berserker rolled Huge, the Fey rolled Frail), which then adds nothing, and asked whether a hero's own badges should be left out of its gift roll - '7, yes.' Wanted: when a hero's gifts are rolled (the first-hero pick, every later draft - kingdom/src/core/opening.ts, and the engine's opening party for the recordings, engine/src/content/opening-party.ts; one rule in one place, read by both), any badge the hero's own row already carries - its origin badges and any other badge on the row - is not among the badges the roll can give that hero, so every rolled badge is one it did not have. The roll stays on the run's dice and stays keyed as it is (kingdom SWITCHES firstHeroOwnRollKey), so a saved run shows the same offers except where an offer held a doubled badge. This re-deals drafts: say how many of replicates 0-199 change, rewrite the frozen-draft fixtures with a dated note (Law 10), re-export the six opening recordings together if the engine's opening party moves, and declare changesBaseline if control battles move. The draft floor fix (a rolled Health loss held at the floor) stands. Rebuild the pages.",
+  "expect": "Across replicates 0-199 no hero is ever rolled a gift badge its own row already carries (a test walks them); a hero with no badge of its own rolls from the same badges as before; the Berserker never rolls Huge and the Forest Fey never rolls Frail; the report says how many drafts changed and which recordings moved.",
+  "note": "Filed by the home chat 2026-10-05."
+ },
+ {
+  "id": "viewer.unaffordable-actions-greyed",
+  "kind": "viewer",
+  "shape": "plumbing",
+  "spec": "Ruled 2026-10-05 (Andrew, engine/DECISIONS.md 'a prone unit only stands; Stand Up is its one move; a set counts everything carried; Dwarf, Elf and Fey act; no gift doubles a hero's own badge; what cannot be paid is greyed; the player moves a summon; Resistance to Weak; the Vigil heals by the party's Spirit'): asked what is chosen when attack one cannot be paid for - 'If a tax can't be paid for or a power can't be paid for, it should be grayed out.' ('tax' is 'attack' - dictation.) Wanted on the action bar (and the kingdom's play input, which reads the same facts): an attack or a power the unit cannot pay for right now - not enough Stamina, a cooldown still running, a use already spent, a warm-up not done - is greyed and cannot be chosen, and hovering it says why in the engine's own reason ('Not enough Stamina: needs 2, has 1'); the moment it can be paid it lights again. First find what the bar does today for each of those four causes (some may already grey - viewer SWITCHES and tools/bar-moves-grey-when-done, bar-shows-every-effect): build only what is missing and say what was already so. What can be paid is read from the engine (the legal actions and their reasons), never worked out in the viewer. With kingdom.attack-one-armed-after-move: when attack one is greyed for cost, nothing is chosen (as built, kingdom SWITCHES attackOne*) - Punch is not chosen in its place; record that as ruled by this answer's reading. Land by the viewer landing order.",
+  "expect": "A hero with 1 Stamina shows its 2-Stamina attack greyed with the reason on hover, and its 0- and 1-Stamina actions lit; a power on cooldown is greyed with the Turns left; a once-per-Battle power already used is greyed; after a Turn restores Stamina the attack is lit again; after a move with attack one unaffordable, no attack is chosen; a hero who can pay for everything shows the bar it showed before.",
+  "note": "Filed by the home chat 2026-10-05."
+ },
+ {
   "id": "viewer.solid-pieces-drawn-by-material",
   "kind": "viewer",
   "shape": "plumbing",

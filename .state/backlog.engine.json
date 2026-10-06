@@ -1,5 +1,57 @@
 [
  {
+  "id": "rule.prone-only-stand-up",
+  "kind": "engine",
+  "shape": "rule",
+  "spec": "Ruled 2026-10-05 (Andrew, engine/DECISIONS.md 'a prone unit only stands; Stand Up is its one move; a set counts everything carried; Dwarf, Elf and Fey act; no gift doubles a hero's own badge; what cannot be paid is greyed; the player moves a summon; Resistance to Weak; the Vigil heals by the party's Spirit'): asked whether a knocked-down unit should be refused its attacks and powers too until it stands - 'yes, it cannot use attacks or powers until it stands.' - and whether it may walk or Leap after Stand Up - 'No, you only perform one move action.' Today the engine lets a prone unit attack and use powers (engine SWITCHES proneNoCrawl, 2026-09-24) and still offers Move and Leap after it stands; the action bar greys only what the engine refuses (viewer.prone-turn-only-stand-up, landed 2026-10-05), so both show lit. Wanted in the engine's one legality check, with no content name in core: (1) a unit with the prone status (the status content marks kdbDown) is refused every action but the stand its status grants, with a reason a player can read ('Knocked down: Stand Up first.'); reactions it does not choose (a counterattack already armed, a free attack) follow what the rulings on prone already say - run `node tools/decided.mjs \"prone\"` and read COMBAT-SEQUENCE.md; where they are silent, a prone unit makes none, and that is recorded as a switch; (2) standing is the unit's one move action for the Activation: after it stands, every other move-class action is refused with the reason the walked-unit rule uses (movement-slot-closed) - the 2026-10-04/05 ruling 'a walk closes every move-class action' applied to the stand; its attacks and powers are then open as after any move; (3) the computer follows the same rule (a prone enemy stands, then acts). Mark proneNoCrawl overturned in part with his words. The bar and the kingdom's play input need no new rule - they grey what the engine refuses; check that they do, on the built page, with the Lumberjack's Wife in the opening's battle 2 and with a hero. This moves battles: declare changesBaseline if control battles move, re-export the six opening recordings together, and say which moved. Engine landing order: engine source by hand, the viewer's dumps and page, the kingdom's pages, the engine gate last.",
+  "expect": "A prone hero's every action but Stand Up is refused by the engine with a readable reason and shows greyed on the bar; after Stand Up its Move, Leap and every other move-class action are refused and greyed and its attacks and powers are lit; a prone enemy played by the computer stands before it does anything else; a standing unit is unchanged; the report says which control battles and recordings moved.",
+  "note": "Filed by the home chat 2026-10-05."
+ },
+ {
+  "id": "rule.player-moves-summons",
+  "kind": "engine",
+  "shape": "rule",
+  "needs": [
+   "capability.summons"
+  ],
+  "spec": "Ruled 2026-10-05 (Andrew, engine/DECISIONS.md 'a prone unit only stands; Stand Up is its one move; a set counts everything carried; Dwarf, Elf and Fey act; no gift doubles a hero's own badge; what cannot be paid is greyed; the player moves a summon; Resistance to Weak; the Vigil heals by the party's Spirit'): asked whether the player should move the summoned Wolf, or the computer as built - 'Then the view Wolf's spine player should move to someone's wolf.' (dictation; the chat's reading, said to him: the player moves a summoned unit.) capability.summons landed with the Wolf acting by its own AI in the Hero Phase from the Turn after it is called (engine SWITCHES summonActsByItsOwnAi, summonActsFromTheNextPhase; the row's own words are 'its own AI'). Wanted: a unit summoned by a player-controlled hero is the player's to play - it takes its Activation in the Hero Phase like a hero (chosen in the top bar, its own bar of actions, its basic move armed, the turn-taking rules of 2026-10-03), from the Turn after it is called (summonActsFromTheNextPhase stands unless a ruling says otherwise). It is still not a hero for victory, defeat, Deathbed, wounds, rewards or the after-battle screen (summonNotAHero stands), and it still leaves at the end of the Battle. A unit summoned by the computer's side is still played by the computer. In the six-battle run played by the computer for the recordings and in control battles, a hero's summon is played by the computer as every hero is. The kingdom's play input and the battle screen's top bar must offer it: its card in the top bar (the Wolf's token art), a click or a double-click as for a hero, 'End activation and activate X' asked the same way. Fix the row's sentence ('It is a summoned ally with its own stat block' - no 'its own AI') through content. Mark summonActsByItsOwnAi overturned for a player's summon, with his words.",
+  "expect": "On the play page, a hero uses Call the Wolf; on the next Turn the Wolf has a card in the top bar, the player can begin its Activation, move it and attack with it, and it is never moved by the computer; with every hero down the battle is still lost; the Wolf is not on the after-battle screen; an enemy's summon is still the computer's; a recording of a battle played by the computer is unchanged.",
+  "note": "Filed by the home chat 2026-10-05."
+ },
+ {
+  "id": "content.dwarf-elf-fey-badges-act",
+  "kind": "engine",
+  "shape": "data",
+  "needs": [
+   "content.hero-origin-badges"
+  ],
+  "spec": "Ruled 2026-10-05 (Andrew, engine/DECISIONS.md 'a prone unit only stands; Stand Up is its one move; a set counts everything carried; Dwarf, Elf and Fey act; no gift doubles a hero's own badge; what cannot be paid is greyed; the player moves a summon; Resistance to Weak; the Vigil heals by the party's Spirit'): asked whether the Dwarf, Elf and Fey badges' numbers should act or stay names only - '6. They should act.' content.hero-origin-badges put the three on the heroes' rows as names that do nothing, because the data holds numbers for them but the Codex's effect line is empty (engine SWITCHES originBadgeNoPayloadRows; the engine worker's note: mark the three rows `payloadIsData: true` in content/gen/badges.json and ship). Do that through the content pipeline (content first, the engine pack, the viewer's dumps, the six opening recordings re-exported together, the kingdom's pages, the engine gate last), and write each badge's effect line from its numbers so the Codex, the panel and the first-hero card say what it does - the words from the numbers only, nothing added. A number that names a mechanism the engine lacks stays a named gap and is listed. This moves battles for every hero that carries one of the three: declare changesBaseline, and say in the report, per hero, what changed.",
+  "expect": "Each hero whose row carries Dwarf, Elf or Fey fights with that badge's numbers; the badge's line on the panel, the Codex and the first-hero card says what it does; a test holds each of the three acting on a fielded hero; the report lists per hero the change, any line left as a named gap, and which recordings and control battles moved.",
+  "note": "Filed by the home chat 2026-10-05."
+ },
+ {
+  "id": "content.sets-count-holy-texts-and-heavy-chain",
+  "kind": "engine",
+  "shape": "data",
+  "needs": [
+   "capability.set-bonus"
+  ],
+  "spec": "Ruled 2026-10-05 (Andrew, engine/DECISIONS.md 'a prone unit only stands; Stand Up is its one move; a set counts everything carried; Dwarf, Elf and Fey act; no gift doubles a hero's own badge; what cannot be paid is greyed; the player moves a summon; Resistance to Weak; the Vigil heals by the party's Spirit'): asked whether Holy Texts should count as a book and Heavy Chain as a chain for set bonuses - '8, yes.' - and what a set bonus counts - 'Everything you carry' (as built: engine SWITCHES setBonusCountsWhatIsCarried). capability.set-bonus left both untagged because the `book` and `chain` tags would also open them to Forge enchantments (engine SWITCHES setBonusTagsAdded). Wanted: Holy Texts is counted by 'for every BOOK you carry' and Heavy Chain by 'for every CHAIN item you carry', WITHOUT changing what the Forge may enchant - by a set-membership tag that the enchantment rule does not read, or by teaching the enchantment rule that set membership is not a weapon form; choose the smaller, record it as a switch with the other side, and prove with a test that the Forge's offers for both items are exactly what they were. Through the content pipeline; the Equip screen's count and the item card's set line follow by themselves. Look for any other item that plainly belongs to a set its row's words name and is not counted (a book, a chain, a ring, a destroyer item): list them in the report rather than tag them - only these two are ruled.",
+  "expect": "A hero carrying the Book of Karma and Holy Texts has +2 Resist from the set; one carrying the Chains of the Wrathful and Heavy Chain has the chain bonus for two; the Forge offers for Holy Texts and Heavy Chain are unchanged (a test compares before and after); the report lists any other uncounted item found.",
+  "note": "Filed by the home chat 2026-10-05."
+ },
+ {
+  "id": "content.resistance-to-weak-and-vigil-party-spirit",
+  "kind": "engine",
+  "shape": "data",
+  "needs": [
+   "capability.planted-banners"
+  ],
+  "spec": "Ruled 2026-10-05 (Andrew, engine/DECISIONS.md 'a prone unit only stands; Stand Up is its one move; a set counts everything carried; Dwarf, Elf and Fey act; no gift doubles a hero's own badge; what cannot be paid is greyed; the player moves a summon; Resistance to Weak; the Vigil heals by the party's Spirit'): 'Immunity to week 2 should now be resistance to week 2. And yes, when we get to that part, it should remove two points of weak' and, asked whether the Banner of the Vigil heals each ally by that ally's own Spirit or the party's, '2 by the party spirit'. Two small content changes, one landing (GBH SWITCHES landing.groupOfSmallItems): (1) the word - everywhere a player or a document reads 'Immunity to Weak N' it reads 'Resistance to Weak N' (GLOSSARY.md 'Settled, 2026-10-05': Resistance to Weak; ids and field names are not renamed): the Banner of Courage's line, the floating words ('WEAK WARDED -2' becomes the GLOSSARY's word), the log line, the tooltip, the Codex, and any other row that carries the same clause (the review of 2026-10-04 counted four of his rows and names the Necklace) - and the mechanism is what capability.planted-banners built for the banner, N points off each Weak gained (engine SWITCHES immunityIsAWard): mark that switch ruled. Where another row carries the clause and is still a named gap, wire it to the same mechanism if it needs nothing new; otherwise leave it named and list it. 'Immune' stays the word for a unit that can gain none of a status. (2) the Banner of the Vigil heals an ally inside by the PARTY's Spirit at the end of its Activation (engine SWITCHES vigilHealsItsOwnSpirit overturned with his words) - the row's sentence says so too.",
+  "expect": "No screen, log line, tooltip or Codex line reads 'Immunity to Weak'; the Banner of Courage reads 'Resistance to Weak 2' and Weak 5 gained inside it leaves 3; an ally with no Spirit of its own ending its Activation in the Vigil's aura heals by the party's Spirit; a test holds both; the report lists every row whose words changed and any left as a named gap.",
+  "note": "Filed by the home chat 2026-10-05."
+ },
+ {
   "id": "content.orphanage-body-and-graves-cursed",
   "kind": "engine",
   "shape": "data",
@@ -5865,7 +5917,17 @@
   "shape": "trigger",
   "spec": "Ruled 2026-10-04 (Andrew, engine/DECISIONS.md 'his 28 reward weapons read back: ... the mechanics his own items need are wanted'): 'Everything else in here seems like something we need.' Two clauses on his reward weapons that the item review of 2026-10-04 reads as not acting and no other item covers - a group of small ones, one landing if they fit (GBH SWITCHES landing.groupOfSmallItems), each confirmed against the engine first: (1) the Staff of the Destroyer's Ruin and Sundering, and the attribute Destroying - 'On kill: the corpse is destroyed': the killed unit leaves no corpse (nothing can raise, eat or target it; the viewer plays the death and then removes the body); a field on the attack or trigger. (2) the Benevolent Rod's Mending Light - '... and remove Weak equal to your Spirit': a power removes stacks of a named status by a flat amount or by a stat's amount. (The Staff of Summoning's '+15 Accuracy against summon' is in capability.summons; the doubled Precision is in capability.effect-lasts-activations and capability.damage-from-two-stats.)",
   "expect": "A unit killed by Ruin leaves no corpse on the board and a power that needs a corpse cannot use that hex; a unit killed by any other attack leaves one as before; Mending Light on an ally with 5 Weak cast by a priest with party Spirit 3 leaves it with 2 Weak, and with 2 Weak leaves it with none.",
-  "note": "Filed by the home chat 2026-10-04."
+  "note": "Filed by the home chat 2026-10-04.",
+  "probeIds": [
+   "trigger.staff-of-the-destroyer.ruin.corpse-destroyed",
+   "power.benevolent-rod.restoration"
+  ],
+  "variants": [
+   "trigger.staff-of-the-destroyer.ruin.corpse-destroyed",
+   "trigger.longsword.destroying.corpse-destroyed"
+  ],
+  "status": "done-needs-review",
+  "sha": "e1da336"
  },
  {
   "id": "capability.planted-banners",
@@ -5873,7 +5935,12 @@
   "shape": "plumbing",
   "spec": "Ruled 2026-10-04 (Andrew, engine/DECISIONS.md 'every dead line on his items is a feature that is needed; his items stay in rewards'): 'All of those deadlines need to be added in as features that we need. So all of these are in.' ('deadlines' is 'dead lines' - dictation: the lines on his 22 items in the game that do nothing today.) His five Banners are in the game and the reward pool and their powers do nothing today: Banner of Mystic Power (mage only, 1 Stamina, radius 2), Banner of the Assassin (rogue only, 2 Stamina, radius 1), Banner of the Vigil (priest only, 2 Stamina, radius 1), Banner of Courage (warrior only, 3 Stamina, radius 2), Banner of Heroism (paladin only, 4 Stamina, radius 3). The Banner of Courage in full: 'Plant the Courage Banner: 3 Stamina, target: the hex you occupy. One use per Battle. Plant the banner on your hex. For the rest of the Battle it projects an aura of radius 2 from that hex - you may walk away and it stays. +1 Resist to allies in the aura, and Immunity to Weak 2 while inside it. At the End of Activation of an ally inside, that ally gains 10 Surge Chance - added to the pool once, never added to the Surge stat'. The item review of 2026-10-04 (C:/Users/aring/Desktop/Heroes of Blight and Tragic/CONTENT-DRAFTS/2026-10-04-item-review/rows.json - in the MAIN folder only, read it there; each row's `abilities` hold its full lines and its `marks` with k 'miss' name the clause and the missing mechanic) is a reading, not proof: confirm against the engine first and build only what is missing. Run `node tools/decided.mjs \"banner\"`, `\"Surge Chance\"` and `\"Immunity to Weak\"` first (the review notes a 2026-09-29 ruling on resistance to Weak that was never built) - a ruling wins over this spec. Wanted, with no content name in core: (1) a power, once per Battle, plants an object on the user's hex that stays for the rest of the Battle and projects an aura of a radius from that hex, not from the unit; whether the object blocks the hex, can be attacked or is removed when its planter dies is taken from the rulings, and where none speaks: it does not block, cannot be attacked and stays (record each as a switch). (2) the aura gives the units of the planter's side inside it what the row lists - a stat while inside (auras lend stats today), an immunity or resistance to a named status by an amount while inside, a gain at the End of Activation of an ally inside (Surge Chance into the pool; a heal; a status - read each Banner's own line). (3) a class limit on who may use the power ('warrior only'): refused with a reason at the bar and at the kingdom's Equip if that is where the rulings put it. The viewer shows the planted banner on its hex and the aura's reach; if there is no banner model it shows a stand-in and the art need is filed in the art queue by name. If it does not fit one landing, land the planted object with the stat aura and the Banner of Courage, and re-file the rest by name with a recorded switch.",
   "expect": "A warrior plants the Banner of Courage for 3 Stamina once in a Battle; allies within 2 hexes of that hex have +1 Resist and take no Weak of 2 or less while inside, and lose both on leaving; an ally that ends its Activation inside adds 10 Surge Chance to the pool; the planter may walk away and the aura stays on the hex; a hero of another class is refused with a reason; a second use in the Battle is refused; each of the other four Banners gives what its own line says; a Battle with no banner is event for event what it was.",
-  "note": "Filed by the home chat 2026-10-04."
+  "note": "Filed by the home chat 2026-10-04.",
+  "probeIds": [
+   "power.banner-courage.plant"
+  ],
+  "status": "done-needs-review",
+  "sha": "2c182d2"
  },
  {
   "id": "capability.placed-traps",
@@ -5991,5 +6058,21 @@
   ],
   "status": "done-needs-review",
   "sha": "329154b"
+ },
+ {
+  "id": "capability.banner-heroism-on-miss",
+  "kind": "engine",
+  "shape": "trigger",
+  "spec": "Re-filed 2026-10-05 from capability.planted-banners (engine/DECISIONS.md 2026-10-04 'every dead line on his items is a feature that is needed; his items stay in rewards': 'All of those deadlines need to be added in as features that we need.'; the item's own words: 'If it does not fit one landing, land the planted object with the stat aura and the Banner of Courage, and re-file the rest by name'). The Banner of Heroism is planted and gives its stats and its heal (engine SWITCHES.md bannersBuilt); the last clause of its line is a named gap on the power: 'onMiss by any ally in the aura: EVERY ally in the aura gains 30 Surge Chance'. What is missing, with no content name in core: a trigger a planted object lends (PlantedDef.lends, core/types.ts) is aimed only at the unit it is lent to (select 'self'; validatePlanted refuses any other); this clause is aimed at every unit of the object's side standing in the object's reach, measured from the OBJECT's hex, when one of them misses. Wanted: a lent trigger may be aimed at 'everyone in this object's reach' (a selector the planted object resolves, not an area round the unit that missed), and the compiler (content/mkenginepack.mjs, the banner block in compiledPowerOf) reads the sentence into it with the engine's surge.gain. Run node tools/decided.mjs \"Surge Chance\" first.",
+  "expect": "With the Banner of Heroism planted, a miss by an ally standing inside its reach gives every ally inside it 30 Surge Chance and an ally outside none; a miss by an ally outside gives nothing; a miss by an enemy inside gives nothing; the power carries no named gap; a Battle with no such banner is event for event what it was.",
+  "note": "Filed by the engine worker 2026-10-05."
+ },
+ {
+  "id": "capability.banner-mystic-magic-attacks",
+  "kind": "engine",
+  "shape": "modifier",
+  "spec": "Re-filed 2026-10-05 from capability.planted-banners (engine/DECISIONS.md 2026-10-04 'every dead line on his items is a feature that is needed; his items stay in rewards': 'All of those deadlines need to be added in as features that we need.'; the item's own words: 're-file the rest by name'). The Banner of Mystic Power (mage only, 1 Stamina, radius 2) is the one Banner still not in the game: 'Plant the Mystic Banner: ... Magic attacks made by allies in the aura deal +1 damage, and each magic attack grants its attacker 30 Surge Chance.' The planted object exists (the effect plant, state.planted, engine SWITCHES.md plantedObjectIsItsOwnState) and lends stats, wards and triggers; neither clause of this line is one of those yet, so the compiler leaves the power unparsed rather than plant an object that does nothing (bannersBuilt). What is missing, with no content name in core: (1) a planted object adds damage to the attacks of a damage type made by units of its side standing inside ('Magic attacks ... deal +1 damage') - a conditioned attack bonus in the damage ledger under the power's name, not a stat; (2) a lent trigger that fires only with an attack of a damage type (a trigger may be scoped to an attack id or a tag today - onlyWithAttack, onlyWithTag - not to a damage type), giving the attacker 30 Surge Chance (the engine's surge.gain). Say in a switch whether 'each magic attack' is each attack made or each that hits, and whether a burst or a power's magic damage counts. Run node tools/decided.mjs \"magic attack\" first.",
+  "expect": "A mage plants the Banner of Mystic Power for 1 Stamina once in a Battle; a magic attack made by an ally standing within 2 hexes of that hex deals 1 more damage, shown in its ledger under the banner's name, and gives its attacker 30 Surge Chance; a physical attack inside, and a magic attack made outside, get neither; the item carries no named gap; a Battle with no such banner is event for event what it was.",
+  "note": "Filed by the engine worker 2026-10-05."
  }
 ]
