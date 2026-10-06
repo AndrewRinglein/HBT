@@ -5634,3 +5634,19 @@ Ruled:
 - **Damage increased by a status on the target - Weak, Burn, or any other given status - is a feature the game needs.** `capability.damage-adds-target-status` stays and is his.
 - **A trigger that moves Surge is wanted too** - "like on hit [gain] 5 surge" (the chat's reading of "No trigger that moves surge should be in there too": no, it does not come out - it should be in there too). `capability.trigger-moves-surge` stays and is his.
 - Both are mechanisms he wants in the game for their own sake, whoever wrote the lines that first named them.
+
+## 2026-10-06 — engine items too are built in groups of up to four, with one set of heavy checks for the group
+
+Andrew, in the kingdom chat, asked how long the backlog would take and then:
+
+“What happens at this time if we don't test against everything for each item? Can we just build several items and then test?”
+
+The chat answered: the writing is not the slow part - for each engine item a worker runs 35 to 45 minutes of heavy checks (the engine's whole suite, content's, the six recordings re-exported, the viewer's gate, the kingdom's pages and shards), most of it again after every second item when main is merged in, and only one heavy run goes at a time across the three workers (GBH SWITCHES workers.gatesTakeTurns), so those runs set the pace; built in groups of three or four with the heavy checks run once for the group, four items cost about 70 minutes of heavy runs where they cost about 200. What it costs: a failing group must be searched for the item that broke it; one bad item holds its neighbours; which item moved which recorded battle is less sharp. What is not lost: nothing reaches main without the full checks having passed on it. And asked: should engine items also be built in groups of up to four with one set of heavy checks per group?
+
+“Yes.”
+
+Ruled:
+
+- **An engine item is built in a group of up to four, like the small viewer and kingdom items of 2026-10-04 (rule 16): one set of heavy checks for the group.** This changes GBH-PROTOCOL's "One item, one commit ... Never batch" for the checks only: each item is still its own commit, with its own test written first and seen red.
+- **The group's heavy checks run once, after its last item is built, and again nothing is merged into main without them having passed on the merged tree.**
+- The chat's working rules for it, each a line to change: within a group a worker runs only the item's own tests as it builds; an item that declares it changes the control battles has the control battles run at ITS commit, so what it moved is still known; a group that fails is searched commit by commit, the item that broke it is fixed or taken out of the group and the rest lands; a group is of items that belong together in one worker's list, never held open waiting for a fourth.
