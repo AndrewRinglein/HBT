@@ -5543,3 +5543,11 @@ Found after the filing, for whoever takes those items (`assets/terrain-3d/orphan
 Asked the same hour: “How does Claude do things like repainting? Should I take these tasks to Astra 6?” Not ruled; the chat does not know what Astra 6 is and said so.
 
 Asked whether recolouring the existing paint is enough for the five maps or the ground is painted fresh: “To repainting the existing is enough. We can keep our shapes and just repaint a bunch of things.” **Ruled: the maps keep their shapes and their own paint is recoloured**; no new ground painting is made for the five. (The Gates has no 3D map to recolour and is built; the barberry standing where the tall grass stood is the one change of shape, ruled earlier the same day.) What an art chat needs to do this - the template and its numbers, the steps of a repaint, each map's ground, stone and tall grass by piece name, the Gates' facts - is `assets/battle-atlas/COLOUR-TEMPLATE.md`, named in `DOCS.md`.
+
+## 2026-10-06 — the zoom pulls back no further than the whole map
+
+Andrew, in the kingdom chat, playing:
+
+“We should not be able to scroll out more than the map. There's a point where you can see the entire map. We don't need to scroll out more than that.”
+
+Ruled: **the wheel's furthest pull-back is the point where the entire map is seen, and no further** ("scroll out" is the wheel's zoom out). `viewer.zoom-stays` (landed 2026-10-05) set the far end at the whole board's fit "with the room the whole-map view always left" (viewer SWITCHES zoomRange) - room he does not want; what he saw go past the map is to be found and stopped. Filed: `viewer.zoom-out-stops-at-the-whole-map`.

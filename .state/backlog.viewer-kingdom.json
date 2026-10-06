@@ -1,5 +1,16 @@
 [
  {
+  "id": "viewer.zoom-out-stops-at-the-whole-map",
+  "kind": "viewer",
+  "shape": "plumbing",
+  "needs": [
+   "viewer.zoom-stays"
+  ],
+  "spec": "Ruled 2026-10-06 (Andrew, engine/DECISIONS.md 'the zoom pulls back no further than the whole map'): 'We should not be able to scroll out more than the map. There's a point where you can see the entire map. We don't need to scroll out more than that.' viewer.zoom-stays (ruled 2026-10-05: 'The wheel's zoom stays where it is left, far enough out to see the whole board') set the wheel's far end at the whole board's fit at the view's own turn 'with the room the whole-map view always left' (viewer SWITCHES zoomRange, zoomWhiteSpace) - on the Orphanage at 1920x1080 that is 0.39x of the standard with the board 1,672 px across, so there is empty surround beside the map at the far end, and he could pull back past the point where the whole map is seen. First find exactly what he saw: on each of the six opening battles and the Caravan, at 1920x1080 and at one narrower and one wider window, at every quarter turn, how far the wheel pulls back and how much of the screen is not map at the far end. Wanted: the far end of the wheel's zoom is the nearest zoom at which the ENTIRE map is in view at the current turn - every hex whole, the map touching the view's edge on its tighter axis - and one notch further does nothing; the map's looser axis is centred, and the room the old whole-map view left around the board is not added. Whatever else can pull the view back (the whole-board view's key or button, a host's call, the new-enemy close-up's return) stops at the same end. If the board's painted scene extends past the hex grid, 'the entire map' is the playable hexes (record as a switch, the other side the painted scene's edge). At a quarter turn the far end is that turn's own fit, so turning while pulled back to the end brings the zoom to the new turn's end, never past it. Everything else of viewer.zoom-stays stands: the zoom stays where left, zooms about the pointer, the standard zoom and nearer keep the no-white-space floor. Mark zoomRange amended with his words. Rewrite the page tests that pin the old far end as the rule, with dated notes (Law 10); assert by the camera's own state and by counts, no fixed milliseconds.",
+  "expect": "On each of the six opening battles and the Caravan, at three window sizes and all four quarter turns, pulling the wheel back as far as it goes ends with every hex of the map whole in view and the map touching the view's edge on its tighter axis; a further notch changes nothing; the report gives, per battle, the old far end and the new one and how much surround was removed; zooming in, the standard zoom and the zoom staying where left are unchanged; the whole-board view ends at the same place.",
+  "note": "Filed by the home chat 2026-10-06."
+ },
+ {
   "id": "viewer.plates-and-banners-sit-low",
   "kind": "viewer",
   "shape": "plumbing",
