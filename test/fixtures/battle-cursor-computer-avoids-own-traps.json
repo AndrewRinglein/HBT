@@ -580,6 +580,35 @@
       "changed": false
     },
     {
+      "id": "test.banner-vigil",
+      "events": "65b658ebdb1d5bc88be8f0ef16aff52c3539728dd5c68e3c99ae4567b5ad7c2a",
+      "state": "c3c1798a4ffaab5aeadfcc191231d932185c0787e4a56bcac1e47429c2d3d109",
+      "rng": "445abf2b0909665bff2994df4f032249d66dbbb28534798180aeecab91960ac8",
+      "result": {
+        "outcome": "wipe",
+        "turns": 18,
+        "usesSpent": [
+          {
+            "unit": 0,
+            "power": "power.banner-vigil.plant",
+            "spent": 1
+          }
+        ],
+        "itemUses": [
+          {
+            "unit": 0,
+            "instanceId": "100/1",
+            "itemId": "item.banner-vigil",
+            "power": "power.banner-vigil.plant",
+            "used": 1,
+            "left": 0
+          }
+        ]
+      },
+      "changed": false,
+      "added": true
+    },
+    {
       "id": "test.bear-traps",
       "events": "859617310b4bcfc400c819fa0ddd1d43b9753621c22ee2308818bea302dd9e06",
       "state": "dcccb324afdaa30f3f0a7b29a382975aa48b90ad78a0d0d69b06743217c85534",

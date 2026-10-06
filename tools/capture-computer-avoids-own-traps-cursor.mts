@@ -3,8 +3,9 @@
 // does not read), content.resistance-to-weak-and-vigil-party-spirit (the word; the Banner of the Vigil heals by the party's Spirit) and
 // rule.computer-avoids-own-traps (ruled 2026-10-05: "Computers should avoid their own traps." - a unit the computer plays will not
 // enter a hex holding its own side's trap). No battle fought before moves: no case fielded the Book of Karma or the Chains of the
-// Wrathful with either row, none plants the Vigil's banner, and in the one case with traps (test.bear-traps) no hero walked onto a
-// hero's trap. Two cases are ADDED: test.sets-counted (the two set rows counted in a real battle) and test.snarer-traps (a trap an
+// Wrathful with either row, none planted the Vigil's banner, and in the one case with traps (test.bear-traps) no hero walked onto a
+// hero's trap. Three cases are ADDED, one fielding to an item: test.sets-counted (the two set rows counted in a real battle),
+// test.banner-vigil (the Vigil's banner planted, an ally with no Spirit healed by the party's) and test.snarer-traps (a trap an
 // enemy places, on its own side's way).
 // Freeze every case's full hashes on this tree. `changed` marks the cases whose full events OR state differ from the
 // dwarf-elf-fey-badges-act capture (the layer below); `movedOnlyText` says the state, RNG and result are all unchanged; `added` marks a
