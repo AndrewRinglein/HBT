@@ -31,8 +31,10 @@ describe('kingdom.tutorial-turns-in-battle-one — taking turns is battle 1\'s l
       point: [{ at: 'acting' }, { at: 'yet-to-act-cards' }] })
     expect((row(YOURS)!['words'] as string[]).length, 'a notice is one to three lines').toBeLessThanOrEqual(3)
     expect(LESSONS.filter((r) => r.encounterId === LUMBERJACK).map((r) => r.id), 'battle 2\'s rows: Stamina when it is still owed, and the camera\'s controls').toEqual([STAMINA2, CAMERA])
+    // LAW 10 — viewer.zoom-stays, 2026-10-05 (engine DECISIONS.md 'the battle screen must feel smooth: … The wheel's zoom stays where it is left, far enough out to see the whole board', Andrew: "2 yes" — overturning 2026-10-01 "snaps back to standard when you stop"): the
+    // second line read "The wheel looks closer or further, and the view springs back."; the wheel's zoom stays now, and the line says so.
     expect(row(CAMERA)).toMatchObject({ encounterId: LUMBERJACK, starts: 'activation-begins', of: 'hero', nthHero: 2, ends: 'time',
-      words: ['Q and E, or the left and right arrows, turn the view.', 'The wheel looks closer or further, and the view springs back.', 'Point at an edge of the screen to scroll the map.'] })
+      words: ['Q and E, or the left and right arrows, turn the view.', 'The wheel zooms in and out, and the view stays where you leave it.', 'Point at an edge of the screen to scroll the map.'] })
   })
 
   it('battle 1: the first civilian activated while another unit has yet to act — the three lines, an arrow on that civilian and one on the card of each unit that waits', () => {

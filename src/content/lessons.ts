@@ -195,8 +195,10 @@ export const LESSONS: readonly LessonRow[] = [
   //      (`lesson.lumberjack.turns`, arrows on the heroes' cards) is gone; battle 1's civilians' row carries the lesson
   //      (kingdom.tutorial-turns-in-battle-one, above).
   // (h2) as the second hero's Activation begins: the camera's controls, as the screen has them — stays, as it was
+  //      (viewer.zoom-stays, 2026-10-05 (engine DECISIONS.md 'the battle screen must feel smooth: … The wheel's zoom stays where it is left, far enough out to see the whole board', Andrew: "2 yes" — overturning 2026-10-01 "snaps back to standard when you stop"): the second line read
+  //      "The wheel looks closer or further, and the view springs back." — the wheel's zoom now stays, so the line says so: kingdom SWITCHES lessonCameraWords)
   { id: 'lesson.lumberjack.camera', encounterId: LUMBERJACK, starts: 'activation-begins', ends: 'time', of: 'hero', nthHero: 2,
-    words: ['Q and E, or the left and right arrows, turn the view.', 'The wheel looks closer or further, and the view springs back.', 'Point at an edge of the screen to scroll the map.'] },
+    words: ['Q and E, or the left and right arrows, turn the view.', 'The wheel zooms in and out, and the view stays where you leave it.', 'Point at an edge of the screen to scroll the map.'] },
 
   // ── kingdom.tutorial-after-battle-lines (2026-10-04; the same entry, the extra step (g)): "One line each, the first time, on the XP,
   //    level-up, reward and equip screens." — "Yep, we need tutorials there." One gold line at the top of each screen between the

@@ -32,11 +32,14 @@ describe('kingdom.tutorial-second-battle — the camera\'s controls (taking turn
   // Law 10, 2026-10-04 (kingdom.tutorial-turns-in-battle-one): this held TWO rows of battle 2 — `lesson.lumberjack.turns` with its
   // two lines and `point: { at: 'hero-cards' }`, and the camera's. The taking-turns row is taken out of battle 2 by the ruling;
   // the camera's row is held exactly as it was.
+  // LAW 10 — viewer.zoom-stays, 2026-10-05 (engine DECISIONS.md 'the battle screen must feel smooth: … The wheel's zoom stays where it is left, far enough out to see the whole board', Andrew: "2 yes" — overturning 2026-10-01 "snaps back to standard when you stop"): the two
+  // word lists below read "The wheel looks closer or further, and the view springs back." as their second line; the screen's wheel no longer springs back, and the lesson is "the
+  // camera's controls as the screen really has them" — so the line is the rule's own now.
   it('the camera\'s row is in the lesson table, battle 2\'s, at the second hero; battle 2 holds no taking-turns row', () => {
     expect(row(TURNS), 'taking turns is battle 1\'s lesson').toBeUndefined(); expect(row(CAMERA), CAMERA).toBeDefined()
     expect(LESSONS.filter((r) => r.encounterId === LUMBERJACK && (r.words ?? []).includes(TURNS_LINE))).toEqual([])
     expect(row(CAMERA)).toMatchObject({ encounterId: LUMBERJACK, starts: 'activation-begins', of: 'hero', nthHero: 2, ends: 'time',
-      words: ['Q and E, or the left and right arrows, turn the view.', 'The wheel looks closer or further, and the view springs back.', 'Point at an edge of the screen to scroll the map.'] })
+      words: ['Q and E, or the left and right arrows, turn the view.', 'The wheel zooms in and out, and the view stays where you leave it.', 'Point at an edge of the screen to scroll the map.'] })
   })
 
   // Law 10, 2026-10-04 (kingdom.tutorial-turns-in-battle-one): this read "(h1) battle 2's first hero activated: the lines and an
@@ -61,7 +64,7 @@ describe('kingdom.tutorial-second-battle — the camera\'s controls (taking turn
     L.open(LUMBERJACK); s.battle.acting = 0; s.battle.yetToAct = [1, 2, 4]; L.still()
     expect(L.up, 'the first hero: nothing').toBe(null); expect(s.up()).toEqual([])
     s.battle.acting = 4; s.battle.yetToAct = [1, 2]; L.still()
-    expect(L.up).toBe(CAMERA); expect(s.told.at(-1)!.words).toEqual(['Q and E, or the left and right arrows, turn the view.', 'The wheel looks closer or further, and the view springs back.', 'Point at an edge of the screen to scroll the map.'])
+    expect(L.up).toBe(CAMERA); expect(s.told.at(-1)!.words).toEqual(['Q and E, or the left and right arrows, turn the view.', 'The wheel zooms in and out, and the view stays where you leave it.', 'Point at an edge of the screen to scroll the map.'])
     expect(s.up(), 'the battle screen has no Reset button to point at').toEqual([])
     s.told.at(-1)!.onDone!('time'); expect(L.up).toBe(null)
     expect(s.told.length, 'one notice in battle 2\'s lesson: the camera\'s').toBe(1)
