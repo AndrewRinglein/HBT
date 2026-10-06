@@ -5763,3 +5763,16 @@ Ruled:
 - **The codebase-review chat is the home chat from this entry on.** Its order: the three copies' owed chains landed (kingdom `HANDOFF-2026-09-04.md`, "2026-10-06 — Now", Next 2), the full four-suite run green in the main folder, then `CODEBASE-REVIEW-2026-10-05.md` §4 stage by stage.
 
 With this the "approved" half of "approved and clean" (the entry of this day, 'the codebase review's changes are all to be built') holds; the "clean" half is that order's first two steps.
+
+## 2026-10-06 — the opening draft and the reward scoring are the kingdom's, not the engine's; the unused rows stay; the leftover git files go; the loose files are gathered
+
+Andrew, in the home chat, answering four questions from the completed list (`CODEBASE-REVIEW-2026-10-05.md` section 4.2: 1 the kingdom's opening draft and reward scoring sit in the engine - stay there, or move to the kingdom; 2 may the leftover unreferenced git files be deleted - 2.3 GB in the kingdom's git folder and about 1,300 temp files there and in the root's; 3 the Codex holds 258 hero rows and the game ships 39, and 205 of 240 bestiary rows are placeholders - keep the unused rows, or cut them; 4 the loose files at the top of the project - delete them, or gather them into one folder):
+
+“The opening draft: the reward scoring should not be in the engine. They should be in the kingdom.   3. Keep the unused rows.2 delete them.  Why don't we gather all those loose files into one folder?”
+
+Ruled:
+
+- **The opening draft and the reward scoring are the kingdom's.** `engine/src/content/opening-party.ts` holds them today (its own note: "ONE RULE, HERE"); the kingdom reads them through its door, and the engine's opening scenarios and about fifteen engine tests field from it. Review item 25 becomes a build item. How the engine's opening test battles get their parties once the rule has moved is that item's to settle, and no battle moves without the written reason the law demands.
+- **The unused rows stay** - the Codex's hero rows beyond the 39 the game ships, and the placeholder bestiary rows. Review item 52 is closed.
+- **The leftover unreferenced git files are deleted** (review item 46). A chat may not delete them: the commands go to him at a moment when no worker is writing to those folders.
+- **The loose files at the top of the project are gathered into one folder, not deleted** (review item 53). Read first, by the item that does it: which of them a tool, a test or a document reads by its path - those stay where they are read.
