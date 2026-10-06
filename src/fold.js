@@ -39,6 +39,7 @@ export function createState() {
     outcome: null,
     /* ── 2026-09-03 ── */
     begun: false,          // battle.begin has passed: a unit.enter after it is an ARRIVAL, not the roster
+    traps: {},             // trap id -> {id, hex, side, source, by} — traps on the board (trap.placed until trap.sprung / trap.removed)
     planted: {},           // object id -> {id, hex, side, radius, source, by, mods, wards} — planted objects (object.planted); nothing removes one
     corpses: {},           // corpse id -> {id, hex, of, typeId, side} — board objects (corpse.created/removed)
     layers: {},            // hex -> painted ground layer number (only non-zero hexes are keys)
@@ -691,7 +692,14 @@ export function fold(S, e, ctx, now = 0) {
            reason 'consumed', `by` the prop, corpse:false. No corpse.created
            follows, so none is drawn; the word names the prop. */
         if (e.reason === 'consumed') cue('float', { hex: U[e.target].hex, kind: 'consumed', text: 'CONSUMED · ' + propWord(e.by), big: true }) } break
-    case 'bleedout.set': case 'bleedout.tick': if (U[e.target]) U[e.target].bleed = e.bleedOut; break
+    /* capability.stabilise-downed-ally (engine item, 2026-10-05): a new fall starts a new count, not a stopped one */
+    case 'bleedout.set': case 'bleedout.tick': if (U[e.target]) { U[e.target].bleed = e.bleedOut; if (e.type === 'bleedout.set') U[e.target].bleedHeld = false } break
+    /* … and a downed unit's count stopped (the Bandages): it stays down at that count and is not counted down again. The
+       count beside the first-aid mark stands still and reads as held. */
+    case 'bleedout.stopped':
+      if (U[e.target]) { U[e.target].bleed = e.bleedOut; U[e.target].bleedHeld = true
+        cue('float', { hex: U[e.target].hex, kind: 'note', text: 'STABILISED', big: true }) }
+      break
     /* ── bodies and the undead economy (§3) ─────────────────────────────── */
     case 'corpse.created':
       /* a board object: it stays until removed. Summons and obliterations make none. */
@@ -733,6 +741,21 @@ export function fold(S, e, ctx, now = 0) {
     case 'surge.gained':
       if (U[e.target]) { U[e.target].surgeChance = e.after
         cue('float', { hex: U[e.target].hex, kind: 'surge', text: 'SURGE CHANCE +' + e.amount, small: true, n: e.amount, of: 'amount' }) }
+      break
+    /* capability.placed-traps (engine item, 2026-10-05): a power placed a trap on an empty hex; it springs on the first unit
+       to enter it (its damage and its status follow as their own lines) and is gone; one nobody entered is taken off when the
+       battle ends. The page is the heroes' side's: it draws and announces the heroes' traps, and an enemy side's trap is not
+       shown until it springs (viewer SWITCHES trapShownToItsSide). */
+    case 'trap.placed':
+      S.traps[e.trap] = { id: e.trap, hex: e.hex, side: e.side, source: e.causeId, by: e.actor }
+      if (e.side === 'hero') cue('float', { hex: e.hex, kind: 'note', text: 'TRAP SET', small: true })
+      break
+    case 'trap.sprung':
+      delete S.traps[e.trap]
+      cue('float', { hex: e.hex, kind: 'consumed', text: 'TRAP!', big: true })
+      break
+    case 'trap.removed':
+      delete S.traps[e.trap]
       break
     case 'corpse.eaten':
       /* the ghoul feeds; heal.applied + statmod.added + maxHp.gained follow */
@@ -888,6 +911,10 @@ export const FOLDED_TYPES = ['burst.declared', 'burst.shielded', 'burst.struck',
   'side.stat.changed', 'side.stat.restored',
   /* capability.planted-banners (engine item, 2026-10-05) */
   'object.planted', 'status.warded', 'surge.gained',
+  /* capability.placed-traps (engine item, 2026-10-05) */
+  'trap.placed', 'trap.sprung', 'trap.removed',
+  /* capability.stabilise-downed-ally (engine item, 2026-10-05) */
+  'bleedout.stopped',
   'deathbed.stood', 'deathbed.fell', 'deathbed.none', 'hp.reset',
   'unit.badged', 'unit.modified', 'badge.gained', 'badge.held', 'power.exhausted', 'charge.spent', 'maxstamina.gained',
   'surge.checked', 'surge.hit', 'power.gained',

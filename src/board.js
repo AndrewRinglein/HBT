@@ -307,6 +307,28 @@ export function corpseGone(V, corpseId, how) {
   V.fx.timers.add(t)
 }
 
+/* ── TRAPS (capability.placed-traps, engine item, 2026-10-05) — a trap lies on its hex from trap.placed until it springs or
+   is taken up. The page is the heroes' side's, so only the heroes' traps are drawn ("shows a placed trap on its hex to the
+   placer's side"): an enemy side's trap is on the board and not on the page until it springs. The mark is the page's own —
+   a ring of teeth on the ground, no art. */
+export function syncTraps(V) {
+  const L = V.layers, S = V.S
+  if (!L.trapL) { L.trapL = el('', 'position:absolute;left:0;top:0;transform-style:preserve-3d'); placeAfter(L.corpseL || L.layL || L.ground, L.trapL); L.TRAP = new Map() }
+  const want = S.traps || {}
+  for (const [id, node] of L.TRAP) if (!want[id] || want[id].side !== 'hero') { node.remove(); L.TRAP.delete(id) }
+  for (const t of Object.values(want)) {
+    if (t.side !== 'hero') continue
+    if (L.TRAP.has(t.id)) { L.TRAP.get(t.id).style.transform = `translateZ(${heightOf(V, t.hex)}px)`; continue }
+    const f = feetOf(V, t.hex)
+    const root = el('trap', `position:absolute;left:${f.x}px;top:${f.y}px;pointer-events:none`)
+    root.style.transform = `translateZ(${heightOf(V, t.hex)}px)`
+    root.dataset.trap = String(t.id)
+    root.dataset.hex = String(t.hex)
+    root.appendChild(el('', 'position:absolute;left:-17px;top:-30px;width:30px;height:18px;border:3px dashed #d9c9a3;border-radius:50%;background:rgba(20,16,12,.45)'))
+    L.trapL.appendChild(root); L.TRAP.set(t.id, root)
+  }
+}
+
 /* ── PLANTED OBJECTS (capability.planted-banners, engine item, 2026-10-05) — a banner a power planted stays on its hex for the
    rest of the battle (object.planted; nothing removes it), whoever planted it walks away or falls. There is no banner model
    yet (the art queue: art.banner-models): the stand-in is a pole and a pennant in its side's colour, drawn in the page's own
@@ -1016,7 +1038,9 @@ export function syncUnits(V) {
       E.clock.style.cssText = 'left:22px;top:-64px;display:block;background:none;border:none;' +
         'padding:0;font:700 40px \'Barlow Semi Condensed\',sans-serif;color:#ff3226;' +
         '-webkit-text-stroke:1.8px #fff;text-shadow:0 2px 6px rgba(0,0,0,.65)'
-      E.clock.textContent = String(u.bleed)
+      /* capability.stabilise-downed-ally (engine item): a stopped count stands still, and says so */
+      E.clock.textContent = u.bleedHeld ? '✚ ' + u.bleed : String(u.bleed)
+      E.clock.title = u.bleedHeld ? 'Stabilised — the bleed-out count is stopped' : ''
     } else E.clock.style.display = 'none'
     E.fring.style.display = (bare || down) ? 'none' : ''
     E.disc.style.display = (bare || down) ? 'none' : ''

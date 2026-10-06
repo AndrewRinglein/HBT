@@ -1,4 +1,5 @@
 import * as THREE from 'three'
+import {PIECE_LAYER} from './solid-batches.js'
 /* viewer.see-through-only-when-moved (2026-10-05; engine DECISIONS.md 'the battle screen must feel smooth: the speed first; …'):
    WHICH solid pieces of the scene stand between the camera and a standing body — the question the see-through rule asks
    (viewer.xcom-camera, terrain3d.js seeThrough: "Anything blocking the view of a character is highly translucent"). The rule
@@ -157,6 +158,9 @@ export const OWN_LENGTH=.6
  */
 export function hidersOf(list,camera,aims,how){
  const ray=new THREE.Raycaster(),now=new Set(),eye=camera.getWorldPosition(new THREE.Vector3())
+ /* viewer.solid-pieces-drawn-by-material: a piece drawn from a batch waits on a layer of its own (solid-batches.js PIECE_LAYER) —
+    it is a piece of the scene like any other, and hides a body as it always did */
+ ray.layers.enable(PIECE_LAYER)
  stats.boxes=stats.triangles=stats.built=stats.plain=0
  for(const a of aims){
   const to=a.at.clone().sub(eye),far=to.length();if(!(far>0))continue

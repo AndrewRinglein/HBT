@@ -220,6 +220,10 @@ function effectWordOf(ef, D, SN) {
     case 'corpse.destroy': return { word: 'Destroys the corpse' }
     /* capability.planted-banners (engine item, 2026-10-05) */
     case 'plant':          return { word: 'Plants a banner', val: ef.radius, radius: true }
+    /* capability.placed-traps (engine item, 2026-10-05) */
+    case 'trap.place':     return { word: 'Places a trap' }
+    /* capability.stabilise-downed-ally (engine item, 2026-10-05) */
+    case 'bleedout.stop':  return { word: 'Stops the bleed-out' }
     case 'surge.gain':     return { word: 'Surge Chance', val: ef.value, signed: true }
     /* an effect kind the engine added and the viewer has not been taught: show
        the engine's own word rather than invent one, and it is a viewer finding */
@@ -248,7 +252,8 @@ export function targetWords(sel) {
   const tags = (sel.requireTags || []).join(' ')
   const who = (tags ? tags + ' ' : '') + ({ any: 'unit', ally: 'ally', enemy: 'enemy' }[sel.side] || 'unit')
   if (sel.select === 'self') return 'self'
-  if (sel.select === 'unit') return 'one ' + who
+  /* capability.stabilise-downed-ally (engine item): a power aimed at a DOWNED unit and at no other */
+  if (sel.select === 'unit') return 'one ' + (sel.life === 'downed' ? 'downed ' : '') + who
   if (sel.select === 'hex') return 'an empty hex'   /* capability.summons (engine item): a hex nobody stands on, within the action's range */
   if (sel.select !== 'area') throw new Error('viewer: unknown target select ' + JSON.stringify(sel.select))
   const every = 'every ' + (sel.excludeSelf ? 'other ' : '') + who
@@ -346,6 +351,18 @@ export function unitTriggers(u, D) {
   return out
 }
 
+/** capability.placed-traps (engine item, 2026-10-05): what a trap does when it springs, field by field of the engine's row —
+    who it springs on, its damage (the amount as every scaled amount is said) and type, who else it strikes, the status it
+    leaves and the ground its hex gains. */
+export function trapWords(ef, D, SN) {
+  const took = []
+  if (ef.damage) took.push(`takes ${valueWords(ef.damage.amount)} ${ef.damage.damageType} damage`)
+  for (const s of ef.statuses || []) took.push(`gains ${s.value} ${shortStatus(s.statusId, SN)}`)
+  const also = ef.radius != null ? `, and every unit within ${hexes(ef.radius)} of it,` : ''
+  const ground = ef.paints ? `; the hex becomes ${String(ef.paints).replace(/^layer\./, '')} ground` : ''
+  return `place a trap on that hex — the first unit to enter it${also} ${took.join(' and ')}${ground}; then the trap is gone`
+}
+
 /** capability.planted-banners (engine item, 2026-10-05): what a planted object gives, field by field of the engine's row —
     the reach from its hex, the stats lent inside, the points of a status that do not land inside, and each trigger it lends
     under its hook's own words. */
@@ -391,6 +408,8 @@ export function effectSentence(ef, sel, D, SN) {
     case 'corpse.consume': return `consume every corpse within ${hexes(ef.radius)}, heal ${ef.healPer} for each`
     case 'corpse.destroy': return 'the corpse is destroyed — nothing is left to raise or eat'
     case 'plant':          return plantWords(ef, D, SN)
+    case 'trap.place':     return trapWords(ef, D, SN)
+    case 'bleedout.stop':  return 'stop its bleed-out count — it stays down and does not die of the count'
     case 'surge.gain':     return `Surge Chance ${sgn(ef.value)}`
     case 'corpse.eat':     return `eat a corpse within ${hexes(ef.radius)}: heal ${ef.heal}${Object.entries(ef.mods || {}).map(([k, v]) => ', ' + statWord(k) + ' ' + sgn(v)).join('')}${ef.maxHp ? ', MAX HEALTH ' + sgn(ef.maxHp) : ''}`
     default:               return ef.kind
@@ -479,6 +498,8 @@ export function actionLines(a, u, D, SN) {
   if (a.cooldown) lim.push('Cooldown ' + a.cooldown)
   if (a.warmup) lim.push('Warm-up ' + a.warmup)
   if (a.uses != null) lim.push(a.uses + ' use' + (a.uses === 1 ? '' : 's') + ' per battle')
+  /* capability.placed-traps (engine item, 2026-10-05): one use aimed at several hexes, one after another (two Bear Traps) */
+  if (a.hexes > 1) lim.push('one use is ' + a.hexes + ' hexes, chosen one after another')
   if (a.free) lim.push('free — does not end the Activation')
   if (a.slot) lim.push(a.slot === 'either' ? 'uses the move or the primary action' : a.slot === 'movement' ? 'uses the move' : 'uses the primary action')
   lines.push(lim.join(' · '))

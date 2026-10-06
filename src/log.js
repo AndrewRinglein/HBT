@@ -174,6 +174,8 @@ export function buildLog(events, SN, turns, D = {}) {
       case 'charge.spent': return b('', `&nbsp;&nbsp;&nbsp;&nbsp;${nmAt(e)} — <span class="sq">${e.abilityId}</span>, ${e.left} use${e.left === 1 ? '' : 's'} left` +
         (e.instanceId != null ? ` <span class="sq">· ${escape(String(e.itemId).replace(/^item\./, ''))} ${escape(e.instanceId)} ${e.instanceLeft === 0 ? 'spent' : e.instanceLeft + ' left'}</span>` : ''))
       case 'maxstamina.gained': return b('status', `&nbsp;&nbsp;&nbsp;&nbsp;<b>${nmT(e)}</b> gains ${e.amount} max stamina <span class="sq">· now ${e.maxStamina}</span>`)
+      /* capability.stabilise-downed-ally (engine item, 2026-10-05) */
+      case 'bleedout.stopped': return b('down', `&nbsp;&nbsp;<b>${nmT(e)}</b> is stabilised — the bleed-out count stops at ${e.bleedOut} <span class="sq">· by ${nmAt(e)} · ${String(e.causeId || '').replace(/^[a-z]+\./, '')}</span>`)
       case 'bleedout.accelerated': return b('down', `&nbsp;&nbsp;&nbsp;&nbsp;<b>${nmT(e)}</b>'s bleed-out moved to ${e.bleedOut} <span class="sq">· ${e.steps} step${e.steps === 1 ? '' : 's'}</span>`)
       case 'surge.checked': return b('', `&nbsp;&nbsp;&nbsp;&nbsp;surge check — rolled ${e.roll} vs ${e.chance}${e.hit ? ' — <b>SURGE</b>' : ''}`)
       case 'surge.hit': return b('hero', `&nbsp;&nbsp;<b>${nmAt(e)}</b> SURGES — acts again`)
@@ -181,6 +183,10 @@ export function buildLog(events, SN, turns, D = {}) {
       case 'side.stat.restored': return b('status', `&nbsp;&nbsp;${e.stat === 'power' ? "the enemy side's Power" : (e.side === 'hero' ? "the party's " : "the enemy side's ") + (e.stat === 'magic' ? 'Magic' : 'Spirit')} returns: ${e.before} → ${e.after} <span class="sq">· ${String(e.source || '').replace(/^[a-z]+\./, '')} has ended</span>`)
       case 'power.gained': return b('enemy', `&nbsp;&nbsp;Power ${e.before} → ${e.after} <span class="sq">· ${sgn(e.amount)}${e.kind ? ' · ' + e.kind : ''}</span>`)
       case 'heal.boosted': return b('status', `&nbsp;&nbsp;&nbsp;&nbsp;heal on <b>${nmT(e)}</b> boosted by ${e.by} <span class="sq">· ${SN[e.statusId] || e.statusId}</span>`)
+      /* capability.placed-traps (engine item, 2026-10-05): the heroes' side knows where its traps lie; an enemy side's is said without its hex */
+      case 'trap.placed': return b(e.side === 'hero' ? 'hero' : 'enemy', `&nbsp;&nbsp;<b>${nmAt(e)}</b> sets a trap${e.side === 'hero' ? ' at hex ' + e.hex : ''} <span class="sq">· ${String(e.causeId || '').replace(/^[a-z]+\./, '')}</span>`)
+      case 'trap.sprung': return b('status', `&nbsp;&nbsp;<b>${nmAt(e)}</b> springs a trap at hex ${e.hex} <span class="sq">· ${String(e.causeId || '').replace(/^[a-z]+\./, '')}</span>`)
+      case 'trap.removed': return b('', `&nbsp;&nbsp;&nbsp;&nbsp;a trap${e.side === 'hero' ? ' at hex ' + e.hex : ''} is taken up <span class="sq">· nobody entered it</span>`)
       /* capability.planted-banners (engine item, 2026-10-05) */
       case 'object.planted': return b(e.side === 'hero' ? 'hero' : 'enemy', `&nbsp;&nbsp;<b>${nmAt(e)}</b> plants a banner at hex ${e.hex} <span class="sq">· ${String(e.causeId || '').replace(/^[a-z]+\./, '')} · reach ${e.radius} from that hex · for the rest of the Battle</span>`)
       case 'status.warded': return b('status', `&nbsp;&nbsp;&nbsp;&nbsp;${e.amount} of ${e.of} ${SN[e.statusId] || e.statusId} does not land on <b>${nmT(e)}</b> <span class="sq">· ${String(e.causeId || '').replace(/^[a-z]+\./, '')}</span>`)

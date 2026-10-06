@@ -30,13 +30,13 @@ export function drawRail(V) {
   const { S, view, data: { ARTMAP, ASSETS } } = V
   /* who still has a card: the heroes' side until dead, everyone else while standing */
   const units = Object.values(S.U).filter(u => u.side === 'hero' ? u.life !== 'dead' : u.life === 'standing')
-  const key = units.map(u => `${u.id}:${u.typeId}:${u.side}:${u.life}:${u.bleed}:${S.acted[u.id] ? 1 : 0}:${freeAttacksUp(u, V.data).join('+')}`).join(',') + `|${S.activeId}|${view.inspectId}`
+  const key = units.map(u => `${u.id}:${u.typeId}:${u.side}:${u.life}:${u.bleed}:${u.bleedHeld ? 1 : 0}:${S.acted[u.id] ? 1 : 0}:${freeAttacksUp(u, V.data).join('+')}`).join(',') + `|${S.activeId}|${view.inspectId}`
   if (rail.dataset.key === key) return
   rail.dataset.key = key
   const chip = u => {
     const a = ARTMAP[u.typeId] || ARTMAP._pending, acted = !!S.acted[u.id], down = u.life === 'downed'
     /* the first-aid mark: a red cross on white, and the bleed-out count beside it while there is one */
-    const aid = down ? `<span class="railaid" title="${u.bleed > 0 ? 'Downed — bleeding out: ' + u.bleed : 'Downed'}">${u.bleed > 0 ? `<b class="railaidNo">${u.bleed}</b>` : ''}<svg class="railaidIcon" viewBox="0 0 12 12" aria-hidden="true"><rect x=".5" y=".5" width="11" height="11" rx="2" fill="#f4f1e8" stroke="#7a1d18"/><path d="M5 2.2h2V5h2.8v2H7v2.8H5V7H2.2V5H5z" fill="#d1332e"/></svg></span>` : ''
+    const aid = down ? `<span class="railaid" title="${u.bleedHeld ? 'Downed — stabilised: the bleed-out count is stopped at ' + u.bleed : u.bleed > 0 ? 'Downed — bleeding out: ' + u.bleed : 'Downed'}">${u.bleed > 0 ? `<b class="railaidNo">${u.bleed}</b>` : ''}<svg class="railaidIcon" viewBox="0 0 12 12" aria-hidden="true"><rect x=".5" y=".5" width="11" height="11" rx="2" fill="#f4f1e8" stroke="#7a1d18"/><path d="M5 2.2h2V5h2.8v2H7v2.8H5V7H2.2V5H5z" fill="#d1332e"/></svg></span>` : ''
     return `<div class="railchip ${u.side}${u.id === S.activeId ? ' now' : ''}${acted ? ' done' : ''}${down ? ' down' : ''}${u.id === view.inspectId ? ' act' : ''}" data-i="${u.id}" title="${u.name}" role="button" tabindex="-1">
       <span class="railno">${acted ? '✓' : u.id === S.activeId ? '▸' : ''}</span>
       <img src="${ASSETS[a.token]}" alt="">${aid}${freeAttacksUp(u, V.data).map(k => `<span class="railup" data-kind="${k}" style="color:${NOTE_HUE.aoo}" title="${FREE_ATTACK[k].word} is up">${raIcon(FREE_ATTACK[k].glyph)}</span>`).join('')}</div>`

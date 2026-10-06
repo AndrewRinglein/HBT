@@ -71,7 +71,9 @@ describe('every action on the bar shows everything it does', () => {
     // 2026-10-05, capability.raise-lower-magic (engine item): a seventh test (a side's party stat changing is said); this read /# pass 6/.
     // 2026-10-05, capability.his-weapons-small-clauses (engine item): an eighth test (the corpse destroyed on a kill, a status removed by a stat's amount); this read /# pass 7/.
     // 2026-10-05, capability.planted-banners (engine item): a ninth test (a planted banner is said whole on its power); this read /# pass 8/.
-    expect(out).toMatch(/# pass 9/); expect(out).toMatch(/# fail 0/)
+    // 2026-10-05, capability.placed-traps (engine item): a tenth test (a trap is said whole on its use, and its two hexes); this read /# pass 9/.
+    // 2026-10-05, capability.stabilise-downed-ally (engine item): an eleventh test (the Bandages say whom they are aimed at and what they stop); this read /# pass 10/.
+    expect(out).toMatch(/# pass 11/); expect(out).toMatch(/# fail 0/)
   }, 170000)
   it('the sandbox: the expect line, read against the engine\'s own units on the built BATTLE-SANDBOX.html (the Orphanage)', () => {
     mkdirSync('../kingdom/scratch', { recursive: true })
