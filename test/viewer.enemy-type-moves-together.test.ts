@@ -24,7 +24,14 @@ const plain = <T>(x: T): T => JSON.parse(JSON.stringify(x))
 const hexAt = (col: number, row: number) => row * 16 + col
 /** three heroes on the left of the open field; five Zombies in a column, four Bloodhounds behind them */
 function fiveAndFour() {
-  const heroes = [{ type: 'hero.base.warrior-iron', hex: hexAt(3, 6) }, { type: 'hero.base.ranger-scantily', hex: hexAt(2, 8) }, { type: 'hero.base.warrior-iron', hex: hexAt(3, 10) }]
+  // Law 10, 2026-10-05 - engine content.dwarf-elf-fey-badges-act (engine DECISIONS.md 2026-10-05 'a prone unit only stands; … Dwarf,
+  // Elf and Fey act; …': "6. They should act."): the two Iron Dwarves stood at column 3. A Dwarf has 1 less Movement now, so from
+  // there they stopped a hex short on Turn 1 and only two of the five Zombies reached a hero to attack - the scene the page test
+  // plays is "each Zombie walks up and attacks". The scene is said as what it is: the Dwarves start one column nearer (4), where
+  // their walk ends on the hexes it ended on before, and the first Enemy Phase is again five Zombies walking and attacking and
+  // four Bloodhounds walking. No assertion of either file is changed.
+  // was: const heroes = [{ type: 'hero.base.warrior-iron', hex: hexAt(3, 6) }, { type: 'hero.base.ranger-scantily', hex: hexAt(2, 8) }, { type: 'hero.base.warrior-iron', hex: hexAt(3, 10) }]
+  const heroes = [{ type: 'hero.base.warrior-iron', hex: hexAt(4, 6) }, { type: 'hero.base.ranger-scantily', hex: hexAt(2, 8) }, { type: 'hero.base.warrior-iron', hex: hexAt(4, 10) }]
   const enemies = [...[3, 5, 7, 9, 11].map((r) => ({ type: 'unit.zombie', hex: hexAt(10, r) })), ...[4, 6, 8, 10].map((r) => ({ type: 'unit.bloodhound', hex: hexAt(13, r) }))]
   const ctx = createCustomBattle(heroes, enemies, { replicate: 1 })
   runBattle(ctx)

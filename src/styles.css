@@ -472,6 +472,9 @@ html,body{margin:0;background:#08090b;color:var(--ink);
    out except 'stand up'"): a row that waits on the unit's stand wears the disabled look — as faint as a row on cooldown,
    its colour drained, and the pointer says it cannot be pressed; Stand Up beside it is at full strength */
 .acRow.standFirst{opacity:.42;filter:grayscale(1);cursor:not-allowed}
+/* viewer.unaffordable-actions-greyed (engine DECISIONS.md 2026-10-05, Andrew: "If a[n attack] can't be paid for or a power can't
+   be paid for, it should be grayed out."): a row the unit cannot pay for now wears the same disabled look */
+.acRow.cantPay{opacity:.42;filter:grayscale(1);cursor:not-allowed}
 .acL1{display:flex;align-items:center;gap:6px;min-width:0}
 .acL2{display:flex;align-items:center;gap:8px;font-family:ui-monospace,monospace;font-size:11.5px}
 .ra{display:inline-block;width:1em;height:1em;fill:currentColor;flex:none;vertical-align:-.125em}

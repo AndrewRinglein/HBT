@@ -59,7 +59,12 @@ const ENDING_KEYS = ['endTurn', 'endActivation']
    a move is made, optional too — moveClick 'one' | 'two', the host's setting. The chrome draws one small control from it
    that says which way it is set and offers the other way back ({kind:'move-click', clicks}); what one click or two DOES is
    the host's. Absent: no control. */
-const OPTIONAL_KEYS = [...ENDING_KEYS, 'swap', 'ask', 'moveDone', 'reachCost', 'reachBorder', 'standFirst', 'moveClick']
+/* viewer.unaffordable-actions-greyed (engine DECISIONS.md 2026-10-05 'a prone unit only stands; …; what cannot be paid is greyed; …', Andrew: "If a tax can't be paid for or a power can't be paid for, it should be grayed out." ('tax' is 'attack' - dictation)): the acting
+   unit's actions it CANNOT PAY FOR now, optional too — cantPay [{id, why}], the host's word from the engine (its limits check
+   refuses the action: not enough Stamina, not ready until a later Turn, no use left) with one plain line that says why, from
+   the engine's own numbers. The bar gives those rows the disabled look and says the line on hover. Absent or empty: every
+   row is as it was. What a unit can pay for is never worked out here. */
+const OPTIONAL_KEYS = [...ENDING_KEYS, 'swap', 'ask', 'moveDone', 'reachCost', 'reachBorder', 'standFirst', 'moveClick', 'cantPay']
 const AIM_KEYS = ['from', 'to', 'target', 'hit', 'dmg', 'hpAfter', 'lethal', 'locked']
 export function playFacts(value, positions) {
   const fail = why => { throw new Error('invalid play facts: ' + why) }
@@ -129,6 +134,11 @@ export function playFacts(value, positions) {
     if (!Array.isArray(v.standFirst) || v.standFirst.some(x => typeof x !== 'string' || !x)) fail('standFirst is not a list of action ids')
     if (new Set(v.standFirst).size !== v.standFirst.length) fail('standFirst repeats an action')
     standFirst = [...v.standFirst] }
+  let cantPay = []
+  if (v.cantPay != null) {
+    if (!Array.isArray(v.cantPay) || v.cantPay.some(x => !x || typeof x !== 'object' || typeof x.id !== 'string' || !x.id || typeof x.why !== 'string' || !x.why)) fail('cantPay is not a list of {id, why}')
+    if (new Set(v.cantPay.map(x => x.id)).size !== v.cantPay.length) fail('cantPay repeats an action')
+    cantPay = v.cantPay.map(x => ({ id: x.id, why: x.why })) }
   let moveClick = null
   if (v.moveClick != null) { if (v.moveClick !== 'one' && v.moveClick !== 'two') fail('moveClick is neither one nor two'); moveClick = v.moveClick }
   const reach = hexes(v.reach, 'reach')
@@ -148,6 +158,6 @@ export function playFacts(value, positions) {
       if (c.cost !== null && int(c.cost, at + '.cost') < 0) fail(at + '.cost is negative')
       return { hex: c.hex, cost: c.cost } })
     if (new Set(reachBorder.map(c => c.hex)).size !== reachBorder.length) fail('reachBorder repeats a hex') }
-  return { endTurn, endActivation: v.endActivation === true, swap, ask, moveDone, standFirst, moveClick, reachCost, reachBorder, actor: intOrNull(v.actor, 'actor'), slot: v.slot, reach, zoc: hexes(v.zoc, 'zoc'),
+  return { endTurn, endActivation: v.endActivation === true, swap, ask, moveDone, standFirst, cantPay, moveClick, reachCost, reachBorder, actor: intOrNull(v.actor, 'actor'), slot: v.slot, reach, zoc: hexes(v.zoc, 'zoc'),
     path: hexes(v.path, 'path', false), provokes: hexes(v.provokes, 'provokes'), ghost, threat, targets: hexes(v.targets, 'targets'), aim, note: v.note }
 }

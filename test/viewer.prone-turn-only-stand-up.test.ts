@@ -53,7 +53,11 @@ describe('a unit that is down: Stand Up, and what the engine refuses until it ha
       const attacks = grantedActionIds(ctx, u).filter((id) => isAttack(act(id)))
       expect(attacks.length).toBeGreaterThan(0); for (const id of attacks) expect(actionReady(ctx, u, act(id)), `${u.name}: ${act(id).name} passes after the stand`).toBe(true)
     }
-    console.log(`  FOUND for the engine's queue: across ${heroes.length} downed units the limits check still passes ${stillPassed} action(s) other than the stand (attacks, powers) — "everything … grayed out except 'stand up'" needs the engine to refuse them`)
+    // 2026-10-05 — engine rule.prone-only-stand-up landed what the line below asked for (Andrew, engine DECISIONS.md 'a prone
+    // unit only stands; Stand Up is its one move; …': "yes, it cannot use attacks or powers until it stands."). What was a
+    // printed FOUND is now held: the limits check passes a downed unit nothing but its stand. The line was:
+    //   console.log(`  FOUND for the engine's queue: across ${heroes.length} downed units the limits check still passes ${stillPassed} action(s) other than the stand (attacks, powers) — "everything … grayed out except 'stand up'" needs the engine to refuse them`)
+    expect(stillPassed, 'down, the engine passes nothing but the stand').toBe(0)
   })
   it('the viewer page: Stand Up is on the bar only of a unit that is down; the actions the host says wait on the stand are greyed, marked disabled and say why; once stood, what greys is what the host says is done', () => {
     const out = execFileSync(process.execPath, ['--test', '--test-reporter=tap', 'tools/prone-turn-only-stand-up.test.mjs'], { cwd: '../viewer', encoding: 'utf8', maxBuffer: 1 << 24, env: { ...process.env, VIEWER_PAGE: process.env.VIEWER_PAGE ?? '' } })

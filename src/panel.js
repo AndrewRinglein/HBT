@@ -3,7 +3,7 @@
    STATS ABOVE THE CARD → card art with STATUSES TO ITS RIGHT → KEYWORDS BELOW
    THE PICTURE. The action bar owns actions (§9.7). Split out 2026-09-02. */
 import { stStyle } from './theme.js'
-import { sgn, STATSHORT, modOf, effectWord, absorbOf, targetWords, unitTriggers, freeAttacksUp, FREE_ATTACK, tagRequirementWords, statusLines } from './actions.js'
+import { sgn, STATSHORT, modOf, effectWord, absorbOf, targetWords, unitTriggers, freeAttacksUp, FREE_ATTACK, tagRequirementWords, statusLines, badgeWords } from './actions.js'
 import { raIcon } from './icons.js'
 import { subjectOf, barUnitOf } from './subject.js'
 import { itemsOf, SLOT_LABEL } from './items.js'
@@ -148,12 +148,17 @@ export function drawPanel(V) {
   const badgeChip = id => {
     const fresh = !born.has(id)
     const bg = fresh ? '#2a1414' : '#221c12', bd = fresh ? '#6d3a30' : '#3a3223', col = fresh ? '#ffb0a4' : '#cbb9a0'
-    return `<span title="${id}" style="font:600 11px 'Barlow Semi Condensed',sans-serif;letter-spacing:.05em;` +
+    /* content.dwarf-elf-fey-badges-act (engine item, 2026-10-05): the chip's hover says what the badge does - its row's numbers */
+    const does = badgeWords(BD[id])
+    return `<span title="${does ? badgeName(id) + ' — ' + does : id}" data-badge="${id}" style="font:600 11px 'Barlow Semi Condensed',sans-serif;letter-spacing:.05em;` +
       `padding:2px 8px;border-radius:2px;background:${bg};border:1px solid ${bd};color:${col}">${badgeName(id)}</span>`
   }
   const badgesBlock = (u.badges || []).length
     ? '<div style="font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);margin:10px 0 6px">Badges</div>' +
-      `<div style="display:flex;flex-wrap:wrap;gap:5px">${u.badges.map(badgeChip).join('')}</div>`
+      `<div style="display:flex;flex-wrap:wrap;gap:5px">${u.badges.map(badgeChip).join('')}</div>` +
+      /* … and under the chips, one line for each badge whose row changes a stat: its name and the numbers (a badge that
+         changes none has no line - its chip is its whole statement) */
+      u.badges.filter(id => badgeWords(BD[id])).map(id => `<div class="badgeline" data-badge-line="${id}" style="font-size:11px;color:#cbb9a0;margin-top:4px"><b style="color:#cbc3ae">${badgeName(id)}</b> ${badgeWords(BD[id])}</div>`).join('')
     : ''
   const kitLine = ((u.kit && u.kit.items.length) ? `<b style="color:#cbc3ae">Kit</b> ${u.kit.items.map(i => i.replace(/^item\./, '')).join(', ')}<br>` : '') +
     /* V2 R6 (2026-09-24): what is carried but not in hand — unit.enter's stowed, moved by loadout.swapped */
