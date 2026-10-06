@@ -93,3 +93,4 @@
 {"suite":"engine","stamp":"dce5b2973d","failed":true,"at":"2026-10-06T07:20:12.725Z","by":"gate --shard 1/4","in":"HBT-worker-content"}
 {"suite":"control","stamp":"dce5b2973d","pack":"bd2ba40096","golden":"b4deeaba50","at":"2026-10-06T08:57:29.640Z","by":"gate viewer.unaffordable-actions-greyed --land","in":"HBT-worker-content","moved":null}
 {"suite":"engine","stamp":"dce5b2973d","with":{"engine":"dce5b2973d","content":"8f939e8202","viewer":"53d63a3faa","kingdom":"e85af16ba7"},"at":"2026-10-06T09:14:42.532Z","by":"gate --shard (4 of 4)","in":"HBT-worker-content"}
+{"suite":"engine","stamp":"45810a3f48","with":{"engine":"45810a3f48","content":"e4b5310a8b","viewer":"bf714cd210","kingdom":"e85af16ba7"},"at":"2026-10-06T10:12:58.119Z","by":"gate --shard (1 of 1)","in":"HBT-worker-engine","tests":3103}
