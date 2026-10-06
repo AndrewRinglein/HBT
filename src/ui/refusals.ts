@@ -2,7 +2,7 @@
 // why in one plain line in the battle screen — never silent, never a raw code like activation-not-selectable). The engine
 // refuses with a code (src/core/commands.ts, src/core/movement.ts); this table only words it. Who is named comes from the
 // caller (the engine's own unit names); nothing here decides whether an order is legal (kingdom SWITCHES turnRefusalWords).
-export type RefusalWho={actor?:string|null;target?:string|null;action?:string|null}
+export type RefusalWho={actor?:string|null;target?:string|null;action?:string|null;/** the name of the stand a knocked-down unit is granted (the engine's own action name) */stand?:string|null}
 
 /** One plain sentence for an engine refusal code. An unknown code still reads as a sentence, never as the code. */
 export function refusalLine(code:string,who:RefusalWho={}):string{
@@ -11,6 +11,9 @@ export function refusalLine(code:string,who:RefusalWho={}):string{
  switch(code){
   case 'unreachable-destination':return `${a} cannot reach that hex.`
   case 'actor-rooted':return `${a} is rooted and cannot move.`
+  // rule.prone-only-stand-up (engine DECISIONS.md 2026-10-05, Andrew: "yes, it cannot use attacks or powers until it stands."):
+  // the engine refuses a knocked-down unit everything but its stand, with this code - the words the bar's greyed rows carry
+  case 'actor-prone':return `Knocked down: ${who.stand??'stand up'} first.`
   case 'movement-slot-closed':return `${a} has already moved - attack, or End Activation.`
   case 'action-slot-closed':return `${a} has already used that part of its Activation.`
   case 'action-not-ready':return `${x} is not ready.`

@@ -356,9 +356,11 @@ export function createPlayInput(session:()=>Sandbox|null,run:(command:BattleComm
      that character's next turn, everything needs to be grayed out except 'stand up'."): the acting unit's actions that WAIT ON
      ITS STAND — read from the engine, never ruled here. The unit is down when the engine grants it a stand (grantedActionIds
      holds a movement that standsUp: the prone status's own action); what waits is every other action it is granted that the
-     engine's one limits check (actionReady) refuses. Today that is its other movements — the engine still takes a downed
-     unit's attacks and powers (engine SWITCHES proneNoCrawl), so those stay lit: the engine's to change, and this follows it
-     the day it does (kingdom SWITCHES proneBarReadsTheEngine). A unit that is standing names none. */
+     engine's one limits check (actionReady) refuses. Until 2026-10-05 that was its other movements only; since engine
+     rule.prone-only-stand-up (ruled that day: "yes, it cannot use attacks or powers until it stands.") it is EVERY action but
+     the stand — by the same reading, with no rule of this file's own (kingdom SWITCHES proneBarReadsTheEngine, its dated
+     note). And once the unit has stood the engine takes no movement from it ("No, you only perform one move action."), so
+     `moveDone` below names every move it holds — again the engine's answer. A unit that is standing names none. */
  const standOf=(s:Sandbox,actor:number):string|null=>{const u=s.ctx.state.units[actor]!
   return grantedActionIds(s.ctx,u).find(id=>{const a=s.ctx.actions[id];return !!a&&standsUp(a)})??null}
  const standFirstOf=(s:Sandbox,actor:number):string[]=>{
@@ -439,7 +441,7 @@ export function createPlayInput(session:()=>Sandbox|null,run:(command:BattleComm
  }
  /** an engine refusal, as one plain line naming the hero acting, the unit aimed at and the action (src/ui/refusals.ts) */
  const said=(s:Sandbox,code:string,actor:number|null,target:number|null=null,actionId:string|null=null)=>
-  refusalLine(code,{actor:nameOf(s,actor),target:nameOf(s,target),action:actionId?s.ctx.actions[actionId]?.name??null:null})
+  refusalLine(code,{actor:nameOf(s,actor),target:nameOf(s,target),action:actionId?s.ctx.actions[actionId]?.name??null:null,stand:actor!==null?s.ctx.actions[standOf(s,actor)??'']?.name??null:null})
 
  /** the ending: End Turn when the engine would take `end-player-phase` now, with the heroes it says have not acted (as unit
      ids, for the pop-up); End activation when it would take `end-cycle` from the hero acting */
