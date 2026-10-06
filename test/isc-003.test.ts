@@ -35,7 +35,13 @@ describe('ISC-003 — the engine is reached through one door and never changed',
     expect(door).not.toMatch(/core\/mutate/)
     // Authorized human sandbox (2026-09-16) needs the engine's preview numbers.
     // Permit that named read-only export only; raw attack execution stays closed.
-    expect(door.match(/^export.*core\/pipeline.*$/gm)).toEqual(["export { preview } from '../../engine/src/core/pipeline.js'"])
+    // Law 10, 2026-10-06 — viewer.attack-row-shows-totals (Andrew, engine/DECISIONS.md 'an attack shows its total Accuracy and Crit,
+    // not the weapon's plus': "What happens is the attack shows the total critical. The same thing is true of accuracy."; the
+    // item: "if the engine exposes only the pieces, add a read-only figure through the viewer's door to the engine rather than
+    // adding the pieces up"): the door is widened by ONE more named read-only export from the pipeline, attackFigures — pure,
+    // no state, no dice. Still exactly the named exports and nothing else; raw attack execution stays closed. The line was:
+    //   expect(door.match(/^export.*core\/pipeline.*$/gm)).toEqual(["export { preview } from '../../engine/src/core/pipeline.js'"])
+    expect(door.match(/^export.*core\/pipeline.*$/gm)).toEqual(["export { preview } from '../../engine/src/core/pipeline.js'", "export { attackFigures } from '../../engine/src/core/pipeline.js'"])
     expect(door).not.toMatch(/export\s*\{[^}]*performAttack/)
   })
 
