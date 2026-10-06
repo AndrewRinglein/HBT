@@ -34,6 +34,22 @@ export function refusalLine(code:string,who:RefusalWho={}):string{
  }
 }
 
+/** viewer.unaffordable-actions-greyed (engine DECISIONS.md 2026-10-05 'a prone unit only stands; …; what cannot be paid is greyed; …', Andrew: "If a tax can't be paid for or a power can't be paid for, it should be grayed out." ('tax' is 'attack' - dictation)): why the engine's
+    limits check refuses an action its unit holds — one plain line from the engine's own numbers. The engine answers yes or
+    no (action.ts actionReady) and says no sentence; which of its questions failed is read by the caller in the order the
+    check asks them (Stamina, then the Turn it is ready on, then a use), and worded here (kingdom SWITCHES unpaidWords). */
+export type Unpaid={kind:'stamina';needs:number;has:number}|{kind:'cooldown';turns:number}|{kind:'warm-up';turns:number}|{kind:'uses'}|{kind:'other'}
+export function unpaidLine(u:Unpaid):string{
+ const turns=(n:number)=>`${n} ${n===1?'Turn':'Turns'}`
+ switch(u.kind){
+  case 'stamina':return `Not enough Stamina: needs ${u.needs}, has ${u.has}.`
+  case 'cooldown':return `On cooldown: ready in ${turns(u.turns)}.`
+  case 'warm-up':return `Warming up: ready in ${turns(u.turns)}.`
+  case 'uses':return 'No uses left this Battle.'
+  default:return 'Not ready.'
+ }
+}
+
 /** viewer.turn-taking point 4: the engine's `activation-not-selectable` for a switch to another hero, worded by why — the
     one asked for is not the player's, or has acted; or the hero acting has already moved or acted and must finish (no
     partial Activations). Every fact read here is the engine's (the unit's side, moveUsed, primaryUsed, the queue it gave). */
