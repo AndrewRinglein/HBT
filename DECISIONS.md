@@ -5353,3 +5353,29 @@ On seeing that demo: “Not what I meant. The tall grass has a purple version. Y
 So: **the ground is grey and brown, a little darker; the purple is the tall grass's, not the ground's; an all-purple ground is not natural enough** (though it made the units stand out a lot more). The page now opens on that look - the ground's own pieces redrawn in a grey-brown (`#6e6052`, darker than the first try), the tall grass (the scene's meadow tufts) in a purple, the river, the trees and the other growth as painted, the cap, the brighter bodies and the fire as before - and shows three buttons (as it is today; grey-brown ground with purple tall grass; all purple, the first try) and two sliders (how dark the ground is, how bright the bodies are), every other control folded away. Measured on it, today against this look: bodies 0.42 against 0.60 lightness; the ground beside them 0.58 against 0.40, its swing 0.23-0.76 against 0.27-0.55, its colourfulness 0.08 against 0.05. The heroes are 0.20 lighter than their ground. The chat did not find a purple version of the tall grass among the terrain's files and tinted the tall grass that is there; where his is, is asked of him.
 
 Of that look: “This looks pretty good. Do we need to make the white stone a different color?” The chat's answer was yes, and the look now does it: the boulders, the shore's rocks and its gravel (12% of the opening view) measured 0.61 lightness as painted, above the bodies' 0.59 - the brightest scenery on the board - and are redrawn a darker grey (`#807a73`), 0.50: under the bodies and over the ground's 0.40. Not ruled: he has not yet seen the grey stones.
+
+## 2026-10-06 — the characters stand out: “this color template is working”
+
+Andrew, in the root chat (the XCOM 2 study), of the Orphanage demo's grey-brown look with the stones made grey, and of the tall grass's purple version the chat had not found:
+
+“It's called something else, but it's the same general shape. There's something purple. I think the gray looks good for some. I think this color template is working.”
+
+Ruled:
+
+- **The colour template is working.** As the demo page shows it on the Orphanage (`.scratch-hero-colours/index.html`, the look it opens on), with what it measured there:
+
+  | what | how it is drawn | lightness |
+  |---|---|---|
+  | heroes and enemies | 2.6 times brighter, their own colours 1.3 times stronger | 0.59 |
+  | stone (boulders, shore rocks, gravel) | a darker grey, `#807a73` | 0.50 |
+  | the ground | grey-brown, `#6e6052`, darker and evened | 0.40 beside the units |
+  | the tall grass | the purple of the kit's own purple plant | - |
+  | water, trees, the other growth, wood, buildings | as painted | - |
+  | fire | lanterns on the map; the enemies edged in firelight, their ring and name in its colour | - |
+
+  The order is the point: units lightest, stone under them, ground under the stone. Today it is ground 0.58, stone 0.61, units 0.42.
+- **The grey is good for the stone** - the chat reads “for some” as “for stone” (dictation); his to correct.
+
+Found: the purple plant he meant is the **barberry bush** of the terrain kit (`assets/terrain-3d/ermakova-forest`: `ef-bush-barberry-01`, `-03`; texture `T_Bush_Barberry_BCO`, its leaves averaging `#5a5368`). The Orphanage's scene uses none. The demo tints its meadow-grass tufts to that purple; putting barberry where the tall grass stands is a change to the map itself.
+
+Not ruled, and the template's next step: how it reaches the game - as a look the battle screen applies to every painted map as it draws (what the demo does, material by material), or as the maps repainted - and whether the enemies' ring and name leave the side's violet on such a ground. It is a demo on one map; no map, model or game code is changed by any of this.
