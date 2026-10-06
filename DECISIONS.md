@@ -5588,3 +5588,65 @@ Ruled:
 - **Why the chat kept asking, and what is wrong in the game:** the engine as built lets a unit spend its PRIMARY action on a second move-class action - after a Leap or another movement power it may still walk its whole movement as its primary (engine SWITCHES movementBeforeWalkToday, probed 2026-10-04), and the walked-unit and Stand Up rules each closed one case of it. The chat asked case by case where it should have set that against this rule once. A move-class action is the move action's alone; the primary action never takes one. This narrows how 2026-08's "structurally, movement and primary are identical. They can both do any of the same things" has been built: the two are the same kind of thing in their limits and costs, and a move still goes in the move action. Filed: `rule.one-move-action-one-primary-action`.
 - **A used-up once-per-battle power stays on the bar, greyed** ("One, yes"). Overturns 2026-09-02's vanishing for the bar. Filed: `viewer.used-up-power-stays-greyed`.
 - **This chat's workers build the five viewer items the other chat filed** ("3 yes"): `viewer.stand-out-measured`, `viewer.units-brighter`, `viewer.enemies-in-firelight`, `viewer.water-moves`, `viewer.trees-sway`.
+
+## 2026-10-06 — the six repainted maps are accepted and go into the game; the units are made lighter by how they are drawn; at the Gates a unit stands where it makes sense
+
+Andrew, in the kingdom chat, brought the art chat's report ("Completed all six: the five repaints and the new Gates scene, including 33 individual Gates assets. Nothing was landed in the game ... visual acceptance remains yours ... ready for you to merge into the game"; the review page `assets/terrain-3d/colour-template-review/`). Told what landing them takes, and that on the new maps the units still read about 0.36-0.39 lightness against a ground of 0.36-0.41 and stone at 0.48-0.50:
+
+“I'm kind of confused. The goal was to make the units lighter. This didn't do that. I don't understand why the units aren't lighter in what was just done. The units need to be lighter. How do we go about doing that? How did this miss the boat? Was this only modifying the maps?”
+
+“I am separately working on cloaks. Is this a painting of the units that needs to be changed?”
+
+The chat answered: the art run changed the maps only - the stone and the ground, two of the template's three parts; the units are not in the map files; they are made lighter by how the game draws a body (`viewer.units-brighter`, on the demo 2.6 times brighter and the colours 1.3 times stronger), not by repainting them, and that item with its measuring tool (`viewer.stand-out-measured`) was moved to the front of the viewer worker's list. Then asked (1 do you accept the six maps as they look, so they are ready to go in when 'units brighter' lands; 2 should the Poison Imp at the Gates move onto the wall walk, or stay where it is for now - the new scene measures its start hex as not standable):
+
+“1. Yes.
+2. I don't know why tile features changed in the process. For gate, put them somewhere that makes sense. I don't want to care about the exact position of a unit.  Okay, then I say yes to the previous questions that were asked.”
+
+Ruled:
+
+- **All six scenes are accepted as they look, and their integration into the game is authorized** - the five repaints (Orphanage, Lumberjack House, Cavern Trail, Bridge, Cathedral) and the Gates' new 3D scene. This is the "explicit integration authorization and exact-hash appearance acceptance" the art chat's handoff item (`viewer.gates-painted-scene`) and each scene's README wait for; the hashes accepted are the ones the review folder's `production.json` files hold on 2026-10-06.
+- **"The units need to be lighter."** It is the point of the colour template; the maps alone do not do it. `viewer.stand-out-measured` and `viewer.units-brighter` are next for the viewer worker.
+- **At the Gates, a unit whose hex the scene shows as not standable is put somewhere that makes sense** - "I don't want to care about the exact position of a unit." The worker chooses; no question comes back to him about a hex. (On "I don't know why tile features changed": no tile's rule changed - the Gates had no 3D scene before, and the new one draws a wall where that hex is; the engine's map is untouched.)
+- **"Yes to the previous questions"** is read as: the maps go in with, or just after, 'units brighter', as the chat proposed. Lanterns were not made and stay in the art queue.
+
+Filed: `viewer.repainted-scenes-in-the-game`, `content.gates-units-stand-where-the-scene-allows`; `viewer.gates-painted-scene` is authorized.
+
+## 2026-10-06 — an attack at several chosen targets was not approved and leaves the queue
+
+Andrew, in the kingdom chat, read the whole backlog and said of two of the items a worker had filed from Codex lines that do nothing (`capability.attack-several-targets`, `capability.damage-adds-target-status`):
+
+“We don't need an attack with several chosen targets. This weapon feature was not approved. That should not be in the queue.   I don't understand the damage that adds a status to the target.   There are a variety of different triggers and attacks and ways to add status to a target. How does that directly relate to damage?”
+
+Ruled:
+
+- **An attack at several chosen targets is not a feature of the game.** It was never approved; `capability.attack-several-targets` is abandoned (the gate's own abandon, with his words). The four Codex attack lines that read 'up to N enemies within R hexes' (Throwing Knives' Fan, Poison Stars' Venom Spread, Poison Throwing Knives' Venom Fan, Demon Whip's Hellcoil) are chat-authored lines, like the Elfbow's Double Shot he corrected 2026-10-04; each strikes one target, as it does.
+- **`capability.damage-adds-target-status` is not understood as named, and is not ruled.** The chat explained it the same day (it is damage that grows with a status the target already holds - 'Strength +1, plus the Stun on the target' - on eight Codex attacks, not a way of applying a status) and asked whether he wants it; no worker takes it until he says.
+- A lesson the chat takes: a worker's finding that a Codex line does nothing is not a reason to queue a mechanism; 2026-10-04's 'items he did not author are set aside' covers their lines too.
+
+## 2026-10-06 — damage that grows with a status on the target is wanted; so is a trigger that moves Surge
+
+Andrew, in the kingdom chat, told what `capability.damage-adds-target-status` is (damage made bigger by a status the target already holds - 'Strength +1, plus the Stun on the target' - on eight Codex attacks, six on chat-written items and two on Hell-TCG's), and asked (1 should it come out of the queue too; 2 should 'a trigger that moves Surge' come out as well, since it comes from a chat-written weapon):
+
+“That is a feature we need: damage increased by weak, by burn, or by any other given status.     No trigger that moves surge should be in there too, like on hit game 5 surge.”
+
+Ruled:
+
+- **Damage increased by a status on the target - Weak, Burn, or any other given status - is a feature the game needs.** `capability.damage-adds-target-status` stays and is his.
+- **A trigger that moves Surge is wanted too** - "like on hit [gain] 5 surge" (the chat's reading of "No trigger that moves surge should be in there too": no, it does not come out - it should be in there too). `capability.trigger-moves-surge` stays and is his.
+- Both are mechanisms he wants in the game for their own sake, whoever wrote the lines that first named them.
+
+## 2026-10-06 — engine items too are built in groups of up to four, with one set of heavy checks for the group
+
+Andrew, in the kingdom chat, asked how long the backlog would take and then:
+
+“What happens at this time if we don't test against everything for each item? Can we just build several items and then test?”
+
+The chat answered: the writing is not the slow part - for each engine item a worker runs 35 to 45 minutes of heavy checks (the engine's whole suite, content's, the six recordings re-exported, the viewer's gate, the kingdom's pages and shards), most of it again after every second item when main is merged in, and only one heavy run goes at a time across the three workers (GBH SWITCHES workers.gatesTakeTurns), so those runs set the pace; built in groups of three or four with the heavy checks run once for the group, four items cost about 70 minutes of heavy runs where they cost about 200. What it costs: a failing group must be searched for the item that broke it; one bad item holds its neighbours; which item moved which recorded battle is less sharp. What is not lost: nothing reaches main without the full checks having passed on it. And asked: should engine items also be built in groups of up to four with one set of heavy checks per group?
+
+“Yes.”
+
+Ruled:
+
+- **An engine item is built in a group of up to four, like the small viewer and kingdom items of 2026-10-04 (rule 16): one set of heavy checks for the group.** This changes GBH-PROTOCOL's "One item, one commit ... Never batch" for the checks only: each item is still its own commit, with its own test written first and seen red.
+- **The group's heavy checks run once, after its last item is built, and again nothing is merged into main without them having passed on the merged tree.**
+- The chat's working rules for it, each a line to change: within a group a worker runs only the item's own tests as it builds; an item that declares it changes the control battles has the control battles run at ITS commit, so what it moved is still known; a group that fails is searched commit by commit, the item that broke it is fixed or taken out of the group and the rest lands; a group is of items that belong together in one worker's list, never held open waiting for a fourth.
