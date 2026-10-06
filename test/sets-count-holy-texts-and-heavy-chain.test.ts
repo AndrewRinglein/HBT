@@ -6,6 +6,7 @@
 // engine's row as the same `setTags` every other member bears. What the Forge makes of both rows is exactly what it was.
 import { describe, expect, it } from 'vitest'
 import { createBattle, fieldedPreview } from '../src/core/setup.js'
+import { runBattle } from '../src/core/battle.js'
 import { setLinesOf } from '../src/core/items.js'
 import { effective } from '../src/core/stats.js'
 import { ITEMS } from '../src/content/index.js'
@@ -49,13 +50,17 @@ describe('the two rows are members of the sets their names say', () => {
     expect(worn.precision - armorOnly.precision).toBe(2)
   })
   it('in a real battle the line is drawn for the item that pays, at the count of two', () => {
-    // the set-bonus fielding (map.open, two zombies) with two priests in it: one holds the Book with the Texts stowed, one the Chains over Heavy Chain
-    const base = { ...scenarioOptions(SCENARIOS['test.set-bonus']!), heroes: [PRIEST, PRIEST], heroHexes: [85, 101] }
-    const ctx = createBattle({ ...base, heroItems: [[KARMA], [CHAINS, HEAVY]], heroStowed: [[TEXTS], []] })
+    // its own fielding (test.sets-counted: map.open, two zombies): one priest holds the Book with the Texts stowed, one the Chains over Heavy Chain
+    const base = scenarioOptions(SCENARIOS['test.sets-counted']!)
+    expect([base.heroItems, base.heroStowed]).toEqual([[[KARMA], [CHAINS, HEAVY]], [[TEXTS], []]])
+    const ctx = createBattle(base)
     const [first, second] = ctx.state.units
     const lines = ctx.events.filter((e) => e.type === 'unit.modified').map((e) => [e.actor, e.causeId, e['stats'] ?? null])
-    expect(lines).toContainEqual([first!.id, KARMA, { resist: 2 }])
-    expect(lines).toContainEqual([second!.id, CHAINS, { precision: 2 }])
+    expect(lines).toEqual([[first!.id, KARMA, { resist: 2 }], [second!.id, CHAINS, { precision: 2 }]])
+    // … and fought to its end, the two lines are the only ones the sets wrote
+    const fought = createBattle(base)
+    runBattle(fought)
+    expect(fought.events.filter((e) => e.type === 'unit.modified').map((e) => [e.causeId, e['stats']])).toEqual([[KARMA, { resist: 2 }], [CHAINS, { precision: 2 }]])
     const alone = createBattle({ ...base, heroItems: [[KARMA], [CHAINS]], heroStowed: [[], []] })
     expect(effective(ctx, first!, 'resist').value - effective(alone, alone.state.units[0]!, 'resist').value).toBe(1)
     expect(effective(ctx, second!, 'precision').value - effective(alone, alone.state.units[1]!, 'precision').value).toBe(1)

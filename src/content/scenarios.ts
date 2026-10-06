@@ -204,6 +204,16 @@ const RAW_SCENARIOS: Readonly<Record<string, ScenarioDef>> = {
     heroItems: [['item.chains-of-the-wrathful', 'item.chains-of-the-faithful'], ['item.staff-of-the-magi', 'item.blink-ring', 'item.ring-of-divine-protection'], ['item.staff-of-the-destroyer']],
     heroStowed: [[], [], ['item.staff-of-the-ultimate-destroyer']], enemies: ['unit.zombie', 'unit.zombie'], enemyHexes: [91, 107], replicate: 0,
   },
+  // content.sets-count-holy-texts-and-heavy-chain (2026-10-06; DECISIONS.md 2026-10-05 'a set counts everything carried; …':
+  // Holy Texts a book and Heavy Chain a chain item for sets, "8, yes."): the two rows counted in a real battle - a priest
+  // holding the Book of Karma with Holy Texts stowed (two books: +2 Resist) and a priest holding the Chains of the Wrathful
+  // over Heavy Chain (two chain items: +2 Precision), against two zombies. A fielding, not a balance claim.
+  'test.sets-counted': {
+    id: 'test.sets-counted', note: 'TEST: two priests whose set counts a row that says its set without bearing the tag - the Book of Karma with Holy Texts stowed, the Chains of the Wrathful over Heavy Chain - against two zombies. No campaign claim.',
+    mapId: 'map.open', heroes: ['hero.base.priest-armored', 'hero.base.priest-armored'], heroHexes: [85, 101],
+    heroItems: [['item.book-of-karma'], ['item.chains-of-the-wrathful', 'item.heavy-chain']],
+    heroStowed: [['item.holy-texts'], []], enemies: ['unit.zombie', 'unit.zombie'], enemyHexes: [91, 107], replicate: 0,
+  },
   // capability.summons (2026-10-05; DECISIONS.md 2026-10-04 'his 28 reward weapons read back …': "We need: summons"): the Staff
   // of Summoning's Call the Wolf live in a real battle - a mage holding it, the zombies too far to reach on the first Turn, so
   // the computer calls the Wolf first and the Wolf then fights in the Hero Phase by its own AI. A fielding, not a balance claim.
