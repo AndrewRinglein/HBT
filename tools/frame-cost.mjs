@@ -177,18 +177,6 @@ function shadowBothWays(){
     camera's version on: the view is the same, the frame is drawn, and no body has moved) */
  const draw=()=>{V.camVersion=(V.camVersion||0)+1;S.tick(0)}
  draw();const one=read();draw();const blendedNoise=differ(one,read()).n
- /* viewer.foliage-drawn-once: the same view with its foliage drawn once, then twice as before — the blended pieces IN the
-    picture (they are what changes) — and, each way, the frame drawn again the same way: what two frames of one way differ by
-    is the blended pieces' own (blendedPiecesShimmer), not the switch's. Counted besides: the pixels that differ by more than
-    16 of 255 (a shade the eye can find). */
- let foliage=null
- if(V.foliage){const f=V.foliage,was=f.once
-  const far=(A,B)=>{let n=0,worst=0,over=0;for(let c=0;c<A.length;c++){const a=A[c],b=B[c]
-    for(let i=0;i<a.length;i+=4){const d=Math.max(Math.abs(a[i]-b[i]),Math.abs(a[i+1]-b[i+1]),Math.abs(a[i+2]-b[i+2]),Math.abs(a[i+3]-b[i+3]));if(d){n++;if(d>worst)worst=d;if(d>16)over++}}}return {n,worst,over}}
-  const take=way=>{f.once=way;draw();draw();const a=read();draw();return [a,read()]}
-  const [on,onAgain]=take(true),inSight=f.inSight(),[off,offAgain]=take(false);f.once=was;draw()
-  const d=far(on,off),a=far(on,onAgain),b=far(off,offAgain)
-  foliage={inSight,differing:d.n,worst:d.worst,over16:d.over,onceAgain:a.n,onceAgainWorst:a.worst,onceAgainOver16:a.over,twiceAgain:b.n,twiceAgainWorst:b.worst,twiceAgainOver16:b.over}}
  let scene=V.seeThrough.pieces()[0]?.o;while(scene?.parent)scene=scene.parent
  const blended=new Set();scene?.traverse(o=>{if(o.isMesh)for(const m of [].concat(o.material))if(m&&m.transparent&&m.colorWrite)blended.add(m)})
  for(const m of blended)m.colorWrite=false
@@ -218,6 +206,19 @@ function shadowBothWays(){
     if(!d.n)break}}
  }finally{for(const m of blended)m.colorWrite=true}
  draw()
+ /* viewer.foliage-drawn-once: LAST, when every older compare of this view is done and read (they are made on the very frames
+    they were made on before this one existed: the switch is not thrown until here) — the same view with its foliage drawn once, then twice as before — the blended pieces IN the
+    picture (they are what changes) — and, each way, the frame drawn again the same way: what two frames of one way differ by
+    is the blended pieces' own (blendedPiecesShimmer), not the switch's. Counted besides: the pixels that differ by more than
+    16 of 255 (a shade the eye can find). */
+ let foliage=null
+ if(V.foliage){const f=V.foliage,was=f.once
+  const far=(A,B)=>{let n=0,worst=0,over=0;for(let c=0;c<A.length;c++){const a=A[c],b=B[c]
+    for(let i=0;i<a.length;i+=4){const d=Math.max(Math.abs(a[i]-b[i]),Math.abs(a[i+1]-b[i+1]),Math.abs(a[i+2]-b[i+2]),Math.abs(a[i+3]-b[i+3]));if(d){n++;if(d>worst)worst=d;if(d>16)over++}}}return {n,worst,over}}
+  const take=way=>{f.once=way;draw();draw();const a=read();draw();return [a,read()]}
+  const [on,onAgain]=take(true),inSight=f.inSight(),[off,offAgain]=take(false);f.once=was;draw()
+  const d=far(on,off),a=far(on,onAgain),b=far(off,offAgain)
+  foliage={inSight,differing:d.n,worst:d.worst,over16:d.over,onceAgain:a.n,onceAgainWorst:a.worst,onceAgainOver16:a.over,twiceAgain:b.n,twiceAgainWorst:b.worst,twiceAgainOver16:b.over}}
  let pixels=0,drawn=0;for(const a of kept){pixels+=a.length/4;drawn+=drawnOf(a)}
  const both=differ(kept,full),same=differ(first,kept)
  /* (the bodies' own canvas is the second: what is drawn on it is the bodies in this view) */
