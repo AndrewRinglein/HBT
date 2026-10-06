@@ -181,6 +181,10 @@ export function buildLog(events, SN, turns, D = {}) {
       case 'side.stat.restored': return b('status', `&nbsp;&nbsp;${e.stat === 'power' ? "the enemy side's Power" : (e.side === 'hero' ? "the party's " : "the enemy side's ") + (e.stat === 'magic' ? 'Magic' : 'Spirit')} returns: ${e.before} → ${e.after} <span class="sq">· ${String(e.source || '').replace(/^[a-z]+\./, '')} has ended</span>`)
       case 'power.gained': return b('enemy', `&nbsp;&nbsp;Power ${e.before} → ${e.after} <span class="sq">· ${sgn(e.amount)}${e.kind ? ' · ' + e.kind : ''}</span>`)
       case 'heal.boosted': return b('status', `&nbsp;&nbsp;&nbsp;&nbsp;heal on <b>${nmT(e)}</b> boosted by ${e.by} <span class="sq">· ${SN[e.statusId] || e.statusId}</span>`)
+      /* capability.planted-banners (engine item, 2026-10-05) */
+      case 'object.planted': return b(e.side === 'hero' ? 'hero' : 'enemy', `&nbsp;&nbsp;<b>${nmAt(e)}</b> plants a banner at hex ${e.hex} <span class="sq">· ${String(e.causeId || '').replace(/^[a-z]+\./, '')} · reach ${e.radius} from that hex · for the rest of the Battle</span>`)
+      case 'status.warded': return b('status', `&nbsp;&nbsp;&nbsp;&nbsp;${e.amount} of ${e.of} ${SN[e.statusId] || e.statusId} does not land on <b>${nmT(e)}</b> <span class="sq">· ${String(e.causeId || '').replace(/^[a-z]+\./, '')}</span>`)
+      case 'surge.gained': return b('', `&nbsp;&nbsp;&nbsp;&nbsp;<b>${nmT(e)}</b> gains ${e.amount} Surge Chance <span class="sq">· ${e.before} → ${e.after} · ${String(e.causeId || '').replace(/^[a-z]+\./, '')}</span>`)
       case 'status.cancelled': return b('status', `&nbsp;&nbsp;&nbsp;&nbsp;${SN[e.statusId] || e.statusId} cancels ${e.amount} ${SN[e.against] || e.against} on <b>${nmT(e)}</b>`)
       case 'maxHp.gained': return b('status', `&nbsp;&nbsp;&nbsp;&nbsp;<b>${nmT(e)}</b> gains ${e.amount} max HP <span class="sq">· now ${e.maxHp}</span>`)
       case 'stamina.drained': return b('status', `&nbsp;&nbsp;&nbsp;&nbsp;<b>${nmT(e)}</b> loses ${e.amount} stamina`)
