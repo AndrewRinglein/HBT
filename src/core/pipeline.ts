@@ -649,12 +649,35 @@ export function preview(ctx: Ctx, attackerId: number, targetId: number, attackId
  * engine's vocabulary export (ruleBases), so the base is never counted twice.
  */
 export const CRIT_BASE = 3
+/** The attacker's own Crit with an attack, before any target: the rule's base, the unit's Crit, the attack's. ONE sum, read by
+ *  the chance below and by the figure a row of the bar shows (attackFigures). */
+const critOwn = (ctx: Ctx, attacker: Unit, a?: AttackDef): number => CRIT_BASE + effective(ctx, attacker, 'crit').value + (a?.attack.crit ?? 0)
 function critChanceOf(ctx: Ctx, attacker: Unit, target: Unit, finalAcc: number, a?: AttackDef): number {
   if (!ctx.cfg.switches.critEnabled) return 0
   const surplus = finalAcc > 100 ? Math.trunc((finalAcc - 100) / 4) : 0
-  const gear = a?.attack.crit ?? 0
-  return Math.max(0, CRIT_BASE + effective(ctx, attacker, 'crit').value + gear + surplus
+  return Math.max(0, critOwn(ctx, attacker, a) + surplus
     - effective(ctx, target, 'luck').value)
+}
+/**
+ * viewer.attack-row-shows-totals (2026-10-06; DECISIONS.md 2026-10-06 'an attack shows its total Accuracy and Crit, not the
+ * weapon's plus': "The dagger doesn't show +5 critical. What happens is the attack shows the total critical. The same thing is
+ * true of accuracy."): the ATTACKER'S SIDE of an attack's two figures, before a target is chosen — what a row of the action bar
+ * shows. Accuracy: every row of resolveAccuracy that reads neither the target nor the way to it — the unit's resolved Accuracy
+ * stat (gear, badges, statuses, auras, a set, the ground: the stat pipeline), a ranged attack's own ground (ELEVATION) and
+ * surroundings (ADJACENT), the unit's own prone rows, the attack's own modifier. Crit: critOwn above. What a target adds or
+ * takes (its Dodge, its ground, cover, the range to it, its Luck, the surplus of the final Accuracy) is the forecast's
+ * (preview). Read-only and pure: no state, no dice, no line. test: viewer/test/viewer.attack-row-shows-totals.test.ts holds
+ * it to preview() against a plain target for every attack of the opening roster.
+ */
+export function attackFigures(ctx: Ctx, attacker: Unit, a: AttackDef): { accuracy: number; crit: number } {
+  let accuracy = effective(ctx, attacker, 'accuracy').value
+  if (a.attack.kind === 'ranged') {
+    if (inMelee(ctx, attacker)) accuracy -= 20
+    accuracy += rangedAccuracyOf(ctx.state.terrain[attacker.hex] ?? 0)
+  }
+  for (const { rule } of proneRulesOf(ctx, attacker)) accuracy += rule.accuracy
+  accuracy += a.attack.accuracy ?? 0
+  return { accuracy, crit: ctx.cfg.switches.critEnabled ? Math.max(0, critOwn(ctx, attacker, a)) : 0 }
 }
 
 /**
