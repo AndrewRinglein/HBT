@@ -48,6 +48,11 @@ const sorted = (o) => Object.fromEntries(Object.keys(o).sort().map((k) => [k, o[
 // A set is a TAG plus a `setBonus` block on the item that cares (GEAR-DESIGN.md §5, resolved 2026-09-03) — so the set
 // tags are the tags any codex setBonus names, and a row's `sets` are those of its tags. Nothing here knows a tag by name.
 const SET_TAGS = new Set(codex.items.map((i) => i.setBonus?.tag).filter(Boolean))
+// content.sets-count-holy-texts-and-heavy-chain (engine item, 2026-10-06; engine/DECISIONS.md 2026-10-05, Holy Texts a book and
+// Heavy Chain a chain for sets, "8, yes."): a row may also say `setMember` - a set it is counted in WITHOUT bearing the tag,
+// because the Forge reads a row's tags to say what it may be enchanted with. A row's `sets` are both; its `tags` are its tags.
+// Like a tag, a membership no row's set line counts makes no set (the pack builder holds the field to the Codex's tags).
+const setsOf = (i) => [...new Set([...(i.tags ?? []), ...(i.setMember ?? [])].filter((t) => SET_TAGS.has(t)))].sort()
 /** A set payload in the engine's stat names (the battle receives it as heroMods); attackDamage is this weapon's own. */
 const payloadOf = (o, where) => sorted(Object.fromEntries(Object.entries(o).map(([k, v]) => {
   if (k === 'attackDamage') return [k, v]
@@ -78,7 +83,7 @@ const campaignModsOf = (mods) => sorted(Object.fromEntries(Object.entries(mods ?
 
 const rows = codex.items.map((i) => ({
   id: i.id,
-  tags: [...(i.tags ?? [])].sort(), sets: [...(i.tags ?? [])].filter((t) => SET_TAGS.has(t)).sort(), setBonus: setBonusOf(i.setBonus, i.id),
+  tags: [...(i.tags ?? [])].sort(), sets: setsOf(i), setBonus: setBonusOf(i.setBonus, i.id),
   // the Waystation's catalog: which band opens the row, and what it costs there (GEAR-DESIGN.md §4)
   waystationBand: i.waystationBand ?? null, price: costOf(i.price), equipCost: costOf(i.equipCost),
   uses: i.uses ?? null, campaignMods: campaignModsOf(i.statModifiers),
