@@ -141,6 +141,10 @@
 {"suite":"viewer","stamp":"902c759a7d","with":{"engine":"83cd1ee3d6","content":"e84e4cb7e0","viewer":"902c759a7d","kingdom":"c1522a2667"},"at":"2026-10-05T23:12:08.425Z","by":"gate (every part)","in":"HBT-worker-engine"}
 {"suite":"viewer","stamp":"b1771cb360","with":{"engine":"83cd1ee3d6","content":"e84e4cb7e0","viewer":"b1771cb360","kingdom":"c1522a2667"},"at":"2026-10-05T23:46:08.319Z","by":"gate (every part)","in":"HBT-worker-content"}
 {"suite":"viewer","stamp":"41c958efc4","with":{"engine":"83cd1ee3d6","content":"e84e4cb7e0","viewer":"41c958efc4","kingdom":"6a710d1863"},"at":"2026-10-06T00:17:41.181Z","by":"gate (every part)","in":"HBT-worker-kingdom"}
+{"suite":"viewer","stamp":"bd83434e07","failed":true,"at":"2026-10-06T02:36:32.877Z","by":"gate --part checks","in":"HBT-worker-kingdom"}
+{"suite":"viewer","stamp":"08bbae27b6","with":{"engine":"83cd1ee3d6","content":"e84e4cb7e0","viewer":"08bbae27b6","kingdom":"6a710d1863"},"at":"2026-10-06T03:02:29.588Z","by":"gate (every part)","in":"HBT-worker-kingdom"}
 {"suite":"viewer","stamp":"d19fc3ce16","with":{"engine":"dc42f97df3","content":"c6cb89aebf","viewer":"d19fc3ce16","kingdom":"6a710d1863"},"at":"2026-10-06T01:58:37.180Z","by":"gate (every part)","in":"HBT-worker-engine"}
 {"suite":"viewer","stamp":"56f33ba09e","with":{"engine":"918e413947","content":"c02de59499","viewer":"56f33ba09e","kingdom":"e421750b7f"},"at":"2026-10-06T03:46:49.603Z","by":"gate (every part)","in":"HBT-worker-engine"}
 {"suite":"viewer","stamp":"60903045d1","with":{"engine":"17fafc9ad2","content":"8f939e8202","viewer":"60903045d1","kingdom":"e421750b7f"},"at":"2026-10-06T04:36:01.946Z","by":"gate (every part)","in":"HBT-worker-engine"}
+{"suite":"viewer","stamp":"42de2b68d5","with":{"engine":"dc42f97df3","content":"c6cb89aebf","viewer":"42de2b68d5","kingdom":"6a710d1863"},"at":"2026-10-06T03:25:37.370Z","by":"gate (every part)","in":"HBT-worker-kingdom"}
+{"suite":"viewer","stamp":"b65800dac0","with":{"engine":"0d95af9351","content":"c6cb89aebf","viewer":"b65800dac0","kingdom":"84ee17bd5b"},"at":"2026-10-06T04:19:15.974Z","by":"gate (every part)","in":"HBT-worker-kingdom"}
