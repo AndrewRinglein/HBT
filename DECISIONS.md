@@ -5229,3 +5229,63 @@ Not ruled - his idea and the chat's proposal, his to pick:
 - **Painting the heroes brighter colours** is his idea ("one thing we could do"), red and blue the two he named. No outfit is repainted on this entry.
 - **The chat's proposal for which**: a scarlet `#e0483a` (lightness 0.61, colourfulness 0.19), a light blue `#4f9be8` (0.68, 0.14; kept toward sky blue, away from the enemy violet) and bone white `#ebe5d6` (0.92); a teal `#2bb3a3` if a fourth is wanted. Kept off the heroes: green, yellow, brown, orange and gold (the ground's) and violet, purple and pink (the enemies').
 - **The chat's proposal for the rest**: show every body brighter (about 0.60 lightness; today only the unit whose panel is shown has its own light, and the unlit outfits take no light at all), and grey only the plain ground (about 0.40 to 0.45 lightness, colourfulness under 0.05) - his own idea of the same day, which is so far only in the comments of `.scratch-ground-tones/index.html`. A board passes when hero lightness clears the ground beside it by 0.2 on either side.
+
+## 2026-10-05 — a prone unit only stands; Stand Up is its one move; a set counts everything carried; Dwarf, Elf and Fey act; no gift doubles a hero's own badge; what cannot be paid is greyed; the player moves a summon; Resistance to Weak; the Vigil heals by the party's Spirit
+
+Andrew, in the kingdom chat, answering two lists at once. The first, twelve questions (1 which foliage change to try for the last speed item; 2 should a knocked-down unit be refused its attacks and powers too until it stands; 3 after Stand Up takes the move, should the unit be unable to walk or Leap that Activation; 4 should a set bonus count everything you carry, as built, or only what is in hand or worn; 5 should the Priest's Verse deal Precision plus the party's Spirit, as its card reads and as it now acts; 6 for Dwarf, Elf and Fey, should the badges' numbers act, or stay names only; 7 should a hero's own badges be excluded from its gift roll; 8 should Holy Texts count as a book and Heavy Chain as a chain for set bonuses; 9 when attack one can't be paid for, should Punch be chosen instead, or nothing as built; 10 should W move the view up, as built, or move the map up; 11 do the Wolf's numbers ported from the old game stand for now; 12 should the player move the summoned Wolf, or the computer as built). The second, four (1 is 'Immunity to Weak 2' two points off each application of Weak, as built; 2 should the Banner of the Vigil heal each ally by that ally's own Spirit, as built, or by the party's; 3 should a planted banner be attackable, block its hex, or fall when its planter dies - as built none of the three; 4 if Ruin only drops a hero who then bleeds out later, should that body also be destroyed - as built it is not):
+
+“I don't understand question one. Question two: yes, it cannot use attacks or powers until it stands.   No, you only perform one move action. I'm confused about how you're asking that question.   Everything you carry  5, yes.   6. They should act.   7, yes.   8, yes.   If a tax can't be paid for or a power can't be paid for, it should be grayed out.  Then the view Wolf's spine player should move to someone's wolf.  Immunity to week 2 should now be resistance to week 2.  And yes, when we get to that part, it should remove two points of weak  2 by the party spirit   3. None of those three.   No, we just lose the bleed counter, and it goes from being unconscious to a corpse.”
+
+Ruled:
+
+- **A knocked-down unit can use no attack and no power until it stands.** Overturns what 2026-09-24 left a prone unit (engine SWITCHES proneNoCrawl): prone, the only thing it may do is Stand Up.
+- **Stand Up is the unit's one move action.** "No, you only perform one move action" - so after standing it does not walk or Leap that Activation; it may then attack or use a power.
+- **A set bonus counts everything the hero carries** - as built.
+- **The Priest's Verse deals Precision plus the party's Spirit** ("5, yes") - as it acts; the other chat-authored two-stat rows keep acting as their cards read.
+- **The Dwarf, Elf and Fey badges act** - their numbers in the data.
+- **A hero's own badges are left out of its gift roll** ("7, yes"), so a gift never doubles a badge the hero's row already has.
+- **Holy Texts counts as a book and Heavy Chain as a chain for set bonuses** ("8, yes").
+- **An attack or a power that cannot be paid for is greyed out.** Asked whether Punch is chosen when attack one cannot be paid: nothing is chosen, as built (the chat's reading of his answer - he answered with the greying alone).
+- **The player moves a summoned unit** (the chat's reading of "Then the view Wolf's spine player should move to someone's wolf" - dictation; said to him the same day). Overturns the engine switch summonActsByItsOwnAi for a hero's summon.
+- **'Immunity to Weak 2' is now 'Resistance to Weak 2'**, and it takes two points off the Weak. GLOSSARY.md 'Settled, 2026-10-05'.
+- **The Banner of the Vigil heals by the party's Spirit**, not the ally's own.
+- **A planted banner cannot be attacked, does not block its hex, and stays when its planter dies** ("None of those three") - as built.
+- **A hero dropped by Ruin who bleeds out later leaves a corpse** - "we just lose the bleed counter, and it goes from being unconscious to a corpse" - as built.
+- **Not answered, asked again the same day:** the foliage change ("I don't understand question one"); whether W moves the view or the map; whether the Wolf's ported numbers stand.
+
+Filed: `rule.prone-only-stand-up`, `viewer.unaffordable-actions-greyed`, `rule.player-moves-summons`, `content.dwarf-elf-fey-badges-act`, `kingdom.gift-roll-leaves-out-own-badges`, `content.sets-count-holy-texts-and-heavy-chain`, `content.resistance-to-weak-and-vigil-party-spirit`.
+
+## 2026-10-06 — the characters stand out: painted-on colour is out; a helm is never shown; a loose cloak for every hero and gear that shows on the body are being considered
+
+Andrew, in the root chat (the XCOM 2 study, the day after), in three messages:
+
+“I wonder about a hero dressed in black like a rogue. Can we give them something red to make them stand out? I also wonder if we can do something like a red scarf on every hero, regardless of their color, to make them stand out.”
+
+“I'm thinking about adding a cape or a cloak to every hero.   Does that give us a better surface for color that isn't interfered with by motions? I'm just trying to think about different solutions. I'm also just thinking about changing away from relics, idols, and Bloodrune to having boots, gauntlets, cloak, helm, and armor.  Because those things are more visual”
+
+“I wasn't thinking about just painting it on because that's going to look bad.     What I am considering doing is having cloak, gauntlet, boots, helm, armor, and the hands be all the equipable things, and I guess item slots would be additional for trinkets.  And additional weapons  and all those things except helms would have a visual representation, not helms, because I still want the personality of the hero to shine through. How difficult would it be to add an actual cloak to everybody, one that hangs loose?”
+
+The page he tries colour on is `.scratch-hero-colours/index.html` (2026-10-05: “it would be good to be able to test coloring on heroes”), a copy of the ground-tones page with the bodies added: each hero's paint, every body's brightness, and a mark every hero wears (scarf, scarf and shoulders, sash, cloak). It changes no game code.
+
+Measured on that page, the Orphanage, as the share of a hero's visible pixels that carry the mark: a scarf 8 to 11%; scarf and shoulders 17 to 23%; a cloak 60 to 73% with the hero's back to the camera, 22 to 54% side-on, 9 to 13% facing the camera (only the shoulders show). The cloak there is painted onto the body the hero has, so narrower than a real one, and three of the four facings were made by turning which side counts as the back.
+
+Found the same day:
+
+- **Every hero body sampled is on one skeleton**: eight heroes in the Orphanage and Cathedral battles (the Forest Elf, the Orphan Child, the School Teacher, The Rose, the Battle Chaplain, the Skullplate Veteran, the Court Champion, the Pyre Witch) each have 101 bones with the same names (`CC_Base_NeckTwist01`, `CC_Base_L_Clavicle`, `CC_Base_R_Clavicle`, `CC_Base_Spine02` among them). The Necromancer and the skeletons share it; the Zombie does not. The battle screen binds 24 base heroes and 4 civilians (`viewer/tools/character-models.mjs` `bindings()`).
+- **Only what is in the hands changes a body today** (`viewer/src/models.js` `equippedLook`); the model catalog is 299 weapons and 5 shields, and an outfit is one fitted suit bound to the hero, not to an armor item.
+- **Every cape in the project is fixed to the skeleton; none is simulated and none has passed a full-motion review.** The Oathblade's own cloak is hidden in battle (his note of 2026-09-19, “The cloak has problems on the back.”); the Lich was rejected over its cloak in death.
+- Relics, idols and Bloodrunes are 32, 23 and 14 of the 268 item rows, and none is in the reward pool yet (`kingdom/SWITCHES.md` 2026-10-04).
+
+Ruled:
+
+- **Painted-on colour is out** - “that's going to look bad”. The page's paint and marks are for judging colour and size only.
+- **A helm is never shown on the body** - “because I still want the personality of the hero to shine through”. The ruling of 2026-09-24 (`ART-NOTES.md`, “we're not going to put helmets on”) stands.
+
+Being considered, not ruled:
+
+- **The equippable things become cloak, gauntlets, boots, helm, armor and the hands; item slots stay, for trinkets and spare weapons; everything but the helm shows on the body.** Open against it: whether the three ways relics, idols and Bloodrunes work (a free swap, 1 Faith a battle, 3 Mana Crystals once) carry over; helm and boots were ruled trinkets on 2026-09-02 (`2-ACTIONS-SETTLED.md`); and his “a lot more fundamental game work before we worry about items and balance” of 2026-10-04.
+- **A real cloak on every hero, one that hangs loose.** The chat's answer to “how difficult”: one shared cloak hung from the shared skeleton and moved by the viewer as it draws, never a cloak modelled into each outfit (the way that has failed here); a trial on one hero first.
+
+Later the same day, of the cloak: “I wasn't specifically thinking just a red cloak.   But a colorful cloak  what do gold highlights do?” So the cloak being considered is colourful, hero by hero, not one red for all; the red scarf for everybody is not what he is asking for. The page took two more controls for it (each hero a different cloak colour; a trim on the cloak, gold by default, with its width). Seen there on the Cathedral, six heroes, the replay page's own overhead view: the trim round the collar and over the shoulders shows on every hero whichever way he faces, the hem's hardly at all; blue, teal and black cloaks read best on that floor, red less (the floor has orange and red-brown tiles) and bone least (cream tiles). The gold `#e0b95e` is lighter than every ground measured but the Cathedral's and is the ground's own hue, so it works against the cloak and the hair it sits on, not against the ground. Not ruled: whether gold on every hero's cloak is the mark the heroes share.
+
+Later again, of the page's painted marks: “These things you're calling cloaks don't read like cloaks. They're just painted onto the body.” The chat had gone on adding painted marks after he ruled paint out, and had called one a cloak. The page now has a real one to judge by (`Real cloak`, what it opens on): a cloth of its own for each hero - a sheet of 9 by 13 points, its top edge pinned across the back of the shoulders to the shared skeleton's bones, moved a step a frame (it falls, trails the hero, is pushed off balls standing for the hips, trunk, head, thighs, calves and upper arms, and off the ground), coloured a hero with a trim. It is the approach of the entry above tried on the page only; no game code is changed. Checked by the chat: made for the Orphanage's three heroes, and through five seconds of that battle playing with the heroes walking it stayed pinned, within its own length of the shoulders, with no error. Not checked: how it looks at full speed, in an attack, a fall or a death; any other battle; what it costs a frame. It has no collar, is fitted to no outfit, hangs flat when the hero stands still, and nothing keeps it out of a weapon, a shield or a shoulder plate.

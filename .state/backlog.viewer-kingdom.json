@@ -1,5 +1,26 @@
 [
  {
+  "id": "kingdom.gift-roll-leaves-out-own-badges",
+  "kind": "kingdom",
+  "shape": "plumbing",
+  "needs": [
+   "content.hero-origin-badges"
+  ],
+  "spec": "Ruled 2026-10-05 (Andrew, engine/DECISIONS.md 'a prone unit only stands; Stand Up is its one move; a set counts everything carried; Dwarf, Elf and Fey act; no gift doubles a hero's own badge; what cannot be paid is greyed; the player moves a summon; Resistance to Weak; the Vigil heals by the party's Spirit'): told that the draft can roll a hero a gift badge its row already has (the Berserker rolled Huge, the Fey rolled Frail), which then adds nothing, and asked whether a hero's own badges should be left out of its gift roll - '7, yes.' Wanted: when a hero's gifts are rolled (the first-hero pick, every later draft - kingdom/src/core/opening.ts, and the engine's opening party for the recordings, engine/src/content/opening-party.ts; one rule in one place, read by both), any badge the hero's own row already carries - its origin badges and any other badge on the row - is not among the badges the roll can give that hero, so every rolled badge is one it did not have. The roll stays on the run's dice and stays keyed as it is (kingdom SWITCHES firstHeroOwnRollKey), so a saved run shows the same offers except where an offer held a doubled badge. This re-deals drafts: say how many of replicates 0-199 change, rewrite the frozen-draft fixtures with a dated note (Law 10), re-export the six opening recordings together if the engine's opening party moves, and declare changesBaseline if control battles move. The draft floor fix (a rolled Health loss held at the floor) stands. Rebuild the pages.",
+  "expect": "Across replicates 0-199 no hero is ever rolled a gift badge its own row already carries (a test walks them); a hero with no badge of its own rolls from the same badges as before; the Berserker never rolls Huge and the Forest Fey never rolls Frail; the report says how many drafts changed and which recordings moved.",
+  "note": "Filed by the home chat 2026-10-05.",
+  "status": "done",
+  "sha": "edaac90"
+ },
+ {
+  "id": "viewer.unaffordable-actions-greyed",
+  "kind": "viewer",
+  "shape": "plumbing",
+  "spec": "Ruled 2026-10-05 (Andrew, engine/DECISIONS.md 'a prone unit only stands; Stand Up is its one move; a set counts everything carried; Dwarf, Elf and Fey act; no gift doubles a hero's own badge; what cannot be paid is greyed; the player moves a summon; Resistance to Weak; the Vigil heals by the party's Spirit'): asked what is chosen when attack one cannot be paid for - 'If a tax can't be paid for or a power can't be paid for, it should be grayed out.' ('tax' is 'attack' - dictation.) Wanted on the action bar (and the kingdom's play input, which reads the same facts): an attack or a power the unit cannot pay for right now - not enough Stamina, a cooldown still running, a use already spent, a warm-up not done - is greyed and cannot be chosen, and hovering it says why in the engine's own reason ('Not enough Stamina: needs 2, has 1'); the moment it can be paid it lights again. First find what the bar does today for each of those four causes (some may already grey - viewer SWITCHES and tools/bar-moves-grey-when-done, bar-shows-every-effect): build only what is missing and say what was already so. What can be paid is read from the engine (the legal actions and their reasons), never worked out in the viewer. With kingdom.attack-one-armed-after-move: when attack one is greyed for cost, nothing is chosen (as built, kingdom SWITCHES attackOne*) - Punch is not chosen in its place; record that as ruled by this answer's reading. Land by the viewer landing order.",
+  "expect": "A hero with 1 Stamina shows its 2-Stamina attack greyed with the reason on hover, and its 0- and 1-Stamina actions lit; a power on cooldown is greyed with the Turns left; a once-per-Battle power already used is greyed; after a Turn restores Stamina the attack is lit again; after a move with attack one unaffordable, no attack is chosen; a hero who can pay for everything shows the bar it showed before.",
+  "note": "Filed by the home chat 2026-10-05."
+ },
+ {
   "id": "viewer.solid-pieces-drawn-by-material",
   "kind": "viewer",
   "shape": "plumbing",
@@ -8,7 +29,9 @@
   ],
   "spec": "Split out of viewer.scene-drawn-in-few-calls by the home chat 2026-10-05 (ruled 2026-10-05, engine/DECISIONS.md 'the battle screen must feel smooth: the speed first ...'). That item's targets (under 300 draw calls, under 8 ms a frame) wait on how the two-sided blended foliage may change, which is Andrew's to rule (viewer SWITCHES fewCallsFoliage, under PENDING). What does not wait: the solid pieces of a scene - opaque, not blended - are each drawn in their own call today, and pieces that share a material can be drawn together with no change to the picture (viewer SWITCHES fewCallsOpaque; the frame-speed worker's estimate: about 700 draw calls a frame on the Orphanage from 1,139, about 150 on the Cavern Trail from 520). Wanted: at scene build, the solid pieces are grouped by material (and by whatever else must match for the result to be the same pixels - shadow casting and receiving, the see-through fade's membership, layers) and each group is drawn in one call (merged geometry or instancing - the worker's choice, recorded as a switch with the other side). Untouched: every blended or two-sided foliage piece, the bodies, the effects, and the see-through check's behaviour - a piece that can be faded see-through must still fade by itself, so pieces that take part in the see-through check are either kept out of a batch or batched in a way that still fades each alone; say which in a switch. The still-frame rule holds (viewer.still-frame-draws-nothing): nothing live, nothing drawn. The cost moves to scene build: say how much longer each battle takes to load. The landing note carries the frame-cost tool's before and after for every 3D battle (draw calls, triangles, script ms with bodies idling) and the two-way pixel compare. viewer.scene-drawn-in-few-calls stays pending for the foliage.",
   "expect": "The frame-cost tool's two-way compare finds 0 differing pixels on each of the six 3D battles against the page before this item (the shimmer already recorded as blendedPiecesShimmer excepted and measured the same way before and after); the Orphanage's draw calls with bodies idling fall well below the 1,139 measured before (the worker's estimate is about 700 - say the number reached); a piece hiding a character still fades see-through by itself at the same 32 of 32 views; a held frame still issues 0 draw calls; the six battles' page verifies pass unchanged; the report gives each battle's added load time.",
-  "note": "Filed by the home chat 2026-10-05/06. The frame tests assert counts and same-run ratios now (viewer.frame-time-tests-hold-under-load): add this item's proof as counts, never a fixed number of milliseconds."
+  "note": "Filed by the home chat 2026-10-05/06. The frame tests assert counts and same-run ratios now (viewer.frame-time-tests-hold-under-load): add this item's proof as counts, never a fixed number of milliseconds.",
+  "status": "done-needs-review",
+  "sha": "e1a3f85"
  },
  {
   "id": "viewer.frame-time-tests-hold-under-load",
