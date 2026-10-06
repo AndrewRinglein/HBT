@@ -5666,3 +5666,100 @@ Ruled:
 - Asked the same day and not yet answered: whether "everybody" reaches the enemy side and civilians, who do not roll today (the check is the hero side's). Until he says, it is the heroes.
 
 Filed: `rule.surge-is-at-least-level`.
+
+## 2026-10-06 — the zoom's far end keeps room for a figure on the far row; no enemy is a boss yet
+
+Andrew, in the kingdom chat, answering two questions from the frame-speed worker's light work (1 at the far end of the zoom a figure standing on the far row has its head and name cut off - should a little room be kept above that row, or is exact edge-to-edge right; 2 which enemies count as a boss or named enemy for the longer close-up - nothing marks one today):
+
+“1. Yes
+2. None yet”
+
+Ruled:
+
+- **At the zoom's far end a little room is kept above the far row, enough for a figure standing there and its name to show whole.** The whole map and no further still holds on the other three sides (viewer SWITCHES zoomEndNoRoom: the other side taken).
+- **No enemy counts as a boss or a named enemy yet.** `viewer.new-enemy-close-up` builds the plain close-up; the longer one waits for content that marks one, and nothing is invented to mark it.
+
+## 2026-10-06 — the held-weapon art and the lanterns: what he believes is in, and what the disk shows
+
+Andrew, in the kingdom chat, read the list of what waits on art:
+
+“The art for the held weapons should all be in.   I believe lanterns are done.”
+
+What the disk shows the same minute (read, not judged): `assets/characters/equipment-v2/` is there and the art chat's `viewer.equipment-v2` is landed in the viewer and the kingdom (2026-10-06); lantern PROPS are made - `assets/terrain-3d/map-lanterns/props/` holds `lantern-post.glb`, `lantern-sconce.glb` and three textures - but no lantern is placed in any of the six accepted scenes (`assets/terrain-3d/colour-template-review/run.json`: "lanterns remain separate queue work"; no lantern node in the six scene files when they were scoped that morning). So the seven viewer items filed as waiting on art (`viewer.enemy-held-weapons` above all) and `art.map-lanterns` are to be read again against what now exists before anyone calls them blocked: the next chat's first read. Nothing is filed from this entry.
+
+## 2026-10-06 — the map code the viewer and the kingdom share goes in a folder of its own
+
+Andrew, in the codebase-review chat, answering whether the map and character code that the viewer and the kingdom import from `assets/` and the root `tools/` should move inside `viewer/` or get a folder of its own (review item 11: `assets/battle-atlas/scene.mjs` and the modules it pulls, `terrain-fire.mjs`, `map-surroundings.mjs`, `cursed-ground.mjs`, `tools/battle-atlas/combat-compiler.mjs`, `tools/terrain-workshop/layout-adapter.mjs` - run by the game, covered by no package's gate):
+
+“I think the shared mapping should be in a folder of its own.   I don't know what you mean by character code. The character codes should definitely not be in the viewer. Shouldn't be in content”
+
+Ruled:
+
+- **The shared map code gets a folder of its own** - not inside `viewer/`, and not left under `assets/` and `tools/`. The viewer and the kingdom import it from there.
+
+Not ruled by this entry: the folder's name (his to give); which gate and code stamp cover it (a tooling switch); and the character half - the model lists (`assets/characters/hero-transformations/activation-registry.json`, `assets/characters/equipment-v2/catalog.json`) and the head-and-skin drawing code (`afflictions.mjs`, `body-afflictions.mjs`). His words on that half are kept above as said; he had not yet been told what those files are, and "Shouldn't be in content" reads either way, so it was asked again the same hour. Nothing is filed from this entry.
+
+## 2026-10-06 — art and motion, and maps, are areas of their own that the viewer points at; each making area keeps a `workshop` shelf and an `accepted` shelf
+
+Andrew, in the codebase-review chat, on how the project divides so that areas can be worked in parallel:
+
+“I'm wondering about the division of things so that things can be worked on in parallel. I think that motion and art should not be part of the viewer.   I think it's actually even separate from the other content.   Shouldn't the viewer just point at the appropriate motions?   Maps also feel like they should just be pointed at by the viewer, and I can author and work on maps.   I'm also wondering about a dedicated testing folder so that when we're working on things, there's just a location for them before we decide if it's going to be part of the game or not.”
+
+Asked back (1 a trying shelf and an accepted shelf inside each making area, instead of one testing folder for everything; 2 what the two shelves are called - `workshop` and `accepted` proposed; 3 whether the line "this hero wears this look" stays on the art side with a check against content; 4 whether the battle you play - the sandbox and the opening's host - comes out of the kingdom into an area of its own later, or stays; 5 whether the GitHub repository is made private):
+
+“One, yes.   Okay, I like two workshops and accepted good.   3S   for it, we're just in a prototype phase.   5. Do I need it to be backed up? Private? I don't care if it's private.”
+
+Said (his first message, taken as the direction):
+
+- **Art and motion is an area of its own, apart from the viewer and apart from content, and the viewer points at it.** As put to him and not objected to: it hands over one catalogue naming each look with its files and its named motions; the viewer asks for a unit's motion by name and holds no art, no motion and no table of which file is which (today `viewer/tools/character-models.mjs` holds that table and reads the art folders by path).
+- **Maps are an area of their own that the viewer points at, and he authors them there.** The shared map code of the entry above lives in it. As put to him: the engine fights on a map too, so the area hands over the rule facts for the engine as well as the scene for the viewer.
+
+Ruled (answers 1 and 2):
+
+- **Each making area (art and motion, maps, sound) keeps two shelves, `workshop` and `accepted`, instead of one testing folder for everything.** As put to him: nothing in the engine, the viewer, the kingdom or content reads from a workshop shelf; accepting is moving a thing to `accepted` and adding its catalogue row, which is his approval.
+
+Read, not certain (dictated; his words are kept above as said, and both readings were put back to him the same hour):
+
+- "3S" is read as **3: yes** - "this hero wears this look" stays on the art side, with a check that fails when the hero id is not in content.
+- "for it, we're just in a prototype phase" is read as the answer to 4: **the battle you play stays in the kingdom for now.**
+- 5 is not a ruling: he asked whether a backup is needed and said he does not care whether the repository is private. Nothing has been pushed.
+
+Not ruled by this entry: the two areas' folder names and where they sit; what becomes of `assets/` and the root `tools/`; which gate checks the workshop rule (a tooling switch); the order of the moves. Nothing is filed from this entry.
+
+## 2026-10-06 — the codebase review's changes are all to be built, once everything is approved and clean; the GitHub repository may be public
+
+Andrew, in the codebase-review chat, answering four questions (1 did "3S" mean yes to keeping "this hero wears this look" on the art side; 2 did the prototype-phase remark mean leave the battle you play inside the kingdom for now; 3 will the GitHub repository be made private, or stay public knowing it would carry licensed art and music; 4 file the work as backlog items, or hold it as a plan):
+
+“One, yes.   Let's leave it wherever it is for right now.  3. I'm okay with it being public. We're just playing around with shit right now. It's fine. I don't care about licenses or public or anything else.   Once we have everything approved and clean, I want you to build everything. I want you to do the codebase updates, everything being discussed, and everything that you proposed.”
+
+Ruled:
+
+- **"This hero wears this look" stays on the art side**, with a check that fails when the hero id is not in content. (The first reading in the entry above, confirmed.)
+- **The battle you play stays in the kingdom for now.** (The second reading, confirmed.)
+- **The GitHub repository, github.com/AndrewRinglein/HBT, may be public.** The licence question was put to him twice and is his. The four packages go there as one branch each (`engine`, `content`, `viewer`, `kingdom`); the push began the same hour, after a scan of all four histories for key-shaped strings and secret-looking file names found none. The root repository does not go yet (it tracks files over GitHub's 100 MB limit).
+- **Everything discussed and proposed in the review is to be built, once everything is approved and clean** - the checklist, the art-and-motion and maps areas, the `workshop` and `accepted` shelves. The findings, the rulings and the build order are `CODEBASE-REVIEW-2026-10-05.md` at the project root, written the same hour so that the work does not depend on that chat.
+
+Not yet approved or clean, read the same hour (not ruled): the two areas' folder names; the full four-suite run the last home chat left owed in the main folder (kingdom and the viewer's checks failed there - kingdom `HANDOFF-2026-09-04.md`, "2026-10-06 — Now"); the owed chains unlanded in three worker copies. Nothing is filed from this entry.
+
+## 2026-10-06 — the animations need not all be backed up
+
+Andrew, in the codebase-review chat, while the four packages were being pushed to GitHub:
+
+“I don't know if it's going to run into issues by size, but I don't think we particularly need to back up all of the animations.”
+
+Ruled:
+
+- **The off-machine backup does not have to carry all the animations.** Read the same minute: the four packages hold no model or motion files (they are under the root's `assets/`), so the push in hand carries none; the root repository, which tracks them, is not pushed. When the root's documents and tools are backed up (`CODEBASE-REVIEW-2026-10-05.md` items 4 and 23), the models and motions may be left out.
+
+## 2026-10-06 — the two new areas are `art/` and `maps/`; the codebase-review chat takes over as the home chat
+
+Andrew, in the codebase-review chat, answering two questions (1 what the two new folders are called - `art/` proposed, the root's small `art/` with its manifest folding in, and `maps/`; 2 whether that chat takes over as the home chat, lands the three worker copies' owed work, gets the main folder's tests green, and then goes straight into the build):
+
+“Yes, and yes.”
+
+Ruled:
+
+- **The art-and-motion area is `art/` and the maps area is `maps/`**, both at the project root.
+- **The codebase-review chat is the home chat from this entry on.** Its order: the three copies' owed chains landed (kingdom `HANDOFF-2026-09-04.md`, "2026-10-06 — Now", Next 2), the full four-suite run green in the main folder, then `CODEBASE-REVIEW-2026-10-05.md` §4 stage by stage.
+
+With this the "approved" half of "approved and clean" (the entry of this day, 'the codebase review's changes are all to be built') holds; the "clean" half is that order's first two steps.
