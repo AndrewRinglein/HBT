@@ -7,8 +7,7 @@
 // shows no greyed row; brought to 1 Stamina, every action the ENGINE refuses it (its one limits check) wears the disabled
 // look, is marked disabled and says why on hover in the host's line — "Not enough Stamina: needs N, has 1." — while its 0- and
 // 1-Stamina actions are lit; a press on a greyed row changes nothing and says the line; a lit attack is chosen as before;
-// with its Stamina back the bar is, row for row, the bar it showed before. At 0 Stamina its attack one is greyed and no attack
-// is chosen. Which actions the engine refuses is asked of the engine here and compared row for row — the page adds none and
+// with its Stamina back the bar is, row for row, the bar it showed before. Which actions the engine refuses is asked of the engine here and compared row for row — the page adds none and
 // drops none.
 //
 // The Stamina is taken and given by the engine's own mutators, in the page's own battle, through the page's own save and
@@ -43,13 +42,12 @@ const look=()=>rows().map(r=>[r.dataset.act,r.className.split(/\s+/).filter(c=>c
 
 /** the page's own battle, with `id`'s Stamina brought to `n` by the engine's own mutators, opened on the page again */
 function staminaTo(id,n){
- const s=E.restoreSandbox(E.saveSandbox(h.session)),u=s.ctx.state.units[id]
+ const s=E.restoreSandbox(E.saveSandbox(h.session)),u=s.ctx.state.units[id],turn=ctx().state.turn
  if(u.stamina>n)E.drainStamina(s.ctx,id,u.stamina-n,WHY);else if(u.stamina<n)E.gainStamina(s.ctx,id,n-u.stamina,WHY)
  w.document.getElementById('transferText').value=E.saveSandbox(s)
  const imp=root.els.find(e=>e.dataset.act==='import');assert.ok(imp,'the page\'s import');imp.handlers.click();settle()
  assert.equal(unit(id).stamina,n,`${unit(id).name} has ${n} Stamina on the page's battle`)
- for(let i=0;i<8&&acting()!==null&&acting()!==id;i++)endActivation()
- assert.equal(acting(),id,`${unit(id).name} is the one acting`)
+ assert.equal(acting(),id,`${unit(id).name} is still the one acting`);assert.equal(ctx().state.turn,turn,'and it is the same Turn: no Stamina came back by itself')
 }
 
 settle()
@@ -87,17 +85,14 @@ const cheap=lit.find(a=>E.isAttack(ctx().actions[a]));row(cheap).handlers.click(
 assert.equal(V().play.slot,cheap,`${name(cheap)} is chosen`);assert.ok(has(row(cheap),'playChosen'))
 say(`${unit(hero).name} at 1 Stamina: greyed, marked disabled and saying why — ${names(grey)}; lit — ${names(lit)}; ${name(cheap)} chosen on a press`)
 
-// 0 Stamina: attack one cannot be paid for, and no attack is chosen
-staminaTo(hero,0)
-const attacks=rows().map(r=>r.dataset.act).filter(a=>E.isAttack(ctx().actions[a])),one=attacks[0]
-assert.ok(costOf(hero,one)>0,'attack one costs Stamina');assert.ok(has(row(one),'cantPay'),`${name(one)}, attack one, is greyed`)
-assert.equal(lastLine(row(one)),`Not enough Stamina: needs ${costOf(hero,one)}, has 0.`)
-assert.ok(V().play.slot===null||!E.isAttack(ctx().actions[V().play.slot]),'no attack is chosen in its place')
-assert.deepEqual([...greyed()].sort(),[...refusedBy(hero).filter(a=>row(a))].sort(),'at 0 Stamina too, the rows greyed are the engine\'s refusals')
-say(`at 0 Stamina: ${name(one)} (attack one) greyed, no attack chosen; greyed — ${names(greyed())}`)
+/* Attack one unaffordable is not shown on this page: the Iron Dwarf's attack one (Chop) costs 1, and brought to 0 Stamina on
+   Turn 1 of battle 1 the engine lists nothing it can do (no step of a walk it can pay for, nobody in reach of Punch), so its
+   Activation ends by itself ("No remaining actions possible.") before a bar could be read. That case — after a move, attack
+   one named with why and no attack chosen in its place — is held on the host's facts in test/unaffordable-actions-greyed.test.ts
+   and test/attack-one-armed-after-move.test.ts. */
 
 // its Stamina back: the bar it showed before, row for row
 staminaTo(hero,full)
 assert.deepEqual(greyed(),[],'with its Stamina back nothing is greyed')
 assert.deepEqual(look(),before,'and the bar is the bar it showed before, row for row')
-console.log(`unaffordable-actions-greyed: on the built sandbox (${ORPHANAGE}), the Iron Dwarf at 1 Stamina showed every action the engine refuses greyed, marked disabled and saying "Not enough Stamina: needs N, has 1.", its cheaper actions lit; a press on a greyed row changed nothing and said why; at 0 Stamina attack one was greyed and no attack chosen; with its Stamina back the bar was the bar it showed before — passed`)
+console.log(`unaffordable-actions-greyed: on the built sandbox (${ORPHANAGE}), the Iron Dwarf at 1 Stamina showed every action the engine refuses greyed, marked disabled and saying "Not enough Stamina: needs N, has 1.", its cheaper actions lit; a press on a greyed row changed nothing and said why; with its Stamina back the bar was the bar it showed before — passed`)
