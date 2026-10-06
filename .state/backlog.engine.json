@@ -5,7 +5,19 @@
   "shape": "rule",
   "spec": "Ruled 2026-10-05 (Andrew, engine/DECISIONS.md 'a prone unit only stands; Stand Up is its one move; a set counts everything carried; Dwarf, Elf and Fey act; no gift doubles a hero's own badge; what cannot be paid is greyed; the player moves a summon; Resistance to Weak; the Vigil heals by the party's Spirit'): asked whether a knocked-down unit should be refused its attacks and powers too until it stands - 'yes, it cannot use attacks or powers until it stands.' - and whether it may walk or Leap after Stand Up - 'No, you only perform one move action.' Today the engine lets a prone unit attack and use powers (engine SWITCHES proneNoCrawl, 2026-09-24) and still offers Move and Leap after it stands; the action bar greys only what the engine refuses (viewer.prone-turn-only-stand-up, landed 2026-10-05), so both show lit. Wanted in the engine's one legality check, with no content name in core: (1) a unit with the prone status (the status content marks kdbDown) is refused every action but the stand its status grants, with a reason a player can read ('Knocked down: Stand Up first.'); reactions it does not choose (a counterattack already armed, a free attack) follow what the rulings on prone already say - run `node tools/decided.mjs \"prone\"` and read COMBAT-SEQUENCE.md; where they are silent, a prone unit makes none, and that is recorded as a switch; (2) standing is the unit's one move action for the Activation: after it stands, every other move-class action is refused with the reason the walked-unit rule uses (movement-slot-closed) - the 2026-10-04/05 ruling 'a walk closes every move-class action' applied to the stand; its attacks and powers are then open as after any move; (3) the computer follows the same rule (a prone enemy stands, then acts). Mark proneNoCrawl overturned in part with his words. The bar and the kingdom's play input need no new rule - they grey what the engine refuses; check that they do, on the built page, with the Lumberjack's Wife in the opening's battle 2 and with a hero. This moves battles: declare changesBaseline if control battles move, re-export the six opening recordings together, and say which moved. Engine landing order: engine source by hand, the viewer's dumps and page, the kingdom's pages, the engine gate last.",
   "expect": "A prone hero's every action but Stand Up is refused by the engine with a readable reason and shows greyed on the bar; after Stand Up its Move, Leap and every other move-class action are refused and greyed and its attacks and powers are lit; a prone enemy played by the computer stands before it does anything else; a standing unit is unchanged; the report says which control battles and recordings moved.",
-  "note": "Filed by the home chat 2026-10-05."
+  "note": "Filed by the home chat 2026-10-05.",
+  "attempts": 1,
+  "probeIds": [
+   "status.prone",
+   "power.stand-up"
+  ],
+  "variants": [
+   "status.prone",
+   "test.status.floored"
+  ],
+  "changesBaseline": true,
+  "status": "done-needs-review",
+  "sha": "6b59506"
  },
  {
   "id": "rule.player-moves-summons",

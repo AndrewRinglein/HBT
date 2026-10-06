@@ -518,6 +518,14 @@ const hisWeaponsSmallClausesGolden = JSON.parse(readFileSync(new URL('./fixtures
 // in them carries a banner); test.banner-courage is ADDED: the Banner of Courage live in a real battle.
 // Every case frozen here (tools/capture-planted-banners-cursor.mts). Moved: none. A `changed` case is checked here and skips the older layers.
 const plantedBannersGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-planted-banners.json', import.meta.url), 'utf8'))
+// rule.prone-only-stand-up (2026-10-05; DECISIONS.md 2026-10-05 'a prone unit only stands; Stand Up is its one move; …': "yes, it
+// cannot use attacks or powers until it stands." / "No, you only perform one move action."), Law 10: a unit holding a prone status
+// is refused every action but its stand, makes no special free attack, and once it has stood takes no other movement in that
+// action cycle. A case that was fought before moves only if a unit in it is knocked down and, until now, attacked from the floor
+// or walked on with its primary action after standing.
+// Every case frozen here (tools/capture-prone-only-stand-up-cursor.mts). Moved: showcase.ordered-power-preview, showcase.waystation,
+// test.back-flip, test.mode-change-a, test.opening-gates, test.prone-b. A `changed` case is checked here and skips the older layers.
+const proneOnlyStandUpGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-prone-only-stand-up.json', import.meta.url), 'utf8'))
 const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
 // Explicit rule migration, not regenerated historical hashes. These nine old
 // cases contain Surge ledger/refresh changes or terminal markers corrected
@@ -671,7 +679,10 @@ describe('resumable battle cursor', () => {
       const raiseLowerMagicExpected = raiseLowerMagicGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const hisWeaponsSmallClausesExpected = hisWeaponsSmallClausesGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const plantedBannersExpected = plantedBannersGolden.cases.find((row:{id:string})=>row.id===fixture.id)
-      const plantedBannersMoved = plantedBannersExpected?.changed === true
+      const proneOnlyStandUpExpected = proneOnlyStandUpGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+      const proneOnlyStandUpMoved = proneOnlyStandUpExpected?.changed === true
+      // was: const plantedBannersMoved = plantedBannersExpected?.changed === true — a case rule.prone-only-stand-up moved skips this layer too (rule.prone-only-stand-up 2026-10-05)
+      const plantedBannersMoved = plantedBannersExpected?.changed === true || proneOnlyStandUpMoved
       // was: const hisWeaponsSmallClausesMoved = hisWeaponsSmallClausesExpected?.changed === true — a case capability.planted-banners moved skips this layer too (capability.planted-banners 2026-10-04)
       const hisWeaponsSmallClausesMoved = hisWeaponsSmallClausesExpected?.changed === true || plantedBannersMoved
       // was: const raiseLowerMagicMoved = raiseLowerMagicExpected?.changed === true — a case capability.his-weapons-small-clauses moved skips this layer too (capability.his-weapons-small-clauses 2026-10-04)
@@ -839,7 +850,14 @@ describe('resumable battle cursor', () => {
             battle.completeActionCycle(ctx)
           }
         } else result = battle.runBattle(ctx)
-        if (plantedBannersExpected) {
+        if (proneOnlyStandUpExpected) {
+        expect(hash(ctx.events), 'full prone-only-stand-up events').toBe(proneOnlyStandUpExpected.events)
+        expect(hash(ctx.state), 'full prone-only-stand-up state').toBe(proneOnlyStandUpExpected.state)
+        expect(hash(ctx.rng.log), 'full prone-only-stand-up RNG').toBe(proneOnlyStandUpExpected.rng)
+        expect(result).toEqual(proneOnlyStandUpExpected.result)
+        }
+        // was: if (plantedBannersExpected) { — rule.prone-only-stand-up (2026-10-05): a case it moved is checked above instead
+        if (plantedBannersExpected && !proneOnlyStandUpMoved) {
         expect(hash(ctx.events), 'full planted-banners events').toBe(plantedBannersExpected.events)
         expect(hash(ctx.state), 'full planted-banners state').toBe(plantedBannersExpected.state)
         expect(hash(ctx.rng.log), 'full planted-banners RNG').toBe(plantedBannersExpected.rng)

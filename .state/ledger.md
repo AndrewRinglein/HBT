@@ -37872,3 +37872,103 @@ index 0d8d35c..2019d5e 100644
        // hiding a body are the pieces the rule as first written finds (every triangle of every tall piece)
 ```
 </details>
+
+## rule.prone-only-stand-up — LANDED `6b59506` **NEEDS REVIEW**
+2026-10-06 05:56
+
+  PASS  dependencies landed
+  WARN  not already decided — 1 candidate ruling(s) — READ BEFORE ASKING: SWITCHES.md:2247
+  PASS  typecheck
+  PASS  the item's own tests — test/battle-cursor.test.ts, test/v2-prone.test.ts, test/prone-only-stand-up.test.ts
+  PASS  gate 1 — the id appears in a real battle — status.prone: 8 log lines, 8 fired, 3 changed state · power.stand-up: 4 log lines, 4 fired, 1 changed state
+  PASS  brought its own tests — test/battle-cursor.test.ts, test/v2-prone.test.ts, test/fixtures/battle-cursor-prone-only-stand-up.json, test/prone-only-stand-up.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/battle-cursor.test.ts (-2), test/v2-prone.test.ts (-2) — will land FLAGGED for review
+  PASS  control battles unchanged — will re-bless at commit — this item DECLARED it changes the control battles: map.flanks eb22eeb5->97748a6a, map.floodplain c2020314->1f783203, test.map.embers 2b539aa5->eb990c7f, test.map.horde-24 11149d6d->f7473de6, test.map.journey-20x10 3d4cffba->15137407, test.map.authored-40x40 8b801b91->103102ac, test.map.high-prop-multi ca9209bf->adfa85b5
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — status.prone live · test.status.floored live
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without status.prone,power.stand-up — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/battle-cursor.test.ts b/test/battle-cursor.test.ts
+index 7c82699..8e5fe3d 100644
+--- a/test/battle-cursor.test.ts
++++ b/test/battle-cursor.test.ts
+@@ -519,4 +519,12 @@ const hisWeaponsSmallClausesGolden = JSON.parse(readFileSync(new URL('./fixtures
+ // Every case frozen here (tools/capture-planted-banners-cursor.mts). Moved: none. A `changed` case is checked here and skips the older layers.
+ const plantedBannersGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-planted-banners.json', import.meta.url), 'utf8'))
++// rule.prone-only-stand-up (2026-10-05; DECISIONS.md 2026-10-05 'a prone unit only stands; Stand Up is its one move; …': "yes, it
++// cannot use attacks or powers until it stands." / "No, you only perform one move action."), Law 10: a unit holding a prone status
++// is refused every action but its stand, makes no special free attack, and once it has stood takes no other movement in that
++// action cycle. A case that was fought before moves only if a unit in it is knocked down and, until now, attacked from the floor
++// or walked on with its primary action after standing.
++// Every case frozen here (tools/capture-prone-only-stand-up-cursor.mts). Moved: showcase.ordered-power-preview, showcase.waystation,
++// test.back-flip, test.mode-change-a, test.opening-gates, test.prone-b. A `changed` case is checked here and skips the older layers.
++const proneOnlyStandUpGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-prone-only-stand-up.json', import.meta.url), 'utf8'))
+ const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
+ // Explicit rule migration, not regenerated historical hashes. These nine old
+@@ -672,5 +680,8 @@ describe('resumable battle cursor', () => {
+       const hisWeaponsSmallClausesExpected = hisWeaponsSmallClausesGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+       const plantedBannersExpected = plantedBannersGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+-      const plantedBannersMoved = plantedBannersExpected?.changed === true
++      const proneOnlyStandUpExpected = proneOnlyStandUpGolden.cases.find((row:{id:string})=>row.id===fixture.id)
++      const proneOnlyStandUpMoved = proneOnlyStandUpExpected?.changed === true
++      // was: const plantedBannersMoved = plantedBannersExpected?.changed === true — a case rule.prone-only-stand-up moved skips this layer too (rule.prone-only-stand-up 2026-10-05)
++      const plantedBannersMoved = plantedBannersExpected?.changed === true || proneOnlyStandUpMoved
+       // was: const hisWeaponsSmallClausesMoved = hisWeaponsSmallClausesExpected?.changed === true — a case capability.planted-banners moved skips this layer too (capability.planted-banners 2026-10-04)
+       const hisWeaponsSmallClausesMoved = hisWeaponsSmallClausesExpected?.changed === true || plantedBannersMoved
+@@ -840,5 +851,12 @@ describe('resumable battle cursor', () => {
+           }
+         } else result = battle.runBattle(ctx)
+-        if (plantedBannersExpected) {
++        if (proneOnlyStandUpExpected) {
++        expect(hash(ctx.events), 'full prone-only-stand-up events').toBe(proneOnlyStandUpExpected.events)
++        expect(hash(ctx.state), 'full prone-only-stand-up state').toBe(proneOnlyStandUpExpected.state)
++        expect(hash(ctx.rng.log), 'full prone-only-stand-up RNG').toBe(proneOnlyStandUpExpected.rng)
++        expect(result).toEqual(proneOnlyStandUpExpected.result)
++        }
++        // was: if (plantedBannersExpected) { — rule.prone-only-stand-up (2026-10-05): a case it moved is checked above instead
++        if (plantedBannersExpected && !proneOnlyStandUpMoved) {
+         expect(hash(ctx.events), 'full planted-banners events').toBe(plantedBannersExpected.events)
+         expect(hash(ctx.state), 'full planted-banners state').toBe(plantedBannersExpected.state)
+diff --git a/test/v2-prone.test.ts b/test/v2-prone.test.ts
+index a6584ad..e7967e1 100644
+--- a/test/v2-prone.test.ts
++++ b/test/v2-prone.test.ts
+@@ -60,5 +60,8 @@ describe('v2.prone — legal actions and payment', () => {
+     expect(movementOptions(ctx, 0, 'power.move')).toEqual([])
+     const away = awayHex(ctx, 85, 86)
+-    expect(validateAction(ctx, { actor: 0, actionId: 'power.move', destination: away })).toEqual({ ok: false, reason: 'action-not-ready' })
++    // Law 10, 2026-10-05 — rule.prone-only-stand-up (DECISIONS.md 'a prone unit only stands; Stand Up is its one move; …'):
++    // the refusal is the same refusal, and it now carries its own reason. The line was:
++    //   expect(validateAction(ctx, { actor: 0, actionId: 'power.move', destination: away })).toEqual({ ok: false, reason: 'action-not-ready' })
++    expect(validateAction(ctx, { actor: 0, actionId: 'power.move', destination: away })).toEqual({ ok: false, reason: 'actor-prone' })
+     expect(validateAction(ctx, { actor: 0, actionId: STAND, destination: 85 })).toEqual({ ok: true })
+     expect(validateAction(ctx, { actor: 0, actionId: STAND, destination: 85, slot: 'primary' }).ok).toBe(false)
+@@ -76,7 +79,17 @@ describe('v2.prone — legal actions and payment', () => {
+     expect(validateAction(ctx, { actor: 0, actionId: id, target: 1 })).toEqual({ ok: true })
+   })
+-  it('a prone unit may still take its primary at -10/-1 without standing', () => {
++  // Law 10, 2026-10-05 — OVERTURNED by a ruling, not loosened. rule.prone-only-stand-up (Andrew, DECISIONS.md 'a prone unit
++  // only stands; Stand Up is its one move; …': "yes, it cannot use attacks or powers until it stands."). The test was:
++  //   it('a prone unit may still take its primary at -10/-1 without standing', () => {
++  //     const { ctx, id } = rig()
++  //     applyStatus(ctx, 0, 'status.prone', 1, 'test')
++  //     expect(validateAction(ctx, { actor: 0, actionId: id, target: 1 })).toEqual({ ok: true })
++  //   })
++  // The -10/-1 rows of a prone attacker stay in the pipeline (read through the ledgers below); no legal order reaches them.
++  it('a prone unit may NOT take its primary without standing: the attack is refused until it stands, then taken', () => {
+     const { ctx, id } = rig()
+     applyStatus(ctx, 0, 'status.prone', 1, 'test')
++    expect(validateAction(ctx, { actor: 0, actionId: id, target: 1 })).toEqual({ ok: false, reason: 'actor-prone' })
++    expect(executeAction(ctx, { actor: 0, actionId: STAND, destination: 85 })).toEqual({ ok: true })
+     expect(validateAction(ctx, { actor: 0, actionId: id, target: 1 })).toEqual({ ok: true })
+   })
+```
+</details>
