@@ -896,7 +896,7 @@ if (SINGLES) {
         check(/dbSkull/.test(E.badges.innerHTML) === !!u.deathbed,
           `${label}: unit ${u.id} ${u.deathbed ? 'stood at the Deathbed and wears no skull' : 'never stood and wears a Deathbed skull'}`) } }
     for (const [e, i] of byType(EV, 'deathbed.fell').slice(0, 2)) { const S = foldTo(EV, i, CTX); check(fold(S, e, CTX, 0).some(c => c.k === 'deathbed' && c.result === 'fell' && c.n === e.roll), `${label}: deathbed.fell at ${i} cued no modal`)
-      v.seek(i); v.step(); win._flush(1200); const m = V.dom.stage.parentNode.querySelector('.dbModal'); check(m && /This hero falls\./.test(m.querySelector('.dbPlate').innerHTML), `${label}: the fell modal does not say the hero falls`); win._flush(2000) }
+      v.seek(i); v.step(); win._flush(1200); const m = V.dom.stage.parentNode.querySelector('.dbModal'); check(m && /This hero falls\./.test((V.dom.stage.parentNode.querySelector('.dbPlate') || {}).innerHTML || ''), `${label}: the fell modal does not say the hero falls`); win._flush(2000) }
     /* deathbed.none — a Wounded unit at 0: no roll, dead (engine b4cbd9b) */
     for (const [e, i] of byType(EV, 'deathbed.none').slice(0, 1)) { v.seek(i); v.step()
       const m = V.dom.stage.parentNode.querySelector('.dbModal')
