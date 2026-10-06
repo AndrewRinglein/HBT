@@ -1,5 +1,16 @@
 [
  {
+  "id": "viewer.pixel-compare-tests-hold-against-frame-noise",
+  "kind": "viewer",
+  "shape": "plumbing",
+  "needs": [
+   "viewer.solid-pieces-drawn-by-material"
+  ],
+  "spec": "Found 2026-10-06 by the viewer worker's gate: the page test of viewer.solid-pieces-drawn-by-material, which asserts 0 differing pixels between the batched drawing and each piece drawn alone, failed the viewer gate's checks part twice and once run alone (6, 2 and 5 pixels differing) before passing on a fourth run, in a gate that had not touched it; viewer.still-frame-draws-nothing's compare did the same once (1 pixel). The frame-speed worker had already recorded the cause as a fact, not a fault of the batching (viewer SWITCHES frameNoiseOneShade, blendedPiecesShimmer): the very same frame drawn again, the same way, is now and then 6 to 13 pixels of one shade off, batched or not, and on main's page before those items; the frame-cost tool redraws a differing view up to three times so that its 0 is not thrown by it - which makes the test pass most of the time and fail some of the time. A test that fails one run in three teaches chats to rerun and wave a red gate through. Wanted: (1) FIND THE NOISE - why two draws of one still frame differ at all (the blended foliage's sort between equal depths, a time-driven uniform still advancing with the clock held, an uncleared buffer, antialiasing resolve, the browser's own compositing of the read-back) - on the Orphanage, where it is largest; if it can be removed without changing what the player sees (a stable sort key, the clock truly held for the compare), remove it and the compares become exact; say what it was. (2) IF IT CANNOT be removed here, make each pixel compare prove its claim against the noise floor measured in the same run: draw the reference way N times and take, per view, the set of pixels that ever differ between two reference draws and by how much; the batched (or still-frame) draw passes if every pixel in which it differs from the reference is in that set and within that size - and fails on any pixel outside it or any larger difference; N and the views are fixed in the test, not retried until green. No redraw-until-it-matches loop is left in a test's pass path. (3) Each of the pixel-compare tests is seen red once by undoing what it guards (a batch drawn with one piece's matrix wrong; a still frame made to redraw), and green ten times in a row beside a four-thread busy loop, as viewer.frame-time-tests-hold-under-load did. Not allowed: widening to a flat tolerance over the whole frame, dropping a view, or skipping the tests in the gate. Record in viewer SWITCHES.md what the noise was and which way was taken.",
+  "expect": "Ten runs in a row of the solid-pieces and still-frame pixel-compare page tests beside a four-thread busy loop all pass; each is seen red once with its guard undone; no pass path retries a draw until it matches; either the still frame is now drawn identically every time (the report says what made it differ) or each compare is held to the same-run noise floor and says so; viewer SWITCHES.md names the cause or the floor.",
+  "note": "Filed by the home chat 2026-10-06 from the viewer worker's report (three red runs in its gate from a test it had not touched)."
+ },
+ {
   "id": "viewer.zoom-out-stops-at-the-whole-map",
   "kind": "viewer",
   "shape": "plumbing",
