@@ -652,11 +652,17 @@ export function tickBleedOut(ctx: Ctx, id: number, causeId: string): void {
  * kills." Its own mutator and its own event, NOT tickBleedOut: the tick is the
  * End-of-Hero-Phase rung's line and the rulings test holds it to that ladder.
  * Never below 1 — the kill belongs to the rung alone.
+ *
+ * fix.bandaged-hero-dies-at-zero (2026-10-05; DECISIONS.md 2026-10-05 'a bandaged hero's count has no floor: bandaging stops
+ * the count, a hit still takes one, and at 0 the hero dies'): "I don't get why the count would start and stop at 1. No, it
+ * goes to 0 when they die." A STOPPED count (Unit.bleedStopped — the Bandages) has no rung to kill it, so a hit takes it all
+ * the way: no floor, and at 0 the unit dies by the count's own death (settle: 'bledOut', a corpse). A running count keeps
+ * its floor of 1, as above.
  */
 export function accelerateBleedOut(ctx: Ctx, id: number, steps: number, causeId: string, actor: number): void {
   const u = unit(ctx, id)
   const before = u.bleedOut
-  u.bleedOut = Math.max(1, u.bleedOut - Math.max(0, steps))
+  u.bleedOut = Math.max(u.bleedStopped ? 0 : 1, u.bleedOut - Math.max(0, steps))
   emit(ctx, 'bleedout.accelerated', causeId, { actor, target: id, steps: before - u.bleedOut, bleedOut: u.bleedOut })
 }
 
