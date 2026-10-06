@@ -143,7 +143,14 @@ export function draftBaseOf(row: HeroRow): BaseOf {
     if (stat === 'itemSlots') return row.itemSlots
     const v = unit?.[crucibleStatOf(stat)]
     return typeof v === 'number' ? v : 0
-  }) as BaseOf & { fielded: (stat: string) => number }
+  }) as BaseOf & { fielded: (stat: string) => number; own: readonly string[] }
+  // kingdom.gift-roll-leaves-out-own-badges (2026-10-05, Andrew, engine/DECISIONS.md 'a prone unit only stands; …; no gift doubles
+  // a hero's own badge; …' - asked whether a hero's own badges should be left out of its gift roll: "7, yes."): the badges this
+  // hero's row already carries - the engine row's (its origin badges: content.hero-origin-badges) and any other on the hero's
+  // row. The rule is the engine's, in the one procedure both drafts call (opening-party.ts pickBadge): none of these is a
+  // badge the roll gives this hero. The roll is keyed as it was, so a saved run shows the same offers except where one held
+  // a doubled badge.
+  base.own = [...((unit?.['badges'] as readonly string[] | undefined) ?? []), ...row.badges]
   // content.hero-origin-badges (engine item, 2026-10-05): the same hero AS FIELDED bare - the engine's own preview of the row,
   // its kit and its row's badges folded (seam.ts fieldedPreviewOf, the number the draft's card shows). The engine's draft
   // holds a rolled LOSS at the stat's floor against this too, so a hero whose kit and origin badges leave it little Health
