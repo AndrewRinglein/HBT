@@ -5666,3 +5666,15 @@ Ruled:
 - Asked the same day and not yet answered: whether "everybody" reaches the enemy side and civilians, who do not roll today (the check is the hero side's). Until he says, it is the heroes.
 
 Filed: `rule.surge-is-at-least-level`.
+
+## 2026-10-06 — the zoom's far end keeps room for a figure on the far row; no enemy is a boss yet
+
+Andrew, in the kingdom chat, answering two questions from the frame-speed worker's light work (1 at the far end of the zoom a figure standing on the far row has its head and name cut off - should a little room be kept above that row, or is exact edge-to-edge right; 2 which enemies count as a boss or named enemy for the longer close-up - nothing marks one today):
+
+“1. Yes
+2. None yet”
+
+Ruled:
+
+- **At the zoom's far end a little room is kept above the far row, enough for a figure standing there and its name to show whole.** The whole map and no further still holds on the other three sides (viewer SWITCHES zoomEndNoRoom: the other side taken).
+- **No enemy counts as a boss or a named enemy yet.** `viewer.new-enemy-close-up` builds the plain close-up; the longer one waits for content that marks one, and nothing is invented to mark it.
