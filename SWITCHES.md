@@ -2073,3 +2073,14 @@ hero, the floating words and the log follow the engine with no viewer rule - che
 | Switch | Question | Default | Reason | Status |
 |---|---|---|---|---|
 | `bandagedCountFollowsTheEngine` | Does the page need a rule for it? | **None, and none was added: the count beside the hero is the engine's (`bleedout.accelerated` carries it), it keeps reading as held ("✚ 4") because only a new fall ends the hold, and the death is the engine's `life.dead`. Checked on the built page by a fourth test in `tools/stabilised-ally.test.mjs`, on a library battle of it: `battles/test.bandages-s47.json` — the Bandages' fielding on replicate 47, the first, read from 0 upward, in which the enemy strikes the bandaged hero to 0 (found, not tuned).** | The item's words. | Default — 2026-10-05 |
+
+## content.resistance-to-weak-and-vigil-party-spirit (engine item) — the page says Resistance to Weak, 2026-10-06
+
+Ruled 2026-10-05 (engine/DECISIONS.md 'a prone unit only stands; … Resistance to Weak; the Vigil heals by the party's Spirit';
+GLOSSARY.md 'Settled, 2026-10-05'). The engine's line keeps its id (`status.warded`) and its fields.
+
+| Switch | Question | Default | Reason | Status |
+|---|---|---|---|---|
+| `resistanceToWeakWords` | "the floating words ('WEAK WARDED -2' becomes the GLOSSARY's word), the log line, the tooltip" | **Over the unit: "RESISTANCE TO WEAK −2" (the line's own amount). In the log: "Resistance to Weak: 2 of 5 Weak does not land on <name> · banner-courage.plant". On the bar, in the banner's sentence: "Resistance to Weak 2 (2 points come off each Weak gained)" — it read "2 of each Weak does not land". The status's name is the engine's, so another status warded the same way reads the same way.** Other side for the float: "WEAK RESISTED −2", shorter, and not the GLOSSARY's word. | The item's words. | Default — 2026-10-06 |
+| `vigilWordsOnTheBar` | The Vigil's heal on the bar. | **Nothing added: a heal by the party's Spirit already reads "heal party Spirit" (the Priest's heals do), so the Vigil's sentence is "at the end of its activation: heal party Spirit" once the engine's row says so.** | One wording for one scale. | Default — 2026-10-06 |
+| `resistanceToWeakRecordings` | Do the recordings or the library battles move? | **No battle is exported again for it: no line of any recording changes, only the words the page makes of `status.warded`. The Banner of Courage's library battle is read by the new test as it stands.** | — | Default — 2026-10-06 |

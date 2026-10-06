@@ -210,7 +210,10 @@ test('a planted banner is said whole on its power: the hex, the reach, the stats
   const said = plantWords(plant, D, STATIC.statuses)
   assert.match(said, /^plant a banner on your hex — it stays for the rest of the Battle, and you may walk away; allies within 2 hexes of that hex: /)
   assert.match(said, /RES\w* \+1/i)
-  assert.match(said, /2 of each weak does not land/i)
+  /* Restated 2026-10-06 (engine item content.resistance-to-weak-and-vigil-party-spirit; ruled 2026-10-05, GLOSSARY.md
+     'Resistance to Weak'): the same two points, under the settled word. It was:
+       assert.match(said, /2 of each weak does not land/i) */
+  assert.match(said, /Resistance to Weak 2 \(2 points come off each Weak gained\)/)
   assert.match(said, /at the end of its activation: Surge Chance \+10/)
   assert.equal(effectSentence(plant, undefined, D, STATIC.statuses), said)
   assert.deepEqual(effectWord(plant, D, STATIC.statuses), { word: 'Plants a banner', val: 2, radius: true })
