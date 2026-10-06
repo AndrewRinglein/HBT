@@ -11,7 +11,7 @@ import { frameCostOnThePage, rowOf, FRAME_COST_PAGE, FRAME_COST_WAIT_MS } from '
 import { existsSync, readFileSync } from 'node:fs'
 
 type Pass = { all: number; shadow: number; scene: number; bodies: number; other?: number }
-type Measure = { frames: number; ms: { median: number; min: number; max: number }; draws: Pass; triangles: Pass; checks?: number }
+type Measure = { frames: number; ms: { median: number; min: number; max: number; total: number }; wallMs: number; draws: Pass; triangles: Pass; checks?: number }
 type Row = { battle: string; flat?: boolean; note?: string; board: { w: number; h: number }; gpu: string; loadMs: number; still: { withCheck: Measure; withoutCheck: Measure }; scrolling: { withCheck: Measure; withoutCheck: Measure }; pageErrors?: string[] }
 const PAGE = '../kingdom/BATTLE-SANDBOX.html'
 
@@ -50,9 +50,20 @@ describe('viewer.frame-cost-measured — the tool that says what a frame costs',
         const at = `${when}, ${which}`
         expect(m.frames, at).toBeGreaterThanOrEqual(30)
         // script ms: a number of milliseconds, its lowest and highest about its median
-        expect(m.ms.median, at).toBeGreaterThan(0)
+        // LAW 10 — 2026-10-05, viewer.frame-time-tests-hold-under-load: the two lines
+        //   expect(m.ms.median, at).toBeGreaterThan(0)
+        //   expect(m.ms.max, `${at}: one frame's script, in ms`).toBeLessThan(60000)
+        // held "it is a time, and in milliseconds" against two fixed numbers of milliseconds. The same is held with none: every
+        // one is a number, in order, and the frames' script time added up is part — and no more than the whole — of the time
+        // the tool's own clock counted over those frames (tools/frame-cost.mjs wallMs): a column in another unit, or one
+        // that was never measured, cannot be both.
+        for (const k of ['min', 'median', 'max', 'total'] as const) expect(Number.isFinite(m.ms[k]), `${at}: ms.${k} = ${m.ms[k]}`).toBe(true)
         expect(m.ms.min, at).toBeLessThanOrEqual(m.ms.median); expect(m.ms.max, at).toBeGreaterThanOrEqual(m.ms.median)
-        expect(m.ms.max, `${at}: one frame's script, in ms`).toBeLessThan(60000)
+        expect(m.ms.total, `${at}: the frames' script time added up is no less than its largest frame`).toBeGreaterThanOrEqual(m.ms.max)
+        expect(Number.isFinite(m.wallMs), `${at}: the tool's own clock over the measured frames`).toBe(true)
+        const part = m.ms.total / m.wallMs
+        expect(part, `${at}: the frames' script time (${m.ms.total}) as a part of the time the measuring took (${m.wallMs})`).toBeGreaterThan(0)
+        expect(part, `${at}: and never more than all of it`).toBeLessThanOrEqual(1)
         // draw calls and triangles, split by pass, and the passes add up
         for (const [what, p] of [['draw calls', m.draws], ['triangles', m.triangles]] as const) {
           for (const k of ['all', 'shadow', 'scene', 'bodies'] as const) expect(whole(p[k]), `${at}: ${what}, ${k} = ${p[k]}`).toBe(true)

@@ -9,7 +9,6 @@ import { icoHTML, actHue, ACT_CLASS } from './icons.js'
 import { stStyle } from './theme.js'
 import { actionsOf, moveHexes, dmgOf, effectTag, triggersFor, actionLines } from './actions.js'
 import { barUnitOf } from './subject.js'
-import { centreOn } from './board.js'
 
 const escape = value => String(value).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))
 const TRG_SHOWN = 3                 // collapse past this many
@@ -147,8 +146,11 @@ export function drawBar(V) {
     r.addEventListener('click', ev => { if (!V.play) return; ev.stopPropagation(); if (ev.detail > 1) return
       V.heldPlay = null
       const unit = barUnitOf(V); V.offerPlay({ kind: 'slot', actionId: r.dataset.act, unit })
-      /* viewer.xcom-camera: "Clicking an ability re-centers on the acting unit" — the one whose bar it is, the one the host acts with */
-      centreOn(V, unit) })
+      /* viewer.ability-click-keeps-view (engine DECISIONS.md 2026-10-05 'the battle screen must feel smooth: … Clicking an ability
+         no longer re-centres the view on the acting unit', Andrew: "3 yes" — overturning viewer.xcom-camera's 2026-10-01
+         "Clicking an ability re-centers on the acting unit"): the click chooses the action and the view stays where the
+         player has it — a player who scrolled to look at a target and then picks the attack still sees the target. The way
+         back is the portrait's click (viewer.js) and a card's in the top bar (rail.js). */ })
     r.addEventListener('dblclick', ev => { ev.stopPropagation()
       const offer = { kind: 'slot', actionId: r.dataset.act, unit: barUnitOf(V) }
       if (V.play) V.offerPlay(offer); else if (V.inputActive()) V.heldPlay = offer }) })

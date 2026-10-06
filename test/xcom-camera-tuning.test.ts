@@ -17,7 +17,9 @@ describe('the XCOM camera, tuned', () => {
     const m = MAPS.find((x) => x.id === 'map.opening.orphanage') as any
     expect([m?.width ?? m?.board?.width, m?.height ?? m?.board?.height]).toEqual([20, 14])
   })
-  it('the viewer page: the wheel goes further and springs back; every edge scrolls; the pan stops at the board\'s edge', () => {
+  /* (viewer.zoom-stays, 2026-10-05: this read "the wheel goes further and springs back" — the zoom now stays where it is left,
+     engine DECISIONS.md 'the battle screen must feel smooth: …'; the page's own test is rewritten, tools/xcom-camera.test.mjs) */
+  it('the viewer page: the wheel goes further and stays where it is left; every edge scrolls; the pan stops at the board\'s edge', () => {
     expect(run('tools/xcom-camera.test.mjs')).toMatch(/# fail 0/)
     expect(run('tools/true-3d-camera.test.mjs')).toMatch(/# fail 0/)
   }, 170000)

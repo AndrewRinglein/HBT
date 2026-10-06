@@ -75,6 +75,7 @@ import {flatAffine} from './camera3d.js'
 import { createState, fold, foldTo, damageDealt } from './fold.js'
 import { el, ensureKeyframes, buildGround, syncProps, syncUnits, syncLayers, syncFalls, syncCorpses, syncPlanted, syncAuras, drawAim, drawTargeting, syncPlayInput, drawPlay, applyCam, playCues, clearFloats, initFX, traverse, ROOT_TRANSITION, bindCamera, drawEdges, cancelBeats, turnCam, resetCam, homeCam, stopGlide, cameraView, cameraState, centreOn, revealPan, revealHex, clickBubble, isoK, boardAffine, GLIDE_MS } from './board.js'
 import { drawPanel, drawPortrait } from './panel.js'
+import { barUnitOf } from './subject.js'
 import { closeAffliction } from './affliction.js'
 import { drawRail } from './rail.js'
 import { pointHexTip, drawHexTip, hexTipOf, groundAt } from './hextip.js'
@@ -154,7 +155,7 @@ const TEMPLATE = `
       <div id="noticeStack"><div id="playNote" class="hbtNotice" role="status" style="display:none"></div></div></div>
     <div data-slot="transport" style="display:contents"></div>
     <div id="stambar"></div>
-    <div id="barrow"><div id="unitPortrait" aria-hidden="true" style="display:none"><img alt=""></div><div id="actionbar"></div></div>
+    <div id="barrow"><div id="unitPortrait" role="button" title="Centre the view on this unit" style="display:none"><img alt=""></div><div id="actionbar"></div></div>
     <div data-slot="bottom" style="display:contents"></div>
   </div>
   <div id="panel"></div>`
@@ -242,6 +243,12 @@ export function mountBattleViewer(root, data, opts = {}) {
   if (data.glyphs && !document.getElementById('raSprite')) document.body.insertAdjacentHTML('beforeend', spriteHTML(data.glyphs))
   initFX(V)
   const unbindCamera = bindCamera(V)
+  /* viewer.ability-click-keeps-view (engine DECISIONS.md 2026-10-05 'the battle screen must feel smooth: … Clicking an ability no
+     longer re-centres the view on the acting unit'; the chat's default, viewer SWITCHES portraitCentres): a click on the
+     portrait — the card of whose bar it is, the acting unit's for a host that plays — centres the view on that unit. It asks
+     nothing of the host: nothing is chosen, nothing aimed. */
+  const portraitClick = ev => { if (ev && ev.stopPropagation) ev.stopPropagation(); const id = barUnitOf(V); if (id != null && V.S.U[id]) centreOn(V, id, { stay: true }) }
+  if (dom.portrait && dom.portrait.addEventListener) dom.portrait.addEventListener('click', portraitClick)
 
   const terrain = terrainLayer(V, opts.terrainDriver)
   /* viewer.play-chrome: End Turn, End activation, 2×, the log — for a host that plays; nothing for a replay */
@@ -1100,7 +1107,7 @@ export function mountBattleViewer(root, data, opts = {}) {
     },
     /* viewer.affliction-pop-up: whether the first-affliction pop-up is holding the pump */
     get held() { return V.hold },
-    dispose() { disposed = true; plan = null; resumeWalks(); dropHold(); overlays.dispose(); stopGlide(V); chrome.dispose(); if (V.itemCard) { V.itemCard.dispose(); V.itemCard = null } clearTargeting(); V.play = null; V.heldPlay = null; cancelBurst(); cancelOpportunityLabel(); terrain.dispose(); pause(); cancelBeats(V); unbindCamera(); for (const E of V.layers.UEL.values()) if (E.walk) E.walk.cancel(); root.innerHTML = '' },
+    dispose() { disposed = true; plan = null; if (dom.portrait && dom.portrait.removeEventListener) dom.portrait.removeEventListener('click', portraitClick); resumeWalks(); dropHold(); overlays.dispose(); stopGlide(V); chrome.dispose(); if (V.itemCard) { V.itemCard.dispose(); V.itemCard = null } clearTargeting(); V.play = null; V.heldPlay = null; cancelBurst(); cancelOpportunityLabel(); terrain.dispose(); pause(); cancelBeats(V); unbindCamera(); for (const E of V.layers.UEL.values()) if (E.walk) E.walk.cancel(); root.innerHTML = '' },
     _V: V,
   }
   /* first frame is already tilted; enable the half-speed camera glide after it */

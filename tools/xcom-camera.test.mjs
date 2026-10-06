@@ -1,9 +1,11 @@
 // viewer.xcom-camera (engine backlog; engine DECISIONS.md 2026-10-01 'the XCOM-style camera'). Andrew: "I want to fully replace
 // the camera with an XCOM-style camera. So no tilt, no free rotation." Expect: "no tilt or free rotation; each arrow key turns
-// the view exactly 90 degrees; the wheel zooms and springs back to the standard zoom; the pointer at the screen edge scrolls;
+// the view exactly 90 degrees; the wheel zooms and springs back to the standard zoom [until 2026-10-05: the zoom stays,
+// viewer.zoom-stays — the test below is rewritten]; the pointer at the screen edge scrolls;
 // the first character is selected and centered at the start and the next in the bar, civilians included, after each
 // activation ends; a double-click on a card or a body selects that unit; the portrait sits lower left at the ability bar's
-// height; clicking an ability centers the actor; a wall or roof between camera and a character is see-through; End Turn is
+// height; clicking an ability centers the actor [until 2026-10-05: it leaves the view, viewer.ability-click-keeps-view — the
+// test below is rewritten]; a wall or roof between camera and a character is see-through; End Turn is
 // visibly smaller than End Activation." The queue itself is the host's (kingdom test/xcom-queue.test.ts); the fixed angle and
 // the 90° turns are tools/true-3d-camera.test.mjs's. This asks the page (VIEWER_PAGE, else BATTLE-VIEWER.html) for the rest.
 import { test } from 'node:test'
@@ -34,7 +36,17 @@ const nearly = (a, b, tol, what) => assert.ok(Math.abs(a - b) <= tol, `${what}: 
 const fire = (node, type, extra = {}) => { for (const f of node.listeners[type] || []) f({ detail: 1, button: 0, stopPropagation() {}, preventDefault() {}, ...extra }) }
 const activations = battle1.events.map((e, i) => [e, i]).filter(([e]) => e.type === 'activation.begin')
 
-test('the wheel looks a little nearer or farther and springs back to the standard zoom once it is still', () => {
+/* Law 10, 2026-10-05 (viewer.zoom-stays; engine DECISIONS.md 2026-10-05 'the battle screen must feel smooth: … The wheel's zoom stays where it is left, far enough
+   out to see the whole board', Andrew: "2 yes" — "Overturns 2026-10-01 'snaps back to standard when you stop'. At the widest zoom the
+   whole board shows, so 2026-10-03's 'the camera never shows white space' gives way there by as much as showing the whole
+   board takes and no more"). This test read 'the wheel looks a little nearer or farther and springs back to
+   the standard zoom once it is still': after the wheel in, `w._flush(300); assert.ok(V.view.cam.zoom > 1, 'still while the wheel
+   turns (300 ms)')` then `w._flush(400); assert.equal(V.view.cam.zoom, 1, 'still for 600 ms: back to the standard zoom')`; after
+   the wheel out, `nearly(V.view.cam.zoom, Math.max(.6, 1 / (1.25 * STAND_OUT.BOARD)), 1e-9, 'farther, as far as the board fills
+   the view (and never past .6×)')` then `w._flush(700); assert.equal(V.view.cam.zoom, 1, 'and back')`. The rule now: the zoom
+   stays where the wheel leaves it; its nearest is unchanged; its farthest is the whole board in view, past the fill
+   (tools/zoom-stays.test.mjs reads the view itself: every hex whole, about the pointer, the ease). */
+test('the wheel looks nearer or farther and the zoom stays where it is left — out as far as the whole board', () => {
   const { w, v, V } = boot(), wrap = V.dom.stage.parentNode
   v.seek(activations[0][1] + 1)
   assert.equal(V.view.cam.zoom, 1, 'the standard zoom')
@@ -44,8 +56,10 @@ test('the wheel looks a little nearer or farther and springs back to the standar
      bit further than the 0.75 and 1.4"; now 1.8× and .6× (the board's own limits still hold inside them) */
   for (let i = 0; i < 20; i++) fire(wrap, 'wheel', { deltaY: -300 })
   assert.ok(V.view.cam.zoom > 1.4 && V.view.cam.zoom <= 1.8 + 1e-9, `nearer than 1.4×, never nearer than 1.8×: ${V.view.cam.zoom}`)
-  w._flush(300); assert.ok(V.view.cam.zoom > 1, 'still while the wheel turns (300 ms)')
-  w._flush(400); assert.equal(V.view.cam.zoom, 1, 'still for 600 ms: back to the standard zoom')
+  const nearest = V.view.cam.zoom
+  w._flush(300); assert.equal(V.view.cam.zoom, nearest, 'still while the wheel turns (300 ms)')
+  w._flush(400); assert.equal(V.view.cam.zoom, nearest, 'still for 600 ms: the zoom stays where the wheel left it')
+  w._flush(10000); assert.equal(V.view.cam.zoom, nearest, 'and ten seconds on')
   for (let i = 0; i < 20; i++) fire(wrap, 'wheel', { deltaY: 300 })
   /* Law 10 (viewer.camera-no-void, engine DECISIONS.md 2026-10-03 'the camera never shows white space', Andrew: "There's no
      reason to ever scroll into white space."): was 'farther than .75×, never past .6×' — the wheel now also stops where the
@@ -55,8 +69,11 @@ test('the wheel looks a little nearer or farther and springs back to the standar
      like the size change does it" · "yes"): the standard zoom is 0.9× the board's own by default (hexes 10% smaller), so the
      fill — where the wheel stops — is 1 / (1.25 × 0.9) of the standard; still never white space, never past .6×.
      was: nearly(V.view.cam.zoom, Math.max(.6, 1 / 1.25), 1e-9, …) */
-  nearly(V.view.cam.zoom, Math.max(.6, 1 / (1.25 * STAND_OUT.BOARD)), 1e-9, 'farther, as far as the board fills the view (and never past .6×)')
-  w._flush(700); assert.equal(V.view.cam.zoom, 1, 'and back')
+  const fill = 1 / (1.25 * STAND_OUT.BOARD), farthest = V.view.cam.zoom
+  assert.ok(farthest < fill - .2 && farthest > .2, `farther than where the board fills the view (${fill.toFixed(3)} of the standard) — out to the whole board: ${farthest.toFixed(3)}`)
+  fire(wrap, 'wheel', { deltaY: 300 }); assert.equal(V.view.cam.zoom, farthest, 'and no farther than that')
+  w._flush(700); assert.equal(V.view.cam.zoom, farthest, 'it stays there')
+  w._flush(10000); assert.equal(V.view.cam.zoom, farthest, 'ten seconds on as well')
   v.dispose()
 })
 
@@ -170,7 +187,13 @@ test('the portrait in the lower-left corner is whose bar it is, as tall as the a
   v.dispose()
 })
 
-test('a double-click on a body offers that unit to the host to act next; an ability click centres the one acting', () => {
+/* Law 10, 2026-10-05 (viewer.ability-click-keeps-view; engine DECISIONS.md 2026-10-05 'the battle screen must feel smooth: … Clicking an
+   ability no longer re-centres the view on the acting unit', Andrew: "3 yes" — "Overturns 2026-10-01 'Clicking an ability
+   re-centers on the acting unit'. A new Activation still centres on the unit that begins."). This test read '… an ability click
+   centres the one acting': after `fire(row, 'click')`, `assert.ok(after < before, 'and the map comes back to the one acting:
+   …')`. The rule now: the click offers the ability and the view does not move; the way back to the one acting is the
+   portrait's click, which is what brings the map back below (tools/ability-click-keeps-view.test.mjs reads the rest). */
+test('a double-click on a body offers that unit to the host to act next; an ability click leaves the view where it is, and the portrait\'s click centres the one acting', () => {
   const { v, V, seen } = boot(), wrap = V.dom.stage.parentNode
   v.seek(activations[0][1] + 1)
   V.data.displayHeights = A.paintedHeights(V.data.atlas); v.render()
@@ -182,15 +205,19 @@ test('a double-click on a body offers that unit to the host to act next; an abil
   const at = { clientX: (p.x + 1) / 2 * vp.w * 100 / 1920, clientY: (1 - p.y) / 2 * vp.h * 100 / 1080, target: wrap }
   seen.length = 0; fire(wrap, 'dblclick', at)
   assert.deepEqual(seen.at(-1), { kind: 'choose', id: u.id }, 'the double-clicked body is offered')
-  /* the ability bar: its row offers the slot, and the map centres on whose bar it is */
+  /* the ability bar: its row offers the slot, and the map stays where it is; the portrait brings it back to whose bar it is */
   v.zoom(1.4); v.pan(400, 300)
   const row = V.dom.actionbar.querySelectorAll('.acRow').find(r => r.dataset.act)
   const who = V.S.U[V.S.activeId], before = Math.hypot(V.camTarget.x - V.data.POS[who.hex].px, V.camTarget.y - V.data.POS[who.hex].py)
   V.view.inspectId = null; v.render(); seen.length = 0
   fire(row, 'click')
   assert.equal(seen.at(-1)?.kind, 'slot', 'the ability is offered')
+  const stayed = Math.hypot(V.camTarget.x - V.data.POS[who.hex].px, V.camTarget.y - V.data.POS[who.hex].py)
+  assert.equal(stayed, before, `and the map does not move: ${before.toFixed(0)} px from the one acting, before and after`)
+  seen.length = 0; fire(V.dom.root.querySelector('#unitPortrait'), 'click')
   const after = Math.hypot(V.camTarget.x - V.data.POS[who.hex].px, V.camTarget.y - V.data.POS[who.hex].py)
-  assert.ok(after < before, `and the map comes back to the one acting: ${before.toFixed(0)} -> ${after.toFixed(0)} px`)
+  assert.ok(after < before, `the portrait's click brings the map back to the one acting: ${before.toFixed(0)} -> ${after.toFixed(0)} px`)
+  assert.deepEqual(seen, [], 'and asks nothing of the host')
   v.dispose()
 })
 

@@ -20,7 +20,7 @@
    downed hero's card wears the first-aid mark in its upper right-hand corner and, while it bleeds out, the turns left: the
    fold's own bleed-out count (bleedout.set / tick / accelerated — the number board.js draws over the body), never counted
    here. The divider stays while both sides still have a card (viewer SWITCHES fallenCards*, firstAid*). */
-import { clickUnit } from './board.js'
+import { clickUnit, centreOn } from './board.js'
 import { freeAttacksUp, FREE_ATTACK } from './actions.js'
 import { raIcon } from './icons.js'
 import { NOTE_HUE } from './theme.js'
@@ -45,7 +45,11 @@ export function drawRail(V) {
   rail.innerHTML = heroes.map(chip).join('') + (heroes.length && others.length ? '<div class="railsep" role="separator" aria-orientation="vertical" title="Heroes | enemies"></div>' : '') + others.map(chip).join('')
   for (const ch of rail.querySelectorAll('.railchip')) {
     const id = +ch.dataset.i
-    ch.addEventListener('click', ev => { ev.stopPropagation(); if (V.S.U[id]) clickUnit(V, id) })
+    /* viewer.ability-click-keeps-view (2026-10-05; the chat's default, viewer SWITCHES cardCentres): a click on a card also centres
+       the view on that unit — the bar's click no longer brings the view back to the one acting, and this is a way to any
+       unit, the acting one included. A click the board is not taking (it is playing) centres nothing, as it shows no panel. */
+    ch.addEventListener('click', ev => { ev.stopPropagation(); if (!V.S.U[id]) return
+      const taken = V.inputActive(); clickUnit(V, id); if (taken) centreOn(V, id, { stay: true }) })
     ch.addEventListener('dblclick', ev => { ev.stopPropagation(); if (V.play && V.inputActive() && V.S.U[id]) V.offerPlay({ kind: 'choose', id }) })
   }
 }

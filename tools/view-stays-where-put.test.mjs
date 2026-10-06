@@ -67,18 +67,31 @@ test('the view the player scrolled away stays there through a redraw, the scene\
   v.dispose()
 })
 
-test('a notch of the wheel zooms where the view is: the centre stays, the acting unit stays off the screen, and the zoom\'s spring does not bring it back', () => {
+/* Law 10, 2026-10-05 (viewer.zoom-stays; engine DECISIONS.md 2026-10-05 'the battle screen must feel smooth: … The wheel's zoom stays where it is left, far enough
+   out to see the whole board', Andrew: "2 yes" — "Overturns 2026-10-01 'snaps back to standard when you stop'. At the widest zoom the
+   whole board shows, so 2026-10-03's 'the camera never shows white space' gives way there by as much as showing the whole
+   board takes and no more"; and the item: "It zooms about the pointer: the ground under the pointer stays
+   under it as the zoom changes (today it zooms about the view's centre)"). This test read 'a notch of the wheel zooms where the
+   view is: the centre stays, the acting unit stays off the screen, and the zoom's spring does not bring it back' — the wheel
+   fired with no pointer, then `w._flush(2500)   // the wheel still: the zoom springs back`, `assert.ok(far(pose(V), put) < 1,
+   'the zoom back at the standard: the view still where the player put it')`, `assert.ok(Math.abs(V.camTarget.zoom - zoom) <
+   1e-6)`. The rule now: the wheel zooms about the pointer — at the middle of the battle area that is the view's own centre,
+   which stays — and the zoom stays where it is left; the view is still the player's (viewer SWITCHES viewPutWheelSpring). */
+test('a notch of the wheel zooms where the view is: with the pointer at its middle the centre stays, the acting unit stays off the screen, and the zoom stays as well', () => {
   const { w, v, V } = boot()
   v.seek(activations[0][1] + 1); w._flush(1300)
   const actor = V.S.U[V.S.activeId]
   scrollAway(w, V); const put = pose(V), zoom = V.camTarget.zoom
-  fire(V.dom.stage.parentNode, 'wheel', { deltaY: -300 }); w._flush(200)
+  /* (the fake board is 100 px square on the screen: its middle is 50, 50) */
+  fire(V.dom.stage.parentNode, 'wheel', { deltaY: -300, clientX: 50, clientY: 50 }); w._flush(200)
   assert.ok(V.view.cam.zoom > 1, 'the wheel looked nearer')
-  assert.ok(far(pose(V), put) < 1, `about the view's own centre: moved ${far(pose(V), put).toFixed(2)} px`)
+  assert.ok(far(pose(V), put) < 1, `about the pointer, at the view's own centre: moved ${far(pose(V), put).toFixed(2)} px`)
   assert.ok(!inView(V, actor.hex), 'the acting unit stays off the screen')
-  w._flush(2500)                                                                 // the wheel still: the zoom springs back
-  assert.ok(far(pose(V), put) < 1, 'the zoom back at the standard: the view still where the player put it')
-  assert.ok(Math.abs(V.camTarget.zoom - zoom) < 1e-6)
+  const near = V.camTarget.zoom; assert.ok(near > zoom * 1.2, 'nearer than the standard')
+  w._flush(2500)                                                                 // the wheel still: the zoom stays
+  assert.ok(far(pose(V), put) < 1, 'two and a half seconds on: the view still where the player put it')
+  assert.ok(Math.abs(V.camTarget.zoom - near) < 1e-9, 'and at the zoom the wheel left it')
+  assert.ok(!inView(V, actor.hex), 'the acting unit still off the screen')
   v.dispose()
 })
 
