@@ -165,6 +165,15 @@ const RAW_SCENARIOS: Readonly<Record<string, ScenarioDef>> = {
     id: 'test.banner-courage', note: 'TEST: a warrior carrying the Banner of Courage (plant it: allies within 2 hexes of that hex have +1 Resist, take 2 less of each Weak, and gain 10 Surge Chance at the end of each Activation) and a priest, against a Necromancer and a zombie. No campaign claim.',
     mapId: 'map.open', heroes: ['hero.base.warrior-iron', 'hero.base.priest-robes'], heroHexes: [85, 101], heroItems: [['item.destroyed-mail', 'item.war-axe', 'item.banner-courage'], undefined], enemies: ['unit.necromancer', 'unit.zombie'], enemyHexes: [95, 94], replicate: 0,
   },
+  // content.resistance-to-weak-and-vigil-party-spirit (2026-10-06; DECISIONS.md 2026-10-05 '… the Vigil heals by the party's
+  // Spirit': asked whether the Banner of the Vigil heals each ally by that ally's own Spirit or the party's, "2 by the party
+  // spirit"): the Vigil's banner live in a real battle - the Banner of Courage's fielding with a priest carrying the Vigil's
+  // banner and a ranger who has no Spirit of her own. The priest plants it when he has nothing to strike; the ranger, hurt,
+  // ends an Activation inside its aura and heals by the party's Spirit. A fielding, not a balance claim.
+  'test.banner-vigil': {
+    id: 'test.banner-vigil', note: 'TEST: a priest carrying the Banner of the Vigil (plant it: an ally that ends its Activation within 1 hex of that hex heals by the Spirit of the party) and a ranger with no Spirit of her own, against a Necromancer and a zombie. No campaign claim.',
+    mapId: 'map.open', heroes: ['hero.base.priest-armored', 'hero.base.ranger-aggressive'], heroHexes: [85, 101], heroItems: [['item.holy-texts', 'item.banner-vigil'], undefined], enemies: ['unit.necromancer', 'unit.zombie'], enemyHexes: [95, 94], replicate: 0,
+  },
   // capability.his-weapons-small-clauses (2026-10-05; DECISIONS.md 2026-10-04 'his 28 reward weapons read back …': "Everything
   // else in here seems like something we need."): "On kill: the corpse is destroyed" live in a real battle, twice over - a mage
   // holding the Staff of the Destroyer (Ruin, Sundering) and a warrior holding a Longsword of Destroying (the artifact

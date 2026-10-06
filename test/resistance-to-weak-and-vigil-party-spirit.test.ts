@@ -8,6 +8,7 @@
 //   (2) the Vigil: an ally inside heals by the PARTY's Spirit at the End of its Activation, its own Spirit or none.
 import { describe, expect, it } from 'vitest'
 import { createBattle } from '../src/core/setup.js'
+import { runBattle } from '../src/core/battle.js'
 import { settle } from '../src/core/settle.js'
 import { usePower } from '../src/core/ability.js'
 import { applyStatus, valueOf as statusValue } from '../src/core/status.js'
@@ -86,6 +87,21 @@ describe("the Banner of the Vigil heals by the party's Spirit", () => {
     planter.hp = 1
     endOfActivation(ctx, planter)
     expect(planter.hp).toBe(Math.min(planter.maxHp, 1 + party))
+  })
+  it("in a real battle (test.banner-vigil): the priest plants the Vigil's banner, and the ranger - no Spirit of her own - heals by the party's Spirit inside it", () => {
+    const ctx = createBattle(scenarioOptions(SCENARIOS['test.banner-vigil']!))
+    const [priest, ranger] = ctx.state.units.filter((u) => u.side === 'hero') as [Unit, Unit]
+    expect(effective(ctx, ranger, 'spirit').value).toBe(0)
+    const party = partySum(ctx, 'hero', 'spirit')
+    expect(party).toBeGreaterThan(0)
+    runBattle(ctx)
+    expect(ctx.events.filter((e) => e.type === 'object.planted').map((e) => [e.actor, e.causeId])).toEqual([[priest.id, VIGIL]])
+    const heals = ctx.events.filter((e) => e.type === 'heal.applied' && e.causeId === 'trigger.banner-vigil.plant.heal')
+    // every one asks for the party's Spirit, whoever it is for; the ranger's, when she is hurt, lands
+    expect(new Set(heals.map((e) => e['asked']))).toEqual(new Set([party]))
+    const hers = heals.filter((e) => e['target'] === ranger.id)
+    expect(hers.length).toBeGreaterThan(0)
+    expect(hers.some((e) => Number(e['amount']) === party)).toBe(true)
   })
   it('outside the aura nothing is healed, and an enemy inside it heals nothing', () => {
     const { ctx, planter, ally } = field('item.banner-vigil', ['hero.base.priest-robes', 'hero.base.warrior-iron'], VIGIL_KIT)
