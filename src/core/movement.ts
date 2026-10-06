@@ -76,8 +76,12 @@ export function stepCost(ctx: Ctx, to: HexId, from?: HexId): number {
  * Every hex this unit can reach, with the cheapest path to each.
  * Dijkstra over integer movement points — hills cost 2, open ground 1.
  * Ties break on lower HexId so paths are reproducible (Law 6).
+ *
+ * `avoid` (rule.computer-avoids-own-traps, 2026-10-06): hexes this move will not ENTER — they are left out of the search, so
+ * a path goes round them and a hex reached only through them is not reached. Absent or empty, the search is the one it was.
+ * The mover names them (a request's `avoid`); this file knows nothing of why.
  */
-export function reachable(ctx: Ctx, u: Unit, budgetMod = 0): Reach {
+export function reachable(ctx: Ctx, u: Unit, budgetMod = 0, avoid?: ReadonlySet<HexId>): Reach {
   const props=ctx.state.props,passable=passableFor(ctx,u,props),edgeCost=preparedLowEdgeCost(ctx,props),structured=anyStructure(ctx)
   const occ = occupancy(ctx)
   // The power's modifier widens or narrows THIS move's budget (Sprint would be
@@ -97,7 +101,7 @@ export function reachable(ctx: Ctx, u: Unit, budgetMod = 0): Reach {
       const node = out.get(h)!
       if (node.cost !== c) continue // stale entry, a cheaper path was found
       for (const n of ctx.geo.neighboursOf(h)) {
-        if (occ.has(n) || !passable(n,h)) continue
+        if (occ.has(n) || !passable(n,h) || avoid?.has(n)) continue
         const nc = c + moveCostOf(ctx.state.terrain[n] ?? 0) + edgeCost(h,n) + (structured ? structureStepCost(ctx,h,n) : 0)
         if (nc > budget) continue
         const prior = out.get(n)
@@ -145,11 +149,15 @@ function movementReason(ctx: Ctx, u: Unit, power: MoveDef, slot?: import('./type
   return null
 }
 
-/** One pure destination planner for controls and AI; never spends or predicts RNG. */
-export function planMovement(ctx: Ctx, actor: number, actionId: string, destination: number, slot?: import('./types.js').ActionSlot): MovementPlan | MovementRejection {
-  return planMovementWithView(ctx, actor, actionId, destination, passableFor(ctx, ctx.state.units[actor]), slot)
+/**
+ * One pure destination planner for controls and AI; never spends or predicts RNG.
+ * `avoid` (rule.computer-avoids-own-traps, 2026-10-06): hexes the move will not enter — a walk's path goes round them, and a
+ * walk, a sidestep or a flight that would END on one is refused as unreachable. A flight crosses nothing, so only its landing is asked.
+ */
+export function planMovement(ctx: Ctx, actor: number, actionId: string, destination: number, slot?: import('./types.js').ActionSlot, avoid?: ReadonlySet<HexId>): MovementPlan | MovementRejection {
+  return planMovementWithView(ctx, actor, actionId, destination, passableFor(ctx, ctx.state.units[actor]), slot, avoid)
 }
-function planMovementWithView(ctx: Ctx, actor: number, actionId: string, destination: number, passable: Passable, slot?: import('./types.js').ActionSlot): MovementPlan | MovementRejection {
+function planMovementWithView(ctx: Ctx, actor: number, actionId: string, destination: number, passable: Passable, slot?: import('./types.js').ActionSlot, avoid?: ReadonlySet<HexId>): MovementPlan | MovementRejection {
   const u = ctx.state.units[actor]
   const power = ctx.actions[actionId]
   if (!u || !Number.isSafeInteger(actor) || !power || !isMove(power)) return refused('action-not-ready')
@@ -159,31 +167,31 @@ function planMovementWithView(ctx: Ctx, actor: number, actionId: string, destina
   const plan: MovementPlan = { kind: 'move', actor, power, destination, path: [], pathCost: 0, slot: resolveActionSlot(ctx, u, power, slot)! }
   if (power.move.shape === 'sidestep' && stepRangeOf(power) === 0) return destination === u.hex ? plan : refused('unreachable-destination')
   if (isRooted(ctx, u)) return refused('actor-rooted')
-  if (!passable(destination) || occupancy(ctx).has(destination)) return refused('unreachable-destination')
+  if (!passable(destination) || occupancy(ctx).has(destination) || avoid?.has(destination)) return refused('unreachable-destination')
   if (power.move.shape === 'sidestep') return ctx.geo.distance(u.hex, destination) === stepRangeOf(power) && passable(destination,u.hex) ? plan : refused('unreachable-destination')
   if (power.move.shape === 'flight') return flightLandings(ctx, u, power).includes(destination) ? plan : refused('unreachable-destination')
-  const reach = reachable(ctx, u, power.move.budgetMod)
+  const reach = reachable(ctx, u, power.move.budgetMod, avoid)
   if (!reach.has(destination)) return refused('unreachable-destination')
   plan.path = pathTo(reach, u.hex, destination)
   plan.pathCost = reach.get(destination)!.cost
   return plan
 }
 
-/** Stable destination order. Callers keep their own scoring and tie breakers. */
-export function movementOptions(ctx: Ctx, actor: number, actionId: string, slot?: import('./types.js').ActionSlot): MovementPlan[] {
+/** Stable destination order. Callers keep their own scoring and tie breakers. `avoid`: as planMovement's. */
+export function movementOptions(ctx: Ctx, actor: number, actionId: string, slot?: import('./types.js').ActionSlot, avoid?: ReadonlySet<HexId>): MovementPlan[] {
   const u = ctx.state.units[actor], power = ctx.actions[actionId]
   if (!u || !power || !isMove(power) || movementReason(ctx, u, power, slot)) return []
   if (power.move.shape === 'sidestep' && stepRangeOf(power) === 0) return [{ kind: 'move', actor, power, destination: u.hex, path: [], pathCost: 0, slot: resolveActionSlot(ctx, u, power, slot)! }]
   if (isRooted(ctx, u)) return []
   if (power.move.shape === 'path') {
-    const reach = reachable(ctx, u, power.move.budgetMod)
+    const reach = reachable(ctx, u, power.move.budgetMod, avoid)
     return [...reach.keys()].sort((a, b) => a - b).map(destination => ({ kind: 'move', actor, power, destination, path: pathTo(reach, u.hex, destination), pathCost: reach.get(destination)!.cost, slot: resolveActionSlot(ctx, u, power, slot)! }))
   }
-  if (power.move.shape === 'flight') return flightLandings(ctx, u, power).map(destination => ({ kind: 'move', actor, power, destination, path: [], pathCost: 0, slot: resolveActionSlot(ctx, u, power, slot)! }))
+  if (power.move.shape === 'flight') return flightLandings(ctx, u, power).filter(h => !avoid?.has(h)).map(destination => ({ kind: 'move', actor, power, destination, path: [], pathCost: 0, slot: resolveActionSlot(ctx, u, power, slot)! }))
   const out: MovementPlan[] = []
   const passable = passableFor(ctx, u)
   for (let destination = 0; destination < ctx.state.terrain.length; destination++) {
-    const plan = planMovementWithView(ctx, actor, actionId, destination, passable, slot)
+    const plan = planMovementWithView(ctx, actor, actionId, destination, passable, slot, avoid)
     if (!('ok' in plan)) out.push(plan)
   }
   return out

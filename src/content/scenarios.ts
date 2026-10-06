@@ -146,6 +146,15 @@ const RAW_SCENARIOS: Readonly<Record<string, ScenarioDef>> = {
     id: 'test.bear-traps', note: 'TEST: a warrior carrying Bear Traps (one use: two traps on empty hexes within 3; the first unit to enter one takes 4 physical damage and gains 1 Root) and a priest, against two zombies. No campaign claim.',
     mapId: 'map.open', heroes: ['hero.base.warrior-iron', 'hero.base.priest-robes'], heroHexes: [85, 101], heroItems: [['item.destroyed-mail', 'item.war-axe', 'item.bear-trap'], undefined], enemies: ['unit.zombie', 'unit.zombie'], enemyHexes: [94, 110], replicate: 0,
   },
+  // rule.computer-avoids-own-traps (2026-10-06; DECISIONS.md 2026-10-05 'the computer avoids its own traps; …': "Computers
+  // should avoid their own traps."): the second fielding the rule is held on - a trap an ENEMY places. No enemy row of the
+  // Codex places one, so the placer is a test body (the test zombie with Stamina and one power, Snare): too far to reach a
+  // hero on the first Turn, it places its trap on the open hex nearest the nearest hero - on its own side's way to them - and
+  // then it and two zombies close in. A fielding, not a balance claim.
+  'test.snarer-traps': {
+    id: 'test.snarer-traps', note: 'TEST: a warrior and a priest against a Snarer (a test zombie that places one trap: 2 physical damage and 1 Root) and two zombies behind it. No campaign claim.',
+    mapId: 'map.open', heroes: ['hero.base.warrior-iron', 'hero.base.priest-robes'], heroHexes: [85, 101], enemies: ['test-snarer', 'test-zombie', 'test-zombie'], enemyHexes: [94, 110, 78], replicate: 0,
+  },
   // capability.planted-banners (2026-10-05; DECISIONS.md 2026-10-04 'every dead line on his items is a feature that is needed …':
   // "All of those deadlines need to be added in as features that we need."): the Banner of Courage live in a real battle - a
   // warrior carrying it beside a priest, against a Necromancer (whose bolt leaves Weak) and a zombie too far to reach on the
@@ -155,6 +164,15 @@ const RAW_SCENARIOS: Readonly<Record<string, ScenarioDef>> = {
   'test.banner-courage': {
     id: 'test.banner-courage', note: 'TEST: a warrior carrying the Banner of Courage (plant it: allies within 2 hexes of that hex have +1 Resist, take 2 less of each Weak, and gain 10 Surge Chance at the end of each Activation) and a priest, against a Necromancer and a zombie. No campaign claim.',
     mapId: 'map.open', heroes: ['hero.base.warrior-iron', 'hero.base.priest-robes'], heroHexes: [85, 101], heroItems: [['item.destroyed-mail', 'item.war-axe', 'item.banner-courage'], undefined], enemies: ['unit.necromancer', 'unit.zombie'], enemyHexes: [95, 94], replicate: 0,
+  },
+  // content.resistance-to-weak-and-vigil-party-spirit (2026-10-06; DECISIONS.md 2026-10-05 '… the Vigil heals by the party's
+  // Spirit': asked whether the Banner of the Vigil heals each ally by that ally's own Spirit or the party's, "2 by the party
+  // spirit"): the Vigil's banner live in a real battle - the Banner of Courage's fielding with a priest carrying the Vigil's
+  // banner and a ranger who has no Spirit of her own. The priest plants it when he has nothing to strike; the ranger, hurt,
+  // ends an Activation inside its aura and heals by the party's Spirit. A fielding, not a balance claim.
+  'test.banner-vigil': {
+    id: 'test.banner-vigil', note: 'TEST: a priest carrying the Banner of the Vigil (plant it: an ally that ends its Activation within 1 hex of that hex heals by the Spirit of the party) and a ranger with no Spirit of her own, against a Necromancer and a zombie. No campaign claim.',
+    mapId: 'map.open', heroes: ['hero.base.priest-armored', 'hero.base.ranger-aggressive'], heroHexes: [85, 101], heroItems: [['item.holy-texts', 'item.banner-vigil'], undefined], enemies: ['unit.necromancer', 'unit.zombie'], enemyHexes: [95, 94], replicate: 0,
   },
   // capability.his-weapons-small-clauses (2026-10-05; DECISIONS.md 2026-10-04 'his 28 reward weapons read back …': "Everything
   // else in here seems like something we need."): "On kill: the corpse is destroyed" live in a real battle, twice over - a mage
@@ -194,6 +212,16 @@ const RAW_SCENARIOS: Readonly<Record<string, ScenarioDef>> = {
     mapId: 'map.open', heroes: ['hero.base.priest-armored', 'hero.base.mage-thinking', 'hero.base.mage-fire'], heroHexes: [85, 101, 69],
     heroItems: [['item.chains-of-the-wrathful', 'item.chains-of-the-faithful'], ['item.staff-of-the-magi', 'item.blink-ring', 'item.ring-of-divine-protection'], ['item.staff-of-the-destroyer']],
     heroStowed: [[], [], ['item.staff-of-the-ultimate-destroyer']], enemies: ['unit.zombie', 'unit.zombie'], enemyHexes: [91, 107], replicate: 0,
+  },
+  // content.sets-count-holy-texts-and-heavy-chain (2026-10-06; DECISIONS.md 2026-10-05 'a set counts everything carried; …':
+  // Holy Texts a book and Heavy Chain a chain item for sets, "8, yes."): the two rows counted in a real battle - a priest
+  // holding the Book of Karma with Holy Texts stowed (two books: +2 Resist) and a priest holding the Chains of the Wrathful
+  // over Heavy Chain (two chain items: +2 Precision), against two zombies. A fielding, not a balance claim.
+  'test.sets-counted': {
+    id: 'test.sets-counted', note: 'TEST: two priests whose set counts a row that says its set without bearing the tag - the Book of Karma with Holy Texts stowed, the Chains of the Wrathful over Heavy Chain - against two zombies. No campaign claim.',
+    mapId: 'map.open', heroes: ['hero.base.priest-armored', 'hero.base.priest-armored'], heroHexes: [85, 101],
+    heroItems: [['item.book-of-karma'], ['item.chains-of-the-wrathful', 'item.heavy-chain']],
+    heroStowed: [['item.holy-texts'], []], enemies: ['unit.zombie', 'unit.zombie'], enemyHexes: [91, 107], replicate: 0,
   },
   // capability.summons (2026-10-05; DECISIONS.md 2026-10-04 'his 28 reward weapons read back …': "We need: summons"): the Staff
   // of Summoning's Call the Wolf live in a real battle - a mage holding it, the zombies too far to reach on the first Turn, so

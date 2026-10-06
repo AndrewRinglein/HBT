@@ -18,7 +18,10 @@ describe('"Immune <element> 1" is a resistance of 1', () => {
     expect(BADGES['badge.poison-resistant']!.statModifiers).toEqual({ poisonResist: 1 })
     expect(BADGES['badge.fire-resistant']!.statModifiers).toEqual({ fireResist: 1 })
     expect(BADGES['badge.dragon-slayer']!.statModifiers).toEqual({ maxHp: 2, fireResist: 1 })   // "immunen to fire 1", as authored
-    expect(BADGES['badge.curse-resistant']!.gaps).toEqual(['Immune weak 1'])
+    // Restated 2026-10-06 (content.resistance-to-weak-and-vigil-party-spirit; ruled 2026-10-05, GLOSSARY 'Resistance to Weak'): the
+    // row's word changed and the rule did not - a status with no element is still a named gap. The line was:
+    //   expect(BADGES['badge.curse-resistant']!.gaps).toEqual(['Immune weak 1'])
+    expect(BADGES['badge.curse-resistant']!.gaps).toEqual(['Resistance to Weak 1'])
     for (const id of ['badge.frost-resistant', 'badge.poison-resistant', 'badge.fire-resistant']) expect(BADGES[id]!.gaps).toBeUndefined()
   })
   it('fielded with Frost Resistant, a hero carries 1 Cold Resist and takes 1 less cold damage; Fire Resistant does the same for fire', () => {

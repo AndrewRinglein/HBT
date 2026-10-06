@@ -52,7 +52,7 @@ import { stampOf, allStamps, PACKAGES } from './code-stamp.mjs'
 import { shardsFor, readPasses, hasPass, appendPass, appendFail, logCheck, controlCheck, recordControl, packGolden, copyName, PASSES_FILE } from './suites.mjs'
 import {
   treeHash, contextHash, openProgress, recall, record, clearResults, serialize,
-  stopBefore, budgetFrom, parseShard, recordShard, shardStatus, testFilesIn, killSwitchFiles,
+  stopBefore, budgetFrom, parseShard, recordShard, shardStatus, testFilesIn, killSwitchFiles, committedItemTests,
 } from './gate-progress.mjs'
 
 const T0 = Date.now()
@@ -206,8 +206,10 @@ const HOME_DIR = TESTS_HOME === '.' ? '' : `${TESTS_HOME.slice(3)}/`
 // A package lands its sources in its own commit before the engine gate runs (its gate builds from
 // that commit), so its item tests may already be committed there: the package's commits that name
 // the item count as touched, in `git status --porcelain` form (A added, M modified).
-const homeCommitted = () => TESTS_HOME === '.' ? '' : sh(`git log --format= --name-status -F --grep="${id}" -- test/`, IN_HOME)
-  .split('\n').filter(Boolean).map((l) => { const [st, f] = l.split('\t'); return `${st === 'A' ? 'A ' : ' M'} ${f}` }).join('\n')
+// Since 2026-10-06 the same holds in the engine's own home: an engine item is built in a group, its own commit with its own
+// test, and gated after the group's one chain (DECISIONS.md 2026-10-06 'engine items too are built in groups of up to four …';
+// GBH SWITCHES gate.committedItemTestsCount). It read '' for the engine: `TESTS_HOME === '.' ? '' : …`.
+const homeCommitted = () => committedItemTests(id, resolve(TESTS_HOME))
 const homePorcelain = () => [sh('git status --porcelain --untracked-files=all', IN_HOME), homeCommitted()].filter(Boolean).join('\n')
 
 const checks = []
