@@ -49,7 +49,15 @@ describe('choosing what the hero does', () => {
     expect(P.facts().reach).toEqual([]); expect(P.facts().slot, 'attack one is chosen by itself').toBe(one); expect(P.facts().aim, 'so its arrow is drawn').not.toBeNull()
     /* taken back (a right-click): no action chosen, no arrow */
     expect(P.input({ kind: 'back' })).toBe(true); P.input({ kind: 'point', hex: far })
-    expect(P.facts().slot).toBeNull(); expect(P.facts().aim).toBeNull()
+    /* Law 10, 2026-10-06 — engine rule.one-move-action-one-primary-action (Andrew, engine/DECISIONS.md 'an Activation is one move
+       action and one primary action, in that order; …'; the item: "a walk begun and cut short may still be finished … since
+       that is the same move action"): the hero walked one hex of its movement, so the rest of that walk is still its move
+       action and the engine lists it in the movement slot — where the input arms the basic move whenever the engine lists
+       one. Before, the rest of a walk was the PRIMARY action and nothing was armed. What this test holds is unchanged: with
+       the attack taken back NO ATTACK is chosen and no arrow is drawn. The line was:
+         expect(P.facts().slot).toBeNull(); expect(P.facts().aim).toBeNull() */
+    const now = P.facts().slot
+    expect(now === null || isMove(s.ctx.actions[now]!), 'no attack is chosen').toBe(true); expect(now).not.toBe(one); expect(P.facts().aim).toBeNull()
   })
   it('an attack chosen, the arrow reaches no further than its reach — the engine\'s — toward the pointer', () => {
     const { s, P, h } = acting(/warrior/)
