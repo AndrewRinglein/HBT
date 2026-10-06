@@ -92,7 +92,7 @@ What a rule may DO.
 | `remove N of a status` | 40 |
 | `grant an aura` | 38 |
 | `move yourself` | 31 |
-| `read the party-wide sum` | 27 |
+| `read the party-wide sum` | 28 |
 | `deal MAGIC damage` | 22 |
 | `place a trap` | 19 |
 | `reveal / break stealth` | 18 |

@@ -57,7 +57,8 @@ const effects={
  'grant a stat for the Battle':/for the rest of the Battle/i,
  'grant a stat until end of next Turn':/until the end of your next Turn|until the start of your next Turn/i,
  'Thorns N':/Thorns \d/i,
- 'Immunity N':/Immunity to/i,
+ // GLOSSARY 'Settled, 2026-10-05': Immunity to Weak N is called Resistance to Weak N — the same function under the ruled word (the function's id is not renamed)
+ 'Immunity N':/Immunity to|Resistance to Weak [0-9]/i,
  'Knockback N':/Knockback \d/i,
  'slayer bonus':/slayer/i,
  'move yourself':/move up to|immediately move|Sidestep/i,

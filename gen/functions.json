@@ -1252,7 +1252,7 @@
   },
   {
    "name": "read the party-wide sum",
-   "uses": 27,
+   "uses": 28,
    "ids": [
     "item.wraithform-cloak",
     "item.mystic-armor",
@@ -1279,6 +1279,7 @@
     "power.sage.ancient-knowledge",
     "power.sage.meditation",
     "power.staff-of-the-magi.vortex",
+    "power.banner-vigil.plant",
     "enchant.divine-protection",
     "specialty.sage"
    ]
