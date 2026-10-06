@@ -99,3 +99,4 @@
 {"suite":"control","stamp":"f60aaf9a04","pack":"f2904abff7","golden":"b4deeaba50","at":"2026-10-06T14:45:46.403Z","by":"gate viewer.attack-row-shows-totals --land","in":"HBT-worker-content","moved":null}
 {"suite":"engine","stamp":"852b05fc95","with":{"engine":"852b05fc95","content":"3a7dd56661","viewer":"7290790dc3","kingdom":"e9c8bd20ba"},"at":"2026-10-06T11:59:26.595Z","by":"gate --shard (1 of 1)","in":"HBT-worker-engine","tests":3136}
 {"suite":"control","stamp":"852b05fc95","pack":"4bc8583765","golden":"b4deeaba50","at":"2026-10-06T13:50:57.842Z","by":"gate content.sets-count-holy-texts-and-heavy-chain --land","in":"HBT-worker-engine","moved":null}
+{"suite":"engine","stamp":"cb8d8ddcb1","with":{"engine":"cb8d8ddcb1","content":"3a7dd56661","viewer":"f033ddc081","kingdom":"23e6eabb91"},"at":"2026-10-06T16:32:03.984Z","by":"gate --shard (4 of 4)","in":"HBT-worker-content"}
