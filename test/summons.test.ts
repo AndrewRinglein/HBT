@@ -81,13 +81,22 @@ describe('a power places a unit on a chosen empty hex', () => {
     const said = typesOf(ctx, 'unit.summoned')
     expect(said.map((e) => [e.causeId, e.actor, e['summoned'], e['typeId'], e['hex'], e['side']])).toEqual([[CALL, mage.id, wolf.id, WOLF, hex, 'hero']])
   })
-  it('a hand that is not the session\'s is not the player\'s: the summoned unit is the computer\'s, whoever controls the caster', () => {
+  // Law 10, 2026-10-06 — OVERTURNED by a ruling, not loosened: rule.player-moves-summons (Andrew, DECISIONS.md 2026-10-05 '… the
+  // player moves a summon …', asked whether the player should move the summoned Wolf or the computer as built: "Then the view
+  // Wolf's spine player should move to someone's wolf." — dictation; read back to him as: the player moves a summoned unit —
+  // and 2026-10-06 '… the player moves the summoned Wolf …'). The test was:
+  //   it('a hand that is not the session\'s is not the player\'s: the summoned unit is the computer\'s, whoever controls the caster', () => {
+  //     … const policy = { humanUnitUids: [mage.uid] }
+  //     expect(controllerOf(ctx, mage.id, policy)).toBe('human')
+  //     expect(controllerOf(ctx, wolf.id, policy)).toBe('ai') })
+  it('the summoned unit is its caster\'s player\'s: the player\'s when the session\'s player controls the caster, the computer\'s when nobody does', () => {
     const { ctx, mage } = atMage()
     executeAction(ctx, { actor: mage.id, actionId: CALL, hex: hexesOf(ctx, mage.id)[0]! })
     const wolf = ctx.state.units.at(-1)!
     const policy = { humanUnitUids: [mage.uid] }
     expect(controllerOf(ctx, mage.id, policy)).toBe('human')
-    expect(controllerOf(ctx, wolf.id, policy)).toBe('ai')
+    expect(controllerOf(ctx, wolf.id, policy)).toBe('human')
+    expect(controllerOf(ctx, wolf.id, { humanUnitUids: [] })).toBe('ai')
   })
   it('a battle with a summoned unit on the board saves and restores', () => {
     const { ctx, mage } = atMage()
