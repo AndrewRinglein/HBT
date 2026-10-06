@@ -5387,3 +5387,38 @@ Andrew, in the kingdom chat:
 “One of the things  I want to figure out how to do and then add to this queue for both replay and for actual battle.   The first time a new enemy is introduced onto a battlefield   we should change perspective and zoom in on the front of them. This is done in xcom2.   So it is a zoom-in, a change of perspective, a frontal view, and then you go back to your old view so that you get a sense of the enemy.   Ask me questions about this feature.”
 
 What he asked for: the first time a new enemy is introduced onto a battlefield, in a replay and in a played battle, the view changes perspective, zooms in on the enemy's front, and then returns to the view it left - "so that you get a sense of the enemy", as XCOM 2 does. It builds on two things ruled 2026-10-04 ('the opening's tutorial ...'): the camera shows what arrives, and "New enemy" with its name and "This enemy can ..." the first time a kind is met. The chat put its questions the same day; items are filed on his answers.
+
+## 2026-10-06 — the colour template goes to all six opening battles, the heroes and the enemies; the tall grass becomes barberry; the water and the trees move
+
+Andrew, in the root chat (the XCOM 2 study). He had been asked three things: whether the template reaches the game as a look the battle screen applies to every map as it draws or by repainting the maps; whether the enemies' ring and name stay violet on such a ground or take the fire colour; whether real barberry bushes go on the Orphanage in place of the tall grass.
+
+“Yes, yes, yes.   We need to look at all the coloration for all of the tiles and the first 6 tiles. I need to apply these changes to all of the six battles and the heroes and the enemies in the UI.   Yeah, the barberry is what I was talking about for the tall grass.   I also want the water and trees animated and barberry purple.”
+
+Ruled:
+
+- **The template is applied to all six opening battles, and to the heroes and the enemies** - in the game, not only on the demo page. This replaces 2026-10-03's “The ground tone … not accepted; they stay off”: that tone was the whole scene a little darker; this is the ground, the stone and the units each given its place.
+- **The tall grass's purple version is the barberry**, and real barberry goes where the tall grass stands.
+- **The water and the trees are animated.**
+
+The chat's readings, said to him and his to change in a line (the first two questions were either-or, and “yes” does not choose):
+
+- the template reaches the game **as a look the battle screen applies as it draws**, a map repainted only where a map needs it;
+- the enemies' ring and name **take the fire colour** on these maps (the side colours themselves, gold and violet, are `VFX/PLAYBACK-DESIGN.md`'s of 2026-08-20);
+- “in the UI” is the battle screen; “the first 6 tiles” is the first six battles.
+
+The template as it stands, tried on each battle on the demo page (units' lightness against the ground beside them, today and with the template; one paused moment each, so a rough reading):
+
+| battle | today | template | what the Orphanage's rules miss |
+|---|---|---|---|
+| Orphanage | 0.34 on 0.67 | 0.46 on 0.42 | - (an earlier moment read 0.59 on 0.40) |
+| Lumberjack House | 0.36 on 0.61 | 0.50 on 0.35 | grave earth, gravel, the forest's growth |
+| Bridge | 0.41 on 0.44 | 0.62 on 0.34 | the bridge's cobbles, its pale and dark stone: the ground there is stone |
+| Cavern Trail | 0.36 on 0.68 | 0.49 on 0.39 | the cliff's paint, the scree |
+| Gates | - | - | its 3D map did not load in the chat's pane on either day; not looked at |
+| Cathedral | 0.37 on 0.68 | 0.52 on 0.41 | the nave's painted floor and its stone are only held down by the cap |
+
+On all five the units go from darker than their ground to lighter. The Orphanage, the Lumberjack House and the Cavern Trail are built from the same kit and take the Orphanage's rules nearly whole; the Bridge and the Cathedral need their own.
+
+Against it, to be settled before the items are written: moving water and moving trees are scenery that changes every frame, and the battle screen was reworked on 2026-10-05 to draw nothing when nothing changed and to draw the scenery's shadows once (`viewer/SWITCHES.md` `stillFrameWhatChanges`) - what they cost has to be measured with the frame-cost tool; and eleven battle-screen items are already open in the queue.
+
+Nothing is filed yet: the pieces are put to him first (a tool that prints each battle's numbers; the look, map by map; the brighter bodies; the enemies' fire; barberry on the maps; lanterns on the maps; the water; the trees).
