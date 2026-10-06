@@ -5485,3 +5485,15 @@ Ruled:
 - The chat's defaults where he did not speak, said to him the same day and each one line to change: damage is left as the row shows it today (he named Crit and Accuracy); the item's own card, at Equip and in battle, still says what the weapon gives ("+5 Crit"), since that is the item described and not an attack; pointing at the total shows what it is made of.
 
 Filed: `viewer.attack-row-shows-totals`.
+
+## 2026-10-06 — an attack's numbers: the total alone, no list of what it is made of
+
+Andrew, in the kingdom chat, asked two things on the entry above (1 should damage follow the same rule - the row shows only the total damage number, with no "Strength −1"; 2 should the item's card keep saying "+5 Crit") and told the chat's default that pointing at a total lists its parts:
+
+“Damage already shows that way.   But yes, we should always be showing the numbers, not the contributing some numbers.     We don't need a total list because there could be four things that are modifying your crit. We just need to see the total.”
+
+Ruled:
+
+- **An attack or action always shows the numbers - the totals - never the numbers that make them up** ("contributing some numbers" is "contributing sum numbers" - dictation). Damage "already shows that way" and stays so.
+- **No list of what a total is made of**, on pointing or anywhere on the row: "there could be four things that are modifying your crit. We just need to see the total." The chat's default (4) in `viewer.attack-row-shows-totals` is struck.
+- The item's own card was not spoken to: it keeps saying what the weapon gives ("+5 Crit"), the chat's default, one line to change.
