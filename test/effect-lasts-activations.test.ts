@@ -214,7 +214,11 @@ describe('in real battles — the two fieldings', () => {
   it('test.perfect-sight: the computer-played mage takes Perfect Sight, and the status is on him at 3', async () => {
     const { SCENARIOS, scenarioOptions } = await import('../src/content/scenarios.js')
     const { runBattle } = await import('../src/core/battle.js')
-    const ctx = createBattle(scenarioOptions(SCENARIOS['test.perfect-sight']!, 0)); runBattle(ctx)
+    // Restated 2026-10-06 (rule.surge-is-at-least-level and rule.special-moves-unlock-at-level-two (DECISIONS.md 2026-10-06 'everyone gains Surge equal to its level at the least …', 'a hero's special moves unlock at level 2, ruled …')): replicate 0 is another battle now and its mage strikes instead. The
+    // replicates are read from 0 upward and the first in which the computer takes Perfect Sight is used (1). The lines were:
+    //   const ctx = createBattle(scenarioOptions(SCENARIOS['test.perfect-sight']!, 0)); runBattle(ctx)
+    let ctx = createBattle(scenarioOptions(SCENARIOS['test.perfect-sight']!, 0)); runBattle(ctx)
+    for (let r = 1; r < 20 && !ctx.events.some((e) => e.type === 'power.used' && e.causeId === SIGHT); r++) { ctx = createBattle(scenarioOptions(SCENARIOS['test.perfect-sight']!, r)); runBattle(ctx) }
     expect(ctx.events.filter((e) => e.type === 'power.used' && e.causeId === SIGHT).length).toBeGreaterThan(0)
     expect(ctx.events.some((e) => e.type === 'status.applied' && e['statusId'] === lentBy(SIGHT) && e['after'] === 3)).toBe(true)
   })

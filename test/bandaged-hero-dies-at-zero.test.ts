@@ -118,7 +118,12 @@ describe('in a real battle', () => {
   it('the Bandages\' fielding, on the first replicate read from 0 upward in which the enemy keeps striking the bandaged hero: one from the held count a hit, and dead at 0', () => {
     let seen: { r: number; ctx: Ctx } | null = null
     for (let r = 0; r < 60 && !seen; r++) {
-      const ctx = createBattle({ ...scenarioOptions(SCENARIOS['test.bandages']!), replicate: r }); runBattle(ctx)
+      // Restated 2026-10-06 (rule.surge-is-at-least-level and rule.special-moves-unlock-at-level-two (DECISIONS.md 2026-10-06 'everyone gains Surge equal to its level at the least …', 'a hero's special moves unlock at level 2, ruled …')): every replicate is another battle now, and in none of 0 to 399 does an
+      // enemy strike a bandaged hero - 16 of the first 100 bandage one and none is hit afterwards (the computer strikes the
+      // downed only when no standing enemy is in reach, SWITCHES aiAttacksDowned). So the probe fields the computer set to
+      // strike the downed always - a fielding choice for this run, as an opening probe waits for its schedule; the rule held is
+      // unchanged and the replicate is still the first read from 0 upward (14). The line was the same without `cfg`.
+      const ctx = createBattle({ ...scenarioOptions(SCENARIOS['test.bandages']!), replicate: r, cfg: { switches: { aiAttacksDowned: 'always' } } } as Parameters<typeof createBattle>[0]); runBattle(ctx)
       const at = ctx.events.findIndex((e) => e.type === 'bleedout.stopped')
       if (at >= 0 && ctx.events.slice(at).some((e) => e.type === 'life.dead' && e['target'] === ctx.events[at]!['target'])) seen = { r, ctx }
     }
