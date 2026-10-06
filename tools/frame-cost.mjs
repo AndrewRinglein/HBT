@@ -103,7 +103,7 @@ import {spawn} from 'node:child_process'
 import {existsSync} from 'node:fs'
 import {resolve,dirname,relative} from 'node:path'
 import {fileURLToPath} from 'node:url'
-import {agree} from './pixel-agree.mjs'
+import {comparer} from './pixel-agree.mjs'
 const here=dirname(fileURLToPath(import.meta.url)),ROOT=resolve(here,'../..')
 /** how often each way of a compare is drawn at a view, turn about with the other (viewer.pixel-compare-tests-hold-against-frame-noise):
     fixed — never raised for a view that differs. Ten: a pixel the card colours two ways with even chances is coloured apart by
@@ -203,10 +203,14 @@ function shadowBothWays(DRAWS){
     handful of pixels, the same ones for a view, are one shade off now and then, however the frame is drawn (the header; viewer
     SWITCHES frameNoiseOneShade). So each compare draws each way DRAWS times, turn about — the way as first written (the
     reference), then the other — and a pixel counts as differing only if no drawing of the other way shows a colour that a
-    drawing of the reference shows there (S.agree: tools/pixel-agree.mjs). Asking for the other way takes the scenery's
+    drawing of the reference shows there (S.comparer: tools/pixel-agree.mjs). Asking for the other way takes the scenery's
     shadow again on the next frame (the kept shadow and the batches both do), so the picture read is the frame AFTER it.
     No drawing is repeated for a view that differs. */
- const turnAbout=(reference,other)=>{const A=[],B=[];for(let i=0;i<DRAWS;i++){reference();draw();draw();A.push(read());other();draw();draw();B.push(read())}return S.agree(A,B)}
+ /* (the drawings are not kept: each is read into the same pair of buffers and handed to the compare, which keeps what the
+    rule needs of it — twenty whole pictures a compare held at once stalled the page now and then on a busy machine) */
+ const scratch=[],readOver=()=>[...document.querySelectorAll('canvas.terrain3d-canvas,canvas.terrain3d-bodies')].map((c,i)=>{const gl=c.getContext('webgl2'),w=gl.drawingBufferWidth,h=gl.drawingBufferHeight
+  const px=scratch[i]&&scratch[i].length===w*h*4?scratch[i]:(scratch[i]=new Uint8Array(w*h*4));gl.readPixels(0,0,w,h,gl.RGBA,gl.UNSIGNED_BYTE,px);return px})
+ const turnAbout=(reference,other)=>{const c=S.comparer();for(let i=0;i<DRAWS;i++){reference();draw();draw();c.a(readOver());other();draw();draw();c.b(readOver())}return c.done()}
  let first,kept,shadow,depth=null,batched=null
  try{
   draw();first=read()
@@ -393,7 +397,7 @@ async function battle(browser,port,id){
   /* (the frame by hand, for the page's own use: a picture is taken in the same task as the frame that drew it) */
   await page.evaluate(src=>{window.__frameCost.tick=(0,eval)('('+src+')')},tick.toString())
   /* (and the rule two ways of drawing a view are compared by: tools/pixel-agree.mjs) */
-  await page.evaluate(src=>{window.__frameCost.agree=(0,eval)('('+src+')')},agree.toString())
+  await page.evaluate(src=>{window.__frameCost.comparer=(0,eval)('('+src+')')},comparer.toString())
   /* the frames the browser already held are its own to fire: let them, so each lands in the tool's hands */
   await page.waitForFunction(()=>[...window.__frameCost.queue.values()].some(cb=>/sawThrough/.test(String(cb))),null,{timeout:30000})
   /* "nothing moving": the battle opens with a glide to the unit that begins — let it arrive before a still frame is counted */

@@ -35,7 +35,7 @@ const DRAWS = Number(/const COMPARE_DRAWS=(\d+)\n/.exec(readFileSync('tools/fram
 describe('viewer.pixel-compare-tests-hold-against-frame-noise', () => {
   it('the rule, on made pictures: the card\'s noise is no difference between two ways; a pixel drawn differently every time is — by one shade, on one pixel', () => {
     const out = execFileSync(process.execPath, ['--test', '--test-reporter=tap', 'tools/pixel-agree.test.mjs'], { cwd: '../viewer', encoding: 'utf8', maxBuffer: 1 << 24 })
-    expect(out).toMatch(/# pass 8/); expect(out).toMatch(/# fail 0/)
+    expect(out).toMatch(/# pass 9/); expect(out).toMatch(/# fail 0/)
   }, 120000)
 
   it('the tool draws no view again until it matches: a fixed number of drawings each way, turn about, and every compare made by the rule', () => {
@@ -44,8 +44,8 @@ describe('viewer.pixel-compare-tests-hold-against-frame-noise', () => {
     expect(count(tool, 'COMPARE_DRAWS'), 'written once, handed to each view\'s compare, and nowhere changed').toBe(3)
     expect(count(tool, 'page.evaluate(shadowBothWays,COMPARE_DRAWS)')).toBe(2)
     /* the turn about: reference, two frames, read; the other way, two frames, read — DRAWS times, with no way out of the loop */
-    expect(tool).toContain('const turnAbout=(reference,other)=>{const A=[],B=[];for(let i=0;i<DRAWS;i++){reference();draw();draw();A.push(read());other();draw();draw();B.push(read())}return S.agree(A,B)}')
-    expect(tool).toContain('import {agree} from \'./pixel-agree.mjs\''); expect(tool).toContain('window.__frameCost.agree=(0,eval)(\'(\'+src+\')\')},agree.toString())')
+    expect(tool).toContain('const turnAbout=(reference,other)=>{const c=S.comparer();for(let i=0;i<DRAWS;i++){reference();draw();draw();c.a(readOver());other();draw();draw();c.b(readOver())}return c.done()}')
+    expect(tool).toContain('import {comparer} from \'./pixel-agree.mjs\''); expect(tool).toContain('window.__frameCost.comparer=(0,eval)(\'(\'+src+\')\')},comparer.toString())')
     /* the three compares, each by the rule, the way as first written the reference */
     expect(tool).toContain('shadow=turnAbout(()=>{k.whole=true},()=>{k.whole=false})')
     expect(tool).toContain('turnAbout(()=>{V.bodiesDepth.whole=true},()=>{V.bodiesDepth.whole=false})')
@@ -55,7 +55,7 @@ describe('viewer.pixel-compare-tests-hold-against-frame-noise', () => {
     for (const old of ['go<=3', 'drawnAgain', 'if(!d.n)break', '.most', 'retake']) expect(tool, 'the tool still holds "' + old + '"').not.toContain(old)
     const from = tool.indexOf('const turnAbout='), compares = tool.slice(from, tool.indexOf('}finally{', from))
     expect(compares.length, 'the three compares, read whole').toBeGreaterThan(400)
-    expect(compares).not.toMatch(/\bbreak\b|\bwhile\s*\(|\bcontinue\b|\breturn\b(?! S\.agree\(A,B\)\})/)
+    expect(compares).not.toMatch(/\bbreak\b|\bwhile\s*\(|\bcontinue\b|\breturn\b(?! c\.done\(\)\})/)
   })
 
   it('the three page tests ask for exactly 0 pixels — at every view — and let no number of pixels through', () => {

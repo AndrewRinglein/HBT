@@ -11,7 +11,7 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
-import { agree } from './pixel-agree.mjs'
+import { agree, comparer } from './pixel-agree.mjs'
 
 const W = 40, H = 30, N = 10
 const rng = seed => () => { seed = (seed * 1664525 + 1013904223) >>> 0; return seed / 4294967296 }
@@ -89,11 +89,28 @@ test('both canvases are counted, and the drawings must be as many each way', () 
   assert.throws(() => agree([], []), /no drawing/)
 })
 
+test('the compare is fed one drawing at a time and keeps none of them: a drawing may be drawn over once it is handed in; the ways come turn about, the reference first', () => {
+  const base = picture(), r = rng(31)
+  const A = drawings(base, noise(r, .5)), B = drawings(base, (p, k) => { noise(r, .5)(p); p[1][at(7, 7)] += 4; if (k === 3) p[0][at(30, 3) + 2] ^= 64 })
+  const whole = agree(A, B)
+  /* the same drawings through ONE pair of buffers, written over for every drawing */
+  const c = comparer(), scratch = base.map(a => new Uint8Array(a.length))
+  for (let i = 0; i < N; i++) { A[i].forEach((a, k) => scratch[k].set(a)); c.a(scratch); B[i].forEach((a, k) => scratch[k].set(a)); c.b(scratch) }
+  for (const s of scratch) s.fill(0)
+  assert.deepEqual(c.done(), whole); assert.equal(whole.differing, 1); assert.equal(whole.worst, 4); assert.equal(whole.otherUnsteadyBy, 64)
+  /* out of turn is refused */
+  const d = comparer(); d.a(base); assert.throws(() => d.a(base), /turn about/); d.b(base); assert.throws(() => d.b(base), /turn about/)
+  assert.throws(() => comparer().b(base), /turn about/); assert.throws(() => comparer().done(), /no drawing/)
+  const e = comparer(); e.a(base); assert.throws(() => e.done(), /as many/)
+})
+
 test('the function stands by itself — the tool hands its text to the page — and repeats no drawing', () => {
-  const text = agree.toString()
+  const text = comparer.toString()
   assert.doesNotMatch(text, /\b(import|require|window|document)\b/)
-  const fn = (0, eval)('(' + text + ')'), base = picture()
-  assert.deepEqual(fn(drawings(base), drawings(base, p => { p[0][at(4, 4)] += 2 })), agree(drawings(base), drawings(base, p => { p[0][at(4, 4)] += 2 })))
+  const made = (0, eval)('(' + text + ')'), base = picture(), c = made()
+  const A = drawings(base), B = drawings(base, p => { p[0][at(4, 4)] += 2 })
+  for (let i = 0; i < N; i++) { c.a(A[i]); c.b(B[i]) }
+  assert.deepEqual(c.done(), agree(A, B))
   const src = readFileSync('tools/pixel-agree.mjs', 'utf8')
   assert.doesNotMatch(src.replace(/\/\*[\s\S]*?\*\//g, '').replace(/^\s*\/\/.*$/gm, ''), /\bwhile\b|retry|again/i, 'nothing in it is done again')
 })
