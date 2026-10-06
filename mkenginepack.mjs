@@ -2107,8 +2107,24 @@ function compileItems() {
 // set tags the row bears (`setTags`: its tags that some row's block names; the engine counts members by them). The row's own
 // sentence and its field must say the same thing: "for every … you carry / are wearing" is `withItself` (every member
 // carried, the carrier too when it bears the tag); "per other" is not. A row that disagrees with itself FAILS THE BUILD.
+//
+// content.sets-count-holy-texts-and-heavy-chain (2026-10-06; engine DECISIONS.md 2026-10-05 'a set counts everything carried
+// …': Holy Texts counts as a book and Heavy Chain as a chain for set bonuses, "8, yes."): a row may say `setMember` — the
+// sets it is counted in WITHOUT bearing the tag. A tag does a second thing: the Forge reads a tier-1 row's tags to say which
+// enchantments it may take (and `book` makes a weapon ranged by its rule), so a membership that must leave the Forge alone
+// is said here and nowhere the Forge looks. It reaches the engine as the same `setTags` every member bears. A setMember
+// that names no set, or one the row's own tags already give, FAILS THE BUILD.
 function setFieldsOf(it, grants) {
-  const setTags = (it.tags || []).filter((t) => SET_TAGS.has(t));
+  if (it.setMember !== undefined) {
+    const no = (why) => { throw new Error(`mkenginepack: ${it.id} setMember ${why}`); };
+    if (!Array.isArray(it.setMember) || !it.setMember.length) no('is not a list of set tags');
+    for (const t of it.setMember) {
+      if (typeof t !== 'string' || !SET_TAGS.has(t)) no(`names '${t}', which no row's set line counts`);
+      if ((it.tags || []).includes(t)) no(`names '${t}', which the row's own tags already say`);
+    }
+    if (new Set(it.setMember).size !== it.setMember.length) no('names a set twice');
+  }
+  const setTags = [...(it.tags || []).filter((t) => SET_TAGS.has(t)), ...(it.setMember || [])];
   const sb = it.setBonus;
   if (!sb) return setTags.length ? { setTags } : {};
   const bad = (why) => { throw new Error(`mkenginepack: ${it.id} setBonus ${why}`); };

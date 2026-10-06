@@ -452,7 +452,10 @@
    "statModifiers": {},
    "triggers": [],
    "intent": "The same book either way — you are choosing which of two people it is aimed at.",
-   "source": "Hell-TCG name reused (Priest, Holy Texts — the hurt-or-heal choice is the tier-1 shape)"
+   "source": "Hell-TCG name reused (Priest, Holy Texts — the hurt-or-heal choice is the tier-1 shape). Ruled 2026-10-05 (engine/DECISIONS.md 'a set counts everything carried …': asked whether Holy Texts counts as a book for set bonuses — \"8, yes.\"): setMember book — counted by \"for every BOOK you carry\". It is NOT the tag: the Forge reads tags to say what a row may be enchanted with, and what the Forge makes of this row is unchanged (engine content.sets-count-holy-texts-and-heavy-chain).",
+   "setMember": [
+    "book"
+   ]
   },
   {
    "id": "item.bane-blade",

@@ -595,7 +595,10 @@
    },
    "triggers": [],
    "intent": "A point of Armor for a hex of Movement, and no other conversation.",
-   "source": "settled content"
+   "source": "settled content. Ruled 2026-10-05 (engine/DECISIONS.md 'a set counts everything carried …': asked whether Heavy Chain counts as a chain for set bonuses — \"8, yes.\"): setMember chain — counted by \"for every CHAIN item you carry\". It is NOT the tag: the Forge reads tags to say what a row may be enchanted with, and what the Forge makes of this row is unchanged (engine content.sets-count-holy-texts-and-heavy-chain).",
+   "setMember": [
+    "chain"
+   ]
   },
   {
    "id": "item.mismatched-armor",

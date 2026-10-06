@@ -111,7 +111,7 @@ w('---\n\n## 5 · Weapons and their attacks\n');
 const weapons=D.items.filter(i=>i.itemClass==='weapon');
 for(const it of weapons){
   const atks=D.attacks.filter(a=>String(a.id).startsWith('attack.'+String(it.id).replace(/^item\./,'')+'.'));
-  w('#### '+it.name+'  <sub>tier '+it.tier+' · '+(it.hands||0)+'h · '+(it.tags||[]).join(' ')+'</sub>');
+  w('#### '+it.name+'  <sub>tier '+it.tier+' · '+(it.hands||0)+'h · '+(it.tags||[]).join(' ')+(it.setMember?' · counted as '+it.setMember.join(' ')+' for sets':'')+'</sub>');
   w('');
   w('**Stats:** '+mods(it.statModifiers)+(it.slayer?'  ·  **slayer:** '+Object.entries(it.slayer).map(([k,v])=>k+' '+v).join(' '):''));
   const t=trig(it); if(t) w('  \n'+t);
