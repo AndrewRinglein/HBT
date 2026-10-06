@@ -90,7 +90,10 @@ test('the fold and the log say the planting, the Weak that did not land and the 
     if (e.type === 'object.planted') assert.ok(cues.some(c => c.k === 'float' && c.text === 'PLANTED' && c.hex === e.hex))
     if (e.type === 'status.warded' && !warded) { warded = e
       const f = cues.find(c => c.k === 'float'); assert.ok(f, 'a warded status floats over the unit')
-      assert.match(f.text, /WEAK WARDED −\d+$/i); assert.equal(f.n, e.amount); assert.equal(f.of, 'amount') }
+      /* Restated 2026-10-06 (engine item content.resistance-to-weak-and-vigil-party-spirit; ruled 2026-10-05, GLOSSARY.md
+         'Resistance to Weak'): the word changed, the number is the same line's. It was:
+           assert.match(f.text, /WEAK WARDED −\d+$/i) */
+      assert.match(f.text, /^RESISTANCE TO WEAK −\d+$/); assert.equal(f.n, e.amount); assert.equal(f.of, 'amount') }
     if (e.type === 'surge.gained' && !gained) { gained = e
       const f = cues.find(c => c.k === 'float'); assert.ok(f)
       assert.equal(f.text, 'SURGE CHANCE +' + e.amount); assert.equal(f.n, e.amount); assert.equal(S.U[e.target].surgeChance, e.after) }

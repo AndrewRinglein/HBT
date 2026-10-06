@@ -189,7 +189,7 @@ export function buildLog(events, SN, turns, D = {}) {
       case 'trap.removed': return b('', `&nbsp;&nbsp;&nbsp;&nbsp;a trap${e.side === 'hero' ? ' at hex ' + e.hex : ''} is taken up <span class="sq">· nobody entered it</span>`)
       /* capability.planted-banners (engine item, 2026-10-05) */
       case 'object.planted': return b(e.side === 'hero' ? 'hero' : 'enemy', `&nbsp;&nbsp;<b>${nmAt(e)}</b> plants a banner at hex ${e.hex} <span class="sq">· ${String(e.causeId || '').replace(/^[a-z]+\./, '')} · reach ${e.radius} from that hex · for the rest of the Battle</span>`)
-      case 'status.warded': return b('status', `&nbsp;&nbsp;&nbsp;&nbsp;${e.amount} of ${e.of} ${SN[e.statusId] || e.statusId} does not land on <b>${nmT(e)}</b> <span class="sq">· ${String(e.causeId || '').replace(/^[a-z]+\./, '')}</span>`)
+      case 'status.warded': return b('status', `&nbsp;&nbsp;&nbsp;&nbsp;Resistance to ${SN[e.statusId] || e.statusId}: ${e.amount} of ${e.of} ${SN[e.statusId] || e.statusId} does not land on <b>${nmT(e)}</b> <span class="sq">· ${String(e.causeId || '').replace(/^[a-z]+\./, '')}</span>`)
       case 'surge.gained': return b('', `&nbsp;&nbsp;&nbsp;&nbsp;<b>${nmT(e)}</b> gains ${e.amount} Surge Chance <span class="sq">· ${e.before} → ${e.after} · ${String(e.causeId || '').replace(/^[a-z]+\./, '')}</span>`)
       case 'status.cancelled': return b('status', `&nbsp;&nbsp;&nbsp;&nbsp;${SN[e.statusId] || e.statusId} cancels ${e.amount} ${SN[e.against] || e.against} on <b>${nmT(e)}</b>`)
       case 'maxHp.gained': return b('status', `&nbsp;&nbsp;&nbsp;&nbsp;<b>${nmT(e)}</b> gains ${e.amount} max HP <span class="sq">· now ${e.maxHp}</span>`)

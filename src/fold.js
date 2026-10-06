@@ -735,8 +735,10 @@ export function fold(S, e, ctx, now = 0) {
       cue('float', { hex: e.hex, kind: 'raised', text: 'PLANTED', big: true })
       break
     case 'status.warded':
-      /* the number in the word is the line's own `amount` */
-      if (U[e.target]) cue('float', { hex: U[e.target].hex, kind: 'note', text: String(SN[e.statusId] || e.statusId).toUpperCase() + ' WARDED −' + e.amount, small: true, n: e.amount, of: 'amount' })
+      /* the number in the word is the line's own `amount`. content.resistance-to-weak-and-vigil-party-spirit (engine item,
+         2026-10-06; GLOSSARY.md 'Settled, 2026-10-05'): the word is Resistance to <Status> - it read '<STATUS> WARDED −N'.
+         The line keeps its id. */
+      if (U[e.target]) cue('float', { hex: U[e.target].hex, kind: 'note', text: 'RESISTANCE TO ' + String(SN[e.statusId] || e.statusId).toUpperCase() + ' −' + e.amount, small: true, n: e.amount, of: 'amount' })
       break
     case 'surge.gained':
       if (U[e.target]) { U[e.target].surgeChance = e.after
