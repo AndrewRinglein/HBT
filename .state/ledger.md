@@ -38516,3 +38516,136 @@ Andrew 2026-10-06: 'We don't need an attack with several chosen targets. This we
   PASS  naming — new content ids use declared kinds
   PASS  naming — no banned words invented
   PASS  kill switch — the tests fail without the content — tests fail without power.bear-trap.use,power.test-snare — they genuinely test it
+
+## content.resistance-to-weak-and-vigil-party-spirit — REFLAGGED, landed `da1d217` **NEEDS REVIEW**
+2026-10-06 18:30
+
+Landed 'done' while the gate's flags read only uncommitted edits; read again from the item's commits (gate.mjs --reflag).
+
+  WARN  not already decided — 1 candidate ruling(s) — READ BEFORE ASKING: SWITCHES.md:2282
+  WARN  existing tests untouched — DELETED LINES in test/immune-one-is-resist.test.ts (-1), test/planted-banners.test.ts (-7), viewer/tools/bar-shows-every-effect.test.mjs (-2), viewer/tools/planted-banner.test.mjs (-1) — will land FLAGGED for review
+  PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  naming — no banned words invented
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+engine 2b23a9e content.resistance-to-weak-and-vigil-party-spirit: the pack - the Vigil's heal is the party's Spirit; the rows' word is Resistance to Weak; immunityIsAWard ruled, vigilHealsItsOwnSpirit overturned; two older tests restated with dated notes
+
+diff --git a/test/immune-one-is-resist.test.ts b/test/immune-one-is-resist.test.ts
+index 688e1ff..c232f27 100644
+--- a/test/immune-one-is-resist.test.ts
++++ b/test/immune-one-is-resist.test.ts
+@@ -19,5 +19,8 @@ describe('"Immune <element> 1" is a resistance of 1', () => {
+     expect(BADGES['badge.fire-resistant']!.statModifiers).toEqual({ fireResist: 1 })
+     expect(BADGES['badge.dragon-slayer']!.statModifiers).toEqual({ maxHp: 2, fireResist: 1 })   // "immunen to fire 1", as authored
+-    expect(BADGES['badge.curse-resistant']!.gaps).toEqual(['Immune weak 1'])
++    // Restated 2026-10-06 (content.resistance-to-weak-and-vigil-party-spirit; ruled 2026-10-05, GLOSSARY 'Resistance to Weak'): the
++    // row's word changed and the rule did not - a status with no element is still a named gap. The line was:
++    //   expect(BADGES['badge.curse-resistant']!.gaps).toEqual(['Immune weak 1'])
++    expect(BADGES['badge.curse-resistant']!.gaps).toEqual(['Resistance to Weak 1'])
+     for (const id of ['badge.frost-resistant', 'badge.poison-resistant', 'badge.fire-resistant']) expect(BADGES[id]!.gaps).toBeUndefined()
+   })
+diff --git a/test/planted-banners.test.ts b/test/planted-banners.test.ts
+index a5af4d6..2f24e59 100644
+--- a/test/planted-banners.test.ts
++++ b/test/planted-banners.test.ts
+@@ -13,5 +13,5 @@ import { canUsePower, usePower } from '../src/core/ability.js'
+ import { applyStatus, valueOf as statusValue } from '../src/core/status.js'
+ import { beginActivation, gainSurgeChance, plantedOver } from '../src/core/mutate.js'
+-import { fireTriggers, validateEffect, validateTrigger, type Trigger } from '../src/core/trigger.js'
++import { fireTriggers, partySum, validateEffect, validateTrigger, type Trigger } from '../src/core/trigger.js'
+ import { effective } from '../src/core/stats.js'
+ import { restoreBattle, saveBattle } from '../src/core/snapshot.js'
+@@ -59,9 +59,11 @@ describe('the rows', () => {
+       lends: [{ id: 'trigger.banner-assassin.plant.stamina', hook: 'onCrit', chance: 100, select: 'self', effect: { kind: 'stamina.gain', value: 1 }, source: assassin.id }] })
+     expect(assassin.gaps ?? []).toEqual([])
+-    // the Vigil's: radius 1, an ally inside heals its own Spirit at the End of its Activation
++    // the Vigil's: radius 1, an ally inside heals the PARTY's Spirit at the End of its Activation
++    // Restated 2026-10-06 (content.resistance-to-weak-and-vigil-party-spirit; ruled 2026-10-05, "2 by the party spirit" -
++    // SWITCHES vigilHealsItsOwnSpirit overturned). The amount was: { scale: 'stat', stat: 'spirit', base: 0, mult: 1 }
+     const vigil = ABILITIES['power.banner-vigil.plant']!
+     expect([vigil.staminaCost, vigil.uses]).toEqual([2, 1])
+     expect(fx(vigil.id)).toEqual({ kind: 'plant', radius: 1,
+-      lends: [{ id: 'trigger.banner-vigil.plant.heal', hook: 'onActivationEnd', chance: 100, select: 'self', effect: { kind: 'heal', amount: { scale: 'stat', stat: 'spirit', base: 0, mult: 1 } }, source: vigil.id }] })
++      lends: [{ id: 'trigger.banner-vigil.plant.heal', hook: 'onActivationEnd', chance: 100, select: 'self', effect: { kind: 'heal', amount: { scale: 'partySpirit', base: 0, mult: 1 } }, source: vigil.id }] })
+     expect(vigil.gaps ?? []).toEqual([])
+     // the Heroic: radius 3, +2 Strength and +2 Precision, heal 5 at the End of Activation; its on-miss clause is a named gap
+@@ -210,5 +212,13 @@ describe('inside its reach', () => {
+ 
+ describe('the other banners, as their lines say', () => {
+-  it('the Vigil\'s: an ally inside heals its own Spirit at the End of its Activation', () => {
++  // Restated 2026-10-06 (content.resistance-to-weak-and-vigil-party-spirit; ruled 2026-10-05: asked whether the Vigil heals each
++  // ally by that ally's own Spirit or the party's, "2 by the party spirit"). It was "the Vigil's: an ally inside heals its own
++  // Spirit at the End of its Activation", and its last lines held that the warrior, with no Spirit of its own, healed nothing:
++  //   // the warrior beside it has no Spirit of its own: it heals nothing
++  //   const own = effective(ctx, ally, 'spirit').value
++  //   ally.hp = 1
++  //   endOfActivation(ctx, ally)
++  //   expect(ally.hp).toBe(1 + own)
++  it('the Vigil\'s: an ally inside heals the party\'s Spirit at the End of its Activation', () => {
+     const { ctx, planter, ally } = field([85, 86], 'item.banner-vigil', ['hero.base.priest-robes', 'hero.base.warrior-iron'], ['item.holy-symbol', 'item.peddlers-vest'])
+     plant(ctx, planter, 'power.banner-vigil.plant')
+@@ -218,10 +228,10 @@ describe('the other banners, as their lines say', () => {
+     endOfActivation(ctx, planter)
+     expect(planter.hp).toBe(Math.min(planter.maxHp, 1 + spirit))
+-    // the warrior beside it has no Spirit of its own: it heals nothing
++    // the warrior beside it has no Spirit of its own: it heals by the party's all the same
+     expect(ctx.geo.distance(ally.hex, ctx.state.planted![0]!.hex)).toBe(1)
+-    const own = effective(ctx, ally, 'spirit').value
++    expect(effective(ctx, ally, 'spirit').value).toBe(0)
+     ally.hp = 1
+     endOfActivation(ctx, ally)
+-    expect(ally.hp).toBe(1 + own)
++    expect(ally.hp).toBe(Math.min(ally.maxHp, 1 + partySum(ctx, 'hero', 'spirit')))
+   })
+ 
+viewer 39f6c5c content.resistance-to-weak-and-vigil-party-spirit (engine item): the page says Resistance to Weak - over the unit, in the log and on the banner's bar; two older assertions restated with dated notes
+
+diff --git a/tools/bar-shows-every-effect.test.mjs b/tools/bar-shows-every-effect.test.mjs
+index ab7dc55..a5d9bce 100644
+--- a/tools/bar-shows-every-effect.test.mjs
++++ b/tools/bar-shows-every-effect.test.mjs
+@@ -211,5 +211,8 @@ test('a planted banner is said whole on its power: the hex, the reach, the stats
+   assert.match(said, /^plant a banner on your hex — it stays for the rest of the Battle, and you may walk away; allies within 2 hexes of that hex: /)
+   assert.match(said, /RES\w* \+1/i)
+-  assert.match(said, /2 of each weak does not land/i)
++  /* Restated 2026-10-06 (engine item content.resistance-to-weak-and-vigil-party-spirit; ruled 2026-10-05, GLOSSARY.md
++     'Resistance to Weak'): the same two points, under the settled word. It was:
++       assert.match(said, /2 of each weak does not land/i) */
++  assert.match(said, /Resistance to Weak 2 \(2 points come off each Weak gained\)/)
+   assert.match(said, /at the end of its activation: Surge Chance \+10/)
+   assert.equal(effectSentence(plant, undefined, D, STATIC.statuses), said)
+diff --git a/tools/planted-banner.test.mjs b/tools/planted-banner.test.mjs
+index 3d25c6d..e8d5f77 100644
+--- a/tools/planted-banner.test.mjs
++++ b/tools/planted-banner.test.mjs
+@@ -91,5 +91,8 @@ test('the fold and the log say the planting, the Weak that did not land and the
+     if (e.type === 'status.warded' && !warded) { warded = e
+       const f = cues.find(c => c.k === 'float'); assert.ok(f, 'a warded status floats over the unit')
+-      assert.match(f.text, /WEAK WARDED −\d+$/i); assert.equal(f.n, e.amount); assert.equal(f.of, 'amount') }
++      /* Restated 2026-10-06 (engine item content.resistance-to-weak-and-vigil-party-spirit; ruled 2026-10-05, GLOSSARY.md
++         'Resistance to Weak'): the word changed, the number is the same line's. It was:
++           assert.match(f.text, /WEAK WARDED −\d+$/i) */
++      assert.match(f.text, /^RESISTANCE TO WEAK −\d+$/); assert.equal(f.n, e.amount); assert.equal(f.of, 'amount') }
+     if (e.type === 'surge.gained' && !gained) { gained = e
+       const f = cues.find(c => c.k === 'float'); assert.ok(f)
+viewer 47419ba content.resistance-to-weak-and-vigil-party-spirit (engine item): the bar test's line for the Vigil restated with a dated note - it heals by the party's Spirit (found by the group's viewer gate; the failed run stays in the record)
+
+diff --git a/tools/bar-shows-every-effect.test.mjs b/tools/bar-shows-every-effect.test.mjs
+index a5d9bce..a6547ed 100644
+--- a/tools/bar-shows-every-effect.test.mjs
++++ b/tools/bar-shows-every-effect.test.mjs
+@@ -225,5 +225,8 @@ test('a planted banner is said whole on its power: the hex, the reach, the stats
+   const of = pid => plantWords(STATIC.actions[pid].effects[0], D, STATIC.statuses)
+   assert.match(of('power.banner-assassin.plant'), /within 1 hex of that hex: CRIT\w* \+20 · on crit: regain 1 Stamina/i)
+-  assert.match(of('power.banner-vigil.plant'), /within 1 hex of that hex: at the end of its activation: heal SPI\w*/i)
++  // Restated 2026-10-06 (engine item content.resistance-to-weak-and-vigil-party-spirit; ruled 2026-10-05, "2 by the party
++  // spirit"): the Vigil heals by the PARTY's Spirit, and the bar says so in the words every party-Spirit heal has. It was:
++  //   assert.match(of('power.banner-vigil.plant'), /within 1 hex of that hex: at the end of its activation: heal SPI\w*/i)
++  assert.match(of('power.banner-vigil.plant'), /within 1 hex of that hex: at the end of its activation: heal party Spirit$/)
+   assert.match(of('power.banner-heroism.plant'), /within 3 hexes of that hex: STR\w* \+2 · PRE\w* \+2 · at the end of its activation: heal 5/i)
+   assert.equal(STATIC.actions['power.banner-mystic-power.plant'], undefined, 'the Mystic Banner is not planted as an object that does nothing')
+```
+</details>
