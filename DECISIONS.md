@@ -5804,3 +5804,14 @@ Andrew, in the home chat, told that the seven-item cut moves the shared map CODE
 Ruled:
 
 - **The cut stays at seven.** The map files and the map tools stay where they are; gathering them into `maps/` (`CODEBASE-REVIEW-2026-10-05.md` item 49) waits with the rest, unsized.
+
+## 2026-10-06 — the art item is the smaller version: the table moves to `art/tools/`, nothing else
+
+Andrew, in the home chat, asking what the art item was and why it was estimated at most of a day, and told of a smaller version (move the one 680-line table, `viewer/tools/character-models.mjs`, and its 24-line companion to `art/tools/` with a one-line pointer left at each old path so that none of the 31 files that use them is edited; two to three hours):
+
+“Okay, let's do a smaller version of the art item”
+
+Ruled:
+
+- **Cut item 5 is the smaller version.** The table of which unit wears which model and motion lives under `art/tools/`; art work edits a file there, never a viewer file. The code stamp counts `art/tools/` as the viewer's code, so an edit there still runs the viewer's gate.
+- **Waiting, written down:** a separate list file the viewer reads, the check of every id against content, and moving the head-and-skin drawing code.
