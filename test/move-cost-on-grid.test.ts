@@ -6,13 +6,14 @@
 // to that hex. Held here against the engine itself: the fact is the engine's number for every reach hex, woodland costs 2,
 // and the number shown on a tile is exactly what the engine takes from the hero's movement when it steps onto it.
 import { describe, it, expect } from 'vitest'
+import { levelTwoRows } from './level-two.js'
 import { createSandbox, advanceSandbox, commandSandbox, sandboxChoices, saveSandbox, restoreSandbox, type Sandbox } from '../src/core/sandbox.js'
 import { SANDBOX_DEFAULT } from '../src/content/sandbox.js'
 import { createPlayInput } from '../src/ui/play-input.js'
 import { movementOptions, stepCost } from '../src/engine.js'
 
-function start() {
-  const box: { s: Sandbox } = { s: createSandbox({ mapId: SANDBOX_DEFAULT.mapId, heroes: [...SANDBOX_DEFAULT.heroes], enemies: [], seed: 1, encounterId: 'encounter.opening.orphanage' }) }
+function start(heroRows?: ReturnType<typeof levelTwoRows>) {
+  const box: { s: Sandbox } = { s: createSandbox({ mapId: SANDBOX_DEFAULT.mapId, heroes: [...SANDBOX_DEFAULT.heroes], ...(heroRows ? { heroRows } : {}), enemies: [], seed: 1, encounterId: 'encounter.opening.orphanage' }) }
   advanceSandbox(box.s)
   const P = createPlayInput(() => box.s, (c) => commandSandbox(box.s, c), { save: () => saveSandbox(box.s), restore: (saved) => { box.s = restoreSandbox(saved as string); return true } })
   P.next()
@@ -74,7 +75,14 @@ describe('the host says what each hex of the movement grid costs to enter', () =
     expect(left - u.movePointsLeft).toBe(shown.cost)
   })
   it('a move that walks no path (a leap) is charged no step, so it names no cost', () => {
-    const { box, P } = start(), s = box.s, u = me(s)
+    // Law 10, 2026-10-06 — rule.special-moves-unlock-at-level-two (engine item; engine DECISIONS.md 2026-10-06 'a hero's special moves
+    // unlock at level 2, ruled: all of them, every hero …'): a hero has a movement power that walks no path (the Leap) from level 2,
+    // and the Orphanage's heroes are level 1. This one test is about such a move, so its heroes are the sandbox's own three as
+    // campaign rows at level 2 (test/level-two.ts); what it holds - a move that walks no path names no cost - is unchanged, and the
+    // two tests above still stand on the level-1 party. Found by the group's kingdom suite (the failed run stays in the record).
+    // The line was:
+    //   const { box, P } = start(), s = box.s, u = me(s)
+    const { box, P } = start(levelTwoRows(SANDBOX_DEFAULT.heroes)), s = box.s, u = me(s)
     const flat = sandboxChoices(s).find((c) => 'destination' in c.command && c.path.length === 0)
     expect(flat, 'the first hero has a movement power that walks no path').toBeTruthy()
     P.input({ kind: 'slot', actionId: flat!.command.actionId, unit: u.id })
