@@ -5575,3 +5575,16 @@ Ruled:
 - The chat's defaults, said to him the day he asked and not spoken against: at level 1 a special move is not on the bar at all, rather than shown locked; at level 2 the hero gains all of its own at once, on top of what the level-up gives today.
 
 Filed: `rule.special-moves-unlock-at-level-two`.
+
+## 2026-10-06 — an Activation is one move action and one primary action, in that order; a used-up power stays on the bar, greyed
+
+Andrew, in the kingdom chat, answering three questions (1 should a used-up once-per-battle power stay on the bar greyed, instead of disappearing; 2 does "one move action" apply to everyone, so a hero who Leaps can't also walk that Activation; 3 should my workers build the five viewer items your other chat filed - units brighter, enemies in firelight, water moves, trees sway, the stand-out measure):
+
+“One, yes.   Dude, I'm really confused why you keep asking this question. All the player units get two actions: a move action and a primary action, in that order, every time they get activated.   You shouldn't need to additionally author something of "Oh, there's only one move action." I really don't understand. That's fundamentally how this was built: there's a move action and a primary action. 3 yes”
+
+Ruled:
+
+- **Every player unit's Activation is two actions: a move action and a primary action, in that order.** One move action. It is not a rule to be added case by case - "That's fundamentally how this was built."
+- **Why the chat kept asking, and what is wrong in the game:** the engine as built lets a unit spend its PRIMARY action on a second move-class action - after a Leap or another movement power it may still walk its whole movement as its primary (engine SWITCHES movementBeforeWalkToday, probed 2026-10-04), and the walked-unit and Stand Up rules each closed one case of it. The chat asked case by case where it should have set that against this rule once. A move-class action is the move action's alone; the primary action never takes one. This narrows how 2026-08's "structurally, movement and primary are identical. They can both do any of the same things" has been built: the two are the same kind of thing in their limits and costs, and a move still goes in the move action. Filed: `rule.one-move-action-one-primary-action`.
+- **A used-up once-per-battle power stays on the bar, greyed** ("One, yes"). Overturns 2026-09-02's vanishing for the bar. Filed: `viewer.used-up-power-stays-greyed`.
+- **This chat's workers build the five viewer items the other chat filed** ("3 yes"): `viewer.stand-out-measured`, `viewer.units-brighter`, `viewer.enemies-in-firelight`, `viewer.water-moves`, `viewer.trees-sway`.

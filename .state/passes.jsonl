@@ -75,6 +75,8 @@
 {"suite":"engine","stamp":"dc42f97df3","with":{"engine":"dc42f97df3","content":"c6cb89aebf","viewer":"bdd60271b1","kingdom":"c1522a2667"},"at":"2026-10-06T01:43:30.809Z","by":"gate --shard (1 of 1)","in":"HBT-worker-engine","tests":3034}
 {"suite":"control","stamp":"dc42f97df3","pack":"06edfcb2d1","golden":"2a98bd088f","at":"2026-10-06T01:45:58.000Z","by":"gate capability.planted-banners --land","in":"HBT-worker-engine","moved":null}
 {"suite":"engine","stamp":"dc42f97df3","with":{"engine":"dc42f97df3","content":"c6cb89aebf","viewer":"d19fc3ce16","kingdom":"6a710d1863"},"at":"2026-10-06T02:06:54.389Z","by":"gate --shard (1 of 1)","in":"HBT-worker-engine","tests":3034}
+{"suite":"engine","stamp":"7b5bd44f67","failed":true,"at":"2026-10-06T03:35:42.776Z","by":"gate --shard 4/4","in":"HBT-worker-content"}
+{"suite":"control","stamp":"7d40f0ec2b","pack":"06edfcb2d1","golden":"b4deeaba50","at":"2026-10-06T05:56:34.240Z","by":"gate rule.prone-only-stand-up --land","in":"HBT-worker-content","moved":"map.flanks eb22eeb5->97748a6a, map.floodplain c2020314->1f783203, test.map.embers 2b539aa5->eb990c7f, test.map.horde-24 11149d6d->f7473de6, test.map.journey-20x10 3d4cffba->15137407, test.map.authored-40x40 8b801b91->103102ac, test.map.high-prop-multi ca9209bf->adfa85b5"}
 {"suite":"engine","stamp":"918e413947","with":{"engine":"918e413947","content":"c02de59499","viewer":"56f33ba09e","kingdom":"e421750b7f"},"at":"2026-10-06T03:55:17.506Z","by":"gate --shard (1 of 1)","in":"HBT-worker-engine","tests":3049}
 {"suite":"control","stamp":"918e413947","pack":"2ad263e0c8","golden":"2a98bd088f","at":"2026-10-06T03:57:00.628Z","by":"gate capability.placed-traps --land","in":"HBT-worker-engine","moved":null}
 {"suite":"engine","stamp":"17fafc9ad2","with":{"engine":"17fafc9ad2","content":"8f939e8202","viewer":"60903045d1","kingdom":"e421750b7f"},"at":"2026-10-06T04:44:14.496Z","by":"gate --shard (1 of 1)","in":"HBT-worker-engine","tests":3065}
@@ -88,3 +90,6 @@
 {"suite":"control","stamp":"1af59e0a85","pack":"f2904abff7","golden":"2a98bd088f","at":"2026-10-06T08:24:07.971Z","by":"gate content.dwarf-elf-fey-badges-act --land","in":"HBT-worker-engine","moved":null}
 {"suite":"engine","stamp":"7bdc42952e","failed":true,"at":"2026-10-06T09:35:59.621Z","by":"gate --shard 1/1","in":"HBT-worker-engine"}
 {"suite":"control","stamp":"7bdc42952e","pack":"f2904abff7","golden":"2a98bd088f","at":"2026-10-06T09:41:00.352Z","by":"gate fix.bandaged-hero-dies-at-zero --land","in":"HBT-worker-engine","moved":null}
+{"suite":"engine","stamp":"dce5b2973d","failed":true,"at":"2026-10-06T07:20:12.725Z","by":"gate --shard 1/4","in":"HBT-worker-content"}
+{"suite":"control","stamp":"dce5b2973d","pack":"bd2ba40096","golden":"b4deeaba50","at":"2026-10-06T08:57:29.640Z","by":"gate viewer.unaffordable-actions-greyed --land","in":"HBT-worker-content","moved":null}
+{"suite":"engine","stamp":"dce5b2973d","with":{"engine":"dce5b2973d","content":"8f939e8202","viewer":"53d63a3faa","kingdom":"e85af16ba7"},"at":"2026-10-06T09:14:42.532Z","by":"gate --shard (4 of 4)","in":"HBT-worker-content"}

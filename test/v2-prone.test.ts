@@ -59,7 +59,10 @@ describe('v2.prone — legal actions and payment', () => {
     expect(usableMoves(ctx, at).map((m) => m.id)).toEqual([STAND])
     expect(movementOptions(ctx, 0, 'power.move')).toEqual([])
     const away = awayHex(ctx, 85, 86)
-    expect(validateAction(ctx, { actor: 0, actionId: 'power.move', destination: away })).toEqual({ ok: false, reason: 'action-not-ready' })
+    // Law 10, 2026-10-05 — rule.prone-only-stand-up (DECISIONS.md 'a prone unit only stands; Stand Up is its one move; …'):
+    // the refusal is the same refusal, and it now carries its own reason. The line was:
+    //   expect(validateAction(ctx, { actor: 0, actionId: 'power.move', destination: away })).toEqual({ ok: false, reason: 'action-not-ready' })
+    expect(validateAction(ctx, { actor: 0, actionId: 'power.move', destination: away })).toEqual({ ok: false, reason: 'actor-prone' })
     expect(validateAction(ctx, { actor: 0, actionId: STAND, destination: 85 })).toEqual({ ok: true })
     expect(validateAction(ctx, { actor: 0, actionId: STAND, destination: 85, slot: 'primary' }).ok).toBe(false)
   })
@@ -75,9 +78,19 @@ describe('v2.prone — legal actions and payment', () => {
     expect(validateAction(ctx, { actor: 0, actionId: STAND, destination: 85 }).ok).toBe(false)
     expect(validateAction(ctx, { actor: 0, actionId: id, target: 1 })).toEqual({ ok: true })
   })
-  it('a prone unit may still take its primary at -10/-1 without standing', () => {
+  // Law 10, 2026-10-05 — OVERTURNED by a ruling, not loosened. rule.prone-only-stand-up (Andrew, DECISIONS.md 'a prone unit
+  // only stands; Stand Up is its one move; …': "yes, it cannot use attacks or powers until it stands."). The test was:
+  //   it('a prone unit may still take its primary at -10/-1 without standing', () => {
+  //     const { ctx, id } = rig()
+  //     applyStatus(ctx, 0, 'status.prone', 1, 'test')
+  //     expect(validateAction(ctx, { actor: 0, actionId: id, target: 1 })).toEqual({ ok: true })
+  //   })
+  // The -10/-1 rows of a prone attacker stay in the pipeline (read through the ledgers below); no legal order reaches them.
+  it('a prone unit may NOT take its primary without standing: the attack is refused until it stands, then taken', () => {
     const { ctx, id } = rig()
     applyStatus(ctx, 0, 'status.prone', 1, 'test')
+    expect(validateAction(ctx, { actor: 0, actionId: id, target: 1 })).toEqual({ ok: false, reason: 'actor-prone' })
+    expect(executeAction(ctx, { actor: 0, actionId: STAND, destination: 85 })).toEqual({ ok: true })
     expect(validateAction(ctx, { actor: 0, actionId: id, target: 1 })).toEqual({ ok: true })
   })
 })
