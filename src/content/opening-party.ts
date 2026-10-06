@@ -80,8 +80,10 @@ export type DraftRoller = { below(n: number, ...keys: number[]): number; d100(..
  * A hero's own value of a stat, in the Crucible's word — what a rolled point is added to and floored against (its row's number).
  * `fielded`, where the caller has it, is the same hero's value AS FIELDED bare — its row, its own kit and its row's badges: a
  * rolled LOSS is also held at the stat's floor against that (content.hero-origin-badges, 2026-10-05).
+ * `own`, where the caller has it, is the badges the hero's own row already carries — its origin badges and any other on the
+ * row: none of them is a badge the gift roll gives that hero (kingdom.gift-roll-leaves-out-own-badges, 2026-10-05).
  */
-export type DraftBase = ((stat: string) => number) & { readonly fielded?: (stat: string) => number }
+export type DraftBase = ((stat: string) => number) & { readonly fielded?: (stat: string) => number; readonly own?: readonly string[] }
 /** What a draft gives one hero: its badges, the stat points it rolled, those points as the battle takes them, and the points no engine stat takes. */
 export type DraftRolls = { readonly badges: string[]; readonly rolls: Rolled[]; readonly mods: UnitMods; readonly unfielded: Rolled[] }
 /** A drafted hero as the opening fields it: its row, what it rolled, and what the battle is handed. */
@@ -115,8 +117,10 @@ const floorOf = (stat: string): number => FLOOR[stat] ?? FLOOR['default']!
 export const baseOfRow = (id: string): DraftBase => {
   const row = UNITS[id] as unknown as Record<string, number | undefined>
   let bare: Record<string, number | undefined> | undefined
-  const base = ((stat: string) => row[STAT_OF[stat] ?? stat] ?? 0) as DraftBase & { fielded: (stat: string) => number }
+  const base = ((stat: string) => row[STAT_OF[stat] ?? stat] ?? 0) as DraftBase & { fielded: (stat: string) => number; own: readonly string[] }
   base.fielded = (stat) => ((bare ??= fieldedDef(id) as unknown as Record<string, number | undefined>)[STAT_OF[stat] ?? stat]) ?? 0
+  // the badges its own row carries (its origin badges among them): never a gift of its own
+  base.own = [...(UNITS[id]!.badges ?? [])]
   return base
 }
 /** The engine's own draft dice: its named 'draft' stream (Law 4), keyed by what the roll is. */
@@ -146,16 +150,37 @@ function rollStats(roller: DraftRoller, baseOf: DraftBase, gains: number, losses
   return out
 }
 
-/** pickWeightedBadge: favourable at `favourablePercent`, else flawed; weighted by rarity; `exclude` never. */
-function pickBadge(roller: DraftRoller, favourablePercent: number, exclude: ReadonlySet<string>, keys: readonly number[]): string | null {
+/**
+ * pickWeightedBadge: favourable at `favourablePercent`, else flawed; weighted by rarity; `exclude` never.
+ *
+ * kingdom.gift-roll-leaves-out-own-badges (2026-10-05, Andrew, DECISIONS.md 'a prone unit only stands; …; no gift doubles a
+ * hero's own badge; …' — told that the draft can roll a hero a gift badge its row already has (the Berserker rolled Huge, the
+ * Fey rolled Frail), which then adds nothing, and asked whether a hero's own badges should be left out of its gift roll:
+ * "7, yes."): `own` — the badges the hero's own row already carries — is never the badge given either. ONE RULE, HERE, for the
+ * first hero's badges and every later draft's, the engine's own draft and the kingdom's (both hand `own` in on the hero's base).
+ * The roll is made as it always was, on the same key, from the same badges; only when it lands on one of the hero's own is it
+ * made again — one further key — among the same badges without the hero's own. So every roll that did not land on an own
+ * badge gives the badge it gave before (a saved run shows the same offers except where an offer held a doubled badge), and
+ * a hero with no badge of its own in the roll's reach rolls exactly as before; the badge given instead is still drawn by
+ * rarity among those left (SWITCHES.md giftRollOwnAgain).
+ */
+function pickBadge(roller: DraftRoller, favourablePercent: number, exclude: ReadonlySet<string>, keys: readonly number[], own: readonly string[] = []): string | null {
   const wantGood = roller.d100(...keys, 0) <= favourablePercent
   let cands = (wantGood ? FAVOURABLE : FLAWED).filter((b) => !exclude.has(b.id))
   if (!cands.length) cands = [...FAVOURABLE, ...FLAWED].filter((b) => !exclude.has(b.id))
   if (!cands.length) return null
   const weight = (b: BadgeRow) => (CRUCIBLE.rarityWeight as Record<string, number>)[b.rarity] ?? CRUCIBLE.rarityDefault
-  let r = roller.below(cands.reduce((s, b) => s + weight(b), 0), ...keys, 1)
-  for (const b of cands) { r -= weight(b); if (r < 0) return b.id }
-  return cands[cands.length - 1]!.id
+  const draw = (from: readonly BadgeRow[], ...again: number[]): string => {
+    let r = roller.below(from.reduce((s, b) => s + weight(b), 0), ...keys, 1, ...again)
+    for (const b of from) { r -= weight(b); if (r < 0) return b.id }
+    return from[from.length - 1]!.id
+  }
+  const first = draw(cands)
+  if (!own.includes(first)) return first
+  // it landed on a badge the hero's row already has: drawn again among the others (of this kind; of either, were none left)
+  let rest = cands.filter((b) => !own.includes(b.id))
+  if (!rest.length) rest = [...FAVOURABLE, ...FLAWED].filter((b) => !exclude.has(b.id) && !own.includes(b.id))
+  return rest.length ? draw(rest, 1) : null
 }
 
 /** The rolls as unit mods; what no engine stat takes is returned apart, never dropped silently. */
@@ -190,7 +215,7 @@ export function firstHeroDraftOf(roller: DraftRoller, baseOf: DraftBase): DraftR
   const badges = [...F.badges]
   const positives = F.positiveBadges + (roller.d100(0, 2, 7) <= F.anotherBadgePercent ? 1 : 0)
   for (let i = 0; i < positives; i++) {
-    const b = pickBadge(roller, 100, new Set(badges), [0, 2, 6, i])
+    const b = pickBadge(roller, 100, new Set(badges), [0, 2, 6, i], baseOf.own)
     if (b) badges.push(b)
   }
   const points = F.statPoints + (roller.d100(0, 2, 9) <= F.anotherPointPercent ? 1 : 0)
@@ -219,7 +244,7 @@ export function draftHandOf(roller: DraftRoller, bases: readonly DraftBase[], or
     for (let i = 0; i < count; i++) {
       const signature = i === 0
       const exclude = new Set([...badges, ...(signature ? signatures : [])])
-      const b = pickBadge(roller, signature ? CRUCIBLE.favourablePercent.signature : CRUCIBLE.favourablePercent.later, exclude, [...keys, 4, i])
+      const b = pickBadge(roller, signature ? CRUCIBLE.favourablePercent.signature : CRUCIBLE.favourablePercent.later, exclude, [...keys, 4, i], baseOf.own)
       if (b && !badges.includes(b)) { badges.push(b); if (signature) signatures.add(b) }
     }
     const { mods, unfielded } = modsOf(rolls, SCORE.rollSource)
