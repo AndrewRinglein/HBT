@@ -5725,3 +5725,18 @@ Read, not certain (dictated; his words are kept above as said, and both readings
 - 5 is not a ruling: he asked whether a backup is needed and said he does not care whether the repository is private. Nothing has been pushed.
 
 Not ruled by this entry: the two areas' folder names and where they sit; what becomes of `assets/` and the root `tools/`; which gate checks the workshop rule (a tooling switch); the order of the moves. Nothing is filed from this entry.
+
+## 2026-10-06 — the codebase review's changes are all to be built, once everything is approved and clean; the GitHub repository may be public
+
+Andrew, in the codebase-review chat, answering four questions (1 did "3S" mean yes to keeping "this hero wears this look" on the art side; 2 did the prototype-phase remark mean leave the battle you play inside the kingdom for now; 3 will the GitHub repository be made private, or stay public knowing it would carry licensed art and music; 4 file the work as backlog items, or hold it as a plan):
+
+“One, yes.   Let's leave it wherever it is for right now.  3. I'm okay with it being public. We're just playing around with shit right now. It's fine. I don't care about licenses or public or anything else.   Once we have everything approved and clean, I want you to build everything. I want you to do the codebase updates, everything being discussed, and everything that you proposed.”
+
+Ruled:
+
+- **"This hero wears this look" stays on the art side**, with a check that fails when the hero id is not in content. (The first reading in the entry above, confirmed.)
+- **The battle you play stays in the kingdom for now.** (The second reading, confirmed.)
+- **The GitHub repository, github.com/AndrewRinglein/HBT, may be public.** The licence question was put to him twice and is his. The four packages go there as one branch each (`engine`, `content`, `viewer`, `kingdom`); the push began the same hour, after a scan of all four histories for key-shaped strings and secret-looking file names found none. The root repository does not go yet (it tracks files over GitHub's 100 MB limit).
+- **Everything discussed and proposed in the review is to be built, once everything is approved and clean** - the checklist, the art-and-motion and maps areas, the `workshop` and `accepted` shelves. The findings, the rulings and the build order are `CODEBASE-REVIEW-2026-10-05.md` at the project root, written the same hour so that the work does not depend on that chat.
+
+Not yet approved or clean, read the same hour (not ruled): the two areas' folder names; the full four-suite run the last home chat left owed in the main folder (kingdom and the viewer's checks failed there - kingdom `HANDOFF-2026-09-04.md`, "2026-10-06 — Now"); the owed chains unlanded in three worker copies. Nothing is filed from this entry.
