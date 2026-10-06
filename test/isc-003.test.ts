@@ -41,7 +41,7 @@ describe('ISC-003 — the engine is reached through one door and never changed',
     // adding the pieces up"): the door is widened by ONE more named read-only export from the pipeline, attackFigures — pure,
     // no state, no dice. Still exactly the named exports and nothing else; raw attack execution stays closed. The line was:
     //   expect(door.match(/^export.*core\/pipeline.*$/gm)).toEqual(["export { preview } from '../../engine/src/core/pipeline.js'"])
-    expect(door.match(/^export.*core\/pipeline.*$/gm)).toEqual(["export { preview } from '../../engine/src/core/pipeline.js'", "export { attackFigures } from '../../engine/src/core/pipeline.js'"])
+    expect(door.match(/^export.*core\/pipeline.*$/gm)).toEqual(["export { attackFigures } from '../../engine/src/core/pipeline.js'", "export { preview } from '../../engine/src/core/pipeline.js'"])
     expect(door).not.toMatch(/export\s*\{[^}]*performAttack/)
   })
 
