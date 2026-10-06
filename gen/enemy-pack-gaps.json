@@ -587,16 +587,6 @@
    "needs": "item power — shape unparsed"
   },
   {
-   "unit": "item.staff-of-the-destroyer",
-   "what": "attack.staff-of-the-destroyer.ruin onKill: \"the corpse is destroyed\"",
-   "needs": "trigger shape unparsed"
-  },
-  {
-   "unit": "item.staff-of-the-destroyer",
-   "what": "attack.staff-of-the-destroyer.sundering onKill: \"the corpse is destroyed\"",
-   "needs": "trigger shape unparsed"
-  },
-  {
    "unit": "item.chains-of-the-wrathful",
    "what": "grants power.chains-of-the-wrathful.weight-of-sin",
    "needs": "item power — shape unparsed"
@@ -605,11 +595,6 @@
    "unit": "item.chains-of-the-wrathful",
    "what": "attack.chains-of-the-wrathful.wrathful-sweep targets 'every enemy within 3 hexes' — lands SINGLE-TARGET",
    "needs": "area attack shape"
-  },
-  {
-   "unit": "item.benevolent-rod",
-   "what": "grants power.benevolent-rod.restoration",
-   "needs": "item power — shape unparsed"
   },
   {
    "unit": "item.benevolent-rod",

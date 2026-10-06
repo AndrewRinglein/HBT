@@ -1052,7 +1052,18 @@ function settledAttackExtras(a, unitId) {
     // engine capability.effect-lasts-activations (2026-10-05): "apply <Status> equal to half your Magic, rounded nearest, 0.5
     // up" — the Fire Punch's own rider, the value Stoke lends: the engine's scaled value with the nearest rounding
     const half = typeof t.effect === 'string' && t.effect.match(/^apply ([A-Z][a-z]+) equal to half your (Magic|Spirit), rounded nearest, 0\.5 up$/);
-    if (half && STATUS_OK.has(half[1].toLowerCase()) && TRIG_HOOKS.has(t.hook)) {
+    // engine capability.his-weapons-small-clauses (2026-10-05; engine DECISIONS.md 2026-10-04 'his 28 reward weapons read back …':
+    // "Everything else in here seems like something we need."): "On kill: the corpse is destroyed" — the Staff of the
+    // Destroyer's Ruin and Sundering. The engine's corpse.destroy on the attack's own onKill, aimed at the unit it killed:
+    // the body is made where it fell and removed at once, so nothing can raise, eat or consume it. EXACT phrase, onKill only.
+    if (t.effect === 'the corpse is destroyed' && t.hook === 'onKill') {
+      out.push({
+        id: `trigger.${a.id.replace(/^attack\./, '')}.corpse-destroyed`,
+        hook: 'onKill', chance: t.chance ?? 100, select: 'target',
+        effect: { kind: 'corpse.destroy' },
+        source: unitId, onlyWithAttack: a.id,
+      });
+    } else if (half && STATUS_OK.has(half[1].toLowerCase()) && TRIG_HOOKS.has(t.hook)) {
       out.push({
         id: `trigger.${a.id.replace(/^attack\./, '')}.${half[1].toLowerCase()}`,
         hook: t.hook, chance: t.chance ?? 100, select: 'target',
@@ -1219,6 +1230,17 @@ function compiledPowerOf(p, unitId) {
     && (r = tgt.match(/^one ally within (\d+) hexes$/))) {
     return { ...base, range: parseInt(r[1], 10), target: { select: 'unit', side: 'ally' },
       effects: [{ kind: 'heal', amount: { scale: 'partySpirit', base: parseInt(m[1], 10), mult: parseInt(m[2], 10) } }] };
+  }
+  // engine capability.his-weapons-small-clauses (2026-10-05): the Benevolent Rod's Mending Light — "Heal the target for (Spirit x
+  // M) + B, give it Protection equal to your Spirit, and remove <Status> equal to your Spirit." Three effects on the one ally:
+  // the heal and the Protection are shapes the engine had; the third is status.remove by a stat's amount. "Your Spirit" is
+  // the party's (GAME-DESIGN §5: Spirit is a party stat — as the Heal sentences above read it).
+  if ((m = desc.match(/^Heal the target for \(Spirit x (\d+)\) \+ (\d+), give it Protection equal to your Spirit, and remove ([A-Z][a-z]+) equal to your Spirit\.$/))
+    && (r = tgt.match(/^one ally within (\d+) hexes$/)) && STATUS_OK.has(m[3].toLowerCase())) {
+    return { ...base, range: parseInt(r[1], 10), target: { select: 'unit', side: 'ally' }, effects: [
+      { kind: 'heal', amount: { scale: 'partySpirit', base: parseInt(m[2], 10), mult: parseInt(m[1], 10) } },
+      { kind: 'status.apply', statusId: 'status.protection', value: { scale: 'partySpirit', base: 0, mult: 1 } },
+      { kind: 'status.remove', statusId: 'status.' + m[3].toLowerCase(), value: { scale: 'partySpirit', base: 0, mult: 1 } }] };
   }
   if ((m = desc.match(/^Gain Protection equal to (\d+) \+ your Armor, and lose (\d+) Dodge for the rest of the Battle\./))
     && tgt === 'self') {
@@ -2289,6 +2311,13 @@ for (const combo of TIER3) {
     if (TRIG_HOOKS.has(t.hook) && (m = eff.match(/^deal (\d+) (physical|magic|fire|poison|shadow|true) damage$/))) {
       for (const scope of scopes) triggers.push({ id: `trigger.${combo.id.replace(/^item\./, '')}.${m[2]}-damage${t.hook === 'onCrit' ? '-crit' : ''}`, hook: t.hook, chance: t.chance ?? 100,
         select: 'target', effect: { kind: 'damage', amount: +m[1], damageType: m[2] }, source: combo.id, ...scope });
+      continue;
+    }
+    // engine capability.his-weapons-small-clauses (2026-10-05): the artifact attribute Destroying — "On kill: the corpse is
+    // destroyed" — the same corpse.destroy the Staff of the Destroyer's attacks carry, riding the attacks of the weapon it is on
+    if (t.hook === 'onKill' && eff === 'the corpse is destroyed') {
+      for (const scope of scopes) triggers.push({ id: `trigger.${combo.id.replace(/^item\./, '')}.corpse-destroyed`, hook: 'onKill', chance: t.chance ?? 100,
+        select: 'target', effect: { kind: 'corpse.destroy' }, source: combo.id, ...scope });
       continue;
     }
     // v2.thorns: the enchant's "Thorns N" is the same magnitude its base items carry.
