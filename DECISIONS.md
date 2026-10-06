@@ -5794,3 +5794,13 @@ Ruled:
 - **Everything else in the list waits, written down and unscheduled** - the palette and dead CSS, dead code and repeated helpers, the kingdom's door to the viewer, the engine's import loop, the splits of `sandbox.ts`, `viewer.js` and the content compiler, moving the existing art onto shelves, the process tooling leaving the engine, gathering the loose files, and the opening draft's move to the kingdom (that ruling stands; only its time waits). A worker already in a file for a feature may take one.
 
 This replaces, for what is built now, 'everything discussed and proposed in the review is to be built' of the same day. The two prerequisites do not change: the three copies' owed chains land and the full four-suite run is green in the main folder first.
+
+## 2026-10-06 — for maps, separating the code is enough for now
+
+Andrew, in the home chat, told that the seven-item cut moves the shared map CODE into `maps/` but leaves the map files in four places (`content/gen/maps.json`, two folders under `assets/`, the generated combat files) and the map tools under `tools/battle-atlas`, and asked whether gathering those into `maps/` should be added to the cut:
+
+“Separate the code enough for now.”
+
+Ruled:
+
+- **The cut stays at seven.** The map files and the map tools stay where they are; gathering them into `maps/` (`CODEBASE-REVIEW-2026-10-05.md` item 49) waits with the rest, unsized.
