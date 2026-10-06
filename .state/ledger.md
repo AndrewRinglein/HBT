@@ -38743,3 +38743,49 @@ index b98f92a..41928c2 100644
  // Every case frozen here (tools/capture-computer-avoids-own-traps-cursor.mts). Moved: none. A `changed` case is checked here and skips the older layers.
 ```
 </details>
+
+## tool.gate-flags-read-committed-edits — LANDED `56fdb83` **NEEDS REVIEW**
+2026-10-06 21:45
+
+  PASS  dependencies landed
+  WARN  not already decided — 3 candidate ruling(s) — READ BEFORE ASKING: DECISIONS.md:5644 · SWITCHES.md:2247
+  PASS  typecheck
+  PASS  the item's own tests — test/gate-committed-item-tests.test.ts, test/gate-flags-read-committed-edits.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — test/gate-committed-item-tests.test.ts, test/gate-flags-read-committed-edits.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/gate-committed-item-tests.test.ts (-1) — will land FLAGGED for review
+  PASS  control battles unchanged
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+engine 5045782 tool.gate-flags-read-committed-edits: its scratch-repository tests take a long time limit - one timed out in the whole suite beside other workers' runs (the failed run stays in the record)
+
+diff --git a/test/gate-committed-item-tests.test.ts b/test/gate-committed-item-tests.test.ts
+index 663b501..c4b54cc 100644
+--- a/test/gate-committed-item-tests.test.ts
++++ b/test/gate-committed-item-tests.test.ts
+@@ -9,5 +9,5 @@
+ //
+ // A scratch repository; nothing here touches the real folder.
+-import { describe, expect, it } from 'vitest'
++import { describe, expect, it, vi } from 'vitest'
+ import { execFileSync } from 'node:child_process'
+ import { mkdirSync, mkdtempSync, writeFileSync } from 'node:fs'
+@@ -16,4 +16,6 @@ import { dirname, join } from 'node:path'
+ import { committedItemTests, killSwitchFiles, testFilesIn } from '../tools/gate-progress.mjs'
+ 
++// every test here makes a scratch repository and runs git a dozen times: seconds alone, more beside other workers' runs - a time limit is not the assertion
++vi.setConfig({ testTimeout: 120_000 })
+ const git = (cwd: string, ...args: string[]) => execFileSync('git', args, { cwd, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] }).trim()
+ const put = (file: string, text: string) => { mkdirSync(dirname(file), { recursive: true }); writeFileSync(file, text) }
+```
+</details>
