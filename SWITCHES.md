@@ -1990,3 +1990,13 @@ half) and the bodies', not the solid pieces'. The calls fell; the frame time wai
 | `solidBatchSplit` | A material whose pieces fall into two batches (two sets of attributes, some mirrored, some taking no shadow)? | **Each batch draws its own pieces in three's order; BETWEEN the two the order is each batch's as a whole, not piece by piece — where a piece of one crosses a piece of the other at equal depth, which shows may differ from drawing each alone. None of the six battles has such a material.** | A batch has one of each. | Default — a limit — 2026-10-05 |
 | `solidBatchStandIn` | A renderer that is not the browser's (a test's stand-in)? | **No batches unless it asks (`platform.batches`): the page tests that read which meshes a pass draws read the pieces as before.** | They hold other rules. | Default — 2026-10-05 |
 | `frameNoiseOneShade` | FOUND, not changed: with the clock held and the blended pieces left out of the picture, a frame is now and then a few pixels of ONE shade off the very same frame drawn again — 6 to 13 pixels of two million, on the Cathedral and the Cavern Trail most; most often the frame in which the scenery's shadow is taken again, but between two plain frames as well; with every piece drawn by itself just as with batches, and on main's page before this item (the tool's "two frames drawn the same way": 4 on the Orphanage that day). | **Left. The tool's batched comparison reads the frame after the one that takes the shadow again, and draws a view again (three times at the most) where its two ways differ: what is the batches' doing differs every time. Where it comes from is not known.** | Not this item's; said so the comparison's "0" is read rightly. | Open — found — 2026-10-05 |
+
+## kingdom.gift-roll-leaves-out-own-badges (the viewer's dumps and recordings) — 2026-10-05
+
+The engine's draft leaves a hero's own badges out of its gift roll (engine SWITCHES, the same heading). Nothing of the viewer's
+code changes. `generated/static.json` and `generated/fields.json` are re-dumped and the six opening recordings re-exported
+together at engine code stamp b96ee0dc7e.
+
+| Switch | Question | Default | Reason | Status |
+|---|---|---|---|---|
+| `giftRollOpeningRecordings` | Do the six opening recordings move? | **No: each is event for event and seed for seed what it was (their seeds are replicates 5, 3, 19, 11, 0 and 10; of those only replicate 11's draft changes, at its sixth hero, and the Cavern Trail fields four). They are re-exported together because the engine's code moved and the six are held to one engine (`test/viewer.opening-replays.test.ts`); only the stamp each carries differs.** | Said so the re-export is not read as a change to the battles. | Default — 2026-10-05 |
