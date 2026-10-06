@@ -10,6 +10,7 @@
 // Up alone: the other moves that go nowhere (Devotion, Focus) keep their two presses (SWITCHES.md standUpAloneIsOnePress).
 // Which move is the stand is the engine's answer (standsUp: a movement whose effects stand the unit), never an id typed here.
 import { describe, it, expect } from 'vitest'
+import { levelTwoRows } from './level-two.js'
 import { execFileSync } from 'node:child_process'
 import { createSandbox, advanceSandbox, commandSandbox, sandboxChoices, type Sandbox } from '../src/core/sandbox.js'
 import { SANDBOX_DEFAULT } from '../src/content/sandbox.js'
@@ -22,7 +23,11 @@ import { standsUp } from '../../engine/src/core/action.js'
 const LUMBERJACK = 'encounter.opening.lumberjack'
 type U = Sandbox['ctx']['state']['units'][number]
 function battle2() {
-  const s = createSandbox({ mapId: encounterDef(LUMBERJACK).mapId!, heroes: [...SANDBOX_DEFAULT.heroes], enemies: [], seed: 1, encounterId: LUMBERJACK })
+  // Law 10, 2026-10-06 — rule.special-moves-unlock-at-level-two (engine item; engine DECISIONS.md 2026-10-06 'a hero's special moves
+  // unlock at level 2, ruled: all of them, every hero …'): a move that goes nowhere (Devotion, Focus) is a hero's from level 2, and
+  // one test here presses it. The sandbox's three heroes are fielded as campaign rows at level 2 (test/level-two.ts); what is
+  // held of Stand Up and of the other moves' gestures is unchanged. The line was the same without `heroRows`.
+  const s = createSandbox({ mapId: encounterDef(LUMBERJACK).mapId!, heroes: [...SANDBOX_DEFAULT.heroes], heroRows: levelTwoRows(SANDBOX_DEFAULT.heroes), enemies: [], seed: 1, encounterId: LUMBERJACK })
   advanceSandbox(s)
   const P = createPlayInput(() => s, (c: BattleCommand) => commandSandbox(s, c))
   const begin = (u: U) => { P.input({ kind: 'choose', id: u.id }); P.input({ kind: 'unit', id: u.id, hex: u.hex }); expect(s.ctx.battleCursor, `${u.name}'s Activation`).toMatchObject({ at: 'acting', actor: u.id }) }

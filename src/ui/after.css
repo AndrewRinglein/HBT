@@ -263,6 +263,9 @@
 @keyframes hxStatFloatUp{0%{opacity:0;transform:translateX(-50%) translateY(0) scale(.8)}15%{opacity:1;transform:translateX(-50%) translateY(-20px) scale(1.1)}25%{transform:translateX(-50%) translateY(-30px) scale(1)}70%{opacity:1;transform:translateX(-50%) translateY(-60px)}100%{opacity:0;transform:translateX(-50%) translateY(-100px)}}
 .hx .stat-gain:nth-child(odd){left:42%} .hx .stat-gain:nth-child(even){left:58%} .hx .stat-gain:nth-child(3n){left:50%}
 .hx .stat-gain.specialty-name{font-size:32px;color:var(--gold);text-shadow:0 0 25px rgba(212,175,55,1),0 0 50px rgba(212,175,55,.6),0 2px 10px rgba(0,0,0,.8)}
+/* rule.special-moves-unlock-at-level-two (engine item, 2026-10-06): a move unlocked, in the list and risen above the hero */
+.hx .bonus-item.move .bonus-line{display:block;font-size:.8em;opacity:.8;margin-top:2px}
+.hx .stat-gain.move{font-size:30px;color:var(--gold);text-shadow:0 0 25px rgba(212,175,55,1),0 0 50px rgba(212,175,55,.6),0 2px 10px rgba(0,0,0,.8)}
 .hx .stat-gain.specialty{color:var(--lu-success-bright)} .hx .stat-gain.slot{color:var(--info-bright);font-size:24px}
 .hx .bonuses-preview{position:absolute;right:40px;top:50%;transform:translateY(-50%);width:280px;background:linear-gradient(135deg,rgba(42,24,16,.95),rgba(10,10,10,.95));border:2px solid var(--gold);border-radius:12px;padding:20px;opacity:0;transition:opacity .5s;z-index:20;box-shadow:0 10px 40px rgba(0,0,0,.6)}
 .hx .bonuses-preview.visible{opacity:1}

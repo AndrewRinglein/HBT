@@ -13,9 +13,9 @@
 // `heroProgress`. The one grant the kingdom itself applies is itemSlots, which is the slot model's number and not a
 // battle stat.
 
-import { SPECIALTY_WORDS } from './generated/progress.js'
+import { SPECIALTY_WORDS, MOVE_LINES } from './generated/progress.js'
 import { omitDisabled } from './disable.js'
-import { LEVELS, SPECIALTIES as ENGINE_SPECIALTIES, SPECIALTY_LEVEL } from '../engine.js'
+import { LEVELS, SPECIALTIES as ENGINE_SPECIALTIES, SPECIALTY_LEVEL, UNITS, ACTIONS } from '../engine.js'
 
 export type LevelRow = {
   readonly level: number
@@ -60,4 +60,23 @@ export function specialtyOf(id: string): SpecialtyRow {
   const s = SPECIALTIES.find((x) => x.id === id)
   if (!s) throw new Error(`unknown specialty '${id}'`)
   return s
+}
+
+/** A movement a level unlocks: the engine's id and name, and the Codex's one line of what it does ('' where it gives none). */
+export type MoveUnlocked = { readonly id: string; readonly name: string; readonly line: string }
+/**
+ * rule.special-moves-unlock-at-level-two (engine item, 2026-10-06; engine/DECISIONS.md 'a hero's special moves unlock at level
+ * 2, ruled: all of them, every hero, enemies and civilians unchanged, named on the level-up screen'): the movements a unit
+ * gains on reaching `level` — read from the ENGINE's row (its `moveLevels`: the level each movement it lists is granted
+ * at), in the row's own order. The kingdom rules nothing here; it names what the engine grants. The line is the Codex's,
+ * by the unit's class (generated MOVE_LINES). A row that names no level — a civilian, an enemy — unlocks none.
+ */
+export function movesUnlockedAt(unitType: string, level: number): MoveUnlocked[] {
+  const def = UNITS[unitType]
+  if (!def?.moveLevels) return []
+  const classes = (def.tags ?? []).filter((t) => t.startsWith('class.'))
+  return def.moves.filter((m) => def.moveLevels![m] === level).map((id) => ({
+    id, name: ACTIONS[id]?.name ?? id,
+    line: MOVE_LINES.find((r) => r.moveId === id && classes.includes(r.classId))?.line ?? '',
+  }))
 }

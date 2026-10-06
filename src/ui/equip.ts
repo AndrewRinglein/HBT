@@ -80,6 +80,10 @@ export const STAT_ROWS: readonly [label: string, key: keyof UnitDef & string][] 
   ['Accuracy', 'accuracy'], ['Crit', 'crit'], ['Strength', 'strength'], ['Precision', 'precision'], ['Stam Regen', 'staminaRegen'],
   // v2.thorns (engine 88064ac, 2026-09-24): Thorns is a folded stat now, so the card shows it
   ['Thorns', 'thorns'],
+  // rule.surge-is-at-least-level (engine item, 2026-10-06; engine/DECISIONS.md 'everyone gains Surge equal to its level at the
+  // least …'): a hero's Surge is on its sheet - the engine's fielded number (its level at the least, with a specialty's,
+  // a badge's or an item's on top), what its Surge Chance gains at the end of each Activation.
+  ['Surge', 'surge'],
 ]
 const PCT = new Set(['accuracy', 'dodge', 'crit'])
 

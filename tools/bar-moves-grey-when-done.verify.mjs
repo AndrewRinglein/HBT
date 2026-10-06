@@ -34,7 +34,18 @@ settle()
 const a=acting(),A=unit(a)
 assert.deepEqual([A.moveUsed,A.primaryUsed],[false,false],'the engine: nothing spent yet')
 assert.deepEqual(greyed(),[]);assert.deepEqual(disabled(),[]);assert.deepEqual(V().play.moveDone,[])
-assert.ok(movesOf(a).length>=2,`${A.name} has its basic move and another movement power`)
+/* Law 10, 2026-10-06 — rule.special-moves-unlock-at-level-two (engine item; engine DECISIONS.md 2026-10-06 'a hero's special moves unlock
+   at level 2, ruled: all of them, every hero …': "the special moves that the starting heroes get should be unlocked instead at level 2").
+   The Orphanage's heroes are level 1 and hold the basic move alone, so the two lines that asked each hero for a second movement
+   power cannot hold here any more:
+     was (step 1): assert.ok(movesOf(a).length>=2,`${A.name} has its basic move and another movement power`)
+     was (step 3): assert.ok(othersB.length>0,`${B.name} has its basic move and another movement power`)
+   Everything this page test reads of the bar is unchanged and is read of whatever movements the hero holds: the move that is done
+   greys, on the host's word; nothing else greys; nothing looks disabled; the grey leaves with the Activation. That a walk closes a
+   hero's OTHER movement is held where a hero has one - at level 2: the engine's half on two level-2 Iron Dwarves
+   (viewer test/viewer.bar-moves-grey-when-done.test.ts) and the page's half on battle 2's level-2 hero
+   (viewer tools/bar-moves-grey-when-done.test.mjs). */
+assert.ok(movesOf(a).length>=1,`${A.name} has its basic move`)
 const [basicA,...othersA]=movesOf(a)
 say(`1 ${A.name} begins: ${rows().length} buttons, none greyed, none disabled (moves: ${movesOf(a).map(id=>ctx().actions[id].name).join(', ')})`)
 /* Law 10, 2026-10-04 — rule.walked-unit-has-moved (engine item; engine DECISIONS.md 2026-10-04 'after the backlog run: ... moves are refused
@@ -67,8 +78,7 @@ V().dom.root.querySelector('#playEndAct').handlers.click({});settle()
 //    and no other movement
 const b=acting(),B=unit(b);assert.notEqual(b,a)
 assert.deepEqual(greyed(),[],`${B.name} begins with nothing greyed`)
-const [basicB,...othersB]=movesOf(b)
-assert.ok(othersB.length>0,`${B.name} has its basic move and another movement power`)
+const [basicB,...othersB]=movesOf(b)   // at level 1: the basic move alone (the note at step 1)
 const near=V().play.reach.find(x=>dist(B.hex,x)===1);assert.ok(near!==undefined,'a hex one step away')
 const budget=B.movePointsLeft
 walkTo(near)
