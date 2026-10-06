@@ -117,6 +117,7 @@ export function restoreBattle(json: string, runtime: BattleRuntime): Ctx {
     for (const key of ['fireResist', 'poisonResist', 'shadowResist', 'coldResist', 'block', 'rangedBlock', 'thorns', 'swapCost', 'bleedOutTurns', 'deathbedFighting', 'counterattack', 'counterattackAccuracy', 'fend', 'fendAccuracy', 'freeAttackAccuracy', 'freeAttackDodge']) requireThat(u[key] === undefined || integer(u[key]), `unit ${key}`)   // bleedOutTurns, deathbedFighting: fix.codex-numbers
     requireThat(u.swapUsed === undefined || typeof u.swapUsed === 'boolean', 'unit swapUsed')   // v2.swap
     requireThat(u.walked === undefined || u.walked === true, 'unit walked')   // rule.walked-unit-has-moved
+    requireThat(u.stood === undefined || u.stood === true, 'unit stood')   // rule.prone-only-stand-up
     if (u.loadout !== undefined) {   // v2.loadout: hands and stowed, item instances
       record(u.loadout)
       requireThat(Object.keys(u.loadout).every((k) => ['hands', 'stowed', 'worn'].includes(k)), 'unit loadout keys')

@@ -63,6 +63,15 @@ function holdsProne(ctx: Ctx, u: Unit): boolean {
 }
 /** v2.prone: a stand action — a movement whose effects include `stand`. */
 export const standsUp = (a: ActionDef): boolean => a.move !== undefined && (a.effects ?? []).some((e) => e.kind === 'stand')
+/**
+ * rule.prone-only-stand-up (ruled 2026-10-05, DECISIONS.md 'a prone unit only stands; Stand Up is its one move; …': "yes, it
+ * cannot use attacks or powers until it stands."): is this an action the unit HOLDS and is refused only because it is
+ * knocked down? Every action but its stand, while it holds a prone status. The command checks ask this before the limits
+ * check so the refusal carries its own reason ('actor-prone'); the answer itself is actionReady's.
+ */
+export function refusedProne(ctx: Ctx, u: Unit, a: ActionDef): boolean {
+  return holdsProne(ctx, u) && !standsUp(a) && grantedActionIds(ctx, u).includes(a.id)
+}
 
 /** The unit's attacks, in its order — every granted id whose row is present and carries an attack profile. */
 export function attacksOf(ctx: Ctx, u: Unit): AttackDef[] {
@@ -108,9 +117,14 @@ export function walkOf(ctx: Ctx, u: Unit): MoveDef | null {
  * walked …'): once a unit has walked in its Activation — entered any hex with its walk — no OTHER movement is accepted
  * from it for the rest of that action cycle. The walk itself is not closed: the rest of a walk cut short may still be
  * walked. A movement used before any walk closes nothing here. Pure; read by the one movement legality (movement.ts).
+ *
+ * rule.prone-only-stand-up (ruled 2026-10-05, the same entry: "No, you only perform one move action."): standing up is the
+ * unit's one move action — once it has stood in this action cycle NO movement is accepted from it, its walk included (it
+ * has not begun one: there is no rest of a walk to finish). The same refusal, for the same reason: its move is done.
  */
 export function closedByWalk(ctx: Ctx, u: Unit, a: ActionDef): boolean {
-  return u.walked === true && isMove(a) && !isCharge(a) && a.id !== walkOf(ctx, u)?.id
+  if (!isMove(a) || isCharge(a)) return false
+  return u.stood === true || (u.walked === true && a.id !== walkOf(ctx, u)?.id)
 }
 /** The ids of the unit's attacks / powers / movements — for the code that indexes by id. */
 export const burstsOf = (ctx: Ctx, u: Unit): BurstDef[] => grantedActionIds(ctx, u).map(id => ctx.actions[id]).filter((a): a is BurstDef => !!a && isBurst(a))
@@ -145,9 +159,11 @@ export function isReady(ctx: Ctx, u: Unit, id: string): boolean {
  */
 export function actionReady(ctx: Ctx, u: Unit, a: ActionDef, free = false): boolean {
   if (!grantedActionIds(ctx, u).includes(a.id)) return false
-  // v2.prone (§10): standing is legal only while prone, and while prone it is
-  // the only movement (SWITCHES.md proneNoCrawl). Primary actions stay.
-  if (a.move !== undefined && standsUp(a) !== holdsProne(ctx, u)) return false
+  // v2.prone (§10): standing is legal only while prone. rule.prone-only-stand-up (ruled 2026-10-05: "yes, it cannot use
+  // attacks or powers until it stands."): and while prone it is the ONLY action — every other is refused here, in the one
+  // check every legality function asks first, so the action list, the computer and a special free attack all follow
+  // (SWITCHES.md proneNoCrawl, overturned in part; proneMakesNoReaction).
+  if (standsUp(a) !== holdsProne(ctx, u)) return false
   // `free`: a special free attack asks for no Stamina (rule.free-attack-is-basic-attack) — every other limit stands
   if (!free && u.stamina < staminaCostOf(u, a)) return false
   if (!isReady(ctx, u, a.id)) return false
