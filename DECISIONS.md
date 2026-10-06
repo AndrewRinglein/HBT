@@ -5443,3 +5443,10 @@ Ruled:
 - **Not answered, the chat's defaults (said to him the same day, each one line to change):** it holds about two seconds; a click or a key skips it; the enemies do what they are doing where they stand (no new motion is made for it); the 'New enemy' notice with its name and 'This enemy can ...' shows as it does today, at the bottom, while the close-up plays; a boss's is longer and nearer.
 
 Filed: `viewer.new-enemy-close-up`.
+
+Two corrections to the entry above, the same morning, after he asked “How much speed would we lose to add in that animation? It does look nice, but it's not that important.”:
+
+- **The Gates is a flat battle with no 3D scene** (`viewer/SWITCHES.md`, the table under `viewer.solid-pieces-drawn-by-material`: “The Gates is a flat battle: no 3D scene”) - that, and not the chat's pane, is why it showed nothing. The template is a way of drawing a 3D scene's materials and does not reach it; the Gates needs a 3D map, or its flat tiles their own colours.
+- **Moving water and trees do not work against the still-frame rule in a battle.** While bodies stand on the board the scene is already drawn every frame - the Orphanage 700 draw calls and 5.18 million triangles a frame, 13.2 ms of script, bodies idling (the same table) - because the bodies move where they stand; “a held frame draws nothing” is a board with nothing on it. Water moved and leaves bent in the way those pieces are drawn add no draw call and no triangle. What would cost is the trees' shadows moving with them: the scenery's shadow is drawn once and kept (`viewer.scenery-shadow-drawn-once`), and a swaying shadow brings that pass back every frame. So: the trees sway, their shadows stand still. Not measured - a gate was running on the machine when he asked, and the frame-cost tool measures it properly once the motion exists.
+
+**“It's not that important”**: the water and the trees go last of the eight pieces, the water first of the two, each landing with the frame-cost tool's before and after; the trees are dropped if the tool shows a cost.
