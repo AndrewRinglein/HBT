@@ -187,6 +187,27 @@ export function applyItems(
  */
 export const SPECIALTY_LEVEL = 2
 
+/**
+ * rule.special-moves-unlock-at-level-two (2026-10-06; DECISIONS.md 'a hero's special moves unlock at level 2, ruled: all of
+ * them, every hero, enemies and civilians unchanged …': "the special moves that the starting heroes get should be unlocked
+ * instead at level 2"). The movements a unit HAS at a level: those its row lists, less the ones the row grants at a later
+ * level (`moveLevels`). The row's order is kept (Law 6). A row that names no level keeps every movement at every level.
+ */
+export function movesAtLevel(def: Pick<UnitDef, 'moves' | 'moveLevels'>, level: number): string[] {
+  const at = def.moveLevels
+  return at ? def.moves.filter((m) => (at[m] ?? 1) <= level) : [...def.moves]
+}
+/** A row's `moveLevels`, held to its shape at load: each names a movement the row lists; each level is a whole number, 2 or more. */
+export function validateMoveLevels(def: Pick<UnitDef, 'typeId' | 'moves' | 'moveLevels'>): void {
+  if (def.moveLevels === undefined) return
+  const entries = Object.entries(def.moveLevels)
+  if (!entries.length) throw new Error(`${def.typeId}: moveLevels names no movement — leave the field off a row that grants none by level`)
+  for (const [m, level] of entries) {
+    if (!def.moves.includes(m)) throw new Error(`${def.typeId}: moveLevels names '${m}', which the row does not list in its moves`)
+    if (!Number.isSafeInteger(level) || level < 2) throw new Error(`${def.typeId}: '${m}' is granted at level '${level}' — a whole number, 2 or more (a movement had from level 1 names no level)`)
+  }
+}
+
 export type LevelTableLike = { readonly id: string; readonly rows: readonly { readonly level: number; readonly grants: Readonly<Record<string, number>>; readonly choice?: readonly Readonly<Record<string, number>>[] }[] }
 export type SpecialtyLike = { readonly id: string; readonly class: string; readonly statModifiers: Readonly<Record<string, number>> }
 
@@ -239,15 +260,18 @@ export function applyProgress(
     if (sp.class !== classId) throw new Error(`${where}: ${base.typeId} (${classId}) cannot hold ${sp.id}, a ${sp.class} specialty`)
     for (const [k, v] of Object.entries(sp.statModifiers)) add(k, v, sp.id)
   } else if (progress.specialtyId) throw new Error(`${where}: ${base.typeId} is level 1 and names a specialty`)
-  // capability.surge: "Surge always EQUALS the character level" (heroes.json rules) — added to whatever the row and the specialty grant
-  delta['surge'] = (delta['surge'] ?? 0) + progress.level
+  // rule.surge-is-at-least-level (2026-10-06; DECISIONS.md 'everyone gains Surge equal to its level at the least …'): the level's
+  // Surge is DATA now — each level row grants it (the table's every-level grant) and the unit's own row carries the level-1
+  // point (content mkenginepack.mjs) — so it is folded above like any other grant. capability.surge added the level here
+  // (`delta['surge'] += progress.level`), which reached only a unit fielded with a progress record: a level-1 hero has none.
   const drafted = [...(progress.powers ?? [])]
   for (const p of drafted) {
     if (!abilities[p] || abilities[p].attack) throw new Error(`${where}: ${base.typeId} drafted '${p}', which is not a power in the registry`)
     if (abilities[p].move && !(generalPool[classId] ?? []).includes(p)) throw new Error(`${where}: ${base.typeId} drafted '${p}', a movement power that is not in ${classId}'s general pool`)
   }
   const powers = drafted.filter((p) => !abilities[p]!.move)
-  let moves = [...base.moves]
+  // rule.special-moves-unlock-at-level-two: the row's own movements this level has reached; a drafted one comes with its draft
+  let moves = movesAtLevel(base, progress.level)
   for (const p of drafted) {
     const shape = abilities[p]!.move?.shape
     if (shape === undefined || moves.includes(p)) continue

@@ -11,6 +11,7 @@
 // Guard already carries — "until the end of your next Activation" — on Dodge. It is in the general
 // pool of the Rogue and of the Ranger and of no other class; a hero of either class who drafts it
 // at a power grant fields it; no hero starts with it.
+import { levelTwo } from './level-two.js'
 import { describe, expect, it } from 'vitest'
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
@@ -35,7 +36,10 @@ const GENERAL_POOL = (content as unknown as { GENERAL_POOL?: Readonly<Record<str
 
 /** One hero who drafted Back Flip, alone against one zombie, placed by hand. */
 function rig(hero: string, heroHex: number, enemyHex: number, mapId = 'map.open'): Ctx {
-  return createBattle({ replicate: 0, mapId, heroes: [hero], heroHexes: [heroHex], enemies: ['test-zombie'], enemyHexes: [enemyHex], enemyCount: 1, heroProgress: [DRAFTED], strict: true })
+  // Restated 2026-10-06 (rule.special-moves-unlock-at-level-two; ruled 2026-10-06, DECISIONS.md 'a hero's special moves unlock
+  // at level 2 …'): the hero who drafted it is at level 2, where it has its Side Roll beside the Back Flip - what Back Flip
+  // does is unchanged. It was: heroProgress: [DRAFTED]  (DRAFTED = { level: 1, powers: [BF] })
+  return createBattle({ replicate: 0, mapId, heroes: [hero], heroHexes: [heroHex], enemies: ['test-zombie'], enemyHexes: [enemyHex], enemyCount: 1, heroProgress: [levelTwo(hero, { powers: [BF] })], strict: true })
 }
 /** One Activation of unit `id`, then its end — the ladder's own order. */
 function activate(ctx: Ctx, id: number, during?: () => void) {
@@ -92,12 +96,19 @@ describe('who has it: the Rogue\'s and the Ranger\'s general pool, and nobody fr
 
   it('a Rogue or a Ranger who drafted it at a power grant fields it — beside its walk and its Side Roll, whatever its specialty', () => {
     for (const hero of [RANGER, ROGUE]) {
-      const def = fieldedDef(hero, { progress: DRAFTED })
+      // Restated 2026-10-06 (rule.special-moves-unlock-at-level-two; ruled 2026-10-06, DECISIONS.md 'a hero's special moves
+      // unlock at level 2 …'): the Side Roll is the hero's from level 2, so the hero who drafted is read at level 2; a level-1
+      // hero - drafted or not - has the walk and no Side Roll. The lines were:
+      //   const def = fieldedDef(hero, { progress: DRAFTED })
+      //   expect(fieldedDef(hero).moves, hero + ' undrafted').toEqual(UNITS[hero]!.moves)
+      const def = fieldedDef(hero, { progress: levelTwo(hero, { powers: [BF] }) })
       expect(def.moves, hero).toContain(BF)
       expect(def.moves, hero).toContain('power.side-roll')
       expect(def.moves[0], hero + ' walks first').toBe(UNITS[hero]!.moves[0])
       expect(def.abilities, hero + ': a movement power is not a primary-action power').not.toContain(BF)
-      expect(fieldedDef(hero).moves, hero + ' undrafted').toEqual(UNITS[hero]!.moves)
+      expect(fieldedDef(hero, { progress: levelTwo(hero) }).moves, hero + ' undrafted, level 2').toEqual(UNITS[hero]!.moves)
+      expect(fieldedDef(hero).moves, hero + ' undrafted, level 1').toEqual([UNITS[hero]!.moves[0]])
+      expect(fieldedDef(hero, { progress: DRAFTED }).moves, hero + ' drafted at level 1').toEqual([UNITS[hero]!.moves[0], BF])
     }
     const specialised = fieldedDef(ROGUE, { progress: { level: 2, specialtyId: 'specialty.assassin', powers: [BF] } })
     expect(specialised.moves).toContain(BF)

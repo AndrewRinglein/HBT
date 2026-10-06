@@ -88,7 +88,10 @@ describe("the Banner of the Vigil heals by the party's Spirit", () => {
     endOfActivation(ctx, planter)
     expect(planter.hp).toBe(Math.min(planter.maxHp, 1 + party))
   })
-  it("in a real battle (test.banner-vigil): the priest plants the Vigil's banner, and the ranger - no Spirit of her own - heals by the party's Spirit inside it", () => {
+  // 2026-10-06, the same day (rule.surge-is-at-least-level and rule.special-moves-unlock-at-level-two (DECISIONS.md 2026-10-06 'everyone gains Surge equal to its level at the least …', 'a hero's special moves unlock at level 2, ruled …')): the fielding is said again - the priest carries the banner alone
+  // and the ally is the Dwarven Brawler (scenarios.ts test.banner-vigil); the test is as it was but for the ally's name in its title
+  // ("the ranger - no Spirit of her own").
+  it("in a real battle (test.banner-vigil): the priest plants the Vigil's banner, and the ally beside him - no Spirit of its own - heals by the party's Spirit inside it", () => {
     const ctx = createBattle(scenarioOptions(SCENARIOS['test.banner-vigil']!))
     const [priest, ranger] = ctx.state.units.filter((u) => u.side === 'hero') as [Unit, Unit]
     expect(effective(ctx, ranger, 'spirit').value).toBe(0)

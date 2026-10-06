@@ -154,12 +154,15 @@ describe('Mercy in battle — the Battle Chaplain heals an ally within 4 hexes f
     // the caravan's fight fields the Battle Chaplain with his kit (scenarios.ts test.caravan-aftermath)
     expect(scenarioDef(CARAVAN).heroes).toContain(CHAPLAIN)
     let healed = false
-    for (let r = 0; r < 10 && !healed; r++) {
+    // Restated 2026-10-06 (rule.surge-is-at-least-level and rule.special-moves-unlock-at-level-two (DECISIONS.md 2026-10-06 'everyone gains Surge equal to its level at the least …', 'a hero's special moves unlock at level 2, ruled …')): every fight at the caravan is another battle now. It read ten
+    // fights (`r < 10`) and its message said so; the fights are read from 0 upward until Mercy heals someone - the 48th
+    // (replicate 47) is the first. Nothing here asks who wins.
+    for (let r = 0; r < 60 && !healed; r++) {
       const ctx = createBattle({ ...scenarioOptions(scenarioDef(CARAVAN)), replicate: r })
       runBattle(ctx)
       healed = ctx.events.some((e) => e.type === 'heal.applied' && e.causeId === MERCY && (e['amount'] as number) > 0)
     }
-    expect(healed, 'Mercy healed someone in one of ten fights at the caravan').toBe(true)
+    expect(healed, 'Mercy healed someone in one of sixty fights at the caravan').toBe(true)
   })
 })
 

@@ -40,7 +40,14 @@ const S = 'test.opening-gates', ENC = 'encounter.opening.gates', FALL = 'trigger
 // the Iron Dwarf 2 Health more, …), so every replicate is another battle; replicate 6's curse now lands on nobody (0 hit).
 // Replicates read from 0 upward, as the notes above did: none of 0 to 20 has a curse that lands on a unit; replicate 21 is the
 // first whose curse lands on a unit and which runs past Turn 7 (both Imps arrive). Nothing here asks who wins.
-const SEEN = 21
+// was: const SEEN = 21
+// Law 10, 2026-10-06 — rule.surge-is-at-least-level and rule.special-moves-unlock-at-level-two (DECISIONS.md 2026-10-06
+// 'everyone gains Surge equal to its level at the least …', 'a hero's special moves unlock at level 2, ruled …'): every hero
+// rolls a Surge check after each Activation and a level-1 hero has no special move, so every replicate is another battle;
+// replicate 21 now ends before Turn 7 with its curse landing on nobody. Replicates read from 0 upward, as above: 11 is the
+// first whose curse lands on a unit but ends before Turn 7; replicate 13 is the first whose curse lands on a unit and which
+// runs past Turn 7 (both Imps arrive). Found, not tuned; nothing here asks who wins.
+const SEEN = 13
 describe('encounter.opening.gates', () => {
   it('fields the six defenders at the Ground Check\'s markers and carries the curse strike with the ruled numbers', () => {
     const e = encounterDef(ENC)

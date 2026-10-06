@@ -62,7 +62,12 @@ describe('the Hunter is a real hero from the Codex', () => {
     expect(h.dodge).toBe((row.ported.dodge ?? 0) + mod('dodge'))
     expect(h.maxStamina, 'heroes run stamina').toBe((row.derivedBase.staminaMax ?? 0) + mod('staminaMax'))
     // class half-step read from the Codex movementAction grants
-    expect(h.moves).toEqual(['power.move', 'power.side-roll'])
+    // Restated 2026-10-06 (rule.special-moves-unlock-at-level-two; ruled 2026-10-06, DECISIONS.md 'a hero's special moves unlock
+    // at level 2 …'): the class half-step is on the row, granted at level 2 - a level-1 Hunter has the walk alone. It was:
+    //   expect(h.moves).toEqual(['power.move', 'power.side-roll'])
+    expect(UNITS[h.typeId]!.moves).toEqual(['power.move', 'power.side-roll'])
+    expect(UNITS[h.typeId]!.moveLevels).toEqual({ 'power.side-roll': 2 })
+    expect(h.moves).toEqual(['power.move'])
   })
 
   it('fights with the longbow the kit dictated — both attacks, stamina PAID', () => {

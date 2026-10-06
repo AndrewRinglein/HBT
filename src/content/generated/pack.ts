@@ -97,7 +97,8 @@ export const UNIT_PACK = {
       ],
       "badges": [
         "badge.hero"
-      ]
+      ],
+      "surge": 1
     },
     {
       "typeId": "test-sky-pirate",
@@ -150,7 +151,8 @@ export const UNIT_PACK = {
       ],
       "badges": [
         "badge.hero"
-      ]
+      ],
+      "surge": 1
     },
     {
       "typeId": "test-dusk-hawk",
@@ -202,7 +204,8 @@ export const UNIT_PACK = {
       ],
       "badges": [
         "badge.hero"
-      ]
+      ],
+      "surge": 1
     },
     {
       "typeId": "test-air-mage",
@@ -268,7 +271,8 @@ export const UNIT_PACK = {
       ],
       "badges": [
         "badge.hero"
-      ]
+      ],
+      "surge": 1
     },
     {
       "typeId": "test-lucius",
@@ -307,7 +311,8 @@ export const UNIT_PACK = {
       "triggers": [],
       "badges": [
         "badge.hero"
-      ]
+      ],
+      "surge": 1
     },
     {
       "typeId": "test-osric",
@@ -346,7 +351,8 @@ export const UNIT_PACK = {
       "triggers": [],
       "badges": [
         "badge.hero"
-      ]
+      ],
+      "surge": 1
     }
   ],
   "enemies": [
@@ -12794,6 +12800,9 @@ export const UNIT_PACK = {
         "power.move",
         "power.sidestep"
       ],
+      "moveLevels": {
+        "power.sidestep": 2
+      },
       "tags": [
         "hero",
         "class.paladin"
@@ -12807,7 +12816,8 @@ export const UNIT_PACK = {
         "badge.hero",
         "badge.vengeful",
         "badge.undead-slayer"
-      ]
+      ],
+      "surge": 1
     },
     {
       "typeId": "hero.base.paladin-shiney",
@@ -12836,6 +12846,9 @@ export const UNIT_PACK = {
         "power.move",
         "power.sidestep"
       ],
+      "moveLevels": {
+        "power.sidestep": 2
+      },
       "tags": [
         "hero",
         "class.paladin"
@@ -12850,7 +12863,8 @@ export const UNIT_PACK = {
         "badge.hero",
         "badge.quick",
         "badge.undead-slayer"
-      ]
+      ],
+      "surge": 1
     },
     {
       "typeId": "hero.base.paladin-hunk",
@@ -12879,6 +12893,9 @@ export const UNIT_PACK = {
         "power.move",
         "power.sidestep"
       ],
+      "moveLevels": {
+        "power.sidestep": 2
+      },
       "tags": [
         "hero",
         "class.paladin"
@@ -12892,7 +12909,8 @@ export const UNIT_PACK = {
       "badges": [
         "badge.hero",
         "badge.undead-slayer"
-      ]
+      ],
+      "surge": 1
     },
     {
       "typeId": "hero.base.paladin-smug",
@@ -12922,6 +12940,9 @@ export const UNIT_PACK = {
         "power.move",
         "power.sidestep"
       ],
+      "moveLevels": {
+        "power.sidestep": 2
+      },
       "tags": [
         "hero",
         "class.paladin"
@@ -12936,7 +12957,8 @@ export const UNIT_PACK = {
         "badge.hero",
         "badge.brave",
         "badge.undead-slayer"
-      ]
+      ],
+      "surge": 1
     },
     {
       "typeId": "hero.base.ranger-ranger",
@@ -12965,6 +12987,9 @@ export const UNIT_PACK = {
         "power.move",
         "power.side-roll"
       ],
+      "moveLevels": {
+        "power.side-roll": 2
+      },
       "tags": [
         "hero",
         "class.ranger"
@@ -12979,7 +13004,8 @@ export const UNIT_PACK = {
         "badge.cultist",
         "badge.elf",
         "badge.mystic"
-      ]
+      ],
+      "surge": 1
     },
     {
       "typeId": "hero.base.ranger-scantily",
@@ -13008,6 +13034,9 @@ export const UNIT_PACK = {
         "power.move",
         "power.side-roll"
       ],
+      "moveLevels": {
+        "power.side-roll": 2
+      },
       "tags": [
         "hero",
         "class.ranger"
@@ -13022,7 +13051,8 @@ export const UNIT_PACK = {
         "badge.agile",
         "badge.elf",
         "badge.forester"
-      ]
+      ],
+      "surge": 1
     },
     {
       "typeId": "hero.base.ranger-nature",
@@ -13051,6 +13081,9 @@ export const UNIT_PACK = {
         "power.move",
         "power.side-roll"
       ],
+      "moveLevels": {
+        "power.side-roll": 2
+      },
       "tags": [
         "hero",
         "class.ranger"
@@ -13066,7 +13099,8 @@ export const UNIT_PACK = {
         "badge.frail",
         "badge.fey",
         "badge.forester"
-      ]
+      ],
+      "surge": 1
     },
     {
       "typeId": "hero.base.ranger-aggressive",
@@ -13095,6 +13129,9 @@ export const UNIT_PACK = {
         "power.move",
         "power.side-roll"
       ],
+      "moveLevels": {
+        "power.side-roll": 2
+      },
       "tags": [
         "hero",
         "class.ranger"
@@ -13107,7 +13144,8 @@ export const UNIT_PACK = {
       "badges": [
         "badge.hero",
         "badge.vengeful"
-      ]
+      ],
+      "surge": 1
     },
     {
       "typeId": "hero.base.warrior-iron",
@@ -13136,6 +13174,9 @@ export const UNIT_PACK = {
         "power.move",
         "power.leap"
       ],
+      "moveLevels": {
+        "power.leap": 2
+      },
       "tags": [
         "hero",
         "class.warrior"
@@ -13150,7 +13191,8 @@ export const UNIT_PACK = {
         "badge.hero",
         "badge.stalwart",
         "badge.dwarf"
-      ]
+      ],
+      "surge": 1
     },
     {
       "typeId": "hero.base.warrior-brawler",
@@ -13179,6 +13221,9 @@ export const UNIT_PACK = {
         "power.move",
         "power.leap"
       ],
+      "moveLevels": {
+        "power.leap": 2
+      },
       "tags": [
         "hero",
         "class.warrior"
@@ -13192,7 +13237,8 @@ export const UNIT_PACK = {
         "badge.unwavering",
         "badge.dwarf",
         "badge.brawler"
-      ]
+      ],
+      "surge": 1
     },
     {
       "typeId": "hero.base.warrior-barbarian",
@@ -13221,6 +13267,9 @@ export const UNIT_PACK = {
         "power.move",
         "power.leap"
       ],
+      "moveLevels": {
+        "power.leap": 2
+      },
       "tags": [
         "hero",
         "class.warrior"
@@ -13235,7 +13284,8 @@ export const UNIT_PACK = {
         "badge.huge",
         "badge.dwarf",
         "badge.climber"
-      ]
+      ],
+      "surge": 1
     },
     {
       "typeId": "hero.base.warrior-fearsome",
@@ -13264,6 +13314,9 @@ export const UNIT_PACK = {
         "power.move",
         "power.leap"
       ],
+      "moveLevels": {
+        "power.leap": 2
+      },
       "tags": [
         "hero",
         "class.warrior"
@@ -13276,7 +13329,8 @@ export const UNIT_PACK = {
       "badges": [
         "badge.hero",
         "badge.brave"
-      ]
+      ],
+      "surge": 1
     },
     {
       "typeId": "hero.base.mage-thinking",
@@ -13305,6 +13359,9 @@ export const UNIT_PACK = {
         "power.move",
         "power.focus"
       ],
+      "moveLevels": {
+        "power.focus": 2
+      },
       "tags": [
         "hero",
         "class.mage"
@@ -13317,7 +13374,8 @@ export const UNIT_PACK = {
       "badges": [
         "badge.hero",
         "badge.quick-learner"
-      ]
+      ],
+      "surge": 1
     },
     {
       "typeId": "hero.base.mage-sexy",
@@ -13346,6 +13404,9 @@ export const UNIT_PACK = {
         "power.move",
         "power.focus"
       ],
+      "moveLevels": {
+        "power.focus": 2
+      },
       "tags": [
         "hero",
         "class.mage"
@@ -13358,7 +13419,8 @@ export const UNIT_PACK = {
       "badges": [
         "badge.hero",
         "badge.frail"
-      ]
+      ],
+      "surge": 1
     },
     {
       "typeId": "hero.base.mage-fire",
@@ -13387,6 +13449,9 @@ export const UNIT_PACK = {
         "power.move",
         "power.focus"
       ],
+      "moveLevels": {
+        "power.focus": 2
+      },
       "tags": [
         "hero",
         "class.mage"
@@ -13398,7 +13463,8 @@ export const UNIT_PACK = {
       ],
       "badges": [
         "badge.hero"
-      ]
+      ],
+      "surge": 1
     },
     {
       "typeId": "hero.base.mage-fireaura",
@@ -13427,6 +13493,9 @@ export const UNIT_PACK = {
         "power.move",
         "power.focus"
       ],
+      "moveLevels": {
+        "power.focus": 2
+      },
       "tags": [
         "hero",
         "class.mage"
@@ -13439,7 +13508,8 @@ export const UNIT_PACK = {
       "badges": [
         "badge.hero",
         "badge.lithe"
-      ]
+      ],
+      "surge": 1
     },
     {
       "typeId": "hero.base.priest-pauper",
@@ -13468,6 +13538,9 @@ export const UNIT_PACK = {
         "power.move",
         "power.devotion"
       ],
+      "moveLevels": {
+        "power.devotion": 2
+      },
       "tags": [
         "hero",
         "class.priest"
@@ -13480,7 +13553,8 @@ export const UNIT_PACK = {
       "badges": [
         "badge.hero",
         "badge.faithful"
-      ]
+      ],
+      "surge": 1
     },
     {
       "typeId": "hero.base.priest-armored",
@@ -13509,6 +13583,9 @@ export const UNIT_PACK = {
         "power.move",
         "power.devotion"
       ],
+      "moveLevels": {
+        "power.devotion": 2
+      },
       "tags": [
         "hero",
         "class.priest"
@@ -13521,7 +13598,8 @@ export const UNIT_PACK = {
       ],
       "badges": [
         "badge.hero"
-      ]
+      ],
+      "surge": 1
     },
     {
       "typeId": "hero.base.priest-robes",
@@ -13550,6 +13628,9 @@ export const UNIT_PACK = {
         "power.move",
         "power.devotion"
       ],
+      "moveLevels": {
+        "power.devotion": 2
+      },
       "tags": [
         "hero",
         "class.priest"
@@ -13562,7 +13643,8 @@ export const UNIT_PACK = {
       "badges": [
         "badge.hero",
         "badge.wise"
-      ]
+      ],
+      "surge": 1
     },
     {
       "typeId": "hero.base.priest-scantily",
@@ -13591,6 +13673,9 @@ export const UNIT_PACK = {
         "power.move",
         "power.devotion"
       ],
+      "moveLevels": {
+        "power.devotion": 2
+      },
       "tags": [
         "hero",
         "class.priest"
@@ -13603,7 +13688,8 @@ export const UNIT_PACK = {
       ],
       "badges": [
         "badge.hero"
-      ]
+      ],
+      "surge": 1
     },
     {
       "typeId": "hero.base.rogue-raven",
@@ -13633,6 +13719,9 @@ export const UNIT_PACK = {
         "power.move",
         "power.side-roll"
       ],
+      "moveLevels": {
+        "power.side-roll": 2
+      },
       "tags": [
         "hero",
         "class.rogue"
@@ -13646,7 +13735,8 @@ export const UNIT_PACK = {
       "badges": [
         "badge.hero",
         "badge.lithe"
-      ]
+      ],
+      "surge": 1
     },
     {
       "typeId": "hero.base.rogue-rose",
@@ -13676,6 +13766,9 @@ export const UNIT_PACK = {
         "power.move",
         "power.side-roll"
       ],
+      "moveLevels": {
+        "power.side-roll": 2
+      },
       "tags": [
         "hero",
         "class.rogue"
@@ -13689,7 +13782,8 @@ export const UNIT_PACK = {
         "badge.hero",
         "badge.ignorant",
         "badge.retaliating"
-      ]
+      ],
+      "surge": 1
     },
     {
       "typeId": "hero.base.rogue-snake",
@@ -13719,6 +13813,9 @@ export const UNIT_PACK = {
         "power.move",
         "power.side-roll"
       ],
+      "moveLevels": {
+        "power.side-roll": 2
+      },
       "tags": [
         "hero",
         "class.rogue"
@@ -13731,7 +13828,8 @@ export const UNIT_PACK = {
       "badges": [
         "badge.hero",
         "badge.lucky"
-      ]
+      ],
+      "surge": 1
     },
     {
       "typeId": "hero.base.rogue-skull",
@@ -13761,6 +13859,9 @@ export const UNIT_PACK = {
         "power.move",
         "power.side-roll"
       ],
+      "moveLevels": {
+        "power.side-roll": 2
+      },
       "tags": [
         "hero",
         "class.rogue"
@@ -13773,7 +13874,8 @@ export const UNIT_PACK = {
       "badges": [
         "badge.hero",
         "badge.vengeful"
-      ]
+      ],
+      "surge": 1
     },
     {
       "typeId": "hero.fixed.orphans",
@@ -14429,7 +14531,8 @@ export const UNIT_PACK = {
       ],
       "badges": [
         "badge.hero"
-      ]
+      ],
+      "surge": 1
     },
     {
       "typeId": "alpha-sky-pirate",
@@ -14485,7 +14588,8 @@ export const UNIT_PACK = {
       ],
       "badges": [
         "badge.hero"
-      ]
+      ],
+      "surge": 1
     },
     {
       "typeId": "alpha-dusk-hawk",
@@ -14539,7 +14643,8 @@ export const UNIT_PACK = {
       ],
       "badges": [
         "badge.hero"
-      ]
+      ],
+      "surge": 1
     },
     {
       "typeId": "alpha-air-mage",
@@ -14605,7 +14710,8 @@ export const UNIT_PACK = {
       ],
       "badges": [
         "badge.hero"
-      ]
+      ],
+      "surge": 1
     },
     {
       "typeId": "alpha-lucius",
@@ -14646,7 +14752,8 @@ export const UNIT_PACK = {
       ],
       "badges": [
         "badge.hero"
-      ]
+      ],
+      "surge": 1
     },
     {
       "typeId": "alpha-osric",
@@ -14688,7 +14795,8 @@ export const UNIT_PACK = {
       ],
       "badges": [
         "badge.hero"
-      ]
+      ],
+      "surge": 1
     }
   ],
   "critChart": {
@@ -21042,7 +21150,8 @@ export const UNIT_PACK = {
           "badge.hero",
           "test.badge.bramble"
         ],
-        "typeId": "test-arc-golem"
+        "typeId": "test-arc-golem",
+        "surge": 1
       },
       {
         "name": "Warrior (TEST)",
@@ -21117,7 +21226,8 @@ export const UNIT_PACK = {
           "badge.hero"
         ],
         "typeId": "test-warrior",
-        "abilities": []
+        "abilities": [],
+        "surge": 1
       },
       {
         "name": "Ranger (TEST)",
@@ -21154,7 +21264,8 @@ export const UNIT_PACK = {
           "badge.hero"
         ],
         "typeId": "test-ranger",
-        "abilities": []
+        "abilities": [],
+        "surge": 1
       },
       {
         "name": "Mage (TEST)",
@@ -21234,7 +21345,8 @@ export const UNIT_PACK = {
         "badges": [
           "badge.hero"
         ],
-        "typeId": "test-mage"
+        "typeId": "test-mage",
+        "surge": 1
       },
       {
         "typeId": "test-gash-zombie",
@@ -21375,7 +21487,7 @@ export const UNIT_PACK = {
             "source": "unit.test-surge-labored"
           }
         ],
-        "surge": 10
+        "surge": 11
       },
       {
         "typeId": "test-surge-swift",
@@ -21435,7 +21547,7 @@ export const UNIT_PACK = {
             "source": "unit.test-surge-swift"
           }
         ],
-        "surge": 20
+        "surge": 21
       },
       {
         "typeId": "test-move-plus-one",
@@ -21519,7 +21631,8 @@ export const UNIT_PACK = {
             },
             "source": "unit.test-move-plus-one"
           }
-        ]
+        ],
+        "surge": 1
       },
       {
         "typeId": "test-move-plus-three",
@@ -21603,7 +21716,8 @@ export const UNIT_PACK = {
             },
             "source": "unit.test-move-plus-three"
           }
-        ]
+        ],
+        "surge": 1
       },
       {
         "typeId": "test-ordered-double",
@@ -21665,7 +21779,8 @@ export const UNIT_PACK = {
             },
             "source": "unit.test-ordered-double"
           }
-        ]
+        ],
+        "surge": 1
       },
       {
         "typeId": "test-ordered-strip",
@@ -21727,7 +21842,8 @@ export const UNIT_PACK = {
             },
             "source": "unit.test-ordered-strip"
           }
-        ]
+        ],
+        "surge": 1
       },
       {
         "typeId": "test-flight-plus-three",
@@ -21786,7 +21902,8 @@ export const UNIT_PACK = {
             },
             "source": "unit.test-flight-plus-three"
           }
-        ]
+        ],
+        "surge": 1
       },
       {
         "typeId": "test-flight-plus-five",
@@ -21845,7 +21962,8 @@ export const UNIT_PACK = {
             },
             "source": "unit.test-flight-plus-five"
           }
-        ]
+        ],
+        "surge": 1
       },
       {
         "typeId": "test-slot-striker",
@@ -21932,7 +22050,8 @@ export const UNIT_PACK = {
             },
             "source": "unit.test-slot-striker"
           }
-        ]
+        ],
+        "surge": 1
       },
       {
         "typeId": "test-packet-flame",
@@ -22019,7 +22138,8 @@ export const UNIT_PACK = {
         "fireResist": 1,
         "shadowResist": 2,
         "luck": 0,
-        "crit": 0
+        "crit": 0,
+        "surge": 1
       },
       {
         "typeId": "test-packet-shadow",
@@ -22169,7 +22289,8 @@ export const UNIT_PACK = {
             },
             "source": "unit.test-burst-flame"
           }
-        ]
+        ],
+        "surge": 1
       },
       {
         "typeId": "test-burst-ward",
@@ -22364,7 +22485,8 @@ export const UNIT_PACK = {
         ],
         "block": 75,
         "rangedBlock": 25,
-        "luck": 100
+        "luck": 100,
+        "surge": 1
       },
       {
         "typeId": "test-block-b",
@@ -22512,7 +22634,8 @@ export const UNIT_PACK = {
             },
             "source": "unit.test-trip-a"
           }
-        ]
+        ],
+        "surge": 1
       },
       {
         "typeId": "test-trip-b",
@@ -22627,7 +22750,8 @@ export const UNIT_PACK = {
           "power.move",
           "power.sidestep"
         ],
-        "triggers": []
+        "triggers": [],
+        "surge": 1
       },
       {
         "typeId": "test-kdb-basher",
@@ -22661,7 +22785,8 @@ export const UNIT_PACK = {
           "power.move",
           "power.sidestep"
         ],
-        "triggers": []
+        "triggers": [],
+        "surge": 1
       },
       {
         "typeId": "test-kdb-firm",
@@ -23055,7 +23180,8 @@ export const UNIT_PACK = {
           "power.move",
           "power.sidestep"
         ],
-        "triggers": []
+        "triggers": [],
+        "surge": 1
       },
       {
         "typeId": "test-destroy-wrecker",
@@ -23089,7 +23215,8 @@ export const UNIT_PACK = {
           "power.move",
           "power.sidestep"
         ],
-        "triggers": []
+        "triggers": [],
+        "surge": 1
       },
       {
         "typeId": "test-rout-zombie",
@@ -23293,7 +23420,8 @@ export const UNIT_PACK = {
             },
             "source": "unit.test-veiled-osric"
           }
-        ]
+        ],
+        "surge": 1
       },
       {
         "typeId": "test-shrouded-zombie",
@@ -23422,7 +23550,8 @@ export const UNIT_PACK = {
             },
             "source": "unit.test-stealthed-osric"
           }
-        ]
+        ],
+        "surge": 1
       },
       {
         "typeId": "test-cloaked-zombie",
@@ -23610,7 +23739,8 @@ export const UNIT_PACK = {
             },
             "source": "unit.test-swell-mage"
           }
-        ]
+        ],
+        "surge": 1
       },
       {
         "typeId": "test-dresser",
@@ -23647,7 +23777,8 @@ export const UNIT_PACK = {
           "power.move",
           "power.sidestep"
         ],
-        "triggers": []
+        "triggers": [],
+        "surge": 1
       },
       {
         "typeId": "test-snarer",
@@ -31516,13 +31647,15 @@ export const UNIT_PACK = {
         {
           "level": 1,
           "grants": {
-            "maxHp": 1
+            "maxHp": 1,
+            "surge": 1
           }
         },
         {
           "level": 2,
           "grants": {
             "maxHp": 2,
+            "surge": 1,
             "maxStamina": 1,
             "itemSlots": 1,
             "accuracy": 5
@@ -31532,6 +31665,7 @@ export const UNIT_PACK = {
           "level": 3,
           "grants": {
             "maxHp": 2,
+            "surge": 1,
             "strength": 1,
             "itemSlots": 1,
             "crit": 2
@@ -31541,6 +31675,7 @@ export const UNIT_PACK = {
           "level": 4,
           "grants": {
             "maxHp": 2,
+            "surge": 1,
             "precision": 1,
             "reach": 1,
             "maxStamina": 1,
@@ -31552,7 +31687,8 @@ export const UNIT_PACK = {
         {
           "level": 5,
           "grants": {
-            "maxHp": 2
+            "maxHp": 2,
+            "surge": 1
           },
           "choice": [
             {
@@ -31576,6 +31712,7 @@ export const UNIT_PACK = {
           "level": 6,
           "grants": {
             "maxHp": 2,
+            "surge": 1,
             "staminaRegen": 1,
             "itemSlots": 1,
             "accuracy": 5,
@@ -31586,6 +31723,7 @@ export const UNIT_PACK = {
           "level": 7,
           "grants": {
             "maxHp": 2,
+            "surge": 1,
             "strength": 1,
             "precision": 1,
             "armor": 1,
@@ -31598,6 +31736,7 @@ export const UNIT_PACK = {
           "level": 8,
           "grants": {
             "maxHp": 2,
+            "surge": 1,
             "strength": 1,
             "itemSlots": 1,
             "accuracy": 4,
@@ -31609,6 +31748,7 @@ export const UNIT_PACK = {
           "level": 9,
           "grants": {
             "maxHp": 2,
+            "surge": 1,
             "precision": 1,
             "reach": 1,
             "maxStamina": 1,
@@ -31620,6 +31760,7 @@ export const UNIT_PACK = {
           "level": 10,
           "grants": {
             "maxHp": 2,
+            "surge": 1,
             "strength": 1,
             "staminaRegen": 1,
             "itemSlots": 1,
@@ -31634,11 +31775,14 @@ export const UNIT_PACK = {
       "rows": [
         {
           "level": 1,
-          "grants": {}
+          "grants": {
+            "surge": 1
+          }
         },
         {
           "level": 2,
           "grants": {
+            "surge": 1,
             "precision": 1,
             "resist": 1,
             "accuracy": 5,
@@ -31648,6 +31792,7 @@ export const UNIT_PACK = {
         {
           "level": 3,
           "grants": {
+            "surge": 1,
             "strength": 1,
             "reach": 1,
             "maxHp": 1,
@@ -31660,6 +31805,7 @@ export const UNIT_PACK = {
         {
           "level": 4,
           "grants": {
+            "surge": 1,
             "precision": 1,
             "maxHp": 1,
             "accuracy": 7,
@@ -31670,6 +31816,7 @@ export const UNIT_PACK = {
         {
           "level": 5,
           "grants": {
+            "surge": 1,
             "maxStamina": 1,
             "accuracy": 2,
             "crit": 1,
@@ -31703,6 +31850,7 @@ export const UNIT_PACK = {
         {
           "level": 6,
           "grants": {
+            "surge": 1,
             "strength": 1,
             "reach": 1,
             "staminaRegen": 1,
@@ -31713,6 +31861,7 @@ export const UNIT_PACK = {
         {
           "level": 7,
           "grants": {
+            "surge": 1,
             "precision": 1,
             "reach": 1,
             "vision": 1,
@@ -31723,6 +31872,7 @@ export const UNIT_PACK = {
         {
           "level": 8,
           "grants": {
+            "surge": 1,
             "strength": 1,
             "itemSlots": 1,
             "maxStamina": 1,
@@ -31733,6 +31883,7 @@ export const UNIT_PACK = {
         {
           "level": 9,
           "grants": {
+            "surge": 1,
             "precision": 1,
             "maxHp": 1,
             "vision": 1,
@@ -31744,6 +31895,7 @@ export const UNIT_PACK = {
         {
           "level": 10,
           "grants": {
+            "surge": 1,
             "precision": 1,
             "reach": 1,
             "staminaRegen": 1,
@@ -31759,11 +31911,14 @@ export const UNIT_PACK = {
       "rows": [
         {
           "level": 1,
-          "grants": {}
+          "grants": {
+            "surge": 1
+          }
         },
         {
           "level": 2,
           "grants": {
+            "surge": 1,
             "precision": 1,
             "maxStamina": 1,
             "accuracy": 5,
@@ -31774,6 +31929,7 @@ export const UNIT_PACK = {
         {
           "level": 3,
           "grants": {
+            "surge": 1,
             "strength": 1,
             "itemSlots": 1,
             "maxHp": 1,
@@ -31785,6 +31941,7 @@ export const UNIT_PACK = {
         {
           "level": 4,
           "grants": {
+            "surge": 1,
             "precision": 1,
             "maxStamina": 1,
             "accuracy": 5,
@@ -31795,6 +31952,7 @@ export const UNIT_PACK = {
         {
           "level": 5,
           "grants": {
+            "surge": 1,
             "itemSlots": 1,
             "accuracy": 2,
             "crit": 2
@@ -31826,6 +31984,7 @@ export const UNIT_PACK = {
         {
           "level": 6,
           "grants": {
+            "surge": 1,
             "precision": 1,
             "staminaRegen": 1,
             "dodge": 5,
@@ -31836,6 +31995,7 @@ export const UNIT_PACK = {
         {
           "level": 7,
           "grants": {
+            "surge": 1,
             "strength": 1,
             "precision": 1,
             "itemSlots": 1,
@@ -31846,6 +32006,7 @@ export const UNIT_PACK = {
         {
           "level": 8,
           "grants": {
+            "surge": 1,
             "precision": 1,
             "maxStamina": 1,
             "vision": 1,
@@ -31856,6 +32017,7 @@ export const UNIT_PACK = {
         {
           "level": 9,
           "grants": {
+            "surge": 1,
             "strength": 1,
             "maxHp": 1,
             "itemSlots": 1,
@@ -31867,6 +32029,7 @@ export const UNIT_PACK = {
         {
           "level": 10,
           "grants": {
+            "surge": 1,
             "precision": 1,
             "staminaRegen": 1,
             "resist": 1,
@@ -31881,11 +32044,14 @@ export const UNIT_PACK = {
       "rows": [
         {
           "level": 1,
-          "grants": {}
+          "grants": {
+            "surge": 1
+          }
         },
         {
           "level": 2,
           "grants": {
+            "surge": 1,
             "magic": 1,
             "maxStamina": 1,
             "accuracy": 5,
@@ -31895,6 +32061,7 @@ export const UNIT_PACK = {
         {
           "level": 3,
           "grants": {
+            "surge": 1,
             "precision": 1,
             "maxHp": 1,
             "resist": 1,
@@ -31905,6 +32072,7 @@ export const UNIT_PACK = {
         {
           "level": 4,
           "grants": {
+            "surge": 1,
             "magic": 1,
             "maxStamina": 1,
             "accuracy": 5,
@@ -31914,6 +32082,7 @@ export const UNIT_PACK = {
         {
           "level": 5,
           "grants": {
+            "surge": 1,
             "itemSlots": 1,
             "accuracy": 2,
             "dodge": 1
@@ -31945,6 +32114,7 @@ export const UNIT_PACK = {
         {
           "level": 6,
           "grants": {
+            "surge": 1,
             "precision": 1,
             "staminaRegen": 1,
             "vision": 1,
@@ -31954,6 +32124,7 @@ export const UNIT_PACK = {
         {
           "level": 7,
           "grants": {
+            "surge": 1,
             "magic": 1,
             "resist": 1,
             "maxStamina": 1,
@@ -31963,6 +32134,7 @@ export const UNIT_PACK = {
         {
           "level": 8,
           "grants": {
+            "surge": 1,
             "precision": 1,
             "maxHp": 1,
             "itemSlots": 1,
@@ -31973,6 +32145,7 @@ export const UNIT_PACK = {
         {
           "level": 9,
           "grants": {
+            "surge": 1,
             "precision": 1,
             "vision": 1,
             "accuracy": 5,
@@ -31983,6 +32156,7 @@ export const UNIT_PACK = {
         {
           "level": 10,
           "grants": {
+            "surge": 1,
             "magic": 1,
             "staminaRegen": 1,
             "precision": 1,
@@ -31997,11 +32171,14 @@ export const UNIT_PACK = {
       "rows": [
         {
           "level": 1,
-          "grants": {}
+          "grants": {
+            "surge": 1
+          }
         },
         {
           "level": 2,
           "grants": {
+            "surge": 1,
             "spirit": 1,
             "maxHp": 1,
             "maxStamina": 1,
@@ -32011,6 +32188,7 @@ export const UNIT_PACK = {
         {
           "level": 3,
           "grants": {
+            "surge": 1,
             "precision": 1,
             "resist": 1,
             "itemSlots": 1,
@@ -32021,6 +32199,7 @@ export const UNIT_PACK = {
         {
           "level": 4,
           "grants": {
+            "surge": 1,
             "spirit": 1,
             "maxStamina": 1,
             "accuracy": 5,
@@ -32030,6 +32209,7 @@ export const UNIT_PACK = {
         {
           "level": 5,
           "grants": {
+            "surge": 1,
             "itemSlots": 1,
             "accuracy": 3,
             "dodge": 1
@@ -32061,6 +32241,7 @@ export const UNIT_PACK = {
         {
           "level": 6,
           "grants": {
+            "surge": 1,
             "precision": 1,
             "staminaRegen": 1,
             "maxHp": 1,
@@ -32070,6 +32251,7 @@ export const UNIT_PACK = {
         {
           "level": 7,
           "grants": {
+            "surge": 1,
             "spirit": 1,
             "resist": 1,
             "maxStamina": 1,
@@ -32079,6 +32261,7 @@ export const UNIT_PACK = {
         {
           "level": 8,
           "grants": {
+            "surge": 1,
             "precision": 1,
             "maxHp": 1,
             "itemSlots": 1,
@@ -32089,6 +32272,7 @@ export const UNIT_PACK = {
         {
           "level": 9,
           "grants": {
+            "surge": 1,
             "spirit": 1,
             "toughness": 1,
             "accuracy": 5,
@@ -32099,6 +32283,7 @@ export const UNIT_PACK = {
         {
           "level": 10,
           "grants": {
+            "surge": 1,
             "precision": 1,
             "staminaRegen": 1,
             "maxHp": 1,
@@ -32114,11 +32299,14 @@ export const UNIT_PACK = {
       "rows": [
         {
           "level": 1,
-          "grants": {}
+          "grants": {
+            "surge": 1
+          }
         },
         {
           "level": 2,
           "grants": {
+            "surge": 1,
             "armor": 1,
             "maxHp": 1,
             "accuracy": 5
@@ -32127,6 +32315,7 @@ export const UNIT_PACK = {
         {
           "level": 3,
           "grants": {
+            "surge": 1,
             "strength": 1,
             "maxHp": 1,
             "maxStamina": 1,
@@ -32137,6 +32326,7 @@ export const UNIT_PACK = {
         {
           "level": 4,
           "grants": {
+            "surge": 1,
             "resist": 1,
             "maxHp": 1,
             "toughness": 1,
@@ -32146,6 +32336,7 @@ export const UNIT_PACK = {
         {
           "level": 5,
           "grants": {
+            "surge": 1,
             "maxHp": 1,
             "maxStamina": 1,
             "accuracy": 2,
@@ -32175,6 +32366,7 @@ export const UNIT_PACK = {
         {
           "level": 6,
           "grants": {
+            "surge": 1,
             "strength": 1,
             "staminaRegen": 1,
             "maxHp": 1,
@@ -32185,6 +32377,7 @@ export const UNIT_PACK = {
         {
           "level": 7,
           "grants": {
+            "surge": 1,
             "armor": 1,
             "maxHp": 1,
             "maxStamina": 1,
@@ -32195,6 +32388,7 @@ export const UNIT_PACK = {
         {
           "level": 8,
           "grants": {
+            "surge": 1,
             "strength": 1,
             "maxHp": 1,
             "itemSlots": 1,
@@ -32205,6 +32399,7 @@ export const UNIT_PACK = {
         {
           "level": 9,
           "grants": {
+            "surge": 1,
             "resist": 1,
             "maxHp": 1,
             "accuracy": 3,
@@ -32215,6 +32410,7 @@ export const UNIT_PACK = {
         {
           "level": 10,
           "grants": {
+            "surge": 1,
             "strength": 1,
             "staminaRegen": 1,
             "armor": 1,
@@ -32238,7 +32434,8 @@ export const UNIT_PACK = {
             "maxHp": 1,
             "itemSlots": 1,
             "accuracy": 5,
-            "maxStamina": 1
+            "maxStamina": 1,
+            "surge": 2
           }
         },
         {
@@ -32247,7 +32444,8 @@ export const UNIT_PACK = {
             "strength": 1,
             "maxHp": 1,
             "itemSlots": 1,
-            "accuracy": 3
+            "accuracy": 3,
+            "surge": 1
           }
         },
         {
@@ -32257,7 +32455,8 @@ export const UNIT_PACK = {
             "maxHp": 1,
             "resist": 1,
             "dodge": 3,
-            "maxStamina": 1
+            "maxStamina": 1,
+            "surge": 1
           }
         },
         {
@@ -32265,7 +32464,8 @@ export const UNIT_PACK = {
           "grants": {
             "itemSlots": 1,
             "accuracy": 3,
-            "luck": 1
+            "luck": 1,
+            "surge": 1
           },
           "choice": [
             {
@@ -32308,7 +32508,8 @@ export const UNIT_PACK = {
             "vision": 1,
             "accuracy": 5,
             "crit": 2,
-            "staminaRegen": 1
+            "staminaRegen": 1,
+            "surge": 1
           }
         },
         {
@@ -32317,7 +32518,8 @@ export const UNIT_PACK = {
             "strength": 1,
             "precision": 1,
             "maxHp": 1,
-            "dodge": 3
+            "dodge": 3,
+            "surge": 1
           }
         },
         {
@@ -32327,7 +32529,8 @@ export const UNIT_PACK = {
             "itemSlots": 1,
             "accuracy": 3,
             "luck": 1,
-            "maxStamina": 1
+            "maxStamina": 1,
+            "surge": 1
           }
         },
         {
@@ -32339,7 +32542,8 @@ export const UNIT_PACK = {
             "crit": 2,
             "dodge": 2,
             "movement": 1,
-            "staminaRegen": 1
+            "staminaRegen": 1,
+            "surge": 1
           }
         },
         {
@@ -32349,7 +32553,8 @@ export const UNIT_PACK = {
             "precision": 1,
             "itemSlots": 1,
             "maxHp": 1,
-            "accuracy": 5
+            "accuracy": 5,
+            "surge": 1
           }
         }
       ]
@@ -32367,7 +32572,8 @@ export const UNIT_PACK = {
             "maxHp": 2,
             "strength": 1,
             "maxStamina": 1,
-            "accuracy": 5
+            "accuracy": 5,
+            "surge": 2
           }
         },
         {
@@ -32376,7 +32582,8 @@ export const UNIT_PACK = {
             "maxHp": 2,
             "movement": 1,
             "toughness": 1,
-            "crit": 3
+            "crit": 3,
+            "surge": 1
           }
         },
         {
@@ -32385,13 +32592,15 @@ export const UNIT_PACK = {
             "maxHp": 2,
             "strength": 1,
             "armor": 1,
-            "dodge": 5
+            "dodge": 5,
+            "surge": 1
           }
         },
         {
           "level": 5,
           "grants": {
-            "maxHp": 2
+            "maxHp": 2,
+            "surge": 1
           },
           "choice": [
             {
@@ -32420,7 +32629,8 @@ export const UNIT_PACK = {
             "maxHp": 2,
             "staminaRegen": 1,
             "reach": 1,
-            "accuracy": 5
+            "accuracy": 5,
+            "surge": 1
           }
         },
         {
@@ -32430,7 +32640,8 @@ export const UNIT_PACK = {
             "strength": 1,
             "movement": 1,
             "toughness": 1,
-            "crit": 3
+            "crit": 3,
+            "surge": 1
           }
         },
         {
@@ -32439,7 +32650,8 @@ export const UNIT_PACK = {
             "maxHp": 2,
             "precision": 1,
             "resist": 1,
-            "dodge": 5
+            "dodge": 5,
+            "surge": 1
           }
         },
         {
@@ -32449,7 +32661,8 @@ export const UNIT_PACK = {
             "strength": 1,
             "reach": 1,
             "maxStamina": 1,
-            "luck": 3
+            "luck": 3,
+            "surge": 1
           }
         },
         {
@@ -32458,7 +32671,8 @@ export const UNIT_PACK = {
             "maxHp": 2,
             "staminaRegen": 1,
             "armor": 1,
-            "accuracy": 5
+            "accuracy": 5,
+            "surge": 1
           }
         }
       ]
@@ -32475,7 +32689,8 @@ export const UNIT_PACK = {
           "grants": {
             "maxHp": 1,
             "itemSlots": 1,
-            "maxStamina": 1
+            "maxStamina": 1,
+            "surge": 2
           }
         },
         {
@@ -32485,7 +32700,8 @@ export const UNIT_PACK = {
             "maxHp": 1,
             "itemSlots": 1,
             "dodge": 5,
-            "accuracy": 5
+            "accuracy": 5,
+            "surge": 1
           }
         },
         {
@@ -32497,12 +32713,15 @@ export const UNIT_PACK = {
             "crit": 5,
             "luck": 2,
             "accuracy": 5,
-            "maxStamina": 1
+            "maxStamina": 1,
+            "surge": 1
           }
         },
         {
           "level": 5,
-          "grants": {},
+          "grants": {
+            "surge": 1
+          },
           "choice": [
             {
               "strength": 2
@@ -32529,7 +32748,8 @@ export const UNIT_PACK = {
             "crit": 5,
             "luck": 2,
             "accuracy": 5,
-            "staminaRegen": 1
+            "staminaRegen": 1,
+            "surge": 1
           }
         },
         {
@@ -32539,7 +32759,8 @@ export const UNIT_PACK = {
             "maxHp": 1,
             "itemSlots": 1,
             "dodge": 2,
-            "accuracy": 3
+            "accuracy": 3,
+            "surge": 1
           }
         },
         {
@@ -32550,7 +32771,8 @@ export const UNIT_PACK = {
             "crit": 5,
             "luck": 2,
             "accuracy": 3,
-            "maxStamina": 1
+            "maxStamina": 1,
+            "surge": 1
           }
         },
         {
@@ -32561,7 +32783,8 @@ export const UNIT_PACK = {
             "itemSlots": 1,
             "dodge": 2,
             "accuracy": 2,
-            "staminaRegen": 1
+            "staminaRegen": 1,
+            "surge": 1
           }
         },
         {
@@ -32571,7 +32794,8 @@ export const UNIT_PACK = {
             "resist": 1,
             "crit": 5,
             "luck": 2,
-            "accuracy": 2
+            "accuracy": 2,
+            "surge": 1
           }
         }
       ]
@@ -32588,7 +32812,8 @@ export const UNIT_PACK = {
           "grants": {
             "maxHp": 1,
             "itemSlots": 1,
-            "maxStamina": 1
+            "maxStamina": 1,
+            "surge": 2
           }
         },
         {
@@ -32597,7 +32822,8 @@ export const UNIT_PACK = {
             "accuracy": 5,
             "crit": 5,
             "maxHp": 1,
-            "precision": 1
+            "precision": 1,
+            "surge": 1
           }
         },
         {
@@ -32607,14 +32833,16 @@ export const UNIT_PACK = {
             "crit": 5,
             "maxHp": 1,
             "resist": 1,
-            "maxStamina": 1
+            "maxStamina": 1,
+            "surge": 1
           }
         },
         {
           "level": 5,
           "grants": {
             "accuracy": 3,
-            "itemSlots": 1
+            "itemSlots": 1,
+            "surge": 1
           },
           "choice": [
             {
@@ -32642,7 +32870,8 @@ export const UNIT_PACK = {
             "maxHp": 1,
             "luck": 2,
             "precision": 1,
-            "staminaRegen": 1
+            "staminaRegen": 1,
+            "surge": 1
           }
         },
         {
@@ -32652,7 +32881,8 @@ export const UNIT_PACK = {
             "crit": 5,
             "maxHp": 1,
             "itemSlots": 1,
-            "precision": 1
+            "precision": 1,
+            "surge": 1
           }
         },
         {
@@ -32663,7 +32893,8 @@ export const UNIT_PACK = {
             "maxHp": 1,
             "luck": 2,
             "resist": 1,
-            "maxStamina": 1
+            "maxStamina": 1,
+            "surge": 1
           }
         },
         {
@@ -32674,7 +32905,8 @@ export const UNIT_PACK = {
             "maxHp": 1,
             "itemSlots": 1,
             "precision": 1,
-            "staminaRegen": 1
+            "staminaRegen": 1,
+            "surge": 1
           }
         },
         {
@@ -32683,7 +32915,8 @@ export const UNIT_PACK = {
             "accuracy": 3,
             "crit": 10,
             "maxHp": 1,
-            "luck": 2
+            "luck": 2,
+            "surge": 1
           }
         }
       ]
@@ -32700,7 +32933,8 @@ export const UNIT_PACK = {
           "grants": {
             "maxHp": 1,
             "luck": 2,
-            "maxStamina": 1
+            "maxStamina": 1,
+            "surge": 2
           }
         },
         {
@@ -32709,7 +32943,8 @@ export const UNIT_PACK = {
             "accuracy": 3,
             "dodge": 5,
             "maxHp": 1,
-            "luck": 2
+            "luck": 2,
+            "surge": 1
           }
         },
         {
@@ -32720,14 +32955,16 @@ export const UNIT_PACK = {
             "maxHp": 1,
             "itemSlots": 1,
             "luck": 3,
-            "maxStamina": 1
+            "maxStamina": 1,
+            "surge": 1
           }
         },
         {
           "level": 5,
           "grants": {
             "dodge": 5,
-            "luck": 2
+            "luck": 2,
+            "surge": 1
           },
           "choice": [
             {
@@ -32755,7 +32992,8 @@ export const UNIT_PACK = {
             "maxHp": 1,
             "luck": 3,
             "precision": 1,
-            "staminaRegen": 1
+            "staminaRegen": 1,
+            "surge": 1
           }
         },
         {
@@ -32765,7 +33003,8 @@ export const UNIT_PACK = {
             "dodge": 5,
             "maxHp": 1,
             "itemSlots": 1,
-            "luck": 2
+            "luck": 2,
+            "surge": 1
           }
         },
         {
@@ -32776,7 +33015,8 @@ export const UNIT_PACK = {
             "maxHp": 1,
             "luck": 3,
             "precision": 1,
-            "maxStamina": 1
+            "maxStamina": 1,
+            "surge": 1
           }
         },
         {
@@ -32787,7 +33027,8 @@ export const UNIT_PACK = {
             "maxHp": 1,
             "itemSlots": 1,
             "luck": 2,
-            "staminaRegen": 1
+            "staminaRegen": 1,
+            "surge": 1
           }
         },
         {
@@ -32797,7 +33038,8 @@ export const UNIT_PACK = {
             "dodge": 5,
             "maxHp": 1,
             "luck": 4,
-            "precision": 1
+            "precision": 1,
+            "surge": 1
           }
         }
       ]
@@ -32814,7 +33056,8 @@ export const UNIT_PACK = {
           "grants": {
             "maxHp": 1,
             "vision": 1,
-            "maxStamina": 1
+            "maxStamina": 1,
+            "surge": 2
           }
         },
         {
@@ -32823,7 +33066,8 @@ export const UNIT_PACK = {
             "accuracy": 3,
             "maxHp": 1,
             "magic": 1,
-            "vision": 1
+            "vision": 1,
+            "surge": 1
           }
         },
         {
@@ -32833,14 +33077,16 @@ export const UNIT_PACK = {
             "maxHp": 1,
             "resist": 1,
             "spirit": 1,
-            "maxStamina": 1
+            "maxStamina": 1,
+            "surge": 1
           }
         },
         {
           "level": 5,
           "grants": {
             "itemSlots": 1,
-            "vision": 1
+            "vision": 1,
+            "surge": 1
           },
           "choice": [
             {
@@ -32867,7 +33113,8 @@ export const UNIT_PACK = {
             "crit": 5,
             "maxHp": 1,
             "magic": 1,
-            "staminaRegen": 1
+            "staminaRegen": 1,
+            "surge": 1
           }
         },
         {
@@ -32876,7 +33123,8 @@ export const UNIT_PACK = {
             "accuracy": 3,
             "maxHp": 1,
             "itemSlots": 1,
-            "spirit": 1
+            "spirit": 1,
+            "surge": 1
           }
         },
         {
@@ -32886,7 +33134,8 @@ export const UNIT_PACK = {
             "maxHp": 1,
             "magic": 1,
             "vision": 1,
-            "maxStamina": 1
+            "maxStamina": 1,
+            "surge": 1
           }
         },
         {
@@ -32896,7 +33145,8 @@ export const UNIT_PACK = {
             "maxHp": 1,
             "itemSlots": 1,
             "spirit": 1,
-            "staminaRegen": 1
+            "staminaRegen": 1,
+            "surge": 1
           }
         },
         {
@@ -32906,7 +33156,8 @@ export const UNIT_PACK = {
             "crit": 5,
             "maxHp": 1,
             "magic": 1,
-            "resist": 1
+            "resist": 1,
+            "surge": 1
           }
         }
       ]
@@ -32923,7 +33174,8 @@ export const UNIT_PACK = {
           "grants": {
             "maxHp": 1,
             "itemSlots": 1,
-            "maxStamina": 1
+            "maxStamina": 1,
+            "surge": 2
           }
         },
         {
@@ -32932,7 +33184,8 @@ export const UNIT_PACK = {
             "armor": 1,
             "maxHp": 1,
             "itemSlots": 1,
-            "strength": 1
+            "strength": 1,
+            "surge": 1
           }
         },
         {
@@ -32941,14 +33194,16 @@ export const UNIT_PACK = {
             "accuracy": 3,
             "maxHp": 1,
             "resist": 1,
-            "maxStamina": 1
+            "maxStamina": 1,
+            "surge": 1
           }
         },
         {
           "level": 5,
           "grants": {
             "itemSlots": 1,
-            "strength": 1
+            "strength": 1,
+            "surge": 1
           },
           "choice": [
             {
@@ -32975,7 +33230,8 @@ export const UNIT_PACK = {
             "armor": 1,
             "maxHp": 1,
             "strength": 1,
-            "staminaRegen": 1
+            "staminaRegen": 1,
+            "surge": 1
           }
         },
         {
@@ -32984,7 +33240,8 @@ export const UNIT_PACK = {
             "accuracy": 3,
             "maxHp": 1,
             "itemSlots": 1,
-            "toughness": 1
+            "toughness": 1,
+            "surge": 1
           }
         },
         {
@@ -32994,7 +33251,8 @@ export const UNIT_PACK = {
             "crit": 5,
             "maxHp": 1,
             "strength": 1,
-            "maxStamina": 1
+            "maxStamina": 1,
+            "surge": 1
           }
         },
         {
@@ -33004,7 +33262,8 @@ export const UNIT_PACK = {
             "maxHp": 1,
             "itemSlots": 1,
             "resist": 1,
-            "staminaRegen": 1
+            "staminaRegen": 1,
+            "surge": 1
           }
         },
         {
@@ -33014,7 +33273,8 @@ export const UNIT_PACK = {
             "maxHp": 1,
             "luck": 2,
             "resist": 1,
-            "strength": 1
+            "strength": 1,
+            "surge": 1
           }
         }
       ]
@@ -33032,7 +33292,8 @@ export const UNIT_PACK = {
             "maxHp": 1,
             "itemSlots": 1,
             "luck": 2,
-            "maxStamina": 1
+            "maxStamina": 1,
+            "surge": 2
           }
         },
         {
@@ -33042,7 +33303,8 @@ export const UNIT_PACK = {
             "maxHp": 1,
             "itemSlots": 1,
             "luck": 3,
-            "precision": 1
+            "precision": 1,
+            "surge": 1
           }
         },
         {
@@ -33053,7 +33315,8 @@ export const UNIT_PACK = {
             "itemSlots": 1,
             "luck": 2,
             "resist": 1,
-            "maxStamina": 1
+            "maxStamina": 1,
+            "surge": 1
           }
         },
         {
@@ -33061,7 +33324,8 @@ export const UNIT_PACK = {
           "grants": {
             "accuracy": 3,
             "itemSlots": 1,
-            "luck": 2
+            "luck": 2,
+            "surge": 1
           },
           "choice": [
             {
@@ -33089,7 +33353,8 @@ export const UNIT_PACK = {
             "itemSlots": 1,
             "luck": 3,
             "precision": 1,
-            "staminaRegen": 1
+            "staminaRegen": 1,
+            "surge": 1
           }
         },
         {
@@ -33099,7 +33364,8 @@ export const UNIT_PACK = {
             "dodge": 3,
             "maxHp": 1,
             "luck": 2,
-            "precision": 1
+            "precision": 1,
+            "surge": 1
           }
         },
         {
@@ -33110,7 +33376,8 @@ export const UNIT_PACK = {
             "itemSlots": 1,
             "luck": 3,
             "precision": 1,
-            "maxStamina": 1
+            "maxStamina": 1,
+            "surge": 1
           }
         },
         {
@@ -33120,7 +33387,8 @@ export const UNIT_PACK = {
             "itemSlots": 1,
             "luck": 2,
             "movement": 1,
-            "staminaRegen": 1
+            "staminaRegen": 1,
+            "surge": 1
           }
         },
         {
@@ -33130,7 +33398,8 @@ export const UNIT_PACK = {
             "crit": 5,
             "maxHp": 1,
             "luck": 3,
-            "precision": 1
+            "precision": 1,
+            "surge": 1
           }
         }
       ]
@@ -33147,7 +33416,8 @@ export const UNIT_PACK = {
           "grants": {
             "maxHp": 2,
             "toughness": 1,
-            "maxStamina": 1
+            "maxStamina": 1,
+            "surge": 2
           }
         },
         {
@@ -33156,7 +33426,8 @@ export const UNIT_PACK = {
             "armor": 1,
             "dodge": 3,
             "maxHp": 2,
-            "toughness": 1
+            "toughness": 1,
+            "surge": 1
           }
         },
         {
@@ -33166,7 +33437,8 @@ export const UNIT_PACK = {
             "maxHp": 2,
             "resist": 1,
             "strength": 1,
-            "maxStamina": 1
+            "maxStamina": 1,
+            "surge": 1
           }
         },
         {
@@ -33174,7 +33446,8 @@ export const UNIT_PACK = {
           "grants": {
             "dodge": 3,
             "maxHp": 1,
-            "toughness": 1
+            "toughness": 1,
+            "surge": 1
           },
           "choice": [
             {
@@ -33201,7 +33474,8 @@ export const UNIT_PACK = {
             "armor": 1,
             "maxHp": 2,
             "toughness": 1,
-            "staminaRegen": 1
+            "staminaRegen": 1,
+            "surge": 1
           }
         },
         {
@@ -33210,7 +33484,8 @@ export const UNIT_PACK = {
             "dodge": 3,
             "maxHp": 2,
             "itemSlots": 1,
-            "strength": 1
+            "strength": 1,
+            "surge": 1
           }
         },
         {
@@ -33220,7 +33495,8 @@ export const UNIT_PACK = {
             "maxHp": 2,
             "resist": 1,
             "toughness": 1,
-            "maxStamina": 1
+            "maxStamina": 1,
+            "surge": 1
           }
         },
         {
@@ -33230,7 +33506,8 @@ export const UNIT_PACK = {
             "dodge": 3,
             "maxHp": 2,
             "itemSlots": 1,
-            "staminaRegen": 1
+            "staminaRegen": 1,
+            "surge": 1
           }
         },
         {
@@ -33240,7 +33517,8 @@ export const UNIT_PACK = {
             "maxHp": 2,
             "luck": 2,
             "strength": 1,
-            "toughness": 1
+            "toughness": 1,
+            "surge": 1
           }
         }
       ]
@@ -33257,7 +33535,8 @@ export const UNIT_PACK = {
           "grants": {
             "accuracy": 5,
             "maxHp": 1,
-            "maxStamina": 1
+            "maxStamina": 1,
+            "surge": 2
           }
         },
         {
@@ -33266,7 +33545,8 @@ export const UNIT_PACK = {
             "accuracy": 5,
             "armor": 1,
             "maxHp": 1,
-            "strength": 1
+            "strength": 1,
+            "surge": 1
           }
         },
         {
@@ -33275,14 +33555,16 @@ export const UNIT_PACK = {
             "accuracy": 5,
             "maxHp": 1,
             "reach": 1,
-            "maxStamina": 1
+            "maxStamina": 1,
+            "surge": 1
           }
         },
         {
           "level": 5,
           "grants": {
             "accuracy": 3,
-            "strength": 1
+            "strength": 1,
+            "surge": 1
           },
           "choice": [
             {
@@ -33309,7 +33591,8 @@ export const UNIT_PACK = {
             "armor": 1,
             "maxHp": 1,
             "strength": 1,
-            "staminaRegen": 1
+            "staminaRegen": 1,
+            "surge": 1
           }
         },
         {
@@ -33318,7 +33601,8 @@ export const UNIT_PACK = {
             "accuracy": 3,
             "crit": 5,
             "maxHp": 1,
-            "itemSlots": 1
+            "itemSlots": 1,
+            "surge": 1
           }
         },
         {
@@ -33328,7 +33612,8 @@ export const UNIT_PACK = {
             "armor": 1,
             "maxHp": 1,
             "strength": 1,
-            "maxStamina": 1
+            "maxStamina": 1,
+            "surge": 1
           }
         },
         {
@@ -33338,7 +33623,8 @@ export const UNIT_PACK = {
             "maxHp": 1,
             "itemSlots": 1,
             "resist": 1,
-            "staminaRegen": 1
+            "staminaRegen": 1,
+            "surge": 1
           }
         },
         {
@@ -33348,7 +33634,8 @@ export const UNIT_PACK = {
             "crit": 5,
             "maxHp": 1,
             "resist": 1,
-            "strength": 1
+            "strength": 1,
+            "surge": 1
           }
         }
       ]
@@ -33366,7 +33653,8 @@ export const UNIT_PACK = {
             "accuracy": 3,
             "dodge": 3,
             "maxHp": 1,
-            "maxStamina": 1
+            "maxStamina": 1,
+            "surge": 2
           }
         },
         {
@@ -33375,7 +33663,8 @@ export const UNIT_PACK = {
             "accuracy": 3,
             "dodge": 5,
             "maxHp": 1,
-            "strength": 1
+            "strength": 1,
+            "surge": 1
           }
         },
         {
@@ -33385,7 +33674,8 @@ export const UNIT_PACK = {
             "maxHp": 1,
             "movement": 1,
             "precision": 1,
-            "maxStamina": 1
+            "maxStamina": 1,
+            "surge": 1
           }
         },
         {
@@ -33393,7 +33683,8 @@ export const UNIT_PACK = {
           "grants": {
             "accuracy": 3,
             "itemSlots": 1,
-            "strength": 1
+            "strength": 1,
+            "surge": 1
           },
           "choice": [
             {
@@ -33420,7 +33711,8 @@ export const UNIT_PACK = {
             "dodge": 5,
             "maxHp": 1,
             "strength": 1,
-            "staminaRegen": 1
+            "staminaRegen": 1,
+            "surge": 1
           }
         },
         {
@@ -33430,7 +33722,8 @@ export const UNIT_PACK = {
             "maxHp": 1,
             "itemSlots": 1,
             "precision": 1,
-            "reach": 1
+            "reach": 1,
+            "surge": 1
           }
         },
         {
@@ -33441,7 +33734,8 @@ export const UNIT_PACK = {
             "maxHp": 1,
             "movement": 1,
             "strength": 1,
-            "maxStamina": 1
+            "maxStamina": 1,
+            "surge": 1
           }
         },
         {
@@ -33452,7 +33746,8 @@ export const UNIT_PACK = {
             "maxHp": 1,
             "itemSlots": 1,
             "strength": 1,
-            "staminaRegen": 1
+            "staminaRegen": 1,
+            "surge": 1
           }
         },
         {
@@ -33462,7 +33757,8 @@ export const UNIT_PACK = {
             "dodge": 5,
             "maxHp": 1,
             "luck": 2,
-            "precision": 1
+            "precision": 1,
+            "surge": 1
           }
         }
       ]
@@ -33479,7 +33775,8 @@ export const UNIT_PACK = {
           "grants": {
             "maxHp": 1,
             "luck": 2,
-            "maxStamina": 1
+            "maxStamina": 1,
+            "surge": 2
           }
         },
         {
@@ -33489,7 +33786,8 @@ export const UNIT_PACK = {
             "maxHp": 1,
             "luck": 2,
             "precision": 1,
-            "spirit": 1
+            "spirit": 1,
+            "surge": 1
           }
         },
         {
@@ -33499,14 +33797,16 @@ export const UNIT_PACK = {
             "maxHp": 1,
             "itemSlots": 1,
             "luck": 3,
-            "maxStamina": 1
+            "maxStamina": 1,
+            "surge": 1
           }
         },
         {
           "level": 5,
           "grants": {
             "luck": 2,
-            "spirit": 1
+            "spirit": 1,
+            "surge": 1
           },
           "choice": [
             {
@@ -33533,7 +33833,8 @@ export const UNIT_PACK = {
             "maxHp": 1,
             "luck": 3,
             "precision": 1,
-            "staminaRegen": 1
+            "staminaRegen": 1,
+            "surge": 1
           }
         },
         {
@@ -33542,7 +33843,8 @@ export const UNIT_PACK = {
             "dodge": 3,
             "maxHp": 1,
             "itemSlots": 1,
-            "spirit": 1
+            "spirit": 1,
+            "surge": 1
           }
         },
         {
@@ -33552,7 +33854,8 @@ export const UNIT_PACK = {
             "maxHp": 1,
             "luck": 3,
             "precision": 1,
-            "maxStamina": 1
+            "maxStamina": 1,
+            "surge": 1
           }
         },
         {
@@ -33562,7 +33865,8 @@ export const UNIT_PACK = {
             "maxHp": 1,
             "itemSlots": 1,
             "luck": 2,
-            "staminaRegen": 1
+            "staminaRegen": 1,
+            "surge": 1
           }
         },
         {
@@ -33573,7 +33877,8 @@ export const UNIT_PACK = {
             "maxHp": 1,
             "luck": 3,
             "resist": 1,
-            "spirit": 1
+            "spirit": 1,
+            "surge": 1
           }
         }
       ]
@@ -33590,7 +33895,8 @@ export const UNIT_PACK = {
           "grants": {
             "maxHp": 1,
             "resist": 1,
-            "maxStamina": 1
+            "maxStamina": 1,
+            "surge": 2
           }
         },
         {
@@ -33599,7 +33905,8 @@ export const UNIT_PACK = {
             "maxHp": 2,
             "precision": 1,
             "itemSlots": 1,
-            "accuracy": 3
+            "accuracy": 3,
+            "surge": 1
           }
         },
         {
@@ -33608,14 +33915,16 @@ export const UNIT_PACK = {
             "strength": 1,
             "maxHp": 1,
             "resist": 1,
-            "maxStamina": 1
+            "maxStamina": 1,
+            "surge": 1
           }
         },
         {
           "level": 5,
           "grants": {
             "maxHp": 1,
-            "itemSlots": 1
+            "itemSlots": 1,
+            "surge": 1
           },
           "choice": [
             {
@@ -33641,7 +33950,8 @@ export const UNIT_PACK = {
             "armor": 1,
             "maxHp": 2,
             "accuracy": 3,
-            "staminaRegen": 1
+            "staminaRegen": 1,
+            "surge": 1
           }
         },
         {
@@ -33651,7 +33961,8 @@ export const UNIT_PACK = {
             "maxHp": 1,
             "itemSlots": 1,
             "dodge": 3,
-            "crit": 5
+            "crit": 5,
+            "surge": 1
           }
         },
         {
@@ -33660,7 +33971,8 @@ export const UNIT_PACK = {
             "maxHp": 2,
             "resist": 1,
             "accuracy": 3,
-            "maxStamina": 1
+            "maxStamina": 1,
+            "surge": 1
           }
         },
         {
@@ -33669,7 +33981,8 @@ export const UNIT_PACK = {
             "armor": 1,
             "maxHp": 1,
             "toughness": 1,
-            "staminaRegen": 1
+            "staminaRegen": 1,
+            "surge": 1
           }
         },
         {
@@ -33680,7 +33993,8 @@ export const UNIT_PACK = {
             "resist": 1,
             "itemSlots": 1,
             "accuracy": 3,
-            "luck": 2
+            "luck": 2,
+            "surge": 1
           }
         }
       ]
@@ -33697,7 +34011,8 @@ export const UNIT_PACK = {
           "grants": {
             "maxHp": 1,
             "dodge": 5,
-            "maxStamina": 1
+            "maxStamina": 1,
+            "surge": 2
           }
         },
         {
@@ -33706,7 +34021,8 @@ export const UNIT_PACK = {
             "maxHp": 1,
             "dodge": 5,
             "resist": 1,
-            "vision": 1
+            "vision": 1,
+            "surge": 1
           }
         },
         {
@@ -33715,14 +34031,16 @@ export const UNIT_PACK = {
             "maxHp": 1,
             "dodge": 5,
             "spirit": 1,
-            "maxStamina": 1
+            "maxStamina": 1,
+            "surge": 1
           }
         },
         {
           "level": 5,
           "grants": {
             "dodge": 5,
-            "vision": 1
+            "vision": 1,
+            "surge": 1
           },
           "choice": [
             {
@@ -33748,7 +34066,8 @@ export const UNIT_PACK = {
             "maxHp": 1,
             "dodge": 5,
             "resist": 1,
-            "staminaRegen": 1
+            "staminaRegen": 1,
+            "surge": 1
           }
         },
         {
@@ -33757,7 +34076,8 @@ export const UNIT_PACK = {
             "maxHp": 1,
             "dodge": 5,
             "spirit": 1,
-            "itemSlots": 1
+            "itemSlots": 1,
+            "surge": 1
           }
         },
         {
@@ -33767,7 +34087,8 @@ export const UNIT_PACK = {
             "dodge": 5,
             "resist": 1,
             "crit": 5,
-            "maxStamina": 1
+            "maxStamina": 1,
+            "surge": 1
           }
         },
         {
@@ -33776,7 +34097,8 @@ export const UNIT_PACK = {
             "dodge": 5,
             "spirit": 1,
             "movement": 1,
-            "staminaRegen": 1
+            "staminaRegen": 1,
+            "surge": 1
           }
         },
         {
@@ -33786,7 +34108,8 @@ export const UNIT_PACK = {
             "dodge": 5,
             "resist": 1,
             "spirit": 1,
-            "crit": 5
+            "crit": 5,
+            "surge": 1
           }
         }
       ]
@@ -33803,7 +34126,8 @@ export const UNIT_PACK = {
           "grants": {
             "maxHp": 2,
             "toughness": 1,
-            "maxStamina": 1
+            "maxStamina": 1,
+            "surge": 2
           }
         },
         {
@@ -33812,7 +34136,8 @@ export const UNIT_PACK = {
             "armor": 1,
             "maxHp": 2,
             "toughness": 1,
-            "strength": 1
+            "strength": 1,
+            "surge": 1
           }
         },
         {
@@ -33821,14 +34146,16 @@ export const UNIT_PACK = {
             "maxHp": 2,
             "resist": 1,
             "toughness": 1,
-            "maxStamina": 1
+            "maxStamina": 1,
+            "surge": 1
           }
         },
         {
           "level": 5,
           "grants": {
             "maxHp": 2,
-            "toughness": 1
+            "toughness": 1,
+            "surge": 1
           },
           "choice": [
             {
@@ -33854,7 +34181,8 @@ export const UNIT_PACK = {
             "armor": 1,
             "maxHp": 2,
             "strength": 1,
-            "staminaRegen": 1
+            "staminaRegen": 1,
+            "surge": 1
           }
         },
         {
@@ -33863,7 +34191,8 @@ export const UNIT_PACK = {
             "maxHp": 2,
             "toughness": 1,
             "itemSlots": 1,
-            "accuracy": 3
+            "accuracy": 3,
+            "surge": 1
           }
         },
         {
@@ -33872,7 +34201,8 @@ export const UNIT_PACK = {
             "armor": 1,
             "maxHp": 2,
             "resist": 1,
-            "maxStamina": 1
+            "maxStamina": 1,
+            "surge": 1
           }
         },
         {
@@ -33881,7 +34211,8 @@ export const UNIT_PACK = {
             "maxHp": 2,
             "strength": 1,
             "toughness": 1,
-            "staminaRegen": 1
+            "staminaRegen": 1,
+            "surge": 1
           }
         },
         {
@@ -33891,7 +34222,8 @@ export const UNIT_PACK = {
             "maxHp": 2,
             "strength": 1,
             "toughness": 1,
-            "accuracy": 3
+            "accuracy": 3,
+            "surge": 1
           }
         }
       ]

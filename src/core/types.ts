@@ -1100,6 +1100,15 @@ export type UnitDef = {
    */
   readonly moves: readonly string[]
   /**
+   * rule.special-moves-unlock-at-level-two (2026-10-06; DECISIONS.md 'a hero's special moves unlock at level 2, ruled …'):
+   * the LEVEL at which a movement this row lists is granted, by the movement's id. A unit fielded below that level does not
+   * have the movement at all — it is not on its list, so it is not legal and not offered. A movement with no entry is had
+   * from the start; a row with no entry at all (every enemy, every civilian) keeps everything it lists at any level.
+   * Content writes the level (a class's movement power is granted at the level its Codex row says); core knows no movement
+   * by name. Each level is a whole number, 2 or more, and names a movement in `moves` (core/items.ts validateMoveLevels).
+   */
+  readonly moveLevels?: Readonly<Record<string, number>>
+  /**
    * Display base name ("Oathblade (TEST)"). Setup derives battle names from it
    * — pack units carry theirs from the Codex; a def without one falls back to
    * a title-cased typeId. Added 2026-08-20 with the generated unit pack.

@@ -18,7 +18,11 @@ describe('the stat', () => {
   it('equals the level, plus the specialty\'s grant — the Iron Dwarf at level 3 with Bloodrage (+1) has Surge 4', () => {
     const d = fieldedDef('hero.base.warrior-iron', undefined, { level: 3, specialtyId: 'specialty.bloodrage' })
     expect(d.surge).toBe(3 + (SPECIALTIES['specialty.bloodrage']!.statModifiers['surge'] ?? 0))
-    expect(fieldedDef('hero.base.warrior-iron').surge ?? 0).toBe(0)   // the bare row: no level, no surge
+    // Restated 2026-10-06 (rule.surge-is-at-least-level; ruled 2026-10-06, DECISIONS.md 'everyone gains Surge equal to its
+    // level at the least …': "Everyone gains surge equal to level, at the very least"): a hero fielded with no progress
+    // record is a level-1 hero, and its row carries the level-1 point. The line was:
+    //   expect(fieldedDef('hero.base.warrior-iron').surge ?? 0).toBe(0)   // the bare row: no level, no surge
+    expect(fieldedDef('hero.base.warrior-iron').surge ?? 0).toBe(1)
   })
 })
 
