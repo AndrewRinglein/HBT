@@ -22,8 +22,8 @@ type Measure = { frames: number; draws: Pass; triangles: Pass }
 type Row = { battle: string; flat?: boolean; note?: string; still: { withCheck: Measure; withoutCheck: Measure }; scrolling: { withCheck: Measure; withoutCheck: Measure }; held: Measure
   eachByItself?: Measure; batches?: { batches: number; pieces: number; solid: number; ms: number }
   seeThrough?: { views: number; same: number; withSomethingHiding: number; fadedAlone?: number; withAPieceOut?: number; mostOut?: number }
-  shadow?: { views: number; differing: number; worst: number; sameWay: number; blendedNoise: number
-    batched?: { views: number; same: number; differing: number; worst: number; withAPieceOut: number; back: number; retake: number; most: number; drawnAgain: number } }; pageErrors?: string[] }
+  shadow?: { views: number; pixels: number; differing: number; worst: number; sameWay: number; blendedNoise: number
+    batched?: { views: number; same: number; differing: number; worst: number; withAPieceOut: number; draws: number; firstPair: number; unsteady: number; unsteadyBy: number; otherUnsteady: number; otherUnsteadyBy: number } }; pageErrors?: string[] }
 
 describe('viewer.solid-pieces-drawn-by-material', () => {
   it('the sources: which pieces share a batch; the numbers and the order a batch draws with are three\'s own for each piece; a faded piece leaves its batch; what each pass draws', () => {
@@ -57,18 +57,29 @@ describe('viewer.solid-pieces-drawn-by-material', () => {
       expect(still.triangles.scene, at + ': the scene\'s pass draws the same triangles').toBe(each.triangles.scene)
       expect(still.draws.all, at + ': a frame\'s draw calls, the bodies idling').toBeLessThan(each.draws.all - (still.draws.inMany! - still.draws.many!) / 2)
       /* the picture: at every view of the round the frame drawn from the batches is the frame drawn piece by piece — every
-         pixel of the scene's canvas and of the bodies'. (A frame is now and then a few pixels of one shade off its own
-         repeat, the pieces batched or not — viewer SWITCHES frameNoiseOneShade — so a view whose two ways differ is drawn
-         again by the tool, three times at the most: what is the batches' doing differs every time. Held: at every view the
-         two ways were the same picture at one of those drawings, and no drawing was ever more than a few dozen pixels off —
-         a batch drawn wrong moves whole pieces.) */
+         pixel of the scene's canvas and of the bodies'.
+         viewer.pixel-compare-tests-hold-against-frame-noise (2026-10-06; it failed a gate that had not touched it three runs
+         in four, by 6, 2 and 5 pixels): this read "(A frame is now and then a few pixels of one shade off its own repeat, the
+         pieces batched or not — viewer SWITCHES frameNoiseOneShade — so a view whose two ways differ is drawn again by the
+         tool, three times at the most: what is the batches' doing differs every time. Held: at every view the two ways were
+         the same picture at one of those drawings, and no drawing was ever more than a few dozen pixels off — a batch drawn
+         wrong moves whole pieces.)" and held `expect(p.most, at + ': the most any one drawing differed by (a frame\'s own
+         noise: a handful of pixels)').toBeLessThanOrEqual(40)`. The handful is this machine's graphics card's own: handed the
+         very same calls it gives a still frame one of a few pictures. The tool no longer draws anything again until it
+         matches: at every view each way is drawn ten times, turn about, and a pixel differs only if NO batched drawing shows
+         a colour that a drawing of the pieces by themselves shows there (tools/pixel-agree.mjs) — held at 0, exactly, with
+         no number of pixels let through. Held with it: the drawings are as many as the tool fixes; the batched drawings of a
+         view are as steady among themselves as a frame is (one shade; 2 is what the shadow's compare always allowed) — a
+         fault that came and went would show there; and the card's noise is a few pixels of the picture, not a part of it. */
       expect(r.shadow?.batched, at + ': the tool drew the views both ways').toBeTruthy()
       const p = r.shadow!.batched!
       expect(p.views, at).toBeGreaterThanOrEqual(8)
       expect(p.differing, at + ': pixels that differ between the batched picture and the pieces drawn alone').toBe(0)
       expect(p.same, at).toBe(p.views)
-      expect(p.most, at + ': the most any one drawing differed by (a frame\'s own noise: a handful of pixels)').toBeLessThanOrEqual(40)
       expect(p.worst, at).toBe(0)
+      expect(p.draws, at + ': how often each way was drawn at a view').toBeGreaterThanOrEqual(10)
+      expect(p.otherUnsteadyBy, at + ': the most two batched drawings of one view are apart in a pixel, of 255').toBeLessThanOrEqual(Math.max(2, p.unsteadyBy))
+      expect((p.unsteady + p.otherUnsteady) * 1000, at + ': pixels the card does not colour the same every time, against the picture\'s').toBeLessThan(r.shadow!.pixels)
       /* the see-through rule: the same pieces found both ways at every view, as before; and every faded piece is out of its batch, drawn by itself */
       expect(r.seeThrough!.same, at + ': the see-through check\'s answer at every view').toBe(r.seeThrough!.views)
       expect(r.seeThrough!.views, at).toBeGreaterThanOrEqual(32)

@@ -11,6 +11,8 @@ import {keptShadow} from './kept-shadow.js'
 import {solidBatches,batchable,batchKey,exactVertex,hookKeepsVertex,ExactBatch,PIECE_LAYER,PIECE_TEXELS} from './solid-batches.js'
 export {keptShadow}
 export {solidBatches,batchable,batchKey,exactVertex,hookKeepsVertex,ExactBatch,PIECE_LAYER,PIECE_TEXELS}
+import {FOLIAGE,isFoliage,foliageOf} from './foliage.js'
+export {FOLIAGE,isFoliage,foliageOf}
 export {hidersStats}
 // The units drawn as 3D models stand in the same scene (viewer.character-models, models.js): board px -> scene by the inverse of the scene's own map
 // Two scene sources behind one board: an Atlas layout (atlas.js) or a painted scene (painted.js, viewer.painted-board)
@@ -179,7 +181,7 @@ export function createDriver(V,onFailure,platform={}){
  const scene=new THREE.Scene(),affine=V.data.boardAffine||(V.data.boardAffine=painted(V.data.atlas)?paintedToCSS(V.data.atlas):worldToCSS(V.data.atlas,V.data.F))
  /* viewer.characters-stand-out: the looks the host named, as numbers (a bare V has none) */
  const look=V.look||NO_LOOK
- let disposed=false,built,removeEnvironment,raf=null,seen=-1,viewportKey='',dirty=true,last=null,effectTime=0,sawThrough=-Infinity,sawWhat=null,sawRuns=0,sawBuilt=null,key=null,keeper,batches=null,bodiesMoved=false,castSize=-1,depthWhole=false,depthDrawn=0,subjectDrawn,cursorDrawn
+ let disposed=false,built,removeEnvironment,raf=null,seen=-1,viewportKey='',dirty=true,last=null,effectTime=0,sawThrough=-Infinity,sawWhat=null,sawRuns=0,sawBuilt=null,key=null,keeper,batches=null,foliage=null,bodiesMoved=false,castSize=-1,depthWhole=false,depthDrawn=0,subjectDrawn,cursorDrawn
  const faded=new Map(),couldHiding=new Set()
  const clock=platform.now||(()=>performance.now())
  const onLost=e=>{e.preventDefault();onFailure(Error('WebGL context lost'))};canvas.addEventListener('webglcontextlost',onLost)
@@ -188,6 +190,14 @@ export function createDriver(V,onFailure,platform={}){
   if(disposed){result.dispose();return}built=result;scene.add(built.group);removeEnvironment=painted(V.data.atlas)?paintedEnvironment(scene,V.data.atlas):atlasEnvironment(scene,built)
   if(V.data.models)V.cast=(platform.createCast||createCast)(V,scene,affine.clone().invert(),{...(platform.models||{}),location:platform.location,onError:(look,error,detail)=>{const st=wrap.querySelector('#terrainStatus');if(st)st.textContent+=' · '+look.name+(detail?.appearance?' transformation unavailable: ':' is its token: ')+String(error?.message||error)}})
   if(renderer.shadowMap)renderer.shadowMap.needsUpdate=true
+  /* viewer.foliage-drawn-once (2026-10-05; the chat's call, engine DECISIONS.md 2026-10-05 '… the foliage is tried the smallest
+     way'): the scene's two-sided blended pieces — its leaves, needles, grass — are found here, once, and each is drawn ONCE
+     where three drew it twice (foliage.js; the switch is its one word, FOLIAGE.ONCE). What the page says of them, for the
+     tests and tools/frame-cost.mjs: how many pieces in how many materials, how many this view's pass draws, and which way
+     they are drawn — which may be asked for the other way while the page runs (the same view drawn both ways, compared). */
+  foliage=foliageOf(built.group,FOLIAGE.ONCE)
+  V.foliage={pieces:foliage.pieces,materials:foliage.materials.size,inSight:()=>V.camera3d?foliage.inSight(V.camera3d):0,
+   get once(){return foliage.once},set once(v){if(!!v===foliage.once)return;foliage.once=v;dirty=true}}
   /* viewer.solid-pieces-drawn-by-material (2026-10-05; engine DECISIONS.md 'the battle screen must feel smooth: the speed first;
      …'): the scene's solid pieces that share a material are gathered into batches here, once, while the loading line still
      shows (solid-batches.js) — each batch one call a pass where the browser draws many in one (WEBGL_multi_draw; without it
@@ -292,5 +302,5 @@ export function createDriver(V,onFailure,platform={}){
     drawBodies(bodies,scene,camera,characters,hiding)}
    dirty=false}raf=requestAnimationFrame(frame)
  }catch(error){onFailure(error)}}
- return{ready,dispose(){if(disposed)return;disposed=true;V.seeThrough=null;V.sceneryShadow=null;V.bodiesDepth=null;V.solidBatches=null;keeper?.dispose();for(const [o,solid] of faded){for(const m of [].concat(o.material))m.dispose();o.material=solid}faded.clear();batches?.dispose();batches=null;if(raf!==null)window.cancelAnimationFrame(raf);V.cast?.dispose();V.cast=null;canvas.removeEventListener('webglcontextlost',onLost);built?.dispose();removeEnvironment?.();renderer.dispose();renderer.forceContextLoss();canvas.remove();if(bodies){const c=bodies.domElement;bodies.dispose();bodies.forceContextLoss?.();c?.remove()}}}
+ return{ready,dispose(){if(disposed)return;disposed=true;V.seeThrough=null;V.sceneryShadow=null;V.bodiesDepth=null;V.solidBatches=null;V.foliage=null;keeper?.dispose();for(const [o,solid] of faded){for(const m of [].concat(o.material))m.dispose();o.material=solid}faded.clear();batches?.dispose();batches=null;foliage?.dispose();foliage=null;if(raf!==null)window.cancelAnimationFrame(raf);V.cast?.dispose();V.cast=null;canvas.removeEventListener('webglcontextlost',onLost);built?.dispose();removeEnvironment?.();renderer.dispose();renderer.forceContextLoss();canvas.remove();if(bodies){const c=bodies.domElement;bodies.dispose();bodies.forceContextLoss?.();c?.remove()}}}
 }

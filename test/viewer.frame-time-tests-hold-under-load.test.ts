@@ -93,7 +93,8 @@ describe('the frame tests hold under load: no time is compared with a number of 
     const [cost, see, shadow, still] = TESTS.map(code) as [string, string, string, string]
     expect(see).toMatch(/expect\(r\.still\.withCheck\.checks,[^)]*\)\.toBe\(0\)/); expect(see).toMatch(/expect\(p!\.checks,[^)]*\)\.toBe\(0\)/)
     expect(see).toMatch(/expect\(r\.scrolling\.withCheck\.checks!,[^)]*\)\.toBeGreaterThan\(30\)/); expect(see).toMatch(/expect\(r\.seeThrough!\.same,[^)]*\)\.toBe\(r\.seeThrough!\.views\)/)
-    expect(shadow).toMatch(/expect\(m\.draws\.shadow,[^)]*\)\.toBeLessThan\(120\)/); expect(shadow).toMatch(/expect\(r\.held\.draws\.shadow,[^)]*\)\.toBe\(0\)/); expect(shadow).toMatch(/expect\(r\.shadow!\.worst,[^)]*\)\.toBeLessThanOrEqual\(2\)/)
+    expect(shadow).toMatch(/expect\(m\.draws\.shadow,[^)]*\)\.toBeLessThan\(120\)/); expect(shadow).toMatch(/expect\(r\.held\.draws\.shadow,[^)]*\)\.toBe\(0\)/); /* (viewer.pixel-compare-tests-hold-against-frame-noise, 2026-10-06: this asked for `expect(r.shadow!.worst, …).toBeLessThanOrEqual(2)`; the shadow's compare is now held at 0 exactly) */
+    expect(shadow).toMatch(/expect\(r\.shadow!\.worst,[^)]*\)\.toBe\(0\)/); expect(shadow).toMatch(/expect\(r\.shadow!\.differing,[^)]*\)\.toBe\(0\)/)
     expect(still).toMatch(/expect\(orphanage\.held\.draws\)\.toEqual\(\{ all: 0, shadow: 0, scene: 0, bodies: 0 \}\)/); expect(still).toMatch(/expect\(orphanage\.live\.afterCamera,[^)]*\)\.toBe\(0\)/)
     expect(cost).toMatch(/expect\(p\.all,[^)]*\)\.toBe\(p\.shadow \+ p\.scene \+ p\.bodies \+ \(p\.other \?\? 0\)\)/)
   })
