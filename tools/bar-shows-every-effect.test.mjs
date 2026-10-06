@@ -156,3 +156,72 @@ test('a side\'s party stat changing is said: the Vortex reads Magic three times 
   assert.match(lines, /using it lowers the enemy side's Power by 1 for the rest of the Battle/)
   for (const t of ['side.stat.changed', 'side.stat.restored']) assert.ok(FOLDED_TYPES.includes(t), t)
 })
+
+/* capability.his-weapons-small-clauses (engine item, 2026-10-05; engine DECISIONS.md 2026-10-04 'his 28 reward weapons read back …':
+   "Everything else in here seems like something we need."): "On kill: the corpse is destroyed" is said under the attack it rides
+   (the Staff of the Destroyer's Ruin, a weapon of Destroying), a status removed by a stat's amount says the amount (Mending
+   Light: Weak equal to Spirit), and the fold takes a destroyed body off the board and says so. Read off the engine's own rows
+   (generated/static.json). */
+test('the corpse destroyed on a kill and a status removed by a stat\'s amount are said; the fold takes the destroyed body off the board', async () => {
+  const { effectSentence, effectWord } = await import('../src/actions.js')
+  const { createState, fold } = await import('../src/fold.js')
+  const RUIN = 'attack.staff-of-the-destroyer.ruin'
+  const staff = STATIC.items['item.staff-of-the-destroyer']
+  const onKill = (staff.triggers || []).find(t => t.onlyWithAttack === RUIN && t.effect.kind === 'corpse.destroy')
+  assert.ok(onKill, 'the engine holds Ruin\'s on-kill')
+  assert.equal(effectSentence(onKill.effect, onKill.select, D, STATIC.statuses), 'the corpse is destroyed — nothing is left to raise or eat')
+  assert.deepEqual(effectWord(onKill.effect, D, STATIC.statuses), { word: 'Destroys the corpse' })
+  // it rides the attack it is scoped to, for a unit holding the staff, and no other attack
+  const holder = { typeId: 'hero.base.mage-fire', kit: { held: [{ itemId: 'item.staff-of-the-destroyer' }] }, badges: [] }
+  assert.deepEqual(ridersOf(holder, { id: RUIN, ...STATIC.actions[RUIN] }, D).filter(t => t.effect.kind === 'corpse.destroy').map(t => t.id), ['trigger.staff-of-the-destroyer.ruin.corpse-destroyed'])
+  assert.deepEqual(ridersOf(holder, { id: 'attack.punch', ...STATIC.actions['attack.punch'] }, D).filter(t => t.effect.kind === 'corpse.destroy'), [])
+  // the artifact attribute, on the weapon it is on
+  const sword = STATIC.items['item.longsword.destroying']
+  assert.deepEqual((sword.triggers || []).filter(t => t.effect.kind === 'corpse.destroy').map(t => [t.hook, t.onlyWithAttack]), [['onKill', 'attack.longsword.slash.destroying']])
+  // Mending Light: the amount removed is the party's Spirit, said as every scaled amount is
+  const mending = STATIC.actions['power.benevolent-rod.restoration']
+  assert.ok(mending, 'the engine holds Mending Light')
+  const remove = mending.effects.find(e => e.kind === 'status.remove')
+  assert.match(effectSentence(remove, undefined, D, STATIC.statuses), /^remove party Spirit weak$/i)
+  assert.match(effectSentence({ kind: 'status.remove', statusId: 'status.weak', value: 2 }, undefined, D, STATIC.statuses), /^remove 2 weak$/i)
+  assert.match(effectSentence({ kind: 'status.remove', statusId: 'status.weak' }, undefined, D, STATIC.statuses), /^remove all weak$/i)
+  assert.doesNotMatch(actionLines({ id: 'power.benevolent-rod.restoration', ...mending }, {}, D, STATIC.statuses).join(' | '), /object Object/)
+  // the fold: the body is made, then destroyed - off the board, with its beat and its words
+  const S = createState(), ctx = { UD: STATIC.units, SN: STATIC.statuses }
+  fold(S, { type: 'corpse.created', causeId: RUIN, corpse: 1, hex: 89, of: 2, typeId: 'unit.zombie', side: 'enemy' }, ctx)
+  assert.deepEqual(Object.keys(S.corpses), ['1'])
+  const cues = fold(S, { type: 'corpse.removed', causeId: onKill.id, corpse: 1, hex: 89, how: 'destroyed', actor: 0, typeId: 'unit.zombie' }, ctx)
+  assert.deepEqual(Object.keys(S.corpses), [])
+  assert.ok(cues.some(c => c.k === 'corpse.gone' && c.how === 'destroyed' && c.hex === 89), 'the body\'s leaving beat')
+  assert.ok(cues.some(c => c.k === 'float' && c.text === 'CORPSE DESTROYED' && c.hex === 89), 'the words over the hex')
+})
+
+/* capability.planted-banners (engine item, 2026-10-05; engine DECISIONS.md 2026-10-04 'every dead line on his items is a feature
+   that is needed …': "All of those deadlines need to be added in as features that we need."): a power that plants a banner
+   says all of it - that it is planted on the user's hex and stays, its reach, each stat it lends, the Weak it wards and what
+   it gives at the End of an Activation - in the engine's own fields, and once a Battle. Read off the engine's own rows
+   (generated/static.json); the audit holds every such row the same way (tools/bar-audit.mjs). */
+test('a planted banner is said whole on its power: the hex, the reach, the stats, the ward, the lent triggers, one use a Battle', async () => {
+  const { effectSentence, effectWord, plantWords } = await import('../src/actions.js')
+  const id = 'power.banner-courage.plant', courage = STATIC.actions[id]
+  assert.ok(courage, 'the engine holds Plant the Courage Banner')
+  const plant = courage.effects[0]
+  assert.deepEqual([plant.kind, plant.radius, plant.mods, plant.wards, plant.lends.map(t => [t.hook, t.effect])], ['plant', 2, { resist: 1 }, { 'status.weak': 2 }, [['onActivationEnd', { kind: 'surge.gain', value: 10 }]]])
+  const said = plantWords(plant, D, STATIC.statuses)
+  assert.match(said, /^plant a banner on your hex — it stays for the rest of the Battle, and you may walk away; allies within 2 hexes of that hex: /)
+  assert.match(said, /RES\w* \+1/i)
+  assert.match(said, /2 of each weak does not land/i)
+  assert.match(said, /at the end of its activation: Surge Chance \+10/)
+  assert.equal(effectSentence(plant, undefined, D, STATIC.statuses), said)
+  assert.deepEqual(effectWord(plant, D, STATIC.statuses), { word: 'Plants a banner', val: 2, radius: true })
+  assert.equal(effectSentence({ kind: 'surge.gain', value: 30 }, 'self', D, STATIC.statuses), 'Surge Chance +30')
+  const lines = actionLines({ id, ...courage }, {}, D, STATIC.statuses).join(' | ')
+  assert.ok(lines.includes(said), 'the tooltip carries the sentence')
+  assert.match(lines, /Stamina 3/); assert.match(lines, /1 use/i)
+  // the other banners the engine holds, by the same function: the Assassin's crit and its on-crit, the Vigil's heal, the Heroic's two stats and heal
+  const of = pid => plantWords(STATIC.actions[pid].effects[0], D, STATIC.statuses)
+  assert.match(of('power.banner-assassin.plant'), /within 1 hex of that hex: CRIT\w* \+20 · on crit: regain 1 Stamina/i)
+  assert.match(of('power.banner-vigil.plant'), /within 1 hex of that hex: at the end of its activation: heal SPI\w*/i)
+  assert.match(of('power.banner-heroism.plant'), /within 3 hexes of that hex: STR\w* \+2 · PRE\w* \+2 · at the end of its activation: heal 5/i)
+  assert.equal(STATIC.actions['power.banner-mystic-power.plant'], undefined, 'the Mystic Banner is not planted as an object that does nothing')
+})

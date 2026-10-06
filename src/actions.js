@@ -216,6 +216,11 @@ function effectWordOf(ef, D, SN) {
     case 'side.stat':      return { word: (ef.value < 0 ? 'Lowers ' : 'Raises ') + (ef.stat === 'power' ? 'Power' : (ef.side === 'enemy' ? 'enemy ' : 'party ') + (ef.stat === 'magic' ? 'Magic' : 'Spirit')), val: Math.abs(ef.value) }
     case 'summon':         return { word: 'Summons ' + ((((D && D.UD) || {})[ef.unit] || {}).name || String(ef.unit || '').replace(/^unit\./, '')) }
     case 'corpse.consume': return { word: 'Consumes a corpse', val: ef.radius, radius: true }
+    /* capability.his-weapons-small-clauses (engine item, 2026-10-05): "On kill: the corpse is destroyed" */
+    case 'corpse.destroy': return { word: 'Destroys the corpse' }
+    /* capability.planted-banners (engine item, 2026-10-05) */
+    case 'plant':          return { word: 'Plants a banner', val: ef.radius, radius: true }
+    case 'surge.gain':     return { word: 'Surge Chance', val: ef.value, signed: true }
     /* an effect kind the engine added and the viewer has not been taught: show
        the engine's own word rather than invent one, and it is a viewer finding */
     default: return { word: ef.kind, unknown: true }
@@ -341,6 +346,17 @@ export function unitTriggers(u, D) {
   return out
 }
 
+/** capability.planted-banners (engine item, 2026-10-05): what a planted object gives, field by field of the engine's row —
+    the reach from its hex, the stats lent inside, the points of a status that do not land inside, and each trigger it lends
+    under its hook's own words. */
+export function plantWords(ef, D, SN) {
+  const parts = []
+  for (const [k, v] of Object.entries(ef.mods || {})) parts.push(`${statWord(k)} ${sgn(v)}`)
+  for (const [id, n] of Object.entries(ef.wards || {})) parts.push(`${n} of each ${shortStatus(id, SN)} does not land`)
+  for (const t of ef.lends || []) parts.push(`${String(HOOK_WORD[t.hook] || t.hook).toLowerCase()}: ${effectSentence(t.effect, undefined, D, SN)}`)
+  return `plant a banner on your hex — it stays for the rest of the Battle, and you may walk away; allies within ${hexes(ef.radius)} of that hex: ${parts.join(' · ')}`
+}
+
 /** `sel`: who it lands on — a trigger's select ('self' · 'target' · a Targeting row), or for a power's own effect its `who`
     (absent: whoever the power is aimed at) */
 export function effectSentence(ef, sel, D, SN) {
@@ -352,7 +368,8 @@ export function effectSentence(ef, sel, D, SN) {
   const st = id => shortStatus(id, SN), badge = id => (BD[id] || {}).name || String(id || '').replace(/^badge\./, '')
   switch (ef.kind) {
     case 'status.apply':   return self ? `gain ${amt(ef.value)} ${st(ef.statusId)}` : `apply ${amt(ef.value)} ${st(ef.statusId)}${to}`
-    case 'status.remove':  return `remove ${ef.value == null ? 'all' : ef.value} ${st(ef.statusId)}${self ? ' from self' : area ? ' from ' + area : ''}`
+    /* capability.his-weapons-small-clauses (engine item, 2026-10-05): the amount may be a stat's ("remove Weak equal to your Spirit") */
+    case 'status.remove':  return `remove ${ef.value == null ? 'all' : amt(ef.value)} ${st(ef.statusId)}${self ? ' from self' : area ? ' from ' + area : ''}`
     case 'badge.grant':    return `inflict ${[ef.badgeId, ...(ef.withBadgeIds || [])].map(badge).join(' with ')}${to}`
     case 'damage':         return `${amt(ef.amount)} ${ef.damageType} damage${onSelf}${to}`
     case 'statDamage':     return `${statWord(ef.stat)} ${sgn(ef.bonus)} ${ef.damageType} damage${ef.allies === 'always' ? ', allies too' : ''}${to}`
@@ -372,6 +389,9 @@ export function effectSentence(ef, sel, D, SN) {
     case 'side.stat':      return sideStatWords(ef)
     case 'summon':         return `summon one ${(UD[ef.unit] || {}).name || ef.unit} on that hex, on your side — it acts by its own AI`
     case 'corpse.consume': return `consume every corpse within ${hexes(ef.radius)}, heal ${ef.healPer} for each`
+    case 'corpse.destroy': return 'the corpse is destroyed — nothing is left to raise or eat'
+    case 'plant':          return plantWords(ef, D, SN)
+    case 'surge.gain':     return `Surge Chance ${sgn(ef.value)}`
     case 'corpse.eat':     return `eat a corpse within ${hexes(ef.radius)}: heal ${ef.heal}${Object.entries(ef.mods || {}).map(([k, v]) => ', ' + statWord(k) + ' ' + sgn(v)).join('')}${ef.maxHp ? ', MAX HEALTH ' + sgn(ef.maxHp) : ''}`
     default:               return ef.kind
   }

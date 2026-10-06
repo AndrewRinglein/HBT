@@ -37,7 +37,7 @@ const BOUNDARY = new Set(['phase.end.begin', 'phase.end.done', 'phase.begin', 't
 const SHOWN = new Set(['attack.declared', 'attack.hit', 'attack.miss', 'power.used', 'power.hit', 'burst.declared', 'burst.struck', 'damage.applied', 'heal.applied', 'move.begin', 'moved', 'move.stopped',
   'knocked', 'knockback.blocked', 'status.applied', 'life.downed', 'life.dead', 'unit.enter', 'unit.raised', 'unit.summoned', 'unit.dismissed', 'corpse.eaten', 'unit.obliterated', 'aoo.provoked', 'prop.struck', 'prop.damaged', 'prop.destroyed',
   'deathbed.stood', 'deathbed.fell', 'deathbed.none', 'surge.hit', 'badge.gained', 'thorns.reflected', 'crit.effect', 'layer.painted', 'layer.cancelled', 'unit.shunted', 'statmod.added', 'maxHp.lost', 'maxHp.gained',
-  'loadout.swapped', 'hp.reset', 'bleedout.accelerated', 'corpse.removed', 'power.gained', 'side.stat.changed', 'side.stat.restored', 'unit.proned', 'unit.stood', 'stamina.drained', 'status.cancelled', 'heal.boosted', 'trigger.fired'])
+  'loadout.swapped', 'hp.reset', 'bleedout.accelerated', 'corpse.removed', 'power.gained', 'side.stat.changed', 'side.stat.restored', 'object.planted', 'status.warded', 'surge.gained', 'unit.proned', 'unit.stood', 'stamina.drained', 'status.cancelled', 'heal.boosted', 'trigger.fired'])
 
 /** One Activation of the run: where it lies in the log, and its opening walk cut into legs and free attacks.
     {actor, from, to, walk: null | {legs: [[from, to)…], aoos: [[from, to)…], end}} — legs[k] is followed by aoos[k] if there is one */

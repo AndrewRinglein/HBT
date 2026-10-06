@@ -307,6 +307,28 @@ export function corpseGone(V, corpseId, how) {
   V.fx.timers.add(t)
 }
 
+/* ── PLANTED OBJECTS (capability.planted-banners, engine item, 2026-10-05) — a banner a power planted stays on its hex for the
+   rest of the battle (object.planted; nothing removes it), whoever planted it walks away or falls. There is no banner model
+   yet (the art queue: art.banner-models): the stand-in is a pole and a pennant in its side's colour, drawn in the page's own
+   shapes — never another thing's art. Its reach is tinted by syncAuras, with the unit auras. */
+export function syncPlanted(V) {
+  const L = V.layers, S = V.S
+  if (!L.plantedL) { L.plantedL = el('', 'position:absolute;left:0;top:0;transform-style:preserve-3d'); placeAfter(L.corpseL || L.layL || L.ground, L.plantedL); L.PLANTED = new Map() }
+  const want = S.planted || {}
+  for (const [id, node] of L.PLANTED) if (!want[id]) { node.remove(); L.PLANTED.delete(id) }
+  for (const p of Object.values(want)) {
+    if (L.PLANTED.has(p.id)) { L.PLANTED.get(p.id).style.transform = `translateZ(${heightOf(V, p.hex)}px)`; continue }
+    const f = feetOf(V, p.hex), hue = p.side === 'hero' ? AURA_HUE.ally : AURA_HUE.enemy
+    const root = el('planted', `position:absolute;left:${f.x}px;top:${f.y}px;pointer-events:none`)
+    root.style.transform = `translateZ(${heightOf(V, p.hex)}px)`
+    root.dataset.planted = String(p.id)
+    root.dataset.hex = String(p.hex)
+    root.appendChild(el('', 'position:absolute;left:-1px;top:-58px;width:3px;height:58px;background:#d9c9a3;border-radius:1px'))
+    root.appendChild(el('', `position:absolute;left:2px;top:-58px;width:0;height:0;border-top:9px solid transparent;border-bottom:9px solid transparent;border-left:22px solid ${hue}`))
+    L.plantedL.appendChild(root); L.PLANTED.set(p.id, root)
+  }
+}
+
 /* ── AURAS (2026-09-03, §7) — derived on read, never emitted: every STANDING
    holder with `auras` on its sheet tints the hexes within each aura's radius —
    the holder's own hex included, as the engine's auraMods counts the holder
@@ -334,6 +356,14 @@ export function syncAuras(V) {
         if (d <= a.radius) { const edge = d === a.radius, k = h + '|' + hue + '|' + (edge ? 'e' : 'i')
           if (!want.has(k)) want.set(k, { hex: h, hue, edge }) } }
     }
+  }
+  /* capability.planted-banners (engine item, 2026-10-05): a planted object's reach, from ITS hex — it does not move with
+     whoever planted it, and it does not end when that unit falls. The planter's side's colour. */
+  if (distance) for (const p of Object.values(S.planted || {})) {
+    const hue = p.side === 'hero' ? AURA_HUE.ally : AURA_HUE.enemy
+    for (let h = 0; h < POS.length; h++) { const d = distance(p.hex, h)
+      if (d <= p.radius) { const edge = d === p.radius, k = h + '|' + hue + '|' + (edge ? 'e' : 'i')
+        if (!want.has(k)) want.set(k, { hex: h, hue, edge }) } }
   }
   for (const [k, E] of L.AURA) if (!want.has(k)) { E.remove(); L.AURA.delete(k) }
   for (const [k, w] of want) {

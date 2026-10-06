@@ -39,6 +39,7 @@ export function createState() {
     outcome: null,
     /* ── 2026-09-03 ── */
     begun: false,          // battle.begin has passed: a unit.enter after it is an ARRIVAL, not the roster
+    planted: {},           // object id -> {id, hex, side, radius, source, by, mods, wards} — planted objects (object.planted); nothing removes one
     corpses: {},           // corpse id -> {id, hex, of, typeId, side} — board objects (corpse.created/removed)
     layers: {},            // hex -> painted ground layer number (only non-zero hexes are keys)
     power: null,           // the enemy side's Power pool after the last power.gained; null until one
@@ -718,6 +719,21 @@ export function fold(S, e, ctx, now = 0) {
       if (U[e.actor]) { U[e.actor].dismissed = true
         cue('float', { hex: U[e.actor].hex, kind: 'note', text: 'LEAVES', small: true }) }
       break
+    /* capability.planted-banners (engine item, 2026-10-05): a power planted an object on its user's hex. It stays there for
+       the rest of the battle and reaches `radius` from THAT hex (the board draws the banner and tints its reach). A status
+       application it warded and Surge Chance it gave are each the engine's own line. */
+    case 'object.planted':
+      S.planted[e.object] = { id: e.object, hex: e.hex, side: e.side, radius: e.radius, source: e.causeId, by: e.actor, mods: e.mods || null, wards: e.wards || null }
+      cue('float', { hex: e.hex, kind: 'raised', text: 'PLANTED', big: true })
+      break
+    case 'status.warded':
+      /* the number in the word is the line's own `amount` */
+      if (U[e.target]) cue('float', { hex: U[e.target].hex, kind: 'note', text: String(SN[e.statusId] || e.statusId).toUpperCase() + ' WARDED −' + e.amount, small: true, n: e.amount, of: 'amount' })
+      break
+    case 'surge.gained':
+      if (U[e.target]) { U[e.target].surgeChance = e.after
+        cue('float', { hex: U[e.target].hex, kind: 'surge', text: 'SURGE CHANCE +' + e.amount, small: true, n: e.amount, of: 'amount' }) }
+      break
     case 'corpse.eaten':
       /* the ghoul feeds; heal.applied + statmod.added + maxHp.gained follow */
       if (U[e.actor]) cue('float', { hex: U[e.actor].hex, kind: 'eaten', text: 'FEEDS', small: true })
@@ -870,6 +886,8 @@ export const FOLDED_TYPES = ['burst.declared', 'burst.shielded', 'burst.struck',
   'unit.summoned', 'unit.dismissed',
   /* capability.raise-lower-magic (engine item, 2026-10-05) */
   'side.stat.changed', 'side.stat.restored',
+  /* capability.planted-banners (engine item, 2026-10-05) */
+  'object.planted', 'status.warded', 'surge.gained',
   'deathbed.stood', 'deathbed.fell', 'deathbed.none', 'hp.reset',
   'unit.badged', 'unit.modified', 'badge.gained', 'badge.held', 'power.exhausted', 'charge.spent', 'maxstamina.gained',
   'surge.checked', 'surge.hit', 'power.gained',

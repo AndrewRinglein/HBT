@@ -146,6 +146,10 @@
    "label": "TEST · Swell: a side’s Magic raised for two Turns, and its return"
   },
   {
+   "file": "test.banner-courage.json",
+   "label": "TEST · the Banner of Courage: planted on a hex, its reach, Weak warded and Surge Chance gained"
+  },
+  {
    "file": "test.knockback-well.json",
    "label": "TEST · knockback collisions: boulder and well (consumed)"
   },

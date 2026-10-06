@@ -76,6 +76,16 @@ function effectNeeds(e, S) {
   if (e.kind === 'power.gain') out.push(word('power'))
   /* capability.summons (engine item, 2026-10-05): what is summoned, by the engine row's own name */
   if (e.kind === 'side.stat') out.push(...sideStatNeeds(e))
+  /* capability.his-weapons-small-clauses (engine item, 2026-10-05): an on-kill that leaves no body */
+  if (e.kind === 'corpse.destroy') out.push(word('corpse'), word('destroyed'))
+  /* capability.planted-banners (engine item, 2026-10-05): a planted object — that it is planted and stays, each status it
+     wards and by how much, and everything each trigger it lends does (its radius and its stats are read above, as every row's) */
+  if (e.kind === 'plant') {
+    out.push(word('plant'), word('rest of the Battle'))
+    for (const [id, n] of Object.entries(e.wards ?? {})) out.push(word(S.statuses[id] ?? id), num(n))
+    for (const t of e.lends ?? []) out.push(...effectNeeds(t.effect, S))
+  }
+  if (e.kind === 'surge.gain') out.push(word('surge'))
   if (e.kind === 'summon') out.push(word('summon'), word(((S && S.units && S.units[e.unit]) || {}).name ?? e.unit))
   if (e.who === 'self') out.push(SELF)
   return out
