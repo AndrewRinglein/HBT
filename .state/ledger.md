@@ -38456,3 +38456,23 @@ index e3240f7..8ee8c29 100644
 2026-10-06 09:51
 
 Andrew 2026-10-06: 'We don't need an attack with several chosen targets. This weapon feature was not approved. That should not be in the queue.' Filed by a worker from four chat-authored Codex attack lines; never ruled.
+
+## content.sets-count-holy-texts-and-heavy-chain — LANDED `465a797`
+2026-10-06 13:50
+
+  PASS  dependencies landed
+  WARN  not already decided — 2 candidate ruling(s) — READ BEFORE ASKING: SWITCHES.md:2526 · SWITCHES.md:2530
+  PASS  typecheck
+  PASS  the item's own tests — test/sets-count-holy-texts-and-heavy-chain.test.ts
+  PASS  gate 1 — the id appears in a real battle — item.book-of-karma: 2 log lines, 2 fired, 2 changed state · item.chains-of-the-wrathful: 2 log lines, 2 fired, 2 changed state
+  PASS  brought its own tests — test/sets-count-holy-texts-and-heavy-chain.test.ts
+  PASS  existing tests untouched
+  PASS  control battles unchanged
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — shape 'data' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without item.book-of-karma,item.chains-of-the-wrathful — they genuinely test it
