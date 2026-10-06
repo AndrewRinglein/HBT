@@ -6,14 +6,7 @@ export function controllerOf(ctx: Ctx, actor: number, policy: ControlPolicy): 'h
   const u = ctx.state.units[actor]
   if (!u) throw new Error(`unknown controller actor ${actor}`)
   if (u.statuses.some(s => s.value > 0 && ctx.statuses[s.id]?.aiControlled)) return 'ai'
-  if (policy.humanUnitUids.includes(u.uid)) return 'human'
-  // rule.player-moves-summons (ruled 2026-10-05, DECISIONS.md '… the player moves a summon …'; 2026-10-06 '… the player moves the
-  // summoned Wolf …'): a unit summoned by a unit the session's player controls is the player's to play — it is offered at
-  // the Hero Phase's selection and takes orders like a hero, and the computer never activates it. A session's players were
-  // only the units it named at the start, so a unit that arrived later was nobody's (SWITCHES.md summonActsByItsOwnAi,
-  // overturned for a player's summon). Summoned by anything else, or with no player in the session, it is the computer's.
-  const by = u.summonedBy !== undefined ? ctx.state.units[u.summonedBy] : undefined
-  return by !== undefined && policy.humanUnitUids.includes(by.uid) ? 'human' : 'ai'
+  return policy.humanUnitUids.includes(u.uid) ? 'human' : 'ai'
 }
 /**
  * The human heroes still to act this Phase, as unit ids: the captured, unspent phase queue,
