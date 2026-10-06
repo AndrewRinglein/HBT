@@ -38280,3 +38280,8 @@ index 68a046c..1f59b85 100644
   PASS  naming — new content ids use declared kinds
   PASS  naming — no banned words invented
   PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+## capability.attack-several-targets — ABANDONED
+2026-10-06 09:51
+
+Andrew 2026-10-06: 'We don't need an attack with several chosen targets. This weapon feature was not approved. That should not be in the queue.' Filed by a worker from four chat-authored Codex attack lines; never ruled.

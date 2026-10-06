@@ -6095,7 +6095,10 @@
   "shape": "rule",
   "spec": "Found landing fix.kit-attack-clauses (2026-10-04, engine SWITCHES.md kitClausesNamedNotBuilt): four Codex attacks read 'up to N enemies within R hexes' - the Throwing Knives' Fan (a weapon a base Rogue carries: 'up to 3 enemies within 3 hexes', 2 hits), the Poison Stars' Venom Spread, the Poison Throwing Knives' Venom Fan and the Demon Whip's Hellcoil - and each lands on ONE unit: an engine attack is aimed at one target (src/core/commands.ts ActionRequest: target; pipeline.ts performAttack). They are named gap lines ('an attack at several chosen targets') in content/gen/enemy-pack-gaps.json. (The Elfbow's Double Shot said the same and was ruled one target, 2026-10-04 'the Elfbow shoots one target' - it is not one of these.) Not ruled: whether 'up to N enemies' is what he means for the knives - ask Andrew in one line before building, since he corrected the Elfbow's. If it is: one mechanism, no content name in core - an attack row may name a number of targets; the command carries the chosen units (each in reach and in line, no unit twice); each is rolled separately at the attack's Accuracy with its own hits; Stamina is paid once; the computer picks by its existing target rule; the forecast, the action bar and the viewer's aim show each chosen unit. Read ENGINE-CONSTITUTION.md and COMBAT-SEQUENCE.md 'Attack' first.",
   "expect": "A Rogue using the Fan chooses up to three enemies within 3 hexes and rolls two hits on each, paying its Stamina once; a test asserts it for two rows with different counts; no gap line names several chosen targets.",
-  "note": "Filed by the engine worker, 2026-10-04, from fix.kit-attack-clauses. The first step is the one question to Andrew."
+  "note": "Filed by the engine worker, 2026-10-04, from fix.kit-attack-clauses. The first step is the one question to Andrew.",
+  "status": "failed",
+  "failedAt": "2026-10-06 09:51",
+  "reason": "Andrew 2026-10-06: 'We don't need an attack with several chosen targets. This weapon feature was not approved. That should not be in the queue.' Filed by a worker from four chat-authored Codex attack lines; never ruled."
  },
  {
   "id": "capability.damage-adds-target-status",

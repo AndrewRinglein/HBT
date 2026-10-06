@@ -5610,3 +5610,15 @@ Ruled:
 - **"Yes to the previous questions"** is read as: the maps go in with, or just after, 'units brighter', as the chat proposed. Lanterns were not made and stay in the art queue.
 
 Filed: `viewer.repainted-scenes-in-the-game`, `content.gates-units-stand-where-the-scene-allows`; `viewer.gates-painted-scene` is authorized.
+
+## 2026-10-06 — an attack at several chosen targets was not approved and leaves the queue
+
+Andrew, in the kingdom chat, read the whole backlog and said of two of the items a worker had filed from Codex lines that do nothing (`capability.attack-several-targets`, `capability.damage-adds-target-status`):
+
+“We don't need an attack with several chosen targets. This weapon feature was not approved. That should not be in the queue.   I don't understand the damage that adds a status to the target.   There are a variety of different triggers and attacks and ways to add status to a target. How does that directly relate to damage?”
+
+Ruled:
+
+- **An attack at several chosen targets is not a feature of the game.** It was never approved; `capability.attack-several-targets` is abandoned (the gate's own abandon, with his words). The four Codex attack lines that read 'up to N enemies within R hexes' (Throwing Knives' Fan, Poison Stars' Venom Spread, Poison Throwing Knives' Venom Fan, Demon Whip's Hellcoil) are chat-authored lines, like the Elfbow's Double Shot he corrected 2026-10-04; each strikes one target, as it does.
+- **`capability.damage-adds-target-status` is not understood as named, and is not ruled.** The chat explained it the same day (it is damage that grows with a status the target already holds - 'Strength +1, plus the Stun on the target' - on eight Codex attacks, not a way of applying a status) and asked whether he wants it; no worker takes it until he says.
+- A lesson the chat takes: a worker's finding that a Codex line does nothing is not a reason to queue a mechanism; 2026-10-04's 'items he did not author are set aside' covers their lines too.
