@@ -36,8 +36,8 @@
 // draw), the input sends the engine's own end-cycle, the command End activation sends, and the host puts the notice on the
 // screen. A unit that has not acted, or that can still do anything, is left alone (kingdom SWITCHES autoEnd*).
 import {sandboxChoices,sandboxActivationChoices,sandboxSwapChoices,sandboxSwapRefusals,type Sandbox,type SandboxChoice,type SandboxSwapOffer} from '../core/sandbox.js'
-import {controllerOf,validateBattleCommand,forecastFrom,previewFrom,preview,threatOf,zocHoldersAt,heroesYetToAct,isAttack,isMove,isBurst,actionReach,stepCost,passableFor,grantedActionIds,standsUp,actionReady} from '../engine.js'
-import {refusalLine,switchLine,type SwitchRefusal} from './refusals.js'
+import {controllerOf,validateBattleCommand,forecastFrom,previewFrom,preview,threatOf,zocHoldersAt,heroesYetToAct,isAttack,isMove,isBurst,actionReach,stepCost,passableFor,grantedActionIds,standsUp,actionReady,staminaCostOf,readyOn} from '../engine.js'
+import {refusalLine,switchLine,unpaidLine,type SwitchRefusal,type Unpaid} from './refusals.js'
 import {shownName} from '../../../viewer/src/names.js'
 import type {BattleCommand,Forecast} from '../engine.js'
 
@@ -56,11 +56,13 @@ export type PlaySettings={moveClick():MoveClick;setMoveClick(clicks:MoveClick):v
 export const FREE_ATTACK_STOP='This path draws a free attack: click the hex again to walk it.'
 export type PlayAim={from:number;to:number;target:number|null;hit:number|null;dmg:number|null;hpAfter:number|null;lethal:boolean;locked:boolean}
 /** What the viewer draws (viewer src/play.js validates the same shape). Hexes ascending unless named a walk. */
-export type PlayFacts={actor:number|null;slot:string|null;reach:number[];zoc:number[];path:number[];provokes:number[];ghost:{unit:number;hex:number}|null;threat:{unit:number;move:number[];hit:number[]}|null;targets:number[];aim:PlayAim|null;note:string|null;swap?:PlaySwap|null;ask?:PlayAsk|null;moveDone?:string[];standFirst?:string[];reachCost?:PlayCost[];reachBorder?:PlayBorder[];moveClick?:MoveClick}
+export type PlayFacts={actor:number|null;slot:string|null;reach:number[];zoc:number[];path:number[];provokes:number[];ghost:{unit:number;hex:number}|null;threat:{unit:number;move:number[];hit:number[]}|null;targets:number[];aim:PlayAim|null;note:string|null;swap?:PlaySwap|null;ask?:PlayAsk|null;moveDone?:string[];standFirst?:string[];reachCost?:PlayCost[];reachBorder?:PlayBorder[];moveClick?:MoveClick;cantPay?:PlayCantPay[]}
 /** viewer.move-cost-on-grid (engine DECISIONS.md 2026-10-03 '... movement costs on the grid ...', Andrew: "tiles that require
     extra movement points should have that movement cost, I think, maybe on them in gray"): what entering one hex of the reach
     costs the acting unit — the engine's stepCost for the last step of the engine's own walk to it (viewer src/play.js's
     optional reachCost fact; kingdom SWITCHES moveCostLastStep). */
+/** viewer.unaffordable-actions-greyed: an action the acting unit cannot pay for now, and the one line that says why */
+export type PlayCantPay={id:string;why:string}
 export type PlayCost={hex:number;cost:number}
 /** viewer.move-cost-on-hex (engine DECISIONS.md 2026-10-05 'playtest post: …', Andrew: "if there are squares in your movement
     area that cost 2 or can't be walked through, that number needs to be on the square."; 'seven answers: … an X on a hex
@@ -356,15 +358,37 @@ export function createPlayInput(session:()=>Sandbox|null,run:(command:BattleComm
      that character's next turn, everything needs to be grayed out except 'stand up'."): the acting unit's actions that WAIT ON
      ITS STAND — read from the engine, never ruled here. The unit is down when the engine grants it a stand (grantedActionIds
      holds a movement that standsUp: the prone status's own action); what waits is every other action it is granted that the
-     engine's one limits check (actionReady) refuses. Today that is its other movements — the engine still takes a downed
-     unit's attacks and powers (engine SWITCHES proneNoCrawl), so those stay lit: the engine's to change, and this follows it
-     the day it does (kingdom SWITCHES proneBarReadsTheEngine). A unit that is standing names none. */
+     engine's one limits check (actionReady) refuses. Until 2026-10-05 that was its other movements only; since engine
+     rule.prone-only-stand-up (ruled that day: "yes, it cannot use attacks or powers until it stands.") it is EVERY action but
+     the stand — by the same reading, with no rule of this file's own (kingdom SWITCHES proneBarReadsTheEngine, its dated
+     note). And once the unit has stood the engine takes no movement from it ("No, you only perform one move action."), so
+     `moveDone` below names every move it holds — again the engine's answer. A unit that is standing names none. */
  const standOf=(s:Sandbox,actor:number):string|null=>{const u=s.ctx.state.units[actor]!
   return grantedActionIds(s.ctx,u).find(id=>{const a=s.ctx.actions[id];return !!a&&standsUp(a)})??null}
  const standFirstOf=(s:Sandbox,actor:number):string[]=>{
   if(standOf(s,actor)===null)return []
   const u=s.ctx.state.units[actor]!
   return grantedActionIds(s.ctx,u).filter(id=>{const a=s.ctx.actions[id];return !!a&&!standsUp(a)&&!actionReady(s.ctx,u,a)})
+ }
+ /** viewer.unaffordable-actions-greyed (engine DECISIONS.md 2026-10-05 'a prone unit only stands; …; what cannot be paid is greyed; …', Andrew: "If a tax can't be paid for or a power can't be paid for, it should be grayed out." ('tax' is 'attack' - dictation)): the acting
+     unit's actions it CANNOT PAY FOR now — every action it is granted that the engine's one limits check (actionReady)
+     refuses, each with the line that says why. Whether it is refused is the engine's answer and nothing else; WHY is read
+     from the engine's own numbers in the order that check asks them (action.ts: Stamina — staminaCostOf against the unit's
+     Stamina; then the Turn it is ready on — readyOn, a warm-up when that Turn is the one its row's warm-up wrote at fielding,
+     else a cooldown; then a use). A unit that is down names none here: its actions wait on the stand (standFirst), one
+     reason at a time. A move the unit cannot pay for is named like any action (kingdom SWITCHES unpaidNamesMoves). */
+ const unpaidOf=(s:Sandbox,actor:number,id:string):Unpaid=>{
+  const u=s.ctx.state.units[actor]!,a=s.ctx.actions[id]!,needs=staminaCostOf(u,a)
+  if(u.stamina<needs)return {kind:'stamina',needs,has:u.stamina}
+  const on=readyOn(u,id),turn=s.ctx.state.turn
+  if(turn<on)return {kind:a.warmup!==undefined&&on===a.warmup+1?'warm-up':'cooldown',turns:on-turn}
+  if(a.uses&&(u.usesLeft[id]??0)<=0)return {kind:'uses'}
+  return {kind:'other'}
+ }
+ const cantPayOf=(s:Sandbox,actor:number):PlayCantPay[]=>{
+  if(standOf(s,actor)!==null)return []
+  const u=s.ctx.state.units[actor]!
+  return grantedActionIds(s.ctx,u).flatMap(id=>{const a=s.ctx.actions[id];return !a||actionReady(s.ctx,u,a)?[]:[{id,why:unpaidLine(unpaidOf(s,actor,id))}]})
  }
  function facts():PlayFacts{
   const mc=moveClick()
@@ -374,7 +398,7 @@ export function createPlayInput(session:()=>Sandbox|null,run:(command:BattleComm
   const threat=chosen===null&&point!==null?threatAt(s,point):null
   if(actor===null)return {...empty,threat}
   const here=s.ctx.state.units[actor]!.hex
-  const f:PlayFacts={...empty,actor,threat,slot:chosen,ghost:ghost?{unit:actor,hex:ghost.destination}:null,swap:swapFact(s),moveDone:moveDoneOf(s,actor),standFirst:standFirstOf(s,actor),...(asking?{ask:{kind:'switch' as const,from:asking.from,to:asking.to}}:{})}
+  const f:PlayFacts={...empty,actor,threat,slot:chosen,ghost:ghost?{unit:actor,hex:ghost.destination}:null,swap:swapFact(s),moveDone:moveDoneOf(s,actor),standFirst:standFirstOf(s,actor),cantPay:cantPayOf(s,actor),...(asking?{ask:{kind:'switch' as const,from:asking.from,to:asking.to}}:{})}
   const mv=moveOf(s,actor)
   if(mv){f.slot=mv.actionId
    f.reach=asc(mv.choices.map(c=>(c.command as {destination:number}).destination))
@@ -439,7 +463,7 @@ export function createPlayInput(session:()=>Sandbox|null,run:(command:BattleComm
  }
  /** an engine refusal, as one plain line naming the hero acting, the unit aimed at and the action (src/ui/refusals.ts) */
  const said=(s:Sandbox,code:string,actor:number|null,target:number|null=null,actionId:string|null=null)=>
-  refusalLine(code,{actor:nameOf(s,actor),target:nameOf(s,target),action:actionId?s.ctx.actions[actionId]?.name??null:null})
+  refusalLine(code,{actor:nameOf(s,actor),target:nameOf(s,target),action:actionId?s.ctx.actions[actionId]?.name??null:null,stand:actor!==null?s.ctx.actions[standOf(s,actor)??'']?.name??null:null})
 
  /** the ending: End Turn when the engine would take `end-player-phase` now, with the heroes it says have not acted (as unit
      ids, for the pop-up); End activation when it would take `end-cycle` from the hero acting */
@@ -536,6 +560,9 @@ export function createPlayInput(session:()=>Sandbox|null,run:(command:BattleComm
       chosen; the press is answered in one line that says what to do, by the stand's own name, and the screen is left as the
       Activation began (the stand armed, as the engine's only movement) */
    if(standFirstOf(s,actor).includes(e.actionId)){chosen=null;aim=null;ghost=null;note=`Knocked down: ${s.ctx.actions[standOf(s,actor)!]!.name} first.`;return true}
+   /* viewer.unaffordable-actions-greyed: an action the unit cannot pay for (cantPayOf — the engine's refusal) is not chosen;
+      the press is answered by the line that says why, and what was chosen and planned is left as it was */
+   {const cp=cantPayOf(s,actor).find(c=>c.id===e.actionId);if(cp){note=cp.why;return true}}
    if(isMove(a)){
     /* a power that goes nowhere is used from the bar: chosen, it is planned on the hero's own hex at once; chosen again (or
        the hero clicked) it is used — engine DECISIONS.md 2026-10-01, Devotion: "I can't double-click on it or anything to

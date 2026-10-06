@@ -67,6 +67,11 @@ function downThenUp(id,label){
  for(const a of greyed){const r=row(a);assert.equal(r.getAttribute('aria-disabled'),'true',`${label}: ${name(a)} is marked disabled`)
   assert.ok(r.getAttribute('title').includes(`Knocked down: ${name(stand)} first.`),`${label}: ${name(a)} says why on hover`)}
  const lit=rows().map(r=>r.dataset.act).filter(a=>a!==stand&&!greyed.includes(a))
+ /* rule.prone-only-stand-up (engine item, ruled 2026-10-05, Andrew: "yes, it cannot use attacks or powers until it stands."):
+    the engine now refuses a unit that is down EVERYTHING but its stand — so nothing but Stand Up is lit, by the same reading
+    of the engine as above (until this date the attacks and powers stayed lit and this line was a printed FOUND). */
+ assert.deepEqual(lit,[],`${label}: down, nothing but Stand Up is lit (still lit: ${names(lit)})`)
+ assert.ok(greyed.some(a=>E.isAttack(ctx().actions[a])),`${label}: its attacks are among the greyed`)
  // a press on a greyed row: answered in words, nothing chosen, nothing happens
  const seq=ctx().state.seq,began={slot:V().play.slot,reach:[...V().play.reach]}
  assert.equal(began.slot,stand,`${label}: its Activation begins with the stand armed`)
@@ -89,6 +94,10 @@ function downThenUp(id,label){
   const attacks=rows().map(r=>r.dataset.act).filter(a=>E.isAttack(ctx().actions[a]))
   for(const a of attacks)assert.ok(!has(row(a),'standFirst')&&!has(row(a),'moveDone')&&!has(row(a),'cool'),`${label}: ${name(a)} is lit after the stand`)
   const openMoves=rows().map(r=>r.dataset.act).filter(a=>{const d=ctx().actions[a];return E.isMove(d)&&!E.isAttack(d)&&!done.includes(a)})
+  /* rule.prone-only-stand-up (the same ruling: "No, you only perform one move action."): standing was its move — the engine
+     takes no movement from it now, so every move on its bar is greyed as done and none is left open */
+  assert.deepEqual(openMoves,[],`${label}: stood, every move on its bar is greyed as done (still open: ${names(openMoves)})`)
+  assert.ok(done.length>0,`${label}: stood, its moves are greyed`)
   after=`still acting — attacks lit: ${names(attacks)}; moves greyed as done: ${names(done)}; moves the engine still takes, in its primary action: ${names(openMoves)}`}
  say(`${label}: ${u().name} down — Stand Up lit; greyed and unpressable (the engine refuses them): ${names(greyed)}; still lit (the engine takes them from a unit that is down): ${names(lit)}. Stood on one press; ${after}`)
 }

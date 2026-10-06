@@ -21,6 +21,7 @@ import { execFileSync } from 'node:child_process'
 import { createSandbox, advanceSandbox, commandSandbox, sandboxChoices, type Sandbox } from '../src/core/sandbox.js'
 import { SANDBOX_DEFAULT } from '../src/content/sandbox.js'
 import { createPlayInput } from '../src/ui/play-input.js'
+import { refusalLine } from '../src/ui/refusals.js'
 import { encounterDef, isMove, isAttack, grantedActionIds, standsUp, actionReady, type BattleCommand } from '../src/engine.js'
 import { applyStatus } from '../../engine/src/core/status.js'
 import { kdbDownStatus } from '../../engine/src/core/kdb.js'
@@ -94,6 +95,40 @@ describe('viewer.prone-turn-only-stand-up — the bar of a unit that is down is 
       // "greyed as after any move": the moves the engine lists no further use of are the ones named done — the same reading as after a walk
       expect([...(f.moveDone ?? [])].sort()).toEqual(moves.filter((id) => !stillOffered.includes(id)).sort())
       console.log(`  ${u.name}, stood: moves named done — ${names(s, f.moveDone ?? [])}; moves the engine STILL TAKES after the stand, in her primary action (the engine's to change if "it takes your move" means she may not walk) — ${names(s, moves.filter((id) => stillOffered.includes(id)))}`)
+    }
+  })
+
+  // rule.prone-only-stand-up (engine item, ruled 2026-10-05; Andrew, engine/DECISIONS.md 'a prone unit only stands; Stand Up is
+  // its one move; …': "yes, it cannot use attacks or powers until it stands." / "No, you only perform one move action."). The
+  // tests above hold whichever way the engine answers; these two hold what it answers NOW — read from the engine by the same
+  // facts, with no rule of the host's own.
+  for (const who of ['wife', 'hero'] as const) {
+    it(`rule.prone-only-stand-up: battle 2, ${who === 'wife' ? 'the Lumberjack\'s Wife' : 'a hero of the party'} knocked down — every action it is granted but Stand Up waits on the stand, its attacks among them; the engine lists the stand and nothing else`, () => {
+      const b = battle2(), u = who === 'wife' ? b.wife() : b.hero(), { s, P } = b
+      const k = knockDown(s, u); b.begin(u)
+      const granted = grantedActionIds(s.ctx, u), f = P.facts()
+      expect([...f.standFirst!].sort(), 'everything but the stand').toEqual(granted.filter((id) => id !== k.stand).sort())
+      expect(f.standFirst!.some((id) => isAttack(s.ctx.actions[id]!)), 'its attacks wait on the stand').toBe(true)
+      expect([...new Set(sandboxChoices(s).filter((c) => c.command.actor === u.id).map((c) => c.command.actionId))], 'the engine lists only the stand').toEqual([k.stand])
+      // an order for an attack, sent past the bar, is refused by the engine in its own word — and the host words it
+      const attack = granted.find((id) => isAttack(s.ctx.actions[id]!))!, foe = s.ctx.state.units.find((x) => x.side === 'enemy' && x.lifeState === 'standing')!
+      expect(commandSandbox(s, { kind: 'action', actor: u.id, actionId: attack, target: foe.id, expectedSeq: s.ctx.state.seq } as BattleCommand)).toMatchObject({ ok: false, reason: 'actor-prone' })
+      expect(refusalLine('actor-prone', { stand: s.ctx.actions[k.stand]!.name })).toBe(`Knocked down: ${s.ctx.actions[k.stand]!.name} first.`)
+    })
+  }
+  it('rule.prone-only-stand-up: once she has stood, every move she holds is named done and the engine lists no movement; her attacks are not named', () => {
+    const { s, P, begin, wife } = battle2(), u = wife()
+    const k = knockDown(s, u); begin(u)
+    expect(P.input({ kind: 'slot', actionId: k.stand, unit: u.id })).toBe(true)
+    expect(k.isProne()).toBe(false)
+    const offered = [...new Set(sandboxChoices(s).filter((c) => c.command.actor === u.id).map((c) => c.command.actionId))]
+    expect(offered.filter((id) => { const a = s.ctx.actions[id]!; return isMove(a) && !isAttack(a) }), 'the engine lists no movement after the stand').toEqual([])
+    const f = P.facts()
+    if (f.actor === u.id) {
+      const moves = u.actions.filter((id) => { const a = s.ctx.actions[id]!; return isMove(a) && !isAttack(a) })
+      expect(moves.length).toBeGreaterThan(0)
+      expect([...(f.moveDone ?? [])].sort(), 'every move is done').toEqual([...moves].sort())
+      expect((f.moveDone ?? []).some((id) => isAttack(s.ctx.actions[id]!))).toBe(false)
     }
   })
 

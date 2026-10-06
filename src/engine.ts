@@ -84,6 +84,11 @@ export { standsUp } from '../../engine/src/core/action.js'
 // affordable, off cooldown, a use left). Read-only, pure. The play input tells the bar which of a downed unit's actions the
 // engine refuses until it has stood; what a unit that is down may do is the engine's answer, never the host's.
 export { actionReady } from '../../engine/src/core/action.js'
+// Widened 2026-10-05 (viewer.unaffordable-actions-greyed): readyOn — the Turn on which an action is usable again (its cooldown, or
+// its warm-up from fielding). Read-only, pure. The play input says WHY the engine's limits check refuses an action the unit
+// cannot pay for, from the engine's own numbers (staminaCostOf above, this, the unit's uses left); whether it is refused is
+// actionReady's answer alone.
+export { readyOn } from '../../engine/src/core/action.js'
 // Widened 2026-10-04 (viewer.move-cost-on-grid): stepCost — the engine's own charge for one step onto a hex, read-only, so
 // the battle screen's movement grid shows the engine's number on a tile and adds nothing up.
 export { movementOptions, stepCost } from '../../engine/src/core/movement.js'
