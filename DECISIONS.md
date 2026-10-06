@@ -5622,3 +5622,15 @@ Ruled:
 - **An attack at several chosen targets is not a feature of the game.** It was never approved; `capability.attack-several-targets` is abandoned (the gate's own abandon, with his words). The four Codex attack lines that read 'up to N enemies within R hexes' (Throwing Knives' Fan, Poison Stars' Venom Spread, Poison Throwing Knives' Venom Fan, Demon Whip's Hellcoil) are chat-authored lines, like the Elfbow's Double Shot he corrected 2026-10-04; each strikes one target, as it does.
 - **`capability.damage-adds-target-status` is not understood as named, and is not ruled.** The chat explained it the same day (it is damage that grows with a status the target already holds - 'Strength +1, plus the Stun on the target' - on eight Codex attacks, not a way of applying a status) and asked whether he wants it; no worker takes it until he says.
 - A lesson the chat takes: a worker's finding that a Codex line does nothing is not a reason to queue a mechanism; 2026-10-04's 'items he did not author are set aside' covers their lines too.
+
+## 2026-10-06 — damage that grows with a status on the target is wanted; so is a trigger that moves Surge
+
+Andrew, in the kingdom chat, told what `capability.damage-adds-target-status` is (damage made bigger by a status the target already holds - 'Strength +1, plus the Stun on the target' - on eight Codex attacks, six on chat-written items and two on Hell-TCG's), and asked (1 should it come out of the queue too; 2 should 'a trigger that moves Surge' come out as well, since it comes from a chat-written weapon):
+
+“That is a feature we need: damage increased by weak, by burn, or by any other given status.     No trigger that moves surge should be in there too, like on hit game 5 surge.”
+
+Ruled:
+
+- **Damage increased by a status on the target - Weak, Burn, or any other given status - is a feature the game needs.** `capability.damage-adds-target-status` stays and is his.
+- **A trigger that moves Surge is wanted too** - "like on hit [gain] 5 surge" (the chat's reading of "No trigger that moves surge should be in there too": no, it does not come out - it should be in there too). `capability.trigger-moves-surge` stays and is his.
+- Both are mechanisms he wants in the game for their own sake, whoever wrote the lines that first named them.
