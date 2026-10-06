@@ -193,6 +193,26 @@ export function validateEffect(e: Effect, where: string): void {
   if (e.kind === 'burstScale' && (!Number.isSafeInteger(e.percent) || e.percent < 0 || e.percent > 100)) throw Error(`${where}: burst scaling requires onBurst/self and percent 0..100`)
   if (e.kind === 'surge.gain' && (!Number.isSafeInteger(e.value) || e.value < 1)) throw Error(`${where}: Surge Chance gained is an integer, 1 or more`)
   if (e.kind === 'plant') validatePlanted(e, where)
+  if (e.kind === 'trap.place') validateTrap(e, where)
+}
+
+/**
+ * capability.placed-traps (2026-10-05): a trap's row — it does something (damage, a status or a layer), its damage is a value
+ * of a damage type, its statuses are named and 1 or more, its radius 1 or more. Loud at load, and again when a saved battle is
+ * restored.
+ */
+export function validateTrap(t: import('./types.js').TrapDef, where: string): void {
+  if (!t.damage && !t.statuses?.length && t.paints === undefined) throw Error(`${where}: a trap that does nothing — no damage, no status, no layer`)
+  if (t.damage) {
+    if (!isDamageType(t.damage.damageType)) throw Error(`${where}: a trap's damage type '${String(t.damage.damageType)}' is not one`)
+    const a = t.damage.amount
+    if (typeof a === 'number' ? !Number.isSafeInteger(a) || a < 1 : !a || typeof a !== 'object' || typeof a.scale !== 'string') throw Error(`${where}: a trap's damage is a whole number, 1 or more, or a scaled value`)
+  }
+  for (const s of t.statuses ?? []) {
+    if (typeof s.statusId !== 'string' || !/^status\.[a-z0-9][a-z0-9.-]*$/.test(s.statusId) || !Number.isSafeInteger(s.value) || s.value < 1) throw Error(`${where}: a trap applies '${String(s.statusId)}' ${String(s.value)} — a status, by 1 or more`)
+  }
+  if (t.radius !== undefined && (!Number.isSafeInteger(t.radius) || t.radius < 1)) throw Error(`${where}: a trap's radius is a whole number, 1 or more (absent: the unit that entered only)`)
+  if (t.paints !== undefined && (typeof t.paints !== 'string' || !/^layer\./.test(t.paints))) throw Error(`${where}: a trap paints a layer id`)
 }
 
 /**
@@ -247,6 +267,7 @@ export function validateTrigger(t: Trigger): void {
   }
   // capability.planted-banners (2026-10-05): an object is planted by a power, on its user's hex — never by a trigger
   if (t.effect.kind === 'plant') throw new Error(`${where}: 'plant' belongs to a power aimed at its own user`)
+  if (t.effect.kind === 'trap.place') throw new Error(`${where}: 'trap.place' belongs to a power aimed at a hex`)
   const needsTarget = t.select === 'target' ||
     (typeof t.select !== 'string' &&
       (t.select.select === 'unit' || (t.select.select === 'area' && t.select.origin === 'target')))
@@ -592,6 +613,9 @@ export function applyEffect(ctx: Ctx, e: Effect, src: EffectSource, targetId: nu
     // capability.planted-banners (2026-10-05): the object goes on the hex of the one acting; the Surge Chance to the one named
     case 'plant': say({ radius: e.radius, hex: actor.hex }); plantObject(ctx, src.actor, e, cause); return 0
     case 'surge.gain': say({ value: e.value }); gainSurgeChance(ctx, targetId, e.value, cause); return 0
+    // capability.placed-traps (2026-10-05): a trap needs the hex it was aimed at, which only a hex-aimed power has (ability.ts
+    // usePowerAt places it); anywhere else the row is refused at load, so reaching this is a bug
+    case 'trap.place': throw new Error(`'${cause}' places a trap with no hex to place it on — a trap belongs to a power aimed at a hex`)
     case 'stamina.drain': {
       const v = valueOf(ctx, actor, e.value)
       say({ value: v })

@@ -55,6 +55,10 @@ export function grantedActionIds(ctx: Ctx, u: Unit): string[] {
     const g = s.value > 0 ? ctx.statuses[s.id]?.prone?.standAction : undefined
     if (g && !u.actions.includes(g) && !extra?.includes(g)) (extra ??= []).push(g)
   }
+  // capability.placed-traps (2026-10-05): a use aimed at several hexes that is not finished. Its last use is spent, so the
+  // power has left the unit's own list ("they should vanish from the list") — it stays granted until the last hex is chosen,
+  // so the bar, the action list and the computer all still see it.
+  if (u.aiming && u.aiming.left > 0 && !u.actions.includes(u.aiming.actionId) && !extra?.includes(u.aiming.actionId)) (extra ??= []).push(u.aiming.actionId)
   return extra ? [...u.actions, ...extra] : u.actions
 }
 /** v2.prone: is this unit holding a prone status? Read inline — status.ts imports this module's neighbours. */

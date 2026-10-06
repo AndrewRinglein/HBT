@@ -11,7 +11,7 @@
 // lists now, and Block's Protection is its row's status.apply.
 
 import type { AbilityDef, Ctx, Unit } from './types.js'
-import { breakStatuses, corpsesNear, emit, loseFreeAttack, unit } from './mutate.js'
+import { breakStatuses, corpsesNear, emit, loseFreeAttack, unit, placeTrap, setAiming } from './mutate.js'
 import { freeAttackKindOf } from './special-free-attacks.js'
 import { actionReady, isPower, spendAction , resolveActionSlot } from './action.js'
 export { readyOn, isReady } from './action.js'
@@ -189,9 +189,17 @@ export function canUsePowerAt(ctx: Ctx, userId: number, hex: number, abilityId: 
   if (!a || !isPower(a) || a.target?.select !== 'hex') return false
   if (u.lifeState !== 'standing') return false
   for (const s of u.statuses) if (s.value > 0 && ctx.statuses[s.id]?.locksPowers) return false
-  if (!actionReady(ctx, u, a)) return false
-  if (resolveActionSlot(ctx, u, a, slot) === null) return false
-  for (const e of a.effects ?? []) if (e.kind === 'summon' && (!ctx.units?.[e.unit] || !ctx.arrive)) return false
+  // capability.placed-traps (2026-10-05): a use aimed at several hexes (`hexes: N`) — after the first, each further hex is
+  // the SAME use: the Stamina, the action and the use are spent already, so only the hex is asked about
+  const more = u.aiming?.actionId === a.id && u.aiming.left > 0
+  if (!more) {
+    if (!actionReady(ctx, u, a)) return false
+    if (resolveActionSlot(ctx, u, a, slot) === null) return false
+  }
+  for (const e of a.effects ?? []) {
+    if (e.kind === 'summon' && (!ctx.units?.[e.unit] || !ctx.arrive)) return false
+    if (e.kind === 'trap.place' && (ctx.state.traps ?? []).some((t) => t.hex === hex)) return false   // one trap to a hex
+  }
   return emptyHexInRange(ctx, u, hex, a.range)
 }
 /** Every hex this power may be used on right now, ascending (Law 6). */
@@ -207,10 +215,18 @@ export function usePowerAt(ctx: Ctx, userId: number, hex: number, abilityId: str
   const u = unit(ctx, userId)
   const a = abilityDef(ctx, abilityId)
   if (!canUsePowerAt(ctx, userId, hex, abilityId, slot)) throw new Error(`illegal power: ${u.name} -> hex ${hex} with ${abilityId}`)
-  spendAction(ctx, userId, a, resolveActionSlot(ctx, u, a, slot)!)
-  breakStatuses(ctx, userId, 'power', a.id)
-  emit(ctx, 'power.used', a.id, { actor: userId, target: null, hex, abilityId: a.id, name: a.name, distance: ctx.geo.distance(u.hex, hex), targets: [], ...(a.free ? { free: true } : {}) })
+  // capability.placed-traps: the first hex of a use is the use — spend, break, one power.used line saying how many hexes it
+  // is aimed at; each further hex of the same use spends nothing and says no second power.used
+  const more = u.aiming?.actionId === a.id && u.aiming.left > 0
+  if (more) setAiming(ctx, userId, { actionId: a.id, left: u.aiming!.left - 1 })
+  else {
+    spendAction(ctx, userId, a, resolveActionSlot(ctx, u, a, slot)!)
+    breakStatuses(ctx, userId, 'power', a.id)
+    emit(ctx, 'power.used', a.id, { actor: userId, target: null, hex, abilityId: a.id, name: a.name, distance: ctx.geo.distance(u.hex, hex), targets: [], ...(a.free ? { free: true } : {}), ...((a.hexes ?? 1) > 1 ? { hexes: a.hexes } : {}) })
+    setAiming(ctx, userId, (a.hexes ?? 1) > 1 ? { actionId: a.id, left: a.hexes! - 1 } : null)
+  }
   for (const e of a.effects ?? []) {
+    if (e.kind === 'trap.place') { placeTrap(ctx, userId, hex, e, a.id); continue }
     if (e.kind === 'summon') {
       const row = ctx.units![e.unit]!
       // on the caster's side, whatever side its row is written for (as a form that changes sides keeps its row's side: rowSide)

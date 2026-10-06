@@ -121,6 +121,15 @@ const RAW_SCENARIOS: Readonly<Record<string, ScenarioDef>> = {
     id: 'test.force-blast', note: 'TEST: two mages, one holding the Force Staff (Force Blast: Precision plus half the Magic of the party, as magic damage), against two zombies. No campaign claim.',
     mapId: 'map.open', heroes: ['hero.base.mage-fire', 'hero.base.mage-thinking'], heroHexes: [85, 101], heroItems: [['item.force-staff'], ['item.frost-staff']], enemies: ['unit.zombie', 'unit.zombie'], enemyHexes: [91, 107], replicate: 0,
   },
+  // capability.placed-traps (2026-10-05; DECISIONS.md 2026-10-04 'every dead line on his items is a feature that is needed …':
+  // "All of those deadlines need to be added in as features that we need."): the Bear Traps live in a real battle - a warrior
+  // carrying them (his mail and axe, no shield - the computer raises a shield's power first) beside a priest, against two
+  // zombies too far to reach on the first Turn: the computer places both traps toward them where the warrior stops, and the
+  // zombies walk in. A fielding, not a balance claim.
+  'test.bear-traps': {
+    id: 'test.bear-traps', note: 'TEST: a warrior carrying Bear Traps (one use: two traps on empty hexes within 3; the first unit to enter one takes 4 physical damage and gains 1 Root) and a priest, against two zombies. No campaign claim.',
+    mapId: 'map.open', heroes: ['hero.base.warrior-iron', 'hero.base.priest-robes'], heroHexes: [85, 101], heroItems: [['item.destroyed-mail', 'item.war-axe', 'item.bear-trap'], undefined], enemies: ['unit.zombie', 'unit.zombie'], enemyHexes: [94, 110], replicate: 0,
+  },
   // capability.planted-banners (2026-10-05; DECISIONS.md 2026-10-04 'every dead line on his items is a feature that is needed …':
   // "All of those deadlines need to be added in as features that we need."): the Banner of Courage live in a real battle - a
   // warrior carrying it beside a priest, against a Necromancer (whose bolt leaves Weak) and a zombie too far to reach on the

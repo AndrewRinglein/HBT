@@ -7829,11 +7829,11 @@
    "content": [
     "item.bear-trap"
    ],
-   "action": null,
-   "name": "active: Once per Battle: place two traps on empty hexes wi",
-   "kind": null,
-   "engine": "no",
-   "bar": null,
+   "action": "power.bear-trap.use",
+   "name": "Bear Traps",
+   "kind": "power",
+   "engine": "yes",
+   "bar": "power",
    "motion": null,
    "bodies": {
     "Ancient Elf": null,
@@ -7859,9 +7859,14 @@
     "The Skull": null
    },
    "motionStatus": "missing",
-   "selected": null,
+   "selected": {
+    "key": "spell",
+    "label": "Casting / power gesture",
+    "clip": "Spell_Simple_Shoot",
+    "record": "assets/characters/oathblade-armor/rebuild/free-motion-study/selections.json"
+   },
    "ruling": null,
-   "note": "an item power the engine has no row for (an ability with charges/targets — capability.consumables)",
+   "note": null,
    "variants": 0
   },
   {
@@ -8209,11 +8214,11 @@
    "content": [
     "item.explosive-trap"
    ],
-   "action": null,
-   "name": "active: Once per Battle: place one trap on an empty hex wi",
-   "kind": null,
-   "engine": "no",
-   "bar": null,
+   "action": "power.explosive-trap.use",
+   "name": "Explosive Trap",
+   "kind": "power",
+   "engine": "yes",
+   "bar": "power",
    "motion": null,
    "bodies": {
     "Ancient Elf": null,
@@ -8239,9 +8244,14 @@
     "The Skull": null
    },
    "motionStatus": "missing",
-   "selected": null,
+   "selected": {
+    "key": "spell",
+    "label": "Casting / power gesture",
+    "clip": "Spell_Simple_Shoot",
+    "record": "assets/characters/oathblade-armor/rebuild/free-motion-study/selections.json"
+   },
    "ruling": null,
-   "note": "an item power the engine has no row for (an ability with charges/targets — capability.consumables)",
+   "note": null,
    "variants": 0
   },
   {
@@ -8334,11 +8344,11 @@
    "content": [
     "item.fire-trap"
    ],
-   "action": null,
-   "name": "active: Once per Battle: place two traps on empty hexes wi",
-   "kind": null,
-   "engine": "no",
-   "bar": null,
+   "action": "power.fire-trap.use",
+   "name": "Fire Trap",
+   "kind": "power",
+   "engine": "yes",
+   "bar": "power",
    "motion": null,
    "bodies": {
     "Ancient Elf": null,
@@ -8364,9 +8374,14 @@
     "The Skull": null
    },
    "motionStatus": "missing",
-   "selected": null,
+   "selected": {
+    "key": "spell",
+    "label": "Casting / power gesture",
+    "clip": "Spell_Simple_Shoot",
+    "record": "assets/characters/oathblade-armor/rebuild/free-motion-study/selections.json"
+   },
    "ruling": null,
-   "note": "an item power the engine has no row for (an ability with charges/targets — capability.consumables)",
+   "note": null,
    "variants": 0
   },
   {
@@ -8644,11 +8659,11 @@
    "content": [
     "item.magic-trap"
    ],
-   "action": null,
-   "name": "active: Once per Battle: place two traps on empty hexes wi",
-   "kind": null,
-   "engine": "no",
-   "bar": null,
+   "action": "power.magic-trap.use",
+   "name": "Magic Trap",
+   "kind": "power",
+   "engine": "yes",
+   "bar": "power",
    "motion": null,
    "bodies": {
     "Ancient Elf": null,
@@ -8674,9 +8689,14 @@
     "The Skull": null
    },
    "motionStatus": "missing",
-   "selected": null,
+   "selected": {
+    "key": "spell",
+    "label": "Casting / power gesture",
+    "clip": "Spell_Simple_Shoot",
+    "record": "assets/characters/oathblade-armor/rebuild/free-motion-study/selections.json"
+   },
    "ruling": null,
-   "note": "an item power the engine has no row for (an ability with charges/targets — capability.consumables)",
+   "note": null,
    "variants": 0
   },
   {
@@ -22719,10 +22739,10 @@
  "counts": {
   "rows": 521,
   "missing": 352,
-  "noEngine": 27,
+  "noEngine": 23,
   "inert": 239,
   "noMotion": 352,
-  "selectedUnbound": 318,
+  "selectedUnbound": 322,
   "partial": 81
  }
 }

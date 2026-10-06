@@ -315,6 +315,12 @@ type EffectBody =
    * planter's side what PlantedDef says, within its radius of that hex. Only on a power aimed at its own user.
    */
   | ({ readonly kind: 'plant' } & PlantedDef)
+  /**
+   * capability.placed-traps (2026-10-05): place a trap (TrapDef) on the hex the power was aimed at. Only on a power whose
+   * target is `select: 'hex'`; the hex holds no unit and no trap. One use of a power whose row says `hexes: N` places N,
+   * one hex after another.
+   */
+  | ({ readonly kind: 'trap.place' } & TrapDef)
   /** capability.planted-banners: add `value` to the unit's Surge Chance — the amount the Surge check rolls against — once; its Surge stat is untouched. */
   | { readonly kind: 'surge.gain'; readonly value: number }
   /** capability.corpses: remove every corpse within `radius`, healing the one acting `healPer` each (Consume the Fallen). */
@@ -372,6 +378,12 @@ export type ActionDef = {
    * hero" (Andrew 2026-09-02). Absent = unlimited (cooldown governs).
    */
   readonly uses?: number
+  /**
+   * capability.placed-traps (2026-10-05): how many hexes ONE use of a hex-aimed power is aimed at, one after another
+   * ("place two traps on empty hexes within 3"). The first hex spends the Stamina, the action and the use; each further hex
+   * is the same use, placed in the same Activation or lost with it. Absent = one.
+   */
+  readonly hexes?: number
   /** "It does not use your primary action" — spends stamina and cooldown only. */
   readonly free?: boolean
   // ── reach and targeting — one vocabulary ──
@@ -525,6 +537,22 @@ export type PlantedDef = {
 /** One planted object on the board (state.planted): its hex, the side it serves, the unit that planted it and the power that did. */
 export type Planted = PlantedDef & { id: number; hex: number; side: Side; by: number; source: string }
 
+/**
+ * capability.placed-traps (2026-10-05): what a trap does when it springs — on the first unit to ENTER its hex, friend or foe.
+ * `damage`: direct damage of a type (no roll, so no crit — through Protection and the type's resist, as the ground's hazard
+ * is), a flat number or a value scaled on the PLACER's side's party stat, read when the trap springs; it lands on the unit
+ * that entered and, when `radius` is given, on every unit within that many hexes of the trap's hex as well. `statuses` land
+ * on the unit that entered. `paints`: the ground layer the trap's hex gains.
+ */
+export type TrapDef = {
+  readonly damage?: { readonly amount: import('./trigger.js').ValueSpec; readonly damageType: DamageType }
+  readonly statuses?: readonly { readonly statusId: string; readonly value: number }[]
+  readonly radius?: number
+  readonly paints?: string
+}
+/** One trap on the board (state.traps): its hex, the side that placed it, the unit that did and the power that did. */
+export type Trap = TrapDef & { id: number; hex: number; side: Side; by: number; source: string }
+
 /** Bursts freeze these authored source packets at declaration. */
 export type BurstProfile = {
   readonly shape: { readonly kind: 'arc' } | { readonly kind: 'radius'; readonly radius: number }
@@ -673,7 +701,7 @@ export type MoveDef = ActionDef & { readonly move: MoveProfile }
 export type AbilityDef = ActionDef
 
 /** plumbing.vocabulary-export: every effect kind, checked against the union by tsc — snapshot validation, pack validation and the exported vocabulary read it, never a copy. */
-export const EFFECT_KINDS = ['statDamage', 'damage', 'heal', 'status.apply', 'status.remove', 'statMod', 'stamina.gain', 'stamina.drain', 'loseMaxStamina', 'loseMaxHp', 'stand', 'knockback', 'badge.grant', 'power.gain', 'corpse.raise', 'summon', 'side.stat', 'corpse.destroy', 'plant', 'surge.gain', 'corpse.consume', 'corpse.eat', 'layer.paint', 'reveal', 'burstScale'] as const satisfies readonly Effect['kind'][]
+export const EFFECT_KINDS = ['statDamage', 'damage', 'heal', 'status.apply', 'status.remove', 'statMod', 'stamina.gain', 'stamina.drain', 'loseMaxStamina', 'loseMaxHp', 'stand', 'knockback', 'badge.grant', 'power.gain', 'corpse.raise', 'summon', 'side.stat', 'corpse.destroy', 'plant', 'surge.gain', 'trap.place', 'corpse.consume', 'corpse.eat', 'layer.paint', 'reveal', 'burstScale'] as const satisfies readonly Effect['kind'][]
 export type EffectKindsCovered = Assert<Covers<Effect['kind'], typeof EFFECT_KINDS>>
 
 
@@ -1222,6 +1250,12 @@ export type Unit = {
    */
   corpseDestroyed?: { readonly by: number; readonly cause: string }
   /**
+   * capability.placed-traps (2026-10-05): this unit is part-way through one use of a power aimed at several hexes — which
+   * power, and how many hexes are still to choose. Written by usePowerAt, cleared when the last is placed and when the
+   * unit's next Activation begins (what was not placed is lost).
+   */
+  aiming?: { actionId: string; left: number }
+  /**
    * v2.loadout (COMBAT-V2 §11.1, ruled 2026-09-07): the weapons and shields in
    * this hero's hands and those stowed in its item slots. Only the hands grant;
    * the stowed are swap fodder. Absent on a unit fielded with no items (enemies).
@@ -1305,6 +1339,8 @@ export type State = {
   sideMods?: SideMod[]
   /** capability.planted-banners (2026-10-05): the objects planted on the board — absent until a power plants one. */
   planted?: Planted[]
+  /** capability.placed-traps (2026-10-05): the traps on the board — absent while there is none. */
+  traps?: Trap[]
   /** One entry per HexId. Plain array so State stays JSON-round-trippable (Law 5b). */
   terrain: number[]
   /** Canonical obstruction state; authored x is normalized at map decode. */

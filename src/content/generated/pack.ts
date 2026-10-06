@@ -12299,6 +12299,129 @@ export const UNIT_PACK = {
         }
       ]
     },
+    "power.bear-trap.use": {
+      "id": "power.bear-trap.use",
+      "name": "Bear Traps",
+      "free": false,
+      "staminaCost": 1,
+      "cooldown": 0,
+      "uses": 1,
+      "range": 3,
+      "target": {
+        "select": "hex",
+        "side": "any"
+      },
+      "hexes": 2,
+      "effects": [
+        {
+          "kind": "trap.place",
+          "damage": {
+            "amount": 4,
+            "damageType": "physical"
+          },
+          "statuses": [
+            {
+              "statusId": "status.root",
+              "value": 1
+            }
+          ]
+        }
+      ]
+    },
+    "power.magic-trap.use": {
+      "id": "power.magic-trap.use",
+      "name": "Magic Trap",
+      "free": false,
+      "staminaCost": 1,
+      "cooldown": 0,
+      "uses": 1,
+      "range": 3,
+      "target": {
+        "select": "hex",
+        "side": "any"
+      },
+      "hexes": 2,
+      "effects": [
+        {
+          "kind": "trap.place",
+          "damage": {
+            "amount": {
+              "scale": "partyMagic",
+              "base": 0,
+              "mult": 2
+            },
+            "damageType": "magic"
+          },
+          "statuses": [
+            {
+              "statusId": "status.slow",
+              "value": 3
+            }
+          ]
+        }
+      ]
+    },
+    "power.fire-trap.use": {
+      "id": "power.fire-trap.use",
+      "name": "Fire Trap",
+      "free": false,
+      "staminaCost": 1,
+      "cooldown": 0,
+      "uses": 1,
+      "range": 3,
+      "target": {
+        "select": "hex",
+        "side": "any"
+      },
+      "hexes": 2,
+      "effects": [
+        {
+          "kind": "trap.place",
+          "damage": {
+            "amount": {
+              "scale": "partyMagic",
+              "base": 0,
+              "mult": 1
+            },
+            "damageType": "magic"
+          },
+          "statuses": [
+            {
+              "statusId": "status.burn",
+              "value": 1
+            }
+          ],
+          "paints": "layer.burning"
+        }
+      ]
+    },
+    "power.explosive-trap.use": {
+      "id": "power.explosive-trap.use",
+      "name": "Explosive Trap",
+      "free": false,
+      "staminaCost": 1,
+      "cooldown": 0,
+      "uses": 1,
+      "range": 3,
+      "target": {
+        "select": "hex",
+        "side": "any"
+      },
+      "effects": [
+        {
+          "kind": "trap.place",
+          "damage": {
+            "amount": {
+              "scale": "partyMagic",
+              "base": 2,
+              "mult": 1
+            },
+            "damageType": "magic"
+          },
+          "radius": 1
+        }
+      ]
+    },
     "power.free-movement-potion.use": {
       "id": "power.free-movement-potion.use",
       "name": "Potion of Free Movement",
@@ -19332,12 +19455,10 @@ export const UNIT_PACK = {
       "slots": 1,
       "statModifiers": {},
       "grants": [],
-      "abilities": [],
-      "triggers": [],
-      "gaps": [
-        "active: Once per Battle: place two traps on empty hexes wi — an ability with charges/targets — capability.consumables",
-        "uses: 1 — no active compiled to carry the charge — charges spent in battle — capability.consumables"
-      ]
+      "abilities": [
+        "power.bear-trap.use"
+      ],
+      "triggers": []
     },
     "item.magic-trap": {
       "id": "item.magic-trap",
@@ -19348,12 +19469,10 @@ export const UNIT_PACK = {
       "slots": 1,
       "statModifiers": {},
       "grants": [],
-      "abilities": [],
-      "triggers": [],
-      "gaps": [
-        "active: Once per Battle: place two traps on empty hexes wi — an ability with charges/targets — capability.consumables",
-        "uses: 1 — no active compiled to carry the charge — charges spent in battle — capability.consumables"
-      ]
+      "abilities": [
+        "power.magic-trap.use"
+      ],
+      "triggers": []
     },
     "item.fire-trap": {
       "id": "item.fire-trap",
@@ -19364,12 +19483,10 @@ export const UNIT_PACK = {
       "slots": 1,
       "statModifiers": {},
       "grants": [],
-      "abilities": [],
-      "triggers": [],
-      "gaps": [
-        "active: Once per Battle: place two traps on empty hexes wi — an ability with charges/targets — capability.consumables",
-        "uses: 1 — no active compiled to carry the charge — charges spent in battle — capability.consumables"
-      ]
+      "abilities": [
+        "power.fire-trap.use"
+      ],
+      "triggers": []
     },
     "item.explosive-trap": {
       "id": "item.explosive-trap",
@@ -19380,12 +19497,10 @@ export const UNIT_PACK = {
       "slots": 1,
       "statModifiers": {},
       "grants": [],
-      "abilities": [],
-      "triggers": [],
-      "gaps": [
-        "active: Once per Battle: place one trap on an empty hex wi — an ability with charges/targets — capability.consumables",
-        "uses: 1 — no active compiled to carry the charge — charges spent in battle — capability.consumables"
-      ]
+      "abilities": [
+        "power.explosive-trap.use"
+      ],
+      "triggers": []
     },
     "item.free-movement-potion": {
       "id": "item.free-movement-potion",

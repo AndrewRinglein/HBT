@@ -35,7 +35,7 @@ export const EVENT_TYPES = [
   'status.applied', 'status.cancelled', 'status.expired', 'status.reduced', 'surge.checked',
   'surge.hit', 'thorns.reflected', 'trigger.fired', 'trigger.rolled', 'turn.begin', 'turn.end',
   'unit.badged', 'unit.enter', 'unit.equipped', 'unit.grown', 'unit.modified', 'unit.obliterated',
-  'side.stat.changed', 'side.stat.restored', 'object.planted', 'status.warded', 'surge.gained', 'unit.dismissed', 'unit.proned', 'unit.raised', 'unit.reverted', 'unit.shunted', 'unit.stood', 'unit.summoned', 'unit.transformed', 'zoc.ignored',
+  'side.stat.changed', 'side.stat.restored', 'object.planted', 'status.warded', 'surge.gained', 'trap.placed', 'trap.sprung', 'trap.removed', 'unit.dismissed', 'unit.proned', 'unit.raised', 'unit.reverted', 'unit.shunted', 'unit.stood', 'unit.summoned', 'unit.transformed', 'zoc.ignored',
 ] as const
 export type EventType = (typeof EVENT_TYPES)[number] | `life.${LifeState}`
 
@@ -651,6 +651,7 @@ export function beginActivation(ctx: Ctx, id: number, causeId: string): void {
   u.activationOrdinal += 1
   u.moveUsed = false
   u.primaryUsed = false
+  delete u.aiming     // capability.placed-traps: a use not finished in the Activation it began is lost
   delete u.swapUsed   // v2.swap: one swap per activation
   delete u.walked     // rule.walked-unit-has-moved: a new Activation has not walked
   // Slow — and any status declaring reducesMovement: this Activation's points
@@ -714,6 +715,9 @@ export function setOutcome(ctx: Ctx, outcome: Ctx['state']['outcome'], causeId: 
   // capability.summons (2026-10-05): "it is removed at the end of the Battle" — every unit a power summoned that still stands
   // leaves, one line each in unit order (Law 6), before the end is told. A raised corpse is not one (no summonedBy).
   for (const u of ctx.state.units) if (u.summonedBy !== undefined && u.lifeState === 'standing') emit(ctx, 'unit.dismissed', 'battle.end', { actor: u.id, hex: u.hex, typeId: u.typeId, summonedBy: u.summonedBy })
+  // capability.placed-traps (2026-10-05): "a trap nobody enters does nothing and is gone at the end of the Battle" — one line
+  // each, in trap order (Law 6), before the end is told
+  for (const t of [...(ctx.state.traps ?? [])].sort((a, b) => a.id - b.id)) removeTrap(ctx, t.id, 'battle-end', null)
   emit(ctx, 'battle.end', causeId, { outcome, turn: ctx.state.turn })
 }
 
@@ -859,6 +863,36 @@ export function gainSurgeChance(ctx: Ctx, id: number, amount: number, causeId: s
   const before = u.surgeChance
   u.surgeChance = before + amount
   emit(ctx, 'surge.gained', causeId, { target: id, amount, before, after: u.surgeChance })
+}
+
+// ── TRAPS — capability.placed-traps (2026-10-05) ─────────────────────────────
+// A power places a trap on an empty hex. Plain data on the state, ids by count; a trap is gone when it springs (core/ground.ts
+// springTrap, on the one funnel every entry into a hex goes through) or when the Battle ends.
+export function placeTrap(ctx: Ctx, actorId: number, hex: HexId, def: import('./types.js').TrapDef, causeId: string): void {
+  const u = unit(ctx, actorId)
+  const list = ctx.state.traps ?? (ctx.state.traps = [])
+  if (list.some((t) => t.hex === hex)) throw new Error(`'${causeId}' places a trap on hex ${hex}, which holds one`)
+  const id = Math.max(0, ...list.map((t) => t.id), ...ctx.events.filter((e) => e.type === 'trap.placed').map((e) => Number(e['trap']))) + 1
+  const row = { ...(def.damage ? { damage: { ...def.damage } } : {}), ...(def.statuses ? { statuses: def.statuses.map((s) => ({ ...s })) } : {}), ...(def.radius !== undefined ? { radius: def.radius } : {}), ...(def.paints !== undefined ? { paints: def.paints } : {}) }
+  list.push({ id, hex, side: u.side, by: actorId, source: causeId, ...row })
+  emit(ctx, 'trap.placed', causeId, { actor: actorId, trap: id, hex, side: u.side, ...row })
+}
+/** Take a trap off the board: it sprang (`trap.sprung`, the unit that entered as its actor) or the Battle ended (`trap.removed`). */
+export function removeTrap(ctx: Ctx, trapId: number, how: 'sprung' | 'battle-end', actor: number | null): import('./types.js').Trap {
+  const list = ctx.state.traps ?? []
+  const i = list.findIndex((t) => t.id === trapId)
+  if (i < 0) throw new Error(`trap ${trapId} is not on the board`)
+  const [t] = list.splice(i, 1)
+  if (!list.length) delete ctx.state.traps
+  if (how === 'sprung') emit(ctx, 'trap.sprung', t!.source, { actor, trap: t!.id, hex: t!.hex, by: t!.by, side: t!.side })
+  else emit(ctx, 'trap.removed', 'battle.end', { actor: null, trap: t!.id, hex: t!.hex, by: t!.by, side: t!.side, reason: how })
+  return t!
+}
+/** capability.placed-traps: a use aimed at several hexes — how many are still to choose (ability.ts usePowerAt writes it). */
+export function setAiming(ctx: Ctx, id: number, aiming: { actionId: string; left: number } | null): void {
+  const u = unit(ctx, id)
+  if (aiming && aiming.left > 0) u.aiming = aiming
+  else delete u.aiming
 }
 
 // ── GROUND LAYERS — capability.ground-layers (2026-09-03) ────────────────────

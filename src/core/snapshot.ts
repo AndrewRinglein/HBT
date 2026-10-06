@@ -9,7 +9,7 @@ import { decodeProps, decodeFloor } from './props.js'
 import { decodeEntries } from '../content/maps.js'
 import { draw, makeRng, STREAMS, type Stream } from './rng.js'
 import { isStatName } from './stats.js'
-import { validateTrigger, type Trigger, validatePlanted } from './trigger.js'
+import { validateTrigger, type Trigger, validatePlanted, validateTrap } from './trigger.js'
 import { EFFECT_KINDS, STAT_MOD_UNTIL } from './types.js'
 import { DEFAULT_CONFIG, MAX_SURGE_CYCLES, TERRAIN, type BattleCursor, type Ctx } from './types.js'
 
@@ -192,6 +192,7 @@ export function restoreBattle(json: string, runtime: BattleRuntime): Ctx {
     requireThat(u.aiRules === undefined || (strings(u.aiRules) && u.aiRules.length > 0 && new Set(u.aiRules).size === u.aiRules.length
       && u.aiRules.every((id: string) => Array.isArray(s.encounter?.aiRules) && s.encounter.aiRules.some((r: any) => r?.id === id))), 'unit AI rules')
     requireThat(u.consumedBy === undefined || (typeof u.consumedBy === 'string' && /^prop\./.test(u.consumedBy)), 'consumed by')   // v2.knockback-collisions
+    requireThat(u.aiming === undefined || (u.aiming !== null && typeof u.aiming === 'object' && typeof u.aiming.actionId === 'string' && Object.hasOwn(runtime.actions, u.aiming.actionId) && integer(u.aiming.left, 1)), 'unit aiming')   // capability.placed-traps
     requireThat(u.corpseDestroyed === undefined, 'corpse mark')   // capability.his-weapons-small-clauses: the mark lasts one settling — a saved battle never carries it
   }
   requireThat(Array.isArray(s.events) && st.seq === s.events.length, 'event count')
@@ -287,6 +288,17 @@ export function restoreBattle(json: string, runtime: BattleRuntime): Ctx {
       requireThat(Object.keys(p.wards ?? {}).every((k) => Object.hasOwn(runtime.statuses, k)), 'planted object ward')
       try { validatePlanted(p as never, 'planted object') } catch { requireThat(false, 'planted object row') }
     }
+  }
+  // capability.placed-traps: the traps on the board
+  if (st.traps !== undefined) {
+    requireThat(Array.isArray(st.traps) && st.traps.length > 0, 'traps')
+    for (const t of st.traps) {
+      record(t)
+      requireThat(integer(t.id, 1) && integer(t.hex, 0, cells - 1) && phases.includes(t.side) && unitId(t.by) && typeof t.source === 'string' && t.source.length > 0, 'trap')
+      requireThat((t.statuses ?? []).every((x: any) => x && Object.hasOwn(runtime.statuses, x.statusId)), 'trap status')
+      try { validateTrap(t as never, 'trap') } catch { requireThat(false, 'trap row') }
+    }
+    requireThat(new Set(st.traps.map((t: any) => t.hex)).size === st.traps.length, 'one trap to a hex')
   }
   if (s.cursor !== undefined) {
     const c = s.cursor; record(c)
