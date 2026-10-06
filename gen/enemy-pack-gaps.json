@@ -722,29 +722,14 @@
    "needs": "an ability with charges/targets — capability.consumables"
   },
   {
-   "unit": "item.banner-assassin",
-   "what": "grants power.banner-assassin.plant",
-   "needs": "item power — shape unparsed"
-  },
-  {
    "unit": "item.banner-mystic-power",
    "what": "grants power.banner-mystic-power.plant",
    "needs": "item power — shape unparsed"
   },
   {
-   "unit": "item.banner-vigil",
-   "what": "grants power.banner-vigil.plant",
-   "needs": "item power — shape unparsed"
-  },
-  {
-   "unit": "item.banner-courage",
-   "what": "grants power.banner-courage.plant",
-   "needs": "item power — shape unparsed"
-  },
-  {
    "unit": "item.banner-heroism",
-   "what": "grants power.banner-heroism.plant",
-   "needs": "item power — shape unparsed"
+   "what": "power.banner-heroism.plant: onMiss by any ally in the aura: EVERY ally in the aura gains 30 Surge Chance",
+   "needs": "planted object: clause unparsed"
   },
   {
    "unit": "item.bandages",

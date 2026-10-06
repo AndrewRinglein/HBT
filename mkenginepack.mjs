@@ -1231,6 +1231,47 @@ function compiledPowerOf(p, unitId) {
     return { ...base, range: parseInt(r[1], 10), target: { select: 'unit', side: 'ally' },
       effects: [{ kind: 'heal', amount: { scale: 'partySpirit', base: parseInt(m[1], 10), mult: parseInt(m[2], 10) } }] };
   }
+  // engine capability.planted-banners (2026-10-05; engine DECISIONS.md 2026-10-04 'every dead line on his items is a feature that
+  // is needed …': "All of those deadlines need to be added in as features that we need."): his Banners. "One use per Battle.
+  // Plant the banner on your hex. For the rest of the Battle it projects an aura of radius N from that hex — you may walk away
+  // and it stays." on "the hex you occupy" -> a power aimed at its user, one use a Battle, whose one effect is the engine's
+  // 'plant': an object on that hex that gives the planter's side, within N of the HEX, what the sentences after it say —
+  //   "+N Stat[ and +N Stat] to allies in the aura[, and Immunity to <Status> N while inside it]"   stats lent while inside; a
+  //       ward: N points of each application of that status do not land while inside (engine SWITCHES.md immunityIsAWard)
+  //   "At the End of Activation of an|any ally inside[ the aura], that ally gains N Surge Chance — added to the pool once,
+  //       never added to the Surge stat"                                                            a lent End-of-Activation trigger
+  //   "… that ally heals N" / "… that ally heals an amount equal to its Spirit"                     the same hook, a heal — the
+  //       ally's OWN Spirit ("its", not the party's "your")
+  //   "onCrit, for a unit in the aura: gain N Stamina"                                              a lent on-crit trigger
+  // A sentence that is none of these is a named gap on the power (the Heroic Banner's "onMiss … EVERY ally in the aura"); a
+  // banner none of whose sentences compile is not planted at all — it stays an unparsed power (the Mystic Banner), never an
+  // object that does nothing.
+  if ((m = desc.match(/^One use per Battle\. Plant the banner on your hex\. For the rest of the Battle it projects an aura of radius (\d+) from that hex — you may walk away and it stays\. (.+)$/)) && tgt === 'the hex you occupy') {
+    const slug = p.id.replace(/^power\./, '');
+    const mods = {}, wards = {}, lends = [], found = [];
+    const lend = (key, hook, effect) => lends.push({ id: `trigger.${slug}.${key}`, hook, chance: 100, select: 'self', effect, source: p.id });
+    for (const s0 of m[2].split(/(?<=\.)\s+/).map((x) => x.trim().replace(/\.$/, '')).filter(Boolean)) {
+      let c;
+      if ((c = s0.match(/^(\+\d+ [A-Z][a-z]+(?: and \+\d+ [A-Z][a-z]+)*) to allies in the aura(?:, and Immunity to ([A-Z][a-z]+) (\d+) while inside it)?$/))) {
+        const parts = c[1].split(' and ').map((x) => x.match(/^\+(\d+) (.+)$/));
+        if (parts.some((x) => !modStatOf(x[2])) || (c[2] && !STATUS_OK.has(c[2].toLowerCase()))) { found.push({ clause: s0, needs: 'a stat or a status the engine does not have' }); continue; }
+        for (const x of parts) mods[modStatOf(x[2])] = (mods[modStatOf(x[2])] ?? 0) + +x[1];
+        if (c[2]) wards['status.' + c[2].toLowerCase()] = +c[3];
+        continue;
+      }
+      if ((c = s0.match(/^At the End of Activation of (?:an|any) ally inside(?: the aura)?, that ally gains (\d+) Surge Chance — added to the pool once, never added to the Surge stat$/))) { lend('surge', 'onActivationEnd', { kind: 'surge.gain', value: +c[1] }); continue; }
+      if ((c = s0.match(/^At the End of Activation of (?:an|any) ally inside(?: the aura)?, that ally heals (\d+)$/))) { lend('heal', 'onActivationEnd', { kind: 'heal', amount: +c[1] }); continue; }
+      if (/^At the End of Activation of (?:an|any) ally inside(?: the aura)?, that ally heals an amount equal to its Spirit$/.test(s0)) { lend('heal', 'onActivationEnd', { kind: 'heal', amount: { scale: 'stat', stat: 'spirit', base: 0, mult: 1 } }); continue; }
+      if ((c = s0.match(/^onCrit, for a unit in the aura: gain (\d+) Stamina$/))) { lend('stamina', 'onCrit', { kind: 'stamina.gain', value: +c[1] }); continue; }
+      found.push({ clause: s0, needs: 'planted object: clause unparsed' });
+    }
+    if (Object.keys(mods).length || Object.keys(wards).length || lends.length) {
+      POWER_GAPS.set(p.id, found);
+      return { ...base, uses: 1, range: 0, target: { select: 'self', side: 'any' },
+        effects: [{ kind: 'plant', radius: +m[1], ...(Object.keys(mods).length ? { mods } : {}), ...(Object.keys(wards).length ? { wards } : {}), ...(lends.length ? { lends } : {}) }],
+        ...(found.length ? { gaps: found.map((x) => `${x.clause} — ${x.needs}`) } : {}) };
+    }
+  }
   // engine capability.his-weapons-small-clauses (2026-10-05): the Benevolent Rod's Mending Light — "Heal the target for (Spirit x
   // M) + B, give it Protection equal to your Spirit, and remove <Status> equal to your Spirit." Three effects on the one ally:
   // the heal and the Protection are shapes the engine had; the third is status.remove by a stat's amount. "Your Spirit" is
