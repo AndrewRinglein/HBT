@@ -164,7 +164,18 @@ test('seek, step and replay land on the same state: the whole battle played by t
   const begin = EV.findIndex(e => e.type === 'battle.begin') + 1
   v.seek(begin); v.speed(4); v.play()
   const order = []; let c = v.cursor
-  for (let n = 0; n < 2000000 && v.cursor < EV.length; n++) { w._flush(FRAME); while (c < v.cursor) order.push(c++) }
+  /* Law 10, 2026-10-05 — engine rule.prone-only-stand-up (Andrew, engine DECISIONS.md 'a prone unit only stands; Stand Up is its
+     one move; …': "yes, it cannot use attacks or powers until it stands."). The fixture is the engine's own battle, and that
+     battle moved: a knocked-down unit no longer attacks from the floor, the fight runs on differently, and on Turn 5 a hero who
+     did not carry it is bitten and gains Lycanthropy (badge.gained) — so the first-affliction pop-up now stands in this battle
+     too and holds the pump, as it does in the Cavern Trail's recording below. The loop closes it, as that test's does, and
+     holds that it stood once for each such line. What the test asks is unchanged: the battle plays to its end with no fault
+     and the board is the engine's. The loop was:
+       for (let n = 0; n < 2000000 && v.cursor < EV.length; n++) { w._flush(FRAME); while (c < v.cursor) order.push(c++) } */
+  let popped = 0
+  for (let n = 0; n < 2000000 && v.cursor < EV.length; n++) { w._flush(FRAME); while (c < v.cursor) order.push(c++)
+    const P = V.dom.root.querySelector('#afflPop'); if (P) { popped++; assert.equal(V.hold, true, 'the pump is held on the pop-up'); fire(P.querySelector('#afflClose'), 'click') } }
+  assert.equal(popped, EV.filter(e => e.type === 'badge.gained').length, 'the first-affliction pop-up stood once for each affliction gained in the battle')
   assert.equal(v.cursor, EV.length, 'the battle played to its end'); assert.equal(V.invalid, null, 'no fault')
   assert.deepEqual(board(V.S), board(foldTo(EV, EV.length, ctx)), 'the board is the engine\'s own state')
   for (const u of Object.values(V.S.U)) if (u.id < 4) { assert.ok(u.typeId.startsWith('hero.'), 'each hero is itself again at the end'); assert.equal(u.side, 'hero') }
