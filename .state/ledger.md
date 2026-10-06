@@ -37884,6 +37884,27 @@ index 0d8d35c..2019d5e 100644
   PASS  brought its own tests — test/battle-cursor.test.ts, test/v2-prone.test.ts, test/fixtures/battle-cursor-prone-only-stand-up.json, test/prone-only-stand-up.test.ts
   WARN  existing tests untouched — DELETED LINES in test/battle-cursor.test.ts (-2), test/v2-prone.test.ts (-2) — will land FLAGGED for review
   PASS  control battles unchanged — will re-bless at commit — this item DECLARED it changes the control battles: map.flanks eb22eeb5->97748a6a, map.floodplain c2020314->1f783203, test.map.embers 2b539aa5->eb990c7f, test.map.horde-24 11149d6d->f7473de6, test.map.journey-20x10 3d4cffba->15137407, test.map.authored-40x40 8b801b91->103102ac, test.map.high-prop-multi ca9209bf->adfa85b5
+## capability.placed-traps — LANDED `9b445b4` **NEEDS REVIEW**
+2026-10-06 03:57
+
+  PASS  dependencies landed
+  WARN  not already decided — 2 candidate ruling(s) — READ BEFORE ASKING: SWITCHES.md:2282 · SWITCHES.md:2526
+  PASS  typecheck
+  PASS  the item's own tests — test/battle-cursor.test.ts, test/placed-traps.test.ts
+  PASS  gate 1 — the id appears in a real battle — power.bear-trap.use: 14 log lines, 14 fired, 12 changed state
+  PASS  brought its own tests — test/battle-cursor.test.ts, test/fixtures/battle-cursor-placed-traps.json, test/placed-traps.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/battle-cursor.test.ts (-2) — will land FLAGGED for review
+## viewer.solid-pieces-drawn-by-material — LANDED `e1a3f85` **NEEDS REVIEW**
+2026-10-06 03:07
+
+  PASS  dependencies landed
+  WARN  not already decided — 2 candidate ruling(s) — READ BEFORE ASKING: SWITCHES.md:1944 · SWITCHES.md:2188
+  PASS  typecheck
+  PASS  the item's own tests — test/viewer.solid-pieces-drawn-by-material.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — viewer/test/viewer.solid-pieces-drawn-by-material.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/viewer.solid-pieces-drawn-by-material.test.ts (-2) — will land FLAGGED for review
+  SKIPPED  control battles unchanged — engine code 83cd1ee3d6 and the content pack are the ones the control battles last passed on (2026-10-05 22:52, gate capability.raise-lower-magic --land, in HBT-worker-engine) — not run
   PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
   PASS  hardcode scan — core knows mechanisms, never names
   PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
@@ -37892,6 +37913,165 @@ index 0d8d35c..2019d5e 100644
   PASS  naming — new content ids use declared kinds
   PASS  naming — no banned words invented
   PASS  kill switch — the tests fail without the content — tests fail without status.prone,power.stand-up — they genuinely test it
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+be045ae
+
+diff --git a/test/viewer.solid-pieces-drawn-by-material.test.ts b/test/viewer.solid-pieces-drawn-by-material.test.ts
+index 6a3c68f..bb30e41 100644
+--- a/test/viewer.solid-pieces-drawn-by-material.test.ts
++++ b/test/viewer.solid-pieces-drawn-by-material.test.ts
+@@ -94,8 +94,11 @@ describe('viewer.solid-pieces-drawn-by-material', () => {
+ 
+   it('no time is asserted here: the proof is counts', () => {
+-    const src = readFileSync('test/viewer.solid-pieces-drawn-by-material.test.ts', 'utf8').replace(/\/\*[\s\S]*?\*\//g, '').split('\n').filter((l) => !/^\s*\/\//.test(l)).join('\n')
++    /* every assertion above this test: what it is made of (the first argument of each expect) reads no time the tool measured */
++    const all = readFileSync('test/viewer.solid-pieces-drawn-by-material.test.ts', 'utf8'), above = all.slice(0, all.indexOf('it(\'no time is asserted here'))
++    const src = above.replace(/\/\*[\s\S]*?\*\//g, '').split('\n').filter((l) => !/^\s*\/\//.test(l)).join('\n')
+     const subjects = [...src.matchAll(/expect\(\s*([^,)]+)/g)].map((m) => m[1]!)
+     expect(subjects.length).toBeGreaterThan(20)
+-    for (const s of subjects) expect(/\bms\b|Ms\b|\.ms\./.test(s), 'a time in an assertion: ' + s).toBe(false)
++    const aTime = new RegExp('\\bm' + 's\\b|M' + 's\\b|loadM')
++    for (const s of subjects) expect(aTime.test(s), 'a time in an assertion: ' + s).toBe(false)
+   })
+ })
+7d7d20d
+
+diff --git a/test/viewer.solid-pieces-drawn-by-material.test.ts b/test/viewer.solid-pieces-drawn-by-material.test.ts
+new file mode 100644
+index 0000000..6a3c68f
+--- /dev/null
++++ b/test/viewer.solid-pieces-drawn-by-material.test.ts
+@@ -0,0 +1,101 @@
++// viewer.solid-pieces-drawn-by-material (engine backlog; split out of viewer.scene-drawn-in-few-calls by the home chat 2026-10-05;
++// engine DECISIONS.md 2026-10-05 'the battle screen must feel smooth: the speed first; …'). Expect: "The frame-cost tool's two-way
++// compare finds 0 differing pixels on each of the six 3D battles against the page before this item (the shimmer already
++// recorded as blendedPiecesShimmer excepted and measured the same way before and after); the Orphanage's draw calls with
++// bodies idling fall well below the 1,139 measured before (the worker's estimate is about 700 - say the number reached); a
++// piece hiding a character still fades see-through by itself at the same 32 of 32 views; a held frame still issues 0 draw
++// calls; the six battles' page verifies pass unchanged; the report gives each battle's added load time."
++// The sources' half — which pieces go into which batch, the numbers a batch hands the graphics card, the order it draws in,
++// the shader's text, what each pass draws — is ../viewer/tools/solid-pieces-drawn-by-material.test.mjs (run here). The page's
++// half is the frame-cost tool in real Chrome on the sandbox page built from these sources (one run for every frame test:
++// test/frame-cost-page.ts): at every view of a round the frame is drawn with the solid pieces batched, then with each piece
++// by itself as first written, and every pixel of both canvases compared. COUNTS ONLY are asserted here — draw calls, pieces,
++// pixels that differ — never a time (viewer.frame-time-tests-hold-under-load). The six battles' own numbers are in the
++// landing note (the tool run by hand on all of them); the run here is on the four the frame tests share. Imports no page code.
++import { describe, it, expect } from 'vitest'
++import { execFileSync } from 'node:child_process'
++import { readFileSync } from 'node:fs'
++import { frameCostOnThePage, rowOf, FRAME_COST_BATTLES, FRAME_COST_WAIT_MS } from './frame-cost-page.js'
++
++type Pass = { all: number; shadow: number; scene: number; bodies: number; many?: number; inMany?: number }
++type Measure = { frames: number; draws: Pass; triangles: Pass }
++type Row = { battle: string; flat?: boolean; note?: string; still: { withCheck: Measure; withoutCheck: Measure }; scrolling: { withCheck: Measure; withoutCheck: Measure }; held: Measure
++  eachByItself?: Measure; batches?: { batches: number; pieces: number; solid: number; ms: number }
++  seeThrough?: { views: number; same: number; withSomethingHiding: number; fadedAlone?: number; withAPieceOut?: number; mostOut?: number }
++  shadow?: { views: number; differing: number; worst: number; sameWay: number; blendedNoise: number
++    batched?: { views: number; same: number; differing: number; worst: number; withAPieceOut: number; back: number; retake: number; most: number; drawnAgain: number } }; pageErrors?: string[] }
++
++describe('viewer.solid-pieces-drawn-by-material', () => {
++  it('the sources: which pieces share a batch; the numbers and the order a batch draws with are three\'s own for each piece; a faded piece leaves its batch; what each pass draws', () => {
++    const out = execFileSync(process.execPath, ['--test', '--test-reporter=tap', 'tools/solid-pieces-drawn-by-material.test.mjs'], { cwd: '../viewer', encoding: 'utf8', maxBuffer: 1 << 24, env: { ...process.env, VIEWER_PAGE: process.env.VIEWER_PAGE ?? '' } })
++    expect(out).toMatch(/# pass 8/); expect(out).toMatch(/# fail 0/)
++  }, 170000)
++
++  it('the built page: on every battle the solid pieces are drawn from batches — fewer calls, the same triangles — and the picture is the same, pixel for pixel, as with each piece drawn by itself', () => {
++    const got = frameCostOnThePage<Row>()
++    for (const battle of FRAME_COST_BATTLES) {
++      const r = rowOf(got, battle), at = battle.replace(/^encounter\.(opening\.)?/, '')
++      expect(r.flat, r.note).toBeFalsy(); expect(r.pageErrors ?? [], at).toEqual([])
++      /* the batches: most of the scene's solid pieces, in far fewer batches than pieces */
++      expect(r.batches, at + ': the page says how its solid pieces are drawn').toBeTruthy()
++      const b = r.batches!
++      expect(b.batches, at).toBeGreaterThan(0); expect(b.pieces, at + ': pieces in batches').toBeGreaterThan(b.batches * 2)
++      expect(b.pieces, at).toBeLessThanOrEqual(b.solid); expect(b.pieces, at + ': most of the solid pieces are in a batch').toBeGreaterThan(b.solid * .8)
++      /* a frame with the bodies idling: each batch in sight is one call that draws many, and the scene's pass makes that many fewer calls */
++      for (const m of [r.still.withoutCheck, r.still.withCheck, r.scrolling.withoutCheck]) {
++        expect(m.draws.many, at + ': calls that draw many').toBeGreaterThan(0); expect(m.draws.many!, at).toBeLessThanOrEqual(b.batches)
++        expect(m.draws.inMany!, at + ': the pieces those calls draw').toBeGreaterThan(m.draws.many!)
++      }
++      /* the same still frames with every piece drawn by itself, as first written, in the same run on the same view: in the
++         scene's own pass the calls saved are exactly the pieces drawn in the many-in-one calls less those calls themselves,
++         and the triangles drawn are the very same (a piece out of sight is drawn from its batch no more than by itself).
++         (The bodies' own passes are not compared to the call: an idling body's part crosses the screen's edge now and then.) */
++      const still = r.still.withoutCheck, each = r.eachByItself!
++      expect(each, at + ': the tool measured the frame with each piece by itself').toBeTruthy()
++      expect(each.draws.many ?? 0, at + ': drawn piece by piece there is no call that draws many').toBe(0)
++      expect(each.draws.scene - still.draws.scene, at + ': draw calls the batches save in the scene\'s pass').toBe(still.draws.inMany! - still.draws.many!)
++      expect(still.triangles.scene, at + ': the scene\'s pass draws the same triangles').toBe(each.triangles.scene)
++      expect(still.draws.all, at + ': a frame\'s draw calls, the bodies idling').toBeLessThan(each.draws.all - (still.draws.inMany! - still.draws.many!) / 2)
++      /* the picture: at every view of the round the frame drawn from the batches is the frame drawn piece by piece — every
++         pixel of the scene's canvas and of the bodies'. (A frame is now and then a few pixels of one shade off its own
++         repeat, the pieces batched or not — viewer SWITCHES frameNoiseOneShade — so a view whose two ways differ is drawn
++         again by the tool, three times at the most: what is the batches' doing differs every time. Held: at every view the
++         two ways were the same picture at one of those drawings, and no drawing was ever more than a few dozen pixels off —
++         a batch drawn wrong moves whole pieces.) */
++      expect(r.shadow?.batched, at + ': the tool drew the views both ways').toBeTruthy()
++      const p = r.shadow!.batched!
++      expect(p.views, at).toBeGreaterThanOrEqual(8)
++      expect(p.differing, at + ': pixels that differ between the batched picture and the pieces drawn alone').toBe(0)
++      expect(p.same, at).toBe(p.views)
++      expect(p.most, at + ': the most any one drawing differed by (a frame\'s own noise: a handful of pixels)').toBeLessThanOrEqual(40)
++      expect(p.worst, at).toBe(0)
++      /* the see-through rule: the same pieces found both ways at every view, as before; and every faded piece is out of its batch, drawn by itself */
++      expect(r.seeThrough!.same, at + ': the see-through check\'s answer at every view').toBe(r.seeThrough!.views)
++      expect(r.seeThrough!.views, at).toBeGreaterThanOrEqual(32)
++      expect(r.seeThrough!.fadedAlone, at + ': views in which every faded piece is out of its batch and drawn by itself').toBe(r.seeThrough!.views)
++    }
++    /* the Orphanage: "well below the 1,139 measured before" — 700 was reached; held under 800 */
++    const o = rowOf(got, 'encounter.opening.orphanage')
++    expect(o.still.withoutCheck.draws.all, 'the Orphanage, bodies idling: draw calls a frame (1,139 before; 700 measured)').toBeLessThan(800)
++    expect(o.batches!.pieces, 'the Orphanage: solid pieces in batches (796 of 800 measured)').toBeGreaterThan(700)
++    /* a piece was in fact faded out of its batch in some view of the round, somewhere (the rule is exercised, not only stated) */
++    expect(FRAME_COST_BATTLES.some((id) => (rowOf(got, id).seeThrough!.withAPieceOut ?? 0) > 0), 'a view with a piece out of its batch').toBe(true)
++    expect(FRAME_COST_BATTLES.some((id) => (rowOf(got, id).shadow!.batched!.withAPieceOut ?? 0) > 0), 'and one such view compared pixel for pixel').toBe(true)
++  }, FRAME_COST_WAIT_MS)
++
++  it('the built page: a held frame still issues no draw call — nothing live, nothing drawn', () => {
++    const got = frameCostOnThePage<Row>()
++    for (const battle of ['encounter.opening.orphanage', 'encounter.opening.lumberjack', 'encounter.opening.bridge']) {
++      const r = rowOf(got, battle)
++      expect(r.held.frames).toBeGreaterThanOrEqual(30)
++      expect(r.held.draws.all, battle + ': draw calls with the clock held').toBe(0)
++    }
++  }, FRAME_COST_WAIT_MS)
++
++  it('no time is asserted here: the proof is counts', () => {
++    const src = readFileSync('test/viewer.solid-pieces-drawn-by-material.test.ts', 'utf8').replace(/\/\*[\s\S]*?\*\//g, '').split('\n').filter((l) => !/^\s*\/\//.test(l)).join('\n')
++    const subjects = [...src.matchAll(/expect\(\s*([^,)]+)/g)].map((m) => m[1]!)
++    expect(subjects.length).toBeGreaterThan(20)
++    for (const s of subjects) expect(/\bms\b|Ms\b|\.ms\./.test(s), 'a time in an assertion: ' + s).toBe(false)
++  })
++})
+```
+</details>
+
+## kingdom.gift-roll-leaves-out-own-badges — LANDED `edaac90`
+2026-10-06 04:23
+
+  PASS  dependencies landed
+  WARN  not already decided — 3 candidate ruling(s) — READ BEFORE ASKING: SWITCHES.md:2485 · SWITCHES.md:2486
+  PASS  typecheck
+  PASS  the item's own tests — test/gift-roll-leaves-out-own-badges.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — kingdom/test/fixtures/gift-roll-own-badges-before.json, kingdom/test/gift-roll-leaves-out-own-badges.test.ts
+  PASS  existing tests untouched
+  PASS  control battles unchanged
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without power.bear-trap.use — they genuinely test it
 
 <details><summary>Existing tests were edited — review this diff</summary>
 
@@ -37972,3 +38152,111 @@ index a6584ad..e7967e1 100644
    })
 ```
 </details>
+index 7c82699..68a046c 100644
+--- a/test/battle-cursor.test.ts
++++ b/test/battle-cursor.test.ts
+@@ -519,4 +519,11 @@ const hisWeaponsSmallClausesGolden = JSON.parse(readFileSync(new URL('./fixtures
+ // Every case frozen here (tools/capture-planted-banners-cursor.mts). Moved: none. A `changed` case is checked here and skips the older layers.
+ const plantedBannersGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-planted-banners.json', import.meta.url), 'utf8'))
++// capability.placed-traps (2026-10-05; DECISIONS.md 2026-10-04 'every dead line on his items is a feature that is needed …': "All of
++// those deadlines need to be added in as features that we need."), Law 10: a use places one or more traps on chosen empty hexes;
++// a trap springs on the first unit to enter its hex - its damage, its statuses, the hexes round it and the ground it leaves as
++// its row says - and is gone (his Bear Traps, Explosive Trap, Fire Trap and Magic Trap). No case that was fought before moves (no
++// unit in them carries a trap); test.bear-traps is ADDED: the Bear Traps live in a real battle.
++// Every case frozen here (tools/capture-placed-traps-cursor.mts). Moved: none. A `changed` case is checked here and skips the older layers.
++const placedTrapsGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-placed-traps.json', import.meta.url), 'utf8'))
+ const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
+ // Explicit rule migration, not regenerated historical hashes. These nine old
+@@ -672,5 +679,8 @@ describe('resumable battle cursor', () => {
+       const hisWeaponsSmallClausesExpected = hisWeaponsSmallClausesGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+       const plantedBannersExpected = plantedBannersGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+-      const plantedBannersMoved = plantedBannersExpected?.changed === true
++      const placedTrapsExpected = placedTrapsGolden.cases.find((row:{id:string})=>row.id===fixture.id)
++      const placedTrapsMoved = placedTrapsExpected?.changed === true
++      // was: const plantedBannersMoved = plantedBannersExpected?.changed === true — a case capability.placed-traps moved skips this layer too (capability.placed-traps 2026-10-04)
++      const plantedBannersMoved = plantedBannersExpected?.changed === true || placedTrapsMoved
+       // was: const hisWeaponsSmallClausesMoved = hisWeaponsSmallClausesExpected?.changed === true — a case capability.planted-banners moved skips this layer too (capability.planted-banners 2026-10-04)
+       const hisWeaponsSmallClausesMoved = hisWeaponsSmallClausesExpected?.changed === true || plantedBannersMoved
+@@ -840,5 +850,12 @@ describe('resumable battle cursor', () => {
+           }
+         } else result = battle.runBattle(ctx)
+-        if (plantedBannersExpected) {
++        if (placedTrapsExpected) {
++        expect(hash(ctx.events), 'full placed-traps events').toBe(placedTrapsExpected.events)
++        expect(hash(ctx.state), 'full placed-traps state').toBe(placedTrapsExpected.state)
++        expect(hash(ctx.rng.log), 'full placed-traps RNG').toBe(placedTrapsExpected.rng)
++        expect(result).toEqual(placedTrapsExpected.result)
++        }
++        // was: if (plantedBannersExpected) { — capability.placed-traps (2026-10-04): a case it moved is checked above instead
++        if (plantedBannersExpected && !placedTrapsMoved) {
+         expect(hash(ctx.events), 'full planted-banners events').toBe(plantedBannersExpected.events)
+         expect(hash(ctx.state), 'full planted-banners state').toBe(plantedBannersExpected.state)
+```
+</details>
+
+## capability.stabilise-downed-ally — LANDED `bb7c8f0` **NEEDS REVIEW**
+2026-10-06 04:51
+
+  PASS  dependencies landed
+  WARN  not already decided — 2 candidate ruling(s) — READ BEFORE ASKING: ..\CODEX.md:1847 · SWITCHES.md:2282
+  PASS  typecheck
+  PASS  the item's own tests — test/battle-cursor.test.ts, test/stabilise-downed-ally.test.ts
+  PASS  gate 1 — the id appears in a real battle — power.bandages.use: 6 log lines, 6 fired, 5 changed state
+  PASS  brought its own tests — test/battle-cursor.test.ts, test/fixtures/battle-cursor-stabilise-downed-ally.json, test/stabilise-downed-ally.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/battle-cursor.test.ts (-2) — will land FLAGGED for review
+  PASS  control battles unchanged
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — power.bandages.use live · power.test-osric.field-dressing live
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without power.bandages.use — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/battle-cursor.test.ts b/test/battle-cursor.test.ts
+index 68a046c..1f59b85 100644
+--- a/test/battle-cursor.test.ts
++++ b/test/battle-cursor.test.ts
+@@ -526,4 +526,11 @@ const plantedBannersGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-
+ // Every case frozen here (tools/capture-placed-traps-cursor.mts). Moved: none. A `changed` case is checked here and skips the older layers.
+ const placedTrapsGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-placed-traps.json', import.meta.url), 'utf8'))
++// capability.stabilise-downed-ally (2026-10-05; DECISIONS.md 2026-10-04 'every dead line on his items is a feature that is needed …':
++// "All of those deadlines need to be added in as features that we need."), Law 10: a power aimed at one downed ally stops its
++// bleed-out count - it stays down and does not die of the count for the rest of the Battle (his Bandages). No case that was
++// fought before moves (no unit in them carries such a power); test.bandages and test.field-dressing are ADDED: the Bandages, and a
++// second row of the same effect, each live in a real battle.
++// Every case frozen here (tools/capture-stabilise-downed-ally-cursor.mts). Moved: none. A `changed` case is checked here and skips the older layers.
++const stabiliseDownedAllyGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-stabilise-downed-ally.json', import.meta.url), 'utf8'))
+ const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
+ // Explicit rule migration, not regenerated historical hashes. These nine old
+@@ -680,5 +687,8 @@ describe('resumable battle cursor', () => {
+       const plantedBannersExpected = plantedBannersGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+       const placedTrapsExpected = placedTrapsGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+-      const placedTrapsMoved = placedTrapsExpected?.changed === true
++      const stabiliseDownedAllyExpected = stabiliseDownedAllyGolden.cases.find((row:{id:string})=>row.id===fixture.id)
++      const stabiliseDownedAllyMoved = stabiliseDownedAllyExpected?.changed === true
++      // was: const placedTrapsMoved = placedTrapsExpected?.changed === true — a case capability.stabilise-downed-ally moved skips this layer too (capability.stabilise-downed-ally 2026-10-04)
++      const placedTrapsMoved = placedTrapsExpected?.changed === true || stabiliseDownedAllyMoved
+       // was: const plantedBannersMoved = plantedBannersExpected?.changed === true — a case capability.placed-traps moved skips this layer too (capability.placed-traps 2026-10-04)
+       const plantedBannersMoved = plantedBannersExpected?.changed === true || placedTrapsMoved
+@@ -850,5 +860,12 @@ describe('resumable battle cursor', () => {
+           }
+         } else result = battle.runBattle(ctx)
+-        if (placedTrapsExpected) {
++        if (stabiliseDownedAllyExpected) {
++        expect(hash(ctx.events), 'full stabilise-downed-ally events').toBe(stabiliseDownedAllyExpected.events)
++        expect(hash(ctx.state), 'full stabilise-downed-ally state').toBe(stabiliseDownedAllyExpected.state)
++        expect(hash(ctx.rng.log), 'full stabilise-downed-ally RNG').toBe(stabiliseDownedAllyExpected.rng)
++        expect(result).toEqual(stabiliseDownedAllyExpected.result)
++        }
++        // was: if (placedTrapsExpected) { — capability.stabilise-downed-ally (2026-10-04): a case it moved is checked above instead
++        if (placedTrapsExpected && !stabiliseDownedAllyMoved) {
+         expect(hash(ctx.events), 'full placed-traps events').toBe(placedTrapsExpected.events)
+         expect(hash(ctx.state), 'full placed-traps state').toBe(placedTrapsExpected.state)
+```
+</details>
+  PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable

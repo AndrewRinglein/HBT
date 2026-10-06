@@ -1,6 +1,6 @@
 {
-  "sourceCommit": "rule.prone-only-stand-up",
-  "note": "rule.prone-only-stand-up (2026-10-05). Cases marked changed differ from the stabilise-downed-ally capture; movedOnlyText means state, RNG and result are unchanged; added marks a case the layer below does not hold.",
+  "sourceCommit": "capability.placed-traps",
+  "note": "capability.placed-traps (2026-10-04). Cases marked changed differ from the planted-banners capture; movedOnlyText means state, RNG and result are unchanged; added marks a case the layer below does not hold.",
   "cases": [
     {
       "id": "showcase.alpha-team",
@@ -220,16 +220,15 @@
     },
     {
       "id": "showcase.ordered-power-preview",
-      "events": "59710309eea00b30b9d35ec0e12d266f70e23692c4d57e48e78fa23eed183046",
-      "state": "7f1873d3598e17787ccc5a6b325b72bf03dbe530207ae3cf23d20a2ad9131ff4",
+      "events": "cd9c01cf2a99aa9f49a7452a35a38f55bbb5bdedb8de0afe287cbd7c8b44ba08",
+      "state": "2ab25a3b81b54c74e77c0f60c7df2efb72316c83b7dcd0491cbd10c5f9eb6306",
       "rng": "dc509ebaac9ff0d5d55b151b477622dbadb9b16c71b6a6a9d1b3b90d052c1a98",
       "result": {
         "outcome": "heroClear",
         "turns": 2,
         "usesSpent": []
       },
-      "changed": true,
-      "movedOnlyText": false
+      "changed": false
     },
     {
       "id": "showcase.prologue-enemies",
@@ -317,11 +316,11 @@
     },
     {
       "id": "showcase.waystation",
-      "events": "dab62cb4e913f973f742483cec633a2f8360911d4eba6dad434e2c640e058989",
-      "state": "065b9febdaab422e29d45376660658ac502553c9c79f5781439be30ce2bd8002",
-      "rng": "a20fffd0a853b807b8298a6bd19506c9bc9cc37785224fac72ccf3755e114fb6",
+      "events": "949b9a64a8c5efdd1a40356a3f2a79d45a89cfb63c325046f428cb8ed23813e9",
+      "state": "9075e74785609d2a43efa31e2abcfded45ec5e790bc8d887697df74f83d546c3",
+      "rng": "c897695c89ef025a1e1809de61208d1b546ed332ce9d5c00f817629caedeea6a",
       "result": {
-        "outcome": "heroClear",
+        "outcome": "wipe",
         "turns": 11,
         "usesSpent": [
           {
@@ -428,8 +427,7 @@
           }
         ]
       },
-      "changed": true,
-      "movedOnlyText": false
+      "changed": false
     },
     {
       "id": "showcase.wounded-entry",
@@ -505,42 +503,13 @@
     },
     {
       "id": "test.back-flip",
-      "events": "93044a725258fe9deb0b91bea17cc53aece84050c04871958784429fe51a6861",
-      "state": "c1438afa03203c884d5952ec1cf4fe08e4f250ca1734c13d0ab23c02b5bf088d",
-      "rng": "1622956354b981e6735d252b1c6087eef487f23ccf982272d5e424cca107ed5a",
+      "events": "aebcfce514500d563e2a2075c932cffb34fde911e76b53b3aac80382a5b2f97d",
+      "state": "073e0a2974edfd7e6a2df057fa52fc118d2120bfe156c673e0acbd234e4782f8",
+      "rng": "fe46cc339efe7dea8afe7614dbfedbde5c5eef2fb473224bb48d0464bacd52d1",
       "result": {
         "outcome": "wipe",
-        "turns": 7,
+        "turns": 5,
         "usesSpent": []
-      },
-      "changed": true,
-      "movedOnlyText": false
-    },
-    {
-      "id": "test.bandages",
-      "events": "fde637254ecc48286dee1bf476bec2f7ea606e6142f0494f8020b4542a3bbdda",
-      "state": "0607571941d0ea23156fa2663821c2bae0115232f13205cdabc9c96ae0c13986",
-      "rng": "d2a55a8f6bfd831a6297cc15750205bc87c0be72381751daf76ec3e8a99c3bb3",
-      "result": {
-        "outcome": "heroClear",
-        "turns": 15,
-        "usesSpent": [
-          {
-            "unit": 1,
-            "power": "power.bandages.use",
-            "spent": 1
-          }
-        ],
-        "itemUses": [
-          {
-            "unit": 1,
-            "instanceId": "101/1",
-            "itemId": "item.bandages",
-            "power": "power.bandages.use",
-            "used": 1,
-            "left": 0
-          }
-        ]
       },
       "changed": false
     },
@@ -598,7 +567,8 @@
           }
         ]
       },
-      "changed": false
+      "changed": false,
+      "added": true
     },
     {
       "id": "test.block-a",
@@ -812,18 +782,6 @@
       "result": {
         "outcome": "heroClear",
         "turns": 6,
-        "usesSpent": []
-      },
-      "changed": false
-    },
-    {
-      "id": "test.field-dressing",
-      "events": "69751791fb1a0940d79443278ed202f05ee58148869e4f595f8304f15d727120",
-      "state": "76755dec7e49c28a321800d32790fafba3d92d3fb7b16bb9ca936753a088c588",
-      "rng": "d237fde5a8ee8604576e69f9364d12379cf2068edfc33425ad480aa528f726b4",
-      "result": {
-        "outcome": "heroClear",
-        "turns": 12,
         "usesSpent": []
       },
       "changed": false
@@ -1045,16 +1003,15 @@
     },
     {
       "id": "test.mode-change-a",
-      "events": "331487d0dee5ca0548aaea7c4b5a529ed8a7154be03cb09ab28aa19e3f87ec2d",
-      "state": "f9558da9ace55e2046f3d3d9f3b7159f544fc249ab4fc3494c0e9543f9810b44",
-      "rng": "4cf8d3eecf8c7bcedb617f090374d460a5952a17a5c92f9c16d5f19493829078",
+      "events": "9cd338029b7e62f743511a622d52479843828371992ac4e98a5595ac938470a8",
+      "state": "fc8f05c334552c4ea465ec7a1dbf325ba717f64dca54c18526451e65d5477b96",
+      "rng": "65e93ceb36ac0b6be895db49690378eae2d5d8f84d7b4cf66e43a408d2b727d7",
       "result": {
         "outcome": "heroClear",
-        "turns": 5,
+        "turns": 4,
         "usesSpent": []
       },
-      "changed": true,
-      "movedOnlyText": false
+      "changed": false
     },
     {
       "id": "test.mode-change-b",
@@ -1106,16 +1063,15 @@
     },
     {
       "id": "test.opening-gates",
-      "events": "9db92056f74607895890c7158a05b11e2ee9a174b67b55c0bd84c3fbe2a8aef6",
-      "state": "2c8d0cdd8fb27cfa865be7d4c95cf314dc7b0f05580f29962544a5b8f94d3cdd",
-      "rng": "2d7188e06eea329fef547f0c9f578c8c78bcb07c55d4050f35ad1e62e524b9fd",
+      "events": "45462eb7afd2138252421f8391a45eb11c4ccad3c0daca0ddfcdaf9b9b9d55a0",
+      "state": "5c9e700534c807bdeccd63dbfb21a9d9b7be70439d80ef008030b86c45e3bf18",
+      "rng": "6d8ef601dd0aa1f5d44438b159facc64598a55d5974b1d2b0248dfc4ccbdae99",
       "result": {
         "outcome": "wipe",
         "turns": 7,
         "usesSpent": []
       },
-      "changed": true,
-      "movedOnlyText": false
+      "changed": false
     },
     {
       "id": "test.opening-lumberjack",
@@ -1204,15 +1160,14 @@
     {
       "id": "test.prone-b",
       "events": "4a2d9a08031b3b87301ba2455a63bbc3fe01b25a5832abc1f5513862a58c4931",
-      "state": "541dcba3472ae5c4aa8b3c8a96b013e63b30e64aa4c62f1cbeec5a324ac68032",
+      "state": "d3472cbce55450c71dd2148c21509b839258a630d1230f11f39196ffbc25359d",
       "rng": "2261d4f64464db9947737e3d551b0af25ca08c707ff3a1bb1cab95426c8cc9c5",
       "result": {
         "outcome": "heroClear",
         "turns": 2,
         "usesSpent": []
       },
-      "changed": true,
-      "movedOnlyText": false
+      "changed": false
     },
     {
       "id": "test.prop-destroy",

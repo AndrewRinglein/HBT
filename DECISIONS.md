@@ -5254,3 +5254,65 @@ Ruled:
 - **Not answered, asked again the same day:** the foliage change ("I don't understand question one"); whether W moves the view or the map; whether the Wolf's ported numbers stand.
 
 Filed: `rule.prone-only-stand-up`, `viewer.unaffordable-actions-greyed`, `rule.player-moves-summons`, `content.dwarf-elf-fey-badges-act`, `kingdom.gift-roll-leaves-out-own-badges`, `content.sets-count-holy-texts-and-heavy-chain`, `content.resistance-to-weak-and-vigil-party-spirit`.
+
+## 2026-10-06 — the characters stand out: painted-on colour is out; a helm is never shown; a loose cloak for every hero and gear that shows on the body are being considered
+
+Andrew, in the root chat (the XCOM 2 study, the day after), in three messages:
+
+“I wonder about a hero dressed in black like a rogue. Can we give them something red to make them stand out? I also wonder if we can do something like a red scarf on every hero, regardless of their color, to make them stand out.”
+
+“I'm thinking about adding a cape or a cloak to every hero.   Does that give us a better surface for color that isn't interfered with by motions? I'm just trying to think about different solutions. I'm also just thinking about changing away from relics, idols, and Bloodrune to having boots, gauntlets, cloak, helm, and armor.  Because those things are more visual”
+
+“I wasn't thinking about just painting it on because that's going to look bad.     What I am considering doing is having cloak, gauntlet, boots, helm, armor, and the hands be all the equipable things, and I guess item slots would be additional for trinkets.  And additional weapons  and all those things except helms would have a visual representation, not helms, because I still want the personality of the hero to shine through. How difficult would it be to add an actual cloak to everybody, one that hangs loose?”
+
+The page he tries colour on is `.scratch-hero-colours/index.html` (2026-10-05: “it would be good to be able to test coloring on heroes”), a copy of the ground-tones page with the bodies added: each hero's paint, every body's brightness, and a mark every hero wears (scarf, scarf and shoulders, sash, cloak). It changes no game code.
+
+Measured on that page, the Orphanage, as the share of a hero's visible pixels that carry the mark: a scarf 8 to 11%; scarf and shoulders 17 to 23%; a cloak 60 to 73% with the hero's back to the camera, 22 to 54% side-on, 9 to 13% facing the camera (only the shoulders show). The cloak there is painted onto the body the hero has, so narrower than a real one, and three of the four facings were made by turning which side counts as the back.
+
+Found the same day:
+
+- **Every hero body sampled is on one skeleton**: eight heroes in the Orphanage and Cathedral battles (the Forest Elf, the Orphan Child, the School Teacher, The Rose, the Battle Chaplain, the Skullplate Veteran, the Court Champion, the Pyre Witch) each have 101 bones with the same names (`CC_Base_NeckTwist01`, `CC_Base_L_Clavicle`, `CC_Base_R_Clavicle`, `CC_Base_Spine02` among them). The Necromancer and the skeletons share it; the Zombie does not. The battle screen binds 24 base heroes and 4 civilians (`viewer/tools/character-models.mjs` `bindings()`).
+- **Only what is in the hands changes a body today** (`viewer/src/models.js` `equippedLook`); the model catalog is 299 weapons and 5 shields, and an outfit is one fitted suit bound to the hero, not to an armor item.
+- **Every cape in the project is fixed to the skeleton; none is simulated and none has passed a full-motion review.** The Oathblade's own cloak is hidden in battle (his note of 2026-09-19, “The cloak has problems on the back.”); the Lich was rejected over its cloak in death.
+- Relics, idols and Bloodrunes are 32, 23 and 14 of the 268 item rows, and none is in the reward pool yet (`kingdom/SWITCHES.md` 2026-10-04).
+
+Ruled:
+
+- **Painted-on colour is out** - “that's going to look bad”. The page's paint and marks are for judging colour and size only.
+- **A helm is never shown on the body** - “because I still want the personality of the hero to shine through”. The ruling of 2026-09-24 (`ART-NOTES.md`, “we're not going to put helmets on”) stands.
+
+Being considered, not ruled:
+
+- **The equippable things become cloak, gauntlets, boots, helm, armor and the hands; item slots stay, for trinkets and spare weapons; everything but the helm shows on the body.** Open against it: whether the three ways relics, idols and Bloodrunes work (a free swap, 1 Faith a battle, 3 Mana Crystals once) carry over; helm and boots were ruled trinkets on 2026-09-02 (`2-ACTIONS-SETTLED.md`); and his “a lot more fundamental game work before we worry about items and balance” of 2026-10-04.
+- **A real cloak on every hero, one that hangs loose.** The chat's answer to “how difficult”: one shared cloak hung from the shared skeleton and moved by the viewer as it draws, never a cloak modelled into each outfit (the way that has failed here); a trial on one hero first.
+
+Later the same day, of the cloak: “I wasn't specifically thinking just a red cloak.   But a colorful cloak  what do gold highlights do?” So the cloak being considered is colourful, hero by hero, not one red for all; the red scarf for everybody is not what he is asking for. The page took two more controls for it (each hero a different cloak colour; a trim on the cloak, gold by default, with its width). Seen there on the Cathedral, six heroes, the replay page's own overhead view: the trim round the collar and over the shoulders shows on every hero whichever way he faces, the hem's hardly at all; blue, teal and black cloaks read best on that floor, red less (the floor has orange and red-brown tiles) and bone least (cream tiles). The gold `#e0b95e` is lighter than every ground measured but the Cathedral's and is the ground's own hue, so it works against the cloak and the hair it sits on, not against the ground. Not ruled: whether gold on every hero's cloak is the mark the heroes share.
+
+Later again, of the page's painted marks: “These things you're calling cloaks don't read like cloaks. They're just painted onto the body.” The chat had gone on adding painted marks after he ruled paint out, and had called one a cloak. The page now has a real one to judge by (`Real cloak`, what it opens on): a cloth of its own for each hero - a sheet of 9 by 13 points, its top edge pinned across the back of the shoulders to the shared skeleton's bones, moved a step a frame (it falls, trails the hero, is pushed off balls standing for the hips, trunk, head, thighs, calves and upper arms, and off the ground), coloured a hero with a trim. It is the approach of the entry above tried on the page only; no game code is changed. Checked by the chat: made for the Orphanage's three heroes, and through five seconds of that battle playing with the heroes walking it stayed pinned, within its own length of the shoulders, with no error. Not checked: how it looks at full speed, in an attack, a fall or a death; any other battle; what it costs a frame. It has no collar, is fitted to no outfit, hangs flat when the hero stands still, and nothing keeps it out of a weapon, a shield or a shoulder plate.
+
+## 2026-10-05 — the computer avoids its own traps; W moves the view up; the Wolf's numbers stand; the player moves the summoned Wolf; the foliage is tried the smallest way
+
+Andrew, in the kingdom chat, answering seven questions (1 should the computer avoid traps - its own side's, the enemy's, or neither as built; 2 the Explosive Trap hits every unit within 1 hex, the placer included if it stands that close - is that right; 3 should a hit on a bandaged hero start the bleed-out count again - as built the count can drop but never below 1 and the stop stays; 4 foliage: A each clump drawn once, B each kind drawn together, C hard edges, D kept exactly at the cost of days; 5 should W move the view up, as built, or push the map up; 6 do the Wolf's ported numbers stand for now; 7 did I read you right that the player moves the summoned Wolf):
+
+“Explosive trap should trigger by someone moving onto it, but then yes.   Computers should avoid their own traps.   I thought that a hit on a bandaged hero cost them one bleedout.   5, I think the view up  6. The Wolf's numbers stand for now. You read right. The player should move the summon wolf.”
+
+Ruled:
+
+- **The Explosive Trap is sprung by a unit moving onto it, and then hits every unit within 1 hex, the placer too** - as built.
+- **The computer avoids its own side's traps.** Overturns the engine switch trapUnknownToTheComputer for a side's own traps; the enemy's traps stay unknown to it (he named only "their own"). Filed: `rule.computer-avoids-own-traps`.
+- **A hit on a bandaged hero costs it one of its bleed-out count** ("I thought that ...") - as built that far (engine SWITCHES stabiliseHitsStillMoveTheCount). Whether the count may reach 0 that way - the hero dying of hits though bandaged - or stops at 1 as built, is asked back the same day.
+- **W moves the view up** - as built (viewer SWITCHES moveKeys).
+- **The Wolf's ported numbers stand for now.**
+- **The player moves the summoned Wolf** - the reading of the entry above is confirmed; `rule.player-moves-summons` as filed.
+- **The foliage - not answered, twice; the chat's call:** he did not pick among A to D ("I don't understand question one", then no answer). By his standing word that the chat decides such details, records the switch and reports in a line, the smallest change is tried - each clump drawn once instead of twice - behind a switch that puts the old drawing back in one line, with before-and-after pictures for him to judge. Filed: `viewer.foliage-drawn-once`. If he dislikes the look it is switched off and the last speed item stays where it is.
+
+## 2026-10-05 — a bandaged hero's count has no floor: bandaging stops the count, a hit still takes one, and at 0 the hero dies
+
+Andrew, in the kingdom chat, asked whether hits can take a bandaged hero's bleed-out count all the way to 0, so it dies though bandaged (as built the count stops at 1):
+
+“I don't get why the count would start and stop at 1. No, it goes to 0 when they die. Bandaging is supposed to completely stop the bleed-out counter, and they're just stable.”
+
+With the answer just before it (the entry above: "I thought that a hit on a bandaged hero cost them one bleedout"), ruled:
+
+- **Bandaging completely stops the bleed-out count** - it no longer runs down by itself; the hero is stable.
+- **A hit on a bandaged hero still takes one from the count, and at 0 the hero dies.** There is no floor at 1: the engine switch stabiliseHitsStillMoveTheCount's "never below 1" is overturned. Filed: `fix.bandaged-hero-dies-at-zero`.

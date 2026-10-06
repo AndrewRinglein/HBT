@@ -71,20 +71,60 @@ describe('what openingHeroesOf returns did not move', () => {
       12: { heroes: '77458f86e4275914a36f332930afdfeb029e5eaf0ed020131e3ae535223dd246' },
       17: { heroes: 'ba7051d51117002da3c96f61748c6f5864bc6e4ac98cb25d735ea2881e3f222a', party: '87ed70c171657e3e1d866ebfa52adfd6ce78a4014909dfb01acf67ba3c8ceac0' },
     }
+    // Law 10, 2026-10-05 — kingdom.gift-roll-leaves-out-own-badges (DECISIONS.md 2026-10-05 'a prone unit only stands; …; no gift
+    // doubles a hero's own badge; …', asked whether a hero's own badges should be left out of its gift roll: "7, yes."; SWITCHES.md
+    // giftRollOwnAgain). Until now the loop below held the other 98 at what the fixture froze, and the three whole replicates read
+    //   for (const w of frozen.whole) expect(JSON.parse(JSON.stringify(openingHeroesOf(w.replicate, frozen.drafted))), …).toEqual(w.heroes)
+    // A roll that lands on a badge the hero's own row already has is now made again, so an offered hero that HELD such a badge
+    // (the Mountain Berserker's Huge, the Ancient Elf's Mystic, the Forest Fey's or the Crimson Sorceress's Frail) is offered
+    // another — and its score, and so sometimes who is taken, moves. Thirteen more of the hundred replicates hold such an
+    // offer; each is held at what it is now, and in each one of those four heroes is on offer. In six of them the party of
+    // six itself is another (a taken hero's badge, or who was taken); in seven only an untaken offer's score. The other 85 are
+    // byte for byte what the fixture froze. (All 200 of replicates 0-199: test/gift-roll-leaves-out-own-badges.test.ts — 25 moved.)
+    const OWN_BADGE: Record<number, { heroes: string; party?: string }> = {
+      9: { heroes: '6a9fe6b5b3a5ea4be47e4829ae8597bd9300aa25467f2d3682d66c7a4a389e75' },
+      11: { heroes: '45fd851578b836585cdc781a33ce1f5d70f8c9050c10bc83841065d3e2e14042', party: '8a09c6ee61a64eed0c32008b599a4316c58ea5088fc2be7f387247d78ee44373' },
+      23: { heroes: '5e0a431cb5a6779c462136d52d65401ebea96a064976c0e97c4bd28adbbf1761', party: '501c8bd569a021e5b2e423a8f088eb3fa9de174cf71a2fbf026c4b85ee332a6f' },
+      35: { heroes: '932762d6cbd43c1a0e04963db079cb5e1b2b8d8a850b7822a1e96a60098d0754' },
+      41: { heroes: '89dd8a31d6135e868321aded0a09ca70e17f32fadc308efd02b2233ff8b09ebe', party: '626873d031c83982c974ed69523508cf69394778d385182ece1f5ad46ae337f2' },
+      43: { heroes: 'e35583e2bb6e59d68ea7b9a1fd8cfb4d010399900b2fab08f192e2d9f755e13f' },
+      54: { heroes: '33e2223c28bb58751af7c78bdb5bd2d52dd509d46bceb490a066bb4d639c9cd7', party: '4580f9151e5a717045745d373b5664e9819915379e338a08da0f5085ba971820' },
+      58: { heroes: 'c2f23ba02bb1996bc41c2bc271a2538971b66eafd186ce88730d0ce88ae1db1d' },
+      69: { heroes: '0df33e50403f543b2f168bb79321cd824a7bb73e164a108379ca0e4c79da9ee4', party: 'ce4b6eed29b8c92801fb9d4553138fe2606e912147e6fcad5c3701780a4d3f14' },
+      77: { heroes: '3ba7980688fea5c20be67878ba18ec43ec8fc20c4b0c4d4726b42c292754bb5a' },
+      86: { heroes: 'd5c3a0b887074b2c6a821877c54a9b7a3a73c028910b6c262cd99f260ac3fe79', party: 'a2496e175e65a172368125049ed95c1397e99b8972bafc5d25f5142899a03bee' },
+      97: { heroes: '95e7170135f8702a07f444633672925fe353a2063998165c8d34d5286b829c93' },
+      99: { heroes: '22e9795e0c1dcd4a5c7571f08933d770e113d89dd886ece4d668a7d8d17c1fe4' },
+    }
+    const GIFT_OF_OWN = ['hero.base.warrior-barbarian', 'hero.base.ranger-ranger', 'hero.base.ranger-nature', 'hero.base.mage-sexy']
+    expect(Object.keys(MOVED).filter((r) => r in OWN_BADGE)).toEqual([])
     for (const row of frozen.replicates) {
-      const moved = MOVED[row.replicate]
+      const moved = MOVED[row.replicate], own = OWN_BADGE[row.replicate], now = moved ?? own
       const heroes = openingHeroesOf(row.replicate, frozen.drafted)
-      expect(hash(heroes), `replicate ${row.replicate}: the drafted heroes`).toBe(moved?.heroes ?? row.heroes)
-      expect(hash(openingPartyOf(frozen.position, row.replicate)), `replicate ${row.replicate}: the party fielded at position ${frozen.position}`).toBe(moved?.party ?? row.party)
-      if (moved) {
-        expect(moved.heroes, `replicate ${row.replicate}: it did move`).not.toBe(row.heroes)
-        expect(heroes.some((h) => h.offered.includes('hero.base.ranger-nature')), `replicate ${row.replicate}: the Forest Fey is offered`).toBe(true)
-      }
+      expect(hash(heroes), `replicate ${row.replicate}: the drafted heroes`).toBe(now?.heroes ?? row.heroes)
+      expect(hash(openingPartyOf(frozen.position, row.replicate)), `replicate ${row.replicate}: the party fielded at position ${frozen.position}`).toBe(now?.party ?? row.party)
+      if (now) expect(now.heroes, `replicate ${row.replicate}: it did move`).not.toBe(row.heroes)
+      if (moved) expect(heroes.some((h) => h.offered.includes('hero.base.ranger-nature')), `replicate ${row.replicate}: the Forest Fey is offered`).toBe(true)
+      if (own) expect(heroes.some((h) => h.offered.some((id) => GIFT_OF_OWN.includes(id))), `replicate ${row.replicate}: a hero whose own badge is one the roll gives is on offer`).toBe(true)
+      // and no hero of any replicate carries a rolled badge its own row has
+      for (const h of heroes) for (const b of h.badges) expect((UNITS[h.id]!.badges ?? []).includes(b), `replicate ${row.replicate}: ${h.id} rolled ${b}`).toBe(false)
     }
     // replicate 17, said out: she is taken, and her one Health loss is 1 - every other roll of the party is a whole step
     const fey = openingHeroesOf(17, frozen.drafted).find((h) => h.id === 'hero.base.ranger-nature')!
     expect(fey.rolls.filter((r) => r.stat === 'health')).toEqual([{ stat: 'health', amount: -1 }])
-    for (const w of frozen.whole) expect(JSON.parse(JSON.stringify(openingHeroesOf(w.replicate, frozen.drafted))), `replicate ${w.replicate}, whole`).toEqual(w.heroes)
+    // the three whole replicates: 0 and 1 are what the fixture froze. Replicate 11, said out: its first five heroes are what the
+    // fixture froze; at the sixth draft the Mountain Berserker was offered with Frail and Huge - Huge is on its own row - and
+    // was taken on Huge's score (4.9); offered now with another badge in Huge's place it scores 0.4, and the Iron Dwarf beside it
+    // (1.5, as before) is taken
+    for (const w of frozen.whole) {
+      const whole = JSON.parse(JSON.stringify(openingHeroesOf(w.replicate, frozen.drafted))) as { id: string; badges: string[]; offered: string[]; scores: number[] }[], was = w.heroes as typeof whole
+      if (w.replicate !== 11) { expect(whole, `replicate ${w.replicate}, whole`).toEqual(was); continue }
+      expect(whole.slice(0, 5), 'replicate 11: its first five heroes').toEqual(was.slice(0, 5))
+      expect([was[5]!.id, was[5]!.badges, was[5]!.scores]).toEqual(['hero.base.warrior-barbarian', ['badge.frail', 'badge.huge'], [1.5, 4.9, 1]])
+      expect(whole[5]!.offered).toEqual(was[5]!.offered)
+      expect([whole[5]!.id, whole[5]!.badges]).toEqual(['hero.base.warrior-iron', ['badge.spiritual', 'badge.many-pockets']])
+      expect(whole[5]!.scores[0]).toBe(1.5); expect(whole[5]!.scores[2]).toBe(1); expect(whole[5]!.scores[1]).toBeCloseTo(0.4, 9)
+    }
     expect(frozen.position).toBe(OPENING_POSITIONS[OPENING_POSITIONS.length - 1]!.position)
   })
 })

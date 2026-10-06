@@ -12152,6 +12152,25 @@ export const UNIT_PACK = {
         }
       ]
     },
+    "power.bandages.use": {
+      "id": "power.bandages.use",
+      "name": "Bandages",
+      "free": true,
+      "staminaCost": 0,
+      "cooldown": 0,
+      "uses": 1,
+      "range": 1,
+      "target": {
+        "select": "unit",
+        "side": "ally",
+        "life": "downed"
+      },
+      "effects": [
+        {
+          "kind": "bleedout.stop"
+        }
+      ]
+    },
     "power.poison-flask.use": {
       "id": "power.poison-flask.use",
       "name": "Poison Flask",
@@ -12296,6 +12315,129 @@ export const UNIT_PACK = {
           "kind": "status.apply",
           "statusId": "status.poison-coating",
           "value": 1
+        }
+      ]
+    },
+    "power.bear-trap.use": {
+      "id": "power.bear-trap.use",
+      "name": "Bear Traps",
+      "free": false,
+      "staminaCost": 1,
+      "cooldown": 0,
+      "uses": 1,
+      "range": 3,
+      "target": {
+        "select": "hex",
+        "side": "any"
+      },
+      "hexes": 2,
+      "effects": [
+        {
+          "kind": "trap.place",
+          "damage": {
+            "amount": 4,
+            "damageType": "physical"
+          },
+          "statuses": [
+            {
+              "statusId": "status.root",
+              "value": 1
+            }
+          ]
+        }
+      ]
+    },
+    "power.magic-trap.use": {
+      "id": "power.magic-trap.use",
+      "name": "Magic Trap",
+      "free": false,
+      "staminaCost": 1,
+      "cooldown": 0,
+      "uses": 1,
+      "range": 3,
+      "target": {
+        "select": "hex",
+        "side": "any"
+      },
+      "hexes": 2,
+      "effects": [
+        {
+          "kind": "trap.place",
+          "damage": {
+            "amount": {
+              "scale": "partyMagic",
+              "base": 0,
+              "mult": 2
+            },
+            "damageType": "magic"
+          },
+          "statuses": [
+            {
+              "statusId": "status.slow",
+              "value": 3
+            }
+          ]
+        }
+      ]
+    },
+    "power.fire-trap.use": {
+      "id": "power.fire-trap.use",
+      "name": "Fire Trap",
+      "free": false,
+      "staminaCost": 1,
+      "cooldown": 0,
+      "uses": 1,
+      "range": 3,
+      "target": {
+        "select": "hex",
+        "side": "any"
+      },
+      "hexes": 2,
+      "effects": [
+        {
+          "kind": "trap.place",
+          "damage": {
+            "amount": {
+              "scale": "partyMagic",
+              "base": 0,
+              "mult": 1
+            },
+            "damageType": "magic"
+          },
+          "statuses": [
+            {
+              "statusId": "status.burn",
+              "value": 1
+            }
+          ],
+          "paints": "layer.burning"
+        }
+      ]
+    },
+    "power.explosive-trap.use": {
+      "id": "power.explosive-trap.use",
+      "name": "Explosive Trap",
+      "free": false,
+      "staminaCost": 1,
+      "cooldown": 0,
+      "uses": 1,
+      "range": 3,
+      "target": {
+        "select": "hex",
+        "side": "any"
+      },
+      "effects": [
+        {
+          "kind": "trap.place",
+          "damage": {
+            "amount": {
+              "scale": "partyMagic",
+              "base": 2,
+              "mult": 1
+            },
+            "damageType": "magic"
+          },
+          "radius": 1
         }
       ]
     },
@@ -19177,12 +19319,10 @@ export const UNIT_PACK = {
       "slots": 1,
       "statModifiers": {},
       "grants": [],
-      "abilities": [],
-      "triggers": [],
-      "gaps": [
-        "active: Free, 0 Stamina: stabilize a downed ally — their b — an ability with charges/targets — capability.consumables",
-        "uses: 1 — no active compiled to carry the charge — charges spent in battle — capability.consumables"
-      ]
+      "abilities": [
+        "power.bandages.use"
+      ],
+      "triggers": []
     },
     "item.backpack": {
       "id": "item.backpack",
@@ -19332,12 +19472,10 @@ export const UNIT_PACK = {
       "slots": 1,
       "statModifiers": {},
       "grants": [],
-      "abilities": [],
-      "triggers": [],
-      "gaps": [
-        "active: Once per Battle: place two traps on empty hexes wi — an ability with charges/targets — capability.consumables",
-        "uses: 1 — no active compiled to carry the charge — charges spent in battle — capability.consumables"
-      ]
+      "abilities": [
+        "power.bear-trap.use"
+      ],
+      "triggers": []
     },
     "item.magic-trap": {
       "id": "item.magic-trap",
@@ -19348,12 +19486,10 @@ export const UNIT_PACK = {
       "slots": 1,
       "statModifiers": {},
       "grants": [],
-      "abilities": [],
-      "triggers": [],
-      "gaps": [
-        "active: Once per Battle: place two traps on empty hexes wi — an ability with charges/targets — capability.consumables",
-        "uses: 1 — no active compiled to carry the charge — charges spent in battle — capability.consumables"
-      ]
+      "abilities": [
+        "power.magic-trap.use"
+      ],
+      "triggers": []
     },
     "item.fire-trap": {
       "id": "item.fire-trap",
@@ -19364,12 +19500,10 @@ export const UNIT_PACK = {
       "slots": 1,
       "statModifiers": {},
       "grants": [],
-      "abilities": [],
-      "triggers": [],
-      "gaps": [
-        "active: Once per Battle: place two traps on empty hexes wi — an ability with charges/targets — capability.consumables",
-        "uses: 1 — no active compiled to carry the charge — charges spent in battle — capability.consumables"
-      ]
+      "abilities": [
+        "power.fire-trap.use"
+      ],
+      "triggers": []
     },
     "item.explosive-trap": {
       "id": "item.explosive-trap",
@@ -19380,12 +19514,10 @@ export const UNIT_PACK = {
       "slots": 1,
       "statModifiers": {},
       "grants": [],
-      "abilities": [],
-      "triggers": [],
-      "gaps": [
-        "active: Once per Battle: place one trap on an empty hex wi — an ability with charges/targets — capability.consumables",
-        "uses: 1 — no active compiled to carry the charge — charges spent in battle — capability.consumables"
-      ]
+      "abilities": [
+        "power.explosive-trap.use"
+      ],
+      "triggers": []
     },
     "item.free-movement-potion": {
       "id": "item.free-movement-potion",
@@ -23474,6 +23606,43 @@ export const UNIT_PACK = {
             "source": "unit.test-swell-mage"
           }
         ]
+      },
+      {
+        "typeId": "test-dresser",
+        "name": "Dresser (TEST)",
+        "side": "hero",
+        "maxHp": 9,
+        "armor": 1,
+        "resist": 0,
+        "accuracy": 72,
+        "dodge": 0,
+        "toughness": 2,
+        "strength": 4,
+        "precision": 3,
+        "magic": 0,
+        "spirit": 1,
+        "role": "melee",
+        "movement": 5,
+        "reach": 1,
+        "maxStamina": 5,
+        "staminaRegen": 1,
+        "ai": "melee-aggressive",
+        "attacks": [
+          "attack.test-warrior.axe",
+          "attack.punch"
+        ],
+        "abilities": [
+          "power.test-osric.field-dressing"
+        ],
+        "tags": [
+          "hero",
+          "class.paladin"
+        ],
+        "moves": [
+          "power.move",
+          "power.sidestep"
+        ],
+        "triggers": []
       }
     ],
     "attacks": {
@@ -23877,6 +24046,24 @@ export const UNIT_PACK = {
         ],
         "staminaCost": 1,
         "cooldown": 6
+      },
+      "power.test-osric.field-dressing": {
+        "id": "power.test-osric.field-dressing",
+        "name": "Field Dressing (TEST)",
+        "range": 2,
+        "target": {
+          "select": "unit",
+          "side": "ally",
+          "life": "downed"
+        },
+        "effects": [
+          {
+            "kind": "bleedout.stop"
+          }
+        ],
+        "staminaCost": 1,
+        "cooldown": 2,
+        "free": true
       }
     },
     "statuses": {

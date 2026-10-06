@@ -141,6 +141,8 @@ export function packAbilities(): Readonly<Record<string, AbilityDef>> {
     validateHexPower(a, `unit pack: power '${k}'`)
     noCorpseDestroy(a.effects, `unit pack: power '${k}'`)
     plantedPower(a, `unit pack: power '${k}'`)
+    trapPower(a, `unit pack: power '${k}'`)
+    stabilisePower(a, `unit pack: power '${k}'`)
     for (const e of a.effects ?? []) if (e.kind === 'side.stat') sideStatChange(e, `unit pack: power '${k}'`)   // capability.raise-lower-magic
   }
   return raw
@@ -152,6 +154,29 @@ export function packAbilities(): Readonly<Record<string, AbilityDef>> {
  */
 export function noCorpseDestroy(effects: readonly import('../core/types.js').Effect[] | undefined, where: string): void {
   for (const e of effects ?? []) if (e.kind === 'corpse.destroy') throw new Error(`${where} carries 'corpse.destroy', which belongs to an attack's onKill trigger`)
+}
+
+/**
+ * capability.stabilise-downed-ally (2026-10-05): stopping a bleed-out count is done to one downed unit, so it belongs to a
+ * power aimed at one (`select: 'unit'`, `life: 'downed'`) and to nothing else — a row that says otherwise is refused at load.
+ */
+export function stabilisePower(a: { readonly target?: { readonly select: string; readonly life?: string }; readonly effects?: readonly import('../core/types.js').Effect[] }, where: string): void {
+  if ((a.effects ?? []).some((e) => e.kind === 'bleedout.stop') && !(a.target?.select === 'unit' && a.target.life === 'downed')) throw new Error(`${where} stops a bleed-out count but is not aimed at one downed unit (target select 'unit', life 'downed')`)
+}
+
+/**
+ * capability.placed-traps (2026-10-05): a trap is placed on the hex its power was aimed at, so it belongs to a power whose
+ * target is `select: 'hex'`; and a use aimed at several hexes (`hexes: N`) is a use that places a trap on each — nothing
+ * else the engine has is done once a hex. The trap's row is held to its shape here, at load.
+ */
+export function trapPower(a: { readonly target?: { readonly select: string }; readonly hexes?: number; readonly effects?: readonly import('../core/types.js').Effect[] }, where: string): void {
+  const traps = (a.effects ?? []).filter((e) => e.kind === 'trap.place')
+  if (traps.length && a.target?.select !== 'hex') throw new Error(`${where} places a trap but is not aimed at a hex (target select 'hex')`)
+  for (const e of traps) validateEffect(e, where)
+  if (a.hexes !== undefined) {
+    if (!Number.isSafeInteger(a.hexes) || a.hexes < 2) throw new Error(`${where}: hexes is a whole number, 2 or more (absent: one)`)
+    if (a.target?.select !== 'hex' || !traps.length || traps.length !== (a.effects ?? []).length) throw new Error(`${where} is aimed at several hexes and does something other than place a trap on each`)
+  }
 }
 
 /**
@@ -177,6 +202,8 @@ export function validateHexPower(a: { readonly target?: { readonly select: strin
     if (e.kind === 'summon') {
       if (!hex) throw new Error(`${where} summons '${e.unit}' but is not aimed at a hex (target select 'hex')`)
       if (typeof e.unit !== 'string' || !e.unit) throw new Error(`${where} summons no named unit row`)
+    } else if (e.kind === 'trap.place') {
+      // capability.placed-traps: a trap goes on the hex aimed at (trapPower, below, holds its row)
     } else if (hex && !('who' in e && e.who === 'self')) throw new Error(`${where} is aimed at an empty hex and carries '${e.kind}', which needs a unit aimed at`)
   }
   if (hex && !(a.effects ?? []).length) throw new Error(`${where} is aimed at a hex and does nothing there`)
@@ -534,6 +561,8 @@ export function packClassPowers(): Readonly<Record<string, AbilityDef>> {
     for (const e of a.effects) if (e.kind === 'side.stat') sideStatChange(e, `class powers: '${k}'`)   // capability.raise-lower-magic
     noCorpseDestroy(a.effects, `class powers: '${k}'`)
     plantedPower(a, `class powers: '${k}'`)
+    trapPower(a, `class powers: '${k}'`)
+    stabilisePower(a, `class powers: '${k}'`)
     if (!a.target) throw new Error(`class powers: '${k}' has no targeting`)
     if (a.effects.length === 0 && !(a.gaps && a.gaps.length)) throw new Error(`class powers: '${k}' compiled nothing and names no gap — the converter must say why`)
   }

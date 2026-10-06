@@ -66,8 +66,11 @@ function planAction(ctx: Ctx, request: unknown): Plan | Rejection {
   if (u.lifeState !== 'standing' || isBlocked(ctx, u)) return reject('actor-cannot-act')
   const a = Object.hasOwn(ctx.actions, actionId) ? ctx.actions[actionId] : undefined
   if (a && refusedProne(ctx, u, a)) return reject('actor-prone')   // rule.prone-only-stand-up: knocked down — only its stand
-  if (!a || !actionReady(ctx, u, a)) return reject('action-not-ready')
-  const slot = resolveActionSlot(ctx, u, a, request.slot)
+  // capability.placed-traps (2026-10-05): a further hex of a use aimed at several is the SAME use — its Stamina, action and use
+  // are spent already (ability.ts canUsePowerAt asks only about the hex), so the limits and the slot are not asked again
+  const more = !!a && a.target?.select === 'hex' && u.aiming?.actionId === actionId && u.aiming.left > 0
+  if (!a || (!more && !actionReady(ctx, u, a))) return reject('action-not-ready')
+  const slot = more ? (request.slot === undefined || request.slot === 'primary' ? 'primary' : null) : resolveActionSlot(ctx, u, a, request.slot)
   if (slot === null) return reject('action-slot-closed')
   if (isBurst(a)) {
     if (!centred || !integer(request.centre)) return reject('malformed-centre')
@@ -239,7 +242,10 @@ export function executeBattleCommand(ctx: Ctx, policy: ControlPolicy, command: u
     // rule.primary-ends-activation (ruled 2026-09-29, DECISIONS.md "the playable battle
     // screen"): a non-free primary ends the activation once it resolves — no end-cycle
     // command; a free one does not; the Surge check runs on advance (surge-check).
-    if (ctx.state.outcome || ctx.state.units[plan.actor]!.lifeState !== 'standing' || ctx.state.units[plan.actor]!.primaryUsed) completeActionCycle(ctx)
+    // capability.placed-traps (2026-10-05): … unless that primary is a use aimed at several hexes with a hex still to choose
+    // (the second Bear Trap) — the cycle stays open for it and closes when the last is placed, or by end-cycle.
+    const actor = ctx.state.units[plan.actor]!
+    if (ctx.state.outcome || actor.lifeState !== 'standing' || (actor.primaryUsed && !(actor.aiming && actor.aiming.left > 0))) completeActionCycle(ctx)
   }
   return { ok: true }
 }

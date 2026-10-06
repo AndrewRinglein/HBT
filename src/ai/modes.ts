@@ -558,6 +558,22 @@ function effectsPower(decision: Decision, u: Unit, when: 'free' | 'primary' | 'o
     // capability.summons (2026-10-05; SWITCHES.md summonAiUse): a power that places a unit on a hex is used when it is ready and
     // an enemy still stands - on the open hex nearest the nearest enemy, the lower hex on a tie (Law 6).
     if (t.select === 'hex') {
+      // capability.placed-traps (2026-10-05; SWITCHES.md trapComputerPlaces): a trap is placed when the power is ready and an
+      // enemy still stands - on the open hex nearest the nearest enemy, the lower hex on a tie (Law 6) - and every hex of the
+      // one use is placed, one after another, each by the same rule on the board as it then stands.
+      if (kinds.has('trap.place')) {
+        const foe = nearestEnemy(ctx, u)
+        if (!foe) continue
+        let placed = 0
+        for (let n = a.hexes ?? 1; n > 0; n--) {
+          const hex = powerHexesOf(ctx, u.id, id).filter((h) => onList(decision, { actor: u.id, hex: h, actionId: id }))
+            .sort((x, y) => ctx.geo.distance(x, foe.hex) - ctx.geo.distance(y, foe.hex) || x - y)[0]
+          if (hex === undefined) break
+          act(decision, { actor: u.id, hex, actionId: id }, { choice: `rule.effects-${when}` }); placed++
+        }
+        if (placed) return true
+        continue
+      }
       if (!kinds.has('summon') || decision.freeUsed.has(id)) continue
       const foe = nearestEnemy(ctx, u)
       if (!foe) continue
@@ -586,6 +602,13 @@ function effectsPower(decision: Decision, u: Unit, when: 'free' | 'primary' | 'o
         if (!lasting && !livingEnemies(ctx, u).some((e) => ctx.geo.distance(u.hex, e.hex) <= u.movement + 1)) continue
       }
       act(decision, { actor: u.id, target: u.id, actionId: id }, { choice: `rule.effects-${when}` }); return true
+    }
+    // capability.stabilise-downed-ally (2026-10-05; SWITCHES.md stabiliseComputerUses): a power aimed at a downed ally is used
+    // when one is in its reach - the one whose count is lowest, the lower id on a tie (Law 6)
+    if (t.select === 'unit' && t.side === 'ally' && t.life === 'downed') {
+      const downed = ctx.state.units.filter((o) => o.side === u.side && o.lifeState === 'downed' && !o.bleedStopped && legal(o)).sort((x, y) => x.bleedOut - y.bleedOut || x.id - y.id)[0]
+      if (!downed) continue
+      act(decision, { actor: u.id, target: downed.id, actionId: id }, { choice: `rule.effects-${when}` }); return true
     }
     if (t.select === 'unit' && t.side === 'ally') {
       const allies = ctx.state.units.filter((o) => o.side === u.side && o.lifeState === 'standing' && legal(o))
