@@ -35,7 +35,7 @@ export const EVENT_TYPES = [
   'status.applied', 'status.cancelled', 'status.expired', 'status.reduced', 'surge.checked',
   'surge.hit', 'thorns.reflected', 'trigger.fired', 'trigger.rolled', 'turn.begin', 'turn.end',
   'unit.badged', 'unit.enter', 'unit.equipped', 'unit.grown', 'unit.modified', 'unit.obliterated',
-  'side.stat.changed', 'side.stat.restored', 'unit.dismissed', 'unit.proned', 'unit.raised', 'unit.reverted', 'unit.shunted', 'unit.stood', 'unit.summoned', 'unit.transformed', 'zoc.ignored',
+  'side.stat.changed', 'side.stat.restored', 'object.planted', 'status.warded', 'surge.gained', 'unit.dismissed', 'unit.proned', 'unit.raised', 'unit.reverted', 'unit.shunted', 'unit.stood', 'unit.summoned', 'unit.transformed', 'zoc.ignored',
 ] as const
 export type EventType = (typeof EVENT_TYPES)[number] | `life.${LifeState}`
 
@@ -831,6 +831,34 @@ export function removeCorpse(ctx: Ctx, corpseId: number, causeId: string, how: '
 export function corpsesNear(ctx: Ctx, hex: HexId, radius: number): { id: number; hex: number; typeId: string; side: 'hero' | 'enemy'; uid: number }[] {
   return (ctx.state.corpses ?? []).filter((c) => ctx.geo.distance(c.hex, hex) <= radius)
     .sort((a, b) => ctx.geo.distance(a.hex, hex) - ctx.geo.distance(b.hex, hex) || a.id - b.id)
+}
+
+// ── PLANTED OBJECTS — capability.planted-banners (2026-10-05) ───────────────
+// A power plants an object on its user's hex. Plain data on the state, ids by count; it stays for the rest of the Battle.
+export function plantObject(ctx: Ctx, actorId: number, def: import('./types.js').PlantedDef, causeId: string): void {
+  const u = unit(ctx, actorId)
+  const list = ctx.state.planted ?? (ctx.state.planted = [])
+  const id = list.length ? Math.max(...list.map((p) => p.id)) + 1 : 1
+  const mods = def.mods && Object.keys(def.mods).length ? { ...def.mods } : undefined
+  const wards = def.wards && Object.keys(def.wards).length ? { ...def.wards } : undefined
+  const lends = def.lends?.length ? def.lends.map((t) => ({ ...t, effect: { ...t.effect } })) : undefined
+  list.push({ id, hex: u.hex, side: u.side, by: actorId, source: causeId, radius: def.radius, ...(mods ? { mods } : {}), ...(wards ? { wards } : {}), ...(lends ? { lends } : {}) })
+  emit(ctx, 'object.planted', causeId, { actor: actorId, object: id, hex: u.hex, side: u.side, radius: def.radius, ...(mods ? { mods } : {}), ...(wards ? { wards } : {}), ...(lends ? { lends: lends.map((t) => t.id) } : {}) })
+}
+/** The planted objects a unit stands within reach of — its own side's, lowest id first (Law 6). */
+export function plantedOver(ctx: Ctx, u: Unit): import('./types.js').Planted[] {
+  return (ctx.state.planted ?? []).filter((p) => p.side === u.side && ctx.geo.distance(p.hex, u.hex) <= p.radius).sort((a, b) => a.id - b.id)
+}
+/**
+ * capability.planted-banners: Surge Chance gained — "added to the pool once, never added to the Surge stat". The amount the
+ * Surge check rolls against (Unit.surgeChance) rises; the unit's Surge, which that check adds every Activation, does not.
+ */
+export function gainSurgeChance(ctx: Ctx, id: number, amount: number, causeId: string): void {
+  if (amount <= 0) return
+  const u = unit(ctx, id)
+  const before = u.surgeChance
+  u.surgeChance = before + amount
+  emit(ctx, 'surge.gained', causeId, { target: id, amount, before, after: u.surgeChance })
 }
 
 // ── GROUND LAYERS — capability.ground-layers (2026-09-03) ────────────────────

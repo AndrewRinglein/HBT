@@ -9,7 +9,7 @@ import { decodeProps, decodeFloor } from './props.js'
 import { decodeEntries } from '../content/maps.js'
 import { draw, makeRng, STREAMS, type Stream } from './rng.js'
 import { isStatName } from './stats.js'
-import { validateTrigger, type Trigger } from './trigger.js'
+import { validateTrigger, type Trigger, validatePlanted } from './trigger.js'
 import { EFFECT_KINDS, STAT_MOD_UNTIL } from './types.js'
 import { DEFAULT_CONFIG, MAX_SURGE_CYCLES, TERRAIN, type BattleCursor, type Ctx } from './types.js'
 
@@ -277,6 +277,16 @@ export function restoreBattle(json: string, runtime: BattleRuntime): Ctx {
   if (st.sideMods !== undefined) {
     requireThat(Array.isArray(st.sideMods) && st.sideMods.length > 0, 'side mods')
     for (const m of st.sideMods) requireThat(m !== null && typeof m === 'object' && phases.includes(m.side) && ['magic', 'spirit', 'power'].includes(m.stat) && (m.stat !== 'power' || m.side === 'enemy') && Number.isSafeInteger(m.value) && m.value !== 0 && typeof m.source === 'string' && m.source.length > 0 && (m.expiresAtTurn === undefined || integer(m.expiresAtTurn, 0)) && Object.keys(m).every((k) => ['side', 'stat', 'value', 'source', 'expiresAtTurn'].includes(k)), 'side mod')
+  }
+  // capability.planted-banners: the objects planted on the board
+  if (st.planted !== undefined) {
+    requireThat(Array.isArray(st.planted) && st.planted.length > 0, 'planted objects')
+    for (const p of st.planted) {
+      record(p)
+      requireThat(integer(p.id, 1) && integer(p.hex, 0, cells - 1) && phases.includes(p.side) && unitId(p.by) && typeof p.source === 'string' && p.source.length > 0, 'planted object')
+      requireThat(Object.keys(p.wards ?? {}).every((k) => Object.hasOwn(runtime.statuses, k)), 'planted object ward')
+      try { validatePlanted(p as never, 'planted object') } catch { requireThat(false, 'planted object row') }
+    }
   }
   if (s.cursor !== undefined) {
     const c = s.cursor; record(c)

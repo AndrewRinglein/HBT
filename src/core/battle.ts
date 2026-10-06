@@ -273,7 +273,10 @@ export function advanceBattle(ctx: Ctx, policy?: ControlPolicy): ControlledBattl
       case 'surge-check': {
         const id = c.actor!
         const u = ctx.state.units[id]!
-        if (u.lifeState !== 'standing' || isBlocked(ctx, u) || rulesSideOf(ctx, u) !== 'hero' || u.surge <= 0) {
+        // capability.planted-banners (2026-10-05; SWITCHES.md surgePoolRollsAtSurgeZero): a unit with no Surge of its own still
+        // rolls while it holds Surge Chance it was GIVEN ("Surge Chance += Surge, roll against it") — before this nothing
+        // could give any, so a unit with Surge 0 always held 0 and no battle that was fought moves.
+        if (u.lifeState !== 'standing' || isBlocked(ctx, u) || rulesSideOf(ctx, u) !== 'hero' || (u.surge <= 0 && u.surgeChance <= 0)) {
           c.at = 'activation-end'
           break
         }
@@ -337,7 +340,8 @@ export function completeActionCycle(ctx: Ctx): void {
   if (!c || c.at !== 'acting' || c.actor === null) throw new Error('completeActionCycle requires an acting cursor')
   const u = ctx.state.units[c.actor]!
   if (ctx.state.outcome) { c.at = 'complete'; return }
-  c.at = rulesSideOf(ctx, u) !== 'hero' || u.surge <= 0 ? 'activation-end' : 'surge-check'
+  // capability.planted-banners (SWITCHES.md surgePoolRollsAtSurgeZero): … or holds Surge Chance it was given — the check's own gate, below
+  c.at = rulesSideOf(ctx, u) !== 'hero' || (u.surge <= 0 && u.surgeChance <= 0) ? 'activation-end' : 'surge-check'
 }
 
 /** The automatic simulator is a driver of the same resumable lifecycle. */

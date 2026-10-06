@@ -140,6 +140,7 @@ export function packAbilities(): Readonly<Record<string, AbilityDef>> {
     for (const e of a.effects ?? []) if (!EFFECT_KINDS.includes(e.kind)) throw new Error(`unit pack: power '${k}' has an effect of kind '${String((e as { kind: string }).kind)}'`)
     validateHexPower(a, `unit pack: power '${k}'`)
     noCorpseDestroy(a.effects, `unit pack: power '${k}'`)
+    plantedPower(a, `unit pack: power '${k}'`)
     for (const e of a.effects ?? []) if (e.kind === 'side.stat') sideStatChange(e, `unit pack: power '${k}'`)   // capability.raise-lower-magic
   }
   return raw
@@ -151,6 +152,18 @@ export function packAbilities(): Readonly<Record<string, AbilityDef>> {
  */
 export function noCorpseDestroy(effects: readonly import('../core/types.js').Effect[] | undefined, where: string): void {
   for (const e of effects ?? []) if (e.kind === 'corpse.destroy') throw new Error(`${where} carries 'corpse.destroy', which belongs to an attack's onKill trigger`)
+}
+
+/**
+ * capability.planted-banners (2026-10-05): an object is planted on its user's own hex, so the power that plants is aimed at
+ * its user and at nothing else; the object's row and a Surge Chance gain are held to their shapes here, at load.
+ */
+export function plantedPower(a: { readonly target?: { readonly select: string }; readonly effects?: readonly import('../core/types.js').Effect[] }, where: string): void {
+  for (const e of a.effects ?? []) {
+    if (e.kind !== 'plant' && e.kind !== 'surge.gain') continue
+    if (e.kind === 'plant' && (a.target?.select ?? 'self') !== 'self') throw new Error(`${where} plants an object but is not aimed at its own user (target select 'self')`)
+    validateEffect(e, where)
+  }
 }
 
 /**
@@ -520,6 +533,7 @@ export function packClassPowers(): Readonly<Record<string, AbilityDef>> {
     validateHexPower(a, `class powers: '${k}'`)
     for (const e of a.effects) if (e.kind === 'side.stat') sideStatChange(e, `class powers: '${k}'`)   // capability.raise-lower-magic
     noCorpseDestroy(a.effects, `class powers: '${k}'`)
+    plantedPower(a, `class powers: '${k}'`)
     if (!a.target) throw new Error(`class powers: '${k}' has no targeting`)
     if (a.effects.length === 0 && !(a.gaps && a.gaps.length)) throw new Error(`class powers: '${k}' compiled nothing and names no gap — the converter must say why`)
   }

@@ -49,6 +49,8 @@ export const ACTED: ReadonlySet<string> = new Set(['damage.applied','heal.applie
   'deathbed.stood', 'deathbed.fell', 'deathbed.none',   // deathbed.none: Wounded at 0 dies with no roll (fix.deathbed-no-stands)
   // capability.surge (2026-09-03): a surge is another move and action
   'surge.hit',
+  // capability.planted-banners (2026-10-05): an object planted on the board, and Surge Chance given to a unit
+  'object.planted', 'surge.gained',
   // capability.corpses (2026-09-03): a body on the board, and what became of it
   'corpse.created', 'corpse.removed', 'unit.raised', 'corpse.eaten',
   // capability.ground-layers (2026-09-03): a stroke on the board

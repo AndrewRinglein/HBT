@@ -246,6 +246,22 @@ export function applyStatus(ctx: Ctx, unitId: number, id: string, value: number,
   const def = ctx.statuses[id]
   if (!def) throw new Error(`unknown status '${id}' — statuses are an explicit registry, check content/statuses.ts`)
   const u = unit(ctx, unitId)
+  // capability.planted-banners (2026-10-05): "Immunity to Weak 2 while inside it" — while the unit stands in the reach of a
+  // planted object of its own side that wards this status, that many points of EACH application do not land (the largest ward
+  // over it, never their sum; the lowest object id on a tie — Law 6). What is left lands as it always did.
+  if (value > 0) {
+    let ward = 0, source = ''
+    for (const p of ctx.state.planted ?? []) {
+      const w = p.side === u.side && ctx.geo.distance(p.hex, u.hex) <= p.radius ? p.wards?.[id] ?? 0 : 0
+      if (w > ward) { ward = w; source = p.source }
+    }
+    if (ward > 0) {
+      const stopped = Math.min(ward, value)
+      emit(ctx, 'status.warded', source, { target: unitId, statusId: id, amount: stopped, of: value, from: causeId })
+      value -= stopped
+      if (value <= 0) return
+    }
+  }
   // rule.burn-frost-cancel (capability.frost, 2026-09-03): one for one on application
   if (def.cancels) {
     const other = u.statuses.find((s) => s.id === def.cancels)

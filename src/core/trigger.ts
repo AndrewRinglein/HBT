@@ -30,12 +30,12 @@ import type { Targeting } from './target.js'
 import { resolveTargets, validateTargeting } from './target.js'
 import { roll100 } from './rng.js'
 import { carriesTag } from './action.js'
-import { addStatMod, applyDamage, applyHealing, breakStatuses, changeSideStat, powerOf, sideModOf, corpsesNear, drainStamina, emit, gainMaxHp, gainPower, gainStamina, grantBadge, loseMaxHp, loseMaxStamina, markCorpseDestroyed, reduceStatus, removeCorpse, standUp, unit } from './mutate.js'
+import { addStatMod, applyDamage, applyHealing, breakStatuses, changeSideStat, powerOf, sideModOf, corpsesNear, drainStamina, emit, gainMaxHp, gainPower, gainStamina, grantBadge, loseMaxHp, loseMaxStamina, markCorpseDestroyed, plantObject, plantedOver, gainSurgeChance, reduceStatus, removeCorpse, standUp, unit } from './mutate.js'
 import { paintRadius } from './vision.js'
 import { layerOfId } from '../content/maps.js'
 import { applyStatus, dealDirectDamage, incomingAbsorb, outgoingPenalty, removeStatus, spendAbsorb, lentTriggers } from './status.js'
 import { resolveDamage } from './pipeline.js'
-import { effective, effectiveOwn } from './stats.js'
+import { effective, effectiveOwn, isStatName } from './stats.js'
 import type { StatName } from './stats.js'
 import { executeKnockback } from './movement.js'
 import { rulesSideOf } from './side.js'
@@ -191,6 +191,28 @@ export function validateEffect(e: Effect, where: string): void {
   // fix.raise-two (2026-09-28): how many a raise takes is a whole number, one or more — never zero, never a fraction
   if (e.kind === 'corpse.raise' && e.count !== undefined && (!Number.isSafeInteger(e.count) || e.count < 1)) throw Error(`${where}: a raise's count is an integer, 1 or more`)
   if (e.kind === 'burstScale' && (!Number.isSafeInteger(e.percent) || e.percent < 0 || e.percent > 100)) throw Error(`${where}: burst scaling requires onBurst/self and percent 0..100`)
+  if (e.kind === 'surge.gain' && (!Number.isSafeInteger(e.value) || e.value < 1)) throw Error(`${where}: Surge Chance gained is an integer, 1 or more`)
+  if (e.kind === 'plant') validatePlanted(e, where)
+}
+
+/**
+ * capability.planted-banners (2026-10-05): a planted object's row — a whole radius, stats the engine has, wards of 1 or more,
+ * and lent triggers that are each a valid trigger aimed at the unit itself (it is lent to the unit that stands inside) and
+ * plant nothing themselves. Loud at load, and again when a saved battle is restored.
+ */
+export function validatePlanted(p: import('./types.js').PlantedDef, where: string): void {
+  if (!Number.isSafeInteger(p.radius) || p.radius < 0) throw Error(`${where}: a planted object's radius is a whole number, 0 or more`)
+  for (const [stat, value] of Object.entries(p.mods ?? {})) {
+    if (!isStatName(stat) || !Number.isSafeInteger(value) || value === 0) throw Error(`${where}: a planted object lends '${stat}' ${String(value)} — a stat the engine has, by a whole number`)
+  }
+  for (const [statusId, n] of Object.entries(p.wards ?? {})) {
+    if (!/^status\.[a-z0-9][a-z0-9.-]*$/.test(statusId) || !Number.isSafeInteger(n) || n < 1) throw Error(`${where}: a planted object wards '${statusId}' by ${String(n)} — a status, by 1 or more`)
+  }
+  for (const t of p.lends ?? []) {
+    if (t.select !== 'self') throw Error(`${where}: the trigger '${t.id}' a planted object lends is aimed at the unit itself (select 'self')`)
+    if (t.effect.kind === 'plant') throw Error(`${where}: the trigger '${t.id}' a planted object lends plants nothing`)
+    validateTrigger(t)
+  }
 }
 
 /**
@@ -223,6 +245,8 @@ export function validateTrigger(t: Trigger): void {
   if (t.effect.kind === 'corpse.destroy' && (t.hook !== 'onKill' || t.select !== 'target')) {
     throw new Error(`${where}: 'corpse.destroy' belongs to an onKill trigger aimed at the target, got hook '${t.hook}'`)
   }
+  // capability.planted-banners (2026-10-05): an object is planted by a power, on its user's hex — never by a trigger
+  if (t.effect.kind === 'plant') throw new Error(`${where}: 'plant' belongs to a power aimed at its own user`)
   const needsTarget = t.select === 'target' ||
     (typeof t.select !== 'string' &&
       (t.select.select === 'unit' || (t.select.select === 'area' && t.select.origin === 'target')))
@@ -408,7 +432,9 @@ export function fireTriggers(ctx: Ctx, hook: Hook, fc: FireContext): BurstAdjust
 
   // capability.effect-lasts-activations (2026-10-05): the triggers the statuses it holds lend it fire as its own. They take
   // the slots after the unit's own, so no existing trigger's roll key moves.
-  const slots = [...owner.triggers, ...lentTriggers(ctx, owner)]
+  // capability.planted-banners (2026-10-05): … and so do the triggers lent by the planted objects whose reach it stands in
+  // (its own side's, in object order), after those — again no existing roll key moves.
+  const slots = [...owner.triggers, ...lentTriggers(ctx, owner), ...plantedOver(ctx, owner).flatMap((p) => p.lends ?? [])]
     .map((t, slot) => ({ t, slot }))
     .filter((x) => x.t.hook === hook)
     // Attack scope: on attack-anchored hooks the FireContext's causeId is the
@@ -563,6 +589,9 @@ export function applyEffect(ctx: Ctx, e: Effect, src: EffectSource, targetId: nu
       return 0
     }
     case 'stamina.gain': gainStamina(ctx, targetId, e.value, cause); return 0
+    // capability.planted-banners (2026-10-05): the object goes on the hex of the one acting; the Surge Chance to the one named
+    case 'plant': say({ radius: e.radius, hex: actor.hex }); plantObject(ctx, src.actor, e, cause); return 0
+    case 'surge.gain': say({ value: e.value }); gainSurgeChance(ctx, targetId, e.value, cause); return 0
     case 'stamina.drain': {
       const v = valueOf(ctx, actor, e.value)
       say({ value: v })

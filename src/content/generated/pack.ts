@@ -11945,6 +11945,155 @@ export const UNIT_PACK = {
         }
       ]
     },
+    "power.banner-assassin.plant": {
+      "id": "power.banner-assassin.plant",
+      "name": "Plant the Assassin’s Banner",
+      "free": false,
+      "staminaCost": 2,
+      "cooldown": 0,
+      "uses": 1,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [
+        {
+          "kind": "plant",
+          "radius": 1,
+          "mods": {
+            "crit": 20
+          },
+          "lends": [
+            {
+              "id": "trigger.banner-assassin.plant.stamina",
+              "hook": "onCrit",
+              "chance": 100,
+              "select": "self",
+              "effect": {
+                "kind": "stamina.gain",
+                "value": 1
+              },
+              "source": "power.banner-assassin.plant"
+            }
+          ]
+        }
+      ]
+    },
+    "power.banner-vigil.plant": {
+      "id": "power.banner-vigil.plant",
+      "name": "Plant the Vigil Banner",
+      "free": false,
+      "staminaCost": 2,
+      "cooldown": 0,
+      "uses": 1,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [
+        {
+          "kind": "plant",
+          "radius": 1,
+          "lends": [
+            {
+              "id": "trigger.banner-vigil.plant.heal",
+              "hook": "onActivationEnd",
+              "chance": 100,
+              "select": "self",
+              "effect": {
+                "kind": "heal",
+                "amount": {
+                  "scale": "stat",
+                  "stat": "spirit",
+                  "base": 0,
+                  "mult": 1
+                }
+              },
+              "source": "power.banner-vigil.plant"
+            }
+          ]
+        }
+      ]
+    },
+    "power.banner-courage.plant": {
+      "id": "power.banner-courage.plant",
+      "name": "Plant the Courage Banner",
+      "free": false,
+      "staminaCost": 3,
+      "cooldown": 0,
+      "uses": 1,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [
+        {
+          "kind": "plant",
+          "radius": 2,
+          "mods": {
+            "resist": 1
+          },
+          "wards": {
+            "status.weak": 2
+          },
+          "lends": [
+            {
+              "id": "trigger.banner-courage.plant.surge",
+              "hook": "onActivationEnd",
+              "chance": 100,
+              "select": "self",
+              "effect": {
+                "kind": "surge.gain",
+                "value": 10
+              },
+              "source": "power.banner-courage.plant"
+            }
+          ]
+        }
+      ]
+    },
+    "power.banner-heroism.plant": {
+      "id": "power.banner-heroism.plant",
+      "name": "Plant the Heroic Banner",
+      "free": false,
+      "staminaCost": 4,
+      "cooldown": 0,
+      "uses": 1,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [
+        {
+          "kind": "plant",
+          "radius": 3,
+          "mods": {
+            "strength": 2,
+            "precision": 2
+          },
+          "lends": [
+            {
+              "id": "trigger.banner-heroism.plant.heal",
+              "hook": "onActivationEnd",
+              "chance": 100,
+              "select": "self",
+              "effect": {
+                "kind": "heal",
+                "amount": 5
+              },
+              "source": "power.banner-heroism.plant"
+            }
+          ]
+        }
+      ],
+      "gaps": [
+        "onMiss by any ally in the aura: EVERY ally in the aura gains 30 Surge Chance — planted object: clause unparsed"
+      ]
+    },
     "power.cure-poison.use": {
       "id": "power.cure-poison.use",
       "name": "Cure Poison",
@@ -18894,11 +19043,10 @@ export const UNIT_PACK = {
       "classRestriction": "class.rogue",
       "statModifiers": {},
       "grants": [],
-      "abilities": [],
-      "triggers": [],
-      "gaps": [
-        "grants power.banner-assassin.plant — item power — shape unparsed"
-      ]
+      "abilities": [
+        "power.banner-assassin.plant"
+      ],
+      "triggers": []
     },
     "item.banner-mystic-power": {
       "id": "item.banner-mystic-power",
@@ -18926,11 +19074,10 @@ export const UNIT_PACK = {
       "classRestriction": "class.priest",
       "statModifiers": {},
       "grants": [],
-      "abilities": [],
-      "triggers": [],
-      "gaps": [
-        "grants power.banner-vigil.plant — item power — shape unparsed"
-      ]
+      "abilities": [
+        "power.banner-vigil.plant"
+      ],
+      "triggers": []
     },
     "item.banner-courage": {
       "id": "item.banner-courage",
@@ -18942,11 +19089,10 @@ export const UNIT_PACK = {
       "classRestriction": "class.warrior",
       "statModifiers": {},
       "grants": [],
-      "abilities": [],
-      "triggers": [],
-      "gaps": [
-        "grants power.banner-courage.plant — item power — shape unparsed"
-      ]
+      "abilities": [
+        "power.banner-courage.plant"
+      ],
+      "triggers": []
     },
     "item.banner-heroism": {
       "id": "item.banner-heroism",
@@ -18958,10 +19104,12 @@ export const UNIT_PACK = {
       "classRestriction": "class.paladin",
       "statModifiers": {},
       "grants": [],
-      "abilities": [],
+      "abilities": [
+        "power.banner-heroism.plant"
+      ],
       "triggers": [],
       "gaps": [
-        "grants power.banner-heroism.plant — item power — shape unparsed"
+        "power.banner-heroism.plant: onMiss by any ally in the aura: EVERY ally in the aura gains 30 Surge Chance — planted object: clause unparsed"
       ]
     },
     "item.torch": {

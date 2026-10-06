@@ -309,6 +309,14 @@ type EffectBody =
    * refuses it anywhere else); the mark it leaves (Unit.corpseDestroyed) is read where death is decided and lasts that settling.
    */
   | { readonly kind: 'corpse.destroy' }
+  /**
+   * capability.planted-banners (2026-10-05): plant an object on the hex of the one acting. It stays there for the rest of the
+   * Battle — it does not block the hex, cannot be attacked, and stays when its planter walks away or dies — and gives the
+   * planter's side what PlantedDef says, within its radius of that hex. Only on a power aimed at its own user.
+   */
+  | ({ readonly kind: 'plant' } & PlantedDef)
+  /** capability.planted-banners: add `value` to the unit's Surge Chance — the amount the Surge check rolls against — once; its Surge stat is untouched. */
+  | { readonly kind: 'surge.gain'; readonly value: number }
   /** capability.corpses: remove every corpse within `radius`, healing the one acting `healPer` each (Consume the Fallen). */
   | { readonly kind: 'corpse.consume'; readonly radius: number; readonly healPer: number }
   /** capability.corpses: eat one corpse within `radius` — heal and battle-long stat gains to the eater. Refused (canUsePower) when none is in reach. */
@@ -502,6 +510,21 @@ export type SideStatChange = { readonly stat: 'magic' | 'spirit' | 'power'; read
 /** One change standing on a side (state.sideMods): what it changes, by how much it actually changed it, whose effect it was, and the Turn it ends with. */
 export type SideMod = { side: Side; stat: 'magic' | 'spirit' | 'power'; value: number; source: string; expiresAtTurn?: number }
 
+/**
+ * capability.planted-banners (2026-10-05): what a planted object gives the units of its planter's side that stand within
+ * `radius` of ITS hex — not of its planter, who may walk away: stats while inside (`mods`, lent as an aura's are), points of
+ * each application of a named status that do not land while inside (`wards`), and triggers that fire as the unit's own while
+ * it is inside (`lends` — each aimed at the unit itself).
+ */
+export type PlantedDef = {
+  readonly radius: number
+  readonly mods?: Readonly<Partial<Record<import('./stats.js').StatName, number>>>
+  readonly wards?: Readonly<Record<string, number>>
+  readonly lends?: readonly import('./trigger.js').Trigger[]
+}
+/** One planted object on the board (state.planted): its hex, the side it serves, the unit that planted it and the power that did. */
+export type Planted = PlantedDef & { id: number; hex: number; side: Side; by: number; source: string }
+
 /** Bursts freeze these authored source packets at declaration. */
 export type BurstProfile = {
   readonly shape: { readonly kind: 'arc' } | { readonly kind: 'radius'; readonly radius: number }
@@ -650,7 +673,7 @@ export type MoveDef = ActionDef & { readonly move: MoveProfile }
 export type AbilityDef = ActionDef
 
 /** plumbing.vocabulary-export: every effect kind, checked against the union by tsc — snapshot validation, pack validation and the exported vocabulary read it, never a copy. */
-export const EFFECT_KINDS = ['statDamage', 'damage', 'heal', 'status.apply', 'status.remove', 'statMod', 'stamina.gain', 'stamina.drain', 'loseMaxStamina', 'loseMaxHp', 'stand', 'knockback', 'badge.grant', 'power.gain', 'corpse.raise', 'summon', 'side.stat', 'corpse.destroy', 'corpse.consume', 'corpse.eat', 'layer.paint', 'reveal', 'burstScale'] as const satisfies readonly Effect['kind'][]
+export const EFFECT_KINDS = ['statDamage', 'damage', 'heal', 'status.apply', 'status.remove', 'statMod', 'stamina.gain', 'stamina.drain', 'loseMaxStamina', 'loseMaxHp', 'stand', 'knockback', 'badge.grant', 'power.gain', 'corpse.raise', 'summon', 'side.stat', 'corpse.destroy', 'plant', 'surge.gain', 'corpse.consume', 'corpse.eat', 'layer.paint', 'reveal', 'burstScale'] as const satisfies readonly Effect['kind'][]
 export type EffectKindsCovered = Assert<Covers<Effect['kind'], typeof EFFECT_KINDS>>
 
 
@@ -1280,6 +1303,8 @@ export type State = {
   power?: number
   /** capability.raise-lower-magic (2026-10-05): the changes standing on the sides' party stats — absent until an effect makes one. */
   sideMods?: SideMod[]
+  /** capability.planted-banners (2026-10-05): the objects planted on the board — absent until a power plants one. */
+  planted?: Planted[]
   /** One entry per HexId. Plain array so State stays JSON-round-trippable (Law 5b). */
   terrain: number[]
   /** Canonical obstruction state; authored x is normalized at map decode. */
