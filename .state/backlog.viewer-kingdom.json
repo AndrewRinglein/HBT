@@ -67,7 +67,9 @@
   "shape": "plumbing",
   "spec": "Ruled 2026-10-05 (Andrew, engine/DECISIONS.md 'a prone unit only stands; Stand Up is its one move; a set counts everything carried; Dwarf, Elf and Fey act; no gift doubles a hero's own badge; what cannot be paid is greyed; the player moves a summon; Resistance to Weak; the Vigil heals by the party's Spirit'): asked what is chosen when attack one cannot be paid for - 'If a tax can't be paid for or a power can't be paid for, it should be grayed out.' ('tax' is 'attack' - dictation.) Wanted on the action bar (and the kingdom's play input, which reads the same facts): an attack or a power the unit cannot pay for right now - not enough Stamina, a cooldown still running, a use already spent, a warm-up not done - is greyed and cannot be chosen, and hovering it says why in the engine's own reason ('Not enough Stamina: needs 2, has 1'); the moment it can be paid it lights again. First find what the bar does today for each of those four causes (some may already grey - viewer SWITCHES and tools/bar-moves-grey-when-done, bar-shows-every-effect): build only what is missing and say what was already so. What can be paid is read from the engine (the legal actions and their reasons), never worked out in the viewer. With kingdom.attack-one-armed-after-move: when attack one is greyed for cost, nothing is chosen (as built, kingdom SWITCHES attackOne*) - Punch is not chosen in its place; record that as ruled by this answer's reading. Land by the viewer landing order.",
   "expect": "A hero with 1 Stamina shows its 2-Stamina attack greyed with the reason on hover, and its 0- and 1-Stamina actions lit; a power on cooldown is greyed with the Turns left; a once-per-Battle power already used is greyed; after a Turn restores Stamina the attack is lit again; after a move with attack one unaffordable, no attack is chosen; a hero who can pay for everything shows the bar it showed before.",
-  "note": "Filed by the home chat 2026-10-05."
+  "note": "Filed by the home chat 2026-10-05.",
+  "status": "done",
+  "sha": "a4f5923"
  },
  {
   "id": "viewer.solid-pieces-drawn-by-material",

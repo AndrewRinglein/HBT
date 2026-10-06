@@ -86,3 +86,5 @@
 {"suite":"engine","stamp":"0d95af9351","with":{"engine":"0d95af9351","content":"c6cb89aebf","viewer":"b65800dac0","kingdom":"84ee17bd5b"},"at":"2026-10-06T04:49:46.987Z","by":"gate --shard (1 of 1)","in":"HBT-worker-kingdom","tests":3040}
 {"suite":"engine","stamp":"f6f6fb0bb1","failed":true,"at":"2026-10-06T05:01:34.138Z","by":"gate --shard 1/1","in":"HBT-worker-engine"}
 {"suite":"engine","stamp":"f6f6fb0bb1","with":{"engine":"f6f6fb0bb1","content":"8f939e8202","viewer":"dbf2e382b6","kingdom":"20721f1c69"},"at":"2026-10-06T05:30:28.681Z","by":"gate --shard (1 of 1)","in":"HBT-worker-engine","tests":3071}
+{"suite":"engine","stamp":"dce5b2973d","failed":true,"at":"2026-10-06T07:20:12.725Z","by":"gate --shard 1/4","in":"HBT-worker-content"}
+{"suite":"control","stamp":"dce5b2973d","pack":"bd2ba40096","golden":"b4deeaba50","at":"2026-10-06T08:57:29.640Z","by":"gate viewer.unaffordable-actions-greyed --land","in":"HBT-worker-content","moved":null}
