@@ -70,7 +70,7 @@ try{
  // 2. the Deathbed plate, both stages, over the dimmed screen
  {let M=await play([{k:'deathbed',id:'HERO',result:'stood',n:12,chance:40}],{plate:'.dbPlate',veil:'.dbVeil'})
   say(low(M,'plate','the Deathbed plate (the roll)'));assert.ok(M.veil&&M.veil.w>=M.frame.w-1&&M.veil.h>=M.frame.h-1&&!/rgba\(0, 0, 0, 0\)/.test(M.veil.bg),'the dimmed screen still covers the board')
-  M=await play([],{plate:'.dbPlate'},1100);assert.match(M.plate.text,/DEATHBED FIGHTING/);say(low(M,'plate','the Deathbed plate (fights on)'));await clear(1700)
+  await clear(2800);M=await play([{k:'deathbed',id:'HERO',result:'stood',n:12,chance:40}],{plate:'.dbPlate'},1400);assert.match(M.plate.text,/DEATHBED FIGHTING/)   /* its second stage, read in the one call that played it: a second call under load came after the plate had gone */;say(low(M,'plate','the Deathbed plate (fights on)'));await clear(1700)
   M=await play([{k:'deathbed',id:'HERO',result:'fell',n:77,chance:40}],{plate:'.dbPlate'},1400);say(low(M,'plate','the Deathbed plate (falls)'));await clear(1500)}
  // 3. an injury plate
  {const M=await play([{k:'injury',id:'HERO',name:'Broken Arm'}],{inj:'.injPlate'},220);say(low(M,'inj','the injury plate ("Broken Arm")'));await clear(1700)}
