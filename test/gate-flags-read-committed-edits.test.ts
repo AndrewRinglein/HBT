@@ -9,7 +9,7 @@
 // packages. Nothing is removed or loosened; a flag still never blocks.
 //
 // Scratch repositories; nothing here runs a tool on the real folder.
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { execFileSync } from 'node:child_process'
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
@@ -17,6 +17,8 @@ import { dirname, join } from 'node:path'
 import { committedAddedLines, committedNewFiles, editedTests, itemCommits, reviewOf } from '../tools/gate-progress.mjs'
 import { changedFiles } from '../tools/prior-art.mjs'
 
+// every test here makes a scratch repository and runs git a dozen times: seconds alone, more beside other workers' runs - a time limit is not the assertion
+vi.setConfig({ testTimeout: 120_000 })
 const git = (cwd: string, ...args: string[]) => execFileSync('git', args, { cwd, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] }).trim()
 const put = (file: string, text: string) => { mkdirSync(dirname(file), { recursive: true }); writeFileSync(file, text) }
 const commit = (dir: string, message: string) => { git(dir, 'add', '-A'); git(dir, 'commit', '-qm', message) }
