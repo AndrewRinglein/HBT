@@ -38261,6 +38261,16 @@ index 68a046c..1f59b85 100644
 </details>
   PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
 
+## content.dwarf-elf-fey-badges-act — LANDED `ea5762b` **NEEDS REVIEW**
+2026-10-06 08:24
+
+  PASS  dependencies landed
+  WARN  not already decided — 1 candidate ruling(s) — READ BEFORE ASKING: SWITCHES.md:2484
+  PASS  typecheck
+  PASS  the item's own tests — test/battle-cursor.test.ts, test/hero-origin-badges.test.ts, test/dwarf-elf-fey-badges-act.test.ts
+  PASS  gate 1 — the id appears in a real battle — badge.dwarf: 1 log lines, 1 fired, 1 changed state · badge.elf: 1 log lines, 1 fired, 1 changed state · badge.fey: 1 log lines, 1 fired, 1 changed state
+  PASS  brought its own tests — test/battle-cursor.test.ts, test/hero-origin-badges.test.ts, test/dwarf-elf-fey-badges-act.test.ts, test/fixtures/battle-cursor-dwarf-elf-fey-badges-act.json
+  WARN  existing tests untouched — DELETED LINES in test/battle-cursor.test.ts (-2), test/hero-origin-badges.test.ts (-8) — will land FLAGGED for review
 ## viewer.unaffordable-actions-greyed — LANDED `a4f5923`
 2026-10-06 08:57
 
@@ -38276,7 +38286,173 @@ index 68a046c..1f59b85 100644
   PASS  hardcode scan — core knows mechanisms, never names
   PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
   PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — shape 'data' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without badge.dwarf,badge.elf,badge.fey — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/battle-cursor.test.ts b/test/battle-cursor.test.ts
+index 1f59b85..8fb6ef0 100644
+--- a/test/battle-cursor.test.ts
++++ b/test/battle-cursor.test.ts
+@@ -533,4 +533,10 @@ const placedTrapsGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cur
+ // Every case frozen here (tools/capture-stabilise-downed-ally-cursor.mts). Moved: none. A `changed` case is checked here and skips the older layers.
+ const stabiliseDownedAllyGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-stabilise-downed-ally.json', import.meta.url), 'utf8'))
++// content.dwarf-elf-fey-badges-act (2026-10-05; DECISIONS.md 2026-10-05 'a prone unit only stands; … Dwarf, Elf and Fey act; …': "6. They
++// should act."), Law 10: the Dwarf, Elf and Fey badges carry the data's numbers (Dwarf -1 Movement +2 Health; Elf +3 Vision +2
++// Luck; Fey +10 Surge), so every battle that fields the Iron Dwarf, the Dwarven Brawler, the Mountain Berserker, the Ancient Elf,
++// the Forest Elf or the Forest Fey is another battle. A case that fields none of the six is event for event what it was; none is ADDED.
++// Every case frozen here (tools/capture-dwarf-elf-fey-badges-act-cursor.mts). Moved: showcase.assembled-party, showcase.eve-24-a, showcase.horrors, showcase.kiln, showcase.prologue-party, showcase.rime, showcase.supper, showcase.surrounded, showcase.waystation, test.back-flip, test.bandages, test.banner-courage, test.bear-traps, test.caravan-aftermath, test.fend, test.field-dressing, test.item-uses, test.mending-light, test.opening-bridge, test.opening-cathedral, test.opening-cavern-trail, test.opening-gates, test.opening-lumberjack, test.opening-orphanage, test.swap, progression-surge-0, progression-surge-1, progression-surge-2. A `changed` case is checked here and skips the older layers.
++const dwarfElfFeyBadgesActGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-dwarf-elf-fey-badges-act.json', import.meta.url), 'utf8'))
+ const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
+ // Explicit rule migration, not regenerated historical hashes. These nine old
+@@ -688,5 +694,8 @@ describe('resumable battle cursor', () => {
+       const placedTrapsExpected = placedTrapsGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+       const stabiliseDownedAllyExpected = stabiliseDownedAllyGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+-      const stabiliseDownedAllyMoved = stabiliseDownedAllyExpected?.changed === true
++      const dwarfElfFeyBadgesActExpected = dwarfElfFeyBadgesActGolden.cases.find((row:{id:string})=>row.id===fixture.id)
++      const dwarfElfFeyBadgesActMoved = dwarfElfFeyBadgesActExpected?.changed === true
++      // was: const stabiliseDownedAllyMoved = stabiliseDownedAllyExpected?.changed === true — a case content.dwarf-elf-fey-badges-act moved skips this layer too (content.dwarf-elf-fey-badges-act 2026-10-04)
++      const stabiliseDownedAllyMoved = stabiliseDownedAllyExpected?.changed === true || dwarfElfFeyBadgesActMoved
+       // was: const placedTrapsMoved = placedTrapsExpected?.changed === true — a case capability.stabilise-downed-ally moved skips this layer too (capability.stabilise-downed-ally 2026-10-04)
+       const placedTrapsMoved = placedTrapsExpected?.changed === true || stabiliseDownedAllyMoved
+@@ -860,5 +869,12 @@ describe('resumable battle cursor', () => {
+           }
+         } else result = battle.runBattle(ctx)
+-        if (stabiliseDownedAllyExpected) {
++        if (dwarfElfFeyBadgesActExpected) {
++        expect(hash(ctx.events), 'full dwarf-elf-fey-badges-act events').toBe(dwarfElfFeyBadgesActExpected.events)
++        expect(hash(ctx.state), 'full dwarf-elf-fey-badges-act state').toBe(dwarfElfFeyBadgesActExpected.state)
++        expect(hash(ctx.rng.log), 'full dwarf-elf-fey-badges-act RNG').toBe(dwarfElfFeyBadgesActExpected.rng)
++        expect(result).toEqual(dwarfElfFeyBadgesActExpected.result)
++        }
++        // was: if (stabiliseDownedAllyExpected) { — content.dwarf-elf-fey-badges-act (2026-10-04): a case it moved is checked above instead
++        if (stabiliseDownedAllyExpected && !dwarfElfFeyBadgesActMoved) {
+         expect(hash(ctx.events), 'full stabilise-downed-ally events').toBe(stabiliseDownedAllyExpected.events)
+         expect(hash(ctx.state), 'full stabilise-downed-ally state').toBe(stabiliseDownedAllyExpected.state)
+diff --git a/test/hero-origin-badges.test.ts b/test/hero-origin-badges.test.ts
+index 817f443..8a8df7e 100644
+--- a/test/hero-origin-badges.test.ts
++++ b/test/hero-origin-badges.test.ts
+@@ -68,5 +68,8 @@ const BEFORE: Record<string, Record<string, number>> = {
+ const CARRIES: Record<string, { mods?: Record<string, number>; flags?: string[]; waits?: string[] }> = {
+   Stalwart: { mods: { maxStamina: 1, maxHp: 2 } },
+-  Dwarf: { waits: ['no payload'] },
++  // Law 10, 2026-10-05 - content.dwarf-elf-fey-badges-act (DECISIONS.md 2026-10-05 'a prone unit only stands; … Dwarf, Elf and Fey
++  // act; …': "6. They should act."): the three rows that were names with no payload carry the data's numbers now.
++  // was: Dwarf: { waits: ['no payload'] },
++  Dwarf: { mods: { movement: -1, maxHp: 2 } },
+   Brave: { mods: { resist: 1 }, waits: ['immune to Weak'] },
+   Huge: { mods: { strength: 2, maxHp: 2, dodge: -15 } },
+@@ -83,8 +86,10 @@ const CARRIES: Record<string, { mods?: Record<string, number>; flags?: string[];
+   Quick: { mods: { movement: 1 }, waits: ['+10 Surge Chance', 'Deploy +2'] },
+   Beautiful: { waits: ['ondeath: all heroes gain 20 surge and +1 health'] },
+-  Fey: { waits: ['no payload'] },
++  // was: Fey: { waits: ['no payload'] },
++  Fey: { mods: { surge: 10 } },
+   Forester: { waits: ['-1 Movement cost into Forest', '+10 Dodge while in Forest'] },
+   Cultist: { mods: { crit: 10 }, waits: ['onbattlestart: lose 1 faith'] },
+-  Elf: { waits: ['no payload'] },
++  // was: Elf: { waits: ['no payload'] },
++  Elf: { mods: { vision: 3, luck: 2 } },
+   Mystic: { mods: { magic: 1 } },
+   Agile: { mods: { dodge: 8 }, flags: ['cannotBeKnockedDown'], waits: ['Gains the Dodge and Roll movement power'] },
+@@ -130,9 +135,16 @@ describe('content.hero-origin-badges: each base hero\'s row carries the origin b
+       if (Object.keys(sum).length) changed.push(id)
+     }
+-    // 13 of the 24 are fielded with different numbers; the other 11 carry a name whose lines all wait, or no origin badge
+-    expect(changed.length).toBe(13)
++    // Law 10, 2026-10-05 - content.dwarf-elf-fey-badges-act: Dwarf, Elf and Fey act, so the heroes whose only numbered badge is
++    // one of the three (the Dwarven Brawler, the Mountain Berserker, the Ancient Elf, the Forest Fey among them) are fielded
++    // with different numbers too: every hero any of whose badges carries a number, counted off the table above.
++    // was: 13 of the 24 are fielded with different numbers; the other 11 carry a name whose lines all wait, or no origin badge
++    // was: expect(changed.length).toBe(13)
++    expect(changed.length).toBe(Object.values(AT_LANDING).filter((names) => names.some((n) => Object.keys(CARRIES[n]!.mods ?? {}).length > 0)).length)
++    expect(changed.length).toBeGreaterThan(13)
+     // the Iron Dwarf, said out: Stalwart's +2 Health and +1 Stamina
+     const dwarf = fieldedDef('hero.base.warrior-iron')
+-    expect([dwarf.maxHp, dwarf.maxStamina]).toEqual([BEFORE['hero.base.warrior-iron']!['maxHp']! + 2, BEFORE['hero.base.warrior-iron']!['maxStamina']! + 1])
++    // was: expect([dwarf.maxHp, dwarf.maxStamina]).toEqual([BEFORE['hero.base.warrior-iron']!['maxHp']! + 2, BEFORE['hero.base.warrior-iron']!['maxStamina']! + 1])
++    // … and now the Dwarf badge's +2 Health and -1 Movement as well
++    expect([dwarf.maxHp, dwarf.maxStamina, dwarf.movement]).toEqual([BEFORE['hero.base.warrior-iron']!['maxHp']! + 4, BEFORE['hero.base.warrior-iron']!['maxStamina']! + 1, BEFORE['hero.base.warrior-iron']!['movement']! - 1])
+   })
+   it('in a real battle: the hero on the board wears its origin badges - one line each at fielding, saying what it put on and what waits - and the Forest Elf cannot be knocked down', () => {
+@@ -140,10 +152,12 @@ describe('content.hero-origin-badges: each base hero\'s row carries the origin b
+     const [dwarf, elf] = ctx.state.units
+     expect(dwarf!.badges).toEqual(['badge.hero', 'badge.stalwart', 'badge.dwarf'])
+-    expect(dwarf!.maxHp).toBe(BEFORE['hero.base.warrior-iron']!['maxHp']! + 2)
++    // was: expect(dwarf!.maxHp).toBe(BEFORE['hero.base.warrior-iron']!['maxHp']! + 2) - Stalwart's 2; the Dwarf badge's 2 are on it too now
++    expect(dwarf!.maxHp).toBe(BEFORE['hero.base.warrior-iron']!['maxHp']! + 4)
+     expect(elf!.badges).toEqual(['badge.hero', 'badge.agile', 'badge.elf', 'badge.forester'])
+     const lines = ctx.events.filter((e) => e.type === 'unit.badged' && e['actor'] === dwarf!.id)
+     expect(lines.map((e) => e.causeId)).toEqual(['badge.hero', 'badge.stalwart', 'badge.dwarf'])
+     expect(lines[1]!['mods']).toEqual({ maxStamina: 1, maxHp: 2 })
+-    expect(lines[2]!['gaps']).toEqual(['no payload'])
++    // was: expect(lines[2]!['gaps']).toEqual(['no payload']) - the Dwarf badge's line says what it put on, and nothing waits
++    expect([lines[2]!['mods'], lines[2]!['gaps'] ?? []]).toEqual([{ movement: -1, maxHp: 2 }, []])
+     expect(knockImmunity(ctx, elf!)).toEqual({ back: [], down: ['badge.agile'] })   // Agile: cannot be knocked down, can still be knocked back
+     expect(knockImmunity(ctx, dwarf!)).toEqual({ back: [], down: [] })
+```
+</details>
+
+## fix.bandaged-hero-dies-at-zero — LANDED `6e6b846` **NEEDS REVIEW**
+2026-10-06 09:40
+
+  PASS  dependencies landed
+  WARN  not already decided — 3 candidate ruling(s) — READ BEFORE ASKING: SWITCHES.md:1944 · SWITCHES.md:2664
+  PASS  typecheck
+  PASS  the item's own tests — test/stabilise-downed-ally.test.ts, test/bandaged-hero-dies-at-zero.test.ts
+  PASS  gate 1 — the id appears in a real battle — power.bandages.use: 6 log lines, 6 fired, 5 changed state
+  PASS  brought its own tests — test/stabilise-downed-ally.test.ts, test/bandaged-hero-dies-at-zero.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/stabilise-downed-ally.test.ts (-2) — will land FLAGGED for review
+  PASS  control battles unchanged
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — power.bandages.use live · power.test-osric.field-dressing live
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without power.bandages.use — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/stabilise-downed-ally.test.ts b/test/stabilise-downed-ally.test.ts
+index e3240f7..8ee8c29 100644
+--- a/test/stabilise-downed-ally.test.ts
++++ b/test/stabilise-downed-ally.test.ts
+@@ -103,9 +103,17 @@ describe('stopping the count', () => {
+   })
+ 
+-  it('a hit on a stabilised ally still moves its count, never below 1 - it does not die of it; standing up again takes the stop away', () => {
++  // Law 10, 2026-10-05 - fix.bandaged-hero-dies-at-zero (DECISIONS.md 2026-10-05 'a bandaged hero's count has no floor: bandaging
++  // stops the count, a hit still takes one, and at 0 the hero dies': "I don't get why the count would start and stop at 1. No,
++  // it goes to 0 when they die. Bandaging is supposed to completely stop the bleed-out counter, and they're just stable."): this
++  // test held that hits could not take a stabilised hero's count below 1. Overturned: a hit takes one with no floor, and at 0
++  // the hero dies (test/bandaged-hero-dies-at-zero.test.ts holds the hits). What stands, and is held here: the count does not
++  // run by itself however low it is, and the stop goes when the unit is no longer down.
++  // was: it('a hit on a stabilised ally still moves its count, never below 1 - it does not die of it; standing up again takes the stop away', () => {
++  it('a stabilised ally whose count hits have brought to 1 is still not counted down by itself; standing up again takes the stop away', () => {
+     const { ctx, medic, ally } = field()
+     down(ctx, ally, 3)
+     usePower(ctx, medic.id, ally.id, USE)
+-    setBleedOut(ctx, ally.id, 1, 'test')   // as far as hits can push it (fix.downed-targetable: never below 1)
++    // was: setBleedOut(ctx, ally.id, 1, 'test')   // as far as hits can push it (fix.downed-targetable: never below 1)
++    setBleedOut(ctx, ally.id, 1, 'test')   // one hit from death
+     for (let i = 0; i < 3; i++) advanceBleedOuts(ctx)
+     settle(ctx, 'test')
+```
+</details>
   PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
   PASS  naming — new content ids use declared kinds
   PASS  naming — no banned words invented
   PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+## capability.attack-several-targets — ABANDONED
+2026-10-06 09:51
+
+Andrew 2026-10-06: 'We don't need an attack with several chosen targets. This weapon feature was not approved. That should not be in the queue.' Filed by a worker from four chat-authored Codex attack lines; never ruled.

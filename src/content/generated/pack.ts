@@ -51579,32 +51579,31 @@ export const UNIT_PACK = {
     "badge.dwarf": {
       "id": "badge.dwarf",
       "name": "Dwarf",
-      "statModifiers": {},
+      "statModifiers": {
+        "movement": -1,
+        "maxHp": 2
+      },
       "grants": [],
-      "flags": {},
-      "gaps": [
-        "no payload"
-      ]
+      "flags": {}
     },
     "badge.elf": {
       "id": "badge.elf",
       "name": "Elf",
-      "statModifiers": {},
+      "statModifiers": {
+        "vision": 3,
+        "luck": 2
+      },
       "grants": [],
-      "flags": {},
-      "gaps": [
-        "no payload"
-      ]
+      "flags": {}
     },
     "badge.fey": {
       "id": "badge.fey",
       "name": "Fey",
-      "statModifiers": {},
+      "statModifiers": {
+        "surge": 10
+      },
       "grants": [],
-      "flags": {},
-      "gaps": [
-        "no payload"
-      ]
+      "flags": {}
     },
     "badge.faithful": {
       "id": "badge.faithful",

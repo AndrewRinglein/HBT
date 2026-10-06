@@ -123,14 +123,16 @@ const RAW_SCENARIOS: Readonly<Record<string, ScenarioDef>> = {
   },
   // capability.stabilise-downed-ally (2026-10-05; DECISIONS.md 2026-10-04 'every dead line on his items is a feature that is
   // needed …': "All of those deadlines need to be added in as features that we need."): the Bandages live in a real battle -
-  // two warriors side by side against five zombies; the one in mail falls on Turn 6 and the other, who carries the Bandages,
-  // is beside him and stops his count on Turn 7. He is still down when the battle is won. A fielding, not a balance claim.
+  // two warriors side by side against six zombies; the Brawler falls on Turn 8 and the Iron Dwarf, who carries the Bandages,
+  // is beside him and stops his count on Turn 9. He is still down when the battle is won. A fielding, not a balance claim.
+  // (content.dwarf-elf-fey-badges-act, 2026-10-05: this fielding was the two the other way round against five zombies - the
+  // Iron Dwarf fell on Turn 6. Both are Dwarves and now field 2 more Health: nobody fell, so the fielding is found again.)
   'test.bandages': {
-    id: 'test.bandages', note: 'TEST: two warriors, one carrying Bandages (free, one use: stop the bleed-out count of a downed ally within 1 hex), against five zombies. No campaign claim.',
-    mapId: 'map.open', heroes: ['hero.base.warrior-iron', 'hero.base.warrior-brawler'], heroHexes: [85, 86], heroItems: [['item.destroyed-mail', 'item.war-axe'], ['item.ragged-hides', 'item.bandages']], enemies: ['unit.zombie', 'unit.zombie', 'unit.zombie', 'unit.zombie', 'unit.zombie'], enemyHexes: [89, 90, 105, 106, 91], replicate: 0,
+    id: 'test.bandages', note: 'TEST: two warriors, one carrying Bandages (free, one use: stop the bleed-out count of a downed ally within 1 hex), against six zombies. No campaign claim.',
+    mapId: 'map.open', heroes: ['hero.base.warrior-iron', 'hero.base.warrior-brawler'], heroHexes: [85, 86], heroItems: [['item.destroyed-mail', 'item.war-axe', 'item.bandages'], ['item.ragged-hides']], enemies: ['unit.zombie', 'unit.zombie', 'unit.zombie', 'unit.zombie', 'unit.zombie', 'unit.zombie'], enemyHexes: [89, 90, 105, 106, 91, 74], replicate: 0,
   },
   // … and its second instance, pure data: a test unit whose one power, Field Dressing, stops the count of a downed ally within
-  // 2 hexes (for 1 Stamina, on a cooldown, with no limit of uses). The brawler beside it falls on Turn 7 and is dressed on Turn 8.
+  // 2 hexes (for 1 Stamina, on a cooldown, with no limit of uses). The brawler beside it falls and is dressed on Turn 8.
   'test.field-dressing': {
     id: 'test.field-dressing', note: 'TEST: a brawler and a test unit whose power Field Dressing stops the bleed-out count of a downed ally within 2 hexes, against five zombies. No campaign claim.',
     mapId: 'map.open', heroes: ['hero.base.warrior-brawler', 'test-dresser'], heroHexes: [85, 86], enemies: ['unit.zombie', 'unit.zombie', 'unit.zombie', 'unit.zombie', 'unit.zombie'], enemyHexes: [89, 90, 105, 106, 91], replicate: 0,

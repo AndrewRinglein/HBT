@@ -67,7 +67,10 @@ const BEFORE: Record<string, Record<string, number>> = {
 // lines; engine SWITCHES.md originBadgeWaitingLines). A line that starts acting leaves this table by its own item.
 const CARRIES: Record<string, { mods?: Record<string, number>; flags?: string[]; waits?: string[] }> = {
   Stalwart: { mods: { maxStamina: 1, maxHp: 2 } },
-  Dwarf: { waits: ['no payload'] },
+  // Law 10, 2026-10-05 - content.dwarf-elf-fey-badges-act (DECISIONS.md 2026-10-05 'a prone unit only stands; … Dwarf, Elf and Fey
+  // act; …': "6. They should act."): the three rows that were names with no payload carry the data's numbers now.
+  // was: Dwarf: { waits: ['no payload'] },
+  Dwarf: { mods: { movement: -1, maxHp: 2 } },
   Brave: { mods: { resist: 1 }, waits: ['immune to Weak'] },
   Huge: { mods: { strength: 2, maxHp: 2, dodge: -15 } },
   Climber: { waits: ['-1 Movement cost into Rocky', '+5 Accuracy while in Rocky'] },
@@ -82,10 +85,12 @@ const CARRIES: Record<string, { mods?: Record<string, number>; flags?: string[];
   UndeadSlayer: { waits: ['Damage +2 vs Undead'] },
   Quick: { mods: { movement: 1 }, waits: ['+10 Surge Chance', 'Deploy +2'] },
   Beautiful: { waits: ['ondeath: all heroes gain 20 surge and +1 health'] },
-  Fey: { waits: ['no payload'] },
+  // was: Fey: { waits: ['no payload'] },
+  Fey: { mods: { surge: 10 } },
   Forester: { waits: ['-1 Movement cost into Forest', '+10 Dodge while in Forest'] },
   Cultist: { mods: { crit: 10 }, waits: ['onbattlestart: lose 1 faith'] },
-  Elf: { waits: ['no payload'] },
+  // was: Elf: { waits: ['no payload'] },
+  Elf: { mods: { vision: 3, luck: 2 } },
   Mystic: { mods: { magic: 1 } },
   Agile: { mods: { dodge: 8 }, flags: ['cannotBeKnockedDown'], waits: ['Gains the Dodge and Roll movement power'] },
   Ignorant: { mods: { magic: -1, luck: 10 } },
@@ -129,22 +134,31 @@ describe('content.hero-origin-badges: each base hero\'s row carries the origin b
       for (const [k, was] of Object.entries(BEFORE[id]!)) expect(now[k] ?? 0, `${id} ${k}`).toBe(was + (sum[k] ?? 0))
       if (Object.keys(sum).length) changed.push(id)
     }
-    // 13 of the 24 are fielded with different numbers; the other 11 carry a name whose lines all wait, or no origin badge
-    expect(changed.length).toBe(13)
+    // Law 10, 2026-10-05 - content.dwarf-elf-fey-badges-act: Dwarf, Elf and Fey act, so the heroes whose only numbered badge is
+    // one of the three (the Dwarven Brawler, the Mountain Berserker, the Ancient Elf, the Forest Fey among them) are fielded
+    // with different numbers too: every hero any of whose badges carries a number, counted off the table above.
+    // was: 13 of the 24 are fielded with different numbers; the other 11 carry a name whose lines all wait, or no origin badge
+    // was: expect(changed.length).toBe(13)
+    expect(changed.length).toBe(Object.values(AT_LANDING).filter((names) => names.some((n) => Object.keys(CARRIES[n]!.mods ?? {}).length > 0)).length)
+    expect(changed.length).toBeGreaterThan(13)
     // the Iron Dwarf, said out: Stalwart's +2 Health and +1 Stamina
     const dwarf = fieldedDef('hero.base.warrior-iron')
-    expect([dwarf.maxHp, dwarf.maxStamina]).toEqual([BEFORE['hero.base.warrior-iron']!['maxHp']! + 2, BEFORE['hero.base.warrior-iron']!['maxStamina']! + 1])
+    // was: expect([dwarf.maxHp, dwarf.maxStamina]).toEqual([BEFORE['hero.base.warrior-iron']!['maxHp']! + 2, BEFORE['hero.base.warrior-iron']!['maxStamina']! + 1])
+    // … and now the Dwarf badge's +2 Health and -1 Movement as well
+    expect([dwarf.maxHp, dwarf.maxStamina, dwarf.movement]).toEqual([BEFORE['hero.base.warrior-iron']!['maxHp']! + 4, BEFORE['hero.base.warrior-iron']!['maxStamina']! + 1, BEFORE['hero.base.warrior-iron']!['movement']! - 1])
   })
   it('in a real battle: the hero on the board wears its origin badges - one line each at fielding, saying what it put on and what waits - and the Forest Elf cannot be knocked down', () => {
     const ctx = createCustomBattle([{ type: 'hero.base.warrior-iron', hex: 85 }, { type: 'hero.base.ranger-scantily', hex: 87 }], [{ type: 'test-zombie', hex: 181 }])
     const [dwarf, elf] = ctx.state.units
     expect(dwarf!.badges).toEqual(['badge.hero', 'badge.stalwart', 'badge.dwarf'])
-    expect(dwarf!.maxHp).toBe(BEFORE['hero.base.warrior-iron']!['maxHp']! + 2)
+    // was: expect(dwarf!.maxHp).toBe(BEFORE['hero.base.warrior-iron']!['maxHp']! + 2) - Stalwart's 2; the Dwarf badge's 2 are on it too now
+    expect(dwarf!.maxHp).toBe(BEFORE['hero.base.warrior-iron']!['maxHp']! + 4)
     expect(elf!.badges).toEqual(['badge.hero', 'badge.agile', 'badge.elf', 'badge.forester'])
     const lines = ctx.events.filter((e) => e.type === 'unit.badged' && e['actor'] === dwarf!.id)
     expect(lines.map((e) => e.causeId)).toEqual(['badge.hero', 'badge.stalwart', 'badge.dwarf'])
     expect(lines[1]!['mods']).toEqual({ maxStamina: 1, maxHp: 2 })
-    expect(lines[2]!['gaps']).toEqual(['no payload'])
+    // was: expect(lines[2]!['gaps']).toEqual(['no payload']) - the Dwarf badge's line says what it put on, and nothing waits
+    expect([lines[2]!['mods'], lines[2]!['gaps'] ?? []]).toEqual([{ movement: -1, maxHp: 2 }, []])
     expect(knockImmunity(ctx, elf!)).toEqual({ back: [], down: ['badge.agile'] })   // Agile: cannot be knocked down, can still be knocked back
     expect(knockImmunity(ctx, dwarf!)).toEqual({ back: [], down: [] })
   })
