@@ -59,6 +59,19 @@
 //     median of each kind, their ratio, and how often the check ran over them;
 //   · seeThrough.pairs and seeThrough.ratio — the two askings "which pieces hide a body now" are already made back to back at
 //     every view of the round (the structure, then every triangle): the ratio of their medians.
+//
+// viewer.solid-pieces-drawn-by-material (2026-10-05): the scene's solid pieces that share a material are drawn from one batch,
+// in ONE call that draws many (WEBGL_multi_draw's multiDrawElementsWEBGL) — counted here as the one draw call it is, with
+// every triangle it draws, and (JSON: draws.many, draws.inMany) how many such calls a frame makes and how many pieces they
+// draw between them. A row says what the page says of its batches (src/terrain3d.js V.solidBatches: how many batches hold how
+// many of the scene's solid pieces, and how long they took to build while the scene loaded). In the round of views that the
+// shadow is compared over, every view is also drawn both ways — the pieces batched, then each piece by itself as first
+// written (V.solidBatches.whole = true) — and every pixel of both canvases compared: the batched column (a view whose two ways
+// differ is drawn again, three times at the most: a frame is now and then a few pixels of one shade off its own repeat, the
+// pieces batched or not, and that is not the batches' doing — the JSON carries the fewest and the most). And at every view
+// of the see-through round the page is asked whether every piece faded see-through is out of its batch and drawn by itself.
+// The still frames are also measured once more with every piece drawn by itself (eachByItself): the draw calls the batches
+// save, counted in the same run on the same view — and the triangles, which must be the very same.
 import {createRequire} from 'node:module'
 import {createServer} from 'node:net'
 import {spawn} from 'node:child_process'
@@ -93,13 +106,18 @@ function install(){
  const wall0=Date.now(),fake0=S.fake;Date.now=()=>Math.round(wall0+(S.fake-fake0))
  const P=WebGL2RenderingContext.prototype,bind=P.bindFramebuffer
  P.bindFramebuffer=function(target,f){if(target===this.FRAMEBUFFER||target===this.DRAW_FRAMEBUFFER)S.fb.set(this,f);return bind.call(this,target,f)}
- const note=(gl,mode,count,instances)=>{if(!S.counts)return
+ const note=(gl,mode,count,instances,many=0)=>{if(!S.counts)return
   const bodies=gl.canvas?.classList?.contains('terrain3d-bodies'),scene=gl.canvas?.classList?.contains('terrain3d-canvas')
   const pass=bodies?'bodies':scene?(S.fb.get(gl)?'shadow':'scene'):'other'
   const tris=(mode===gl.TRIANGLES?count/3:mode===gl.TRIANGLE_STRIP||mode===gl.TRIANGLE_FAN?Math.max(0,count-2):0)*instances
-  const c=S.counts[pass]||(S.counts[pass]={draws:0,triangles:0});c.draws++;c.triangles+=tris}
+  const c=S.counts[pass]||(S.counts[pass]={draws:0,triangles:0,many:0,inMany:0});c.draws++;c.triangles+=tris;if(many){c.many++;c.inMany+=many}}
  for(const [name,count,inst] of [['drawElements',1,-1],['drawArrays',2,-1],['drawElementsInstanced',1,4],['drawArraysInstanced',2,3]]){const real=P[name]
   P[name]=function(...a){note(this,a[0],a[count],inst<0?1:a[inst]);return real.apply(this,a)}}
+ /* one call that draws many (a batch): the extension's own object is the one three already holds — its calls are counted on it */
+ for(const c of document.querySelectorAll('canvas.terrain3d-canvas,canvas.terrain3d-bodies')){const gl=c.getContext('webgl2'),x=gl&&gl.getExtension('WEBGL_multi_draw');if(!x||x.__counted)continue;x.__counted=true
+  const sum=(list,at,n)=>{let t=0;for(let i=0;i<n;i++)t+=list[at+i];return t}
+  const elements=x.multiDrawElementsWEBGL;x.multiDrawElementsWEBGL=function(mode,counts,countsAt,type,offsets,offsetsAt,n){note(gl,mode,sum(counts,countsAt,n),1,n);return elements.apply(this,arguments)}
+  const arrays=x.multiDrawArraysWEBGL;x.multiDrawArraysWEBGL=function(mode,firsts,firstsAt,counts,countsAt,n){note(gl,mode,sum(counts,countsAt,n),1,n);return arrays.apply(this,arguments)}}
  return true
 }
 /** one frame by hand: the clock stepped, every stored callback called once, the 3D scene's own timed */
@@ -119,6 +137,11 @@ function hidingNow(){
  const s=window.__sandbox.viewer._V.seeThrough,S=window.__frameCost;if(!s?.hiding)return null
  const a=S.realNow(),fast=s.hiding(),b=S.realNow(),plain=s.hiding('plain'),c=S.realNow()
  return {same:fast.length===plain.length&&fast.every((x,i)=>x===plain[i]),hiding:plain.length,ms:b-a,plainMs:c-b}
+}
+/** what is faded see-through now, and — where the solid pieces are drawn from batches — is every faded piece out of its batch and drawn by itself? */
+function fadedNow(){
+ const V=window.__sandbox.viewer._V,b=V.solidBatches;if(!V.seeThrough)return null
+ return {faded:V.seeThrough.faded.size,...(b?{out:b.out,inStep:b.inStep}:{})}
 }
 function quarterTurn(){window.__sandbox.viewer.turn(90);return true}
 /** the same frame drawn with the scenery's shadow kept, then with the shadow whole: are the two pictures the same, pixel for pixel? */
@@ -142,7 +165,7 @@ function shadowBothWays(){
  let scene=V.seeThrough.pieces()[0]?.o;while(scene?.parent)scene=scene.parent
  const blended=new Set();scene?.traverse(o=>{if(o.isMesh)for(const m of [].concat(o.material))if(m&&m.transparent&&m.colorWrite)blended.add(m)})
  for(const m of blended)m.colorWrite=false
- let first,kept,full,depth=null
+ let first,kept,full,depth=null,batched=null
  try{
   draw();first=read()
   draw();kept=read()
@@ -151,12 +174,27 @@ function shadowBothWays(){
   /* the bodies' depth: from the pieces that can hide a body, then from every solid piece */
   if(V.bodiesDepth){draw();const few=read(),pieces=V.bodiesDepth.pieces;V.bodiesDepth.whole=true;draw();const all=read();V.bodiesDepth.whole=false;draw()
    const d=differ(few,all);depth={pieces,differing:d.n,worst:d.worst}}
+  /* the solid pieces: drawn from their batches, then each by itself as first written, then from their batches again.
+     A FRAME IS NOW AND THEN A FEW PIXELS OF ONE SHADE OFF THE VERY SAME FRAME DRAWN AGAIN, however its pieces are drawn (found
+     2026-10-05 on the Cathedral and the Cavern Trail: 6 to 12 pixels by 1 of 255 — most often the frame that takes the
+     scenery's shadow again, which asking for the other way does; between two frames with every piece by itself just as
+     well, and in the frame after the shadow's own switch above; the page before the batches has it too — sameWay. Viewer
+     SWITCHES frameNoiseOneShade). So the picture compared is the frame AFTER the one that takes the shadow again, and where
+     the two ways still differ they are drawn again, three times at the most: what is the batches' doing differs every
+     time; a frame's own noise does not come twice. Carried: the fewest pixels that differed over the drawings (differing),
+     the most (most), how often it was drawn (drawn), what the shadow-taking frame differed by (retake), and the batched
+     picture against itself drawn afterwards (back). */
+  if(V.solidBatches){for(let go=1;go<=3;go++){
+    draw();const by=read(),out=V.solidBatches.out;V.solidBatches.whole=true;draw();const taken=read();draw();const each=read();V.solidBatches.whole=false;draw();draw()
+    const again=read(),d=differ(by,each),got={differing:d.n,worst:d.worst,out,back:differ(by,again).n,retake:differ(taken,each).n}
+    batched=batched&&batched.differing<=got.differing?{...batched,most:Math.max(batched.most,d.n),drawn:go}:{...got,most:Math.max(batched?batched.most:0,d.n),drawn:go}
+    if(!d.n)break}}
  }finally{for(const m of blended)m.colorWrite=true}
  draw()
  let pixels=0,drawn=0;for(const a of kept){pixels+=a.length/4;drawn+=drawnOf(a)}
  const both=differ(kept,full),same=differ(first,kept)
  /* (the bodies' own canvas is the second: what is drawn on it is the bodies in this view) */
- return {canvases:kept.length,pixels,drawn,bodies:kept[1]?drawnOf(kept[1]):0,differing:both.n,worst:both.worst,sameWay:same.n,blendedNoise,takes:k.takes,depth}
+ return {canvases:kept.length,pixels,drawn,bodies:kept[1]?drawnOf(kept[1]):0,differing:both.n,worst:both.worst,sameWay:same.n,blendedNoise,takes:k.takes,depth,batched}
 }
 function scrollStep(px){
  const v=window.__sandbox.viewer,V=v._V,S=window.__frameCost
@@ -174,9 +212,11 @@ function summed(frames){
  const passes={};for(const f of frames)for(const [p,c] of Object.entries(f.counts)){(passes[p]??=[]).push(c)}
  const of=p=>({draws:median((passes[p]??[]).map(c=>c.draws).concat(Array(frames.length-(passes[p]?.length??0)).fill(0)))??0,triangles:Math.round(median((passes[p]??[]).map(c=>c.triangles).concat(Array(frames.length-(passes[p]?.length??0)).fill(0)))??0)})
  const shadow=of('shadow'),scene=of('scene'),bodies=of('bodies'),other=of('other')
+ /* the calls that draw many, and the pieces they draw: the scene's pass, a middle frame's */
+ const mid=(passes.scene??[]).map(c=>({many:c.many??0,inMany:c.inMany??0})).sort((a,b)=>a.many-b.many)[Math.floor((passes.scene?.length??0)/2)]??{many:0,inMany:0},many=(passes.scene?.length??0)*2>frames.length?mid:{many:0,inMany:0}
  const ms=frames.map(f=>f.ms).filter(n=>n!=null)
  return {frames:frames.length,ms:{median:round(median(ms)),min:round(Math.min(...ms)),max:round(Math.max(...ms)),total:round(ms.reduce((a,b)=>a+b,0))},
-  draws:{all:shadow.draws+scene.draws+bodies.draws+other.draws,shadow:shadow.draws,scene:scene.draws,bodies:bodies.draws,...(other.draws?{other:other.draws}:{})},
+  draws:{all:shadow.draws+scene.draws+bodies.draws+other.draws,shadow:shadow.draws,scene:scene.draws,bodies:bodies.draws,...(other.draws?{other:other.draws}:{}),...(many.many?{many:many.many,inMany:many.inMany}:{})},
   triangles:{all:shadow.triangles+scene.triangles+bodies.triangles+other.triangles,shadow:shadow.triangles,scene:scene.triangles,bodies:bodies.triangles,...(other.triangles?{other:other.triangles}:{})}}
 }
 async function measure(page,step,scroll){
@@ -213,13 +253,16 @@ async function seeThroughRound(page){
  for(let q=0;q<4;q++){
   for(let i=0;i<8;i++){
    for(let k=0;k<3;k++){await page.evaluate(scrollStep,SCROLL_PX*4);await page.evaluate(tick,WITH_CHECK_MS)}
-   views.push(await page.evaluate(hidingNow))}
+   views.push({...await page.evaluate(hidingNow),now:await page.evaluate(fadedNow)})}
   await page.evaluate(quarterTurn)
   /* the turn is a glide of about a second: let it arrive */
   for(let i=0;i<14;i++)await page.evaluate(tick,WITH_CHECK_MS)}
  const ms=views.map(v=>v.ms),plain=views.map(v=>v.plainMs)
  const built=await page.evaluate(()=>window.__sandbox.viewer._V.seeThrough.built||null)
+ const batched=views.every(v=>v.now&&v.now.inStep!==undefined)
  return {...(built?{built:{pieces:built.pieces,triangles:built.triangles,ms:round(built.ms)}}:{}),views:views.length,same:views.filter(v=>v.same).length,withSomethingHiding:views.filter(v=>v.hiding>0).length,
+  /* where the solid pieces are batched: in how many views is every faded piece out of its batch and drawn by itself, and in how many is one out at all */
+  ...(batched?{fadedAlone:views.filter(v=>v.now.inStep).length,withAPieceOut:views.filter(v=>v.now.out>0).length,mostOut:Math.max(...views.map(v=>v.now.out))}:{}),
   /* the two askings are made back to back at every view: the ratio of their medians (viewer.frame-time-tests-hold-under-load) */
   pairs:views.length,ratio:round(median(ms)/median(plain),4),
   ms:{median:round(median(ms),2),max:round(Math.max(...ms),2)},plainMs:{median:round(median(plain),1),max:round(Math.max(...plain),1)}}
@@ -239,7 +282,10 @@ async function shadowRound(page){
  return {views:views.length,same:views.filter(v=>v.differing===0).length,pixels:views[0].pixels,drawn:Math.min(...views.map(v=>v.drawn)),bodies:Math.min(...views.map(v=>v.bodies)),
   differing:Math.max(...views.map(v=>v.differing)),worst:Math.max(...views.map(v=>v.worst)),
   sameWay:Math.max(...views.map(v=>v.sameWay)),blendedNoise:Math.max(...views.map(v=>v.blendedNoise)),sceneryShadowDrawn:views[views.length-1].takes,
-  ...(views[0].depth?{depth:{pieces:Math.max(...views.map(v=>v.depth.pieces)),differing:Math.max(...views.map(v=>v.depth.differing)),worst:Math.max(...views.map(v=>v.depth.worst))}}:{})}
+  ...(views[0].depth?{depth:{pieces:Math.max(...views.map(v=>v.depth.pieces)),differing:Math.max(...views.map(v=>v.depth.differing)),worst:Math.max(...views.map(v=>v.depth.worst))}}:{}),
+  ...(views[0].batched?{batched:{views:views.length,same:views.filter(v=>v.batched.differing===0).length,differing:Math.max(...views.map(v=>v.batched.differing)),worst:Math.max(...views.map(v=>v.batched.worst)),
+   withAPieceOut:views.filter(v=>v.batched.out>0).length,back:Math.max(...views.map(v=>v.batched.back)),retake:Math.max(...views.map(v=>v.batched.retake)),
+   most:Math.max(...views.map(v=>v.batched.most)),drawnAgain:views.filter(v=>v.batched.drawn>1).length}}:{})}
 }
 /** each thing that can move a pixel, started with the clock held, and what the very next frame did (viewer.still-frame-draws-nothing) */
 async function liveRound(page){
@@ -288,7 +334,13 @@ async function battle(browser,port,id){
   for(let i=0;i<40;i++){await page.evaluate(tick,WITH_CHECK_MS);if(!await page.evaluate(()=>!!window.__sandbox.viewer._V.camAnim))break}
   for(let i=0;i<3;i++)await page.evaluate(tick,WITH_CHECK_MS)
   const row={battle:id,name,board,gpu,loadMs}
+  const batches=await page.evaluate(()=>{const b=window.__sandbox.viewer._V.solidBatches;return b?{batches:b.batches,pieces:b.pieces,solid:b.solid,ms:b.ms}:null});if(batches)row.batches={...batches,ms:round(batches.ms)}
   row.still={withCheck:await measure(page,WITH_CHECK_MS,false),withoutCheck:await measure(page,WITHOUT_CHECK_MS,false)}
+  /* viewer.solid-pieces-drawn-by-material: the same still frames, on the same view, with every solid piece drawn by itself as
+     first written — what the batches save is counted in the same run (the calls; the triangles must be the very same) */
+  if(row.batches){await page.evaluate(()=>{window.__sandbox.viewer._V.solidBatches.whole=true;return true})
+   row.eachByItself=await measure(page,WITHOUT_CHECK_MS,false)
+   await page.evaluate(()=>{window.__sandbox.viewer._V.solidBatches.whole=false;return true});for(let i=0;i<3;i++)await page.evaluate(tick,WITH_CHECK_MS)}
   row.stillPaired=await stillPaired(page)
   row.scrolling={withCheck:await measure(page,WITH_CHECK_MS,true),withoutCheck:await measure(page,WITHOUT_CHECK_MS,true)}
   row.held=await measure(page,0,false)
@@ -304,8 +356,8 @@ async function battle(browser,port,id){
 const n=x=>x==null?'—':x.toLocaleString('en-US')
 const short=id=>id.replace(/^encounter\.(opening\.)?/,'')
 function table(rows){
- const head=['battle','draw calls a frame (shadow · scene · bodies)','triangles a frame (shadow · scene · bodies)','script ms, still: with the check / without','script ms, scrolling: with / without','draw calls scrolling','see-through checks run: still / scrolling','one check, ms: now / every triangle','same pieces both ways','clock held: draw calls (shadow · scene · bodies)','shadow kept against shadow whole: the same picture?','bodies\' depth: pieces drawn; same picture as every piece?']
- const lines=rows.map(r=>r.flat?[short(r.battle),r.note,'','','','','','','','','','']:[short(r.battle),
+ const head=['battle','draw calls a frame (shadow · scene · bodies)','triangles a frame (shadow · scene · bodies)','script ms, still: with the check / without','script ms, scrolling: with / without','draw calls scrolling','see-through checks run: still / scrolling','one check, ms: now / every triangle','same pieces both ways','clock held: draw calls (shadow · scene · bodies)','shadow kept against shadow whole: the same picture?','bodies\' depth: pieces drawn; same picture as every piece?','solid pieces: in batches; batched against each by itself: the same picture?']
+ const lines=rows.map(r=>r.flat?[short(r.battle),r.note,'','','','','','','','','','','']:[short(r.battle),
   `${n(r.still.withoutCheck.draws.all)} (${n(r.still.withoutCheck.draws.shadow)} · ${n(r.still.withoutCheck.draws.scene)} · ${n(r.still.withoutCheck.draws.bodies)})`,
   `${n(r.still.withoutCheck.triangles.all)} (${n(r.still.withoutCheck.triangles.shadow)} · ${n(r.still.withoutCheck.triangles.scene)} · ${n(r.still.withoutCheck.triangles.bodies)})`,
   `${r.still.withCheck.ms.median} (${r.still.withCheck.ms.min}–${r.still.withCheck.ms.max}) / ${r.still.withoutCheck.ms.median} (${r.still.withoutCheck.ms.min}–${r.still.withoutCheck.ms.max})`,
@@ -316,7 +368,8 @@ function table(rows){
   r.seeThrough?`${r.seeThrough.same} of ${r.seeThrough.views} views (${r.seeThrough.withSomethingHiding} with a piece in the way)`:'—',
   `${n(r.held.draws.all)} (${n(r.held.draws.shadow)} · ${n(r.held.draws.scene)} · ${n(r.held.draws.bodies)})`,
   r.shadow?`at most ${n(r.shadow.differing)} of ${n(r.shadow.pixels)} pixels differ, by ${r.shadow.worst} of 255, over ${r.shadow.views} views (two frames drawn the same way: ${n(r.shadow.sameWay)}); bodies in every view: ${r.shadow.bodies>0?'yes':'NO'}`:'—',
-  r.shadow?.depth?`at most ${n(r.shadow.depth.pieces)} pieces; ${n(r.shadow.depth.differing)} pixels differ${r.shadow.depth.differing?`, by ${r.shadow.depth.worst} of 255`:''}`:'—'])
+  r.shadow?.depth?`at most ${n(r.shadow.depth.pieces)} pieces; ${n(r.shadow.depth.differing)} pixels differ${r.shadow.depth.differing?`, by ${r.shadow.depth.worst} of 255`:''}`:'—',
+  r.batches?`${n(r.batches.pieces)} of ${n(r.batches.solid)} in ${n(r.batches.batches)} batches${r.shadow?.batched?`; at most ${n(r.shadow.batched.differing)} pixels differ${r.shadow.batched.differing?`, by ${r.shadow.batched.worst} of 255`:''}, over ${r.shadow.batched.views} views (${r.shadow.batched.withAPieceOut} with a piece out of its batch${r.shadow.batched.drawnAgain?`; ${r.shadow.batched.drawnAgain} drawn again — a frame of them was ${n(r.shadow.batched.most)} pixels off its own repeat`:''})`:''}`:'—'])
  const w=head.map((h,i)=>Math.max(h.length,...lines.map(l=>l[i].length)))
  const row=c=>'| '+c.map((x,i)=>x.padEnd(w[i])).join(' | ')+' |'
  return [row(head),'|'+w.map(x=>'-'.repeat(x+2)).join('|')+'|',...lines.map(row)].join('\n')
@@ -343,6 +396,7 @@ try{
   console.log(`frame-cost: ${relative(ROOT,PAGE).replace(/\\/g,'/')} in a 1920x1080 window${first?`, the board ${first.board.w}x${first.board.h}, drawn by ${first.gpu}`:''}; each number the median of ${FRAMES} frames (lowest–highest), the bodies idling; script ms is one call of src/terrain3d.js frame()`)
   console.log(table(rows))
   for(const r of rows)if(r.seeThrough?.built)console.log(`  ${short(r.battle)}: the see-through structures — ${n(r.seeThrough.built.pieces)} pieces, ${n(r.seeThrough.built.triangles)} triangles — were built in ${r.seeThrough.built.ms} ms while the scene loaded (the page was ready ${n(r.loadMs)} ms after it was opened)`)
+  for(const r of rows)if(r.batches)console.log(`  ${short(r.battle)}: the batches — ${n(r.batches.pieces)} solid pieces in ${n(r.batches.batches)}${r.eachByItself?`: ${n(r.still.withoutCheck.draws.all)} draw calls a frame where each piece by itself is ${n(r.eachByItself.draws.all)} (script ${r.still.withoutCheck.ms.median} ms where ${r.eachByItself.ms.median}), the same ${n(r.eachByItself.triangles.scene)} triangles in the scene's pass${r.eachByItself.triangles.scene===r.still.withoutCheck.triangles.scene?'':' — NOT the same: '+n(r.still.withoutCheck.triangles.scene)}`:''} — were built in ${r.batches.ms} ms while the scene loaded${r.seeThrough?.fadedAlone!=null?`; a piece faded see-through was out of its batch and drawn by itself in ${r.seeThrough.fadedAlone} of ${r.seeThrough.views} views (${r.seeThrough.withAPieceOut} with one out)`:''}`)
   for(const r of rows)if(r.pageErrors)console.log(`  ${short(r.battle)}: page errors — ${r.pageErrors.join(' · ')}`)}
 }finally{clearTimeout(deadline);await browser.close();child.kill()}
 process.exitCode=code
