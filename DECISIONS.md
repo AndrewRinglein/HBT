@@ -5776,3 +5776,21 @@ Ruled:
 - **The unused rows stay** - the Codex's hero rows beyond the 39 the game ships, and the placeholder bestiary rows. Review item 52 is closed.
 - **The leftover unreferenced git files are deleted** (review item 46). A chat may not delete them: the commands go to him at a moment when no worker is writing to those folders.
 - **The loose files at the top of the project are gathered into one folder, not deleted** (review item 53). Read first, by the item that does it: which of them a tool, a test or a document reads by its path - those stay where they are read.
+
+## 2026-10-06 — the cleanup is cut to seven items that run beside the feature work; the rest waits, written down
+
+Andrew, in the home chat, when told that building the whole list (`CODEBASE-REVIEW-2026-10-05.md` section 4, about fifty backlog items) would take about four to seven days:
+
+“This seems really excessive. I don't really want to spend 4 days on architecture cleanup.”
+
+A cut of seven items, about one day of worker time, was put to him - only what stops a daily cost or is the division he asked for himself - with the rest left written and unscheduled, and the question whether the opening draft's move to the kingdom (ruled earlier this day) waits with the rest, since it is one of the larger changes (the engine's own opening battles, 27 test files and their recorded battles, field their parties from that file). He answered:
+
+“I think the seven-item cut is right, and let's wait on the opening draft move.”
+
+Ruled:
+
+- **The build is these seven items, not the whole list.** (1) Logs stop being tracked. (2) The engine's per-landing golden chain becomes one capture tool and one current golden. (3) The camera comes out of `viewer/src/board.js` - the camera only. (4) `maps/` holds the shared map code. (5) `art/` publishes one list the viewer reads for which model and motion each unit uses; no model or motion file moves. (6) `workshop` and `accepted` folders in `art/` and `maps/` for NEW work only; nothing existing is reshuffled. (7) The tutorial line's style rule, if it is misplaced on screen.
+- **They run beside the feature queue, not ahead of it.**
+- **Everything else in the list waits, written down and unscheduled** - the palette and dead CSS, dead code and repeated helpers, the kingdom's door to the viewer, the engine's import loop, the splits of `sandbox.ts`, `viewer.js` and the content compiler, moving the existing art onto shelves, the process tooling leaving the engine, gathering the loose files, and the opening draft's move to the kingdom (that ruling stands; only its time waits). A worker already in a file for a feature may take one.
+
+This replaces, for what is built now, 'everything discussed and proposed in the review is to be built' of the same day. The two prerequisites do not change: the three copies' owed chains land and the full four-suite run is green in the main folder first.
