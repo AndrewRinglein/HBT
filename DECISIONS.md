@@ -5559,3 +5559,19 @@ Andrew, in the kingdom chat:
 “Real is another rule I want to add, which is that the special moves that the starting heroes get should be unlocked instead at level 2, so they don't clutter up level 1 tutorial. That way, you get something extra when you level up.”
 
 What he asked for: the special moves a starting hero has today at level 1 are instead unlocked at level 2 - so the level-1 tutorial is not cluttered with them, and a level-up gives something extra. Which actions count as "special moves", which heroes it covers, and how it shows at level 1 were asked the same day; the item is filed on his answers.
+
+## 2026-10-06 — a hero's special moves unlock at level 2, ruled: all of them, every hero, enemies and civilians unchanged, named on the level-up screen
+
+Andrew, in the kingdom chat, answering four questions on the entry above (1 which count as special moves - Leap, Side Roll, Sidestep and Back Flip only, or also Focus and Devotion, which the game treats as move actions too; 2 does this cover every hero at level 1, including ones drafted later, or only the first heroes of a run; 3 do enemies and civilians keep any special moves they have, whatever their level; 4 should the level-up screen name the moves that just unlocked):
+
+“You name them all in one.  This is going to cover later heroes too. I think we're always going to give starting heroes a special move, but we'll give it to them at level 2.   Enemies are unchanged. Civilians will be unchanged.   Yeah, the level-up screen should name the moves unlocked, and it should go above their head as a thing they gained”
+
+Ruled:
+
+- **Every one of them is a special move:** Leap, Side Roll, Sidestep, Back Flip, Focus and Devotion - every move-class action a hero has besides the basic Move ("You name them all in one"). Stand Up is the prone status's and is not one.
+- **A hero has no special move at level 1 and gains its own at level 2** - every hero, the ones drafted later too: "we're always going to give starting heroes a special move, but we'll give it to them at level 2."
+- **Enemies and civilians are unchanged.**
+- **The level-up screen names the moves unlocked, and shows each above the hero's head as a thing gained.**
+- The chat's defaults, said to him the day he asked and not spoken against: at level 1 a special move is not on the bar at all, rather than shown locked; at level 2 the hero gains all of its own at once, on top of what the level-up gives today.
+
+Filed: `rule.special-moves-unlock-at-level-two`.
