@@ -93,5 +93,13 @@
   "spec": "Filed 2026-10-05 by engine capability.summons (engine/DECISIONS.md 2026-10-04 'his 28 reward weapons read back ...': 'We need: summons'; the item's own words: 'if the Wolf has no model the viewer shows its stand-in and the art need is filed in the art queue by name'). The Staff of Summoning's Call the Wolf puts a Wolf (unit.wolf, content/gen/enemies-authored.json) on the board on the heroes' side. unit.wolf has no 3D model bound, so it stands as a 2D token (node viewer/tools/character-models.mjs --list does not list it). Start at assets/characters/PRODUCTION-START.md. The hounds' bodies are built on the wolf rig (assets/characters/wolf/hounds/bloodhound.glb, hellhound.glb) and are the candidate anatomy and motions: an idle, a move, an attack for each of Pounce and Nip (or one shared), a hit and a death. Its card art is the bestiary's (assets/cards/enemies/wolf.png).",
   "expect": "unit.wolf is listed by viewer/tools/character-models.mjs with a model of its own, and a summoned Wolf stands, walks, attacks, is hit and dies as a 3D body in a battle; shown to Andrew for approval before it is bound.",
   "note": "Filed by the engine worker 2026-10-05."
+ },
+ {
+  "id": "art.banner-models",
+  "kind": "art",
+  "shape": "data",
+  "spec": "Filed 2026-10-05 by engine capability.planted-banners (engine/DECISIONS.md 2026-10-04 'every dead line on his items is a feature that is needed; his items stay in rewards'; the item's own words: 'The viewer shows the planted banner on its hex and the aura's reach; if there is no banner model it shows a stand-in and the art need is filed in the art queue by name'). His Banners are planted on a hex and stay there for the rest of the Battle: the Banner of Courage (warrior), of the Assassin (rogue), of the Vigil (priest), of Heroism (paladin), and - when capability.banner-mystic-magic-attacks lands - of Mystic Power (mage). There is no banner model: the page draws a stand-in, a pole and a pennant in the planter's side's colour (viewer/src/board.js syncPlanted; viewer SWITCHES.md plantedStandIn). Start at assets/characters/PRODUCTION-START.md. Wanted: one planted-banner model per Banner (or one model with five cloths), standing on a hex at a unit's scale, bound so the page draws it where the stand-in is; shown to Andrew for approval before it is bound.",
+  "expect": "A planted Banner stands on its hex as its own 3D model in a battle, each of the five told from the others at a glance, and the stand-in pole is drawn only for a planted object with no model; approved by Andrew before it is bound.",
+  "note": "Filed by the engine worker 2026-10-05."
  }
 ]
