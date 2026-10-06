@@ -5472,3 +5472,16 @@ Ruled:
 Open: the fourth question was not understood and is put again in plainer words - five of the six opening battles are played on a 3D map; the Gates is still a flat board of hex pictures, so it has no 3D tiles to repaint.
 
 The chat's default, his to change in a line: the maps' repainting is filed in the art queue (`engine/.state/backlog.art.json`), a map an item; the units' brightness, the enemies' fire, the measuring tool, the water and the trees in the battle screen's (`backlog.viewer-kingdom.json`).
+
+## 2026-10-06 — an attack shows its total Accuracy and Crit, not the weapon's plus
+
+Andrew, in the kingdom chat, playing:
+
+“In the attacks and actions, when you have a dagger, it shows +5 critical.   It should not show the weapon modifier if the modifier is one of the stats that is regularly in use.  Instead, that stat should be displayed. Critical is an example, whereas critical just needs to be on the bottom part where it shows you have accuracy and then you have critical.  The dagger doesn't show +5 critical. What happens is the attack shows the total critical.   The same thing is true of accuracy.   There's no reason to show a plus accuracy. You just put it in the accuracy. Any questions about cueing the side amount?”
+
+Ruled:
+
+- **On an attack or action, a weapon's change to a stat the row already shows is not listed as a plus or a minus; the row shows that stat's total.** Crit and Accuracy are his two examples: a Dagger's Stab does not say "+5 Crit" - its Crit, in the part of the row that shows Accuracy and then Crit, is the total; "There's no reason to show a plus accuracy. You just put it in the accuracy."
+- The chat's defaults where he did not speak, said to him the same day and each one line to change: damage is left as the row shows it today (he named Crit and Accuracy); the item's own card, at Equip and in battle, still says what the weapon gives ("+5 Crit"), since that is the item described and not an attack; pointing at the total shows what it is made of.
+
+Filed: `viewer.attack-row-shows-totals`.
