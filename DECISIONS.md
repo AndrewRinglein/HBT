@@ -5849,3 +5849,15 @@ Ruled:
 - Not asked for now, in his words: changing how pinned values are handled, and an automatic re-run of failed tests in the gates.
 
 This changes `DISPLAY-RULES.md` rules 16, 28 and 32 as they describe one worker building and landing its own items; that file is his list and is brought into line at the next wrap.
+
+## 2026-10-06 — corrected: the seven-item cut goes FIRST; what is outside it goes to the back
+
+Andrew, in the home chat, minutes after the entry above recorded 'the seven-item cut's items go at the very back of the builders' queue':
+
+“Wait, maybe I misunderstood the seven items. I thought the things that were outside of the seven items. I want to do the things that are going to improve us overall first.”
+
+Ruled:
+
+- **The seven-item cut is done first, ahead of the feature items.** This replaces the last bullet but one of the entry above, and 'they run beside the feature queue, not ahead of it' in the entry 'the cleanup is cut to seven items' of this day.
+- **What is outside the seven is what goes to the very back** — it stays written in `CODEBASE-REVIEW-2026-10-05.md` and waits, as before.
+- Read, not certain: the two tool items from the review of the testing (the 30-second limit; the two tests that depend on run order) are also 'things that are going to improve us overall' and go first with the seven. Put to him the same minute.
