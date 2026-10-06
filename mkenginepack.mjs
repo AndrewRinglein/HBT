@@ -2115,18 +2115,19 @@ function compileItems() {
 // sets it is counted in WITHOUT bearing the tag. A tag does a second thing: the Forge reads a tier-1 row's tags to say which
 // enchantments it may take (and `book` makes a weapon ranged by its rule), so a membership that must leave the Forge alone
 // is said here and nowhere the Forge looks. It reaches the engine as the same `setTags` every member bears. A setMember
-// that names no set, or one the row's own tags already give, FAILS THE BUILD.
+// that names no tag of the Codex, or one the row's own tags already give, FAILS THE BUILD. Like a tag, a membership no row's
+// set line counts is carried by nothing (a row whose set line is broken is the one that fails, by its own check below).
 function setFieldsOf(it, grants) {
   if (it.setMember !== undefined) {
     const no = (why) => { throw new Error(`mkenginepack: ${it.id} setMember ${why}`); };
     if (!Array.isArray(it.setMember) || !it.setMember.length) no('is not a list of set tags');
     for (const t of it.setMember) {
-      if (typeof t !== 'string' || !SET_TAGS.has(t)) no(`names '${t}', which no row's set line counts`);
+      if (typeof t !== 'string' || !(D.tags || []).some((x) => x.id === 'tag.' + t)) no(`names '${t}', which is no tag of the Codex`);
       if ((it.tags || []).includes(t)) no(`names '${t}', which the row's own tags already say`);
     }
     if (new Set(it.setMember).size !== it.setMember.length) no('names a set twice');
   }
-  const setTags = [...(it.tags || []).filter((t) => SET_TAGS.has(t)), ...(it.setMember || [])];
+  const setTags = [...(it.tags || []), ...(it.setMember || [])].filter((t) => SET_TAGS.has(t));
   const sb = it.setBonus;
   if (!sb) return setTags.length ? { setTags } : {};
   const bad = (why) => { throw new Error(`mkenginepack: ${it.id} setBonus ${why}`); };

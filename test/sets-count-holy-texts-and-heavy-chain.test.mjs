@@ -71,9 +71,12 @@ test('the Forge makes of both rows exactly what it made before, and the same wit
  assert.deepEqual(live.pack.derivedItems['item.holy-texts.keen'].setTags,['book']);assert.deepEqual(live.pack.derivedItems['item.heavy-chain.masterwork'].setTags,['chain']);assert.deepEqual(live.pack.enchanted['item.holy-texts.demon-slayer'].setTags,['book']);
 });
 
-test('a setMember that names no set, repeats the row\'s own tag, or is no list fails the build',()=>{
+test('a setMember that names no tag of the Codex, repeats the row\'s own tag, or is no list fails the build; one no set line counts is carried by nothing',()=>{
  const none=candidate(edit=>edit('gen/weapons.json',d=>{rowIn(d,'item.holy-texts').setMember=['gryphon']}));
- assert.notEqual(none.status,0);assert.match(none.stdout+none.stderr,/holy-texts setMember names 'gryphon', which no row's set line counts/);
+ assert.notEqual(none.status,0);assert.match(none.stdout+none.stderr,/holy-texts setMember names 'gryphon', which is no tag of the Codex/);
+ // like a tag: a membership of a tag no row's set line counts builds, and reaches the engine as nothing
+ const uncounted=candidate(edit=>edit('gen/weapons.json',d=>{rowIn(d,'item.holy-texts').setMember=['sword']}));
+ assert.equal(uncounted.status,0,uncounted.stderr);assert.equal(uncounted.pack.items['item.holy-texts'].setTags,undefined);
  const twice=candidate(edit=>edit('gen/settled-items.json',d=>{rowIn(d,'item.book-of-karma').setMember=['book']}));
  assert.notEqual(twice.status,0);assert.match(twice.stdout+twice.stderr,/book-of-karma setMember names 'book', which the row's own tags already say/);
  const word=candidate(edit=>edit('gen/weapons.json',d=>{rowIn(d,'item.holy-texts').setMember='book'}));
