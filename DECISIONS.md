@@ -5422,3 +5422,24 @@ On all five the units go from darker than their ground to lighter. The Orphanage
 Against it, to be settled before the items are written: moving water and moving trees are scenery that changes every frame, and the battle screen was reworked on 2026-10-05 to draw nothing when nothing changed and to draw the scenery's shadows once (`viewer/SWITCHES.md` `stillFrameWhatChanges`) - what they cost has to be measured with the frame-cost tool; and eleven battle-screen items are already open in the queue.
 
 Nothing is filed yet: the pieces are put to him first (a tool that prints each battle's numbers; the look, map by map; the brighter bodies; the enemies' fire; barberry on the maps; lanterns on the maps; the water; the trees).
+
+## 2026-10-06 — the new-enemy close-up, ruled: once a battle for each kind, the group together, kinds one after the other, at the start of a battle too, everything else stops, a setting, a boss gets more
+
+Andrew, in the kingdom chat, answering twelve questions on the entry above (1 is 'the first time' once per run, like the 'New enemy' notice, or once in every battle a kind first appears; 2 when several of a new kind arrive together, one close-up on one of them or a sweep across the group; 3 when two new kinds arrive at once, does each get its own, one after the other; 4 does it also play for new kinds already standing on the board when a battle begins; 5 how long it holds - about two seconds; 6 should a click or a key skip it; 7 should the enemy do something during it, a roar or a flourish, or just stand; 8 do the name and 'This enemy can ...' show during the close-up, in place of the notice at the bottom; 9 for an enemy with no 3D body yet, its card art full-size instead, or no close-up until it has a body; 10 does everything else stop while it plays, in a live battle and in a replay; 11 a setting to turn close-ups off; 12 should a boss or a named enemy get a longer or different one):
+
+“Once every battle, when it appears on a list    one after the other.   I guess we should do it at the beginning of the battle, too. See what it looks like.  No, this is meant to be 3D, so it's going to have the environment around them. There are three zombies at the start of the battle. It's going to zoom in on the front of those zombies and show whatever terrain is around or behind. Zoom in so they're somewhat large, and then snap back to normal.  9. Just zoom in, it's fine if there's no 3D body.     10. Yeah, everything else stops.  11 and 12, yes.”
+
+Ruled:
+
+- **Once in every battle, for each kind of enemy, the first time that kind is on the battlefield** - not once a run.
+- **A group of one kind is shown together:** "It's going to zoom in on the front of those zombies and show whatever terrain is around or behind." One close-up for the group, not one each.
+- **Two new kinds at once: each its own close-up, one after the other.**
+- **At the beginning of a battle too**, for the kinds already standing there - "See what it looks like": it is a try, his to judge.
+- **It is the 3D scene itself** - the enemies where they stand with the ground and scenery around and behind them, "somewhat large" - and then the view "snap[s] back to normal": to the view it left.
+- **An enemy with no 3D body is zoomed in on all the same** ("Just zoom in, it's fine if there's no 3D body").
+- **Everything else stops while it plays**, in a played battle and in a replay.
+- **A setting turns close-ups off.**
+- **A boss or a named enemy gets a longer or different one** ("12, yes" - which of the two he did not say).
+- **Not answered, the chat's defaults (said to him the same day, each one line to change):** it holds about two seconds; a click or a key skips it; the enemies do what they are doing where they stand (no new motion is made for it); the 'New enemy' notice with its name and 'This enemy can ...' shows as it does today, at the bottom, while the close-up plays; a boss's is longer and nearer.
+
+Filed: `viewer.new-enemy-close-up`.
