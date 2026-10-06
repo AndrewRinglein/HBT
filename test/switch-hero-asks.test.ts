@@ -62,7 +62,15 @@ describe('switching heroes asks first', () => {
     walk(P); P.input({ kind: 'choose', id: y })
     const before = box.s.ctx.events.length
     expect(P.input({ kind: 'answer', yes: true })).toBe(true)
-    expect(box.s.ctx.events.slice(before).map((e) => [e.type, (e as { actor?: number }).actor])).toEqual([['activation.end', x], ['activation.selected', y], ['activation.begin', y]])
+    // Law 10, 2026-10-06 — rule.surge-is-at-least-level (engine item; engine DECISIONS.md 2026-10-06 'everyone gains Surge equal to
+    // its level at the least, and rolls the Surge check every Activation'): the hero rolls its Surge check when its action cycle
+    // ends, so that line stands before End activation - here a check that does not surge (1 in 100). The three events the answer
+    // makes are as they were, in the same order, with the actors named. Found by the group's kingdom suite (the failed run stays
+    // in the record). The line was:
+    //   expect(box.s.ctx.events.slice(before).map((e) => [e.type, (e as { actor?: number }).actor])).toEqual([['activation.end', x], ['activation.selected', y], ['activation.begin', y]])
+    const after = box.s.ctx.events.slice(before)
+    expect(after[0]).toMatchObject({ type: 'surge.checked', actor: x, hit: false, chance: 1 })
+    expect(after.slice(1).map((e) => [e.type, (e as { actor?: number }).actor])).toEqual([['activation.end', x], ['activation.selected', y], ['activation.begin', y]])
     expect(acting(box.s)).toEqual(['acting', y])
     expect(yet(box.s), 'the one left has acted').not.toContain(x)
     const f = P.facts()
