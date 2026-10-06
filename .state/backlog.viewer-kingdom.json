@@ -1,5 +1,16 @@
 [
  {
+  "id": "viewer.used-up-power-stays-greyed",
+  "kind": "viewer",
+  "shape": "plumbing",
+  "needs": [
+   "viewer.unaffordable-actions-greyed"
+  ],
+  "spec": "Ruled 2026-10-06 (Andrew, engine/DECISIONS.md 'an Activation is one move action and one primary action, in that order; a used-up power stays on the bar, greyed'): asked whether a used-up once-per-battle power should stay on the bar greyed instead of disappearing - 'One, yes.' viewer.unaffordable-actions-greyed greys what cannot be paid for, but a once-per-Battle power (or any action with uses) that has been used still VANISHES from the bar, as ruled 2026-09-02 (viewer SWITCHES unpaidUsedUpVanishes). Wanted: an action whose uses are spent stays on the unit's bar in its place, greyed and unpressable, and says why on hover in the engine's own reason ('Used: once per Battle.' / 'No uses left.'); it does not light again that battle unless the rules give a use back, and then it lights at once. The same in the kingdom's play input. Item uses that are spent (Bandages, a trap item) follow the same rule where the bar lists them. Mark unpaidUsedUpVanishes overturned with his words and cite 2026-09-02's entry as overturned for the bar. Land by the viewer landing order.",
+  "expect": "After a hero uses a once-per-Battle power its row is still on the bar, greyed, with the reason on hover, for the rest of the battle; the Banner of Courage after it is planted and Bandages after they are used read the same; a power with uses left is lit; a press on the greyed row changes nothing.",
+  "note": "Filed by the home chat 2026-10-06."
+ },
+ {
   "id": "viewer.pixel-compare-tests-hold-against-frame-noise",
   "kind": "viewer",
   "shape": "plumbing",
