@@ -21,7 +21,7 @@ import { runBattle } from '../../engine/src/core/battle.js'
 import { scenarioDef, scenarioOptions } from '../../engine/src/content/scenarios.js'
 
 const page = (file: string) => execFileSync(process.execPath, ['--test', '--test-reporter=tap', file], { cwd: '../viewer', encoding: 'utf8', maxBuffer: 1 << 26, env: { ...process.env, VIEWER_PAGE: process.env.VIEWER_PAGE ?? '' } })
-type E = { type: string; actor?: number | null; target?: number | null; defender?: number; blocked?: boolean; attackId?: string; causeId?: string; kind?: string }
+type E = { type: string; actor?: number | null; target?: number | null; defender?: number; blocked?: boolean; attackId?: string; causeId?: string; kind?: string; downed?: boolean }
 const ENDS = new Set(['attack.declared', 'activation.begin', 'activation.end', 'move.begin', 'moved', 'burst.declared', 'turn.begin', 'phase.begin', 'battle.end'])
 
 describe('an attack\'s moments: what the engine\'s log gives the board to time', () => {
@@ -32,12 +32,13 @@ describe('an attack\'s moments: what the engine\'s log gives the board to time',
       const EV = ctx.events as unknown as E[]
       for (let i = 0; i < EV.length; i++) { const e = EV[i]!; if (e.type !== 'attack.declared') continue
         attacks++; if (e.kind === 'ranged') ranged++
-        let outcome = -1, damage = -1
+        let outcome = -1, damage = -1, bled = -1
         for (let j = i + 1; j < EV.length && !ENDS.has(EV[j]!.type); j++) { const x = EV[j]!
           if (outcome < 0) { if ((x.type === 'attack.hit' || x.type === 'attack.miss') && x.target === e.target || x.type === 'block.rolled' && x.blocked) outcome = j; continue }
           if (EV[outcome]!.type !== 'attack.hit') continue
           /* the attack's own damage carries its id (a hook's damage on the same target may stand between the hit and it) */
           if (x.type === 'damage.applied' && x.target === e.target && x.attackId === e.attackId && damage < 0) damage = j
+          if (x.type === 'bleedout.accelerated' && x.target === e.target && x.causeId === e.attackId && bled < 0) bled = j
           if ((x.type === 'life.dead' || x.type === 'life.downed') && x.target === e.target && damage >= 0) { expect(damage, `${id} line ${j}: the fall comes after the damage`).toBeGreaterThan(outcome)
             // Law 10, combine 2026-10-04 (engine master ea9dafc — rule.free-attack-is-basic-attack — with this copy's engine
             // fix.opening-probe-cadence): was `expect(x.causeId).toBe(e.attackId)`. True of every attack these three battles held
@@ -48,7 +49,17 @@ describe('an attack\'s moments: what the engine\'s log gives the board to time',
             // combineFreeAttackFallCause): anything that matches a fall to its attack by causeId misses a free attack's kill.
             expect(x.causeId).toBe((e as { free?: boolean }).free ? 'movement.aoo' : e.attackId); falls++ } }
         expect(outcome, `${id} line ${i}: the attack's outcome follows its declaration`).toBeGreaterThan(i)
-        if (EV[outcome]!.type === 'attack.hit') { hits++; expect(damage, `${id} line ${outcome}: a hit's damage follows it`).toBeGreaterThan(outcome) } } }
+        // Restated 2026-10-06 (engine items rule.surge-is-at-least-level and rule.special-moves-unlock-at-level-two; engine
+        // DECISIONS.md 2026-10-06 'everyone gains Surge equal to its level at the least …', 'a hero's special moves unlock at level
+        // 2, ruled …'): every hero rolls a Surge check and a level-1 hero has no special move, so replicate 1 of these three
+        // battles is another battle - and in the Bridge's a Fire Imp now hits a hero who is already DOWN. The engine's line says
+        // so (`downed: true`): such a hit deals no damage and takes one from the bleed-out count instead (fix.downed-targetable),
+        // so what follows it is `bleedout.accelerated` under the attack's id, not `damage.applied`. The rule is held for both:
+        // a hit on a standing unit is followed by its damage, a hit on a downed one by the count it took. The line was:
+        //   if (EV[outcome]!.type === 'attack.hit') { hits++; expect(damage, `${id} line ${outcome}: a hit's damage follows it`).toBeGreaterThan(outcome) } } }
+        if (EV[outcome]!.type === 'attack.hit') { hits++
+          if (EV[outcome]!.downed) expect(bled, `${id} line ${outcome}: a hit on a downed unit is followed by the bleed-out count it took`).toBeGreaterThan(outcome)
+          else expect(damage, `${id} line ${outcome}: a hit's damage follows it`).toBeGreaterThan(outcome) } } }
     expect(attacks).toBeGreaterThan(60); expect(hits).toBeGreaterThan(30); expect(falls).toBeGreaterThan(8); expect(ranged).toBeGreaterThan(15)
   })
   it('the viewer page: per attack kind, the attacker\'s motion start, the projectile\'s start and the target\'s reaction start against each clip\'s authored moment; every clip with none is listed; a kill falls at the blow', () => {

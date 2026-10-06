@@ -67,7 +67,11 @@ test('the fold plays both lines: they are folded types, and both battles hold th
      opening six, shields, custom weapons'): this read assert.equal(cavern.seed.replicate, 17). The shields are the Armory Ledger's now,
      the Cavern Trail is another fight, and by the same rule (the lowest seed whose battle turns a hero — viewer SWITCHES
      combineTurnedSeed, shieldsOpeningSeeds) the recording is on seed 11. */
-  assert.equal(cavern.seed.replicate, 11)
+  /* Law 10, 2026-10-06 — engine items rule.surge-is-at-least-level and rule.special-moves-unlock-at-level-two; engine DECISIONS.md 2026-10-06 'everyone gains Surge equal to its level at the least …', 'a hero's special moves unlock at level 2, ruled …':
+     this read assert.equal(cavern.seed.replicate, 11). Every hero rolls a Surge check and a level-1 hero has no special move, so
+     the Cavern Trail is another fight on every seed; read from 0 upward by the same rule, seeds 1, 5 and 22 turn a hero and the
+     recording is on seed 1 (the Battle Chaplain is bitten and turns). */
+  assert.equal(cavern.seed.replicate, 1)
 })
 
 test('before, during and after: at the turn the unit is its form — type, side, Health, the form\'s attacks, no hero gear — keeping its hex and its statuses; at the revert it is itself, whole', () => {

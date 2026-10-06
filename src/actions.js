@@ -59,7 +59,11 @@ export function kitOf(u, D) {
   for (const p of (d.abilities || [])) push(p)
   /* a badge may grant an action too (badge.mechanism 2e76ede) */
   for (const id of (kit.badges || [])) push(ACT[id] && { id, ...ACT[id] })
-  for (const m of (d.moves || [])) push(m)
+  /* rule.special-moves-unlock-at-level-two (engine item, 2026-10-06; engine DECISIONS.md 'a hero's special moves unlock at level 2,
+     ruled …'): a movement the row grants at a level is listed once the unit has reached it. The level is the engine's own line
+     (unit.grown), 1 where the battle fielded the unit with none; a row that names no level lists every movement, as before. */
+  const level = (u && u.grown && u.grown.level) || 1, at = d.moveLevels || {}
+  for (const m of (d.moves || [])) if ((at[m.id] || 1) <= level) push(m)
   /* v2.prone, the engine's grantedActionIds: a status the unit holds may grant an action while held —
      a prone status's stand action ("only appears while prone"), named by the status's own row, in
      status-id order. Derived from what the log folded, so standing removes it with nothing to undo. */

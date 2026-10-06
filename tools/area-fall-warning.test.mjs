@@ -11,6 +11,7 @@ import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import { makeWindow } from './fakedom.mjs'
 import { buildLog } from '../src/log.js'
+import { shownName } from '../src/names.js'
 import { FOLDED_TYPES, createState, fold, foldTo } from '../src/fold.js'
 import { layerHue } from '../src/theme.js'
 const RECORDINGS = { 'the Cavern Trail': JSON.parse(readFileSync('battles/test.opening-cavern-trail.json', 'utf8')), 'the Gates': JSON.parse(readFileSync('battles/test.opening-gates.json', 'utf8')) }
@@ -95,7 +96,13 @@ for (const [name, battle] of Object.entries(RECORDINGS)) {
     assert.match(said(mark).t, new RegExp('Turn ' + M.lands + '\\b'), 'and the Turn the event says it lands')
     assert.match(said(land).t, new RegExp(word, 'i')); assert.match(said(land).t, /lands/i)
     const names = Object.fromEntries(EV.filter(e => e.type === 'unit.enter').map(e => [e.actor, e.name]))
-    for (const id of EV[land].hit) assert.ok(said(land).t.includes(names[id]), 'it names ' + names[id] + ', whom the engine says it struck')
+    /* Restated 2026-10-06 (engine items rule.surge-is-at-least-level and rule.special-moves-unlock-at-level-two; engine DECISIONS.md 2026-10-06 'everyone gains Surge equal to its level at the least …', 'a hero's special moves unlock at level 2, ruled …'): the
+       six recordings are other battles now, and in the Cavern Trail's the meteors strike a hero for the first time - until now
+       no recording's fall struck anyone, so this line had nothing to check. The log names a unit as the board does, the
+       engine's name less its mark (viewer.unit-names-no-letters-or-numbers: "Skullplate Veteran", not "Skullplate Veteran A");
+       the line asked for the engine's name whole. It was:
+         for (const id of EV[land].hit) assert.ok(said(land).t.includes(names[id]), 'it names ' + names[id] + ', whom the engine says it struck') */
+    for (const id of EV[land].hit) assert.ok(said(land).t.includes('<b>' + shownName(names[id]) + '</b>'), 'it names ' + shownName(names[id]) + ', whom the engine says it struck')
     assert.ok(!/\[object|undefined|NaN/.test(said(mark).t + said(land).t))
   })
 }

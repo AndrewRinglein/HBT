@@ -101,7 +101,12 @@ test('battle 2: the Lumberjack reads "Lumberjack", the Soldier "Soldier", every 
   assert.ok(of('unit.soldier').length >= 1); for (const u of of('unit.soldier')) assert.deepEqual([u.label, u.card, u.panel], ['Soldier', 'Soldier', 'Soldier'], u.engine)
   assert.ok(of('unit.zombie').length >= 3); for (const u of of('unit.zombie')) assert.deepEqual([u.label, u.card, u.panel], ['Zombie', 'Zombie', 'Zombie'], u.engine)
   /* the log: one sentence per line of the engine's, and none names a unit with its mark */
-  assert.ok(lines.length > 300, 'the log\'s lines')
+  /* Law 10, 2026-10-06 — engine items rule.surge-is-at-least-level and rule.special-moves-unlock-at-level-two (engine DECISIONS.md
+     2026-10-06 'everyone gains Surge equal to its level at the least …', 'a hero's special moves unlock at level 2, ruled …'):
+     this read assert.ok(lines.length > 300, 'the log\'s lines') — a floor under the recording of the day (717 events). Battle 2's
+     recording is another fight on the same seed, cleared a Turn sooner: 666 events and 283 lines of log. The floor is said
+     again under it; what this test holds - every line read, none naming a unit with its mark - is the loop below, unchanged. */
+  assert.ok(lines.length > 250, 'the log\'s lines')
   const engineNames = [...new Set(units.map(u => u.engine))]
   for (const l of lines) { const t = text(l.t)
     for (const n of engineNames) assert.ok(!new RegExp('(^|[^A-Za-z])' + n.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '($|[^0-9A-Za-z])').test(t), `the log line for event ${l.i} names "${n}": ${t}`) }

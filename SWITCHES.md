@@ -2084,3 +2084,12 @@ GLOSSARY.md 'Settled, 2026-10-05'). The engine's line keeps its id (`status.ward
 | `resistanceToWeakWords` | "the floating words ('WEAK WARDED -2' becomes the GLOSSARY's word), the log line, the tooltip" | **Over the unit: "RESISTANCE TO WEAK −2" (the line's own amount). In the log: "Resistance to Weak: 2 of 5 Weak does not land on <name> · banner-courage.plant". On the bar, in the banner's sentence: "Resistance to Weak 2 (2 points come off each Weak gained)" — it read "2 of each Weak does not land". The status's name is the engine's, so another status warded the same way reads the same way.** Other side for the float: "WEAK RESISTED −2", shorter, and not the GLOSSARY's word. | The item's words. | Default — 2026-10-06 |
 | `vigilWordsOnTheBar` | The Vigil's heal on the bar. | **Nothing added: a heal by the party's Spirit already reads "heal party Spirit" (the Priest's heals do), so the Vigil's sentence is "at the end of its activation: heal party Spirit" once the engine's row says so.** | One wording for one scale. | Default — 2026-10-06 |
 | `resistanceToWeakRecordings` | Do the recordings or the library battles move? | **No battle is exported again for it: no line of any recording changes, only the words the page makes of `status.warded`. The Banner of Courage's library battle is read by the new test as it stands.** | — | Default — 2026-10-06 |
+
+## rule.special-moves-unlock-at-level-two (engine item) — the bar lists a movement once the unit has reached its level, 2026-10-06
+
+Ruled 2026-10-06 (engine/DECISIONS.md 'a hero's special moves unlock at level 2, ruled: all of them, every hero, enemies and
+civilians unchanged, named on the level-up screen').
+
+| Switch | Question | Default | Reason | Status |
+|---|---|---|---|---|
+| `barListsMovesByLevel` | "A level-1 hero's bar shows the basic Move and no Leap, Side Roll, Sidestep, Back Flip, Focus or Devotion" | **The bar listed a unit's movements from its TYPE's row in the dump, whatever its level. The row carries the engine's `moveLevels` now (copied verbatim) and the bar lists a movement only when the unit has reached its level — the level is the engine's own line (`unit.grown`), 1 where the battle fielded the unit with none. A row that names no level (an enemy, a civilian, the test parties) lists everything, as before. Not shown locked: not there.** | The item's words; the page never guesses a level. | Default — 2026-10-06 |
