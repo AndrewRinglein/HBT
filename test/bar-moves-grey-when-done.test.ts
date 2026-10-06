@@ -6,12 +6,19 @@
 // takes). Before the unit moves nothing is done; a move the engine still takes is not done; a new Activation starts clean.
 import { describe, it, expect } from 'vitest'
 import { createSandbox, advanceSandbox, commandSandbox, sandboxChoices, saveSandbox, restoreSandbox, type Sandbox } from '../src/core/sandbox.js'
-import { SANDBOX_DEFAULT } from '../src/content/sandbox.js'
+import { SANDBOX_DEFAULT, SANDBOX_HEROES } from '../src/content/sandbox.js'
+import { specialtiesOf } from '../src/content/progress.js'
 import { createPlayInput } from '../src/ui/play-input.js'
 import { isAttack, isMove } from '../src/engine.js'
 
 function start() {
-  const box: { s: Sandbox } = { s: createSandbox({ mapId: SANDBOX_DEFAULT.mapId, heroes: [...SANDBOX_DEFAULT.heroes], enemies: [], seed: 1, encounterId: 'encounter.opening.orphanage' }) }
+  // Law 10, 2026-10-06 — rule.special-moves-unlock-at-level-two (engine item; engine DECISIONS.md 2026-10-06 'a hero's special moves
+  // unlock at level 2, ruled: all of them, every hero …'): a hero has a second movement power from level 2, and this file is
+  // about what the host says of a hero's OTHER movements after a walk. So its heroes are the sandbox's own three as campaign
+  // rows at level 2, each with the first specialty of its class (the engine fields no level-2 hero without one). The line was:
+  //   const box: { s: Sandbox } = { s: createSandbox({ mapId: SANDBOX_DEFAULT.mapId, heroes: [...SANDBOX_DEFAULT.heroes], enemies: [], seed: 1, encounterId: 'encounter.opening.orphanage' }) }
+  const heroRows = SANDBOX_DEFAULT.heroes.map((id) => { const h = structuredClone(SANDBOX_HEROES.find((x) => x.id === id)!); return { ...h, level: 2, specialty: specialtiesOf(h.classes[0]!)[0]!.id } })
+  const box: { s: Sandbox } = { s: createSandbox({ mapId: SANDBOX_DEFAULT.mapId, heroes: [...SANDBOX_DEFAULT.heroes], heroRows, enemies: [], seed: 1, encounterId: 'encounter.opening.orphanage' }) }
   advanceSandbox(box.s)
   const P = createPlayInput(() => box.s, (c) => commandSandbox(box.s, c), { save: () => saveSandbox(box.s), restore: (saved) => { box.s = restoreSandbox(saved as string); return true } })
   P.next()
