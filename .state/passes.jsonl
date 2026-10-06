@@ -166,3 +166,4 @@
 {"suite":"viewer","stamp":"7290790dc3","failed":true,"at":"2026-10-06T12:16:32.493Z","by":"gate --part checks","in":"HBT-worker-engine"}
 {"suite":"viewer","stamp":"42ad19d70c","failed":true,"at":"2026-10-06T12:41:36.283Z","by":"gate --part checks","in":"HBT-worker-engine"}
 {"suite":"viewer","stamp":"42ad19d70c","with":{"engine":"852b05fc95","content":"3a7dd56661","viewer":"42ad19d70c","kingdom":"e9c8bd20ba"},"at":"2026-10-06T12:59:27.574Z","by":"gate (every part)","in":"HBT-worker-engine"}
+{"suite":"viewer","stamp":"2a8cb4c722","failed":true,"at":"2026-10-06T16:01:32.003Z","by":"gate --part checks","in":"HBT-worker-kingdom"}
