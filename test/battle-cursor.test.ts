@@ -559,6 +559,13 @@ const dwarfElfFeyBadgesActGolden = JSON.parse(readFileSync(new URL('./fixtures/b
 // enemy places, on its own side's way).
 // Every case frozen here (tools/capture-computer-avoids-own-traps-cursor.mts). Moved: none. A `changed` case is checked here and skips the older layers.
 const computerAvoidsOwnTrapsGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-computer-avoids-own-traps.json', import.meta.url), 'utf8'))
+// rule.surge-is-at-least-level (2026-10-06). Ruled 2026-10-06 (DECISIONS.md 'everyone gains Surge equal to its level at the least, and
+// rolls the Surge check every Activation'): "Everyone gains surge equal to level, at the very least. Therefore, there is always at
+// least a 1% chance of a surge." Every hero is fielded with Surge of at least 1 - the level's Surge is data now, on the pack's level
+// rows and the hero's own row - so every hero rolls the Surge check after each Activation: one more roll an Activation, and now and
+// then a Surge. Every battle a hero fights moves; a battle that fields only enemies, civilians or bodies with no hero class does not.
+// Every case frozen here (tools/capture-surge-is-at-least-level-cursor.mts). Moved: showcase.alpha-team, showcase.arc-variant, showcase.assembled-party (text only), showcase.badged, showcase.civilians, showcase.eve-24-a, showcase.eve-24-b, showcase.flight-bonuses, showcase.gash-variant, showcase.horrors, showcase.item-powers, showcase.kiln, showcase.knockback-two, showcase.movement-bonuses, showcase.ordered-power-preview, showcase.prologue-enemies, showcase.prologue-party, showcase.rime, showcase.supper, showcase.surge-flight-ladder, showcase.surrounded, showcase.two-zombies-and-a-child, showcase.waystation, showcase.wounded-entry, test.afflictions-at-zero, test.afflictions-at-zero-rule, test.area-fall-curse, test.area-fall-meteor, test.authored-slots, test.back-flip (text only), test.bandages, test.banner-courage, test.banner-vigil, test.bear-traps, test.block-a, test.block-b, test.board-authored, test.board-journey, test.call-the-wolf, test.caravan-aftermath, test.charge-a, test.charge-b, test.corpse-destroyed, test.counterattack, test.cover-crates, test.cover-fence, test.damage-packets, test.direct-map-authored, test.direct-map-journey, test.encounter-rules-a, test.encounter-rules-b, test.fend, test.field-dressing, test.flaming-longsword, test.flaming-war-axe, test.force-blast, test.frost-resistant, test.geometry-corridor, test.geometry-diagonal, test.ghost, test.ground-table, test.item-uses, test.kdb, test.knockback-well, test.mage-kindle, test.mending-light, test.mode-change-a, test.mode-change-b, test.opening-bridge, test.opening-cathedral, test.opening-cavern-trail, test.opening-gates, test.opening-lumberjack, test.opening-orphanage, test.perfect-sight, test.placed-remains-a, test.placed-remains-b, test.prone-a, test.prone-b, test.prop-destroy, test.props-viewer-ranged-zoc, test.raise-one, test.set-bonus, test.sets-counted, test.sight-a, test.sight-b, test.snarer-traps, test.stealth-a, test.stealth-b, test.stoke, test.structures, test.swap, test.swell, test.thin-sign, test.thorns, test.trigger-with-tag, test.vampire-bite, test.vortex, test.vs-target-a, test.vs-target-b, test.vs-target-c, progression-surge-0 (text only), progression-surge-1 (text only), progression-surge-2 (text only). A `changed` case is checked here and skips the older layers.
+const surgeIsAtLeastLevelGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-surge-is-at-least-level.json', import.meta.url), 'utf8'))
 const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
 // Explicit rule migration, not regenerated historical hashes. These nine old
 // cases contain Surge ledger/refresh changes or terminal markers corrected
@@ -717,7 +724,10 @@ describe('resumable battle cursor', () => {
       const proneOnlyStandUpExpected = proneOnlyStandUpGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const dwarfElfFeyBadgesActExpected = dwarfElfFeyBadgesActGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const computerAvoidsOwnTrapsExpected = computerAvoidsOwnTrapsGolden.cases.find((row:{id:string})=>row.id===fixture.id)
-      const computerAvoidsOwnTrapsMoved = computerAvoidsOwnTrapsExpected?.changed === true
+      const surgeIsAtLeastLevelExpected = surgeIsAtLeastLevelGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+      const surgeIsAtLeastLevelMoved = surgeIsAtLeastLevelExpected?.changed === true
+      // was: const computerAvoidsOwnTrapsMoved = computerAvoidsOwnTrapsExpected?.changed === true — a case rule.surge-is-at-least-level moved skips this layer too (rule.surge-is-at-least-level 2026-10-04)
+      const computerAvoidsOwnTrapsMoved = computerAvoidsOwnTrapsExpected?.changed === true || surgeIsAtLeastLevelMoved
       // was: const dwarfElfFeyBadgesActMoved = dwarfElfFeyBadgesActExpected?.changed === true — a case group A: content.sets-count-holy-texts-and-heavy-chain, content.resistance-to-weak-and-vigil-party-spirit, rule.computer-avoids-own-traps moved skips this layer too (group A: content.sets-count-holy-texts-and-heavy-chain, content.resistance-to-weak-and-vigil-party-spirit, rule.computer-avoids-own-traps 2026-10-04)
       const dwarfElfFeyBadgesActMoved = dwarfElfFeyBadgesActExpected?.changed === true || computerAvoidsOwnTrapsMoved
       // was: const proneOnlyStandUpMoved = proneOnlyStandUpExpected?.changed === true — a case content.dwarf-elf-fey-badges-act moved skips this layer too (content.dwarf-elf-fey-badges-act 2026-10-04)
@@ -895,7 +905,14 @@ describe('resumable battle cursor', () => {
             battle.completeActionCycle(ctx)
           }
         } else result = battle.runBattle(ctx)
-        if (computerAvoidsOwnTrapsExpected) {
+        if (surgeIsAtLeastLevelExpected) {
+        expect(hash(ctx.events), 'full surge-is-at-least-level events').toBe(surgeIsAtLeastLevelExpected.events)
+        expect(hash(ctx.state), 'full surge-is-at-least-level state').toBe(surgeIsAtLeastLevelExpected.state)
+        expect(hash(ctx.rng.log), 'full surge-is-at-least-level RNG').toBe(surgeIsAtLeastLevelExpected.rng)
+        expect(result).toEqual(surgeIsAtLeastLevelExpected.result)
+        }
+        // was: if (computerAvoidsOwnTrapsExpected) { — rule.surge-is-at-least-level (2026-10-04): a case it moved is checked above instead
+        if (computerAvoidsOwnTrapsExpected && !surgeIsAtLeastLevelMoved) {
         expect(hash(ctx.events), 'full computer-avoids-own-traps events').toBe(computerAvoidsOwnTrapsExpected.events)
         expect(hash(ctx.state), 'full computer-avoids-own-traps state').toBe(computerAvoidsOwnTrapsExpected.state)
         expect(hash(ctx.rng.log), 'full computer-avoids-own-traps RNG').toBe(computerAvoidsOwnTrapsExpected.rng)
