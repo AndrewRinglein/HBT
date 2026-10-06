@@ -911,12 +911,18 @@ if (SINGLES) {
         check(cues.some(c => c.k === 'float' && c.kind === 'badge'), `${label}: badge.gained floated no name`) }
       /* a badge's name comes from the dumped table, never invented */
       for (const [e] of byType(EV, 'badge.gained').slice(0, 2)) check(LIB.static.badges[e.badgeId], `${label}: badge ${e.badgeId} is not in the dumped BADGES table`) }
-    /* capability.charges: an exhausted action leaves the bar (viewer finding 2026-09-04) */
+    /* Law 10, 2026-10-06 — viewer.used-up-power-stays-greyed (Andrew, engine DECISIONS.md 'an Activation is one move action and one
+       primary action, in that order; a used-up power stays on the bar, greyed' — asked whether a used-up once-per-battle power
+       should stay on the bar greyed instead of disappearing: "One, yes.") overturns what this check held since capability.charges
+       ("an exhausted action leaves the bar", viewer finding 2026-09-04). Now: the row is on the bar before, lit; after its last
+       use it is STILL on the bar, greyed and marked disabled. The last line was:
+         check(!V.dom.actionbar.innerHTML.includes(`data-act="${id}"`), `${label}: ${id} spent its last use and is still on the bar`) */
     for (const [e, i] of byType(EV, 'power.exhausted').slice(0, 1)) { const id = e.abilityId ?? e.actionId
+      const rowOf = () => V.dom.actionbar.querySelectorAll('.acRow').find(r => r.dataset.act === id)
       v.seek(i); v.inspect(e.actor); v.render()
-      check(V.dom.actionbar.innerHTML.includes(`data-act="${id}"`), `${label}: ${id} is not on the bar before it is exhausted`)
+      check(rowOf() && !/\busedUp\b/.test(rowOf().className), `${label}: ${id} is not on the bar, lit, before it is exhausted`)
       v.step(); v.inspect(e.actor); v.render()
-      check(!V.dom.actionbar.innerHTML.includes(`data-act="${id}"`), `${label}: ${id} spent its last use and is still on the bar`) }
+      check(rowOf() && /\busedUp\b/.test(rowOf().className) && rowOf().getAttribute('aria-disabled') === 'true', `${label}: ${id} spent its last use and is not on the bar greyed`) }
     /* light.cast / maxHp.gained / stamina.drained — on the mandatory list since
        2026-09-03 with NO assertion anywhere until 2026-09-04 (REVIEW §B2) */
     for (const [e, i] of byType(EV, 'light.cast').slice(0, 2)) {
