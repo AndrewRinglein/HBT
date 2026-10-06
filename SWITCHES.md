@@ -1533,3 +1533,17 @@ Activation'). The number is the engine's row; nothing is counted here.
 |---|---|---|---|---|
 | `surgeOnTheSheet` | "the hero sheet … show[s] the same Surge the engine fields" | **The hero's stat block (Roster, Deploy, Equip) had no Surge row; it has one now, last, reading the engine's fielded hero like every other row — 1 for a level-1 hero, with the difference its gear makes shown as the others show theirs.** Other side: leave the sheet as it was and show Surge only where it is gained. | The item's words. | Default — 2026-10-06 |
 | `surgeOnTheLevelUpScreen` | "the level-up screen shows the Surge gained with the level like any other stat" | **Nothing built: the screen lists the engine's level row, and the row grants 1 Surge now, so "+1 Surge" stands beside "+2 Health". A civilian's screen shows what its own table says ("+2 Surge" at level 2, "+1" after) — the Surge it was already gaining unseen.** | One list of grants, the engine's. | Default — 2026-10-06 |
+
+## rule.special-moves-unlock-at-level-two (engine item) — the level-up screen names the moves unlocked, 2026-10-06
+
+Ruled 2026-10-06 (engine/DECISIONS.md 'a hero's special moves unlock at level 2, ruled: all of them, every hero, enemies and
+civilians unchanged, named on the level-up screen'): "Yeah, the level-up screen should name the moves unlocked, and it should
+go above their head as a thing they gained". Which move a hero has, and from which level, is the engine's row; the kingdom
+rules nothing.
+
+| Switch | Question | Default | Reason | Status |
+|---|---|---|---|---|
+| `moveUnlockedOnTheLevelUpScreen` | How is a move unlocked named? | **As a bonus of its own in the "You will gain" list, after the level's stats: "New move: Leap", and under it the move's one line. A level that unlocks none shows nothing new.** | His words. | Default — 2026-10-06 |
+| `moveUnlockedLine` | "with its one line of what it does (the Codex's words)" | **The class row's own note for its bonus move in the Codex (`bonusMoveNote`): Leap "2 stamina, 2 hexes, +2 Strength until end of Turn." · Side Roll "1 stamina, 1 hex." · Focus "0 stamina, moves you ZERO hexes, gain 1 Stamina. A caught caster stays caught." · Devotion "0 stamina, moves you ZERO hexes, -1 Stamina Max for the Battle, gain 2 Stamina." · Sidestep "0 stamina, cooldown 1, 1 hex." Generated (`tools/mk-progress.mjs` MOVE_LINES); none typed here.** Other side: the move's whole description from the Codex (four or five sentences), too long for a line. | The one line the Codex has. For Andrew: these are authoring notes, terse; say if a player-facing line should be written for each. | Default — 2026-10-06 |
+| `moveUnlockedAboveTheHead` | "it should go above their head as a thing they gained … in the way the screen already shows a gain above a head" | **The screen already raises each gain above the hero's card after the level is taken (the stat gains, the specialty's name, one every 450 ms); the move rises with them, in gold, reading "New move: Leap".** | The existing way; nothing new invented. | Default — 2026-10-06 |
+| `lessonsNameNoSpecialMove` | "the lessons of battles 1 and 2 … must not point at, name or require a move a level-1 hero no longer has" | **None does, and none was reworded: the lessons teach the basic Move (they point at `basic-move`), attacking, the enemy's numbers, the phases, End Turn, Stamina, free attacks and the camera. No lesson existed to teach a special move. Held by a test over every lesson's words and pointer.** | Read, not changed. | Default — 2026-10-06 |

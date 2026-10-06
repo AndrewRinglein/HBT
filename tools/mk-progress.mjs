@@ -49,6 +49,14 @@ const linesOf = (rows, what) => sorted(Object.fromEntries((rows ?? []).filter((r
   return [r.id, r.playerLine]
 })))
 const badgeLines = linesOf(codex.badges, 'badge'), statLines = linesOf(codex.stats, 'stat')
+// rule.special-moves-unlock-at-level-two (engine item, 2026-10-06; engine DECISIONS.md 'a hero's special moves unlock at level
+// 2, ruled …': "the level-up screen should name the moves unlocked"): the Codex's one line for a class's bonus move — its
+// class row's `bonusMoveNote` beside `bonusMove` — by class and move. Which move a hero has and at what level is the engine's
+// row; only the words are carried here. A class with a bonus move and no note carries ''.
+const moveLines = codex.classes.filter((c) => typeof c.bonusMove === 'string').map((c) => {
+  if (c.bonusMoveNote !== undefined && typeof c.bonusMoveNote !== 'string') fail(`class '${c.id}' has a bonusMoveNote that is not words`)
+  return { classId: c.id, moveId: c.bonusMove, line: (c.bonusMoveNote ?? '').trim() }
+})
 if (new Set(classes.map((c) => c.id)).size !== classes.length) fail('duplicate class id in codex.classes')
 
 if (OUT === 'src/content/generated/progress.ts') mkdirSync('src/content/generated', { recursive: true })
@@ -77,5 +85,10 @@ ${Object.entries(badgeLines).map(([k, v]) => '  ' + JSON.stringify(k) + ': ' + J
 export const STAT_LINES: Readonly<Record<string, string>> = {
 ${Object.entries(statLines).map(([k, v]) => '  ' + JSON.stringify(k) + ': ' + JSON.stringify(v) + ',').join('\n')}
 }
+
+/** Per class that has one: its bonus move and the Codex's one line of what the move does (the class row's bonusMoveNote). */
+export const MOVE_LINES: readonly { readonly classId: string; readonly moveId: string; readonly line: string }[] = [
+${moveLines.map((m) => '  ' + JSON.stringify(m) + ',').join('\n')}
+]
 `)
 console.log(`${OUT} — ${specs.length} specialties' words, ${classes.length} classes (${classes.filter((c) => c.line).length} with a player-facing line), ${Object.keys(badgeLines).length} badges' and ${Object.keys(statLines).length} stats' plain words`)
