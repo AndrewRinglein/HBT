@@ -146,6 +146,15 @@ const RAW_SCENARIOS: Readonly<Record<string, ScenarioDef>> = {
     id: 'test.bear-traps', note: 'TEST: a warrior carrying Bear Traps (one use: two traps on empty hexes within 3; the first unit to enter one takes 4 physical damage and gains 1 Root) and a priest, against two zombies. No campaign claim.',
     mapId: 'map.open', heroes: ['hero.base.warrior-iron', 'hero.base.priest-robes'], heroHexes: [85, 101], heroItems: [['item.destroyed-mail', 'item.war-axe', 'item.bear-trap'], undefined], enemies: ['unit.zombie', 'unit.zombie'], enemyHexes: [94, 110], replicate: 0,
   },
+  // rule.computer-avoids-own-traps (2026-10-06; DECISIONS.md 2026-10-05 'the computer avoids its own traps; …': "Computers
+  // should avoid their own traps."): the second fielding the rule is held on - a trap an ENEMY places. No enemy row of the
+  // Codex places one, so the placer is a test body (the test zombie with Stamina and one power, Snare): too far to reach a
+  // hero on the first Turn, it places its trap on the open hex nearest the nearest hero - on its own side's way to them - and
+  // then it and two zombies close in. A fielding, not a balance claim.
+  'test.snarer-traps': {
+    id: 'test.snarer-traps', note: 'TEST: a warrior and a priest against a Snarer (a test zombie that places one trap: 2 physical damage and 1 Root) and two zombies behind it. No campaign claim.',
+    mapId: 'map.open', heroes: ['hero.base.warrior-iron', 'hero.base.priest-robes'], heroHexes: [85, 101], enemies: ['test-snarer', 'test-zombie', 'test-zombie'], enemyHexes: [94, 110, 78], replicate: 0,
+  },
   // capability.planted-banners (2026-10-05; DECISIONS.md 2026-10-04 'every dead line on his items is a feature that is needed …':
   // "All of those deadlines need to be added in as features that we need."): the Banner of Courage live in a real battle - a
   // warrior carrying it beside a priest, against a Necromancer (whose bolt leaves Weak) and a zombie too far to reach on the

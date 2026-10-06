@@ -56,7 +56,7 @@ function strikesFrom(ctx: Ctx, at: Unit, tg: Unit, a: AttackDef, hex: HexId): bo
  *   - a hex within the charge's budget from which the attack would strike
  * The walk ends on the cheapest such hex, ties to the lower hex id (Law 6).
  */
-export function planCharge(ctx: Ctx, actor: number, target: number, actionId: string, slot: ActionSlot): ChargePlan | Refusal {
+export function planCharge(ctx: Ctx, actor: number, target: number, actionId: string, slot: ActionSlot, avoid?: ReadonlySet<HexId>): ChargePlan | Refusal {
   const u = ctx.state.units[actor], tg = ctx.state.units[target], a = ctx.actions[actionId]
   if (!u || !tg || !a || !isCharge(a)) return refused('illegal-target-or-action')
   if (a.move.shape !== 'path') return refused('illegal-target-or-action')
@@ -66,7 +66,8 @@ export function planCharge(ctx: Ctx, actor: number, target: number, actionId: st
   if (strikesFrom(ctx, u, tg, a, u.hex)) return refused('target-already-in-reach')
   const budget = chargeBudget(u, a)
   if (budget <= 0) return refused('charge-out-of-reach')
-  const reach = reachable(ctx, u, budget - u.movePointsLeft)
+  // rule.computer-avoids-own-traps (2026-10-06): hexes the charger will not enter (a request's `avoid`) — the walk goes round them, or the charge is out of reach
+  const reach = reachable(ctx, u, budget - u.movePointsLeft, avoid)
   let best: HexId | null = null
   for (const [hex, node] of reach) {
     if (!strikesFrom(ctx, u, tg, a, hex)) continue
