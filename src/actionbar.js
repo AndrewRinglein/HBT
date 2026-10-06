@@ -65,6 +65,11 @@ export function drawBar(V) {
   const stands = new Set(Object.keys((u && u.st) || {}).filter(sid => u.st[sid] > 0).map(sid => ((D.STATUS_ROWS || {})[sid] || {}).standAction).filter(Boolean))
   const waiting = !!V.play && !!u && V.play.actor === u.id ? V.play.standFirst.filter(id => !stands.has(id)) : []
   const standName = (all.find(a => stands.has(a.id)) || {}).name
+  /* viewer.unaffordable-actions-greyed (engine DECISIONS.md 2026-10-05 'a prone unit only stands; …; what cannot be paid is greyed; …', Andrew: "If a tax can't be paid for or a power can't be paid for, it should be grayed out." ('tax' is 'attack' - dictation)): the rows the
+     acting unit cannot pay for now are the HOST'S word too (play facts' cantPay — the engine's limits check, asked by the
+     host, each with the line that says why). Nothing about Stamina, a cooldown or a use is worked out here for it: with no
+     word from the host a row is as it was (a replay still shows the fold's cooldown count, below). */
+  const unpaid = new Map(!!V.play && !!u && V.play.actor === u.id ? V.play.cantPay.map(c => [c.id, c.why]) : [])
   const base = (UD[u?.typeId] || {}).accuracy      // EXEMPTION base-accuracy: the sheet's base, not the live total
   const now = V.clock()
   let html = ''
@@ -111,10 +116,12 @@ export function drawBar(V) {
        moveDone, from the engine), for the unit acting only, and never an attack or a power. A row the engine refuses (on
        cooldown) keeps the disabled look instead: the two are told apart at a glance (styles.css .moveDone, .cool) */
     const standFirst = waiting.includes(a.id)
+    /* one reason at a time: a row that waits on the stand says that; otherwise the host's line for what cannot be paid */
+    const cantPay = !standFirst && unpaid.has(a.id)
     const moveDone = !cool && !standFirst && a.kind === 'move' && !!V.play && V.play.actor === u.id && V.play.moveDone.includes(a.id)
     const whole = actionLines(a, u, D, SN).join('\n') + (moveDone ? '\nThis move is done for this Activation.' : '')
-      + (standFirst ? '\nKnocked down: ' + (standName || 'stand up') + ' first.' : '')
-    html += `<div class="acRow${firing ? ' firing' : ''}${cool ? ' cool' : ''}${moveDone ? ' moveDone' : ''}${standFirst ? ' standFirst' : ''}${chosen && !standFirst ? ' playChosen' : ''}" data-act="${escape(a.id)}"${standFirst ? ' aria-disabled="true"' : ''} title="${escape(whole)}" style="border-left-color:${accent}">
+      + (standFirst ? '\nKnocked down: ' + (standName || 'stand up') + ' first.' : '') + (cantPay ? '\n' + unpaid.get(a.id) : '')
+    html += `<div class="acRow${firing ? ' firing' : ''}${cool ? ' cool' : ''}${moveDone ? ' moveDone' : ''}${standFirst ? ' standFirst' : ''}${cantPay ? ' cantPay' : ''}${chosen && !standFirst && !cantPay ? ' playChosen' : ''}" data-act="${escape(a.id)}"${standFirst || cantPay ? ' aria-disabled="true"' : ''} title="${escape(whole)}" style="border-left-color:${accent}">
       <div class="acMain">
         <div class="acL1">${icoHTML(a)}
           <span class="acName">${escape(a.name || a.id)}${dupe ? `<span class="acFrom">${dupe}</span>` : ''}</span>
