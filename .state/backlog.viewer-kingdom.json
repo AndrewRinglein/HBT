@@ -18,7 +18,7 @@
   "expect": "After a hero uses a once-per-Battle power its row is still on the bar, greyed, with the reason on hover, for the rest of the battle; the Banner of Courage after it is planted and Bandages after they are used read the same; a power with uses left is lit; a press on the greyed row changes nothing.",
   "note": "Filed by the home chat 2026-10-06.",
   "status": "done",
-  "sha": "158d56e"
+  "sha": "5d61759"
  },
  {
   "id": "viewer.pixel-compare-tests-hold-against-frame-noise",
