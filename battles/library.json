@@ -150,6 +150,14 @@
    "label": "TEST · the Banner of Courage: planted on a hex, its reach, Weak warded and Surge Chance gained"
   },
   {
+   "file": "test.bear-traps.json",
+   "label": "TEST · Bear Traps: two traps placed in one use, and each sprung by a zombie that walks onto it"
+  },
+  {
+   "file": "test.bear-traps-s1.json",
+   "label": "TEST · Bear Traps: one sprung, one nobody entered - taken up when the battle ends (seed 1)"
+  },
+  {
    "file": "test.knockback-well.json",
    "label": "TEST · knockback collisions: boulder and well (consumed)"
   },

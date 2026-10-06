@@ -73,7 +73,7 @@ import {paintedBinding, bundledPainted, paintedToCSS} from './painted.js'
 import {worldToCSS} from './terrain-scene.js'
 import {flatAffine} from './camera3d.js'
 import { createState, fold, foldTo, damageDealt } from './fold.js'
-import { el, ensureKeyframes, buildGround, syncProps, syncUnits, syncLayers, syncFalls, syncCorpses, syncPlanted, syncAuras, drawAim, drawTargeting, syncPlayInput, drawPlay, applyCam, playCues, clearFloats, initFX, traverse, ROOT_TRANSITION, bindCamera, drawEdges, cancelBeats, turnCam, resetCam, homeCam, stopGlide, cameraView, cameraState, centreOn, revealPan, revealHex, clickBubble, isoK, boardAffine, GLIDE_MS } from './board.js'
+import { el, ensureKeyframes, buildGround, syncProps, syncUnits, syncLayers, syncFalls, syncCorpses, syncPlanted, syncTraps, syncAuras, drawAim, drawTargeting, syncPlayInput, drawPlay, applyCam, playCues, clearFloats, initFX, traverse, ROOT_TRANSITION, bindCamera, drawEdges, cancelBeats, turnCam, resetCam, homeCam, stopGlide, cameraView, cameraState, centreOn, revealPan, revealHex, clickBubble, isoK, boardAffine, GLIDE_MS } from './board.js'
 import { drawPanel, drawPortrait } from './panel.js'
 import { barUnitOf } from './subject.js'
 import { closeAffliction } from './affliction.js'
@@ -103,6 +103,8 @@ export const DUR = { 'burst.declared': 900, 'burst.shielded': 300, 'burst.struck
   'side.stat.changed': 420, 'side.stat.restored': 320,
   /* capability.planted-banners (engine item, 2026-10-05) */
   'object.planted': 640, 'status.warded': 300, 'surge.gained': 160,
+  /* capability.placed-traps (engine item, 2026-10-05) */
+  'trap.placed': 320, 'trap.sprung': 520, 'trap.removed': 0,
   /* viewer.plays-turned-units (2026-10-04) */
   'unit.transformed': 900, 'unit.reverted': 420,
   /* the Deathbed Fighting modal holds the game (ruled 2026-09-03 evening): DB_TOTAL + a breath */
@@ -263,7 +265,7 @@ export function mountBattleViewer(root, data, opts = {}) {
     if (!V.layers.ground) buildGround(V)
     syncProps(V)
     /* the persistent board objects, coplanar with the ground and right after it */
-    syncLayers(V); syncFalls(V); syncCorpses(V); syncPlanted(V); syncAuras(V)
+    syncLayers(V); syncFalls(V); syncCorpses(V); syncPlanted(V); syncTraps(V); syncAuras(V)
     drawAim(V); drawTargeting(V)
     syncUnits(V); syncPlayInput(V); drawPlay(V)
     drawPanel(V); drawRail(V); drawActivated(); applyCam(V); drawEdges(V); drawChips(); terrain.update(); chrome.sync()

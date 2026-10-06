@@ -86,6 +86,14 @@ function effectNeeds(e, S) {
     for (const t of e.lends ?? []) out.push(...effectNeeds(t.effect, S))
   }
   if (e.kind === 'surge.gain') out.push(word('surge'))
+  /* capability.placed-traps (engine item, 2026-10-05): a trap — that it is a trap and springs on the first unit to enter, its
+     damage (amount and type), each status it leaves and the ground its hex gains (its radius is read above, as every row's) */
+  if (e.kind === 'trap.place') {
+    out.push(word('trap'), word('first unit to enter'))
+    if (e.damage) out.push(...amountNeeds(e.damage.amount), word(e.damage.damageType))
+    for (const s of e.statuses ?? []) out.push(word(S.statuses[s.statusId] ?? s.statusId), num(s.value))
+    if (e.paints) out.push(word(String(S.layers[e.paints] ?? e.paints).replace(/^layer\./, '')))
+  }
   if (e.kind === 'summon') out.push(word('summon'), word(((S && S.units && S.units[e.unit]) || {}).name ?? e.unit))
   if (e.who === 'self') out.push(SELF)
   return out
@@ -98,6 +106,7 @@ export function actionNeeds(a, triggers, S) {
   if (a.cooldown) need('cooldown ' + a.cooldown, [word('cooldown'), num(a.cooldown)])
   if (a.warmup) need('warm-up ' + a.warmup, [word('warm-up'), num(a.warmup)])
   if (a.uses != null) need(a.uses + ' uses per battle', [num(a.uses), word('use')])
+  if (a.hexes > 1) need(a.hexes + ' hexes in one use', [num(a.hexes), word('hexes')])   // capability.placed-traps (engine item)
   if (a.free) need('free', [word('free')])
   if (a.slot) need('slot ' + a.slot, [word(a.slot === 'either' ? 'move or the primary' : a.slot === 'movement' ? 'move' : 'primary')])
   if (a.target) need('target ' + JSON.stringify(a.target), targetNeeds(a.target))

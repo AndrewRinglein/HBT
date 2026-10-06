@@ -225,3 +225,29 @@ test('a planted banner is said whole on its power: the hex, the reach, the stats
   assert.match(of('power.banner-heroism.plant'), /within 3 hexes of that hex: STR\w* \+2 · PRE\w* \+2 · at the end of its activation: heal 5/i)
   assert.equal(STATIC.actions['power.banner-mystic-power.plant'], undefined, 'the Mystic Banner is not planted as an object that does nothing')
 })
+
+/* capability.placed-traps (engine item, 2026-10-05; engine DECISIONS.md 2026-10-04 'every dead line on his items is a feature
+   that is needed …': "All of those deadlines need to be added in as features that we need."): a use that places a trap says
+   all of it - the empty hex it is aimed at, that one use is two hexes where it is, who the trap springs on, its damage and
+   type, the status it leaves, who else it strikes and the ground its hex gains. Read off the engine's own rows
+   (generated/static.json); the audit holds every such row the same way (tools/bar-audit.mjs). */
+test('a trap is said whole on its use: the hex, the two hexes of one use, who springs it, its damage, its status, its radius, its ground', async () => {
+  const { effectSentence, effectWord, trapWords } = await import('../src/actions.js')
+  const row = id => STATIC.actions[id], trap = id => row(id).effects[0]
+  const bear = row('power.bear-trap.use')
+  assert.ok(bear, 'the engine holds the Bear Traps\' use')
+  assert.deepEqual([bear.staminaCost, bear.uses, bear.range, bear.hexes, bear.target.select], [1, 1, 3, 2, 'hex'])
+  assert.deepEqual(trap('power.bear-trap.use'), { kind: 'trap.place', damage: { amount: 4, damageType: 'physical' }, statuses: [{ statusId: 'status.root', value: 1 }] })
+  assert.match(trapWords(trap('power.bear-trap.use'), D, STATIC.statuses), /^place a trap on that hex — the first unit to enter it takes 4 physical damage and gains 1 root; then the trap is gone$/i)
+  assert.equal(effectSentence(trap('power.bear-trap.use'), undefined, D, STATIC.statuses), trapWords(trap('power.bear-trap.use'), D, STATIC.statuses))
+  assert.deepEqual(effectWord(trap('power.bear-trap.use'), D, STATIC.statuses), { word: 'Places a trap' })
+  const lines = actionLines({ id: 'power.bear-trap.use', ...bear }, {}, D, STATIC.statuses).join(' | ')
+  assert.match(lines, /Stamina 1/); assert.match(lines, /1 use per battle/); assert.match(lines, /one use is 2 hexes, chosen one after another/)
+  assert.match(lines, /empty hex/i)
+  // the other three, by the same function
+  assert.match(trapWords(trap('power.explosive-trap.use'), D, STATIC.statuses), /the first unit to enter it, and every unit within 1 hex of it, takes 2 \+ party Magic magic damage; then the trap is gone$/)
+  assert.match(trapWords(trap('power.fire-trap.use'), D, STATIC.statuses), /takes party Magic magic damage and gains 1 burn; the hex becomes burning ground; then the trap is gone$/i)
+  assert.match(trapWords(trap('power.magic-trap.use'), D, STATIC.statuses), /takes 2 × party Magic magic damage and gains 3 slow; then the trap is gone$/i)
+  assert.equal(row('power.explosive-trap.use').hexes, undefined, 'the Explosive Trap is one trap')
+  assert.doesNotMatch(actionLines({ id: 'power.explosive-trap.use', ...row('power.explosive-trap.use') }, {}, D, STATIC.statuses).join(' | '), /one use is/)
+})
