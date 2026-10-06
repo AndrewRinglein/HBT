@@ -12005,8 +12005,7 @@ export const UNIT_PACK = {
               "effect": {
                 "kind": "heal",
                 "amount": {
-                  "scale": "stat",
-                  "stat": "spirit",
+                  "scale": "partySpirit",
                   "base": 0,
                   "mult": 1
                 }
@@ -20742,7 +20741,7 @@ export const UNIT_PACK = {
     },
     "item.necklace-of-weakness-immunity": {
       "id": "item.necklace-of-weakness-immunity",
-      "name": "Necklace of Weakness Immunity",
+      "name": "Necklace of Weakness Resistance",
       "itemClass": "trinket",
       "tier": 2,
       "hands": 0,
@@ -52077,7 +52076,7 @@ export const UNIT_PACK = {
       "grants": [],
       "flags": {},
       "gaps": [
-        "Immune weak 1"
+        "Resistance to Weak 1"
       ]
     },
     "badge.fire-resistant": {

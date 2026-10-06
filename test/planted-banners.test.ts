@@ -12,7 +12,7 @@ import { settle } from '../src/core/settle.js'
 import { canUsePower, usePower } from '../src/core/ability.js'
 import { applyStatus, valueOf as statusValue } from '../src/core/status.js'
 import { beginActivation, gainSurgeChance, plantedOver } from '../src/core/mutate.js'
-import { fireTriggers, validateEffect, validateTrigger, type Trigger } from '../src/core/trigger.js'
+import { fireTriggers, partySum, validateEffect, validateTrigger, type Trigger } from '../src/core/trigger.js'
 import { effective } from '../src/core/stats.js'
 import { restoreBattle, saveBattle } from '../src/core/snapshot.js'
 import { plantedPower } from '../src/content/pack.js'
@@ -58,11 +58,13 @@ describe('the rows', () => {
     expect(fx(assassin.id)).toEqual({ kind: 'plant', radius: 1, mods: { crit: 20 },
       lends: [{ id: 'trigger.banner-assassin.plant.stamina', hook: 'onCrit', chance: 100, select: 'self', effect: { kind: 'stamina.gain', value: 1 }, source: assassin.id }] })
     expect(assassin.gaps ?? []).toEqual([])
-    // the Vigil's: radius 1, an ally inside heals its own Spirit at the End of its Activation
+    // the Vigil's: radius 1, an ally inside heals the PARTY's Spirit at the End of its Activation
+    // Restated 2026-10-06 (content.resistance-to-weak-and-vigil-party-spirit; ruled 2026-10-05, "2 by the party spirit" -
+    // SWITCHES vigilHealsItsOwnSpirit overturned). The amount was: { scale: 'stat', stat: 'spirit', base: 0, mult: 1 }
     const vigil = ABILITIES['power.banner-vigil.plant']!
     expect([vigil.staminaCost, vigil.uses]).toEqual([2, 1])
     expect(fx(vigil.id)).toEqual({ kind: 'plant', radius: 1,
-      lends: [{ id: 'trigger.banner-vigil.plant.heal', hook: 'onActivationEnd', chance: 100, select: 'self', effect: { kind: 'heal', amount: { scale: 'stat', stat: 'spirit', base: 0, mult: 1 } }, source: vigil.id }] })
+      lends: [{ id: 'trigger.banner-vigil.plant.heal', hook: 'onActivationEnd', chance: 100, select: 'self', effect: { kind: 'heal', amount: { scale: 'partySpirit', base: 0, mult: 1 } }, source: vigil.id }] })
     expect(vigil.gaps ?? []).toEqual([])
     // the Heroic: radius 3, +2 Strength and +2 Precision, heal 5 at the End of Activation; its on-miss clause is a named gap
     const heroic = ABILITIES['power.banner-heroism.plant']!
@@ -209,7 +211,15 @@ describe('inside its reach', () => {
 })
 
 describe('the other banners, as their lines say', () => {
-  it('the Vigil\'s: an ally inside heals its own Spirit at the End of its Activation', () => {
+  // Restated 2026-10-06 (content.resistance-to-weak-and-vigil-party-spirit; ruled 2026-10-05: asked whether the Vigil heals each
+  // ally by that ally's own Spirit or the party's, "2 by the party spirit"). It was "the Vigil's: an ally inside heals its own
+  // Spirit at the End of its Activation", and its last lines held that the warrior, with no Spirit of its own, healed nothing:
+  //   // the warrior beside it has no Spirit of its own: it heals nothing
+  //   const own = effective(ctx, ally, 'spirit').value
+  //   ally.hp = 1
+  //   endOfActivation(ctx, ally)
+  //   expect(ally.hp).toBe(1 + own)
+  it('the Vigil\'s: an ally inside heals the party\'s Spirit at the End of its Activation', () => {
     const { ctx, planter, ally } = field([85, 86], 'item.banner-vigil', ['hero.base.priest-robes', 'hero.base.warrior-iron'], ['item.holy-symbol', 'item.peddlers-vest'])
     plant(ctx, planter, 'power.banner-vigil.plant')
     const spirit = effective(ctx, planter, 'spirit').value
@@ -217,12 +227,12 @@ describe('the other banners, as their lines say', () => {
     planter.hp = 1
     endOfActivation(ctx, planter)
     expect(planter.hp).toBe(Math.min(planter.maxHp, 1 + spirit))
-    // the warrior beside it has no Spirit of its own: it heals nothing
+    // the warrior beside it has no Spirit of its own: it heals by the party's all the same
     expect(ctx.geo.distance(ally.hex, ctx.state.planted![0]!.hex)).toBe(1)
-    const own = effective(ctx, ally, 'spirit').value
+    expect(effective(ctx, ally, 'spirit').value).toBe(0)
     ally.hp = 1
     endOfActivation(ctx, ally)
-    expect(ally.hp).toBe(1 + own)
+    expect(ally.hp).toBe(Math.min(ally.maxHp, 1 + partySum(ctx, 'hero', 'spirit')))
   })
 
   it('the Assassin\'s: +20 Crit inside, and a crit by a unit inside gives it 1 Stamina', () => {
