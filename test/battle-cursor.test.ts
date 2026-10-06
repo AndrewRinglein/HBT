@@ -559,6 +559,14 @@ const dwarfElfFeyBadgesActGolden = JSON.parse(readFileSync(new URL('./fixtures/b
 // enemy places, on its own side's way).
 // Every case frozen here (tools/capture-computer-avoids-own-traps-cursor.mts). Moved: none. A `changed` case is checked here and skips the older layers.
 const computerAvoidsOwnTrapsGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-computer-avoids-own-traps.json', import.meta.url), 'utf8'))
+// rule.one-move-action-one-primary-action (ruled 2026-10-06; DECISIONS.md 'an Activation is one move action and one primary action,
+// in that order; …': "All the player units get two actions: a move action and a primary action, in that order, every time they
+// get activated."), Law 10: a move-class action is only ever the move action, and `Unit.stood` is removed as subsumed. No case
+// is FOUGHT differently — the computer never spent its primary action on a movement (SWITCHES.md oneMoveEveryUnit) — but a case in
+// which a unit stood up no longer carries `stood` in its state: its state hash moves, its events, RNG and result do not.
+// Every case frozen here (tools/capture-one-move-action-one-primary-action-cursor.mts). Moved: test.prone-b (state only).
+// A `changed` case is checked here and skips the older layers.
+const oneMoveActionGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-one-move-action-one-primary-action.json', import.meta.url), 'utf8'))
 const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
 // Explicit rule migration, not regenerated historical hashes. These nine old
 // cases contain Surge ledger/refresh changes or terminal markers corrected
@@ -717,7 +725,10 @@ describe('resumable battle cursor', () => {
       const proneOnlyStandUpExpected = proneOnlyStandUpGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const dwarfElfFeyBadgesActExpected = dwarfElfFeyBadgesActGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const computerAvoidsOwnTrapsExpected = computerAvoidsOwnTrapsGolden.cases.find((row:{id:string})=>row.id===fixture.id)
-      const computerAvoidsOwnTrapsMoved = computerAvoidsOwnTrapsExpected?.changed === true
+      const oneMoveActionExpected = oneMoveActionGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+      const oneMoveActionMoved = oneMoveActionExpected?.changed === true
+      // was: const computerAvoidsOwnTrapsMoved = computerAvoidsOwnTrapsExpected?.changed === true — a case rule.one-move-action-one-primary-action moved skips this layer too (rule.one-move-action-one-primary-action 2026-10-06)
+      const computerAvoidsOwnTrapsMoved = computerAvoidsOwnTrapsExpected?.changed === true || oneMoveActionMoved
       // was: const dwarfElfFeyBadgesActMoved = dwarfElfFeyBadgesActExpected?.changed === true — a case group A: content.sets-count-holy-texts-and-heavy-chain, content.resistance-to-weak-and-vigil-party-spirit, rule.computer-avoids-own-traps moved skips this layer too (group A: content.sets-count-holy-texts-and-heavy-chain, content.resistance-to-weak-and-vigil-party-spirit, rule.computer-avoids-own-traps 2026-10-04)
       const dwarfElfFeyBadgesActMoved = dwarfElfFeyBadgesActExpected?.changed === true || computerAvoidsOwnTrapsMoved
       // was: const proneOnlyStandUpMoved = proneOnlyStandUpExpected?.changed === true — a case content.dwarf-elf-fey-badges-act moved skips this layer too (content.dwarf-elf-fey-badges-act 2026-10-04)
@@ -895,7 +906,14 @@ describe('resumable battle cursor', () => {
             battle.completeActionCycle(ctx)
           }
         } else result = battle.runBattle(ctx)
-        if (computerAvoidsOwnTrapsExpected) {
+        if (oneMoveActionExpected) {
+        expect(hash(ctx.events), 'full one-move-action-one-primary-action events').toBe(oneMoveActionExpected.events)
+        expect(hash(ctx.state), 'full one-move-action-one-primary-action state').toBe(oneMoveActionExpected.state)
+        expect(hash(ctx.rng.log), 'full one-move-action-one-primary-action RNG').toBe(oneMoveActionExpected.rng)
+        expect(result).toEqual(oneMoveActionExpected.result)
+        }
+        // was: if (computerAvoidsOwnTrapsExpected) { — rule.one-move-action-one-primary-action (2026-10-06): a case it moved is checked above instead
+        if (computerAvoidsOwnTrapsExpected && !oneMoveActionMoved) {
         expect(hash(ctx.events), 'full computer-avoids-own-traps events').toBe(computerAvoidsOwnTrapsExpected.events)
         expect(hash(ctx.state), 'full computer-avoids-own-traps state').toBe(computerAvoidsOwnTrapsExpected.state)
         expect(hash(ctx.rng.log), 'full computer-avoids-own-traps RNG').toBe(computerAvoidsOwnTrapsExpected.rng)
