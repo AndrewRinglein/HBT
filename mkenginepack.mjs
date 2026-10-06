@@ -1236,12 +1236,14 @@ function compiledPowerOf(p, unitId) {
   // Plant the banner on your hex. For the rest of the Battle it projects an aura of radius N from that hex — you may walk away
   // and it stays." on "the hex you occupy" -> a power aimed at its user, one use a Battle, whose one effect is the engine's
   // 'plant': an object on that hex that gives the planter's side, within N of the HEX, what the sentences after it say —
-  //   "+N Stat[ and +N Stat] to allies in the aura[, and Immunity to <Status> N while inside it]"   stats lent while inside; a
-  //       ward: N points of each application of that status do not land while inside (engine SWITCHES.md immunityIsAWard)
+  //   "+N Stat[ and +N Stat] to allies in the aura[, and Resistance to <Status> N while inside it]"  stats lent while inside; a
+  //       ward: N points of each application of that status do not land while inside (engine SWITCHES.md immunityIsAWard,
+  //       ruled 2026-10-05 — GLOSSARY.md 'Resistance to Weak'; the line read "Immunity to <Status> N" until 2026-10-06)
   //   "At the End of Activation of an|any ally inside[ the aura], that ally gains N Surge Chance — added to the pool once,
   //       never added to the Surge stat"                                                            a lent End-of-Activation trigger
-  //   "… that ally heals N" / "… that ally heals an amount equal to its Spirit"                     the same hook, a heal — the
-  //       ally's OWN Spirit ("its", not the party's "your")
+  //   "… that ally heals N" / "… that ally heals an amount equal to the party's Spirit"             the same hook, a heal — the
+  //       PARTY's Spirit, the ally's own or none (ruled 2026-10-05, "2 by the party spirit"; it read "its Spirit" and healed
+  //       by the ally's own — engine SWITCHES.md vigilHealsItsOwnSpirit, overturned)
   //   "onCrit, for a unit in the aura: gain N Stamina"                                              a lent on-crit trigger
   // A sentence that is none of these is a named gap on the power (the Heroic Banner's "onMiss … EVERY ally in the aura"); a
   // banner none of whose sentences compile is not planted at all — it stays an unparsed power (the Mystic Banner), never an
@@ -1252,7 +1254,7 @@ function compiledPowerOf(p, unitId) {
     const lend = (key, hook, effect) => lends.push({ id: `trigger.${slug}.${key}`, hook, chance: 100, select: 'self', effect, source: p.id });
     for (const s0 of m[2].split(/(?<=\.)\s+/).map((x) => x.trim().replace(/\.$/, '')).filter(Boolean)) {
       let c;
-      if ((c = s0.match(/^(\+\d+ [A-Z][a-z]+(?: and \+\d+ [A-Z][a-z]+)*) to allies in the aura(?:, and Immunity to ([A-Z][a-z]+) (\d+) while inside it)?$/))) {
+      if ((c = s0.match(/^(\+\d+ [A-Z][a-z]+(?: and \+\d+ [A-Z][a-z]+)*) to allies in the aura(?:, and Resistance to ([A-Z][a-z]+) (\d+) while inside it)?$/))) {
         const parts = c[1].split(' and ').map((x) => x.match(/^\+(\d+) (.+)$/));
         if (parts.some((x) => !modStatOf(x[2])) || (c[2] && !STATUS_OK.has(c[2].toLowerCase()))) { found.push({ clause: s0, needs: 'a stat or a status the engine does not have' }); continue; }
         for (const x of parts) mods[modStatOf(x[2])] = (mods[modStatOf(x[2])] ?? 0) + +x[1];
@@ -1261,7 +1263,7 @@ function compiledPowerOf(p, unitId) {
       }
       if ((c = s0.match(/^At the End of Activation of (?:an|any) ally inside(?: the aura)?, that ally gains (\d+) Surge Chance — added to the pool once, never added to the Surge stat$/))) { lend('surge', 'onActivationEnd', { kind: 'surge.gain', value: +c[1] }); continue; }
       if ((c = s0.match(/^At the End of Activation of (?:an|any) ally inside(?: the aura)?, that ally heals (\d+)$/))) { lend('heal', 'onActivationEnd', { kind: 'heal', amount: +c[1] }); continue; }
-      if (/^At the End of Activation of (?:an|any) ally inside(?: the aura)?, that ally heals an amount equal to its Spirit$/.test(s0)) { lend('heal', 'onActivationEnd', { kind: 'heal', amount: { scale: 'stat', stat: 'spirit', base: 0, mult: 1 } }); continue; }
+      if (/^At the End of Activation of (?:an|any) ally inside(?: the aura)?, that ally heals an amount equal to the party's Spirit$/.test(s0)) { lend('heal', 'onActivationEnd', { kind: 'heal', amount: { scale: 'partySpirit', base: 0, mult: 1 } }); continue; }
       if ((c = s0.match(/^onCrit, for a unit in the aura: gain (\d+) Stamina$/))) { lend('stamina', 'onCrit', { kind: 'stamina.gain', value: +c[1] }); continue; }
       found.push({ clause: s0, needs: 'planted object: clause unparsed' });
     }

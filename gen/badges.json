@@ -2140,10 +2140,10 @@
    "id": "badge.curse-resistant",
    "name": "Curse Resistant",
    "rarity": "rare",
-   "payload": "Immune weak 1",
+   "payload": "Resistance to Weak 1",
    "statModifiers": [],
    "rollable": true,
-   "source": "Authored in the 2026-08-25 badge workbook review."
+   "source": "Authored in the 2026-08-25 badge workbook review. | Ruled 2026-10-05 (GLOSSARY.md 'Settled, 2026-10-05'): Immunity to Weak N is called Resistance to Weak N; the payload read \"Immune weak 1\". NOT BUILT: a named gap — the engine wards Weak only inside a planted banner."
   },
   {
    "id": "badge.fire-resistant",

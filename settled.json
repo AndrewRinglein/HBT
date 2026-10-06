@@ -1147,11 +1147,11 @@
    "tags": [
     "banner"
    ],
-   "description": "One use per Battle. Plant the banner on your hex. For the rest of the Battle it projects an aura of radius 1 from that hex — you may walk away and it stays. At the End of Activation of any ally inside the aura, that ally heals an amount equal to its Spirit.",
+   "description": "One use per Battle. Plant the banner on your hex. For the rest of the Battle it projects an aura of radius 1 from that hex — you may walk away and it stays. At the End of Activation of any ally inside the aura, that ally heals an amount equal to the party's Spirit.",
    "intent": "A small circle of ground that does not let you die in it.",
    "triggers": [],
    "needsCapability": "capability.banner — a planted board object projecting an aura from its hex for the rest of the Battle. Nothing in the engine plants anything yet.",
-   "source": "Dictated 2026-09-02. Banners are planted on a hex, ruled at landing. NAME IS MINE — the priest banner was dictated unnamed 2026-09-02."
+   "source": "Dictated 2026-09-02. Banners are planted on a hex, ruled at landing. NAME IS MINE — the priest banner was dictated unnamed 2026-09-02. | Ruled 2026-10-05 (engine/DECISIONS.md '… the Vigil heals by the party's Spirit': asked whether it heals each ally by that ally's own Spirit or the party's — \"2 by the party spirit\"): the sentence read \"that ally heals an amount equal to its Spirit\"."
   },
   {
    "id": "power.banner-courage.plant",
@@ -1167,11 +1167,11 @@
    "tags": [
     "banner"
    ],
-   "description": "One use per Battle. Plant the banner on your hex. For the rest of the Battle it projects an aura of radius 2 from that hex — you may walk away and it stays. +1 Resist to allies in the aura, and Immunity to Weak 2 while inside it. At the End of Activation of an ally inside, that ally gains 10 Surge Chance — added to the pool once, never added to the Surge stat.",
+   "description": "One use per Battle. Plant the banner on your hex. For the rest of the Battle it projects an aura of radius 2 from that hex — you may walk away and it stays. +1 Resist to allies in the aura, and Resistance to Weak 2 while inside it. At the End of Activation of an ally inside, that ally gains 10 Surge Chance — added to the pool once, never added to the Surge stat.",
    "intent": "Hold this ground and the fear does not land; hold it long enough and you go twice.",
    "triggers": [],
    "needsCapability": "capability.banner — a planted board object projecting an aura from its hex for the rest of the Battle. Nothing in the engine plants anything yet.",
-   "source": "Dictated 2026-09-02. Banners are planted on a hex, ruled at landing."
+   "source": "Dictated 2026-09-02. Banners are planted on a hex, ruled at landing. | Ruled 2026-10-05 (GLOSSARY.md 'Settled, 2026-10-05': \"Immunity to week 2 should now be resistance to week 2. And yes … it should remove two points of weak\"): the line read \"Immunity to Weak 2 while inside it\"; what it does is as built — 2 points come off each Weak gained inside."
   },
   {
    "id": "power.banner-heroism.plant",
@@ -1257,7 +1257,7 @@
   },
   {
    "id": "item.necklace-of-weakness-immunity",
-   "name": "Necklace of Weakness Immunity",
+   "name": "Necklace of Weakness Resistance",
    "itemClass": "trinket",
    "tier": 2,
    "slots": 1,
@@ -1272,9 +1272,9 @@
    "immunity": {
     "weak": 1
    },
-   "description": "Immunity to Weak 1. One point of Weak is removed BEFORE Weak resolves, so that point never gets to reduce the damage you deal. The ordinary -1 decay still follows, so Weak falls by 2 a Turn.",
-   "intent": "One point of Immunity makes you substantially immune to the thing. That is the whole item.",
-   "source": "Settled content, 2026-08-17 — rebuilt on 's Immunity mechanic (was written as a plain End-of-Activation strip, which is half of it). | 2026-08-17 corrected: immunity resolves BEFORE the status does; it is not a second strip. The status still takes its own -1 afterwards."
+   "description": "Resistance to Weak 1. One point comes off each Weak you would gain.",
+   "intent": "One point of Resistance takes the first point off every Weak that comes at you. That is the whole item.",
+   "source": "Settled content, 2026-08-17 — rebuilt on 's Immunity mechanic (was written as a plain End-of-Activation strip, which is half of it). | 2026-08-17 corrected: immunity resolves BEFORE the status does; it is not a second strip. The status still takes its own -1 afterwards. | Ruled 2026-10-05 (GLOSSARY.md 'Settled, 2026-10-05': \"Immunity to week 2 should now be resistance to week 2 … it should remove two points of weak\"): Immunity to Weak N is Resistance to Weak N — N points come off each Weak the unit would gain. The name follows (as the Fire and Poison necklaces' did; the id is not renamed) and the sentence says the ruled meaning. It read: \"Immunity to Weak 1. One point of Weak is removed BEFORE Weak resolves, so that point never gets to reduce the damage you deal. The ordinary -1 decay still follows, so Weak falls by 2 a Turn.\" and its intent \"One point of Immunity makes you substantially immune to the thing. That is the whole item.\" NOT BUILT: the engine wards Weak only inside a planted banner; a ward a unit carries is a named gap (engine content.resistance-to-weak-and-vigil-party-spirit)."
   },
   {
    "id": "item.necklace-of-frost-immunity",

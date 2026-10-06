@@ -20,7 +20,7 @@
  "familyRules": [
   {
    "family": "imps",
-   "rule": "every Demon in the imp family has Immunity 1 (weak)",
+   "rule": "every Demon in the imp family has Resistance to Weak 1",
    "excludes": [
     "unit.imp-master"
    ],

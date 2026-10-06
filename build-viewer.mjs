@@ -208,7 +208,8 @@ const RENDER = {
     '</div>'+act(i)+(i.intent?'<div class="intent">'+esc(i.intent)+'</div>':'')+
     (i.description?'<div class="desc">'+esc(i.description)+'</div>':'')+
     mods(i.statModifiers)+
-    (i.immunity?'<div class="trig"><b>immunity</b> '+Object.entries(i.immunity).map(([k,v])=>k+' '+v).join(', ')+'</div>':'')+
+    /* GLOSSARY 'Settled, 2026-10-05': Immunity to Weak N is called Resistance to Weak N (the field keeps its name) */
+    (i.immunity?'<div class="trig">'+Object.entries(i.immunity).map(([k,v])=>k==='weak'?'<b>Resistance to Weak</b> '+v:'<b>immunity</b> '+k+' '+v).join(', ')+'</div>':'')+
     (i.flight?'<div class="trig"><b>FLIGHT</b></div>':'')+(i.airwalk?'<div class="trig"><b>AIRWALK</b></div>':'')+
     trigs(i.triggers)+
     (i.grants&&i.grants.length?'<div class="trig"><b>grants</b> '+i.grants.map(esc).join(', ')+'</div>':'')+
