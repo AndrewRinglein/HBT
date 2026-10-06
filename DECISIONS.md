@@ -5316,3 +5316,34 @@ With the answer just before it (the entry above: "I thought that a hit on a band
 
 - **Bandaging completely stops the bleed-out count** - it no longer runs down by itself; the hero is stable.
 - **A hit on a bandaged hero still takes one from the count, and at 0 the hero dies.** There is no floor at 1: the engine switch stabiliseHitsStillMoveTheCount's "never below 1" is overturned. Filed: `fix.bandaged-hero-dies-at-zero`.
+
+## 2026-10-06 — the characters stand out: the ground need not be yellow and green; a demo of the Orphanage with all of it but the cloaks
+
+Andrew, in the root chat (the XCOM 2 study), after the chat listed what the study asks for:
+
+“Well, if the ground is not going to be yellow and green, and if we change from yellow and green, I think we change all the yellow and green on the ground to something darker. There's no implicit reason why we need yellow and green on the ground.     We need to change hers. We change the sun with grass. We can change all grass to be that blue-violet color. That still looks good.  I'm building the cloaks in another chat. Sounds like we need to be mindful of the enemies as well. Have more fire and more highlights.   Can you alter a bunch of our terrain and all the things we knew we needed, so I can see this on the orphan map?   Everything except the cloaks. This is just a demo map.”
+
+Before it, the same morning: “One thing I've been exploring with another chat is putting a custom-fitted cloak that has a unique shape by class and a unique color by class, which are fairly bright on the backs of all the heroes.”
+
+Ruled:
+
+- **The ground need not be yellow and green.** For the demo all of it is changed to something darker, the grass to a blue-violet.
+- **The cloaks are built in another chat** - a fitted cloak, its shape and its bright colour by class, on every hero's back. This chat's demo leaves them out.
+- **It is a demo, on the Orphanage only.** No map, model or game code is changed by it.
+
+The demo is the page `.scratch-hero-colours/index.html` (what it opens on; `Two side by side` puts today's battle beside it). Four steps, each a switch:
+
+1. The ground and everything that grows on it is redrawn darker in one tint (blue-violet `#6a5fd0` at 45%), its own light and dark kept but evened; so is whatever else is painted yellow to green. It is taken on the painted colour before the light, so the sun, the shade and firelight lie on it.
+2. Nothing in the scenery is drawn brighter than a cap.
+3. Every body is drawn brighter (2.6 times) and its own colours stronger (1.3 times).
+4. Fire: four lanterns stood on the map, each a warm light; and the enemies edged in firelight, their ring and name in the fire's colour.
+
+Measured on it, the Orphanage's opening view, today against the demo: bodies 0.41 against 0.59 lightness; the ground beside them 0.58 against 0.43, and its dark-to-light swing 0.24-0.77 against 0.26-0.56; the bodies' colourfulness 0.03 against 0.07. The heroes go from 0.17 darker than their ground to 0.16 lighter. Strong colour in the scenery goes from 3% of it to 0.1%.
+
+The chat's own defaults, said to him and his to change in a line:
+
+- **“More fire and more highlights” is read as both** lanterns on the map and firelight on the enemies.
+- **The enemies' ring and name are drawn in the fire's colour in the demo**, not the side's violet `#a964d8`: on a blue-violet ground the violet sinks. The side colours themselves (gold, violet; `VFX/PLAYBACK-DESIGN.md`, 2026-08-20) are not changed by this.
+- “We need to change hers. We change the sun with grass.” is not understood (dictation); the chat took it as the sunlit grass, which step 1 and step 2 cover. The sun itself is as it was.
+
+Found on the way: since the viewer draws its solid pieces a material at a time (`viewer.solid-pieces-drawn-by-material`), a batch has a material of its own that shares only the piece's name - so the ground-tones page's `Open ground only` step, which finds the ground by its pieces' materials, no longer reaches the ground that is drawn. The demo finds it by the materials' names. For the cloak chat: on a blue-violet ground a blue cloak is the weak one and gold, red, orange and bone the strong ones - the reverse of the green ground.
