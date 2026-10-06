@@ -88,13 +88,19 @@ describe('each acts on a fielded hero', () => {
     const ctx = createCustomBattle([{ type: 'hero.base.ranger-nature', hex: 85 }], [{ type: 'test-zombie', hex: 181 }])
     const u = ctx.state.units[0]!
     expect(u.surge).toBe((was['surge'] ?? 0) + 10)
-    expect(u.surge).toBe(10)
+    // Restated 2026-10-06 (rule.surge-is-at-least-level; ruled 2026-10-06: "Everyone gains surge equal to level, at the very
+    // least" - the Fey's +10 is on top of her level's 1, "11 at level 1"). The badge still gives exactly 10 (the line above).
+    // The lines were:
+    //   expect(u.surge).toBe(10)
+    //   expect([checks[0]!['surge'], checks[0]!['chance']]).toEqual([10, 10])
+    //   if (checks.length > 1 && !checks[0]!['hit']) expect(checks[1]!['chance']).toBe(20)   // the pool: what was not spent is kept
+    expect(u.surge).toBe(11)
     const line = ctx.events.find((e) => e.type === 'unit.badged' && e.actor === u.id && e.causeId === 'badge.fey')!
     expect([line['mods'], line['gaps'] ?? []]).toEqual([{ surge: 10 }, []])
     runBattle(ctx)
     const checks = ctx.events.filter((e) => e.type === 'surge.checked' && e.actor === u.id)
     expect(checks.length).toBeGreaterThan(0)
-    expect([checks[0]!['surge'], checks[0]!['chance']]).toEqual([10, 10])
-    if (checks.length > 1 && !checks[0]!['hit']) expect(checks[1]!['chance']).toBe(20)   // the pool: what was not spent is kept
+    expect([checks[0]!['surge'], checks[0]!['chance']]).toEqual([11, 11])
+    if (checks.length > 1 && !checks[0]!['hit']) expect(checks[1]!['chance']).toBe(22)   // the pool: what was not spent is kept
   })
 })

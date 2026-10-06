@@ -239,8 +239,10 @@ export function applyProgress(
     if (sp.class !== classId) throw new Error(`${where}: ${base.typeId} (${classId}) cannot hold ${sp.id}, a ${sp.class} specialty`)
     for (const [k, v] of Object.entries(sp.statModifiers)) add(k, v, sp.id)
   } else if (progress.specialtyId) throw new Error(`${where}: ${base.typeId} is level 1 and names a specialty`)
-  // capability.surge: "Surge always EQUALS the character level" (heroes.json rules) — added to whatever the row and the specialty grant
-  delta['surge'] = (delta['surge'] ?? 0) + progress.level
+  // rule.surge-is-at-least-level (2026-10-06; DECISIONS.md 'everyone gains Surge equal to its level at the least …'): the level's
+  // Surge is DATA now — each level row grants it (the table's every-level grant) and the unit's own row carries the level-1
+  // point (content mkenginepack.mjs) — so it is folded above like any other grant. capability.surge added the level here
+  // (`delta['surge'] += progress.level`), which reached only a unit fielded with a progress record: a level-1 hero has none.
   const drafted = [...(progress.powers ?? [])]
   for (const p of drafted) {
     if (!abilities[p] || abilities[p].attack) throw new Error(`${where}: ${base.typeId} drafted '${p}', which is not a power in the registry`)
