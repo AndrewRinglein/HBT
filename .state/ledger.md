@@ -38476,3 +38476,23 @@ Andrew 2026-10-06: 'We don't need an attack with several chosen targets. This we
   PASS  naming — new content ids use declared kinds
   PASS  naming — no banned words invented
   PASS  kill switch — the tests fail without the content — tests fail without item.book-of-karma,item.chains-of-the-wrathful — they genuinely test it
+
+## content.resistance-to-weak-and-vigil-party-spirit — LANDED `da1d217`
+2026-10-06 14:20
+
+  PASS  dependencies landed
+  WARN  not already decided — 1 candidate ruling(s) — READ BEFORE ASKING: SWITCHES.md:2282
+  PASS  typecheck
+  PASS  the item's own tests — test/immune-one-is-resist.test.ts, test/planted-banners.test.ts, test/resistance-to-weak-and-vigil-party-spirit.test.ts
+  PASS  gate 1 — the id appears in a real battle — power.banner-courage.plant: 16 log lines, 16 fired, 5 changed state · power.banner-vigil.plant: 18 log lines, 18 fired, 5 changed state
+  PASS  brought its own tests — test/immune-one-is-resist.test.ts, test/planted-banners.test.ts, test/resistance-to-weak-and-vigil-party-spirit.test.ts
+  PASS  existing tests untouched
+  SKIPPED  control battles unchanged — engine code 852b05fc95 and the content pack are the ones the control battles last passed on (2026-10-06 13:50, gate content.sets-count-holy-texts-and-heavy-chain --land, in HBT-worker-engine) — not run
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — shape 'data' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without power.banner-courage.plant,power.banner-vigil.plant — they genuinely test it

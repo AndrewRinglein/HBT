@@ -144,7 +144,9 @@
   "probeIds": [
    "power.banner-courage.plant",
    "power.banner-vigil.plant"
-  ]
+  ],
+  "status": "done",
+  "sha": "da1d217"
  },
  {
   "id": "content.orphanage-body-and-graves-cursed",

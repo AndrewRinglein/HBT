@@ -1,24 +1,24 @@
 {
- "id": "content.sets-count-holy-texts-and-heavy-chain",
- "tree": "1c7c2398036a84eb43425c5d1cc465f52b871345",
- "ctx": "fdfd67f0025cb4dbc870a4520020d3b6f73beff0",
+ "id": "content.resistance-to-weak-and-vigil-party-spirit",
+ "tree": "fb3e0e0881640cc159487d9f389646281397ea4c",
+ "ctx": "5dbb9fc5f2c607c4f05378cb477bdc591130ac63",
  "results": {},
  "durations": {
   "dependencies landed": 0,
-  "not already decided": 495,
-  "typecheck": 2336,
-  "the item's own tests": 2708,
-  "gate 1 — the id appears in a real battle": 4287,
-  "brought its own tests": 126,
+  "not already decided": 513,
+  "typecheck": 2415,
+  "the item's own tests": 3117,
+  "gate 1 — the id appears in a real battle": 4562,
+  "brought its own tests": 134,
   "existing tests untouched": 0,
-  "control battles unchanged": 47942,
-  "content has a published source": 288,
-  "hardcode scan — core knows mechanisms, never names": 75,
+  "control battles unchanged": 99,
+  "content has a published source": 149,
+  "hardcode scan — core knows mechanisms, never names": 36,
   "prior art — nothing new copies what exists": 0,
   "wrong home — nothing another package owns": 0,
   "generalizes — the second instance costs zero engine code": 0,
-  "naming — new content ids use declared kinds": 37,
-  "naming — no banned words invented": 134,
-  "kill switch — the tests fail without the content": 3433
+  "naming — new content ids use declared kinds": 35,
+  "naming — no banned words invented": 113,
+  "kill switch — the tests fail without the content": 2886
  }
 }
