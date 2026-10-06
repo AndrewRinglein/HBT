@@ -5588,3 +5588,25 @@ Ruled:
 - **Why the chat kept asking, and what is wrong in the game:** the engine as built lets a unit spend its PRIMARY action on a second move-class action - after a Leap or another movement power it may still walk its whole movement as its primary (engine SWITCHES movementBeforeWalkToday, probed 2026-10-04), and the walked-unit and Stand Up rules each closed one case of it. The chat asked case by case where it should have set that against this rule once. A move-class action is the move action's alone; the primary action never takes one. This narrows how 2026-08's "structurally, movement and primary are identical. They can both do any of the same things" has been built: the two are the same kind of thing in their limits and costs, and a move still goes in the move action. Filed: `rule.one-move-action-one-primary-action`.
 - **A used-up once-per-battle power stays on the bar, greyed** ("One, yes"). Overturns 2026-09-02's vanishing for the bar. Filed: `viewer.used-up-power-stays-greyed`.
 - **This chat's workers build the five viewer items the other chat filed** ("3 yes"): `viewer.stand-out-measured`, `viewer.units-brighter`, `viewer.enemies-in-firelight`, `viewer.water-moves`, `viewer.trees-sway`.
+
+## 2026-10-06 — the six repainted maps are accepted and go into the game; the units are made lighter by how they are drawn; at the Gates a unit stands where it makes sense
+
+Andrew, in the kingdom chat, brought the art chat's report ("Completed all six: the five repaints and the new Gates scene, including 33 individual Gates assets. Nothing was landed in the game ... visual acceptance remains yours ... ready for you to merge into the game"; the review page `assets/terrain-3d/colour-template-review/`). Told what landing them takes, and that on the new maps the units still read about 0.36-0.39 lightness against a ground of 0.36-0.41 and stone at 0.48-0.50:
+
+“I'm kind of confused. The goal was to make the units lighter. This didn't do that. I don't understand why the units aren't lighter in what was just done. The units need to be lighter. How do we go about doing that? How did this miss the boat? Was this only modifying the maps?”
+
+“I am separately working on cloaks. Is this a painting of the units that needs to be changed?”
+
+The chat answered: the art run changed the maps only - the stone and the ground, two of the template's three parts; the units are not in the map files; they are made lighter by how the game draws a body (`viewer.units-brighter`, on the demo 2.6 times brighter and the colours 1.3 times stronger), not by repainting them, and that item with its measuring tool (`viewer.stand-out-measured`) was moved to the front of the viewer worker's list. Then asked (1 do you accept the six maps as they look, so they are ready to go in when 'units brighter' lands; 2 should the Poison Imp at the Gates move onto the wall walk, or stay where it is for now - the new scene measures its start hex as not standable):
+
+“1. Yes.
+2. I don't know why tile features changed in the process. For gate, put them somewhere that makes sense. I don't want to care about the exact position of a unit.  Okay, then I say yes to the previous questions that were asked.”
+
+Ruled:
+
+- **All six scenes are accepted as they look, and their integration into the game is authorized** - the five repaints (Orphanage, Lumberjack House, Cavern Trail, Bridge, Cathedral) and the Gates' new 3D scene. This is the "explicit integration authorization and exact-hash appearance acceptance" the art chat's handoff item (`viewer.gates-painted-scene`) and each scene's README wait for; the hashes accepted are the ones the review folder's `production.json` files hold on 2026-10-06.
+- **"The units need to be lighter."** It is the point of the colour template; the maps alone do not do it. `viewer.stand-out-measured` and `viewer.units-brighter` are next for the viewer worker.
+- **At the Gates, a unit whose hex the scene shows as not standable is put somewhere that makes sense** - "I don't want to care about the exact position of a unit." The worker chooses; no question comes back to him about a hex. (On "I don't know why tile features changed": no tile's rule changed - the Gates had no 3D scene before, and the new one draws a wall where that hex is; the engine's map is untouched.)
+- **"Yes to the previous questions"** is read as: the maps go in with, or just after, 'units brighter', as the chat proposed. Lanterns were not made and stay in the art queue.
+
+Filed: `viewer.repainted-scenes-in-the-game`, `content.gates-units-stand-where-the-scene-allows`; `viewer.gates-painted-scene` is authorized.
