@@ -5750,3 +5750,16 @@ Andrew, in the codebase-review chat, while the four packages were being pushed t
 Ruled:
 
 - **The off-machine backup does not have to carry all the animations.** Read the same minute: the four packages hold no model or motion files (they are under the root's `assets/`), so the push in hand carries none; the root repository, which tracks them, is not pushed. When the root's documents and tools are backed up (`CODEBASE-REVIEW-2026-10-05.md` items 4 and 23), the models and motions may be left out.
+
+## 2026-10-06 — the two new areas are `art/` and `maps/`; the codebase-review chat takes over as the home chat
+
+Andrew, in the codebase-review chat, answering two questions (1 what the two new folders are called - `art/` proposed, the root's small `art/` with its manifest folding in, and `maps/`; 2 whether that chat takes over as the home chat, lands the three worker copies' owed work, gets the main folder's tests green, and then goes straight into the build):
+
+“Yes, and yes.”
+
+Ruled:
+
+- **The art-and-motion area is `art/` and the maps area is `maps/`**, both at the project root.
+- **The codebase-review chat is the home chat from this entry on.** Its order: the three copies' owed chains landed (kingdom `HANDOFF-2026-09-04.md`, "2026-10-06 — Now", Next 2), the full four-suite run green in the main folder, then `CODEBASE-REVIEW-2026-10-05.md` §4 stage by stage.
+
+With this the "approved" half of "approved and clean" (the entry of this day, 'the codebase review's changes are all to be built') holds; the "clean" half is that order's first two steps.
