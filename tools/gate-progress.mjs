@@ -208,42 +208,126 @@ export function shardStatus(raw, tree, defaultN) {
 
 // ── which test files (the fast process, Andrew 2026-09-30) ──────────────────
 /** The test files in `git status --porcelain --untracked-files=all` output. */
-/**
- * An item's COMMITTED tests, in `git status --porcelain` form (`A ` a file one of its commits added, ` M` one it only
- * edited): the test/ files of every commit in `cwd`'s repository whose message names the item. A package lands its sources
- * in its own commit before the engine gate runs (GBH SWITCHES gate.testsHome), and since 2026-10-06 an ENGINE item is its own
- * commit too, built in a group and gated after the group's one chain (DECISIONS.md 2026-10-06 'engine items too are built in
- * groups of up to four …': "each item is still its own commit, with its own test written first") — so the gate counts these
- * beside what is uncommitted, in every home (GBH SWITCHES gate.committedItemTestsCount). The id is matched as written and
- * whole: `rule.x` does not claim a commit that names `rule.x-more` or `rule.x.more`. A file a commit deleted is not a test
- * to run. '' when no commit names the item.
- */
-export function committedItemTests(id, cwd = process.cwd()) {
-  const git = (args) => execFileSync('git', args, { cwd, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'], maxBuffer: 64 * 1024 * 1024 })
+// ── WHAT AN ITEM COMMITTED (gate.committedItemTestsCount, tool.gate-flags-read-committed-edits; 2026-10-06) ──────────────
+// Since the group rule (DECISIONS.md 2026-10-06 'engine items too are built in groups of up to four, with one set of heavy
+// checks for the group') an item is its own commit BEFORE its gate runs, so every check that learns what the item touched
+// from the working tree's uncommitted state reads the item's commits as well: the commits of a repository whose message
+// names the item. The id is matched as written and WHOLE — `rule.x` does not claim a commit that names `rule.x-more` or
+// `rule.x.more`. A commit that names two items is both items'.
+const gitIn = (cwd, args) => execFileSync('git', args, { cwd, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'], maxBuffer: 256 * 1024 * 1024 })
+const linesOf = (text) => String(text ?? '').split(/\r?\n/).filter(Boolean)
+/** Does `text` name the item `id` as a whole id? */
+export function namesItem(text, id) {
+  const s = String(text ?? '')
+  for (let at = s.indexOf(id); at >= 0; at = s.indexOf(id, at + 1)) {
+    const before = s[at - 1] ?? ' ', after = s[at + id.length] ?? ' ', next = s[at + id.length + 1] ?? ' '
+    if (/[A-Za-z0-9.-]/.test(before)) continue
+    if (/[A-Za-z0-9-]/.test(after) || (after === '.' && /[A-Za-z0-9]/.test(next))) continue
+    return true
+  }
+  return false
+}
+/** The commits in `cwd`'s repository whose message names the item, oldest first (full hashes). [] where there is none, or no repository. */
+export function itemCommits(id, cwd = process.cwd()) {
   const COMMIT = String.fromCharCode(1), BODY = String.fromCharCode(2)   // the separators git prints for %x01 and %x02
   let log = ''
-  try { log = git(['log', '--format=%x01%H%x02%B', '-F', `--grep=${id}`]) } catch { return '' }
-  const whole = (text) => {
-    for (let at = text.indexOf(id); at >= 0; at = text.indexOf(id, at + 1)) {
-      const before = text[at - 1] ?? ' ', after = text[at + id.length] ?? ' ', next = text[at + id.length + 1] ?? ' '
-      if (/[A-Za-z0-9.-]/.test(before)) continue
-      if (/[A-Za-z0-9-]/.test(after) || (after === '.' && /[A-Za-z0-9]/.test(next))) continue
-      return true
-    }
-    return false
-  }
-  const shas = log.split(COMMIT).filter(Boolean).map((c) => c.split(BODY)).filter(([, body]) => whole(body ?? '')).map(([sha]) => sha.trim())
+  try { log = gitIn(cwd, ['log', '--format=%x01%H%x02%B', '-F', `--grep=${id}`]) } catch { return [] }
+  return log.split(COMMIT).filter(Boolean).map((c) => c.split(BODY)).filter(([, body]) => namesItem(body, id)).map(([sha]) => sha.trim()).reverse()
+}
+/** name-status rows of one commit under `paths` (a merge is read against its first parent). */
+const statusRows = (cwd, sha, paths) => linesOf(gitIn(cwd, ['show', '--first-parent', '--format=', '--name-status', sha, '--', ...paths]))
+  .map((line) => { const [st, ...rest] = line.split(/\t/); return { st, file: rest[rest.length - 1] } }).filter((r) => r.file)
+/**
+ * An item's COMMITTED tests, in `git status --porcelain` form (`A ` a file one of its commits added, ` M` one it only
+ * edited): the test/ files of its commits (itemCommits). A package lands its sources in its own commit before the engine
+ * gate runs (GBH SWITCHES gate.testsHome), and an ENGINE item is its own commit too — so the gate counts these beside what
+ * is uncommitted, in every home. A file a commit deleted is not a test to run. '' when no commit names the item.
+ */
+export function committedItemTests(id, cwd = process.cwd()) {
   const state = new Map()   // file -> 'A ' | ' M', an addition by any of the item's commits wins
-  for (const sha of shas.reverse()) {   // oldest first
-    for (const line of git(['show', '--format=', '--name-status', sha, '--', 'test/']).split(/\r?\n/).filter(Boolean)) {
-      const [st, ...paths] = line.split(/\t/), file = paths[paths.length - 1]
-      if (!file) continue
+  for (const sha of itemCommits(id, cwd)) {
+    for (const { st, file } of statusRows(cwd, sha, ['test/'])) {
       if (st.startsWith('D')) { state.delete(file); continue }
       if (st.startsWith('A')) state.set(file, 'A ')
       else if (!state.has(file)) state.set(file, ' M')
     }
   }
   return [...state].sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0)).map(([file, st]) => `${st} ${file}`).join(String.fromCharCode(10))
+}
+/** The files an item's commits ADDED to `cwd`'s repository (and did not delete again), sorted. */
+export function committedNewFiles(id, cwd = process.cwd()) {
+  const added = new Set()
+  for (const sha of itemCommits(id, cwd)) for (const { st, file } of statusRows(cwd, sha, ['.'])) {
+    if (st.startsWith('A')) added.add(file); else if (st.startsWith('D')) added.delete(file)
+  }
+  return [...added].sort()
+}
+/** The lines an item's commits added under `path` (each with its leading '+', as `git diff -U0` prints them), oldest commit first. */
+export function committedAddedLines(id, cwd = process.cwd(), path = '.') {
+  const out = []
+  for (const sha of itemCommits(id, cwd)) {
+    for (const l of gitIn(cwd, ['show', '--first-parent', '--format=', '-U0', sha, '--', path]).split(/\r?\n/)) if (l.startsWith('+') && !l.startsWith('+++')) out.push(l)
+  }
+  return out
+}
+/** A test FILE of a package the item's home is not: its test/ and tools/ tests and verifiers — never regenerated data (dumps, fixtures, recordings). */
+const OTHER_PACKAGE_TEST = /^(test|tools)\/.*\.(test|verify)\.(ts|mts|mjs)$/
+/** The folder's own name: 'viewer' of '…/HBT/viewer'. */
+const packageName = (dir) => resolve(String(dir)).split(/[\\/]/).filter(Boolean).pop()
+const numstatRows = (text) => linesOf(text).map((l) => { const [add, del, ...rest] = l.split(/\t/); return { file: rest[rest.length - 1], add: Number(add) || 0, del: Number(del) || 0 } }).filter((r) => r.file)
+/**
+ * 'existing tests untouched', whole: the STANDING test files the item changed with lines deleted — a new mechanic may add
+ * tests; editing tests that already passed is how a failure is laundered into a pass, so it lands flagged for review (Law 10).
+ *   - in the item's `home` (the engine, or a viewer or kingdom item's own package): every file under test/ that is changed
+ *     and uncommitted, as before, AND every file under test/ that one of the item's commits changed — unless one of its own
+ *     commits added that file (its own test, edited again, is not a standing test). In a viewer or kingdom home its tools'
+ *     tests and verifiers count too.
+ *   - in each of `others` (the other packages' folders): the test files — test/ and tools/, *.test.* and *.verify.* — that
+ *     the item's commits there changed, under the package's name ('viewer/tools/bar.test.mjs').
+ * Rows `{ file, add, del }` with del > 0, one a file, sorted by file. Nothing here blocks: the gate flags.
+ */
+export function editedTests(id, { home = process.cwd(), others = [] } = {}) {
+  const sum = new Map()
+  const count = (file, add, del) => { const had = sum.get(file) ?? { add: 0, del: 0 }; sum.set(file, { add: had.add + add, del: had.del + del }) }
+  const committed = (cwd, label, keep) => {
+    const shas = itemCommits(id, cwd)
+    const own = new Set()
+    for (const sha of shas) for (const { st, file } of statusRows(cwd, sha, ['.'])) if (st.startsWith('A')) own.add(file)
+    for (const sha of shas) for (const r of numstatRows(gitIn(cwd, ['show', '--first-parent', '--format=', '--numstat', sha, '--', 'test/', 'tools/']))) {
+      if (own.has(r.file) || !keep(r.file)) continue
+      count(label + r.file, r.add, r.del)
+    }
+  }
+  const homeIsEngine = !['viewer', 'kingdom', 'content'].includes(packageName(home))
+  const inHome = (file) => file.startsWith('test/') || (!homeIsEngine && OTHER_PACKAGE_TEST.test(file))
+  let uncommitted = ''
+  try { uncommitted = gitIn(home, ['diff', '--numstat', '--', 'test/', 'tools/']) } catch { uncommitted = '' }
+  for (const r of numstatRows(uncommitted)) if (inHome(r.file)) count(r.file, r.add, r.del)
+  committed(home, '', inHome)
+  for (const dir of others) committed(dir, `${packageName(dir)}/`, (file) => OTHER_PACKAGE_TEST.test(file))
+  return [...sum].filter(([, v]) => v.del > 0).sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0)).map(([file, v]) => ({ file, add: v.add, del: v.del }))
+}
+/**
+ * What a reviewer reads for an item whose standing tests were edited: `needsReview`, the rows of editedTests, and the diff
+ * of exactly those files — uncommitted in the home, and from the item's commits in every package. The gate's landing writes
+ * it into the ledger; `gate.mjs <id> --reflag` reads it again for an item that is already landed.
+ */
+export function reviewOf(id, { home = process.cwd(), others = [] } = {}) {
+  const edited = editedTests(id, { home, others })
+  if (!edited.length) return { needsReview: false, edited: [], diff: '' }
+  let diff = ''
+  try { diff += gitIn(home, ['diff', '-U2', '--', 'test/']) } catch { /* no repository: nothing uncommitted */ }
+  const labels = others.map((dir) => `${packageName(dir)}/`)
+  const from = (cwd, files) => {
+    if (!files.length) return
+    for (const sha of itemCommits(id, cwd)) {
+      const text = gitIn(cwd, ['show', '--first-parent', `--format=${packageName(cwd)} %h %s`, '-U2', sha, '--', ...files])
+      if (/^diff --git/m.test(text)) diff += text
+    }
+  }
+  from(home, edited.filter((w) => !labels.some((l) => w.file.startsWith(l))).map((w) => w.file))
+  others.forEach((dir, i) => from(dir, edited.filter((w) => w.file.startsWith(labels[i])).map((w) => w.file.slice(labels[i].length))))
+  return { needsReview: true, edited, diff }
 }
 export function testFilesIn(porcelain) {
   return String(porcelain ?? '').split('\n').filter(Boolean)

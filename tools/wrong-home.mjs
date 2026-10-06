@@ -152,7 +152,7 @@ export function wrongHomeVerdict(item, fresh) {
 /** The gate's check: the item's changed engine files, before and after. */
 export function checkWrongHome(item, root = ROOT) {
   const ctx = loadContext(root)
-  const changed = changedFiles(root).filter((c) => c.path.startsWith('engine/src/'))
+  const changed = changedFiles(root, item?.id).filter((c) => c.path.startsWith('engine/src/'))
   const before = changed.filter((c) => c.before !== null).flatMap((c) => scanEngineFile(c.path, c.before, ctx))
   const after = changed.filter((c) => c.after !== null).flatMap((c) => scanEngineFile(c.path, c.after, ctx))
   const fresh = newFindings(before, after)
