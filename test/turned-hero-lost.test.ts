@@ -18,8 +18,16 @@ const AFFLICTED = [['badge.vampirism'], ['badge.lycanthropy'], ['badge.vampirism
 const battle = (seed: number) => resolveEngagement({ id: 'test.k.turned', mapId: 'map.open', heroes: HEROES, enemies: PACK, seed, heroBadges: AFFLICTED })
 
 describe('a hero still turned when a battle is lost is lost', () => {
-  // seed 1: a wipe — heroes 0, 2 and 3 end it turned to the enemy side, standing; hero 1 turned and was beaten down
-  const { result, events } = battle(1)
+  // Law 10, 2026-10-05 — engine rule.prone-only-stand-up (Andrew, engine DECISIONS.md 'a prone unit only stands; Stand Up is its
+  // one move; …': "yes, it cannot use attacks or powers until it stands." / "No, you only perform one move action.") moved
+  // these fights: a knocked-down unit no longer attacks from the floor or walks on after standing, and on seed 1 all four
+  // heroes now end the battle turned and standing — no longer the case this file is about. The case is the same and every
+  // assertion below is unchanged; only the seed that fights it out is read again, the lowest of seeds 0 to 39 that does
+  // (4; also 11, 20, 28, 34, 38). The lines were:
+  //   // seed 1: a wipe — heroes 0, 2 and 3 end it turned to the enemy side, standing; hero 1 turned and was beaten down
+  //   const { result, events } = battle(1)
+  // seed 4: a wipe — heroes 0, 2 and 3 end it turned to the enemy side, standing; hero 1 turned and was beaten down
+  const { result, events } = battle(4)
 
   it('the battle is the case: lost, some heroes turned at its end, one turned and beaten down', () => {
     expect(() => validateResult(result)).not.toThrow()
@@ -65,8 +73,13 @@ describe('a hero still turned when a battle is lost is lost', () => {
   })
 
   it('a won battle: a hero that turned and was beaten down, and the heroes on the player\'s side, are unchanged', () => {
-    // seed 2: heroClear — hero 3 turned, was beaten down in its own form; the rest never left
-    const won = battle(2).result
+    // Law 10, 2026-10-05 — the same engine item moved seed 2 (now a wipe, all four turned). The case is unchanged; the lowest
+    // of seeds 0 to 39 that fights it out is 22. The lines were:
+    //   // seed 2: heroClear — hero 3 turned, was beaten down in its own form; the rest never left
+    //   const won = battle(2).result
+    // seed 22: heroClear — hero 3 turned, was beaten down in its own form; the rest never left
+    const fought = battle(22), won = fought.result
+    expect(fought.events.some((e) => e.type === 'unit.reverted' && e['reason'] === 'fell'), 'a hero turned and was beaten down in this battle').toBe(true)
     expect(won.outcome).toBe('heroClear')
     expect(won.units.some((u) => u.turned)).toBe(false)
     const paid = battleXpOf('test.k.turned', won)
