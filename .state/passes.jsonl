@@ -129,3 +129,6 @@
 {"suite":"viewer","stamp":"d858b3284f","with":{"engine":"f9fdfb5dde","content":"a1cfec8160","viewer":"d858b3284f","kingdom":"0f4a00d058"},"at":"2026-10-05T19:54:58.250Z","by":"gate (every part)","in":"HBT-worker-content"}
 {"suite":"viewer","stamp":"c3a6eb2723","with":{"engine":"f9fdfb5dde","content":"a1cfec8160","viewer":"c3a6eb2723","kingdom":"0f4a00d058"},"at":"2026-10-05T21:04:39.904Z","by":"gate (every part)","in":"HBT-worker-kingdom"}
 {"suite":"viewer","stamp":"902c759a7d","with":{"engine":"83cd1ee3d6","content":"e84e4cb7e0","viewer":"902c759a7d","kingdom":"c1522a2667"},"at":"2026-10-05T23:12:08.425Z","by":"gate (every part)","in":"HBT-worker-engine"}
+{"suite":"viewer","stamp":"d78d21bda5","failed":true,"at":"2026-10-06T00:35:29.042Z","by":"gate --part verify 4/4","in":"HBT-worker-engine"}
+{"suite":"viewer","stamp":"a0ab1b419d","failed":true,"at":"2026-10-06T00:38:08.842Z","by":"gate --part verify 4/4","in":"HBT-worker-engine"}
+{"suite":"viewer","stamp":"8a79bbacd1","with":{"engine":"7133daffea","content":"24efafa6d5","viewer":"8a79bbacd1","kingdom":"c1522a2667"},"at":"2026-10-06T01:03:33.564Z","by":"gate (every part)","in":"HBT-worker-engine"}
