@@ -1,6 +1,6 @@
 {
  "note": "Captured from the engine by its tools/capture-loadout-swap.mts: showcase.prologue-party options, one Iron Dwarf (uid 501) holding item.longsword with item.kite-shield stowed, human-controlled; select-activation, then the engine swap command { hands: [\"501/1\"] }. Every event the engine emitted, in order.",
- "engineCommit": "9a5cb65afd",
+ "engineCommit": "089aa1f3ff",
  "events": [
   {
    "seq": 0,
@@ -16,8 +16,8 @@
    "typeId": "hero.base.warrior-iron",
    "role": "melee",
    "hex": 247,
-   "hp": 14,
-   "maxHp": 14,
+   "hp": 16,
+   "maxHp": 16,
    "stamina": 6,
    "maxStamina": 6,
    "terrain": 0,
@@ -90,11 +90,11 @@
    "target": null,
    "badgeId": "badge.dwarf",
    "grants": [],
-   "mods": {},
-   "flags": {},
-   "gaps": [
-    "no payload"
-   ]
+   "mods": {
+    "movement": -1,
+    "maxHp": 2
+   },
+   "flags": {}
   },
   {
    "seq": 5,
@@ -222,7 +222,7 @@
    "target": null,
    "ordinal": 1,
    "hex": 247,
-   "hp": 14,
+   "hp": 16,
    "stamina": 6
   },
   {

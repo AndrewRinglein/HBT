@@ -164,7 +164,14 @@ test('seek, step and replay land on the same state: the whole battle played by t
   const begin = EV.findIndex(e => e.type === 'battle.begin') + 1
   v.seek(begin); v.speed(4); v.play()
   const order = []; let c = v.cursor
-  for (let n = 0; n < 2000000 && v.cursor < EV.length; n++) { w._flush(FRAME); while (c < v.cursor) order.push(c++) }
+  /* Law 10, 2026-10-05 - engine content.dwarf-elf-fey-badges-act (engine DECISIONS.md 2026-10-05 'a prone unit only stands; … Dwarf,
+     Elf and Fey act; …': "6. They should act."): the fixture's battle fields the Iron Dwarf and the Forest Elf, who fight with
+     their badges' numbers now, so it is another battle - and in it a Werewolf's bite gives a hero Lycanthropy mid-battle, which
+     the page holds on its first-affliction pop-up (viewer.affliction-pop-up). The pump closes the pop-up when it stands, as the
+     test below has always done; every claim is unchanged - the battle plays to its end and the board is the engine's own state.
+     was: for (let n = 0; n < 2000000 && v.cursor < EV.length; n++) { w._flush(FRAME); while (c < v.cursor) order.push(c++) } */
+  for (let n = 0; n < 2000000 && v.cursor < EV.length; n++) { w._flush(FRAME); while (c < v.cursor) order.push(c++)
+    const P = V.dom.root.querySelector('#afflPop'); if (P) fire(P.querySelector('#afflClose'), 'click') }
   assert.equal(v.cursor, EV.length, 'the battle played to its end'); assert.equal(V.invalid, null, 'no fault')
   assert.deepEqual(board(V.S), board(foldTo(EV, EV.length, ctx)), 'the board is the engine\'s own state')
   for (const u of Object.values(V.S.U)) if (u.id < 4) { assert.ok(u.typeId.startsWith('hero.'), 'each hero is itself again at the end'); assert.equal(u.side, 'hero') }
@@ -215,7 +222,12 @@ test('the log says each in a sentence, and the turn floats its word over the uni
   const formName = statics.units[e.into].name, heroName = shownName(EV.find(x => x.type === 'unit.enter' && x.actor === e.actor).name)
   const t = lineOf(i), r = lineOf(back)
   assert.ok(t && t.includes(heroName) && t.includes(formName), `the turn's sentence names the hero and the form: ${t}`)
-  assert.ok(t.includes('Lycanthropy'), 'and the affliction'); assert.ok(/enem/i.test(t), 'and the side it now fights for')
+  /* Law 10, 2026-10-05 - engine content.dwarf-elf-fey-badges-act: the first hero turned in the fixture's battle was turned by
+     Lycanthropy, and this line asked for that word. The battle is another now and its first turn may be either affliction's;
+     the claim is unchanged - the sentence names the affliction - and the affliction is the line's own (its badgeId), by the
+     name the engine's badge row gives it.
+     was: assert.ok(t.includes('Lycanthropy'), 'and the affliction'); assert.ok(/enem/i.test(t), 'and the side it now fights for') */
+  assert.ok(t.includes(statics.badges[e.badgeId].name), 'and the affliction'); assert.ok(/enem/i.test(t), 'and the side it now fights for')
   assert.ok(r && r.includes(heroName) && /again/i.test(r), `the revert's sentence: ${r}`)
   /* the turned unit's own lines are the enemy's from the turn on (the log colours a line by its unit's side at that line) */
   const act = EV.findIndex((x, k) => k > i && x.type === 'activation.begin' && x.actor === e.actor); assert.equal(lines.find(l => l.i === act).cls, 'enemy')
