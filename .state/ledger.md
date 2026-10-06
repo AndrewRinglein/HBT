@@ -37491,3 +37491,69 @@ index 3b81571..34c3816 100644
          expect(hash(ctx.state), 'full raise-lower-magic state').toBe(raiseLowerMagicExpected.state)
 ```
 </details>
+
+## capability.planted-banners — LANDED `2c182d2` **NEEDS REVIEW**
+2026-10-06 01:45
+
+  PASS  dependencies landed
+  WARN  not already decided — 2 candidate ruling(s) — READ BEFORE ASKING: SWITCHES.md:2282 · ..\CODEX.md:1851
+  PASS  typecheck
+  PASS  the item's own tests — test/battle-cursor.test.ts, test/planted-banners.test.ts
+  PASS  gate 1 — the id appears in a real battle — power.banner-courage.plant: 21 log lines, 21 fired, 5 changed state
+  PASS  brought its own tests — test/battle-cursor.test.ts, test/fixtures/battle-cursor-planted-banners.json, test/planted-banners.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/battle-cursor.test.ts (-2) — will land FLAGGED for review
+  PASS  control battles unchanged
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without power.banner-courage.plant — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/battle-cursor.test.ts b/test/battle-cursor.test.ts
+index 34c3816..7c82699 100644
+--- a/test/battle-cursor.test.ts
++++ b/test/battle-cursor.test.ts
+@@ -512,4 +512,11 @@ const raiseLowerMagicGolden = JSON.parse(readFileSync(new URL('./fixtures/battle
+ // Every case frozen here (tools/capture-his-weapons-small-clauses-cursor.mts). Moved: test.set-bonus. A `changed` case is checked here and skips the older layers.
+ const hisWeaponsSmallClausesGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-his-weapons-small-clauses.json', import.meta.url), 'utf8'))
++// capability.planted-banners (2026-10-05; DECISIONS.md 2026-10-04 'every dead line on his items is a feature that is needed …': "All of
++// those deadlines need to be added in as features that we need."), Law 10: a power plants an object on its user's hex that stays
++// for the rest of the Battle and gives the planter's side, within its radius of that hex, stats, a ward against a status and lent
++// triggers (his Banners of Courage, of the Assassin, of the Vigil and of Heroism). No case that was fought before moves (no unit
++// in them carries a banner); test.banner-courage is ADDED: the Banner of Courage live in a real battle.
++// Every case frozen here (tools/capture-planted-banners-cursor.mts). Moved: none. A `changed` case is checked here and skips the older layers.
++const plantedBannersGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-planted-banners.json', import.meta.url), 'utf8'))
+ const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
+ // Explicit rule migration, not regenerated historical hashes. These nine old
+@@ -664,5 +671,8 @@ describe('resumable battle cursor', () => {
+       const raiseLowerMagicExpected = raiseLowerMagicGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+       const hisWeaponsSmallClausesExpected = hisWeaponsSmallClausesGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+-      const hisWeaponsSmallClausesMoved = hisWeaponsSmallClausesExpected?.changed === true
++      const plantedBannersExpected = plantedBannersGolden.cases.find((row:{id:string})=>row.id===fixture.id)
++      const plantedBannersMoved = plantedBannersExpected?.changed === true
++      // was: const hisWeaponsSmallClausesMoved = hisWeaponsSmallClausesExpected?.changed === true — a case capability.planted-banners moved skips this layer too (capability.planted-banners 2026-10-04)
++      const hisWeaponsSmallClausesMoved = hisWeaponsSmallClausesExpected?.changed === true || plantedBannersMoved
+       // was: const raiseLowerMagicMoved = raiseLowerMagicExpected?.changed === true — a case capability.his-weapons-small-clauses moved skips this layer too (capability.his-weapons-small-clauses 2026-10-04)
+       const raiseLowerMagicMoved = raiseLowerMagicExpected?.changed === true || hisWeaponsSmallClausesMoved
+@@ -830,5 +840,12 @@ describe('resumable battle cursor', () => {
+           }
+         } else result = battle.runBattle(ctx)
+-        if (hisWeaponsSmallClausesExpected) {
++        if (plantedBannersExpected) {
++        expect(hash(ctx.events), 'full planted-banners events').toBe(plantedBannersExpected.events)
++        expect(hash(ctx.state), 'full planted-banners state').toBe(plantedBannersExpected.state)
++        expect(hash(ctx.rng.log), 'full planted-banners RNG').toBe(plantedBannersExpected.rng)
++        expect(result).toEqual(plantedBannersExpected.result)
++        }
++        // was: if (hisWeaponsSmallClausesExpected) { — capability.planted-banners (2026-10-04): a case it moved is checked above instead
++        if (hisWeaponsSmallClausesExpected && !plantedBannersMoved) {
+         expect(hash(ctx.events), 'full his-weapons-small-clauses events').toBe(hisWeaponsSmallClausesExpected.events)
+         expect(hash(ctx.state), 'full his-weapons-small-clauses state').toBe(hisWeaponsSmallClausesExpected.state)
+```
+</details>

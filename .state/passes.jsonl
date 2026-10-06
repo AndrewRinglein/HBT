@@ -72,3 +72,5 @@
 {"suite":"engine","stamp":"83cd1ee3d6","with":{"engine":"83cd1ee3d6","content":"e84e4cb7e0","viewer":"902c759a7d","kingdom":"c1522a2667"},"at":"2026-10-05T23:19:35.628Z","by":"gate --shard (1 of 1)","in":"HBT-worker-engine","tests":2995}
 {"suite":"engine","stamp":"7133daffea","with":{"engine":"7133daffea","content":"24efafa6d5","viewer":"8a79bbacd1","kingdom":"c1522a2667"},"at":"2026-10-06T01:11:51.969Z","by":"gate --shard (1 of 1)","in":"HBT-worker-engine","tests":3015}
 {"suite":"control","stamp":"7133daffea","pack":"6cbe672f8d","golden":"2a98bd088f","at":"2026-10-06T01:13:52.943Z","by":"gate capability.his-weapons-small-clauses --land","in":"HBT-worker-engine","moved":null}
+{"suite":"engine","stamp":"dc42f97df3","with":{"engine":"dc42f97df3","content":"c6cb89aebf","viewer":"bdd60271b1","kingdom":"c1522a2667"},"at":"2026-10-06T01:43:30.809Z","by":"gate --shard (1 of 1)","in":"HBT-worker-engine","tests":3034}
+{"suite":"control","stamp":"dc42f97df3","pack":"06edfcb2d1","golden":"2a98bd088f","at":"2026-10-06T01:45:58.000Z","by":"gate capability.planted-banners --land","in":"HBT-worker-engine","moved":null}
