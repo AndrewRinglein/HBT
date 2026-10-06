@@ -214,5 +214,9 @@ describe('in real battles, over 100 replicates of each', () => {
     // trap is the rule held above on a built board, for a hero and for a zombie ('a trap of the OTHER side on its way is
     // unknown to it'), and in the Bear Traps' fielding, where the zombies spring over a hundred. Here it is only counted.
     expect(t.other).toBeGreaterThanOrEqual(0)
-  })
+    // 2026-10-06 (rule.special-moves-unlock-at-level-two, found by its gate; the failed run stays in the record): this test is a
+    // hundred whole battles, and under the two rules of the day each is a longer fight - 2.6 seconds run alone, against the
+    // default limit of 5. It ran out of time once among nineteen files on four workers (it had passed in the whole suite and
+    // twice at the other rule's gate the same hour). The time limit is said here; no assertion is changed. It ended `})`.
+  }, 30_000)
 })

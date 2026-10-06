@@ -182,7 +182,10 @@ describe('pass 3 — the Mage', () => {
     expect(seen.moved).toBeGreaterThan(0)
     expect(seen.staff).toBeGreaterThan(0)
     expect(seen.hurt).toBeGreaterThan(0)
-  })
+    // 2026-10-06 (rule.special-moves-unlock-at-level-two, after its gate ran out of time on two many-battle tests of its files): this
+    // test runs 2.6 seconds alone against the default limit of 5 and stated none; the limit is said here. No assertion is
+    // changed. It ended `})`.
+  }, 30_000)
 })
 
 // ─── PASS 4: the class power ─────────────────────────────────────────────────
@@ -244,7 +247,10 @@ describe('pass 4 — Arcane Bolt', () => {
           throw new Error('a unit attacked after casting in the same activation')
       }
     }
-  })
+    // 2026-10-06 (rule.special-moves-unlock-at-level-two, after its gate ran out of time on two many-battle tests of its files): this
+    // test runs 3.0 seconds alone against the default limit of 5 and stated none; the limit is said here. No assertion is
+    // changed. It ended `})`.
+  }, 30_000)
   it('gate 1 — casts appear in the log with a full damage ledger', () => {
     // Arcane Bolt again — test cohort, explicitly (2026-09-02, see above).
     const ctx = createBattle({ replicate: 1, enemyCount: 8, heroes: TEST_COHORT.heroes }); runBattle(ctx)
@@ -286,5 +292,8 @@ describe('everything together', () => {
       const b = createBattle({ replicate: 7, mapId, enemyCount: 8 }); runBattle(b)
       expect(JSON.stringify(a.events)).toBe(JSON.stringify(b.events))
     }
-  })
+    // 2026-10-06 (rule.special-moves-unlock-at-level-two, after its gate ran out of time on two many-battle tests of its files): this
+    // test runs 2.4 seconds alone against the default limit of 5 and stated none; the limit is said here. No assertion is
+    // changed. It ended `})`.
+  }, 30_000)
 })

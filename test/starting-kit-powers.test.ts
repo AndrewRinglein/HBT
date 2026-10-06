@@ -163,7 +163,11 @@ describe('Mercy in battle — the Battle Chaplain heals an ally within 4 hexes f
       healed = ctx.events.some((e) => e.type === 'heal.applied' && e.causeId === MERCY && (e['amount'] as number) > 0)
     }
     expect(healed, 'Mercy healed someone in one of sixty fights at the caravan').toBe(true)
-  })
+    // 2026-10-06 (rule.special-moves-unlock-at-level-two, found by its gate; the failed run stays in the record): read to the
+    // 48th fight this test is 48 whole battles where it was at most ten - 2.5 seconds run alone, against the default limit of
+    // 5. It ran out of time once among nineteen files on four workers (it had passed in the whole suite and twice at the other
+    // rule's gate the same hour). The time limit is said here; no assertion is changed. It ended `})`.
+  }, 30_000)
 })
 
 describe('Flame Burst and Frost Nova in battle — Magic damage to every unit in the seven hexes, no roll', () => {

@@ -119,7 +119,9 @@ describe('the computer, and who is unchanged', () => {
     }
     // the levels the recordings field, battle by battle: level 2 is first reached by the first hero, going into battle 2
     expect(levels).toEqual(['1', '21', '211', '2111', '21111', '211111'])
-  })
+    // 2026-10-06 (after this item's gate ran out of time on two many-battle tests of its files): six whole battles, 2.1 seconds
+    // alone against the default limit of 5; the limit is said here.
+  }, 30_000)
   it('an enemy keeps every movement it has: no enemy row names a level, and the Vampire still flies', () => {
     for (const e of [...P.enemies, ...P.authoredEnemies]) expect(e.moveLevels, e.typeId).toBeUndefined()
     expect(fieldedDef('unit.vampire').moves).toContain('power.flight')
