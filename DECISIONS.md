@@ -5450,3 +5450,25 @@ Two corrections to the entry above, the same morning, after he asked “How much
 - **Moving water and trees do not work against the still-frame rule in a battle.** While bodies stand on the board the scene is already drawn every frame - the Orphanage 700 draw calls and 5.18 million triangles a frame, 13.2 ms of script, bodies idling (the same table) - because the bodies move where they stand; “a held frame draws nothing” is a board with nothing on it. Water moved and leaves bent in the way those pieces are drawn add no draw call and no triangle. What would cost is the trees' shadows moving with them: the scenery's shadow is drawn once and kept (`viewer.scenery-shadow-drawn-once`), and a swaying shadow brings that pass back every frame. So: the trees sway, their shadows stand still. Not measured - a gate was running on the machine when he asked, and the frame-cost tool measures it properly once the motion exists.
 
 **“It's not that important”**: the water and the trees go last of the eight pieces, the water first of the two, each landing with the frame-cost tool's before and after; the trees are dropped if the tool shows a cost.
+
+## 2026-10-06 — the colour template reaches the game by repainting the 3D tiles; the enemies' marks take the fire colour; the work goes after what is queued; planning first, then the queues
+
+Andrew, in the root chat (the XCOM 2 study), to four questions (1 a look the battle screen applies as it draws, or the maps repainted; 2 the enemies' ring and name from violet to the fire colour on these maps; 3 ahead of the queued battle-screen items or behind; 4 the Gates, a 3D map or its flat tiles recoloured):
+
+“1. I don't know the answer.
+2. Yes.
+3. After.
+4. I don't know what you mean.
+
+ I want to change the current 3D tiles by repainting them. We're going to want to insert all of this into the regular work queues, so we're just planning right now, and then we're going to insert items into our documentation.”
+
+Ruled:
+
+- **The current 3D tiles are changed by repainting them.** This answers the first question and replaces the chat's reading of the entry above (“a look the battle screen applies as it draws”): the template's colours go into the maps' own paint. The demo page stays what the repaint is judged against.
+- **The enemies' ring and name take the fire colour on these maps** (“Yes”), in place of the side's violet there.
+- **The work goes after what is already queued** (“After”).
+- **Planning now; the items are inserted into the regular queues afterwards.** Nothing is filed on this entry.
+
+Open: the fourth question was not understood and is put again in plainer words - five of the six opening battles are played on a 3D map; the Gates is still a flat board of hex pictures, so it has no 3D tiles to repaint.
+
+The chat's default, his to change in a line: the maps' repainting is filed in the art queue (`engine/.state/backlog.art.json`), a map an item; the units' brightness, the enemies' fire, the measuring tool, the water and the trees in the battle screen's (`backlog.viewer-kingdom.json`).
