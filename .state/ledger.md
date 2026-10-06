@@ -38297,3 +38297,53 @@ index 817f443..8a8df7e 100644
      expect(knockImmunity(ctx, dwarf!)).toEqual({ back: [], down: [] })
 ```
 </details>
+
+## fix.bandaged-hero-dies-at-zero — LANDED `6e6b846` **NEEDS REVIEW**
+2026-10-06 09:40
+
+  PASS  dependencies landed
+  WARN  not already decided — 3 candidate ruling(s) — READ BEFORE ASKING: SWITCHES.md:1944 · SWITCHES.md:2664
+  PASS  typecheck
+  PASS  the item's own tests — test/stabilise-downed-ally.test.ts, test/bandaged-hero-dies-at-zero.test.ts
+  PASS  gate 1 — the id appears in a real battle — power.bandages.use: 6 log lines, 6 fired, 5 changed state
+  PASS  brought its own tests — test/stabilise-downed-ally.test.ts, test/bandaged-hero-dies-at-zero.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/stabilise-downed-ally.test.ts (-2) — will land FLAGGED for review
+  PASS  control battles unchanged
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — power.bandages.use live · power.test-osric.field-dressing live
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without power.bandages.use — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/stabilise-downed-ally.test.ts b/test/stabilise-downed-ally.test.ts
+index e3240f7..8ee8c29 100644
+--- a/test/stabilise-downed-ally.test.ts
++++ b/test/stabilise-downed-ally.test.ts
+@@ -103,9 +103,17 @@ describe('stopping the count', () => {
+   })
+ 
+-  it('a hit on a stabilised ally still moves its count, never below 1 - it does not die of it; standing up again takes the stop away', () => {
++  // Law 10, 2026-10-05 - fix.bandaged-hero-dies-at-zero (DECISIONS.md 2026-10-05 'a bandaged hero's count has no floor: bandaging
++  // stops the count, a hit still takes one, and at 0 the hero dies': "I don't get why the count would start and stop at 1. No,
++  // it goes to 0 when they die. Bandaging is supposed to completely stop the bleed-out counter, and they're just stable."): this
++  // test held that hits could not take a stabilised hero's count below 1. Overturned: a hit takes one with no floor, and at 0
++  // the hero dies (test/bandaged-hero-dies-at-zero.test.ts holds the hits). What stands, and is held here: the count does not
++  // run by itself however low it is, and the stop goes when the unit is no longer down.
++  // was: it('a hit on a stabilised ally still moves its count, never below 1 - it does not die of it; standing up again takes the stop away', () => {
++  it('a stabilised ally whose count hits have brought to 1 is still not counted down by itself; standing up again takes the stop away', () => {
+     const { ctx, medic, ally } = field()
+     down(ctx, ally, 3)
+     usePower(ctx, medic.id, ally.id, USE)
+-    setBleedOut(ctx, ally.id, 1, 'test')   // as far as hits can push it (fix.downed-targetable: never below 1)
++    // was: setBleedOut(ctx, ally.id, 1, 'test')   // as far as hits can push it (fix.downed-targetable: never below 1)
++    setBleedOut(ctx, ally.id, 1, 'test')   // one hit from death
+     for (let i = 0; i < 3; i++) advanceBleedOuts(ctx)
+     settle(ctx, 'test')
+```
+</details>

@@ -102,11 +102,19 @@ describe('stopping the count', () => {
     expect(canUsePower(ctx, medic.id, foe.id, USE)).toBe(false)
   })
 
-  it('a hit on a stabilised ally still moves its count, never below 1 - it does not die of it; standing up again takes the stop away', () => {
+  // Law 10, 2026-10-05 - fix.bandaged-hero-dies-at-zero (DECISIONS.md 2026-10-05 'a bandaged hero's count has no floor: bandaging
+  // stops the count, a hit still takes one, and at 0 the hero dies': "I don't get why the count would start and stop at 1. No,
+  // it goes to 0 when they die. Bandaging is supposed to completely stop the bleed-out counter, and they're just stable."): this
+  // test held that hits could not take a stabilised hero's count below 1. Overturned: a hit takes one with no floor, and at 0
+  // the hero dies (test/bandaged-hero-dies-at-zero.test.ts holds the hits). What stands, and is held here: the count does not
+  // run by itself however low it is, and the stop goes when the unit is no longer down.
+  // was: it('a hit on a stabilised ally still moves its count, never below 1 - it does not die of it; standing up again takes the stop away', () => {
+  it('a stabilised ally whose count hits have brought to 1 is still not counted down by itself; standing up again takes the stop away', () => {
     const { ctx, medic, ally } = field()
     down(ctx, ally, 3)
     usePower(ctx, medic.id, ally.id, USE)
-    setBleedOut(ctx, ally.id, 1, 'test')   // as far as hits can push it (fix.downed-targetable: never below 1)
+    // was: setBleedOut(ctx, ally.id, 1, 'test')   // as far as hits can push it (fix.downed-targetable: never below 1)
+    setBleedOut(ctx, ally.id, 1, 'test')   // one hit from death
     for (let i = 0; i < 3; i++) advanceBleedOuts(ctx)
     settle(ctx, 'test')
     expect([ally.lifeState, ally.bleedOut, ally.bleedStopped]).toEqual(['downed', 1, true])

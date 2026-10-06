@@ -86,3 +86,5 @@
 {"suite":"engine","stamp":"f6f6fb0bb1","with":{"engine":"f6f6fb0bb1","content":"8f939e8202","viewer":"dbf2e382b6","kingdom":"20721f1c69"},"at":"2026-10-06T05:30:28.681Z","by":"gate --shard (1 of 1)","in":"HBT-worker-engine","tests":3071}
 {"suite":"engine","stamp":"1af59e0a85","with":{"engine":"1af59e0a85","content":"e4b5310a8b","viewer":"bead638a17","kingdom":"20721f1c69"},"at":"2026-10-06T08:13:24.392Z","by":"gate --shard (1 of 1)","in":"HBT-worker-engine","tests":3077}
 {"suite":"control","stamp":"1af59e0a85","pack":"f2904abff7","golden":"2a98bd088f","at":"2026-10-06T08:24:07.971Z","by":"gate content.dwarf-elf-fey-badges-act --land","in":"HBT-worker-engine","moved":null}
+{"suite":"engine","stamp":"7bdc42952e","failed":true,"at":"2026-10-06T09:35:59.621Z","by":"gate --shard 1/1","in":"HBT-worker-engine"}
+{"suite":"control","stamp":"7bdc42952e","pack":"f2904abff7","golden":"2a98bd088f","at":"2026-10-06T09:41:00.352Z","by":"gate fix.bandaged-hero-dies-at-zero --land","in":"HBT-worker-engine","moved":null}
