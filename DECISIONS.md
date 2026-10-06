@@ -5861,3 +5861,9 @@ Ruled:
 - **The seven-item cut is done first, ahead of the feature items.** This replaces the last bullet but one of the entry above, and 'they run beside the feature queue, not ahead of it' in the entry 'the cleanup is cut to seven items' of this day.
 - **What is outside the seven is what goes to the very back** — it stays written in `CODEBASE-REVIEW-2026-10-05.md` and waits, as before.
 - Read, not certain: the two tool items from the review of the testing (the 30-second limit; the two tests that depend on run order) are also 'things that are going to improve us overall' and go first with the seven. Put to him the same minute.
+
+Added the same minute, his next message, which settles the reading above:
+
+“We need to improve our methodology. We need to improve our file structure before we continue with development.”
+
+- **Methodology and file structure come before feature development continues.** Methodology: the two tool items from the review of the testing, and the builders-and-lander way of working. File structure: the seven-item cut. The three owed chains already running in the worker copies are finished and merged first, since the restructure edits the same files; no new feature item is started until the nine are landed.
