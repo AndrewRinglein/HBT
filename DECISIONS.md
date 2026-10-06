@@ -5740,3 +5740,13 @@ Ruled:
 - **Everything discussed and proposed in the review is to be built, once everything is approved and clean** - the checklist, the art-and-motion and maps areas, the `workshop` and `accepted` shelves. The findings, the rulings and the build order are `CODEBASE-REVIEW-2026-10-05.md` at the project root, written the same hour so that the work does not depend on that chat.
 
 Not yet approved or clean, read the same hour (not ruled): the two areas' folder names; the full four-suite run the last home chat left owed in the main folder (kingdom and the viewer's checks failed there - kingdom `HANDOFF-2026-09-04.md`, "2026-10-06 — Now"); the owed chains unlanded in three worker copies. Nothing is filed from this entry.
+
+## 2026-10-06 — the animations need not all be backed up
+
+Andrew, in the codebase-review chat, while the four packages were being pushed to GitHub:
+
+“I don't know if it's going to run into issues by size, but I don't think we particularly need to back up all of the animations.”
+
+Ruled:
+
+- **The off-machine backup does not have to carry all the animations.** Read the same minute: the four packages hold no model or motion files (they are under the root's `assets/`), so the push in hand carries none; the root repository, which tracks them, is not pushed. When the root's documents and tools are backed up (`CODEBASE-REVIEW-2026-10-05.md` items 4 and 23), the models and motions may be left out.
