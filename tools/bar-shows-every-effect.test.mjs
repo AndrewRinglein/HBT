@@ -224,7 +224,10 @@ test('a planted banner is said whole on its power: the hex, the reach, the stats
   // the other banners the engine holds, by the same function: the Assassin's crit and its on-crit, the Vigil's heal, the Heroic's two stats and heal
   const of = pid => plantWords(STATIC.actions[pid].effects[0], D, STATIC.statuses)
   assert.match(of('power.banner-assassin.plant'), /within 1 hex of that hex: CRIT\w* \+20 · on crit: regain 1 Stamina/i)
-  assert.match(of('power.banner-vigil.plant'), /within 1 hex of that hex: at the end of its activation: heal SPI\w*/i)
+  // Restated 2026-10-06 (engine item content.resistance-to-weak-and-vigil-party-spirit; ruled 2026-10-05, "2 by the party
+  // spirit"): the Vigil heals by the PARTY's Spirit, and the bar says so in the words every party-Spirit heal has. It was:
+  //   assert.match(of('power.banner-vigil.plant'), /within 1 hex of that hex: at the end of its activation: heal SPI\w*/i)
+  assert.match(of('power.banner-vigil.plant'), /within 1 hex of that hex: at the end of its activation: heal party Spirit$/)
   assert.match(of('power.banner-heroism.plant'), /within 3 hexes of that hex: STR\w* \+2 · PRE\w* \+2 · at the end of its activation: heal 5/i)
   assert.equal(STATIC.actions['power.banner-mystic-power.plant'], undefined, 'the Mystic Banner is not planted as an object that does nothing')
 })
