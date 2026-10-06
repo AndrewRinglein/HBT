@@ -53,6 +53,8 @@ export const ACTED: ReadonlySet<string> = new Set(['damage.applied','heal.applie
   'object.planted', 'surge.gained',
   // capability.placed-traps (2026-10-05): a trap put on the board, sprung, or taken off it
   'trap.placed', 'trap.sprung', 'trap.removed',
+  // capability.stabilise-downed-ally (2026-10-05): a downed unit's bleed-out count stopped
+  'bleedout.stopped',
   // capability.corpses (2026-09-03): a body on the board, and what became of it
   'corpse.created', 'corpse.removed', 'unit.raised', 'corpse.eaten',
   // capability.ground-layers (2026-09-03): a stroke on the board

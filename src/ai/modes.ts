@@ -603,6 +603,13 @@ function effectsPower(decision: Decision, u: Unit, when: 'free' | 'primary' | 'o
       }
       act(decision, { actor: u.id, target: u.id, actionId: id }, { choice: `rule.effects-${when}` }); return true
     }
+    // capability.stabilise-downed-ally (2026-10-05; SWITCHES.md stabiliseComputerUses): a power aimed at a downed ally is used
+    // when one is in its reach - the one whose count is lowest, the lower id on a tie (Law 6)
+    if (t.select === 'unit' && t.side === 'ally' && t.life === 'downed') {
+      const downed = ctx.state.units.filter((o) => o.side === u.side && o.lifeState === 'downed' && !o.bleedStopped && legal(o)).sort((x, y) => x.bleedOut - y.bleedOut || x.id - y.id)[0]
+      if (!downed) continue
+      act(decision, { actor: u.id, target: downed.id, actionId: id }, { choice: `rule.effects-${when}` }); return true
+    }
     if (t.select === 'unit' && t.side === 'ally') {
       const allies = ctx.state.units.filter((o) => o.side === u.side && o.lifeState === 'standing' && legal(o))
       if (!allies.length) continue

@@ -7524,11 +7524,11 @@
    "content": [
     "item.bandages"
    ],
-   "action": null,
-   "name": "active: Free, 0 Stamina: stabilize a downed ally",
-   "kind": null,
-   "engine": "no",
-   "bar": null,
+   "action": "power.bandages.use",
+   "name": "Bandages",
+   "kind": "power",
+   "engine": "yes",
+   "bar": "power",
    "motion": null,
    "bodies": {
     "Ancient Elf": null,
@@ -7554,9 +7554,14 @@
     "The Skull": null
    },
    "motionStatus": "missing",
-   "selected": null,
+   "selected": {
+    "key": "consume",
+    "label": "Drink or consume",
+    "clip": "Consume",
+    "record": "assets/characters/oathblade-armor/rebuild/free-motion-study/selections.json"
+   },
    "ruling": null,
-   "note": "an item power the engine has no row for (their b — an ability with charges/targets — capability.consumables)",
+   "note": null,
    "variants": 0
   },
   {
@@ -22739,10 +22744,10 @@
  "counts": {
   "rows": 521,
   "missing": 352,
-  "noEngine": 23,
+  "noEngine": 22,
   "inert": 239,
   "noMotion": 352,
-  "selectedUnbound": 322,
+  "selectedUnbound": 323,
   "partial": 81
  }
 }

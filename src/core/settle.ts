@@ -162,7 +162,8 @@ export function checkVictory(ctx: Ctx, causeId: string): boolean {
  * phase. (Angela, 2026-08-15.)
  */
 export function advanceBleedOuts(ctx: Ctx): void {
-  const downed = ctx.state.units.filter((u) => u.lifeState === 'downed')
+  // capability.stabilise-downed-ally (2026-10-05): a downed unit whose count was stopped is not counted down
+  const downed = ctx.state.units.filter((u) => u.lifeState === 'downed' && !u.bleedStopped)
   for (const u of downed) tickBleedOut(ctx, u.id, 'bleedout')
   if (downed.length) settle(ctx, 'bleedout')
 }

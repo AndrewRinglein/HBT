@@ -48,7 +48,10 @@ export function canUsePower(ctx: Ctx, userId: number, targetId: number, abilityI
   const tg = unit(ctx, targetId)
   const a = ctx.actions[abilityId]
   if (!a || !isPower(a)) return false
-  if (u.lifeState !== 'standing' || tg.lifeState !== 'standing') return false
+  // capability.stabilise-downed-ally (2026-10-05): a power aimed at "one downed ally" lands on a downed unit and on no other;
+  // every other power lands on the standing only, as it always did
+  const onTheDowned = a.target?.select === 'unit' && a.target.life === 'downed'
+  if (u.lifeState !== 'standing' || tg.lifeState !== (onTheDowned ? 'downed' : 'standing')) return false
   // Dazed — station.crit (2026-08-27): "loses access to class powers".
   // A status FLAG, not a hardcoded name: any status declaring locksPowers.
   for (const s of u.statuses) {
@@ -269,7 +272,9 @@ function performEffects(ctx: Ctx, userId: number, targetId: number, a: AbilityDe
     // `who: 'self'` and the kinds that are only ever the one acting's own (a move's riders, on a power too)
     const ids = e.who === 'self' || e.kind === 'loseMaxStamina' || e.kind === 'stand' ? [userId] : targets
     for (const id of ids) {
-      if (unit(ctx, id).lifeState !== 'standing') continue
+      // … on the standing only — but a power aimed at a downed unit lands on the one it was aimed at (capability.stabilise-downed-ally)
+      const life = unit(ctx, id).lifeState
+      if (life !== 'standing' && !(life === 'downed' && a.target?.select === 'unit' && a.target.life === 'downed' && id !== userId)) continue
       total += applyEffect(ctx, e, { causeId: a.id, actor: userId, by: userId, abilityId: a.id }, id)
     }
   }

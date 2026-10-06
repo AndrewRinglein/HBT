@@ -121,6 +121,20 @@ const RAW_SCENARIOS: Readonly<Record<string, ScenarioDef>> = {
     id: 'test.force-blast', note: 'TEST: two mages, one holding the Force Staff (Force Blast: Precision plus half the Magic of the party, as magic damage), against two zombies. No campaign claim.',
     mapId: 'map.open', heroes: ['hero.base.mage-fire', 'hero.base.mage-thinking'], heroHexes: [85, 101], heroItems: [['item.force-staff'], ['item.frost-staff']], enemies: ['unit.zombie', 'unit.zombie'], enemyHexes: [91, 107], replicate: 0,
   },
+  // capability.stabilise-downed-ally (2026-10-05; DECISIONS.md 2026-10-04 'every dead line on his items is a feature that is
+  // needed …': "All of those deadlines need to be added in as features that we need."): the Bandages live in a real battle -
+  // two warriors side by side against five zombies; the one in mail falls on Turn 6 and the other, who carries the Bandages,
+  // is beside him and stops his count on Turn 7. He is still down when the battle is won. A fielding, not a balance claim.
+  'test.bandages': {
+    id: 'test.bandages', note: 'TEST: two warriors, one carrying Bandages (free, one use: stop the bleed-out count of a downed ally within 1 hex), against five zombies. No campaign claim.',
+    mapId: 'map.open', heroes: ['hero.base.warrior-iron', 'hero.base.warrior-brawler'], heroHexes: [85, 86], heroItems: [['item.destroyed-mail', 'item.war-axe'], ['item.ragged-hides', 'item.bandages']], enemies: ['unit.zombie', 'unit.zombie', 'unit.zombie', 'unit.zombie', 'unit.zombie'], enemyHexes: [89, 90, 105, 106, 91], replicate: 0,
+  },
+  // … and its second instance, pure data: a test unit whose one power, Field Dressing, stops the count of a downed ally within
+  // 2 hexes (for 1 Stamina, on a cooldown, with no limit of uses). The brawler beside it falls on Turn 7 and is dressed on Turn 8.
+  'test.field-dressing': {
+    id: 'test.field-dressing', note: 'TEST: a brawler and a test unit whose power Field Dressing stops the bleed-out count of a downed ally within 2 hexes, against five zombies. No campaign claim.',
+    mapId: 'map.open', heroes: ['hero.base.warrior-brawler', 'test-dresser'], heroHexes: [85, 86], enemies: ['unit.zombie', 'unit.zombie', 'unit.zombie', 'unit.zombie', 'unit.zombie'], enemyHexes: [89, 90, 105, 106, 91], replicate: 0,
+  },
   // capability.placed-traps (2026-10-05; DECISIONS.md 2026-10-04 'every dead line on his items is a feature that is needed …':
   // "All of those deadlines need to be added in as features that we need."): the Bear Traps live in a real battle - a warrior
   // carrying them (his mail and axe, no shield - the computer raises a shield's power first) beside a priest, against two

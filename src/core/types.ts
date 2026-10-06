@@ -321,6 +321,12 @@ type EffectBody =
    * one hex after another.
    */
   | ({ readonly kind: 'trap.place' } & TrapDef)
+  /**
+   * capability.stabilise-downed-ally (2026-10-05): stop the bleed-out count of the DOWNED unit it lands on — "their
+   * bleed-out counter stops". The unit stays down and cannot act; its count no longer advances, so it does not die of it for
+   * the rest of the Battle. Only on a power aimed at one downed unit (Targeting.life 'downed').
+   */
+  | { readonly kind: 'bleedout.stop' }
   /** capability.planted-banners: add `value` to the unit's Surge Chance — the amount the Surge check rolls against — once; its Surge stat is untouched. */
   | { readonly kind: 'surge.gain'; readonly value: number }
   /** capability.corpses: remove every corpse within `radius`, healing the one acting `healPer` each (Consume the Fallen). */
@@ -701,7 +707,7 @@ export type MoveDef = ActionDef & { readonly move: MoveProfile }
 export type AbilityDef = ActionDef
 
 /** plumbing.vocabulary-export: every effect kind, checked against the union by tsc — snapshot validation, pack validation and the exported vocabulary read it, never a copy. */
-export const EFFECT_KINDS = ['statDamage', 'damage', 'heal', 'status.apply', 'status.remove', 'statMod', 'stamina.gain', 'stamina.drain', 'loseMaxStamina', 'loseMaxHp', 'stand', 'knockback', 'badge.grant', 'power.gain', 'corpse.raise', 'summon', 'side.stat', 'corpse.destroy', 'plant', 'surge.gain', 'trap.place', 'corpse.consume', 'corpse.eat', 'layer.paint', 'reveal', 'burstScale'] as const satisfies readonly Effect['kind'][]
+export const EFFECT_KINDS = ['statDamage', 'damage', 'heal', 'status.apply', 'status.remove', 'statMod', 'stamina.gain', 'stamina.drain', 'loseMaxStamina', 'loseMaxHp', 'stand', 'knockback', 'badge.grant', 'power.gain', 'corpse.raise', 'summon', 'side.stat', 'corpse.destroy', 'plant', 'surge.gain', 'trap.place', 'bleedout.stop', 'corpse.consume', 'corpse.eat', 'layer.paint', 'reveal', 'burstScale'] as const satisfies readonly Effect['kind'][]
 export type EffectKindsCovered = Assert<Covers<Effect['kind'], typeof EFFECT_KINDS>>
 
 
@@ -1249,6 +1255,12 @@ export type Unit = {
    * settling ends: a hero who stands on its Deathbed roll, or goes down and bleeds out later, was not killed by that attack.
    */
   corpseDestroyed?: { readonly by: number; readonly cause: string }
+  /**
+   * capability.stabilise-downed-ally (2026-10-05): this downed unit's bleed-out count is stopped (stopBleedOut wrote it; the
+   * line `bleedout.stopped` says so). The End of Hero Phase rung no longer advances its count. Gone when the unit is no
+   * longer downed.
+   */
+  bleedStopped?: true
   /**
    * capability.placed-traps (2026-10-05): this unit is part-way through one use of a power aimed at several hexes — which
    * power, and how many hexes are still to choose. Written by usePowerAt, cleared when the last is placed and when the

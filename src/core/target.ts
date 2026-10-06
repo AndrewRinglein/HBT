@@ -51,6 +51,11 @@ export type Targeting = {
    */
   readonly origin?: 'self' | 'target'
   /**
+   * Unit only — capability.stabilise-downed-ally (2026-10-05): "one DOWNED ally within 1 hex". The one aimed at is a downed
+   * unit (a hero bleeding out) and nothing else is a legal target; absent = a standing unit, as every other power's.
+   */
+  readonly life?: 'downed'
+  /**
    * Area only — "every OTHER unit within N hexes": the one acting is not among those the area holds.
    * Absent = the area counts the one acting, exactly the old behaviour ("every unit within N hexes").
    *
@@ -76,6 +81,7 @@ export function validateTargeting(t: Targeting, where: string): void {
   if (t.select === 'self' && t.side !== 'any' && t.side !== 'ally') {
     throw new Error(`${where}: select:'self' cannot have side:'${t.side}'`)
   }
+  if (t.life !== undefined && (t.life !== 'downed' || t.select !== 'unit')) throw new Error(`${where}: life is 'downed', on select:'unit' only`)
   if (t.origin !== undefined) {
     if (t.select !== 'area') throw new Error(`${where}: origin only means something for select:'area'`)
     if (t.origin !== 'self' && t.origin !== 'target') throw new Error(`${where}: unknown origin '${t.origin}'`)
@@ -108,6 +114,7 @@ export function validateTargeting(t: Targeting, where: string): void {
  */
 export function eligible(actor: Unit, u: Unit, t: Targeting): boolean {
   if (u.lifeState === 'dead') return false
+  if (t.life === 'downed' && u.lifeState !== 'downed') return false   // capability.stabilise-downed-ally: aimed at the downed, and only at them
   if (t.excludeSelf && u.id === actor.id) return false
   const isAlly = u.side === actor.side
   if (t.side === 'ally' && !isAlly) return false

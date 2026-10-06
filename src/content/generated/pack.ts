@@ -12152,6 +12152,25 @@ export const UNIT_PACK = {
         }
       ]
     },
+    "power.bandages.use": {
+      "id": "power.bandages.use",
+      "name": "Bandages",
+      "free": true,
+      "staminaCost": 0,
+      "cooldown": 0,
+      "uses": 1,
+      "range": 1,
+      "target": {
+        "select": "unit",
+        "side": "ally",
+        "life": "downed"
+      },
+      "effects": [
+        {
+          "kind": "bleedout.stop"
+        }
+      ]
+    },
     "power.poison-flask.use": {
       "id": "power.poison-flask.use",
       "name": "Poison Flask",
@@ -19300,12 +19319,10 @@ export const UNIT_PACK = {
       "slots": 1,
       "statModifiers": {},
       "grants": [],
-      "abilities": [],
-      "triggers": [],
-      "gaps": [
-        "active: Free, 0 Stamina: stabilize a downed ally — their b — an ability with charges/targets — capability.consumables",
-        "uses: 1 — no active compiled to carry the charge — charges spent in battle — capability.consumables"
-      ]
+      "abilities": [
+        "power.bandages.use"
+      ],
+      "triggers": []
     },
     "item.backpack": {
       "id": "item.backpack",
@@ -23589,6 +23606,43 @@ export const UNIT_PACK = {
             "source": "unit.test-swell-mage"
           }
         ]
+      },
+      {
+        "typeId": "test-dresser",
+        "name": "Dresser (TEST)",
+        "side": "hero",
+        "maxHp": 9,
+        "armor": 1,
+        "resist": 0,
+        "accuracy": 72,
+        "dodge": 0,
+        "toughness": 2,
+        "strength": 4,
+        "precision": 3,
+        "magic": 0,
+        "spirit": 1,
+        "role": "melee",
+        "movement": 5,
+        "reach": 1,
+        "maxStamina": 5,
+        "staminaRegen": 1,
+        "ai": "melee-aggressive",
+        "attacks": [
+          "attack.test-warrior.axe",
+          "attack.punch"
+        ],
+        "abilities": [
+          "power.test-osric.field-dressing"
+        ],
+        "tags": [
+          "hero",
+          "class.paladin"
+        ],
+        "moves": [
+          "power.move",
+          "power.sidestep"
+        ],
+        "triggers": []
       }
     ],
     "attacks": {
@@ -23992,6 +24046,24 @@ export const UNIT_PACK = {
         ],
         "staminaCost": 1,
         "cooldown": 6
+      },
+      "power.test-osric.field-dressing": {
+        "id": "power.test-osric.field-dressing",
+        "name": "Field Dressing (TEST)",
+        "range": 2,
+        "target": {
+          "select": "unit",
+          "side": "ally",
+          "life": "downed"
+        },
+        "effects": [
+          {
+            "kind": "bleedout.stop"
+          }
+        ],
+        "staminaCost": 1,
+        "cooldown": 2,
+        "free": true
       }
     },
     "statuses": {

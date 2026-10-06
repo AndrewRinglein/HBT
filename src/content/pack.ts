@@ -142,6 +142,7 @@ export function packAbilities(): Readonly<Record<string, AbilityDef>> {
     noCorpseDestroy(a.effects, `unit pack: power '${k}'`)
     plantedPower(a, `unit pack: power '${k}'`)
     trapPower(a, `unit pack: power '${k}'`)
+    stabilisePower(a, `unit pack: power '${k}'`)
     for (const e of a.effects ?? []) if (e.kind === 'side.stat') sideStatChange(e, `unit pack: power '${k}'`)   // capability.raise-lower-magic
   }
   return raw
@@ -153,6 +154,14 @@ export function packAbilities(): Readonly<Record<string, AbilityDef>> {
  */
 export function noCorpseDestroy(effects: readonly import('../core/types.js').Effect[] | undefined, where: string): void {
   for (const e of effects ?? []) if (e.kind === 'corpse.destroy') throw new Error(`${where} carries 'corpse.destroy', which belongs to an attack's onKill trigger`)
+}
+
+/**
+ * capability.stabilise-downed-ally (2026-10-05): stopping a bleed-out count is done to one downed unit, so it belongs to a
+ * power aimed at one (`select: 'unit'`, `life: 'downed'`) and to nothing else — a row that says otherwise is refused at load.
+ */
+export function stabilisePower(a: { readonly target?: { readonly select: string; readonly life?: string }; readonly effects?: readonly import('../core/types.js').Effect[] }, where: string): void {
+  if ((a.effects ?? []).some((e) => e.kind === 'bleedout.stop') && !(a.target?.select === 'unit' && a.target.life === 'downed')) throw new Error(`${where} stops a bleed-out count but is not aimed at one downed unit (target select 'unit', life 'downed')`)
 }
 
 /**
@@ -553,6 +562,7 @@ export function packClassPowers(): Readonly<Record<string, AbilityDef>> {
     noCorpseDestroy(a.effects, `class powers: '${k}'`)
     plantedPower(a, `class powers: '${k}'`)
     trapPower(a, `class powers: '${k}'`)
+    stabilisePower(a, `class powers: '${k}'`)
     if (!a.target) throw new Error(`class powers: '${k}' has no targeting`)
     if (a.effects.length === 0 && !(a.gaps && a.gaps.length)) throw new Error(`class powers: '${k}' compiled nothing and names no gap — the converter must say why`)
   }

@@ -30,7 +30,7 @@ import type { Targeting } from './target.js'
 import { resolveTargets, validateTargeting } from './target.js'
 import { roll100 } from './rng.js'
 import { carriesTag } from './action.js'
-import { addStatMod, applyDamage, applyHealing, breakStatuses, changeSideStat, powerOf, sideModOf, corpsesNear, drainStamina, emit, gainMaxHp, gainPower, gainStamina, grantBadge, loseMaxHp, loseMaxStamina, markCorpseDestroyed, plantObject, plantedOver, gainSurgeChance, reduceStatus, removeCorpse, standUp, unit } from './mutate.js'
+import { addStatMod, applyDamage, applyHealing, breakStatuses, changeSideStat, powerOf, sideModOf, corpsesNear, drainStamina, emit, gainMaxHp, gainPower, gainStamina, grantBadge, loseMaxHp, loseMaxStamina, markCorpseDestroyed, plantObject, plantedOver, gainSurgeChance, stopBleedOut, reduceStatus, removeCorpse, standUp, unit } from './mutate.js'
 import { paintRadius } from './vision.js'
 import { layerOfId } from '../content/maps.js'
 import { applyStatus, dealDirectDamage, incomingAbsorb, outgoingPenalty, removeStatus, spendAbsorb, lentTriggers } from './status.js'
@@ -268,6 +268,7 @@ export function validateTrigger(t: Trigger): void {
   // capability.planted-banners (2026-10-05): an object is planted by a power, on its user's hex — never by a trigger
   if (t.effect.kind === 'plant') throw new Error(`${where}: 'plant' belongs to a power aimed at its own user`)
   if (t.effect.kind === 'trap.place') throw new Error(`${where}: 'trap.place' belongs to a power aimed at a hex`)
+  if (t.effect.kind === 'bleedout.stop') throw new Error(`${where}: 'bleedout.stop' belongs to a power aimed at one downed unit`)
   const needsTarget = t.select === 'target' ||
     (typeof t.select !== 'string' &&
       (t.select.select === 'unit' || (t.select.select === 'area' && t.select.origin === 'target')))
@@ -613,6 +614,8 @@ export function applyEffect(ctx: Ctx, e: Effect, src: EffectSource, targetId: nu
     // capability.planted-banners (2026-10-05): the object goes on the hex of the one acting; the Surge Chance to the one named
     case 'plant': say({ radius: e.radius, hex: actor.hex }); plantObject(ctx, src.actor, e, cause); return 0
     case 'surge.gain': say({ value: e.value }); gainSurgeChance(ctx, targetId, e.value, cause); return 0
+    // capability.stabilise-downed-ally (2026-10-05): the downed unit's count stops (a unit that is not downed is left as it is)
+    case 'bleedout.stop': say({}); stopBleedOut(ctx, targetId, cause, src.actor); return 0
     // capability.placed-traps (2026-10-05): a trap needs the hex it was aimed at, which only a hex-aimed power has (ability.ts
     // usePowerAt places it); anywhere else the row is refused at load, so reaching this is a bug
     case 'trap.place': throw new Error(`'${cause}' places a trap with no hex to place it on — a trap belongs to a power aimed at a hex`)

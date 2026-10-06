@@ -193,6 +193,7 @@ export function restoreBattle(json: string, runtime: BattleRuntime): Ctx {
       && u.aiRules.every((id: string) => Array.isArray(s.encounter?.aiRules) && s.encounter.aiRules.some((r: any) => r?.id === id))), 'unit AI rules')
     requireThat(u.consumedBy === undefined || (typeof u.consumedBy === 'string' && /^prop\./.test(u.consumedBy)), 'consumed by')   // v2.knockback-collisions
     requireThat(u.aiming === undefined || (u.aiming !== null && typeof u.aiming === 'object' && typeof u.aiming.actionId === 'string' && Object.hasOwn(runtime.actions, u.aiming.actionId) && integer(u.aiming.left, 1)), 'unit aiming')   // capability.placed-traps
+    requireThat(u.bleedStopped === undefined || (u.bleedStopped === true && u.lifeState === 'downed'), 'unit bleed-out stopped')   // capability.stabilise-downed-ally
     requireThat(u.corpseDestroyed === undefined, 'corpse mark')   // capability.his-weapons-small-clauses: the mark lasts one settling — a saved battle never carries it
   }
   requireThat(Array.isArray(s.events) && st.seq === s.events.length, 'event count')

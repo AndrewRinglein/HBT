@@ -35,7 +35,7 @@ export const EVENT_TYPES = [
   'status.applied', 'status.cancelled', 'status.expired', 'status.reduced', 'surge.checked',
   'surge.hit', 'thorns.reflected', 'trigger.fired', 'trigger.rolled', 'turn.begin', 'turn.end',
   'unit.badged', 'unit.enter', 'unit.equipped', 'unit.grown', 'unit.modified', 'unit.obliterated',
-  'side.stat.changed', 'side.stat.restored', 'object.planted', 'status.warded', 'surge.gained', 'trap.placed', 'trap.sprung', 'trap.removed', 'unit.dismissed', 'unit.proned', 'unit.raised', 'unit.reverted', 'unit.shunted', 'unit.stood', 'unit.summoned', 'unit.transformed', 'zoc.ignored',
+  'side.stat.changed', 'side.stat.restored', 'object.planted', 'status.warded', 'surge.gained', 'trap.placed', 'trap.sprung', 'trap.removed', 'bleedout.stopped', 'unit.dismissed', 'unit.proned', 'unit.raised', 'unit.reverted', 'unit.shunted', 'unit.stood', 'unit.summoned', 'unit.transformed', 'zoc.ignored',
 ] as const
 export type EventType = (typeof EVENT_TYPES)[number] | `life.${LifeState}`
 
@@ -558,6 +558,7 @@ export function setLifeState(ctx: Ctx, id: number, to: LifeState, causeId: strin
   const u = unit(ctx, id)
   const from = u.lifeState
   if (from === to) return
+  if (from === 'downed') delete u.bleedStopped   // capability.stabilise-downed-ally: the stopped count is the downed unit's; it goes when it is no longer down
   u.lifeState = to
   emit(ctx, `life.${to}`, causeId, { ...extra, target: id, from, to })
 }
@@ -624,6 +625,19 @@ export function setBleedOut(ctx: Ctx, id: number, value: number, causeId: string
   const u = unit(ctx, id)
   u.bleedOut = value
   emit(ctx, 'bleedout.set', causeId, { target: id, bleedOut: value })
+}
+
+/**
+ * capability.stabilise-downed-ally (2026-10-05): "stabilize a downed ally — their bleed-out counter stops". The count of a
+ * DOWNED unit is stopped where it stands: the unit stays down, the End of Hero Phase rung no longer advances its count, and
+ * so it does not die of the count for the rest of the Battle. One line says so, with the count it stopped at and who did it.
+ * A unit that is not downed, or whose count is stopped already, is left as it is and nothing is said.
+ */
+export function stopBleedOut(ctx: Ctx, id: number, causeId: string, actor: number): void {
+  const u = unit(ctx, id)
+  if (u.lifeState !== 'downed' || u.bleedStopped) return
+  u.bleedStopped = true
+  emit(ctx, 'bleedout.stopped', causeId, { actor, target: id, bleedOut: u.bleedOut })
 }
 
 export function tickBleedOut(ctx: Ctx, id: number, causeId: string): void {
