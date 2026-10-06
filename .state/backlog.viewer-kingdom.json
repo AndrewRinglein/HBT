@@ -8,7 +8,9 @@
   ],
   "spec": "Ruled 2026-10-05 (Andrew, engine/DECISIONS.md 'a prone unit only stands; Stand Up is its one move; a set counts everything carried; Dwarf, Elf and Fey act; no gift doubles a hero's own badge; what cannot be paid is greyed; the player moves a summon; Resistance to Weak; the Vigil heals by the party's Spirit'): told that the draft can roll a hero a gift badge its row already has (the Berserker rolled Huge, the Fey rolled Frail), which then adds nothing, and asked whether a hero's own badges should be left out of its gift roll - '7, yes.' Wanted: when a hero's gifts are rolled (the first-hero pick, every later draft - kingdom/src/core/opening.ts, and the engine's opening party for the recordings, engine/src/content/opening-party.ts; one rule in one place, read by both), any badge the hero's own row already carries - its origin badges and any other badge on the row - is not among the badges the roll can give that hero, so every rolled badge is one it did not have. The roll stays on the run's dice and stays keyed as it is (kingdom SWITCHES firstHeroOwnRollKey), so a saved run shows the same offers except where an offer held a doubled badge. This re-deals drafts: say how many of replicates 0-199 change, rewrite the frozen-draft fixtures with a dated note (Law 10), re-export the six opening recordings together if the engine's opening party moves, and declare changesBaseline if control battles move. The draft floor fix (a rolled Health loss held at the floor) stands. Rebuild the pages.",
   "expect": "Across replicates 0-199 no hero is ever rolled a gift badge its own row already carries (a test walks them); a hero with no badge of its own rolls from the same badges as before; the Berserker never rolls Huge and the Forest Fey never rolls Frail; the report says how many drafts changed and which recordings moved.",
-  "note": "Filed by the home chat 2026-10-05."
+  "note": "Filed by the home chat 2026-10-05.",
+  "status": "done",
+  "sha": "edaac90"
  },
  {
   "id": "viewer.unaffordable-actions-greyed",

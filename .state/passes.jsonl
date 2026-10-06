@@ -75,3 +75,4 @@
 {"suite":"engine","stamp":"dc42f97df3","with":{"engine":"dc42f97df3","content":"c6cb89aebf","viewer":"bdd60271b1","kingdom":"c1522a2667"},"at":"2026-10-06T01:43:30.809Z","by":"gate --shard (1 of 1)","in":"HBT-worker-engine","tests":3034}
 {"suite":"control","stamp":"dc42f97df3","pack":"06edfcb2d1","golden":"2a98bd088f","at":"2026-10-06T01:45:58.000Z","by":"gate capability.planted-banners --land","in":"HBT-worker-engine","moved":null}
 {"suite":"engine","stamp":"dc42f97df3","with":{"engine":"dc42f97df3","content":"c6cb89aebf","viewer":"d19fc3ce16","kingdom":"6a710d1863"},"at":"2026-10-06T02:06:54.389Z","by":"gate --shard (1 of 1)","in":"HBT-worker-engine","tests":3034}
+{"suite":"control","stamp":"0d95af9351","pack":"06edfcb2d1","golden":"2a98bd088f","at":"2026-10-06T04:23:59.303Z","by":"gate kingdom.gift-roll-leaves-out-own-badges --land","in":"HBT-worker-kingdom","moved":null}
