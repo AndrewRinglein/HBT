@@ -73,9 +73,9 @@ try{
   M=await play([],{plate:'.dbPlate'},1100);assert.match(M.plate.text,/DEATHBED FIGHTING/);say(low(M,'plate','the Deathbed plate (fights on)'));await clear(1700)
   M=await play([{k:'deathbed',id:'HERO',result:'fell',n:77,chance:40}],{plate:'.dbPlate'},1400);say(low(M,'plate','the Deathbed plate (falls)'));await clear(1500)}
  // 3. an injury plate
- {const M=await play([{k:'injury',id:'HERO',name:'Broken Arm'}],{inj:'.injPlate'});say(low(M,'inj','the injury plate ("Broken Arm")'));await clear(1700)}
+ {const M=await play([{k:'injury',id:'HERO',name:'Broken Arm'}],{inj:'.injPlate'},220);say(low(M,'inj','the injury plate ("Broken Arm")'));await clear(1700)}
  // 4. two at once: one above the other, neither over the other
- {const M=await play([{k:'banner',kind:'wave',text:'A wave arrives',sub:'Zombie'},{k:'injury',id:'HERO',name:'Broken Arm'}],{banner:'.banner',inj:'.injPlate'},600)
+ {const M=await play([{k:'banner',kind:'wave',text:'A wave arrives',sub:'Zombie'},{k:'injury',id:'HERO',name:'Broken Arm'}],{banner:'.banner',inj:'.injPlate'},300)
   low(M,'banner','the banner, with an injury plate up');low(M,'inj','the injury plate, with a banner up')
   /* where each is LAID OUT in the stack (its own box, whatever its entrance is still doing to the picture: a banner slides in 8 px, a plate swells) */
   assert.ok(M.inj.ot+M.inj.oh<=M.banner.ot,`the newer (the injury plate) is laid out above the older (the banner), not over it (injury ${M.inj.ot}+${M.inj.oh}, banner from ${M.banner.ot})`)
