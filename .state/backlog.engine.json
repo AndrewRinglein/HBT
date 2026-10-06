@@ -63,7 +63,9 @@
   "variants": [
    "power.bear-trap.use",
    "power.test-snare"
-  ]
+  ],
+  "status": "done",
+  "sha": "644d244"
  },
  {
   "id": "rule.prone-only-stand-up",

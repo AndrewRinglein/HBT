@@ -38496,3 +38496,23 @@ Andrew 2026-10-06: 'We don't need an attack with several chosen targets. This we
   PASS  naming — new content ids use declared kinds
   PASS  naming — no banned words invented
   PASS  kill switch — the tests fail without the content — tests fail without power.banner-courage.plant,power.banner-vigil.plant — they genuinely test it
+
+## rule.computer-avoids-own-traps — LANDED `644d244`
+2026-10-06 14:23
+
+  PASS  dependencies landed
+  WARN  not already decided — 1 candidate ruling(s) — READ BEFORE ASKING: DECISIONS.md:5295
+  PASS  typecheck
+  PASS  the item's own tests — test/battle-cursor.test.ts, test/computer-avoids-own-traps.test.ts
+  PASS  gate 1 — the id appears in a real battle — power.bear-trap.use: 14 log lines, 14 fired, 12 changed state · power.test-snare: 6 log lines, 6 fired, 4 changed state
+  PASS  brought its own tests — test/battle-cursor.test.ts, test/computer-avoids-own-traps.test.ts, test/fixtures/battle-cursor-computer-avoids-own-traps.json
+  PASS  existing tests untouched
+  SKIPPED  control battles unchanged — engine code 852b05fc95 and the content pack are the ones the control battles last passed on (2026-10-06 13:50, gate content.sets-count-holy-texts-and-heavy-chain --land, in HBT-worker-engine) — not run
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — power.bear-trap.use live · power.test-snare live
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without power.bear-trap.use,power.test-snare — they genuinely test it
