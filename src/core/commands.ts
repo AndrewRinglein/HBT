@@ -1,7 +1,7 @@
 // The session boundary owns whose input is accepted. Resolution stays in the
 // same attack, power and movement functions used by automatic battles.
 import type { Ctx } from './types.js'
-import { actionReady, grantedActionIds, isAttack, isBurst, isCharge, isMove, resolveActionSlot } from './action.js'
+import { actionReady, grantedActionIds, isAttack, isBurst, isCharge, isMove, refusedProne, resolveActionSlot } from './action.js'
 import { canAttack, performAttack } from './pipeline.js'
 import { burstCentres, canUseBurst, useBurst } from './burst.js'
 import { canUsePower, canUsePowerAt, powerHexesOf, usePower, usePowerAt } from './ability.js'
@@ -65,6 +65,7 @@ function planAction(ctx: Ctx, request: unknown): Plan | Rejection {
   if (ctx.state.outcome) return reject('battle-complete')
   if (u.lifeState !== 'standing' || isBlocked(ctx, u)) return reject('actor-cannot-act')
   const a = Object.hasOwn(ctx.actions, actionId) ? ctx.actions[actionId] : undefined
+  if (a && refusedProne(ctx, u, a)) return reject('actor-prone')   // rule.prone-only-stand-up: knocked down — only its stand
   // capability.placed-traps (2026-10-05): a further hex of a use aimed at several is the SAME use — its Stamina, action and use
   // are spent already (ability.ts canUsePowerAt asks only about the hex), so the limits and the slot are not asked again
   const more = !!a && a.target?.select === 'hex' && u.aiming?.actionId === actionId && u.aiming.left > 0

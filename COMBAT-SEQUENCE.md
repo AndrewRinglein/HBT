@@ -203,6 +203,20 @@ when the claim that they already did turned out to be true of this ladder only.
 
 Repeat per hex. Vision and stealth recalculate after **every** step, after everything else in that step. Reveal auras (e.g. *reveal all stealth within 4*) are evaluated here too.
 
+**A prone unit only stands, and standing is its one move** (rule.prone-only-stand-up, 2026-10-05; DECISIONS.md 2026-10-05 "a
+prone unit only stands; Stand Up is its one move; …": asked whether a knocked-down unit should be refused its attacks and
+powers too until it stands — "yes, it cannot use attacks or powers until it stands."; asked whether it may walk after Stand
+Up — "No, you only perform one move action."). **Built: yes.** A unit holding a status that carries the prone rule is
+refused **every action but the stand that status grants** — by the one limits check (`action.ts actionReady`), so the
+action list, the computer and a special free attack all follow; the command checks give it its own reason, `actor-prone`.
+It makes no special free attack while down (it already held no zone of control, and going down already took the
+counterattack or fend it had up; one on its own row or gear is not made either). The stand marks the unit `stood`
+(`mutate.ts standUp`), and from then until that action cycle is over **no movement is accepted from it, its walk
+included** — refused by the one movement legality with `movement-slot-closed`, as after a walk. Its attacks and powers
+open the moment it stands. A charge is one of the unit's attacks, as under the walked rule. The fact is cleared where
+`walked` is: at the start of an Activation, at its end, and by a Surge. A unit knocked down after its movement action is
+spent cannot stand in that cycle and does nothing more in it.
+
 **A unit that has walked has moved** (rule.walked-unit-has-moved, 2026-10-04; DECISIONS.md 2026-10-04 "after the backlog run: …
 moves are refused once a unit has walked …": asked "Once a unit has walked, should Leap and Side Roll grey out and be
 refused?" — "2 yes"; with 2026-10-03 "Just gray the moves out after a move is done"). **Built: yes.** A unit's *walk* is its

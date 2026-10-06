@@ -851,7 +851,8 @@ function performHit(ctx: Ctx, attackerId: number, targetId: number, attackId: st
   // THE DOWNED (fix.downed-targetable, 2026-09-03). GAME-DESIGN §9: "a hit
   // only accelerates the bleed-out counter. It never kills." No damage, no
   // crit, no onDamage; onHit still fires (it connected). The counter never
-  // goes below 1 by a hit — the kill belongs to the bleed-out rung alone.
+  // goes below 1 by a hit — the kill belongs to the bleed-out rung alone. (A count the Bandages stopped has no rung: a hit
+  // takes it to 0 and the caller's settling makes the unit dead — fix.bandaged-hero-dies-at-zero, mutate.ts accelerateBleedOut.)
   if (tg.lifeState === 'downed') {
     emit(ctx, 'attack.hit', a.id, { actor: attackerId, target: targetId, roll, hitChance: pv.hitChance, downed: true, damage: 0 })
     fireTriggers(ctx, 'onHit', fc)

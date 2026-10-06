@@ -532,6 +532,22 @@ const placedTrapsGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cur
 // second row of the same effect, each live in a real battle.
 // Every case frozen here (tools/capture-stabilise-downed-ally-cursor.mts). Moved: none. A `changed` case is checked here and skips the older layers.
 const stabiliseDownedAllyGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-stabilise-downed-ally.json', import.meta.url), 'utf8'))
+// rule.prone-only-stand-up (2026-10-05; DECISIONS.md 2026-10-05 'a prone unit only stands; Stand Up is its one move; …': "yes, it
+// cannot use attacks or powers until it stands." / "No, you only perform one move action."), Law 10: a unit holding a prone status
+// is refused every action but its stand, makes no special free attack, and once it has stood takes no other movement in that
+// action cycle. A case that was fought before moves only if a unit in it is knocked down and, until now, attacked from the floor
+// or walked on with its primary action after standing.
+// Every case frozen here (tools/capture-prone-only-stand-up-cursor.mts). Moved: showcase.ordered-power-preview, showcase.waystation,
+// test.back-flip, test.mode-change-a, test.opening-gates, test.prone-b. A `changed` case is checked here and skips the older layers.
+const proneOnlyStandUpGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-prone-only-stand-up.json', import.meta.url), 'utf8'))
+// content.dwarf-elf-fey-badges-act (2026-10-05; DECISIONS.md 2026-10-05 'a prone unit only stands; … Dwarf, Elf and Fey act; …': "6. They
+// should act."), Law 10: the Dwarf, Elf and Fey badges carry the data's numbers (Dwarf -1 Movement +2 Health; Elf +3 Vision +2
+// Luck; Fey +10 Surge), so every battle that fields the Iron Dwarf, the Dwarven Brawler, the Mountain Berserker, the Ancient Elf,
+// the Forest Elf or the Forest Fey is another battle. A case that fields none of the six is event for event what it was; none is ADDED.
+// (Combine, 2026-10-06: this layer landed on stabilise-downed-ally in the engine worker's copy while rule.prone-only-stand-up
+// landed on the same layer in main; it is stacked on that one here and captured again on the merged tree.)
+// Every case frozen here (tools/capture-dwarf-elf-fey-badges-act-cursor.mts). Moved: showcase.assembled-party, showcase.eve-24-a, showcase.horrors, showcase.kiln, showcase.prologue-party, showcase.rime, showcase.supper, showcase.surrounded, showcase.waystation, test.back-flip, test.bandages, test.banner-courage, test.bear-traps, test.caravan-aftermath, test.fend, test.field-dressing, test.item-uses, test.mending-light, test.opening-bridge, test.opening-cathedral, test.opening-cavern-trail, test.opening-gates, test.opening-lumberjack, test.opening-orphanage, test.swap, progression-surge-0, progression-surge-1, progression-surge-2. A `changed` case is checked here and skips the older layers.
+const dwarfElfFeyBadgesActGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-dwarf-elf-fey-badges-act.json', import.meta.url), 'utf8'))
 const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
 // Explicit rule migration, not regenerated historical hashes. These nine old
 // cases contain Surge ledger/refresh changes or terminal markers corrected
@@ -687,7 +703,13 @@ describe('resumable battle cursor', () => {
       const plantedBannersExpected = plantedBannersGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const placedTrapsExpected = placedTrapsGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const stabiliseDownedAllyExpected = stabiliseDownedAllyGolden.cases.find((row:{id:string})=>row.id===fixture.id)
-      const stabiliseDownedAllyMoved = stabiliseDownedAllyExpected?.changed === true
+      const proneOnlyStandUpExpected = proneOnlyStandUpGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+      const dwarfElfFeyBadgesActExpected = dwarfElfFeyBadgesActGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+      const dwarfElfFeyBadgesActMoved = dwarfElfFeyBadgesActExpected?.changed === true
+      // was: const proneOnlyStandUpMoved = proneOnlyStandUpExpected?.changed === true — a case content.dwarf-elf-fey-badges-act moved skips this layer too (content.dwarf-elf-fey-badges-act 2026-10-04)
+      const proneOnlyStandUpMoved = proneOnlyStandUpExpected?.changed === true || dwarfElfFeyBadgesActMoved
+      // was: const stabiliseDownedAllyMoved = stabiliseDownedAllyExpected?.changed === true — a case rule.prone-only-stand-up moved skips this layer too (rule.prone-only-stand-up 2026-10-05; combine 2026-10-05: it sat on planted-banners in its own copy, and sits on the newest layer here)
+      const stabiliseDownedAllyMoved = stabiliseDownedAllyExpected?.changed === true || proneOnlyStandUpMoved
       // was: const placedTrapsMoved = placedTrapsExpected?.changed === true — a case capability.stabilise-downed-ally moved skips this layer too (capability.stabilise-downed-ally 2026-10-04)
       const placedTrapsMoved = placedTrapsExpected?.changed === true || stabiliseDownedAllyMoved
       // was: const plantedBannersMoved = plantedBannersExpected?.changed === true — a case capability.placed-traps moved skips this layer too (capability.placed-traps 2026-10-04)
@@ -859,7 +881,21 @@ describe('resumable battle cursor', () => {
             battle.completeActionCycle(ctx)
           }
         } else result = battle.runBattle(ctx)
-        if (stabiliseDownedAllyExpected) {
+        if (dwarfElfFeyBadgesActExpected) {
+        expect(hash(ctx.events), 'full dwarf-elf-fey-badges-act events').toBe(dwarfElfFeyBadgesActExpected.events)
+        expect(hash(ctx.state), 'full dwarf-elf-fey-badges-act state').toBe(dwarfElfFeyBadgesActExpected.state)
+        expect(hash(ctx.rng.log), 'full dwarf-elf-fey-badges-act RNG').toBe(dwarfElfFeyBadgesActExpected.rng)
+        expect(result).toEqual(dwarfElfFeyBadgesActExpected.result)
+        }
+        // was: if (proneOnlyStandUpExpected) { — content.dwarf-elf-fey-badges-act (2026-10-04): a case it moved is checked above instead
+        if (proneOnlyStandUpExpected && !dwarfElfFeyBadgesActMoved) {
+        expect(hash(ctx.events), 'full prone-only-stand-up events').toBe(proneOnlyStandUpExpected.events)
+        expect(hash(ctx.state), 'full prone-only-stand-up state').toBe(proneOnlyStandUpExpected.state)
+        expect(hash(ctx.rng.log), 'full prone-only-stand-up RNG').toBe(proneOnlyStandUpExpected.rng)
+        expect(result).toEqual(proneOnlyStandUpExpected.result)
+        }
+        // was: if (stabiliseDownedAllyExpected) { — rule.prone-only-stand-up (2026-10-05): a case it moved is checked above instead
+        if (stabiliseDownedAllyExpected && !proneOnlyStandUpMoved) {
         expect(hash(ctx.events), 'full stabilise-downed-ally events').toBe(stabiliseDownedAllyExpected.events)
         expect(hash(ctx.state), 'full stabilise-downed-ally state').toBe(stabiliseDownedAllyExpected.state)
         expect(hash(ctx.rng.log), 'full stabilise-downed-ally RNG').toBe(stabiliseDownedAllyExpected.rng)

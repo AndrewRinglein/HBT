@@ -9,7 +9,7 @@ import { moveCostOf, terrainIdOf } from '../content/maps.js'
 import { blockingPropAt, passableHexes, type Passable } from './props.js'
 import { flatDamage } from './mitigation.js'
 import { addStatMod, applyCollisionDamage, emit, gainStamina, knockUnit, layerAt, loseMaxStamina, markWalked, moveUnit, standUp, unit } from './mutate.js'
-import { actionReady, closedByWalk, resolveActionSlot, isMove, movesOf, spendAction, staminaCostOf, walkOf } from './action.js'
+import { actionReady, closedByWalk, refusedProne, resolveActionSlot, isMove, movesOf, spendAction, staminaCostOf, walkOf } from './action.js'
 import { forcedTargetOf, hiddenFrom, incomingAbsorb, isBlocked, isProne, isRooted, spendAbsorb } from './status.js'
 import { FREE_ATTACK_STATS, performAttack, preview, type FreeAttackKind } from './pipeline.js'
 import { effective } from './stats.js'
@@ -135,10 +135,12 @@ const refused = (reason: string): MovementRejection => ({ ok: false, reason })
 function movementReason(ctx: Ctx, u: Unit, power: MoveDef, slot?: import('./types.js').ActionSlot): string | null {
   if (ctx.state.outcome) return 'battle-complete'
   if (u.lifeState !== 'standing' || isBlocked(ctx, u)) return 'actor-cannot-act'
+  if (refusedProne(ctx, u, power)) return 'actor-prone'   // rule.prone-only-stand-up: knocked down — only its stand
   if (!actionReady(ctx, u, power)) return 'action-not-ready'
   if (resolveActionSlot(ctx, u, power, slot) === null) return 'movement-slot-closed'
   // rule.walked-unit-has-moved (2026-10-04): a unit that has walked takes no OTHER movement this action cycle — the same
-  // refusal a spent movement slot gives, because that is what it is: its move is done (the rest of the walk is not closed)
+  // refusal a spent movement slot gives, because that is what it is: its move is done (the rest of the walk is not closed).
+  // rule.prone-only-stand-up (2026-10-05): and a unit that has stood up takes no movement at all — standing was its move
   if (closedByWalk(ctx, u, power)) return 'movement-slot-closed'
   return null
 }
