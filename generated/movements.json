@@ -495,10 +495,10 @@
     "item.benevolent-rod"
    ],
    "action": "power.benevolent-rod.restoration",
-   "name": "power.benevolent-rod.restoration",
-   "kind": null,
-   "engine": "no",
-   "bar": null,
+   "name": "Mending Light",
+   "kind": "power",
+   "engine": "yes",
+   "bar": "power",
    "motion": null,
    "bodies": {
     "Ancient Elf": null,
@@ -524,9 +524,14 @@
     "The Skull": null
    },
    "motionStatus": "missing",
-   "selected": null,
+   "selected": {
+    "key": "spell",
+    "label": "Casting / power gesture",
+    "clip": "Spell_Simple_Shoot",
+    "record": "assets/characters/oathblade-armor/rebuild/free-motion-study/selections.json"
+   },
    "ruling": null,
-   "note": "the pack names it; the engine has no row (item power — shape unparsed)",
+   "note": null,
    "variants": 0
   },
   {
@@ -22694,10 +22699,10 @@
  "counts": {
   "rows": 521,
   "missing": 352,
-  "noEngine": 32,
+  "noEngine": 31,
   "inert": 239,
   "noMotion": 352,
-  "selectedUnbound": 313,
+  "selectedUnbound": 314,
   "partial": 81
  }
 }

@@ -139,9 +139,18 @@ export function packAbilities(): Readonly<Record<string, AbilityDef>> {
     if (!a.effects && !a.burst) throw new Error(`unit pack: power '${k}' carries no effects list — regenerate the pack`)
     for (const e of a.effects ?? []) if (!EFFECT_KINDS.includes(e.kind)) throw new Error(`unit pack: power '${k}' has an effect of kind '${String((e as { kind: string }).kind)}'`)
     validateHexPower(a, `unit pack: power '${k}'`)
+    noCorpseDestroy(a.effects, `unit pack: power '${k}'`)
     for (const e of a.effects ?? []) if (e.kind === 'side.stat') sideStatChange(e, `unit pack: power '${k}'`)   // capability.raise-lower-magic
   }
   return raw
+}
+
+/**
+ * capability.his-weapons-small-clauses (2026-10-05): "the corpse is destroyed" is an attack's onKill trigger (validateTrigger
+ * holds it to that hook) — a power kills nothing itself, so a power row carrying it is refused at load.
+ */
+export function noCorpseDestroy(effects: readonly import('../core/types.js').Effect[] | undefined, where: string): void {
+  for (const e of effects ?? []) if (e.kind === 'corpse.destroy') throw new Error(`${where} carries 'corpse.destroy', which belongs to an attack's onKill trigger`)
 }
 
 /**
@@ -510,6 +519,7 @@ export function packClassPowers(): Readonly<Record<string, AbilityDef>> {
     for (const e of a.effects) if (!EFFECT_KINDS.includes(e.kind)) throw new Error(`class powers: '${k}' has an effect of kind '${String((e as { kind: string }).kind)}'`)
     validateHexPower(a, `class powers: '${k}'`)
     for (const e of a.effects) if (e.kind === 'side.stat') sideStatChange(e, `class powers: '${k}'`)   // capability.raise-lower-magic
+    noCorpseDestroy(a.effects, `class powers: '${k}'`)
     if (!a.target) throw new Error(`class powers: '${k}' has no targeting`)
     if (a.effects.length === 0 && !(a.gaps && a.gaps.length)) throw new Error(`class powers: '${k}' compiled nothing and names no gap — the converter must say why`)
   }

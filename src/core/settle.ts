@@ -3,7 +3,7 @@
 // Never reentrant: damage caused during a settle is absorbed by the running settle.
 
 import type { Ctx } from './types.js'
-import { badgeFlags, createCorpse, emit, gainStamina, grantBadge, revertUnit, setBleedOut, setLifeState, setOutcome, tickBleedOut, transformUnit } from './mutate.js'
+import { badgeFlags, clearCorpseMarks, emit, gainStamina, grantBadge, leaveCorpse, revertUnit, setBleedOut, setLifeState, setOutcome, tickBleedOut, transformUnit } from './mutate.js'
 import { roll100 } from './rng.js'
 import { effective } from './stats.js'
 import type { AtZeroRule, Side } from './types.js'
@@ -58,7 +58,7 @@ export function settle(ctx: Ctx, causeId: string): void {
             revertUnit(ctx, u.id, 'fell', causeId)
             if (kept) {
               setLifeState(ctx, u.id, 'dead', causeId, { reason: 'transformed' })
-              if (!u.summoned) createCorpse(ctx, u, causeId)
+              leaveCorpse(ctx, u, causeId)
               died.push(u.id)
             } else {
               setLifeState(ctx, u.id, 'downed', causeId, { reason: 'hp0' })
@@ -66,7 +66,7 @@ export function settle(ctx: Ctx, causeId: string): void {
             }
           } else if (rulesSideOf(ctx, u) === 'enemy') {
             setLifeState(ctx, u.id, 'dead', causeId, { reason: 'hp0' })
-            if (!u.summoned) createCorpse(ctx, u, causeId)   // capability.corpses: summons leave none
+            leaveCorpse(ctx, u, causeId)   // capability.corpses: summons leave none
             died.push(u.id)
           } else {
             // rule.afflictions-at-zero (2026-10-02): an affliction's 0-Health rule first — its gains, then, for
@@ -85,7 +85,7 @@ export function settle(ctx: Ctx, causeId: string): void {
             } else {
               // 'dies': Wounded already, or no Hero badge — dead and a corpse, no bleed-out
               setLifeState(ctx, u.id, 'dead', causeId, { reason: verdict === 'dies-wounded' ? 'wounded' : 'fell' })
-              if (!u.summoned) createCorpse(ctx, u, causeId)
+              leaveCorpse(ctx, u, causeId)
               died.push(u.id)
             }
           }
@@ -94,7 +94,7 @@ export function settle(ctx: Ctx, causeId: string): void {
         // A downed hero whose counter has run out.
         if (u.lifeState === 'downed' && u.bleedOut <= 0) {
           setLifeState(ctx, u.id, 'dead', causeId, { reason: 'bledOut' })
-          if (!u.summoned) createCorpse(ctx, u, causeId)   // "when a hero actually dies" — the clock ran out
+          leaveCorpse(ctx, u, causeId)   // "when a hero actually dies" — the clock ran out
           died.push(u.id)
           changed = true
         }
@@ -116,6 +116,8 @@ export function settle(ctx: Ctx, causeId: string): void {
     emit(ctx, 'error.settleOverflow', 'engine', {})
     throw new Error('settle did not reach equilibrium in 64 rounds — this is a bug, not a result')
   } finally {
+    // capability.his-weapons-small-clauses (2026-10-05): "the corpse is destroyed" is said of the kill this settling decided
+    clearCorpseMarks(ctx)
     settling = false
   }
 }

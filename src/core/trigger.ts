@@ -30,7 +30,7 @@ import type { Targeting } from './target.js'
 import { resolveTargets, validateTargeting } from './target.js'
 import { roll100 } from './rng.js'
 import { carriesTag } from './action.js'
-import { addStatMod, applyDamage, applyHealing, breakStatuses, changeSideStat, powerOf, sideModOf, corpsesNear, drainStamina, emit, gainMaxHp, gainPower, gainStamina, grantBadge, loseMaxHp, loseMaxStamina, reduceStatus, removeCorpse, standUp, unit } from './mutate.js'
+import { addStatMod, applyDamage, applyHealing, breakStatuses, changeSideStat, powerOf, sideModOf, corpsesNear, drainStamina, emit, gainMaxHp, gainPower, gainStamina, grantBadge, loseMaxHp, loseMaxStamina, markCorpseDestroyed, reduceStatus, removeCorpse, standUp, unit } from './mutate.js'
 import { paintRadius } from './vision.js'
 import { layerOfId } from '../content/maps.js'
 import { applyStatus, dealDirectDamage, incomingAbsorb, outgoingPenalty, removeStatus, spendAbsorb, lentTriggers } from './status.js'
@@ -218,6 +218,10 @@ export function validateTrigger(t: Trigger): void {
   }
   if (!Number.isInteger(t.chance) || t.chance < 0 || t.chance > 100) {
     throw new Error(`${where}: chance must be an integer 0..100, got ${t.chance}`)
+  }
+  // capability.his-weapons-small-clauses (2026-10-05): "the corpse is destroyed" is said of the unit an attack has just killed
+  if (t.effect.kind === 'corpse.destroy' && (t.hook !== 'onKill' || t.select !== 'target')) {
+    throw new Error(`${where}: 'corpse.destroy' belongs to an onKill trigger aimed at the target, got hook '${t.hook}'`)
   }
   const needsTarget = t.select === 'target' ||
     (typeof t.select !== 'string' &&
@@ -534,9 +538,12 @@ export function applyEffect(ctx: Ctx, e: Effect, src: EffectSource, targetId: nu
       return 0
     }
     case 'status.remove': {
-      say({ statusId: e.statusId, ...(e.value !== undefined ? { value: e.value } : {}) })
-      if (e.value === undefined) removeStatus(ctx, targetId, e.statusId, cause)
-      else reduceStatus(ctx, targetId, e.statusId, e.value, cause)
+      // capability.his-weapons-small-clauses (2026-10-05): the amount is a value like any other — a number, or a stat's
+      // amount resolved for the one acting ("remove Weak equal to your Spirit"); 0 removes nothing
+      const v = e.value === undefined ? undefined : valueOf(ctx, actor, e.value)
+      say({ statusId: e.statusId, ...(v !== undefined ? { value: v } : {}) })
+      if (v === undefined) removeStatus(ctx, targetId, e.statusId, cause)
+      else if (v > 0) reduceStatus(ctx, targetId, e.statusId, v, cause)
       return 0
     }
     case 'statMod': {
@@ -606,6 +613,8 @@ export function applyEffect(ctx: Ctx, e: Effect, src: EffectSource, targetId: nu
     // capability.summons (2026-10-05): a summon needs the hex it was aimed at, which only a hex-aimed power has (ability.ts
     // usePowerAt places the unit); anywhere else the row is refused at load (content/pack.ts), so reaching this is a bug.
     case 'summon': throw new Error(`'${cause}' summons '${e.unit}' with no hex to place it on — a summon belongs to a power aimed at a hex`)
+    // capability.his-weapons-small-clauses (2026-10-05): "On kill: the corpse is destroyed" — the mark settle reads
+    case 'corpse.destroy': say({}); markCorpseDestroyed(ctx, targetId, src.actor, cause); return 0
     case 'corpse.consume': {
       const near = corpsesNear(ctx, actor.hex, e.radius)
       say({ corpses: near.length })

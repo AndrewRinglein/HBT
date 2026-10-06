@@ -119,6 +119,7 @@
   "corpse.raise",
   "summon",
   "side.stat",
+  "corpse.destroy",
   "corpse.consume",
   "corpse.eat",
   "layer.paint",

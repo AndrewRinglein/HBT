@@ -158,7 +158,8 @@ export function restoreBattle(json: string, runtime: BattleRuntime): Ctx {
       if (e.kind === 'badge.grant') requireThat(typeof e.badgeId === 'string' && Object.hasOwn(runtime.badges, e.badgeId) && (e.withBadgeIds === undefined || (Array.isArray(e.withBadgeIds) && e.withBadgeIds.every((w: unknown) => typeof w === 'string' && Object.hasOwn(runtime.badges, w)))), 'trigger badge')
       if (e.kind === 'damage' || e.kind === 'statDamage') requireThat(isDamageType(e.damageType), 'trigger damage type')
       if (e.kind === 'statMod') requireThat(typeof e.stat === 'string' && isStatName(e.stat) && integer(e.value) && (STAT_MOD_UNTIL as readonly string[]).includes(e.until), 'trigger modifier')
-      if (['status.apply', 'knockback', 'power.gain', 'stamina.drain', 'damage', 'heal'].includes(e.kind)) {
+      // capability.his-weapons-small-clauses: a status.remove may state no amount (every point) — otherwise a value like the rest
+      if (['status.apply', 'knockback', 'power.gain', 'stamina.drain', 'damage', 'heal'].includes(e.kind) || (e.kind === 'status.remove' && e.value !== undefined)) {
         const v = ['damage', 'heal'].includes(e.kind) ? e.amount : e.value
         if (typeof v === 'number') requireThat(integer(v), 'trigger amount')
         else {
@@ -191,6 +192,7 @@ export function restoreBattle(json: string, runtime: BattleRuntime): Ctx {
     requireThat(u.aiRules === undefined || (strings(u.aiRules) && u.aiRules.length > 0 && new Set(u.aiRules).size === u.aiRules.length
       && u.aiRules.every((id: string) => Array.isArray(s.encounter?.aiRules) && s.encounter.aiRules.some((r: any) => r?.id === id))), 'unit AI rules')
     requireThat(u.consumedBy === undefined || (typeof u.consumedBy === 'string' && /^prop\./.test(u.consumedBy)), 'consumed by')   // v2.knockback-collisions
+    requireThat(u.corpseDestroyed === undefined, 'corpse mark')   // capability.his-weapons-small-clauses: the mark lasts one settling — a saved battle never carries it
   }
   requireThat(Array.isArray(s.events) && st.seq === s.events.length, 'event count')
   for (const [i, e] of s.events.entries()) {

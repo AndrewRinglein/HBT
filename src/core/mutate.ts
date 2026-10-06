@@ -798,6 +798,28 @@ export function placeCorpse(ctx: Ctx, hex: HexId, typeId: string, side: Side, ui
   const id = pushCorpse(ctx, hex, typeId, side, uid)
   emit(ctx, 'corpse.created', causeId, { corpse: id, hex, of: null, typeId, side, remains })
 }
+/**
+ * capability.his-weapons-small-clauses (2026-10-05): "On kill: the corpse is destroyed". The mark an onKill trigger leaves on
+ * the unit its attack has just brought to 0 Health (the trigger.fired line names it), and what settle does with it: the body
+ * is made where the unit fell and removed at once, so the log shows a death, a corpse and its destruction, and the board
+ * never holds a corpse anything could raise, eat or consume. The mark lasts the settling of that attack and no longer.
+ */
+export function markCorpseDestroyed(ctx: Ctx, id: number, by: number, causeId: string): void {
+  unit(ctx, id).corpseDestroyed = { by, cause: causeId }
+}
+/** A dead unit's body: none for a summon; made and at once destroyed for a unit marked by markCorpseDestroyed; a corpse otherwise. */
+export function leaveCorpse(ctx: Ctx, u: Unit, causeId: string): void {
+  if (u.summoned) return   // capability.corpses: summons leave none
+  createCorpse(ctx, u, causeId)
+  const mark = u.corpseDestroyed
+  if (!mark) return
+  const body = (ctx.state.corpses ?? []).find((c) => c.uid === u.uid && c.hex === u.hex)
+  if (body) removeCorpse(ctx, body.id, mark.cause, 'destroyed', mark.by)
+}
+/** The marks last one settling: whoever did not die of that attack leaves a corpse when it does die. */
+export function clearCorpseMarks(ctx: Ctx): void {
+  for (const u of ctx.state.units) if (u.corpseDestroyed) delete u.corpseDestroyed
+}
 export function removeCorpse(ctx: Ctx, corpseId: number, causeId: string, how: 'raised' | 'eaten' | 'consumed' | 'destroyed', actor: number): void {
   const list = ctx.state.corpses ?? []
   const i = list.findIndex((c) => c.id === corpseId)
