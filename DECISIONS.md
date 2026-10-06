@@ -5763,3 +5763,162 @@ Ruled:
 - **The codebase-review chat is the home chat from this entry on.** Its order: the three copies' owed chains landed (kingdom `HANDOFF-2026-09-04.md`, "2026-10-06 — Now", Next 2), the full four-suite run green in the main folder, then `CODEBASE-REVIEW-2026-10-05.md` §4 stage by stage.
 
 With this the "approved" half of "approved and clean" (the entry of this day, 'the codebase review's changes are all to be built') holds; the "clean" half is that order's first two steps.
+
+## 2026-10-06 — the opening draft and the reward scoring are the kingdom's, not the engine's; the unused rows stay; the leftover git files go; the loose files are gathered
+
+Andrew, in the home chat, answering four questions from the completed list (`CODEBASE-REVIEW-2026-10-05.md` section 4.2: 1 the kingdom's opening draft and reward scoring sit in the engine - stay there, or move to the kingdom; 2 may the leftover unreferenced git files be deleted - 2.3 GB in the kingdom's git folder and about 1,300 temp files there and in the root's; 3 the Codex holds 258 hero rows and the game ships 39, and 205 of 240 bestiary rows are placeholders - keep the unused rows, or cut them; 4 the loose files at the top of the project - delete them, or gather them into one folder):
+
+“The opening draft: the reward scoring should not be in the engine. They should be in the kingdom.   3. Keep the unused rows.2 delete them.  Why don't we gather all those loose files into one folder?”
+
+Ruled:
+
+- **The opening draft and the reward scoring are the kingdom's.** `engine/src/content/opening-party.ts` holds them today (its own note: "ONE RULE, HERE"); the kingdom reads them through its door, and the engine's opening scenarios and about fifteen engine tests field from it. Review item 25 becomes a build item. How the engine's opening test battles get their parties once the rule has moved is that item's to settle, and no battle moves without the written reason the law demands.
+- **The unused rows stay** - the Codex's hero rows beyond the 39 the game ships, and the placeholder bestiary rows. Review item 52 is closed.
+- **The leftover unreferenced git files are deleted** (review item 46). A chat may not delete them: the commands go to him at a moment when no worker is writing to those folders.
+- **The loose files at the top of the project are gathered into one folder, not deleted** (review item 53). Read first, by the item that does it: which of them a tool, a test or a document reads by its path - those stay where they are read.
+
+## 2026-10-06 — the cleanup is cut to seven items that run beside the feature work; the rest waits, written down
+
+Andrew, in the home chat, when told that building the whole list (`CODEBASE-REVIEW-2026-10-05.md` section 4, about fifty backlog items) would take about four to seven days:
+
+“This seems really excessive. I don't really want to spend 4 days on architecture cleanup.”
+
+A cut of seven items, about one day of worker time, was put to him - only what stops a daily cost or is the division he asked for himself - with the rest left written and unscheduled, and the question whether the opening draft's move to the kingdom (ruled earlier this day) waits with the rest, since it is one of the larger changes (the engine's own opening battles, 27 test files and their recorded battles, field their parties from that file). He answered:
+
+“I think the seven-item cut is right, and let's wait on the opening draft move.”
+
+Ruled:
+
+- **The build is these seven items, not the whole list.** (1) Logs stop being tracked. (2) The engine's per-landing golden chain becomes one capture tool and one current golden. (3) The camera comes out of `viewer/src/board.js` - the camera only. (4) `maps/` holds the shared map code. (5) `art/` publishes one list the viewer reads for which model and motion each unit uses; no model or motion file moves. (6) `workshop` and `accepted` folders in `art/` and `maps/` for NEW work only; nothing existing is reshuffled. (7) The tutorial line's style rule, if it is misplaced on screen.
+- **They run beside the feature queue, not ahead of it.**
+- **Everything else in the list waits, written down and unscheduled** - the palette and dead CSS, dead code and repeated helpers, the kingdom's door to the viewer, the engine's import loop, the splits of `sandbox.ts`, `viewer.js` and the content compiler, moving the existing art onto shelves, the process tooling leaving the engine, gathering the loose files, and the opening draft's move to the kingdom (that ruling stands; only its time waits). A worker already in a file for a feature may take one.
+
+This replaces, for what is built now, 'everything discussed and proposed in the review is to be built' of the same day. The two prerequisites do not change: the three copies' owed chains land and the full four-suite run is green in the main folder first.
+
+## 2026-10-06 — for maps, separating the code is enough for now
+
+Andrew, in the home chat, told that the seven-item cut moves the shared map CODE into `maps/` but leaves the map files in four places (`content/gen/maps.json`, two folders under `assets/`, the generated combat files) and the map tools under `tools/battle-atlas`, and asked whether gathering those into `maps/` should be added to the cut:
+
+“Separate the code enough for now.”
+
+Ruled:
+
+- **The cut stays at seven.** The map files and the map tools stay where they are; gathering them into `maps/` (`CODEBASE-REVIEW-2026-10-05.md` item 49) waits with the rest, unsized.
+
+## 2026-10-06 — the art item is the smaller version: the table moves to `art/tools/`, nothing else
+
+Andrew, in the home chat, asking what the art item was and why it was estimated at most of a day, and told of a smaller version (move the one 680-line table, `viewer/tools/character-models.mjs`, and its 24-line companion to `art/tools/` with a one-line pointer left at each old path so that none of the 31 files that use them is edited; two to three hours):
+
+“Okay, let's do a smaller version of the art item”
+
+Ruled:
+
+- **Cut item 5 is the smaller version.** The table of which unit wears which model and motion lives under `art/tools/`; art work edits a file there, never a viewer file. The code stamp counts `art/tools/` as the viewer's code, so an edit there still runs the viewer's gate.
+- **Waiting, written down:** a separate list file the viewer reads, the check of every id against content, and moving the head-and-skin drawing code.
+
+## 2026-10-06 — building is split from testing: three builders and one lander; two tool items from the review of the testing
+
+Andrew, in the home chat, pasted this (from a review of the testing he had another chat do that day; the method is the memory note `timing-workers-from-transcripts`) and, asked whether it was his instruction to be recorded as his ruling, answered "1. Yes.":
+
+“After your full run and wrap are done, file the three things below. They come from a review of the testing I had another chat do on 2026-10-06 (the method is in the memory note timing-workers-from-transcripts).
+
+What it measured, 4 Oct 10:36Z to 6 Oct: workers spent about 69% of their active time on tests, 56% of it running or waiting on whole-suite runs and landing chains. The single-item gate failed 8 of 274 runs. The whole-suite runs in the four passes.jsonl files failed 119 of 417. Those 119 are 90 incidents: 42 were time-outs on a busy machine that passed on a re-run with nothing changed, 24 were older tests or recordings holding a value the item changed on purpose, 15 were real faults in the new work, 7 were the landing steps in the wrong order, 2 unknown.
+
+1. Tool item: give tests the 30-second limit on my PC that Cowork already has. engine/tools/gate-progress.mjs testTimeoutFor() returns 30 s only in Cowork (tool.cowork-test-timeout, 2026-09-26, "a timeout is not an assertion"); kingdom and viewer set no limit. Make all three packages use 30 s on the PC too. 19 of the 42 busy-machine incidents were a 5-second time-out.
+
+2. Tool item: the engine tests test/fix-shield-power-double-click.test.ts and test/movement-swap-and-shields.test.ts fail with "Shared viewer metadata is stale or dirty" whenever the engine suite runs before the viewer's dumps are regenerated after an engine change. Make the run order right, or make the two tests not depend on it. This was 7 incidents.
+
+3. Ruling, as a one-day trial: split building from testing. Three builders write items, each with its own test seen red then green and the single-item gate check, commit, and go straight to the next item; they never run the whole suites. One lander merges the builders' commits in groups of up to four, runs the heavy chain once on the merged tree, and lands each item at the engine gate. When the lander's run fails it re-runs once; it clears re-runs and stale recordings itself; a real fault goes back to the builder who wrote the item, who fixes it with a new commit; the rest of the group lands unless it depends on the bad item. Write this in DECISIONS.md as mine, re-brief the workers, and after one day measure the same way so I can see whether landings went from about 2 an hour toward 3 or 4.
+
+Not asked for now: changing how pinned values are handled, and an automatic re-run of failed tests in the gates.”
+
+Asked three things (1 is the pasted text his instruction; 2 since a wrap ends the chat, file and record after the full run is green and before any wrap; 3 should the seven-item cut's items go into the builders' queues), he answered:
+
+“1. Yes.
+2. Yes.
+3. Yes.
+
+ Let's ignore trial day.  There's no trial day, but we should put items into the very back of the builders queue.”
+
+Ruled:
+
+- **Building is split from testing.** Three builders write items - each with its own test seen red then green and the single-item gate check - commit, and go straight to the next item; they never run the whole suites. One lander merges the builders' commits in groups of up to four, runs the heavy chain once on the merged tree, and lands each item at the engine gate. A failed run is re-run once; the lander clears re-runs and stale recordings itself; a real fault goes back to the builder who wrote the item, who fixes it with a new commit; the rest of the group lands unless it depends on the bad item.
+- **It is not a one-day trial** ("There's no trial day"): it is how the work runs from the next round of workers on. Read, not certain: the measurement after a day that the pasted text asks for is still worth taking, the same way, and is taken unless he says not to.
+- **Two tool items are filed** after the full run is green in the main folder and before any wrap: tests get the 30-second limit on the PC that Cowork already has, in the engine, the kingdom and the viewer; and the two engine tests that fail with 'Shared viewer metadata is stale or dirty' stop depending on the order of the run.
+- **The seven-item cut's items go at the very back of the builders' queue**, behind the feature items.
+- Not asked for now, in his words: changing how pinned values are handled, and an automatic re-run of failed tests in the gates.
+
+This changes `DISPLAY-RULES.md` rules 16, 28 and 32 as they describe one worker building and landing its own items; that file is his list and is brought into line at the next wrap.
+
+## 2026-10-06 — corrected: the seven-item cut goes FIRST; what is outside it goes to the back
+
+Andrew, in the home chat, minutes after the entry above recorded 'the seven-item cut's items go at the very back of the builders' queue':
+
+“Wait, maybe I misunderstood the seven items. I thought the things that were outside of the seven items. I want to do the things that are going to improve us overall first.”
+
+Ruled:
+
+- **The seven-item cut is done first, ahead of the feature items.** This replaces the last bullet but one of the entry above, and 'they run beside the feature queue, not ahead of it' in the entry 'the cleanup is cut to seven items' of this day.
+- **What is outside the seven is what goes to the very back** — it stays written in `CODEBASE-REVIEW-2026-10-05.md` and waits, as before.
+- Read, not certain: the two tool items from the review of the testing (the 30-second limit; the two tests that depend on run order) are also 'things that are going to improve us overall' and go first with the seven. Put to him the same minute.
+
+Added the same minute, his next message, which settles the reading above:
+
+“We need to improve our methodology. We need to improve our file structure before we continue with development.”
+
+- **Methodology and file structure come before feature development continues.** Methodology: the two tool items from the review of the testing, and the builders-and-lander way of working. File structure: the seven-item cut. The three owed chains already running in the worker copies are finished and merged first, since the restructure edits the same files; no new feature item is started until the nine are landed.
+
+## 2026-10-06 — the one plan: land on the quick check, run the whole suites twice a day, four streams and one lander
+
+Andrew, in the home chat, after several versions of the plan and three questions put back to him:
+
+“I'm just going to say it again: the goal is to improve the architecture, improve the methodology of what we're doing, and make it so it's faster. Our process is really, really slow, and we have to make it faster.  I'm not even sure that this... I think we're just being saddled by a bunch of testing that isn't being very effective. How do we make everything faster? How do we make it organized the right way? How do we make it so I can work in parallel on multiple things? That is the goal.”
+
+“You're asking me questions that I'm asking you.   Decide what keeps the checks that matter and removes the things that don't. You know what the goal is. Don't ask me questions. I'm not you. I don't know the answer.   We want a game that doesn't have bugs, but if we catch very few bugs for twice as much time, that is not effective.   I want to be able to iterate on this game in at least four different ways simultaneously.  We are changing some architecture and some methodology, and doing some cleanup. What should we be doing? You tell me.  Not me telling you  consider very carefully, and then consider it again. Don't keep giving me different answers.  Give me one answer. That's the right answer you are telling me.”
+
+Decided by the home chat, on that word. It replaces the seven-item cut and its order (the entries above of this day); the builders-and-lander ruling stands and is widened to four builders.
+
+What it rests on (his review of the testing, 4-6 Oct, and the gate's own log read the same hour): workers spent 56% of their time on whole-suite runs and landing chains; those runs failed 119 times in 417 and 15 of the 90 incidents were real faults. The single-item gate takes seconds (five from check to landing, at the median) and failed for a real reason about ten times in 279 runs. So the quick check is cheap and honest, and the whole suites are dear and mostly noise at the moment they are run.
+
+**The checks**
+
+- **On every landing, kept as they are:** typecheck, the item's own test (seen red, then green) and the single-item gate. An item that changes engine code also keeps the control battles, which the gate already runs. A page item also needs the page to build and play its battles through (the viewer gate's verify part), once per group, by the lander.
+- **Twice a day, by the lander, alone on the machine:** all four whole suites. A real fault goes back to the builder who wrote the item, who fixes it with a new commit; a test or recording still holding a value an item changed on purpose is updated by the lander; a time-out is re-run once, and a test that times out a second time is put on a named list and fixed as an item, not re-run again.
+- **Dropped:** the whole suites at every merge-back (`tools/combine.mjs` runs them today); the viewer's whole gate at every page landing (its checks and tests parts); a new page test for every look-and-feel item - that kind of item is checked by a screenshot for Andrew's eye, and rules and numbers keep their tests.
+- **What that costs:** the main folder can be broken for up to half a day, and a fault found by a scheduled run has to be traced among the items landed since the last one.
+
+**Four streams, one lander**
+
+- (1) Engine and content. (2) The viewer's screen: the bars, panels, tokens and input. (3) The viewer's scene: the 3D scene, the camera and how maps are drawn. (4) Art and maps. Kingdom work, when there is any (its queue is empty today), goes with stream 2.
+- One builder per stream, each in its own copy, never running a whole suite and never building or committing a built page. A stream does not edit another stream's files; what it needs from another stream is filed as an item for that stream.
+- One lander merges the builders' commits in groups of up to four, builds the pages, runs the quick checks and lands each item at the engine gate; and runs the twice-daily suites.
+
+**The structure changes that the four streams need, and no others now**
+
+- Built pages are made by the lander only (no tool change; it is in every brief).
+- Logs stop being tracked.
+- The engine's per-landing golden chain becomes one capture tool and one current golden, so that the lander re-records a group's battles with one command.
+- The table of which unit wears which model and motion moves from `viewer/tools/` to `art/tools/`, so that stream 4 edits no viewer file.
+- The camera comes out of `viewer/src/board.js`, so that streams 2 and 3 do not both live in one 2,400-line file.
+
+**Not now, written down in `CODEBASE-REVIEW-2026-10-05.md`:** `maps/` holding the shared map code, the `workshop` and `accepted` folders, the tutorial-line fix (an ordinary bug), one repository in place of five, and everything else in that file's section 4.
+
+**The order**
+
+1. The three owed chains finish and are merged; the full run is green once in the main folder (the starting line).
+2. Tool items, by the home chat's first builder: the 30-second test limit on the PC; the two engine tests that depend on run order; the merge-back and the viewer's page landing no longer demand the whole suites, and the lander's twice-daily run records them; a look-and-feel item lands on a named screenshot in place of a page test.
+3. The four builders and the lander start. Each stream's first item is its structure change (stream 1 the golden chain, stream 2 or 3 the camera, stream 4 the table; logs go with the lander), and its feature queue follows at once.
+4. After one day, the same measurement as his review: landings an hour, and what the twice-daily runs caught.
+
+Added the same hour. Andrew: “Why are these four streams? Why isn't Kingdom a stream, and why isn't content a stream?” They are. The four named above were chosen from what is queued today (engine 16 items waiting, viewer 22, art 20, kingdom none, content none), which answers who gets a builder first and not what the streams are. Stated properly:
+
+- **A stream is an area that owns its own files; there are six:** the engine (`engine/src`, rules); content (`content/`, the authored rows); the kingdom (`kingdom/src`, the campaign and its screens); the viewer's screen (bars, panels, tokens, input); the viewer's scene (the 3D scene, the camera, how maps are drawn); art and maps (the models, motions and scenes under `assets/`, and `art/tools/`).
+- **A builder is given to every stream that has items waiting**, four at once at the least and more when the queues and the usage allow, since builders no longer queue for the machine. Today that is the engine, the viewer's two and art and maps; the kingdom and content get theirs the moment an item is filed for them.
+- The rule that keeps them apart does not change: a stream edits only its own files, and what it needs from another stream is filed as an item for that stream (a content row that needs a new mechanic waits on the engine item it names).
+
+Added the same hour. Andrew: “Am I running out of these six streams out of one chat or out of multiple chats?” Decided, as part of the one plan:
+
+- **Several chats. A stream he is steering himself is its own chat**, in its own copy of the folder: he talks to it, it builds and commits there, and it never runs a whole suite or builds a page. One chat per stream at most (`DISPLAY-RULES.md` rule 35 as it stands).
+- **One lander chat** - the home chat - merges every stream's commits, builds the pages, lands the items, runs the twice-daily suites and holds the queue. A stream he is not steering runs as a builder under the lander chat, from its queue.
+- Why not one chat for all six: he could not talk to a builder directly; one chat's memory would fill several times a day; and when the app's session stops, every builder under it stops with it. With a chat per stream a stopped chat stops one stream.
+- A ruling he makes in a stream chat is written by that chat, in its copy, and reaches the main folder with its next merge.
