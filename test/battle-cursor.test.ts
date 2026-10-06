@@ -504,6 +504,13 @@ const setBonusGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor
 // fought before moves (nothing in them changed a party stat); test.vortex is ADDED: the Staff of the Magi's Vortex live in a real battle.
 // Every case frozen here (tools/capture-raise-lower-magic-cursor.mts). Moved: test.set-bonus. A `changed` case is checked here and skips the older layers.
 const raiseLowerMagicGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-raise-lower-magic.json', import.meta.url), 'utf8'))
+// capability.his-weapons-small-clauses (2026-10-05; DECISIONS.md 2026-10-04 'his 28 reward weapons read back …': "Everything else in
+// here seems like something we need."), Law 10: an attack's on-kill may destroy the corpse of what it kills (the Staff of the
+// Destroyer's Ruin and Sundering, the artifact attribute Destroying), and a power removes points of a named status by a stat's
+// amount (the Benevolent Rod's Mending Light). A case that was fought before moves only if a unit in it holds one of those rows;
+// test.corpse-destroyed and test.mending-light are ADDED: each clause live in a real battle.
+// Every case frozen here (tools/capture-his-weapons-small-clauses-cursor.mts). Moved: test.set-bonus. A `changed` case is checked here and skips the older layers.
+const hisWeaponsSmallClausesGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-his-weapons-small-clauses.json', import.meta.url), 'utf8'))
 const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
 // Explicit rule migration, not regenerated historical hashes. These nine old
 // cases contain Surge ledger/refresh changes or terminal markers corrected
@@ -655,7 +662,10 @@ describe('resumable battle cursor', () => {
       const summonsExpected = summonsGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const setBonusExpected = setBonusGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const raiseLowerMagicExpected = raiseLowerMagicGolden.cases.find((row:{id:string})=>row.id===fixture.id)
-      const raiseLowerMagicMoved = raiseLowerMagicExpected?.changed === true
+      const hisWeaponsSmallClausesExpected = hisWeaponsSmallClausesGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+      const hisWeaponsSmallClausesMoved = hisWeaponsSmallClausesExpected?.changed === true
+      // was: const raiseLowerMagicMoved = raiseLowerMagicExpected?.changed === true — a case capability.his-weapons-small-clauses moved skips this layer too (capability.his-weapons-small-clauses 2026-10-04)
+      const raiseLowerMagicMoved = raiseLowerMagicExpected?.changed === true || hisWeaponsSmallClausesMoved
       // was: const setBonusMoved = setBonusExpected?.changed === true — a case capability.raise-lower-magic moved skips this layer too (capability.raise-lower-magic 2026-10-04)
       const setBonusMoved = setBonusExpected?.changed === true || raiseLowerMagicMoved
       // was: const summonsMoved = summonsExpected?.changed === true — a case capability.set-bonus moved skips this layer too (capability.set-bonus 2026-10-04)
@@ -819,7 +829,14 @@ describe('resumable battle cursor', () => {
             battle.completeActionCycle(ctx)
           }
         } else result = battle.runBattle(ctx)
-        if (raiseLowerMagicExpected) {
+        if (hisWeaponsSmallClausesExpected) {
+        expect(hash(ctx.events), 'full his-weapons-small-clauses events').toBe(hisWeaponsSmallClausesExpected.events)
+        expect(hash(ctx.state), 'full his-weapons-small-clauses state').toBe(hisWeaponsSmallClausesExpected.state)
+        expect(hash(ctx.rng.log), 'full his-weapons-small-clauses RNG').toBe(hisWeaponsSmallClausesExpected.rng)
+        expect(result).toEqual(hisWeaponsSmallClausesExpected.result)
+        }
+        // was: if (raiseLowerMagicExpected) { — capability.his-weapons-small-clauses (2026-10-04): a case it moved is checked above instead
+        if (raiseLowerMagicExpected && !hisWeaponsSmallClausesMoved) {
         expect(hash(ctx.events), 'full raise-lower-magic events').toBe(raiseLowerMagicExpected.events)
         expect(hash(ctx.state), 'full raise-lower-magic state').toBe(raiseLowerMagicExpected.state)
         expect(hash(ctx.rng.log), 'full raise-lower-magic RNG').toBe(raiseLowerMagicExpected.rng)

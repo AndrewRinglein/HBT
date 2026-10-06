@@ -70,3 +70,5 @@
 {"suite":"engine","stamp":"83cd1ee3d6","failed":true,"at":"2026-10-05T21:01:10.136Z","by":"gate --shard 1/1","in":"HBT-worker-engine"}
 {"suite":"control","stamp":"83cd1ee3d6","pack":"d79c8c7203","golden":"2a98bd088f","at":"2026-10-05T22:52:06.412Z","by":"gate capability.raise-lower-magic --land","in":"HBT-worker-engine","moved":null}
 {"suite":"engine","stamp":"83cd1ee3d6","with":{"engine":"83cd1ee3d6","content":"e84e4cb7e0","viewer":"902c759a7d","kingdom":"c1522a2667"},"at":"2026-10-05T23:19:35.628Z","by":"gate --shard (1 of 1)","in":"HBT-worker-engine","tests":2995}
+{"suite":"engine","stamp":"7133daffea","with":{"engine":"7133daffea","content":"24efafa6d5","viewer":"8a79bbacd1","kingdom":"c1522a2667"},"at":"2026-10-06T01:11:51.969Z","by":"gate --shard (1 of 1)","in":"HBT-worker-engine","tests":3015}
+{"suite":"control","stamp":"7133daffea","pack":"6cbe672f8d","golden":"2a98bd088f","at":"2026-10-06T01:13:52.943Z","by":"gate capability.his-weapons-small-clauses --land","in":"HBT-worker-engine","moved":null}

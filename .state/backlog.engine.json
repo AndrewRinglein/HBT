@@ -5865,7 +5865,17 @@
   "shape": "trigger",
   "spec": "Ruled 2026-10-04 (Andrew, engine/DECISIONS.md 'his 28 reward weapons read back: ... the mechanics his own items need are wanted'): 'Everything else in here seems like something we need.' Two clauses on his reward weapons that the item review of 2026-10-04 reads as not acting and no other item covers - a group of small ones, one landing if they fit (GBH SWITCHES landing.groupOfSmallItems), each confirmed against the engine first: (1) the Staff of the Destroyer's Ruin and Sundering, and the attribute Destroying - 'On kill: the corpse is destroyed': the killed unit leaves no corpse (nothing can raise, eat or target it; the viewer plays the death and then removes the body); a field on the attack or trigger. (2) the Benevolent Rod's Mending Light - '... and remove Weak equal to your Spirit': a power removes stacks of a named status by a flat amount or by a stat's amount. (The Staff of Summoning's '+15 Accuracy against summon' is in capability.summons; the doubled Precision is in capability.effect-lasts-activations and capability.damage-from-two-stats.)",
   "expect": "A unit killed by Ruin leaves no corpse on the board and a power that needs a corpse cannot use that hex; a unit killed by any other attack leaves one as before; Mending Light on an ally with 5 Weak cast by a priest with party Spirit 3 leaves it with 2 Weak, and with 2 Weak leaves it with none.",
-  "note": "Filed by the home chat 2026-10-04."
+  "note": "Filed by the home chat 2026-10-04.",
+  "probeIds": [
+   "trigger.staff-of-the-destroyer.ruin.corpse-destroyed",
+   "power.benevolent-rod.restoration"
+  ],
+  "variants": [
+   "trigger.staff-of-the-destroyer.ruin.corpse-destroyed",
+   "trigger.longsword.destroying.corpse-destroyed"
+  ],
+  "status": "done-needs-review",
+  "sha": "e1da336"
  },
  {
   "id": "capability.planted-banners",
