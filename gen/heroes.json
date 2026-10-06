@@ -7,7 +7,7 @@
   "movement": "5 — documented. Heroes 5, enemies 4.",
   "staminaMax": "5 at level 1 — documented. Civilian 0: a Civilian has no stamina bar.",
   "staminaRegen": "1 at level 1 — documented, and it hard-caps at 3. Civilian 0.",
-  "surge": "Not a baseline at all — Surge always EQUALS the character level. Documented rule, computed, never stored.",
+  "surge": "Not a baseline of the hero's own — Surge is the character level at the least (ruled 2026-10-06: \"Everyone gains surge equal to level, at the very least\"). Each hero class grants 1 Surge at every level, level 1 among them (gen/levels.json, the table's every-level grant); the pack writes the level-1 point on the hero's row and the rest come with the levels. A number here is a hero's own difference from that. It read: Surge always EQUALS the character level. Documented rule, computed, never stored.",
   "toughness": "Ported, not derived: hell-tcg maxAfflictions IS injury capacity, which is what Toughness means here.",
   "deathbedFighting": "Derived, never stored: 20 + 5 x Toughness."
  },

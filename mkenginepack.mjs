@@ -2842,6 +2842,27 @@ checkBurstGround(authoredBursts); checkBurstGround(testBursts);
 const xpByTier = AUTH.xpByTier;
 if (!xpByTier || Object.keys(xpByTier).some((k) => !/^[1-9]$/.test(k)) || Object.values(xpByTier).some((v) => !Number.isSafeInteger(v) || v < 0)) throw new Error('gen/enemies-authored.json: xpByTier must map tiers to whole XP');
 for (const u of authoredEnemies) if (u.tier !== undefined && xpByTier[u.tier] === undefined) throw new Error(`${u.typeId}: tier ${u.tier} has no price in xpByTier`);
+// ── A HERO'S SURGE AT LEVEL 1 (engine rule.surge-is-at-least-level, 2026-10-06) ──────────────────────────────────────────
+// Ruled 2026-10-06 (engine DECISIONS.md 'everyone gains Surge equal to its level at the least, and rolls the Surge check
+// every Activation'): "Everyone gains surge equal to level, at the very least. Therefore, there is always at least a 1%
+// chance of a surge." The number is made HERE and in the level tables, nowhere else: a class table's every-level grant
+// (gen/levels.json `freebie`) is granted at every level, and level 1 is a level — the engine applies a table's rows from
+// level 2 up, so the level-1 share of an every-level grant of Surge is written on the unit's own row. One pass over every
+// row a hero is fielded from (the test cohort, the party, the alpha team, the test bodies), by the table the engine levels
+// it on (its `levelTable`, else its class tag — engine core/setup.ts levelTableOf), so no row is missed and none is typed
+// by hand. Hero-side rows only: an enemy rolls no Surge check. What a row already says (a test body's own Surge) is kept
+// and the level-1 point added to it. Until this ruling the engine added the level itself, and only to a hero fielded with
+// a progress record — which a level-1 hero is not, so every level-1 hero had Surge 0.
+{
+  const everyLevelSurge = (table) => { const st = Object.entries(table?.freebie || {}).filter(([k]) => statOf(k) === 'surge'); return st.reduce((n, [, v]) => n + v, 0); };
+  const tableOf = (row) => { const id = row.levelTable ?? (row.tags || []).find((t) => t.startsWith('class.')); return [...(LEVELS.classes || []), ...(LEVELS.civilianTypes || [])].find((c) => c.id === id); };
+  for (const row of [...heroes, ...prologueParty, ...alphaTeam, ...(Array.isArray(test.units) ? test.units : Object.values(test.units))]) {
+    if (row.side !== 'hero') continue;
+    const n = everyLevelSurge(tableOf(row));
+    if (!Number.isSafeInteger(n) || n < 0) throw new Error(`mkenginepack: ${row.typeId}'s level table grants '${n}' Surge at every level — a whole number, 0 or more`);
+    if (n > 0) row.surge = (row.surge ?? 0) + n;
+  }
+}
 const pack = { note: D.testCohort.note, xpByTier, heroes, enemies, authoredEnemies, authoredAttacks, authoredAbilities, authoredBursts, prologueParty, alphaTeam, critChart: compileCritChart(SETTLED.critChart), statuses, moves, items, test,
   classPowers, specialties, levels, generalPool, enchanted, derivedItems, encounters, badges, maps };
 
