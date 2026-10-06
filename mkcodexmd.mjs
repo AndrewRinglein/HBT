@@ -95,6 +95,7 @@ w('---\n\n## 4 · Powers\n');
 const cost=p=>{const bits=[];
   if(p.free) bits.push('**Free**');
   bits.push((p.stamina||0)+' stam'); if(p.cooldown) bits.push('cd '+p.cooldown); if(p.warmup) bits.push('warmup '+p.warmup);
+  if(p.grantedAtLevel) bits.push('from level '+p.grantedAtLevel);   // engine rule.special-moves-unlock-at-level-two (2026-10-06): a class's move is granted at this level
   return bits.join(', ')};
 const bySpec={}; for(const p of D.powers) (bySpec[p.specialty||'—universal—']=bySpec[p.specialty||'—universal—']||[]).push(p);
 for(const [sid,list] of Object.entries(bySpec).sort()){

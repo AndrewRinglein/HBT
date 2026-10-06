@@ -988,6 +988,25 @@ const movesForClass = (cls) => {
   walkP(SETTLED.powers);
   return [...new Set(out)];
 };
+// engine rule.special-moves-unlock-at-level-two (2026-10-06; engine DECISIONS.md 'a hero's special moves unlock at level 2,
+// ruled: all of them, every hero, enemies and civilians unchanged, named on the level-up screen'): "the special moves that
+// the starting heroes get should be unlocked instead at level 2". The level is on the GRANT, in the Codex: a movement power
+// a class grants says `grantedAtLevel` beside `grantedToClasses` (2 on each of the five today — Leap, Side Roll, Sidestep,
+// Focus, Devotion), and a row that gets its movements by its class carries the level of each as `moveLevels`; the engine
+// fields a hero below that level without the movement. A later special move names its own level here, with no code change.
+// Only a class's grant carries a level: an enemy's and a civilian's rows list their movements themselves and name none, and
+// so does the engine's own test party (the cohort's rows are copies that say their own moves). A level that is not a whole
+// number of 2 or more, or sits on a power no class grants, FAILS THE BUILD.
+for (const p of (Array.isArray(SETTLED.powers) ? SETTLED.powers : [])) {
+  if (p.grantedAtLevel === undefined) continue;
+  if (!p.movementAction || !(p.grantedToClasses || []).length) throw new Error(`mkenginepack: ${p.id} says grantedAtLevel and is not a movement power a class grants`);
+  if (!Number.isSafeInteger(p.grantedAtLevel) || p.grantedAtLevel < 2) throw new Error(`mkenginepack: ${p.id} grantedAtLevel is '${p.grantedAtLevel}' — a whole number, 2 or more`);
+}
+const moveLevelsForClass = (cls) => {
+  const levels = {};
+  for (const id of movesForClass(cls)) { const at = SPOWER_BY_ID.get(id)?.grantedAtLevel; if (at !== undefined) levels[id] = at; }
+  return Object.keys(levels).length ? { moveLevels: levels } : {};
+};
 
 const allHeroes = [];
 (function wh(o) { if (Array.isArray(o)) o.forEach(wh); else if (o && typeof o === 'object') { if (o.id && String(o.id).startsWith('hero.') && o.ported) allHeroes.push(o); else Object.values(o).forEach(wh); } })(D.heroes);
@@ -1489,7 +1508,7 @@ for (const id of PARTY) {
     maxStamina: d.staminaMax, staminaRegen: d.staminaRegen ?? 1,
     // no ai: the engine derives a hero's default from its kit (core/items.ts defaultAiOf; C16)
     attacks: ownAttackIds, abilities: [],
-    moves: movesForClass(h.class),
+    moves: movesForClass(h.class), ...moveLevelsForClass(h.class),   // rule.special-moves-unlock-at-level-two: the level each is granted at
     // hero assembly (2026-09-03): the class rides on tags so fieldedDef can find the level table
     tags: ['hero', ...(h.class ? [h.class] : [])],
     triggers: distinctTriggerIds(id, ownTriggers),
@@ -1588,7 +1607,7 @@ const alphaTeam = [];
       // a derived one is derived again (seam.items-per-unit)
       ...(h.ai ? { aiAuthored: true } : {}),
       attacks: ownAttackIds, abilities: [],
-      moves: movesForClass(h.class),
+      moves: movesForClass(h.class),   // no level (rule.special-moves-unlock-at-level-two): the Alpha Team is the engine's test party rebuilt as heroes, and a test party keeps its movements at level 1
       tags: ['hero', ...(h.class ? [h.class] : [])],
       triggers: distinctTriggerIds(id, ownTriggers),
       defaultItems: (h.kit || []).filter((i) => ITEM_BY_ID.has(i)),
