@@ -166,3 +166,5 @@
 {"suite":"viewer","stamp":"42ad19d70c","with":{"engine":"852b05fc95","content":"3a7dd56661","viewer":"42ad19d70c","kingdom":"e9c8bd20ba"},"at":"2026-10-06T12:59:27.574Z","by":"gate (every part)","in":"HBT-worker-engine"}
 {"suite":"viewer","stamp":"42ad19d70c","failed":true,"at":"2026-10-06T20:05:53.543Z","by":"gate --part checks","in":"Heroes of Blight and Tragic"}
 {"suite":"viewer","stamp":"793517f25c","failed":true,"at":"2026-10-06T17:13:46.381Z","by":"gate --part checks","in":"HBT-worker-engine"}
+{"suite":"viewer","stamp":"3136f53162","failed":true,"at":"2026-10-06T22:11:18.442Z","by":"gate --part checks","in":"HBT-worker-engine"}
+{"suite":"viewer","stamp":"3136f53162","with":{"engine":"86b00fef88","content":"08aab47578","viewer":"3136f53162","kingdom":"eba9aabb61"},"at":"2026-10-06T23:00:13.356Z","by":"gate (every part)","in":"HBT-worker-engine"}
