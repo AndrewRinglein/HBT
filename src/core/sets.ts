@@ -34,9 +34,10 @@ export type SetLine = {
 
 /** Pure: the sets that pay over a list of carried rows, in carried order (Law 6: order is placement) — the engine's count. */
 export function resolveSetsOf(worn: readonly ItemRow[]): SetLine[] {
-  // `sets`, not `tags` (content.sets-count-holy-texts-and-heavy-chain, 2026-10-06): a row is counted in the sets its tags name AND
-  // in those it says it is a member of without bearing the tag (Holy Texts a book, Heavy Chain a chain item - the Forge reads tags).
-  return setLinesOf(worn.map((r) => ({ id: r.id, setTags: r.sets, ...(r.setBonus ? { setBonus: r.setBonus } : {}) })))
+  // its tags AND its `sets` (content.sets-count-holy-texts-and-heavy-chain, 2026-10-06): a row is counted in every set its tags name,
+  // as it always was, and in those it says it is a member of without bearing the tag (Holy Texts a book, Heavy Chain a chain item -
+  // the Forge reads tags; `sets` holds the membership). It read `setTags: r.tags`.
+  return setLinesOf(worn.map((r) => ({ id: r.id, setTags: [...new Set([...r.tags, ...r.sets])], ...(r.setBonus ? { setBonus: r.setBonus } : {}) })))
 }
 
 /** The triggered sets on one hero — over `equipped` and nothing else. */
