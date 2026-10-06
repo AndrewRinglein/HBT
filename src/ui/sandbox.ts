@@ -2,6 +2,7 @@ import {createSandbox,advanceSandbox,sandboxMarkedAreas,sandboxActivationChoices
 import {SANDBOX_MAPS,SANDBOX_HEROES,SANDBOX_ENEMIES,SANDBOX_ENCOUNTERS,SANDBOX_DEFAULT} from '../content/sandbox.js'
 import {viewSandbox} from '../view/sandbox.js'
 import {createBattleSurface} from './battle-surface.js'
+import {attackTotalsOf} from './attack-totals.js'
 import {burstForecast} from './burst-forecast.js'
 import {sandboxTargetingOf} from './sandbox-targeting.js'
 import {controllerOf,validateBattleCommand,type BattleCommand} from '../engine.js'
@@ -503,7 +504,7 @@ function install(next:Sandbox){
  const run=isCampaignBattle(next)?sitting!.ctx:null
  const meet=(typeId:string)=>{const c=sitting?.ctx;if(!c)return;const id=enemyRevealOf(typeId);if(canReveal(c.campaign,id)){performReveal(c,id,sitCause);persist()}}
  if(run)for(const k of LESSON_INTRODUCES[next.config.encounterId??'']??[])meet(k)
- const candidate=createBattleSurface(__BATTLE_VIEW_DATA__,{...(LOOK?{look:LOOK}:{}),newEnemies:enemiesToAnnounce(run?run.campaign.revealed:[],next.config.encounterId),
+ const candidate=createBattleSurface(__BATTLE_VIEW_DATA__,{attackTotals:(id:number)=>attackTotalsOf(session?.ctx,id),...(LOOK?{look:LOOK}:{}),newEnemies:enemiesToAnnounce(run?run.campaign.revealed:[],next.config.encounterId),
   onNewEnemy:(typeId:string)=>{if(epoch===generation&&session&&isCampaignBattle(session))meet(typeId)},
   /* kingdom.tutorial-orphanage-enemy-turn: each line of the battle's log as the board plays it (never a seek's) — a lesson's row
      that starts on a line goes up then, and its notice holds the playback for its time */
