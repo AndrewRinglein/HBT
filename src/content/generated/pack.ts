@@ -15855,7 +15855,10 @@ export const UNIT_PACK = {
       "abilities": [
         "power.holy-texts.mercy"
       ],
-      "triggers": []
+      "triggers": [],
+      "setTags": [
+        "book"
+      ]
     },
     "item.bane-blade": {
       "id": "item.bane-blade",
@@ -18252,7 +18255,10 @@ export const UNIT_PACK = {
       },
       "grants": [],
       "abilities": [],
-      "triggers": []
+      "triggers": [],
+      "setTags": [
+        "chain"
+      ]
     },
     "item.mismatched-armor": {
       "id": "item.mismatched-armor",
@@ -37917,6 +37923,9 @@ export const UNIT_PACK = {
         "power.holy-texts.mercy"
       ],
       "triggers": [],
+      "setTags": [
+        "book"
+      ],
       "vsTarget": [
         {
           "tag": "undead",
@@ -37953,6 +37962,9 @@ export const UNIT_PACK = {
         "power.holy-texts.mercy"
       ],
       "triggers": [],
+      "setTags": [
+        "book"
+      ],
       "vsTarget": [
         {
           "tag": "undead",
@@ -37981,6 +37993,9 @@ export const UNIT_PACK = {
         "power.holy-texts.mercy"
       ],
       "triggers": [],
+      "setTags": [
+        "book"
+      ],
       "base": "item.holy-texts",
       "enchant": "enchant.heavens-edge",
       "gaps": [
@@ -38005,6 +38020,9 @@ export const UNIT_PACK = {
         "power.holy-texts.mercy"
       ],
       "triggers": [],
+      "setTags": [
+        "book"
+      ],
       "vsTarget": [
         {
           "tag": "demon",
@@ -41745,6 +41763,9 @@ export const UNIT_PACK = {
       "grants": [],
       "abilities": [],
       "triggers": [],
+      "setTags": [
+        "chain"
+      ],
       "base": "item.heavy-chain",
       "enchant": "enchant.warded"
     },
@@ -41763,6 +41784,9 @@ export const UNIT_PACK = {
       "grants": [],
       "abilities": [],
       "triggers": [],
+      "setTags": [
+        "chain"
+      ],
       "base": "item.heavy-chain",
       "enchant": "enchant.durable"
     },
@@ -41783,6 +41807,9 @@ export const UNIT_PACK = {
       "grants": [],
       "abilities": [],
       "triggers": [],
+      "setTags": [
+        "chain"
+      ],
       "base": "item.heavy-chain",
       "enchant": "enchant.enduring"
     },
@@ -41803,6 +41830,9 @@ export const UNIT_PACK = {
       "grants": [],
       "abilities": [],
       "triggers": [],
+      "setTags": [
+        "chain"
+      ],
       "base": "item.heavy-chain",
       "enchant": "enchant.might"
     },
@@ -41822,6 +41852,9 @@ export const UNIT_PACK = {
       "grants": [],
       "abilities": [],
       "triggers": [],
+      "setTags": [
+        "chain"
+      ],
       "base": "item.heavy-chain",
       "enchant": "enchant.runed"
     },
@@ -45147,6 +45180,9 @@ export const UNIT_PACK = {
         "power.holy-texts.mercy"
       ],
       "triggers": [],
+      "setTags": [
+        "book"
+      ],
       "base": "item.holy-texts"
     },
     "item.holy-texts.heavy": {
@@ -45165,6 +45201,9 @@ export const UNIT_PACK = {
         "power.holy-texts.mercy"
       ],
       "triggers": [],
+      "setTags": [
+        "book"
+      ],
       "base": "item.holy-texts",
       "enchant": "enchant.heavy"
     },
@@ -45184,6 +45223,9 @@ export const UNIT_PACK = {
         "power.holy-texts.mercy"
       ],
       "triggers": [],
+      "setTags": [
+        "book"
+      ],
       "base": "item.holy-texts",
       "enchant": "enchant.keen"
     },
@@ -45203,6 +45245,9 @@ export const UNIT_PACK = {
         "power.holy-texts.mercy"
       ],
       "triggers": [],
+      "setTags": [
+        "book"
+      ],
       "base": "item.holy-texts",
       "enchant": "enchant.cruel"
     },
@@ -47772,6 +47817,9 @@ export const UNIT_PACK = {
       "grants": [],
       "abilities": [],
       "triggers": [],
+      "setTags": [
+        "chain"
+      ],
       "base": "item.heavy-chain"
     },
     "item.heavy-chain.hale": {
@@ -47789,6 +47837,9 @@ export const UNIT_PACK = {
       "grants": [],
       "abilities": [],
       "triggers": [],
+      "setTags": [
+        "chain"
+      ],
       "base": "item.heavy-chain",
       "enchant": "enchant.hale"
     },
@@ -47807,6 +47858,9 @@ export const UNIT_PACK = {
       "grants": [],
       "abilities": [],
       "triggers": [],
+      "setTags": [
+        "chain"
+      ],
       "base": "item.heavy-chain",
       "enchant": "enchant.lucky"
     },
@@ -47825,6 +47879,9 @@ export const UNIT_PACK = {
       "grants": [],
       "abilities": [],
       "triggers": [],
+      "setTags": [
+        "chain"
+      ],
       "base": "item.heavy-chain",
       "enchant": "enchant.nimble"
     },
@@ -47842,6 +47899,9 @@ export const UNIT_PACK = {
       "grants": [],
       "abilities": [],
       "triggers": [],
+      "setTags": [
+        "chain"
+      ],
       "base": "item.heavy-chain",
       "enchant": "enchant.fleet"
     },
