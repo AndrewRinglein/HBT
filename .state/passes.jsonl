@@ -77,3 +77,5 @@
 {"suite":"engine","stamp":"dc42f97df3","with":{"engine":"dc42f97df3","content":"c6cb89aebf","viewer":"d19fc3ce16","kingdom":"6a710d1863"},"at":"2026-10-06T02:06:54.389Z","by":"gate --shard (1 of 1)","in":"HBT-worker-engine","tests":3034}
 {"suite":"engine","stamp":"918e413947","with":{"engine":"918e413947","content":"c02de59499","viewer":"56f33ba09e","kingdom":"e421750b7f"},"at":"2026-10-06T03:55:17.506Z","by":"gate --shard (1 of 1)","in":"HBT-worker-engine","tests":3049}
 {"suite":"control","stamp":"918e413947","pack":"2ad263e0c8","golden":"2a98bd088f","at":"2026-10-06T03:57:00.628Z","by":"gate capability.placed-traps --land","in":"HBT-worker-engine","moved":null}
+{"suite":"engine","stamp":"17fafc9ad2","with":{"engine":"17fafc9ad2","content":"8f939e8202","viewer":"60903045d1","kingdom":"e421750b7f"},"at":"2026-10-06T04:44:14.496Z","by":"gate --shard (1 of 1)","in":"HBT-worker-engine","tests":3065}
+{"suite":"control","stamp":"17fafc9ad2","pack":"bd2ba40096","golden":"2a98bd088f","at":"2026-10-06T04:51:07.959Z","by":"gate capability.stabilise-downed-ally --land","in":"HBT-worker-engine","moved":null}

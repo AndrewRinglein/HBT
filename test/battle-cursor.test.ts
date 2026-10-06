@@ -525,6 +525,13 @@ const plantedBannersGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-
 // unit in them carries a trap); test.bear-traps is ADDED: the Bear Traps live in a real battle.
 // Every case frozen here (tools/capture-placed-traps-cursor.mts). Moved: none. A `changed` case is checked here and skips the older layers.
 const placedTrapsGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-placed-traps.json', import.meta.url), 'utf8'))
+// capability.stabilise-downed-ally (2026-10-05; DECISIONS.md 2026-10-04 'every dead line on his items is a feature that is needed …':
+// "All of those deadlines need to be added in as features that we need."), Law 10: a power aimed at one downed ally stops its
+// bleed-out count - it stays down and does not die of the count for the rest of the Battle (his Bandages). No case that was
+// fought before moves (no unit in them carries such a power); test.bandages and test.field-dressing are ADDED: the Bandages, and a
+// second row of the same effect, each live in a real battle.
+// Every case frozen here (tools/capture-stabilise-downed-ally-cursor.mts). Moved: none. A `changed` case is checked here and skips the older layers.
+const stabiliseDownedAllyGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-stabilise-downed-ally.json', import.meta.url), 'utf8'))
 const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
 // Explicit rule migration, not regenerated historical hashes. These nine old
 // cases contain Surge ledger/refresh changes or terminal markers corrected
@@ -679,7 +686,10 @@ describe('resumable battle cursor', () => {
       const hisWeaponsSmallClausesExpected = hisWeaponsSmallClausesGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const plantedBannersExpected = plantedBannersGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const placedTrapsExpected = placedTrapsGolden.cases.find((row:{id:string})=>row.id===fixture.id)
-      const placedTrapsMoved = placedTrapsExpected?.changed === true
+      const stabiliseDownedAllyExpected = stabiliseDownedAllyGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+      const stabiliseDownedAllyMoved = stabiliseDownedAllyExpected?.changed === true
+      // was: const placedTrapsMoved = placedTrapsExpected?.changed === true — a case capability.stabilise-downed-ally moved skips this layer too (capability.stabilise-downed-ally 2026-10-04)
+      const placedTrapsMoved = placedTrapsExpected?.changed === true || stabiliseDownedAllyMoved
       // was: const plantedBannersMoved = plantedBannersExpected?.changed === true — a case capability.placed-traps moved skips this layer too (capability.placed-traps 2026-10-04)
       const plantedBannersMoved = plantedBannersExpected?.changed === true || placedTrapsMoved
       // was: const hisWeaponsSmallClausesMoved = hisWeaponsSmallClausesExpected?.changed === true — a case capability.planted-banners moved skips this layer too (capability.planted-banners 2026-10-04)
@@ -849,7 +859,14 @@ describe('resumable battle cursor', () => {
             battle.completeActionCycle(ctx)
           }
         } else result = battle.runBattle(ctx)
-        if (placedTrapsExpected) {
+        if (stabiliseDownedAllyExpected) {
+        expect(hash(ctx.events), 'full stabilise-downed-ally events').toBe(stabiliseDownedAllyExpected.events)
+        expect(hash(ctx.state), 'full stabilise-downed-ally state').toBe(stabiliseDownedAllyExpected.state)
+        expect(hash(ctx.rng.log), 'full stabilise-downed-ally RNG').toBe(stabiliseDownedAllyExpected.rng)
+        expect(result).toEqual(stabiliseDownedAllyExpected.result)
+        }
+        // was: if (placedTrapsExpected) { — capability.stabilise-downed-ally (2026-10-04): a case it moved is checked above instead
+        if (placedTrapsExpected && !stabiliseDownedAllyMoved) {
         expect(hash(ctx.events), 'full placed-traps events').toBe(placedTrapsExpected.events)
         expect(hash(ctx.state), 'full placed-traps state').toBe(placedTrapsExpected.state)
         expect(hash(ctx.rng.log), 'full placed-traps RNG').toBe(placedTrapsExpected.rng)

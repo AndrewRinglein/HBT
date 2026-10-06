@@ -37938,3 +37938,69 @@ index 7c82699..68a046c 100644
          expect(hash(ctx.state), 'full planted-banners state').toBe(plantedBannersExpected.state)
 ```
 </details>
+
+## capability.stabilise-downed-ally — LANDED `bb7c8f0` **NEEDS REVIEW**
+2026-10-06 04:51
+
+  PASS  dependencies landed
+  WARN  not already decided — 2 candidate ruling(s) — READ BEFORE ASKING: ..\CODEX.md:1847 · SWITCHES.md:2282
+  PASS  typecheck
+  PASS  the item's own tests — test/battle-cursor.test.ts, test/stabilise-downed-ally.test.ts
+  PASS  gate 1 — the id appears in a real battle — power.bandages.use: 6 log lines, 6 fired, 5 changed state
+  PASS  brought its own tests — test/battle-cursor.test.ts, test/fixtures/battle-cursor-stabilise-downed-ally.json, test/stabilise-downed-ally.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/battle-cursor.test.ts (-2) — will land FLAGGED for review
+  PASS  control battles unchanged
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — power.bandages.use live · power.test-osric.field-dressing live
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without power.bandages.use — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/battle-cursor.test.ts b/test/battle-cursor.test.ts
+index 68a046c..1f59b85 100644
+--- a/test/battle-cursor.test.ts
++++ b/test/battle-cursor.test.ts
+@@ -526,4 +526,11 @@ const plantedBannersGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-
+ // Every case frozen here (tools/capture-placed-traps-cursor.mts). Moved: none. A `changed` case is checked here and skips the older layers.
+ const placedTrapsGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-placed-traps.json', import.meta.url), 'utf8'))
++// capability.stabilise-downed-ally (2026-10-05; DECISIONS.md 2026-10-04 'every dead line on his items is a feature that is needed …':
++// "All of those deadlines need to be added in as features that we need."), Law 10: a power aimed at one downed ally stops its
++// bleed-out count - it stays down and does not die of the count for the rest of the Battle (his Bandages). No case that was
++// fought before moves (no unit in them carries such a power); test.bandages and test.field-dressing are ADDED: the Bandages, and a
++// second row of the same effect, each live in a real battle.
++// Every case frozen here (tools/capture-stabilise-downed-ally-cursor.mts). Moved: none. A `changed` case is checked here and skips the older layers.
++const stabiliseDownedAllyGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-stabilise-downed-ally.json', import.meta.url), 'utf8'))
+ const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
+ // Explicit rule migration, not regenerated historical hashes. These nine old
+@@ -680,5 +687,8 @@ describe('resumable battle cursor', () => {
+       const plantedBannersExpected = plantedBannersGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+       const placedTrapsExpected = placedTrapsGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+-      const placedTrapsMoved = placedTrapsExpected?.changed === true
++      const stabiliseDownedAllyExpected = stabiliseDownedAllyGolden.cases.find((row:{id:string})=>row.id===fixture.id)
++      const stabiliseDownedAllyMoved = stabiliseDownedAllyExpected?.changed === true
++      // was: const placedTrapsMoved = placedTrapsExpected?.changed === true — a case capability.stabilise-downed-ally moved skips this layer too (capability.stabilise-downed-ally 2026-10-04)
++      const placedTrapsMoved = placedTrapsExpected?.changed === true || stabiliseDownedAllyMoved
+       // was: const plantedBannersMoved = plantedBannersExpected?.changed === true — a case capability.placed-traps moved skips this layer too (capability.placed-traps 2026-10-04)
+       const plantedBannersMoved = plantedBannersExpected?.changed === true || placedTrapsMoved
+@@ -850,5 +860,12 @@ describe('resumable battle cursor', () => {
+           }
+         } else result = battle.runBattle(ctx)
+-        if (placedTrapsExpected) {
++        if (stabiliseDownedAllyExpected) {
++        expect(hash(ctx.events), 'full stabilise-downed-ally events').toBe(stabiliseDownedAllyExpected.events)
++        expect(hash(ctx.state), 'full stabilise-downed-ally state').toBe(stabiliseDownedAllyExpected.state)
++        expect(hash(ctx.rng.log), 'full stabilise-downed-ally RNG').toBe(stabiliseDownedAllyExpected.rng)
++        expect(result).toEqual(stabiliseDownedAllyExpected.result)
++        }
++        // was: if (placedTrapsExpected) { — capability.stabilise-downed-ally (2026-10-04): a case it moved is checked above instead
++        if (placedTrapsExpected && !stabiliseDownedAllyMoved) {
+         expect(hash(ctx.events), 'full placed-traps events').toBe(placedTrapsExpected.events)
+         expect(hash(ctx.state), 'full placed-traps state').toBe(placedTrapsExpected.state)
+```
+</details>

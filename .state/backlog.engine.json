@@ -5909,7 +5909,16 @@
   "shape": "rule",
   "spec": "Ruled 2026-10-04 (Andrew, engine/DECISIONS.md 'every dead line on his items is a feature that is needed; his items stay in rewards'): 'All of those deadlines need to be added in as features that we need. So all of these are in.' ('deadlines' is 'dead lines' - dictation: the lines on his 22 items in the game that do nothing today.) His Bandages are in the game - 'Use: Free, 0 Stamina, 1 use, target: one downed ally within 1 hex. 0 Stamina: stabilize a downed ally - their bleed-out counter stops' - and the use does nothing today. The item review of 2026-10-04 (C:/Users/aring/Desktop/Heroes of Blight and Tragic/CONTENT-DRAFTS/2026-10-04-item-review/rows.json - in the MAIN folder only, read it there; each row's `abilities` hold its full lines and its `marks` with k 'miss' name the clause and the missing mechanic) is a reading, not proof: confirm against the engine first and build only what is missing. Run `node tools/decided.mjs \"downed\"`, `\"bleed\"` and `\"stabilize\"` first and read GLOSSARY.md for the words: what happens to a hero at 0 Health (downed, a bleed-out count, a wound, death) is ruled there, and this item builds only the Bandages' part on top of what is built. If the engine has a downed state with a count: a free use on a downed ally within 1 hex stops the count - the ally stays down, cannot act, and does not die of the count for the rest of the Battle; how the Battle then records it (wounded, not dead) follows the rulings. If the engine has no downed state at all, do not invent one: abandon this item with that finding and re-file the downed state as its own item, quoting the rulings found.",
   "expect": "A hero's Bandages used on a downed ally within 1 hex stop its bleed-out count: the ally is still down at the end of the Battle and is not dead; the use costs no Stamina and is spent; it cannot target a standing ally or one 2 hexes away; a downed ally nobody bandages runs its count as before.",
-  "note": "Filed by the home chat 2026-10-04."
+  "note": "Filed by the home chat 2026-10-04.",
+  "probeIds": [
+   "power.bandages.use"
+  ],
+  "variants": [
+   "power.bandages.use",
+   "power.test-osric.field-dressing"
+  ],
+  "status": "done-needs-review",
+  "sha": "bb7c8f0"
  },
  {
   "id": "capability.weapon-mechanisms",
