@@ -162,6 +162,10 @@
    "label": "TEST · Bandages: a downed hero stabilised - his bleed-out count stops and he is down, not dead, at the end"
   },
   {
+   "file": "test.bandages-s47.json",
+   "label": "TEST · Bandages: the bandaged hero is struck again and again - one from the held count a hit, dead at 0 (seed 47)"
+  },
+  {
    "file": "test.knockback-well.json",
    "label": "TEST · knockback collisions: boulder and well (consumed)"
   },

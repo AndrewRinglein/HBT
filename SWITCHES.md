@@ -2036,3 +2036,12 @@ badge's line on the panel … says what it does."
 |---|---|---|---|---|
 | `badgeLineOnThePanel` | The panel showed a badge as a chip with its name and nothing of what it does. | **Under the chips the panel has one line for each badge whose engine row changes a stat — its name and the numbers, in the row's own fields ("Dwarf MOVE -1 · MAX HEALTH +2", `src/actions.js` `badgeWords`) — and the chip's hover says the same. For every badge, not the three alone: a badge whose row changes no stat (its lines wait, or it is a rule badge) keeps its chip and has no line. Nothing is typed in the page: a badge's words are its numbers.** Held by a sixth test in `tools/panel-lists-items.test.mjs`. | "The words from the numbers only, nothing added." | Default — 2026-10-05 |
 | `dwarfElfFeyRecordings` | Which recordings move? | **All six opening recordings are another battle wherever a Dwarf, an Elf or the Fey is drafted, re-exported together at the engine's new code stamp (the Cavern Trail on the lowest seed of 0–29 whose battle turns a hero, read again). The four library battles of this run that field a Dwarf are exported again on their replicates: `test.banner-courage`, `test.bear-traps`, `test.bear-traps-s1`, `test.bandages`. The library's other showcases are the battles they were when exported.** | A recording carries the stamp of the engine that made it. | Default — 2026-10-05 |
+
+## fix.bandaged-hero-dies-at-zero (engine item) — the held count drops a hit at a time, and the hero dies at 0, 2026-10-05
+
+The engine's rule (engine SWITCHES.md `bandagedCountHasNoFloor`). The item's words for the page: "the count shown beside the
+hero, the floating words and the log follow the engine with no viewer rule - check them on the built page."
+
+| Switch | Question | Default | Reason | Status |
+|---|---|---|---|---|
+| `bandagedCountFollowsTheEngine` | Does the page need a rule for it? | **None, and none was added: the count beside the hero is the engine's (`bleedout.accelerated` carries it), it keeps reading as held ("✚ 4") because only a new fall ends the hold, and the death is the engine's `life.dead`. Checked on the built page by a fourth test in `tools/stabilised-ally.test.mjs`, on a library battle of it: `battles/test.bandages-s47.json` — the Bandages' fielding on replicate 47, the first, read from 0 upward, in which the enemy strikes the bandaged hero to 0 (found, not tuned).** | The item's words. | Default — 2026-10-05 |

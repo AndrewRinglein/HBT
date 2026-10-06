@@ -70,3 +70,36 @@ test('the fold and the log say it: STABILISED over the hero, and the fold knows 
   fold(S, { type: 'bleedout.set', causeId: 'test', target: stopped.target, bleedOut: 4 }, ctx)
   assert.deepEqual([S.U[stopped.target].bleed, S.U[stopped.target].bleedHeld], [4, false])
 })
+
+/* fix.bandaged-hero-dies-at-zero (engine item, 2026-10-05; engine DECISIONS.md 2026-10-05 'a bandaged hero's count has no floor:
+   bandaging stops the count, a hit still takes one, and at 0 the hero dies'): "No, it goes to 0 when they die. Bandaging is
+   supposed to completely stop the bleed-out counter, and they're just stable." The page has no rule of its own for it - the
+   count beside the hero, its held mark and the death follow the engine's lines. On the library's battle of it
+   (battles/test.bandages-s47.json - the Bandages' fielding on replicate 47, the first in which the enemy strikes the bandaged
+   hero to 0): after each hit the held count reads one less, still held; at 0 the hero is dead and has no count. */
+test('a bandaged hero who is hit: the held count drops by one a hit and still reads as held; at 0 the hero is dead', () => {
+  const struck = JSON.parse(readFileSync('battles/test.bandages-s47.json', 'utf8')), EV = struck.events
+  const s = EV.findIndex(e => e.type === 'bleedout.stopped'), id = EV[s].target
+  const hits = EV.map((e, i) => i > s && e.type === 'bleedout.accelerated' && e.target === id ? i : -1).filter(i => i >= 0)
+  const death = EV.findIndex((e, i) => i > s && e.type === 'life.dead' && e.target === id)
+  assert.ok(hits.length >= 2 && death > hits.at(-1), 'the battle strikes the bandaged hero to 0')
+  assert.deepEqual(hits.map(i => EV[i].bleedOut), Array.from({ length: EV[s].bleedOut }, (_, k) => EV[s].bleedOut - 1 - k), 'one from the count a hit, down to 0')
+  assert.equal(EV.slice(s, death).some(e => e.type === 'bleedout.tick' && e.target === id), false, 'never counted down by itself')
+  const { v, V } = boot(struck)
+  v.seek(s + 1)
+  assert.equal(V.layers.UEL.get(id).clock.textContent, '✚ ' + EV[s].bleedOut)
+  for (const i of hits.slice(0, -1)) {
+    v.seek(i + 1)
+    const u = V.S.U[id]
+    assert.deepEqual([u.life, u.bleed, u.bleedHeld], ['downed', EV[i].bleedOut, true], 'still down, still held, one less')
+    assert.equal(V.layers.UEL.get(id).clock.textContent, '✚ ' + EV[i].bleedOut)
+  }
+  v.seek(death + 1)
+  assert.equal(V.S.U[id].life, 'dead')
+  const E = V.layers.UEL.get(id)
+  assert.ok(!E || E.root.style.display === 'none', 'a dead hero\'s token leaves the board, its count with it')
+  const body = EV.findIndex((e, i) => i > death && e.type === 'corpse.created' && e.of === id)
+  assert.ok(body > death, 'the engine leaves its body'); v.seek(body + 1)
+  assert.ok(Object.values(V.S.corpses).some(c => c.of === id), 'and its body lies there')
+  v.dispose()
+})
