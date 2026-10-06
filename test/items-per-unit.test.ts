@@ -33,6 +33,21 @@ describe('the invariant — no heroItems means the hero the converter used to fo
     const differ: Record<string, string[]> = {}
     for (const [id, row] of Object.entries(o)) {
       const f = shape(fieldedDef(id) as unknown as Record<string, unknown>)
+      // Law 10, 2026-10-06 — rule.surge-is-at-least-level and rule.special-moves-unlock-at-level-two (DECISIONS.md 2026-10-06
+      // 'everyone gains Surge equal to its level at the least …' and 'a hero's special moves unlock at level 2, ruled …'): a
+      // hero's row carries its level-1 Surge and the level each movement is granted at, and a hero fielded at level 1 has no
+      // special move. Content moved, not the fold; the oracle stays frozen. So the fielded hero is read here with exactly
+      // those three things put back as the oracle knew them - the row's own Surge taken out again, the row's own list of
+      // movements (which the level only shortens), and the new field `moveLevels` left out - and a wrong fold of anything
+      // else still shows. Each of the three is held on its own: Surge by test/surge-is-at-least-level.test.ts, the movements
+      // by test/special-moves-unlock-at-level-two.test.ts. The line above is as it was.
+      {
+        const own = UNITS[id]
+        const surge = ((f['surge'] as number | undefined) ?? 0) - (own?.surge ?? 0)
+        if (surge) f['surge'] = surge; else delete f['surge']
+        if (own?.moveLevels) { expect(f['moves'], `${id} at level 1 has the movements its row grants from the start`).toEqual(own.moves.filter((m) => own.moveLevels![m] === undefined)); f['moves'] = [...own.moves] }
+        delete f['moveLevels']
+      }
       // Law 10, 2026-10-01 (fix.codex-numbers; DECISIONS.md 2026-09-28 "the duplication review, ruled",
       // finding C1: "Crit base 3 should be counted once"): the frozen oracle holds crit as the Codex
       // TOTAL (a warrior 3), which the engine then added its own 3 to. A row now carries the total less

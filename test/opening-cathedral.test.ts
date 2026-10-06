@@ -17,7 +17,13 @@ const S = 'test.opening-cathedral', ENC = 'encounter.opening.cathedral', RAISE =
 // No replicate is won untouched on the party drafted by battle 6 (0 of 20, 2026-10-01 — the 2026-09-29
 // count "Cathedral 0" before the upgrades, DECISIONS.md "the battles might be too hard"). Replicate 0
 // runs to Turn 12 with the Ghouls eating.
-const SEEN = 0
+// was: const SEEN = 0
+// Law 10, 2026-10-06 — rule.surge-is-at-least-level and rule.special-moves-unlock-at-level-two (DECISIONS.md 2026-10-06
+// 'everyone gains Surge equal to its level at the least …', 'a hero's special moves unlock at level 2, ruled …'): every hero
+// rolls a Surge check after each Activation and a level-1 hero has no special move, so every replicate is another battle; in
+// replicate 0 the Ghouls still arrive on Turn 5 and eat nothing. Replicates read from 0 upward: 2 is the first in which the
+// Ghouls arrive on Turn 5 and one eats. Found, not tuned; nothing here asks who wins.
+const SEEN = 2
 const field = (replicate: number): Ctx => createBattle({ ...scenarioOptions(scenarioDef(S), replicate), replicate, cfg: { switches: { boardClearWaitsForSchedule: true } } } as Parameters<typeof createBattle>[0])
 const strike = (ctx: Ctx, id: number) => { ctx.state.units[id]!.hp = 0; setLifeState(ctx, id, 'dead', 'test', { reason: 'hp0' }) }
 const raisedOn = (ctx: Ctx) => ctx.events.filter((e) => e.type === 'unit.raised').map((e) => [e.turn, e.causeId] as const)
