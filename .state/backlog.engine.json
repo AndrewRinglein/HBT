@@ -1,5 +1,16 @@
 [
  {
+  "id": "fix.bandaged-hero-dies-at-zero",
+  "kind": "engine",
+  "shape": "rule",
+  "needs": [
+   "capability.stabilise-downed-ally"
+  ],
+  "spec": "Ruled 2026-10-05 (Andrew, engine/DECISIONS.md 'a bandaged hero's count has no floor: bandaging stops the count, a hit still takes one, and at 0 the hero dies'): 'I thought that a hit on a bandaged hero cost them one bleedout.' and, asked whether hits can take the count to 0 so the hero dies though bandaged, 'I don't get why the count would start and stop at 1. No, it goes to 0 when they die. Bandaging is supposed to completely stop the bleed-out counter, and they're just stable.' capability.stabilise-downed-ally landed with a hit on a stabilised hero moving the count but never below 1 (engine SWITCHES stabiliseHitsStillMoveTheCount). Wanted: a bandaged (stabilised) hero's count no longer runs down by itself - unchanged - and each hit it takes still costs one from the count exactly as a hit costs an unbandaged downed hero, with NO floor: when the count reaches 0 the hero dies, by the same death the count's own running out gives (the same events, the same after-battle record). The stop itself stays through hits short of 0 (stabiliseStopGoesWithTheFall as built). Remove the floor; mark the switch's 'never below 1' overturned with his words; the count shown beside the hero, the floating words and the log follow the engine with no viewer rule - check them on the built page. Rewrite the test that held the floor as the rule now stands, with a dated note (Law 10). Declare changesBaseline only if a control battle moves; say whether any recording moves.",
+  "expect": "A bandaged hero at count 3 that nobody hits is still at 3 and down, not dead, when the battle ends; hit three times it is at 2, then 1, then dead at 0, with the death the count's running out gives; an unbandaged downed hero is unchanged; the page shows the held count dropping by one a hit and the death at 0.",
+  "note": "Filed by the home chat 2026-10-05."
+ },
+ {
   "id": "rule.computer-avoids-own-traps",
   "kind": "engine",
   "shape": "rule",

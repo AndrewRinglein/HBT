@@ -5305,3 +5305,14 @@ Ruled:
 - **The Wolf's ported numbers stand for now.**
 - **The player moves the summoned Wolf** - the reading of the entry above is confirmed; `rule.player-moves-summons` as filed.
 - **The foliage - not answered, twice; the chat's call:** he did not pick among A to D ("I don't understand question one", then no answer). By his standing word that the chat decides such details, records the switch and reports in a line, the smallest change is tried - each clump drawn once instead of twice - behind a switch that puts the old drawing back in one line, with before-and-after pictures for him to judge. Filed: `viewer.foliage-drawn-once`. If he dislikes the look it is switched off and the last speed item stays where it is.
+
+## 2026-10-05 — a bandaged hero's count has no floor: bandaging stops the count, a hit still takes one, and at 0 the hero dies
+
+Andrew, in the kingdom chat, asked whether hits can take a bandaged hero's bleed-out count all the way to 0, so it dies though bandaged (as built the count stops at 1):
+
+“I don't get why the count would start and stop at 1. No, it goes to 0 when they die. Bandaging is supposed to completely stop the bleed-out counter, and they're just stable.”
+
+With the answer just before it (the entry above: "I thought that a hit on a bandaged hero cost them one bleedout"), ruled:
+
+- **Bandaging completely stops the bleed-out count** - it no longer runs down by itself; the hero is stable.
+- **A hit on a bandaged hero still takes one from the count, and at 0 the hero dies.** There is no floor at 1: the engine switch stabiliseHitsStillMoveTheCount's "never below 1" is overturned. Filed: `fix.bandaged-hero-dies-at-zero`.
