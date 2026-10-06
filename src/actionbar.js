@@ -121,11 +121,18 @@ export function drawBar(V) {
        cooldown) keeps the disabled look instead: the two are told apart at a glance (styles.css .moveDone, .cool) */
     const standFirst = waiting.includes(a.id)
     /* one reason at a time: a row that waits on the stand says that; otherwise the host's line for what cannot be paid */
-    const cantPay = !standFirst && unpaid.has(a.id)
+    /* viewer.used-up-power-stays-greyed (engine DECISIONS.md 2026-10-06, Andrew: "One, yes."): a row whose uses are spent (the
+       log's power.exhausted — actions.js actionsOf) stays in its place, greyed and unpressable, and says why. Where a host
+       plays the unit acting, whether it is still used up is the HOST's word (it names the row in cantPay with its line; a
+       use the rules gave back is simply not named, and the row is lit at once); with no host the log's line stands. */
+    const hosted = !!V.play && V.play.actor === u.id
+    const usedUp = !standFirst && !!a.usedUp && (!hosted || unpaid.has(a.id))
+    const cantPay = !standFirst && (unpaid.has(a.id) || usedUp)
+    const whyNot = unpaid.get(a.id) || (usedUp ? (a.uses === 1 ? 'Used: once per Battle.' : 'No uses left.') : '')
     const moveDone = !cool && !standFirst && a.kind === 'move' && !!V.play && V.play.actor === u.id && V.play.moveDone.includes(a.id)
     const whole = actionLines(a, u, D, SN, given).join('\n') + (moveDone ? '\nThis move is done for this Activation.' : '')
-      + (standFirst ? '\nKnocked down: ' + (standName || 'stand up') + ' first.' : '') + (cantPay ? '\n' + unpaid.get(a.id) : '')
-    html += `<div class="acRow${firing ? ' firing' : ''}${cool ? ' cool' : ''}${moveDone ? ' moveDone' : ''}${standFirst ? ' standFirst' : ''}${cantPay ? ' cantPay' : ''}${chosen && !standFirst && !cantPay ? ' playChosen' : ''}" data-act="${escape(a.id)}"${standFirst || cantPay ? ' aria-disabled="true"' : ''} title="${escape(whole)}" style="border-left-color:${accent}">
+      + (standFirst ? '\nKnocked down: ' + (standName || 'stand up') + ' first.' : '') + (cantPay ? '\n' + whyNot : '')
+    html += `<div class="acRow${firing ? ' firing' : ''}${cool ? ' cool' : ''}${moveDone ? ' moveDone' : ''}${standFirst ? ' standFirst' : ''}${cantPay ? ' cantPay' : ''}${usedUp ? ' usedUp' : ''}${chosen && !standFirst && !cantPay ? ' playChosen' : ''}" data-act="${escape(a.id)}"${standFirst || cantPay ? ' aria-disabled="true"' : ''} title="${escape(whole)}" style="border-left-color:${accent}">
       <div class="acMain">
         <div class="acL1">${icoHTML(a)}
           <span class="acName">${escape(a.name || a.id)}${dupe ? `<span class="acFrom">${dupe}</span>` : ''}</span>

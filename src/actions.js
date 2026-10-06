@@ -77,13 +77,17 @@ export const kindOf = (a, D) => { const k = classOf(a, D); return k === 'attack'
 export function actionsOf(u, D) {
   if (!u) return []
   const k = kitOf(u, D)
-  /* capability.charges: an action that spent its last use LEAVES the list
-     (power.exhausted) — Andrew 2026-09-02, "they should vanish" */
-  const spent = new Set(u.spent || [])
+  /* viewer.used-up-power-stays-greyed (engine DECISIONS.md 2026-10-06 'an Activation is one move action and one primary action,
+     in that order; a used-up power stays on the bar, greyed' — asked whether a used-up once-per-battle power should stay on
+     the bar greyed instead of disappearing, Andrew: "One, yes."): an action that spent its last use (the log's own
+     power.exhausted) KEEPS its place in the list, marked usedUp; the bar greys it. Overturns, for the bar, capability.charges'
+     "an action that spent its last use LEAVES the list — Andrew 2026-09-02, 'they should vanish'". The lines were:
+       for (const m of k.moves)     if (!spent.has(m.id)) rows.push({ ...m, kind: 'move' })      (and so for attacks and abilities) */
+  const spent = new Set(u.spent || []), used = id => (spent.has(id) ? { usedUp: true } : {})
   const rows = []
-  for (const m of k.moves)     if (!spent.has(m.id)) rows.push({ ...m, kind: 'move' })
-  for (const a of k.attacks)   if (!spent.has(a.id)) rows.push({ ...a, kind: kindOf(a, D), isAttack: true, ...(classOf(a, D) === 'charge' ? { charge: true } : {}) })
-  for (const p of k.abilities) if (!spent.has(p.id)) rows.push({ ...p, kind: classOf(p, D), isPower: true })
+  for (const m of k.moves)     rows.push({ ...m, kind: 'move', ...used(m.id) })
+  for (const a of k.attacks)   rows.push({ ...a, kind: kindOf(a, D), isAttack: true, ...(classOf(a, D) === 'charge' ? { charge: true } : {}), ...used(a.id) })
+  for (const p of k.abilities) rows.push({ ...p, kind: classOf(p, D), isPower: true, ...used(p.id) })
   return rows
 }
 
