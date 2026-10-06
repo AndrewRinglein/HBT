@@ -367,12 +367,12 @@ export function trapWords(ef, D, SN) {
 }
 
 /** capability.planted-banners (engine item, 2026-10-05): what a planted object gives, field by field of the engine's row —
-    the reach from its hex, the stats lent inside, the points of a status that do not land inside, and each trigger it lends
+    the reach from its hex, the stats lent inside, its Resistance to a status (the points that come off each gain inside), and each trigger it lends
     under its hook's own words. */
 export function plantWords(ef, D, SN) {
   const parts = []
   for (const [k, v] of Object.entries(ef.mods || {})) parts.push(`${statWord(k)} ${sgn(v)}`)
-  for (const [id, n] of Object.entries(ef.wards || {})) parts.push(`${n} of each ${shortStatus(id, SN)} does not land`)
+  for (const [id, n] of Object.entries(ef.wards || {})) parts.push(`Resistance to ${shortStatus(id, SN)} ${n} (${n} point${n === 1 ? '' : 's'} come${n === 1 ? 's' : ''} off each ${shortStatus(id, SN)} gained)`)   // GLOSSARY 'Settled, 2026-10-05'; it read 'N of each Weak does not land'
   for (const t of ef.lends || []) parts.push(`${String(HOOK_WORD[t.hook] || t.hook).toLowerCase()}: ${effectSentence(t.effect, undefined, D, SN)}`)
   return `plant a banner on your hex — it stays for the rest of the Battle, and you may walk away; allies within ${hexes(ef.radius)} of that hex: ${parts.join(' · ')}`
 }
