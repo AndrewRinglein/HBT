@@ -108,7 +108,9 @@ describe('a screenshot is taken of a still page: the frame loop is held, the pag
     }
     expect(direct, 'tools that take a screenshot directly').toEqual([])
     expect(through.sort()).toEqual(['affliction-pop-up.verify.mjs', 'area-trigger-burst.shot.mjs', 'bar-card-and-log.verify.mjs', 'bar-moves-grey-when-done.shot.mjs', 'camera-shows-edge-units.shot.mjs',
-      'characters-stand-out.verify.mjs', 'hit-slash.shot.mjs', 'no-target-ring.shot.mjs', 'notices-gold-low-no-backdrop.verify.mjs', 'plates-banners-tooltip-gold-look.verify.mjs', 'tutorial-overlays.shot.mjs'])
+      /* viewer.foliage-drawn-once (2026-10-05): one more tool takes its pictures through the helper — the foliage's before-and-after pairs; until then the list read
+         … 'characters-stand-out.verify.mjs', 'hit-slash.shot.mjs', … with no 'foliage-drawn-once.shot.mjs' between them */
+      'characters-stand-out.verify.mjs', 'foliage-drawn-once.shot.mjs', 'hit-slash.shot.mjs', 'no-target-ring.shot.mjs', 'notices-gold-low-no-backdrop.verify.mjs', 'plates-banners-tooltip-gold-look.verify.mjs', 'tutorial-overlays.shot.mjs'])
   })
   it('viewer.bar-card-and-log asserts everything it asserted before: each assertion of the tool as it stood (kingdom ccb2dc4) is still in it, and no time limit in it is longer', () => {
     const now = readFileSync('../kingdom/tools/bar-card-and-log.verify.mjs', 'utf8')

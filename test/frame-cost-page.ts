@@ -6,7 +6,8 @@
 // the battles any of them reads, 60 frames a number; the others wait for that run's result and read it. What each file
 // asserts of its rows is unchanged.
 // Not a test file. Used by test/viewer.frame-cost-measured.test.ts, test/viewer.see-through-only-when-moved.test.ts,
-// test/viewer.scenery-shadow-drawn-once.test.ts and test/viewer.still-frame-draws-nothing.test.ts.
+// test/viewer.scenery-shadow-drawn-once.test.ts, test/viewer.still-frame-draws-nothing.test.ts,
+// test/viewer.solid-pieces-drawn-by-material.test.ts and test/viewer.foliage-drawn-once.test.ts.
 import { execFileSync } from 'node:child_process'
 import { mkdirSync, readFileSync, rmSync, statSync, writeFileSync } from 'node:fs'
 

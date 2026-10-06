@@ -72,6 +72,17 @@
 // of the see-through round the page is asked whether every piece faded see-through is out of its batch and drawn by itself.
 // The still frames are also measured once more with every piece drawn by itself (eachByItself): the draw calls the batches
 // save, counted in the same run on the same view — and the triangles, which must be the very same.
+//
+// viewer.foliage-drawn-once (2026-10-05): the scene's two-sided blended pieces — its foliage — are each drawn once where three
+// drew each twice, behind a switch the page can be asked the other side of while it runs (src/terrain3d.js V.foliage.once; a
+// page built before that item has none and the column reads —). A row says what the page says of its foliage (how many pieces
+// in how many materials, how many are in the still view's sight, which way they are drawn), and carries (JSON: foliageWays)
+// the still frames measured on the same view BOTH ways — drawn once, then twice as before: the draw calls, counted — and
+// frames taken turn about, one drawn once and one drawn twice (once, twice, once, twice …), the median of each and their
+// ratio: the two kinds timed under the same load. In the round of views the shadow is compared over, every view is also
+// drawn both ways WITH its blended pieces in the picture, and every pixel of both canvases compared: how many differ, by how
+// much at the most, how many by more than 16 of 255 — beside what two frames drawn the SAME way differ by, each way (the
+// blended pieces' own frame-to-frame difference, viewer SWITCHES blendedPiecesShimmer: what is under it is not the switch's).
 import {createRequire} from 'node:module'
 import {createServer} from 'node:net'
 import {spawn} from 'node:child_process'
@@ -144,6 +155,10 @@ function fadedNow(){
  return {faded:V.seeThrough.faded.size,...(b?{out:b.out,inStep:b.inStep}:{})}
 }
 function quarterTurn(){window.__sandbox.viewer.turn(90);return true}
+/** what the page says of its foliage — the two-sided blended pieces — and how many of them this view's pass draws */
+function foliageNow(){const f=window.__sandbox.viewer._V.foliage;return f?{pieces:f.pieces,materials:f.materials,once:f.once,inSight:f.inSight()}:null}
+/** ask for the foliage drawn once (true) or twice, as before (false) */
+function foliageWay(once){window.__sandbox.viewer._V.foliage.once=once;return true}
 /** the same frame drawn with the scenery's shadow kept, then with the shadow whole: are the two pictures the same, pixel for pixel? */
 function shadowBothWays(){
  const V=window.__sandbox.viewer._V,k=V.sceneryShadow,S=window.__frameCost;if(!k||!V.seeThrough)return null
@@ -162,6 +177,18 @@ function shadowBothWays(){
     camera's version on: the view is the same, the frame is drawn, and no body has moved) */
  const draw=()=>{V.camVersion=(V.camVersion||0)+1;S.tick(0)}
  draw();const one=read();draw();const blendedNoise=differ(one,read()).n
+ /* viewer.foliage-drawn-once: the same view with its foliage drawn once, then twice as before — the blended pieces IN the
+    picture (they are what changes) — and, each way, the frame drawn again the same way: what two frames of one way differ by
+    is the blended pieces' own (blendedPiecesShimmer), not the switch's. Counted besides: the pixels that differ by more than
+    16 of 255 (a shade the eye can find). */
+ let foliage=null
+ if(V.foliage){const f=V.foliage,was=f.once
+  const far=(A,B)=>{let n=0,worst=0,over=0;for(let c=0;c<A.length;c++){const a=A[c],b=B[c]
+    for(let i=0;i<a.length;i+=4){const d=Math.max(Math.abs(a[i]-b[i]),Math.abs(a[i+1]-b[i+1]),Math.abs(a[i+2]-b[i+2]),Math.abs(a[i+3]-b[i+3]));if(d){n++;if(d>worst)worst=d;if(d>16)over++}}}return {n,worst,over}}
+  const take=way=>{f.once=way;draw();draw();const a=read();draw();return [a,read()]}
+  const [on,onAgain]=take(true),inSight=f.inSight(),[off,offAgain]=take(false);f.once=was;draw()
+  const d=far(on,off),a=far(on,onAgain),b=far(off,offAgain)
+  foliage={inSight,differing:d.n,worst:d.worst,over16:d.over,onceAgain:a.n,onceAgainWorst:a.worst,onceAgainOver16:a.over,twiceAgain:b.n,twiceAgainWorst:b.worst,twiceAgainOver16:b.over}}
  let scene=V.seeThrough.pieces()[0]?.o;while(scene?.parent)scene=scene.parent
  const blended=new Set();scene?.traverse(o=>{if(o.isMesh)for(const m of [].concat(o.material))if(m&&m.transparent&&m.colorWrite)blended.add(m)})
  for(const m of blended)m.colorWrite=false
@@ -194,7 +221,7 @@ function shadowBothWays(){
  let pixels=0,drawn=0;for(const a of kept){pixels+=a.length/4;drawn+=drawnOf(a)}
  const both=differ(kept,full),same=differ(first,kept)
  /* (the bodies' own canvas is the second: what is drawn on it is the bodies in this view) */
- return {canvases:kept.length,pixels,drawn,bodies:kept[1]?drawnOf(kept[1]):0,differing:both.n,worst:both.worst,sameWay:same.n,blendedNoise,takes:k.takes,depth,batched}
+ return {canvases:kept.length,pixels,drawn,bodies:kept[1]?drawnOf(kept[1]):0,differing:both.n,worst:both.worst,sameWay:same.n,blendedNoise,takes:k.takes,depth,batched,foliage}
 }
 function scrollStep(px){
  const v=window.__sandbox.viewer,V=v._V,S=window.__frameCost
@@ -246,6 +273,20 @@ async function stillPaired(page){
  const ma=median(a),mb=median(b)
  return {pairs:a.length,withCheck:round(ma,2),withoutCheck:round(mb,2),ratio:round(ma/mb,3),...(runs0!=null?{checks:runs1-runs0}:{})}
 }
+/** viewer.foliage-drawn-once: still frames taken turn about, one with the foliage drawn once and one with it drawn twice as
+    before (once, twice, once, twice …) — the two kinds timed under the same load, frame for frame. A frame is drawn and let
+    go after each change of way (three finds each material's shader again on it), and the next one is the frame timed. */
+async function foliagePaired(page){
+ const a=[],b=[]
+ for(let i=0;i<WARM_UP/2+FRAMES;i++){
+  await page.evaluate(foliageWay,true);await page.evaluate(tick,WITHOUT_CHECK_MS);const A=await page.evaluate(tick,WITHOUT_CHECK_MS)
+  await page.evaluate(foliageWay,false);await page.evaluate(tick,WITHOUT_CHECK_MS);const B=await page.evaluate(tick,WITHOUT_CHECK_MS)
+  if(A.ms==null||B.ms==null)throw Error('the 3D scene\'s frame was not among the page\'s stored frames')
+  if(i<WARM_UP/2)continue
+  a.push(A.ms);b.push(B.ms)}
+ const ma=median(a),mb=median(b)
+ return {pairs:a.length,once:round(ma,2),twice:round(mb,2),ratio:round(ma/mb,3)}
+}
 /** a round of views: the four quarters, the view scrolled at each — which pieces hide a body, both ways, at every one */
 async function seeThroughRound(page){
  if(await page.evaluate(hidingNow)===null)return null
@@ -285,7 +326,13 @@ async function shadowRound(page){
   ...(views[0].depth?{depth:{pieces:Math.max(...views.map(v=>v.depth.pieces)),differing:Math.max(...views.map(v=>v.depth.differing)),worst:Math.max(...views.map(v=>v.depth.worst))}}:{}),
   ...(views[0].batched?{batched:{views:views.length,same:views.filter(v=>v.batched.differing===0).length,differing:Math.max(...views.map(v=>v.batched.differing)),worst:Math.max(...views.map(v=>v.batched.worst)),
    withAPieceOut:views.filter(v=>v.batched.out>0).length,back:Math.max(...views.map(v=>v.batched.back)),retake:Math.max(...views.map(v=>v.batched.retake)),
-   most:Math.max(...views.map(v=>v.batched.most)),drawnAgain:views.filter(v=>v.batched.drawn>1).length}}:{})}
+   most:Math.max(...views.map(v=>v.batched.most)),drawnAgain:views.filter(v=>v.batched.drawn>1).length}}:{}),
+  /* viewer.foliage-drawn-once: over the views, the most and the fewest pixels the two ways differ by, the largest difference,
+     and beside them the most two frames drawn the same way differ by, each way */
+  ...(views[0].foliage?{foliage:{views:views.length,inSight:Math.max(...views.map(v=>v.foliage.inSight)),differing:Math.max(...views.map(v=>v.foliage.differing)),least:Math.min(...views.map(v=>v.foliage.differing)),
+   worst:Math.max(...views.map(v=>v.foliage.worst)),over16:Math.max(...views.map(v=>v.foliage.over16)),
+   onceAgain:Math.max(...views.map(v=>v.foliage.onceAgain)),onceAgainWorst:Math.max(...views.map(v=>v.foliage.onceAgainWorst)),onceAgainOver16:Math.max(...views.map(v=>v.foliage.onceAgainOver16)),
+   twiceAgain:Math.max(...views.map(v=>v.foliage.twiceAgain)),twiceAgainWorst:Math.max(...views.map(v=>v.foliage.twiceAgainWorst)),twiceAgainOver16:Math.max(...views.map(v=>v.foliage.twiceAgainOver16))}}:{})}
 }
 /** each thing that can move a pixel, started with the clock held, and what the very next frame did (viewer.still-frame-draws-nothing) */
 async function liveRound(page){
@@ -341,6 +388,16 @@ async function battle(browser,port,id){
   if(row.batches){await page.evaluate(()=>{window.__sandbox.viewer._V.solidBatches.whole=true;return true})
    row.eachByItself=await measure(page,WITHOUT_CHECK_MS,false)
    await page.evaluate(()=>{window.__sandbox.viewer._V.solidBatches.whole=false;return true});for(let i=0;i<3;i++)await page.evaluate(tick,WITH_CHECK_MS)}
+  /* viewer.foliage-drawn-once: the same still frames, on the same view, with the foliage drawn once and then twice as before —
+     the draw calls each way counted in the same run — and frames of the two ways taken turn about for their ratio */
+  const foliage=await page.evaluate(foliageNow)
+  if(foliage){row.foliage=foliage
+   await page.evaluate(foliageWay,true);for(let i=0;i<3;i++)await page.evaluate(tick,WITHOUT_CHECK_MS)
+   const once=await measure(page,WITHOUT_CHECK_MS,false)
+   await page.evaluate(foliageWay,false);for(let i=0;i<3;i++)await page.evaluate(tick,WITHOUT_CHECK_MS)
+   const twice=await measure(page,WITHOUT_CHECK_MS,false)
+   row.foliageWays={once,twice,paired:await foliagePaired(page)}
+   await page.evaluate(foliageWay,foliage.once);for(let i=0;i<3;i++)await page.evaluate(tick,WITH_CHECK_MS)}
   row.stillPaired=await stillPaired(page)
   row.scrolling={withCheck:await measure(page,WITH_CHECK_MS,true),withoutCheck:await measure(page,WITHOUT_CHECK_MS,true)}
   row.held=await measure(page,0,false)
@@ -356,8 +413,8 @@ async function battle(browser,port,id){
 const n=x=>x==null?'—':x.toLocaleString('en-US')
 const short=id=>id.replace(/^encounter\.(opening\.)?/,'')
 function table(rows){
- const head=['battle','draw calls a frame (shadow · scene · bodies)','triangles a frame (shadow · scene · bodies)','script ms, still: with the check / without','script ms, scrolling: with / without','draw calls scrolling','see-through checks run: still / scrolling','one check, ms: now / every triangle','same pieces both ways','clock held: draw calls (shadow · scene · bodies)','shadow kept against shadow whole: the same picture?','bodies\' depth: pieces drawn; same picture as every piece?','solid pieces: in batches; batched against each by itself: the same picture?']
- const lines=rows.map(r=>r.flat?[short(r.battle),r.note,'','','','','','','','','','','']:[short(r.battle),
+ const head=['battle','draw calls a frame (shadow · scene · bodies)','triangles a frame (shadow · scene · bodies)','script ms, still: with the check / without','script ms, scrolling: with / without','draw calls scrolling','see-through checks run: still / scrolling','one check, ms: now / every triangle','same pieces both ways','clock held: draw calls (shadow · scene · bodies)','shadow kept against shadow whole: the same picture?','bodies\' depth: pieces drawn; same picture as every piece?','solid pieces: in batches; batched against each by itself: the same picture?','foliage: pieces, drawn once or twice; draw calls once / twice; once against twice: pixels that differ']
+ const lines=rows.map(r=>r.flat?[short(r.battle),r.note,'','','','','','','','','','','','']:[short(r.battle),
   `${n(r.still.withoutCheck.draws.all)} (${n(r.still.withoutCheck.draws.shadow)} · ${n(r.still.withoutCheck.draws.scene)} · ${n(r.still.withoutCheck.draws.bodies)})`,
   `${n(r.still.withoutCheck.triangles.all)} (${n(r.still.withoutCheck.triangles.shadow)} · ${n(r.still.withoutCheck.triangles.scene)} · ${n(r.still.withoutCheck.triangles.bodies)})`,
   `${r.still.withCheck.ms.median} (${r.still.withCheck.ms.min}–${r.still.withCheck.ms.max}) / ${r.still.withoutCheck.ms.median} (${r.still.withoutCheck.ms.min}–${r.still.withoutCheck.ms.max})`,
@@ -369,7 +426,8 @@ function table(rows){
   `${n(r.held.draws.all)} (${n(r.held.draws.shadow)} · ${n(r.held.draws.scene)} · ${n(r.held.draws.bodies)})`,
   r.shadow?`at most ${n(r.shadow.differing)} of ${n(r.shadow.pixels)} pixels differ, by ${r.shadow.worst} of 255, over ${r.shadow.views} views (two frames drawn the same way: ${n(r.shadow.sameWay)}); bodies in every view: ${r.shadow.bodies>0?'yes':'NO'}`:'—',
   r.shadow?.depth?`at most ${n(r.shadow.depth.pieces)} pieces; ${n(r.shadow.depth.differing)} pixels differ${r.shadow.depth.differing?`, by ${r.shadow.depth.worst} of 255`:''}`:'—',
-  r.batches?`${n(r.batches.pieces)} of ${n(r.batches.solid)} in ${n(r.batches.batches)} batches${r.shadow?.batched?`; at most ${n(r.shadow.batched.differing)} pixels differ${r.shadow.batched.differing?`, by ${r.shadow.batched.worst} of 255`:''}, over ${r.shadow.batched.views} views (${r.shadow.batched.withAPieceOut} with a piece out of its batch${r.shadow.batched.drawnAgain?`; ${r.shadow.batched.drawnAgain} drawn again — a frame of them was ${n(r.shadow.batched.most)} pixels off its own repeat`:''})`:''}`:'—'])
+  r.batches?`${n(r.batches.pieces)} of ${n(r.batches.solid)} in ${n(r.batches.batches)} batches${r.shadow?.batched?`; at most ${n(r.shadow.batched.differing)} pixels differ${r.shadow.batched.differing?`, by ${r.shadow.batched.worst} of 255`:''}, over ${r.shadow.batched.views} views (${r.shadow.batched.withAPieceOut} with a piece out of its batch${r.shadow.batched.drawnAgain?`; ${r.shadow.batched.drawnAgain} drawn again — a frame of them was ${n(r.shadow.batched.most)} pixels off its own repeat`:''})`:''}`:'—',
+  r.foliage?`${n(r.foliage.pieces)} in ${n(r.foliage.materials)} materials, drawn ${r.foliage.once?'once':'twice'}; ${n(r.foliageWays.once.draws.all)} / ${n(r.foliageWays.twice.draws.all)}${r.shadow?.foliage?`; at most ${n(r.shadow.foliage.differing)} pixels differ, by ${r.shadow.foliage.worst} of 255, ${n(r.shadow.foliage.over16)} by more than 16, over ${r.shadow.foliage.views} views (two frames the same way: once ${n(r.shadow.foliage.onceAgain)}, twice ${n(r.shadow.foliage.twiceAgain)})`:''}`:'—'])
  const w=head.map((h,i)=>Math.max(h.length,...lines.map(l=>l[i].length)))
  const row=c=>'| '+c.map((x,i)=>x.padEnd(w[i])).join(' | ')+' |'
  return [row(head),'|'+w.map(x=>'-'.repeat(x+2)).join('|')+'|',...lines.map(row)].join('\n')
@@ -397,6 +455,7 @@ try{
   console.log(table(rows))
   for(const r of rows)if(r.seeThrough?.built)console.log(`  ${short(r.battle)}: the see-through structures — ${n(r.seeThrough.built.pieces)} pieces, ${n(r.seeThrough.built.triangles)} triangles — were built in ${r.seeThrough.built.ms} ms while the scene loaded (the page was ready ${n(r.loadMs)} ms after it was opened)`)
   for(const r of rows)if(r.batches)console.log(`  ${short(r.battle)}: the batches — ${n(r.batches.pieces)} solid pieces in ${n(r.batches.batches)}${r.eachByItself?`: ${n(r.still.withoutCheck.draws.all)} draw calls a frame where each piece by itself is ${n(r.eachByItself.draws.all)} (script ${r.still.withoutCheck.ms.median} ms where ${r.eachByItself.ms.median}), the same ${n(r.eachByItself.triangles.scene)} triangles in the scene's pass${r.eachByItself.triangles.scene===r.still.withoutCheck.triangles.scene?'':' — NOT the same: '+n(r.still.withoutCheck.triangles.scene)}`:''} — were built in ${r.batches.ms} ms while the scene loaded${r.seeThrough?.fadedAlone!=null?`; a piece faded see-through was out of its batch and drawn by itself in ${r.seeThrough.fadedAlone} of ${r.seeThrough.views} views (${r.seeThrough.withAPieceOut} with one out)`:''}`)
+  for(const r of rows)if(r.foliage)console.log(`  ${short(r.battle)}: the foliage — ${n(r.foliage.pieces)} two-sided blended pieces in ${n(r.foliage.materials)} materials, ${n(r.foliage.inSight)} in the still view's sight — drawn once: ${n(r.foliageWays.once.draws.all)} draw calls a frame (the scene's pass ${n(r.foliageWays.once.draws.scene)}); drawn twice, as before: ${n(r.foliageWays.twice.draws.all)} (${n(r.foliageWays.twice.draws.scene)}); triangles handed to the card in the scene's pass: ${n(r.foliageWays.once.triangles.scene)} where ${n(r.foliageWays.twice.triangles.scene)} (drawn twice, every foliage triangle is handed over twice); script, frames taken turn about: once ${r.foliageWays.paired.once} ms where twice ${r.foliageWays.paired.twice} (${r.foliageWays.paired.ratio} of it)`)
   for(const r of rows)if(r.pageErrors)console.log(`  ${short(r.battle)}: page errors — ${r.pageErrors.join(' · ')}`)}
 }finally{clearTimeout(deadline);await browser.close();child.kill()}
 process.exitCode=code
