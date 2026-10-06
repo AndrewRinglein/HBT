@@ -156,3 +156,42 @@ test('a side\'s party stat changing is said: the Vortex reads Magic three times 
   assert.match(lines, /using it lowers the enemy side's Power by 1 for the rest of the Battle/)
   for (const t of ['side.stat.changed', 'side.stat.restored']) assert.ok(FOLDED_TYPES.includes(t), t)
 })
+
+/* capability.his-weapons-small-clauses (engine item, 2026-10-05; engine DECISIONS.md 2026-10-04 'his 28 reward weapons read back …':
+   "Everything else in here seems like something we need."): "On kill: the corpse is destroyed" is said under the attack it rides
+   (the Staff of the Destroyer's Ruin, a weapon of Destroying), a status removed by a stat's amount says the amount (Mending
+   Light: Weak equal to Spirit), and the fold takes a destroyed body off the board and says so. Read off the engine's own rows
+   (generated/static.json). */
+test('the corpse destroyed on a kill and a status removed by a stat\'s amount are said; the fold takes the destroyed body off the board', async () => {
+  const { effectSentence, effectWord } = await import('../src/actions.js')
+  const { createState, fold } = await import('../src/fold.js')
+  const RUIN = 'attack.staff-of-the-destroyer.ruin'
+  const staff = STATIC.items['item.staff-of-the-destroyer']
+  const onKill = (staff.triggers || []).find(t => t.onlyWithAttack === RUIN && t.effect.kind === 'corpse.destroy')
+  assert.ok(onKill, 'the engine holds Ruin\'s on-kill')
+  assert.equal(effectSentence(onKill.effect, onKill.select, D, STATIC.statuses), 'the corpse is destroyed — nothing is left to raise or eat')
+  assert.deepEqual(effectWord(onKill.effect, D, STATIC.statuses), { word: 'Destroys the corpse' })
+  // it rides the attack it is scoped to, for a unit holding the staff, and no other attack
+  const holder = { typeId: 'hero.base.mage-fire', kit: { held: [{ itemId: 'item.staff-of-the-destroyer' }] }, badges: [] }
+  assert.deepEqual(ridersOf(holder, { id: RUIN, ...STATIC.actions[RUIN] }, D).filter(t => t.effect.kind === 'corpse.destroy').map(t => t.id), ['trigger.staff-of-the-destroyer.ruin.corpse-destroyed'])
+  assert.deepEqual(ridersOf(holder, { id: 'attack.punch', ...STATIC.actions['attack.punch'] }, D).filter(t => t.effect.kind === 'corpse.destroy'), [])
+  // the artifact attribute, on the weapon it is on
+  const sword = STATIC.items['item.longsword.destroying']
+  assert.deepEqual((sword.triggers || []).filter(t => t.effect.kind === 'corpse.destroy').map(t => [t.hook, t.onlyWithAttack]), [['onKill', 'attack.longsword.slash.destroying']])
+  // Mending Light: the amount removed is the party's Spirit, said as every scaled amount is
+  const mending = STATIC.actions['power.benevolent-rod.restoration']
+  assert.ok(mending, 'the engine holds Mending Light')
+  const remove = mending.effects.find(e => e.kind === 'status.remove')
+  assert.match(effectSentence(remove, undefined, D, STATIC.statuses), /^remove party Spirit weak$/i)
+  assert.match(effectSentence({ kind: 'status.remove', statusId: 'status.weak', value: 2 }, undefined, D, STATIC.statuses), /^remove 2 weak$/i)
+  assert.match(effectSentence({ kind: 'status.remove', statusId: 'status.weak' }, undefined, D, STATIC.statuses), /^remove all weak$/i)
+  assert.doesNotMatch(actionLines({ id: 'power.benevolent-rod.restoration', ...mending }, {}, D, STATIC.statuses).join(' | '), /object Object/)
+  // the fold: the body is made, then destroyed - off the board, with its beat and its words
+  const S = createState(), ctx = { UD: STATIC.units, SN: STATIC.statuses }
+  fold(S, { type: 'corpse.created', causeId: RUIN, corpse: 1, hex: 89, of: 2, typeId: 'unit.zombie', side: 'enemy' }, ctx)
+  assert.deepEqual(Object.keys(S.corpses), ['1'])
+  const cues = fold(S, { type: 'corpse.removed', causeId: onKill.id, corpse: 1, hex: 89, how: 'destroyed', actor: 0, typeId: 'unit.zombie' }, ctx)
+  assert.deepEqual(Object.keys(S.corpses), [])
+  assert.ok(cues.some(c => c.k === 'corpse.gone' && c.how === 'destroyed' && c.hex === 89), 'the body\'s leaving beat')
+  assert.ok(cues.some(c => c.k === 'float' && c.text === 'CORPSE DESTROYED' && c.hex === 89), 'the words over the hex')
+})

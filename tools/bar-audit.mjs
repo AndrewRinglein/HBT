@@ -76,6 +76,8 @@ function effectNeeds(e, S) {
   if (e.kind === 'power.gain') out.push(word('power'))
   /* capability.summons (engine item, 2026-10-05): what is summoned, by the engine row's own name */
   if (e.kind === 'side.stat') out.push(...sideStatNeeds(e))
+  /* capability.his-weapons-small-clauses (engine item, 2026-10-05): an on-kill that leaves no body */
+  if (e.kind === 'corpse.destroy') out.push(word('corpse'), word('destroyed'))
   if (e.kind === 'summon') out.push(word('summon'), word(((S && S.units && S.units[e.unit]) || {}).name ?? e.unit))
   if (e.who === 'self') out.push(SELF)
   return out
