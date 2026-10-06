@@ -5915,3 +5915,10 @@ Added the same hour. Andrew: “Why are these four streams? Why isn't Kingdom a 
 - **A stream is an area that owns its own files; there are six:** the engine (`engine/src`, rules); content (`content/`, the authored rows); the kingdom (`kingdom/src`, the campaign and its screens); the viewer's screen (bars, panels, tokens, input); the viewer's scene (the 3D scene, the camera, how maps are drawn); art and maps (the models, motions and scenes under `assets/`, and `art/tools/`).
 - **A builder is given to every stream that has items waiting**, four at once at the least and more when the queues and the usage allow, since builders no longer queue for the machine. Today that is the engine, the viewer's two and art and maps; the kingdom and content get theirs the moment an item is filed for them.
 - The rule that keeps them apart does not change: a stream edits only its own files, and what it needs from another stream is filed as an item for that stream (a content row that needs a new mechanic waits on the engine item it names).
+
+Added the same hour. Andrew: “Am I running out of these six streams out of one chat or out of multiple chats?” Decided, as part of the one plan:
+
+- **Several chats. A stream he is steering himself is its own chat**, in its own copy of the folder: he talks to it, it builds and commits there, and it never runs a whole suite or builds a page. One chat per stream at most (`DISPLAY-RULES.md` rule 35 as it stands).
+- **One lander chat** - the home chat - merges every stream's commits, builds the pages, lands the items, runs the twice-daily suites and holds the queue. A stream he is not steering runs as a builder under the lander chat, from its queue.
+- Why not one chat for all six: he could not talk to a builder directly; one chat's memory would fill several times a day; and when the app's session stops, every builder under it stops with it. With a chat per stream a stopped chat stops one stream.
+- A ruling he makes in a stream chat is written by that chat, in its copy, and reaches the main folder with its next merge.
