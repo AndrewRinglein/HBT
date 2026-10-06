@@ -5505,3 +5505,35 @@ Andrew, in the kingdom chat, playing:
 “The deathbed fighting notification and maybe other notifications are still happening too close to the center of the screen. Push it down closer to the bottom of the screen.”
 
 Ruled: **the Deathbed plate, and every other notification still shown near the middle of the screen, moves down close to the bottom** - where the notices already sit (2026-10-05, 'gold and bright text with no backdrop ... right above the bottom of the screen'). This overturns the chat's own default in `viewer.plates-banners-tooltip-gold-look` that the plates and banners "keep their own places" (viewer SWITCHES goldLookPlacesAndSizes); he had ruled their look, and the chat had left their place. Filed: `viewer.plates-and-banners-sit-low`.
+
+## 2026-10-06 — the colour template is filed: seven items in the art queue, five in the battle screen's; the Gates gets a 3D map
+
+Andrew, in the root chat (the XCOM 2 study), shown the plan as eleven items and asked whether the Gates gets a 3D map built like the other five or stays flat for now, and whether the list was right to file as it stood:
+
+“Yes, Gates gives a 3D map.  2, yes.”
+
+Ruled:
+
+- **The Gates gets a 3D map**, built like the other five and painted to the template from the start.
+- **The list is filed as it stood**, after what was already queued (his “After” of the entry above).
+
+Filed (`node tools/add-item.mjs`, at the end of each queue, in this order):
+
+| queue | item | what it is |
+|---|---|---|
+| art | `art.orphanage-repainted` | the ground grey-brown and darker, the stone a darker grey, barberry where the tall grass stands |
+| art | `art.lumberjack-house-repainted` | the same, with its grave earth and gravel |
+| art | `art.cavern-trail-repainted` | the same, with the cliff's paint, the scree and the straw field |
+| art | `art.bridge-repainted` | its cobbles and pale stone: the ground there is stone |
+| art | `art.cathedral-repainted` | the nave's painted floor and its stone, darker |
+| art | `art.map-lanterns` | lanterns and their warm light on the five maps |
+| art | `art.gates-3d-map` | a painted 3D scene for the Gates |
+| battle screen | `viewer.stand-out-measured` | one command printing each battle's numbers, taken over the battle |
+| battle screen | `viewer.units-brighter` | every body brighter, its own colours stronger |
+| battle screen | `viewer.enemies-in-firelight` | the enemies' ring and name in the fire colour; a firelight edge on their bodies |
+| battle screen | `viewer.water-moves` | the water moves, the cheap way, measured |
+| battle screen | `viewer.trees-sway` | the trees sway, their shadows still; abandoned if it costs speed |
+
+Each map is accepted against the demo page (`.scratch-hero-colours/index.html`, the look “The grey-brown template”) and by the numbers: the ground beside the units about 0.40 lightness, the stone about 0.50, the units over both. Every map item ends with pictures he says yes to before the scene is taken as the map. The cloaks are another chat's and are in none of these.
+
+The chat's defaults, his to change in a line: the maps' repainting is the art queue's, a map an item (that queue held only characters until now); the measuring tool stands eighth, behind twelve open battle-screen items, so a map repainted before it lands is measured by hand as this chat did; the Gates' scene is the art queue's and its binding to the map is filed in the battle screen's queue by that item when the scene exists.
