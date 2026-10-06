@@ -105,7 +105,8 @@ export function sandboxChoices(s:Sandbox):SandboxChoice[]{
      ...(a.target?.select==='hex'?powerHexesOf(ctx,actor,id).map(hex=>({hex,path:[]})):[])]
    for(const aim of aims){const {path,...target}=aim,command:ActionCommand={kind:'action',actor,actionId:id,slot,expectedSeq:ctx.state.seq,...target}
     if(!validateBattleCommand(ctx,s.policy,command).ok)continue
-    out.push({name:a.name,cost:staminaCostOf(u,a),command,path,preview:'target' in command?(isAttack(a)?preview(ctx,actor,command.target,id):previewPower(ctx,actor,command.target,id)):null})
+    // capability.placed-traps (engine item, 2026-10-05): a further hex of a use aimed at several (the second Bear Trap) is the same use - it costs nothing more
+    out.push({name:a.name,cost:u.aiming?.actionId===id&&u.aiming.left>0?0:staminaCostOf(u,a),command,path,preview:'target' in command?(isAttack(a)?preview(ctx,actor,command.target,id):previewPower(ctx,actor,command.target,id)):null})
    }
   }
  }
