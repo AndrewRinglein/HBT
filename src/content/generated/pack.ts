@@ -12800,6 +12800,9 @@ export const UNIT_PACK = {
         "power.move",
         "power.sidestep"
       ],
+      "moveLevels": {
+        "power.sidestep": 2
+      },
       "tags": [
         "hero",
         "class.paladin"
@@ -12843,6 +12846,9 @@ export const UNIT_PACK = {
         "power.move",
         "power.sidestep"
       ],
+      "moveLevels": {
+        "power.sidestep": 2
+      },
       "tags": [
         "hero",
         "class.paladin"
@@ -12887,6 +12893,9 @@ export const UNIT_PACK = {
         "power.move",
         "power.sidestep"
       ],
+      "moveLevels": {
+        "power.sidestep": 2
+      },
       "tags": [
         "hero",
         "class.paladin"
@@ -12931,6 +12940,9 @@ export const UNIT_PACK = {
         "power.move",
         "power.sidestep"
       ],
+      "moveLevels": {
+        "power.sidestep": 2
+      },
       "tags": [
         "hero",
         "class.paladin"
@@ -12975,6 +12987,9 @@ export const UNIT_PACK = {
         "power.move",
         "power.side-roll"
       ],
+      "moveLevels": {
+        "power.side-roll": 2
+      },
       "tags": [
         "hero",
         "class.ranger"
@@ -13019,6 +13034,9 @@ export const UNIT_PACK = {
         "power.move",
         "power.side-roll"
       ],
+      "moveLevels": {
+        "power.side-roll": 2
+      },
       "tags": [
         "hero",
         "class.ranger"
@@ -13063,6 +13081,9 @@ export const UNIT_PACK = {
         "power.move",
         "power.side-roll"
       ],
+      "moveLevels": {
+        "power.side-roll": 2
+      },
       "tags": [
         "hero",
         "class.ranger"
@@ -13108,6 +13129,9 @@ export const UNIT_PACK = {
         "power.move",
         "power.side-roll"
       ],
+      "moveLevels": {
+        "power.side-roll": 2
+      },
       "tags": [
         "hero",
         "class.ranger"
@@ -13150,6 +13174,9 @@ export const UNIT_PACK = {
         "power.move",
         "power.leap"
       ],
+      "moveLevels": {
+        "power.leap": 2
+      },
       "tags": [
         "hero",
         "class.warrior"
@@ -13194,6 +13221,9 @@ export const UNIT_PACK = {
         "power.move",
         "power.leap"
       ],
+      "moveLevels": {
+        "power.leap": 2
+      },
       "tags": [
         "hero",
         "class.warrior"
@@ -13237,6 +13267,9 @@ export const UNIT_PACK = {
         "power.move",
         "power.leap"
       ],
+      "moveLevels": {
+        "power.leap": 2
+      },
       "tags": [
         "hero",
         "class.warrior"
@@ -13281,6 +13314,9 @@ export const UNIT_PACK = {
         "power.move",
         "power.leap"
       ],
+      "moveLevels": {
+        "power.leap": 2
+      },
       "tags": [
         "hero",
         "class.warrior"
@@ -13323,6 +13359,9 @@ export const UNIT_PACK = {
         "power.move",
         "power.focus"
       ],
+      "moveLevels": {
+        "power.focus": 2
+      },
       "tags": [
         "hero",
         "class.mage"
@@ -13365,6 +13404,9 @@ export const UNIT_PACK = {
         "power.move",
         "power.focus"
       ],
+      "moveLevels": {
+        "power.focus": 2
+      },
       "tags": [
         "hero",
         "class.mage"
@@ -13407,6 +13449,9 @@ export const UNIT_PACK = {
         "power.move",
         "power.focus"
       ],
+      "moveLevels": {
+        "power.focus": 2
+      },
       "tags": [
         "hero",
         "class.mage"
@@ -13448,6 +13493,9 @@ export const UNIT_PACK = {
         "power.move",
         "power.focus"
       ],
+      "moveLevels": {
+        "power.focus": 2
+      },
       "tags": [
         "hero",
         "class.mage"
@@ -13490,6 +13538,9 @@ export const UNIT_PACK = {
         "power.move",
         "power.devotion"
       ],
+      "moveLevels": {
+        "power.devotion": 2
+      },
       "tags": [
         "hero",
         "class.priest"
@@ -13532,6 +13583,9 @@ export const UNIT_PACK = {
         "power.move",
         "power.devotion"
       ],
+      "moveLevels": {
+        "power.devotion": 2
+      },
       "tags": [
         "hero",
         "class.priest"
@@ -13574,6 +13628,9 @@ export const UNIT_PACK = {
         "power.move",
         "power.devotion"
       ],
+      "moveLevels": {
+        "power.devotion": 2
+      },
       "tags": [
         "hero",
         "class.priest"
@@ -13616,6 +13673,9 @@ export const UNIT_PACK = {
         "power.move",
         "power.devotion"
       ],
+      "moveLevels": {
+        "power.devotion": 2
+      },
       "tags": [
         "hero",
         "class.priest"
@@ -13659,6 +13719,9 @@ export const UNIT_PACK = {
         "power.move",
         "power.side-roll"
       ],
+      "moveLevels": {
+        "power.side-roll": 2
+      },
       "tags": [
         "hero",
         "class.rogue"
@@ -13703,6 +13766,9 @@ export const UNIT_PACK = {
         "power.move",
         "power.side-roll"
       ],
+      "moveLevels": {
+        "power.side-roll": 2
+      },
       "tags": [
         "hero",
         "class.rogue"
@@ -13747,6 +13813,9 @@ export const UNIT_PACK = {
         "power.move",
         "power.side-roll"
       ],
+      "moveLevels": {
+        "power.side-roll": 2
+      },
       "tags": [
         "hero",
         "class.rogue"
@@ -13790,6 +13859,9 @@ export const UNIT_PACK = {
         "power.move",
         "power.side-roll"
       ],
+      "moveLevels": {
+        "power.side-roll": 2
+      },
       "tags": [
         "hero",
         "class.rogue"

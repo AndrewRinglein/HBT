@@ -10,6 +10,7 @@
 //   3. the computer follows the same rule - a prone unit it plays stands before anything else;
 //   4. a prone unit makes no special free attack either (SWITCHES.md proneMakesNoReaction);
 //   5. a unit that is standing and has not stood this Activation is unchanged.
+import { levelTwo } from './level-two.js'
 import { describe, expect, it } from 'vitest'
 import { createBattle } from '../src/core/setup.js'
 import { executeAction, legalActions, validateAction } from '../src/core/commands.js'
@@ -31,7 +32,10 @@ const HOME = hexId(5, 5)
 function rig(hero: string): { ctx: Ctx; u: Unit; foe: Unit } {
   const probe = createBattle({ replicate: 0, mapId: 'map.open', heroes: [hero], heroHexes: [HOME], enemies: ['test-zombie'], enemyHexes: [hexId(14, 13)], enemyCount: 1, strict: true })
   const beside = probe.geo.neighboursOf(HOME)[0]!
-  const ctx = createBattle({ replicate: 0, mapId: 'map.open', heroes: [hero], heroHexes: [HOME], enemies: ['test-zombie'], enemyHexes: [beside], enemyCount: 1, strict: true })
+  // Restated 2026-10-06 (rule.special-moves-unlock-at-level-two; ruled 2026-10-06, DECISIONS.md 'a hero's special moves unlock
+  // at level 2 …'): the hero is fielded at level 2, where it has the special move this file refuses and reopens; the rule held
+  // here - a prone unit only stands, and standing is its one move - is unchanged. The line was the same without heroProgress.
+  const ctx = createBattle({ replicate: 0, mapId: 'map.open', heroes: [hero], heroHexes: [HOME], enemies: ['test-zombie'], enemyHexes: [beside], enemyCount: 1, strict: true, heroProgress: [levelTwo(hero)] })
   const u = ctx.state.units[0]!, foe = ctx.state.units[1]!
   foe.hp = foe.maxHp = 500
   beginActivation(ctx, 0, 'test')

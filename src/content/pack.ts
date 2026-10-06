@@ -21,7 +21,7 @@ import type { StatusDef } from '../core/status.js'
 // lists (core/types.ts, core/items.ts), never copies — review findings C10 (five stat lists here,
 // the aura one missing vision, thorns and swapCost) and the effect-kind copy that stood here.
 import { EFFECT_KINDS as ENGINE_EFFECT_KINDS } from '../core/types.js'
-import { FOLDABLE, HELD_CLASSES, handsOf } from '../core/items.js'
+import { FOLDABLE, HELD_CLASSES, handsOf, validateMoveLevels } from '../core/items.js'
 import { validateEffect } from '../core/trigger.js'
 // fix.one-effect-vocabulary (2026-10-01): one effect list for powers, moves and the chart alike
 const EFFECT_KINDS: readonly string[] = ENGINE_EFFECT_KINDS
@@ -98,6 +98,7 @@ export function packUnits(): Readonly<Record<string, UnitDef>> {
     }
     for(const key of ['fireResist','poisonResist','shadowResist','coldResist','block','rangedBlock','bleedOutTurns','deathbedFighting','tier'] as const)if(r[key]!==undefined&&!Number.isSafeInteger(r[key]))throw Error(`unit pack: invalid ${key} on '${r.typeId}'`)   // bleedOutTurns, deathbedFighting, tier: fix.codex-numbers
     for (const t of r.triggers ?? []) validateTrigger(t)
+    validateMoveLevels(r)   // rule.special-moves-unlock-at-level-two (2026-10-06): a level names a movement the row lists
     for (const m of r.moves) {
       if (!/^power\./.test(m)) {
         throw new Error(`unit pack: '${r.typeId}' grants movement '${m}' — movement powers live under power.* (Codex 2026-08-20: "Grants power.flight")`)
