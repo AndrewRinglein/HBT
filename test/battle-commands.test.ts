@@ -8,7 +8,7 @@ import { forkBattle } from '../src/core/fork.js'
 import { attacksOf } from '../src/core/action.js'
 import { performAttack } from '../src/core/pipeline.js'
 import { usePower } from '../src/core/ability.js'
-import { executeFlight, executeMove, executeSidestep, pathTo, reachable } from '../src/core/movement.js'
+import { executeFlight, executeMove, executeSidestep, movementOptions, pathTo, reachable } from '../src/core/movement.js'
 import { applyStatus } from '../src/core/status.js'
 import { settle } from '../src/core/settle.js'
 import { beginActivation } from '../src/core/mutate.js'
@@ -82,8 +82,20 @@ describe('plumbing.battle-commands', () => {
     expect(executeBattleCommand(ctx, policy, action(ctx, { actionId: id, destination }))).toEqual({ ok: true })
     expect(ctx.state.units[0]!.hex).toBe(destination)
     expect(saveBattle(ctx)).toBe(saveBattle(direct))
-    // V2 profiles no longer imply restrictions: this reuses the SAME slot.
-    rejected(ctx, action(ctx, { actionId: id, destination: 87, slot: 'movement' }))
+    // Law 10, 2026-10-06 — rule.one-move-action-one-primary-action (Andrew, DECISIONS.md 'an Activation is one move action and one
+    // primary action, in that order; …'; the item: "a walk begun and cut short may still be finished … since that is the same
+    // move action"): a second request in the movement slot is refused for a movement that is
+    // not the unit's walk, as before; for its walk it is the rest of that walk — taken when movement is left, in the same move
+    // action, and never the primary action. The lines were:
+    //   // V2 profiles no longer imply restrictions: this reuses the SAME slot.
+    //   rejected(ctx, action(ctx, { actionId: id, destination: 87, slot: 'movement' }))
+    const me = ctx.state.units[0]!, rest = power.move.shape === 'path' && me.walked === true && movementOptions(ctx, 0, id).some((p) => p.destination === 87)
+    if (!rest) rejected(ctx, action(ctx, { actionId: id, destination: 87, slot: 'movement' }))
+    else {
+      rejected(ctx, action(ctx, { actionId: id, destination: 87, slot: 'primary' }))
+      expect(executeBattleCommand(ctx, policy, action(ctx, { actionId: id, destination: 87, slot: 'movement' }))).toEqual({ ok: true })
+      expect([me.hex, me.moveUsed, me.primaryUsed]).toEqual([87, true, false])
+    }
   })
 
   it('validates the full walk and permits flight across an impassable barrier', () => {

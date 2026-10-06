@@ -106,17 +106,31 @@ describe('once a unit has walked, no other movement is accepted from it', () => 
     expect(u.hex).not.toBe(from)
   })
 
-  it('a movement used BEFORE any walk is unchanged: after a Leap the walk is still taken, and the hero has not walked until it does', () => {
+  // Law 10, 2026-10-06 — OVERTURNED by a ruling, not loosened: rule.one-move-action-one-primary-action (Andrew, DECISIONS.md 'an
+  // Activation is one move action and one primary action, in that order; …': "All the player units get two actions: a move action
+  // and a primary action, in that order, every time they get activated. … That's fundamentally how this was built.") A walk
+  // after a Leap was the engine's fault, not a case to keep: the primary action never takes a move-class action. The test was:
+  //   it('a movement used BEFORE any walk is unchanged: after a Leap the walk is still taken, and the hero has not walked until it does', () => {
+  //     … expect(executeAction(ctx, { actor: 0, actionId: 'power.leap', destination: destinations(ctx, 'power.leap')[0]! })).toEqual({ ok: true })
+  //     expect(u.moveUsed).toBe(true); expect((u as { walked?: boolean }).walked).toBeUndefined()
+  //     const next = destinations(ctx, walk); expect(next.length).toBeGreaterThan(0)
+  //     expect(executeAction(ctx, { actor: 0, actionId: walk, destination: next[0]! })).toEqual({ ok: true })
+  //     // as before this rule: the walk after a Leap is the hero's primary action
+  //     expect(u.primaryUsed).toBe(true) })
+  it('a movement used BEFORE any walk is the unit\'s move action: after a Leap the walk is refused with the same reason, and the hero has not walked', () => {
     const { ctx, u } = rig(WARRIOR)
     const walk = walkOf(ctx, u).id
+    const before = destinations(ctx, walk)
+    expect(before.length, 'before the Leap the walk has somewhere to go').toBeGreaterThan(0)
     expect(executeAction(ctx, { actor: 0, actionId: 'power.leap', destination: destinations(ctx, 'power.leap')[0]! })).toEqual({ ok: true })
     expect(u.moveUsed).toBe(true)
     expect((u as { walked?: boolean }).walked).toBeUndefined()
-    const next = destinations(ctx, walk)
-    expect(next.length).toBeGreaterThan(0)
-    expect(executeAction(ctx, { actor: 0, actionId: walk, destination: next[0]! })).toEqual({ ok: true })
-    // as before this rule: the walk after a Leap is the hero's primary action
-    expect(u.primaryUsed).toBe(true)
+    expect(destinations(ctx, walk)).toEqual([])
+    expect(listed(ctx, walk)).toBe(0)
+    expect(validateAction(ctx, { actor: 0, actionId: walk, destination: aimAt(ctx, u, 1) })).toEqual(REFUSED)
+    expect(executeAction(ctx, { actor: 0, actionId: walk, destination: aimAt(ctx, u, 1), slot: 'primary' })).toEqual(REFUSED)
+    // its primary action is still its own
+    expect(u.primaryUsed).toBe(false)
   })
 
   it('a walk of no hex is no walk: a unit that has not entered a hex may still use its other movement', () => {

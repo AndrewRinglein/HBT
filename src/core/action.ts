@@ -122,14 +122,18 @@ export function walkOf(ctx: Ctx, u: Unit): MoveDef | null {
  * from it for the rest of that action cycle. The walk itself is not closed: the rest of a walk cut short may still be
  * walked. A movement used before any walk closes nothing here. Pure; read by the one movement legality (movement.ts).
  *
- * rule.prone-only-stand-up (ruled 2026-10-05, the same entry: "No, you only perform one move action."): standing up is the
- * unit's one move action — once it has stood in this action cycle NO movement is accepted from it, its walk included (it
- * has not begun one: there is no rest of a walk to finish). The same refusal, for the same reason: its move is done.
+ * SUBSUMED 2026-10-06 by rule.one-move-action-one-primary-action (resolveActionSlot below): a move-class action is only ever the
+ * move action, so once ANY of them is taken the others are closed by the slot itself — the walked unit's other movements and,
+ * since rule.prone-only-stand-up, every movement of a unit that has stood. `closedByWalk` and `Unit.stood` are gone; what is
+ * left of this rule is the one thing the slot cannot say by itself: the unit's walk, cut short, is still its move action
+ * (`resumesWalk`).
  */
-export function closedByWalk(ctx: Ctx, u: Unit, a: ActionDef): boolean {
-  if (!isMove(a) || isCharge(a)) return false
-  return u.stood === true || (u.walked === true && a.id !== walkOf(ctx, u)?.id)
+/** Is this the rest of the walk that IS the unit's move action this cycle — begun, a hex entered, movement left to the planner? */
+export function resumesWalk(ctx: Ctx, u: Unit, a: ActionDef): boolean {
+  return u.walked === true && u.moveUsed && isMove(a) && !isCharge(a) && a.id === walkOf(ctx, u)?.id
 }
+/** A move-class action: a movement that is not a charge (a charge is one of the unit's attacks — walkedClosesEveryOtherMovement). */
+export const isMoveClass = (a: ActionDef): boolean => isMove(a) && !isCharge(a)
 /** The ids of the unit's attacks / powers / movements — for the code that indexes by id. */
 export const burstsOf = (ctx: Ctx, u: Unit): BurstDef[] => grantedActionIds(ctx, u).map(id => ctx.actions[id]).filter((a): a is BurstDef => !!a && isBurst(a))
 export const attackIdsOf = (ctx: Ctx, u: Unit): string[] => attacksOf(ctx, u).map((a) => a.id)
@@ -182,6 +186,17 @@ export function resolveActionSlot(ctx: Ctx, u: Unit, a: ActionDef, requested?: A
   if (a.slot !== undefined && !['movement', 'primary', 'either'].includes(a.slot)) throw new Error(`invalid action slot on '${a.id}'`)
   if (u.primaryUsed) return null
   const authored = a.slot ?? 'either'
+  // rule.one-move-action-one-primary-action (ruled 2026-10-06, DECISIONS.md 'an Activation is one move action and one primary
+  // action, in that order; …': "All the player units get two actions: a move action and a primary action, in that order,
+  // every time they get activated. … That's fundamentally how this was built."): a MOVE-CLASS action is only ever the move
+  // action. The primary action never takes one (asked for, or as a fallback once the move action is spent — it took a walk
+  // or a second movement power until this date); a row authored for the primary action alone has no slot at all. Once the
+  // move action is spent no move-class action is legal in this cycle — except the rest of the walk that IS that move action
+  // (resumesWalk: the same action, not a second one). Every unit, the computer's too (SWITCHES.md oneMoveEveryUnit).
+  if (isMoveClass(a)) {
+    if (requested === 'primary' || authored === 'primary') return null
+    return a.free || !u.moveUsed || resumesWalk(ctx, u, a) ? 'movement' : null
+  }
   // capability.charge: a unit with noPrimaryAction (the Iron Colossus) has no primary slot to spend
   const compatible = (slot: ActionSlot) => (authored === 'either' || authored === slot) && (a.free || slot === 'primary' || !u.moveUsed)
     && !(slot === 'primary' && u.noPrimaryAction)

@@ -478,7 +478,6 @@ export function standUp(ctx: Ctx, unitId: number, causeId: string): void {
   const u = unit(ctx, unitId)
   const ids = u.statuses.filter((s) => s.value > 0 && ctx.statuses[s.id]?.prone !== undefined).map((s) => s.id).sort()
   for (const id of ids) removeStatus(ctx, unitId, id, causeId)
-  u.stood = true   // rule.prone-only-stand-up (2026-10-05): standing is the unit's one move action of this cycle (action.ts closedByWalk)
   emit(ctx, 'unit.stood', causeId, { actor: unitId, hex: u.hex, statusIds: ids })
 }
 
@@ -585,7 +584,6 @@ export function transformUnit(ctx: Ctx, id: number, form: Unit, side: Side, badg
     moveUsed: true, primaryUsed: true, movePointsLeft: 0,
     ...(u.swapUsed !== undefined ? { swapUsed: u.swapUsed } : {}),
     ...(u.walked !== undefined ? { walked: u.walked } : {}),
-    ...(u.stood !== undefined ? { stood: u.stood } : {}),
     summoned: u.summoned,
   }
   replaceUnit(u, { ...structuredClone(form), ...keep, transformed: { badgeId, into: form.typeId, original } })
@@ -611,7 +609,6 @@ export function revertUnit(ctx: Ctx, id: number, reason: 'fell' | 'battleEnd', c
     moveUsed: u.moveUsed, primaryUsed: u.primaryUsed, movePointsLeft: u.movePointsLeft,
     ...(u.swapUsed !== undefined ? { swapUsed: u.swapUsed } : {}),
     ...(u.walked !== undefined ? { walked: u.walked } : {}),
-    ...(u.stood !== undefined ? { stood: u.stood } : {}),
   }
   replaceUnit(u, { ...t.original, ...carry, hp: reason === 'battleEnd' ? Math.max(1, t.original.maxHp) : 0 } as Unit)
   emit(ctx, 'unit.reverted', causeId, { actor: id, badgeId: t.badgeId, from: was.typeId, into: u.typeId, fromSide: was.side, side: u.side, reason, hp: u.hp, maxHp: u.maxHp })
@@ -677,7 +674,6 @@ export function beginActivation(ctx: Ctx, id: number, causeId: string): void {
   delete u.aiming     // capability.placed-traps: a use not finished in the Activation it began is lost
   delete u.swapUsed   // v2.swap: one swap per activation
   delete u.walked     // rule.walked-unit-has-moved: a new Activation has not walked
-  delete u.stood      // rule.prone-only-stand-up: … nor stood up
   // Slow — and any status declaring reducesMovement: this Activation's points
   // are Movement minus the summed stack values, floored at 0 (the unit still
   // acts from where it stands; that is what separates Slow from Stun). Read
@@ -706,7 +702,6 @@ export function beginActivation(ctx: Ctx, id: number, causeId: string): void {
 
 export function endActivation(ctx: Ctx, id: number, causeId: string): void {
   delete unit(ctx, id).walked   // rule.walked-unit-has-moved: the fact is the Activation's, and ends with it
-  delete unit(ctx, id).stood    // rule.prone-only-stand-up: the same
   emit(ctx, 'activation.end', causeId, { actor: id, hex: unit(ctx, id).hex })
 }
 
@@ -717,7 +712,6 @@ export function reopenSurgeCycle(ctx: Ctx, id: number, allowance: number, link: 
   u.primaryUsed = false
   delete u.swapUsed   // v2.swap (COMBAT-V2 §11.2): "A Surge reopens everything, the swap included"
   delete u.walked     // rule.walked-unit-has-moved: … and the movements a walk had closed (SWITCHES.md walkedSurgeReopens)
-  delete u.stood      // rule.prone-only-stand-up: … and the ones a stand had (SWITCHES.md stoodSurgeReopens)
   const rooted = u.statuses.some(s => s.value > 0 && ctx.statuses[s.id]?.blocksMovement)
   u.movePointsLeft = rooted ? 0 : allowance
   // fix.surge-spend (2026-09-28): the Surge amount before the check and after the spend
