@@ -27,7 +27,14 @@
   ],
   "spec": "Ruled 2026-10-05 (Andrew, engine/DECISIONS.md 'a prone unit only stands; Stand Up is its one move; a set counts everything carried; Dwarf, Elf and Fey act; no gift doubles a hero's own badge; what cannot be paid is greyed; the player moves a summon; Resistance to Weak; the Vigil heals by the party's Spirit'): asked whether the Dwarf, Elf and Fey badges' numbers should act or stay names only - '6. They should act.' content.hero-origin-badges put the three on the heroes' rows as names that do nothing, because the data holds numbers for them but the Codex's effect line is empty (engine SWITCHES originBadgeNoPayloadRows; the engine worker's note: mark the three rows `payloadIsData: true` in content/gen/badges.json and ship). Do that through the content pipeline (content first, the engine pack, the viewer's dumps, the six opening recordings re-exported together, the kingdom's pages, the engine gate last), and write each badge's effect line from its numbers so the Codex, the panel and the first-hero card say what it does - the words from the numbers only, nothing added. A number that names a mechanism the engine lacks stays a named gap and is listed. This moves battles for every hero that carries one of the three: declare changesBaseline, and say in the report, per hero, what changed.",
   "expect": "Each hero whose row carries Dwarf, Elf or Fey fights with that badge's numbers; the badge's line on the panel, the Codex and the first-hero card says what it does; a test holds each of the three acting on a fielded hero; the report lists per hero the change, any line left as a named gap, and which recordings and control battles moved.",
-  "note": "Filed by the home chat 2026-10-05."
+  "note": "Filed by the home chat 2026-10-05.",
+  "probeIds": [
+   "badge.dwarf",
+   "badge.elf",
+   "badge.fey"
+  ],
+  "status": "done-needs-review",
+  "sha": "ea5762b"
  },
  {
   "id": "content.sets-count-holy-texts-and-heavy-chain",
