@@ -49,6 +49,7 @@ function targetNeeds(t) {
   if (t.select === 'hex') return [word('empty'), word('hex')]
   const out = [word(SIDE_WORDS[t.side] ?? t.side)]
   for (const tag of t.requireTags ?? []) out.push(word(tag))
+  if (t.life === 'downed') out.push(word('downed'))   // capability.stabilise-downed-ally (engine item)
   if (t.select === 'area') { out.push(word('every')); if (t.radius != null) out.push(num(t.radius)); if (t.excludeSelf) out.push(word('other')); if (t.origin === 'target') out.push(word('of the target')) }
   return out
 }
@@ -86,6 +87,7 @@ function effectNeeds(e, S) {
     for (const t of e.lends ?? []) out.push(...effectNeeds(t.effect, S))
   }
   if (e.kind === 'surge.gain') out.push(word('surge'))
+  if (e.kind === 'bleedout.stop') out.push(word('bleed-out'), word('stop'))   // capability.stabilise-downed-ally (engine item)
   /* capability.placed-traps (engine item, 2026-10-05): a trap — that it is a trap and springs on the first unit to enter, its
      damage (amount and type), each status it leaves and the ground its hex gains (its radius is read above, as every row's) */
   if (e.kind === 'trap.place') {

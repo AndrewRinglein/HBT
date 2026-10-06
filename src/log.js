@@ -174,6 +174,8 @@ export function buildLog(events, SN, turns, D = {}) {
       case 'charge.spent': return b('', `&nbsp;&nbsp;&nbsp;&nbsp;${nmAt(e)} — <span class="sq">${e.abilityId}</span>, ${e.left} use${e.left === 1 ? '' : 's'} left` +
         (e.instanceId != null ? ` <span class="sq">· ${escape(String(e.itemId).replace(/^item\./, ''))} ${escape(e.instanceId)} ${e.instanceLeft === 0 ? 'spent' : e.instanceLeft + ' left'}</span>` : ''))
       case 'maxstamina.gained': return b('status', `&nbsp;&nbsp;&nbsp;&nbsp;<b>${nmT(e)}</b> gains ${e.amount} max stamina <span class="sq">· now ${e.maxStamina}</span>`)
+      /* capability.stabilise-downed-ally (engine item, 2026-10-05) */
+      case 'bleedout.stopped': return b('down', `&nbsp;&nbsp;<b>${nmT(e)}</b> is stabilised — the bleed-out count stops at ${e.bleedOut} <span class="sq">· by ${nmAt(e)} · ${String(e.causeId || '').replace(/^[a-z]+\./, '')}</span>`)
       case 'bleedout.accelerated': return b('down', `&nbsp;&nbsp;&nbsp;&nbsp;<b>${nmT(e)}</b>'s bleed-out moved to ${e.bleedOut} <span class="sq">· ${e.steps} step${e.steps === 1 ? '' : 's'}</span>`)
       case 'surge.checked': return b('', `&nbsp;&nbsp;&nbsp;&nbsp;surge check — rolled ${e.roll} vs ${e.chance}${e.hit ? ' — <b>SURGE</b>' : ''}`)
       case 'surge.hit': return b('hero', `&nbsp;&nbsp;<b>${nmAt(e)}</b> SURGES — acts again`)

@@ -692,7 +692,14 @@ export function fold(S, e, ctx, now = 0) {
            reason 'consumed', `by` the prop, corpse:false. No corpse.created
            follows, so none is drawn; the word names the prop. */
         if (e.reason === 'consumed') cue('float', { hex: U[e.target].hex, kind: 'consumed', text: 'CONSUMED · ' + propWord(e.by), big: true }) } break
-    case 'bleedout.set': case 'bleedout.tick': if (U[e.target]) U[e.target].bleed = e.bleedOut; break
+    /* capability.stabilise-downed-ally (engine item, 2026-10-05): a new fall starts a new count, not a stopped one */
+    case 'bleedout.set': case 'bleedout.tick': if (U[e.target]) { U[e.target].bleed = e.bleedOut; if (e.type === 'bleedout.set') U[e.target].bleedHeld = false } break
+    /* … and a downed unit's count stopped (the Bandages): it stays down at that count and is not counted down again. The
+       count beside the first-aid mark stands still and reads as held. */
+    case 'bleedout.stopped':
+      if (U[e.target]) { U[e.target].bleed = e.bleedOut; U[e.target].bleedHeld = true
+        cue('float', { hex: U[e.target].hex, kind: 'note', text: 'STABILISED', big: true }) }
+      break
     /* ── bodies and the undead economy (§3) ─────────────────────────────── */
     case 'corpse.created':
       /* a board object: it stays until removed. Summons and obliterations make none. */
@@ -906,6 +913,8 @@ export const FOLDED_TYPES = ['burst.declared', 'burst.shielded', 'burst.struck',
   'object.planted', 'status.warded', 'surge.gained',
   /* capability.placed-traps (engine item, 2026-10-05) */
   'trap.placed', 'trap.sprung', 'trap.removed',
+  /* capability.stabilise-downed-ally (engine item, 2026-10-05) */
+  'bleedout.stopped',
   'deathbed.stood', 'deathbed.fell', 'deathbed.none', 'hp.reset',
   'unit.badged', 'unit.modified', 'badge.gained', 'badge.held', 'power.exhausted', 'charge.spent', 'maxstamina.gained',
   'surge.checked', 'surge.hit', 'power.gained',

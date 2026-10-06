@@ -1038,7 +1038,9 @@ export function syncUnits(V) {
       E.clock.style.cssText = 'left:22px;top:-64px;display:block;background:none;border:none;' +
         'padding:0;font:700 40px \'Barlow Semi Condensed\',sans-serif;color:#ff3226;' +
         '-webkit-text-stroke:1.8px #fff;text-shadow:0 2px 6px rgba(0,0,0,.65)'
-      E.clock.textContent = String(u.bleed)
+      /* capability.stabilise-downed-ally (engine item): a stopped count stands still, and says so */
+      E.clock.textContent = u.bleedHeld ? '✚ ' + u.bleed : String(u.bleed)
+      E.clock.title = u.bleedHeld ? 'Stabilised — the bleed-out count is stopped' : ''
     } else E.clock.style.display = 'none'
     E.fring.style.display = (bare || down) ? 'none' : ''
     E.disc.style.display = (bare || down) ? 'none' : ''

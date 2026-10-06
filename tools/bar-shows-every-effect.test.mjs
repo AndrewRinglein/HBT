@@ -251,3 +251,21 @@ test('a trap is said whole on its use: the hex, the two hexes of one use, who sp
   assert.equal(row('power.explosive-trap.use').hexes, undefined, 'the Explosive Trap is one trap')
   assert.doesNotMatch(actionLines({ id: 'power.explosive-trap.use', ...row('power.explosive-trap.use') }, {}, D, STATIC.statuses).join(' | '), /one use is/)
 })
+
+/* capability.stabilise-downed-ally (engine item, 2026-10-05; engine DECISIONS.md 2026-10-04 'every dead line on his items is a
+   feature that is needed …': "All of those deadlines need to be added in as features that we need."): the Bandages say whom
+   they may be used on - one DOWNED ally, within 1 hex - and what they do: the bleed-out count stops. Free, one use. Read off
+   the engine's own rows (generated/static.json); the audit holds the row the same way (tools/bar-audit.mjs). */
+test('the Bandages say whom they are aimed at and what they stop: one downed ally within 1 hex, its bleed-out count; free, one use', async () => {
+  const { effectSentence, effectWord, targetWords } = await import('../src/actions.js')
+  const id = 'power.bandages.use', use = STATIC.actions[id]
+  assert.ok(use, 'the engine holds the Bandages\' use')
+  assert.deepEqual([use.staminaCost, use.uses, use.free, use.range, use.target, use.effects], [0, 1, true, 1, { select: 'unit', side: 'ally', life: 'downed' }, [{ kind: 'bleedout.stop' }]])
+  assert.equal(targetWords(use.target), 'one downed ally')
+  assert.equal(targetWords({ select: 'unit', side: 'ally' }), 'one ally')
+  assert.equal(effectSentence(use.effects[0], undefined, D, STATIC.statuses), 'stop its bleed-out count — it stays down and does not die of the count')
+  assert.deepEqual(effectWord(use.effects[0], D, STATIC.statuses), { word: 'Stops the bleed-out' })
+  const lines = actionLines({ id, ...use }, {}, D, STATIC.statuses).join(' | ')
+  assert.match(lines, /one downed ally/); assert.match(lines, /stop its bleed-out count/)
+  assert.match(lines, /Stamina 0/); assert.match(lines, /1 use per battle/); assert.match(lines, /free/)
+})

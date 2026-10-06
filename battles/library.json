@@ -158,6 +158,10 @@
    "label": "TEST · Bear Traps: one sprung, one nobody entered - taken up when the battle ends (seed 1)"
   },
   {
+   "file": "test.bandages.json",
+   "label": "TEST · Bandages: a downed hero stabilised - his bleed-out count stops and he is down, not dead, at the end"
+  },
+  {
    "file": "test.knockback-well.json",
    "label": "TEST · knockback collisions: boulder and well (consumed)"
   },

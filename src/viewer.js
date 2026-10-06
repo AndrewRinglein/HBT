@@ -105,6 +105,8 @@ export const DUR = { 'burst.declared': 900, 'burst.shielded': 300, 'burst.struck
   'object.planted': 640, 'status.warded': 300, 'surge.gained': 160,
   /* capability.placed-traps (engine item, 2026-10-05) */
   'trap.placed': 320, 'trap.sprung': 520, 'trap.removed': 0,
+  /* capability.stabilise-downed-ally (engine item, 2026-10-05) */
+  'bleedout.stopped': 520,
   /* viewer.plays-turned-units (2026-10-04) */
   'unit.transformed': 900, 'unit.reverted': 420,
   /* the Deathbed Fighting modal holds the game (ruled 2026-09-03 evening): DB_TOTAL + a breath */

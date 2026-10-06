@@ -222,6 +222,8 @@ function effectWordOf(ef, D, SN) {
     case 'plant':          return { word: 'Plants a banner', val: ef.radius, radius: true }
     /* capability.placed-traps (engine item, 2026-10-05) */
     case 'trap.place':     return { word: 'Places a trap' }
+    /* capability.stabilise-downed-ally (engine item, 2026-10-05) */
+    case 'bleedout.stop':  return { word: 'Stops the bleed-out' }
     case 'surge.gain':     return { word: 'Surge Chance', val: ef.value, signed: true }
     /* an effect kind the engine added and the viewer has not been taught: show
        the engine's own word rather than invent one, and it is a viewer finding */
@@ -250,7 +252,8 @@ export function targetWords(sel) {
   const tags = (sel.requireTags || []).join(' ')
   const who = (tags ? tags + ' ' : '') + ({ any: 'unit', ally: 'ally', enemy: 'enemy' }[sel.side] || 'unit')
   if (sel.select === 'self') return 'self'
-  if (sel.select === 'unit') return 'one ' + who
+  /* capability.stabilise-downed-ally (engine item): a power aimed at a DOWNED unit and at no other */
+  if (sel.select === 'unit') return 'one ' + (sel.life === 'downed' ? 'downed ' : '') + who
   if (sel.select === 'hex') return 'an empty hex'   /* capability.summons (engine item): a hex nobody stands on, within the action's range */
   if (sel.select !== 'area') throw new Error('viewer: unknown target select ' + JSON.stringify(sel.select))
   const every = 'every ' + (sel.excludeSelf ? 'other ' : '') + who
@@ -406,6 +409,7 @@ export function effectSentence(ef, sel, D, SN) {
     case 'corpse.destroy': return 'the corpse is destroyed — nothing is left to raise or eat'
     case 'plant':          return plantWords(ef, D, SN)
     case 'trap.place':     return trapWords(ef, D, SN)
+    case 'bleedout.stop':  return 'stop its bleed-out count — it stays down and does not die of the count'
     case 'surge.gain':     return `Surge Chance ${sgn(ef.value)}`
     case 'corpse.eat':     return `eat a corpse within ${hexes(ef.radius)}: heal ${ef.heal}${Object.entries(ef.mods || {}).map(([k, v]) => ', ' + statWord(k) + ' ' + sgn(v)).join('')}${ef.maxHp ? ', MAX HEALTH ' + sgn(ef.maxHp) : ''}`
     default:               return ef.kind
