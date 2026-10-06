@@ -13,7 +13,7 @@
 //                              Any complete set is the full suite.
 //
 // Everything here is pure except treeHash, which asks git. gate.mjs owns the I/O.
-import { execSync } from 'node:child_process'
+import { execFileSync, execSync } from 'node:child_process'
 import { copyFileSync, rmSync } from 'node:fs'
 import { createHash } from 'node:crypto'
 import { availableParallelism, tmpdir } from 'node:os'
@@ -208,6 +208,43 @@ export function shardStatus(raw, tree, defaultN) {
 
 // ── which test files (the fast process, Andrew 2026-09-30) ──────────────────
 /** The test files in `git status --porcelain --untracked-files=all` output. */
+/**
+ * An item's COMMITTED tests, in `git status --porcelain` form (`A ` a file one of its commits added, ` M` one it only
+ * edited): the test/ files of every commit in `cwd`'s repository whose message names the item. A package lands its sources
+ * in its own commit before the engine gate runs (GBH SWITCHES gate.testsHome), and since 2026-10-06 an ENGINE item is its own
+ * commit too, built in a group and gated after the group's one chain (DECISIONS.md 2026-10-06 'engine items too are built in
+ * groups of up to four …': "each item is still its own commit, with its own test written first") — so the gate counts these
+ * beside what is uncommitted, in every home (GBH SWITCHES gate.committedItemTestsCount). The id is matched as written and
+ * whole: `rule.x` does not claim a commit that names `rule.x-more` or `rule.x.more`. A file a commit deleted is not a test
+ * to run. '' when no commit names the item.
+ */
+export function committedItemTests(id, cwd = process.cwd()) {
+  const git = (args) => execFileSync('git', args, { cwd, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'], maxBuffer: 64 * 1024 * 1024 })
+  const COMMIT = String.fromCharCode(1), BODY = String.fromCharCode(2)   // the separators git prints for %x01 and %x02
+  let log = ''
+  try { log = git(['log', '--format=%x01%H%x02%B', '-F', `--grep=${id}`]) } catch { return '' }
+  const whole = (text) => {
+    for (let at = text.indexOf(id); at >= 0; at = text.indexOf(id, at + 1)) {
+      const before = text[at - 1] ?? ' ', after = text[at + id.length] ?? ' ', next = text[at + id.length + 1] ?? ' '
+      if (/[A-Za-z0-9.-]/.test(before)) continue
+      if (/[A-Za-z0-9-]/.test(after) || (after === '.' && /[A-Za-z0-9]/.test(next))) continue
+      return true
+    }
+    return false
+  }
+  const shas = log.split(COMMIT).filter(Boolean).map((c) => c.split(BODY)).filter(([, body]) => whole(body ?? '')).map(([sha]) => sha.trim())
+  const state = new Map()   // file -> 'A ' | ' M', an addition by any of the item's commits wins
+  for (const sha of shas.reverse()) {   // oldest first
+    for (const line of git(['show', '--format=', '--name-status', sha, '--', 'test/']).split(/\r?\n/).filter(Boolean)) {
+      const [st, ...paths] = line.split(/\t/), file = paths[paths.length - 1]
+      if (!file) continue
+      if (st.startsWith('D')) { state.delete(file); continue }
+      if (st.startsWith('A')) state.set(file, 'A ')
+      else if (!state.has(file)) state.set(file, ' M')
+    }
+  }
+  return [...state].sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0)).map(([file, st]) => `${st} ${file}`).join(String.fromCharCode(10))
+}
 export function testFilesIn(porcelain) {
   return String(porcelain ?? '').split('\n').filter(Boolean)
     .map((l) => l.slice(3).replace(/^.* -> /, '')).filter((f) => f.startsWith('test/') && /\.test\.ts$/.test(f))
