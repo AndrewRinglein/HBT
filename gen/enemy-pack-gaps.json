@@ -772,46 +772,6 @@
    "needs": "charges spent in battle — capability.consumables"
   },
   {
-   "unit": "item.bear-trap",
-   "what": "active: Once per Battle: place two traps on empty hexes wi",
-   "needs": "an ability with charges/targets — capability.consumables"
-  },
-  {
-   "unit": "item.bear-trap",
-   "what": "uses: 1 — no active compiled to carry the charge",
-   "needs": "charges spent in battle — capability.consumables"
-  },
-  {
-   "unit": "item.magic-trap",
-   "what": "active: Once per Battle: place two traps on empty hexes wi",
-   "needs": "an ability with charges/targets — capability.consumables"
-  },
-  {
-   "unit": "item.magic-trap",
-   "what": "uses: 1 — no active compiled to carry the charge",
-   "needs": "charges spent in battle — capability.consumables"
-  },
-  {
-   "unit": "item.fire-trap",
-   "what": "active: Once per Battle: place two traps on empty hexes wi",
-   "needs": "an ability with charges/targets — capability.consumables"
-  },
-  {
-   "unit": "item.fire-trap",
-   "what": "uses: 1 — no active compiled to carry the charge",
-   "needs": "charges spent in battle — capability.consumables"
-  },
-  {
-   "unit": "item.explosive-trap",
-   "what": "active: Once per Battle: place one trap on an empty hex wi",
-   "needs": "an ability with charges/targets — capability.consumables"
-  },
-  {
-   "unit": "item.explosive-trap",
-   "what": "uses: 1 — no active compiled to carry the charge",
-   "needs": "charges spent in battle — capability.consumables"
-  },
-  {
    "unit": "item.marching-orders",
    "what": "statModifier 'itemSlots' -1",
    "needs": "stat: itemSlots (no UnitDef field)"

@@ -1801,15 +1801,45 @@ const ITEM_TARGET = (tgt) => inVocabulary(tgt, ITEM_TARGET_RAW(tgt));
 const ITEM_TARGET_RAW = (tgt) => {
   let r;
   if (!tgt || tgt === 'self') return { target: { select: 'self', side: 'any' }, range: 0 };
+  // engine capability.placed-traps (2026-10-05): "one empty hex within N" / "two empty hexes within N" — a power aimed at an
+  // empty hex (the engine's select 'hex'); two is ONE use aimed at two hexes, one after another (the engine's `hexes`)
+  if ((r = tgt.match(/^(one|two) empty hex(?:es)? within (\d+)$/)) && (r[1] === 'two') === /hexes/.test(tgt)) return { target: { select: 'hex', side: 'any' }, range: +r[2], hexes: r[1] === 'two' ? 2 : 1 };
   if ((r = tgt.match(/^(?:yourself or )?one ally within (\d+) hex(?:es)?$/))) return { target: { select: 'unit', side: 'ally' }, range: +r[1] };
   if ((r = tgt.match(/^one enemy within (\d+) hex(?:es)?$/))) return { target: { select: 'unit', side: 'enemy' }, range: +r[1] };
   if ((r = tgt.match(/^allies within (\d+) hexes$/))) return { target: { select: 'area', side: 'ally', radius: +r[1], origin: 'self' }, range: 0 };
   return null;
 };
+// engine capability.placed-traps (2026-10-05; engine DECISIONS.md 2026-10-04 'every dead line on his items is a feature that is
+// needed …': "All of those deadlines need to be added in as features that we need."): his four trap items. One sentence pair,
+// read whole — "Once per Battle: place one|two trap[s] on [an] empty hex[es] within N. The first unit to enter one|it[, and
+// every unit within R hex,] takes <damage>[ and|, gains <Status> V][, and the hex gains Burning]." — into the engine's
+// trap.place on a hex-aimed power: the damage is a flat number of a type ("4 physical damage") or the PARTY's Magic scaled
+// ("magic damage equal to [twice ]your Magic[ plus B]" — "your Magic" is the party's, read when the trap springs), the status
+// lands on the unit that entered, the radius strikes every unit round the trap's hex, and the layer is the hex's. The count
+// and the range must agree with the row's `targets`; a line that is not this sentence compiles nothing (a named gap, as before).
+function compileTrap(it, row, tg) {
+  const desc = String(row.description || '');
+  const m = desc.match(/^Once per Battle: place (one|two) traps? on (?:an )?empty hex(?:es)? within (\d+)\. The first unit to enter (?:one|it)(?:, and every unit within (\d+) hex(?:es)?,)? takes (.+)\.$/);
+  if (!m) return null;
+  if ((m[1] === 'two' ? 2 : 1) !== tg.hexes || +m[2] !== tg.range) throw new Error(`mkenginepack: ${it.id} places ${m[1]} within ${m[2]} by its sentence and targets '${row.targets}'`);
+  const trap = {};
+  let rest = m[4], d, s;
+  if ((d = rest.match(/^(\d+) (physical|magic|fire|poison|shadow|true) damage(.*)$/))) { trap.damage = { amount: +d[1], damageType: d[2] }; rest = d[3]; }
+  else if ((d = rest.match(/^(physical|magic|fire|poison|shadow|true) damage equal to (twice )?your Magic(?: plus (\d+))?(.*)$/))) { trap.damage = { amount: { scale: 'partyMagic', base: +(d[3] ?? 0), mult: d[2] ? 2 : 1 }, damageType: d[1] }; rest = d[4]; }
+  else return null;
+  if ((s = rest.match(/^(?:,| and) gains ([A-Z][a-z]+) (\d+)(.*)$/))) { if (!STATUS_OK.has(s[1].toLowerCase())) return null; trap.statuses = [{ statusId: 'status.' + s[1].toLowerCase(), value: +s[2] }]; rest = s[3]; }
+  if (m[3]) trap.radius = +m[3];
+  if ((s = rest.match(/^, and the hex gains (Burning)$/))) { trap.paints = 'layer.' + s[1].toLowerCase(); rest = ''; }
+  if (rest !== '') return null;
+  return { id: it.id.replace(/^item\./, 'power.') + '.use', name: it.name, ...actionSlot(row), staminaCost: row.stamina ?? 0, cooldown: row.cooldown ?? 0,
+    ...(row.uses !== undefined ? { uses: typeof row.uses === 'number' ? row.uses : (row.uses.perBattle ?? row.uses.count ?? 1) } : {}),
+    range: tg.range, target: tg.target, ...(tg.hexes > 1 ? { hexes: tg.hexes } : {}), effects: [{ kind: 'trap.place', ...trap }] };
+}
 function compileItemActive(it, row) {
   const desc = String(row.description || '');
   const tg = ITEM_TARGET(row.targets);
   if (!tg) return null;
+  if (tg.target.select === 'hex') return compileTrap(it, row, tg);
   const free = /^Free[,.: ]/.test(desc) || /^Once per Battle: /.test(desc) && row.stamina === 0 && !/costs your primary/.test(desc);
   const effects = []; const gaps = [];
   // the rule sentence: after "Free, 0 Stamina:" / "Once per Battle, 2 Stamina:" / "Costs your primary action, 0 Stamina:" / "Free."
