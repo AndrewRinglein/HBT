@@ -93,9 +93,12 @@ describe('viewer.solid-pieces-drawn-by-material', () => {
   }, FRAME_COST_WAIT_MS)
 
   it('no time is asserted here: the proof is counts', () => {
-    const src = readFileSync('test/viewer.solid-pieces-drawn-by-material.test.ts', 'utf8').replace(/\/\*[\s\S]*?\*\//g, '').split('\n').filter((l) => !/^\s*\/\//.test(l)).join('\n')
+    /* every assertion above this test: what it is made of (the first argument of each expect) reads no time the tool measured */
+    const all = readFileSync('test/viewer.solid-pieces-drawn-by-material.test.ts', 'utf8'), above = all.slice(0, all.indexOf('it(\'no time is asserted here'))
+    const src = above.replace(/\/\*[\s\S]*?\*\//g, '').split('\n').filter((l) => !/^\s*\/\//.test(l)).join('\n')
     const subjects = [...src.matchAll(/expect\(\s*([^,)]+)/g)].map((m) => m[1]!)
     expect(subjects.length).toBeGreaterThan(20)
-    for (const s of subjects) expect(/\bms\b|Ms\b|\.ms\./.test(s), 'a time in an assertion: ' + s).toBe(false)
+    const aTime = new RegExp('\\bm' + 's\\b|M' + 's\\b|loadM')
+    for (const s of subjects) expect(aTime.test(s), 'a time in an assertion: ' + s).toBe(false)
   })
 })
