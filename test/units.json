@@ -853,5 +853,12 @@
     "name": "Swell Mage (TEST)",
     "abilities": ["power.test-mage.swell"],
     "note": "engine capability.raise-lower-magic (2026-10-05): the Air Mage's body with one power, Swell (raise the Magic of its own side by 2 for two Turns), so the second instance of a side's party stat changing - a raise, by an effect, for Turns - is live in a real battle (the engine's fielding test.swell). TEST only."
+  },
+  {
+    "id": "test-dresser",
+    "from": "test-osric",
+    "name": "Dresser (TEST)",
+    "abilities": ["power.test-osric.field-dressing"],
+    "note": "engine capability.stabilise-downed-ally (2026-10-05): Osric's body (the test paladin) with one power, Field Dressing (stop the bleed-out count of a downed ally within 2 hexes), so the second instance of stabilising a downed ally is live in a battle (test.field-dressing). No battle of the cohort fields it."
   }
 ]

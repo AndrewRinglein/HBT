@@ -1805,6 +1805,9 @@ const ITEM_TARGET_RAW = (tgt) => {
   // empty hex (the engine's select 'hex'); two is ONE use aimed at two hexes, one after another (the engine's `hexes`)
   if ((r = tgt.match(/^(one|two) empty hex(?:es)? within (\d+)$/)) && (r[1] === 'two') === /hexes/.test(tgt)) return { target: { select: 'hex', side: 'any' }, range: +r[2], hexes: r[1] === 'two' ? 2 : 1 };
   if ((r = tgt.match(/^(?:yourself or )?one ally within (\d+) hex(?:es)?$/))) return { target: { select: 'unit', side: 'ally' }, range: +r[1] };
+  // engine capability.stabilise-downed-ally (2026-10-05): "one downed ally within N hex" — aimed at a DOWNED unit of the user's
+  // side and at nothing else (the engine's Targeting.life 'downed')
+  if ((r = tgt.match(/^one downed ally within (\d+) hex(?:es)?$/))) return { target: { select: 'unit', side: 'ally', life: 'downed' }, range: +r[1] };
   if ((r = tgt.match(/^one enemy within (\d+) hex(?:es)?$/))) return { target: { select: 'unit', side: 'enemy' }, range: +r[1] };
   if ((r = tgt.match(/^allies within (\d+) hexes$/))) return { target: { select: 'area', side: 'ally', radius: +r[1], origin: 'self' }, range: 0 };
   return null;
@@ -1848,6 +1851,10 @@ function compileItemActive(it, row) {
   const SP = (base, mult = 1) => ({ scale: 'partySpirit', base, mult });
   for (const s0 of parts) {
     let m;
+    // engine capability.stabilise-downed-ally (2026-10-05; engine DECISIONS.md 2026-10-04 'every dead line on his items is a
+    // feature that is needed …'): the Bandages — "stabilize a downed ally — their bleed-out counter stops", on a row aimed at
+    // one downed ally: the engine's bleedout.stop. On any other targeting the sentence is a named gap (it says a downed ally).
+    if (/^stabilize a downed ally — their bleed-out counter stops$/.test(s0) && tg.target.life === 'downed') { effects.push({ kind: 'bleedout.stop' }); continue; }
     if ((m = s0.match(/^heal (\d+)$/i))) { effects.push({ kind: 'heal', amount: +m[1] }); continue; }
     if ((m = s0.match(/^Heal (\d+) and remove (\d+) ([A-Z][a-z]+)$/))) { effects.push({ kind: 'heal', amount: +m[1] }); effects.push({ kind: 'status.remove', statusId: 'status.' + m[3].toLowerCase(), value: +m[2] }); continue; }
     if ((m = s0.match(/^remove (\d+) ([A-Z][a-z]+)$/i))) { effects.push({ kind: 'status.remove', statusId: 'status.' + m[2].toLowerCase(), value: +m[1] }); continue; }

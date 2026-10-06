@@ -732,16 +732,6 @@
    "needs": "planted object: clause unparsed"
   },
   {
-   "unit": "item.bandages",
-   "what": "active: Free, 0 Stamina: stabilize a downed ally — their b",
-   "needs": "an ability with charges/targets — capability.consumables"
-  },
-  {
-   "unit": "item.bandages",
-   "what": "uses: 1 — no active compiled to carry the charge",
-   "needs": "charges spent in battle — capability.consumables"
-  },
-  {
    "unit": "item.backpack",
    "what": "statModifier 'itemSlots' 2",
    "needs": "stat: itemSlots (no UnitDef field)"

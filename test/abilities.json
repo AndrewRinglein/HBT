@@ -127,5 +127,16 @@
     "staminaCost": 1,
     "cooldown": 6,
     "note": "engine capability.raise-lower-magic (2026-10-05): a test row that RAISES a side's party stat for a number of Turns - the Magic of the caster's own side by 2, this Turn and the next - so the mechanism is held on a raise and on a Turn count as well as on the Vortex's battle-long lowering. No unit row grants it: a test hands it to a unit."
+  },
+  {
+    "id": "power.test-osric.field-dressing",
+    "name": "Field Dressing (TEST)",
+    "range": 2,
+    "target": { "select": "unit", "side": "ally", "life": "downed" },
+    "effects": [{ "kind": "bleedout.stop" }],
+    "staminaCost": 1,
+    "cooldown": 2,
+    "free": true,
+    "note": "engine capability.stabilise-downed-ally (2026-10-05): a second power that stops a downed ally's bleed-out count, with other numbers than the Bandages' - within 2 hexes, 1 Stamina, a cooldown and no limit of uses - so the mechanism is held on a second row, pure data. Fielded only by test.field-dressing."
   }
 ]
