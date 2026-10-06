@@ -1548,3 +1548,15 @@ greys what the engine lists and refuses.
 | Switch | Question | Default | Reason | Status |
 |---|---|---|---|---|
 | `restOfAWalkStaysArmed` | The engine now lists the rest of a walk cut short as the MOVE action (it was the primary action). What does a player see after walking one hex of five? | **The basic move is still offered with its smaller movement area — the input arms the basic move whenever the engine lists one — and attack one is chosen after the walk as before (kingdom.attack-one-armed-after-move); taking the attack back leaves the move armed, not nothing. Walking on does not cost the hero its attack. A Leap, a Side Roll and their like grey the moment the hero has moved (`moveDone`), and the Move greys after any of them.** FOUND for Andrew: a hero may now walk in parts — two hexes, look, three more — inside its one move action and still attack; until now the second part cost its primary action. The other side (the engine's to change): a walk that reached the hex the player chose is done, and only a walk something stopped may be finished — which, since a hit on the way already takes the movement left, would mean never. | The item: "a walk begun and cut short may still be finished … since that is the same move action." | Default — 2026-10-06 |
+
+## rule.player-moves-summons (engine item) — the host's half, 2026-10-06
+
+Ruled 2026-10-05 (Andrew, engine DECISIONS.md '… the player moves a summon …'), asked whether the player should move the
+summoned Wolf or the computer as built: "Then the view Wolf's spine player should move to someone's wolf." (dictation; read
+back to him as: the player moves a summoned unit). The rule is the engine's (`engine/SWITCHES.md`, the section of the same
+name: whose a unit is). Test: `test/player-moves-summons.test.ts`.
+
+| Switch | Question | Default | Reason | Status |
+|---|---|---|---|---|
+| `summonPlayedWithNoHostRule` | What does the play input need to offer and play the Wolf? | **Nothing of its own: who may begin is the engine's list of activation choices, whose bar it is and what it may do are the engine's answers, so the Wolf is begun, armed with its basic move, walked and made to attack exactly as a hero is — held on the engine's own Call-the-Wolf fielding with the mage as the session's player.** | The host reads the engine. | Default — 2026-10-06 |
+| `summonPageOwed` | "On the play page … the Wolf has a card in the top bar (the Wolf's token art) … 'End activation and activate X' asked the same way … the Wolf is not on the after-battle screen"; "Fix the row's sentence … through content." | **OWED, not built: these need a built page and a content ship, and this half was written while the machine had no memory for either. To do at the landing: the page check on the built BATTLE-SANDBOX.html (the top bar's card and its art, the switch-hero question, a click and a double-click, the after-battle screen without the Wolf, the battle lost with every hero down and the Wolf standing), and the content's sentence ("It is a summoned ally with its own stat block" — no "its own AI").** | Said plainly rather than landed unseen. | Open — owed — 2026-10-06 |
