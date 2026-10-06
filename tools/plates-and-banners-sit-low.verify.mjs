@@ -34,6 +34,8 @@ async function serve(){
   child.stdout.on('data',d=>{out+=d;if(/Battle Atlas/.test(out)){clearTimeout(t);ok()}});child.stderr.on('data',d=>{out+=d});child.on('exit',c=>{clearTimeout(t);no(Error('the battle server exited '+c+': '+out))})})
  return {port,stop:()=>child.kill()}
 }
+/* a page that stops answering (Chrome starved under load: seen once, 24 minutes with the gate lock held) is a failure said in words, never a wait without end */
+let stage="starting";const dog=setTimeout(()=>{console.error("plates-and-banners-sit-low: no answer from the page within 300 s (at: "+stage+")");process.exit(3)},300000)
 const server=await serve()
 const browser=await chromium.launch({channel:'chrome',headless:true,args:['--use-angle=swiftshader','--enable-unsafe-swiftshader','--ignore-gpu-blocklist']})
 const errors=[]
@@ -43,13 +45,13 @@ try{
  await page.waitForFunction(()=>window.__sandbox?.session&&window.__sandbox.viewer&&!window.__sandbox.busy&&window.__sandbox.viewer._V?.camera3d,null,{timeout:180000})
  let quiet=0;for(let n=0;n<200&&quiet<5;n++){await page.waitForTimeout(100);quiet=await page.evaluate(()=>window.__sandbox.busy)?0:quiet+1}
  /** play cues of the page's own, wait `ms`, and read where the browser put each thing asked for */
- const play=(cues,sels,ms=320)=>page.evaluate(async([cues,sels,ms])=>{
+ const play=(cues,sels,ms=320)=>(stage="reading "+(Object.values(sels).join(", ")||"the frame"),page.evaluate(async([cues,sels,ms])=>{
   const V=window.__sandbox.viewer._V,hero=Object.values(V.S.U).find(u=>u.side==='hero').id
   V.playCues(cues.map(c=>c.id==='HERO'?{...c,id:hero}:c));await new Promise(r=>setTimeout(r,ms))
   const R=n=>{if(!n)return null;const r=n.getBoundingClientRect(),c=getComputedStyle(n);return {ot:n.offsetTop,oh:n.offsetHeight,l:r.left,t:r.top,r:r.right,b:r.bottom,w:r.width,h:r.height,shown:c.display!=='none'&&r.width>0&&r.height>0,text:n.textContent.trim().slice(0,50),bg:c.backgroundColor}}
   const out={frame:R(V.dom.stage.parentNode),screen:R(V.dom.root),stack:R(V.dom.root.querySelector('#noticeStack')),bar:R(V.dom.actionbar),stam:R(V.dom.stambar)}
   for(const [k,sel] of Object.entries(sels))out[k]=R(V.dom.root.querySelector(sel))
-  return out},[cues,sels,ms])
+  return out},[cues,sels,ms]))
  const clear=ms=>page.waitForTimeout(ms)
  const mid=x=>(x.l+x.r)/2
  /** in the band: inside the board's frame, above the stamina strip and the bar, centred, and wholly under the middle third of the screen */
@@ -96,5 +98,5 @@ try{
    const n=t.content.firstElementChild;V.dom.root.appendChild(n);const r=n.querySelector('#afflBox').getBoundingClientRect(),s=V.dom.root.getBoundingClientRect();n.remove();return {h:r.height,t:r.top-s.top,screen:s.height}})
   assert.ok(M.h>M.screen/3,'the affliction pop-up is taller than a third of the screen: it cannot stand in the band');say(`the affliction pop-up: ${M.h.toFixed(0)} px tall with its two cards and its Continue button, on a ${M.screen.toFixed(0)} px screen — a held screen, not moved (viewer SWITCHES lowAfflictionPopUpStays)`)}
  assert.deepEqual(errors,[],'no page errors')
-}finally{await browser.close();server.stop()}
+}finally{stage="closing the browser";await browser.close();server.stop();clearTimeout(dog)}
 console.log('plates-and-banners-sit-low: a phase banner, a wave banner, the Deathbed plate at each stage and an injury plate each stood in the band just above the stamina strip and the action bar, inside the board\'s frame, centred, below the middle of the screen; two at once stood one above the other; with more than fits under the middle of the screen the oldest left and the newest stayed; the hex tooltip was at the pointer — passed')
