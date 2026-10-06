@@ -123,7 +123,11 @@ export function groundNames(): Record<string, string> {
 
 export function allSheets(): Record<string, UnitSheet> {
   const out: Record<string, UnitSheet> = {}
-  for (const typeId of Object.keys(UNITS)) { const s = sheetOf(typeId); if (s) out[typeId] = s }
+  /* viewer.attack-row-shows-totals (2026-10-06): the unit's Crit AT REST as the engine counts it — the rule's base, which the
+     engine publishes (its vocabulary export, ruleBases.crit: "the 3 is the rule"), with the row's own Crit (the row carries
+     total − base). Stated here so no page holds the rule's number: a replay's row reads this field. */
+  const critBase = Number((VOCABULARY as { ruleBases?: { crit?: number } }).ruleBases?.crit ?? 0)
+  for (const typeId of Object.keys(UNITS)) { const s = sheetOf(typeId); if (s) out[typeId] = { ...s, critAtRest: critBase + Number((s as { crit?: number }).crit ?? 0) } }
   return out
 }
 
