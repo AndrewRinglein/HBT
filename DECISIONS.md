@@ -5551,3 +5551,11 @@ Andrew, in the kingdom chat, playing:
 “We should not be able to scroll out more than the map. There's a point where you can see the entire map. We don't need to scroll out more than that.”
 
 Ruled: **the wheel's furthest pull-back is the point where the entire map is seen, and no further** ("scroll out" is the wheel's zoom out). `viewer.zoom-stays` (landed 2026-10-05) set the far end at the whole board's fit "with the room the whole-map view always left" (viewer SWITCHES zoomRange) - room he does not want; what he saw go past the map is to be found and stopped. Filed: `viewer.zoom-out-stops-at-the-whole-map`.
+
+## 2026-10-06 — the starting heroes' special moves unlock at level 2 (asked for; questions put, not yet filed)
+
+Andrew, in the kingdom chat:
+
+“Real is another rule I want to add, which is that the special moves that the starting heroes get should be unlocked instead at level 2, so they don't clutter up level 1 tutorial. That way, you get something extra when you level up.”
+
+What he asked for: the special moves a starting hero has today at level 1 are instead unlocked at level 2 - so the level-1 tutorial is not cluttered with them, and a level-up gives something extra. Which actions count as "special moves", which heroes it covers, and how it shows at level 1 were asked the same day; the item is filed on his answers.
