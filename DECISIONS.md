@@ -5254,3 +5254,36 @@ Ruled:
 - **Not answered, asked again the same day:** the foliage change ("I don't understand question one"); whether W moves the view or the map; whether the Wolf's ported numbers stand.
 
 Filed: `rule.prone-only-stand-up`, `viewer.unaffordable-actions-greyed`, `rule.player-moves-summons`, `content.dwarf-elf-fey-badges-act`, `kingdom.gift-roll-leaves-out-own-badges`, `content.sets-count-holy-texts-and-heavy-chain`, `content.resistance-to-weak-and-vigil-party-spirit`.
+
+## 2026-10-06 — the characters stand out: painted-on colour is out; a helm is never shown; a loose cloak for every hero and gear that shows on the body are being considered
+
+Andrew, in the root chat (the XCOM 2 study, the day after), in three messages:
+
+“I wonder about a hero dressed in black like a rogue. Can we give them something red to make them stand out? I also wonder if we can do something like a red scarf on every hero, regardless of their color, to make them stand out.”
+
+“I'm thinking about adding a cape or a cloak to every hero.   Does that give us a better surface for color that isn't interfered with by motions? I'm just trying to think about different solutions. I'm also just thinking about changing away from relics, idols, and Bloodrune to having boots, gauntlets, cloak, helm, and armor.  Because those things are more visual”
+
+“I wasn't thinking about just painting it on because that's going to look bad.     What I am considering doing is having cloak, gauntlet, boots, helm, armor, and the hands be all the equipable things, and I guess item slots would be additional for trinkets.  And additional weapons  and all those things except helms would have a visual representation, not helms, because I still want the personality of the hero to shine through. How difficult would it be to add an actual cloak to everybody, one that hangs loose?”
+
+The page he tries colour on is `.scratch-hero-colours/index.html` (2026-10-05: “it would be good to be able to test coloring on heroes”), a copy of the ground-tones page with the bodies added: each hero's paint, every body's brightness, and a mark every hero wears (scarf, scarf and shoulders, sash, cloak). It changes no game code.
+
+Measured on that page, the Orphanage, as the share of a hero's visible pixels that carry the mark: a scarf 8 to 11%; scarf and shoulders 17 to 23%; a cloak 60 to 73% with the hero's back to the camera, 22 to 54% side-on, 9 to 13% facing the camera (only the shoulders show). The cloak there is painted onto the body the hero has, so narrower than a real one, and three of the four facings were made by turning which side counts as the back.
+
+Found the same day:
+
+- **Every hero body sampled is on one skeleton**: eight heroes in the Orphanage and Cathedral battles (the Forest Elf, the Orphan Child, the School Teacher, The Rose, the Battle Chaplain, the Skullplate Veteran, the Court Champion, the Pyre Witch) each have 101 bones with the same names (`CC_Base_NeckTwist01`, `CC_Base_L_Clavicle`, `CC_Base_R_Clavicle`, `CC_Base_Spine02` among them). The Necromancer and the skeletons share it; the Zombie does not. The battle screen binds 24 base heroes and 4 civilians (`viewer/tools/character-models.mjs` `bindings()`).
+- **Only what is in the hands changes a body today** (`viewer/src/models.js` `equippedLook`); the model catalog is 299 weapons and 5 shields, and an outfit is one fitted suit bound to the hero, not to an armor item.
+- **Every cape in the project is fixed to the skeleton; none is simulated and none has passed a full-motion review.** The Oathblade's own cloak is hidden in battle (his note of 2026-09-19, “The cloak has problems on the back.”); the Lich was rejected over its cloak in death.
+- Relics, idols and Bloodrunes are 32, 23 and 14 of the 268 item rows, and none is in the reward pool yet (`kingdom/SWITCHES.md` 2026-10-04).
+
+Ruled:
+
+- **Painted-on colour is out** - “that's going to look bad”. The page's paint and marks are for judging colour and size only.
+- **A helm is never shown on the body** - “because I still want the personality of the hero to shine through”. The ruling of 2026-09-24 (`ART-NOTES.md`, “we're not going to put helmets on”) stands.
+
+Being considered, not ruled:
+
+- **The equippable things become cloak, gauntlets, boots, helm, armor and the hands; item slots stay, for trinkets and spare weapons; everything but the helm shows on the body.** Open against it: whether the three ways relics, idols and Bloodrunes work (a free swap, 1 Faith a battle, 3 Mana Crystals once) carry over; helm and boots were ruled trinkets on 2026-09-02 (`2-ACTIONS-SETTLED.md`); and his “a lot more fundamental game work before we worry about items and balance” of 2026-10-04.
+- **A real cloak on every hero, one that hangs loose.** The chat's answer to “how difficult”: one shared cloak hung from the shared skeleton and moved by the viewer as it draws, never a cloak modelled into each outfit (the way that has failed here); a trial on one hero first.
+
+Later the same day, of the cloak: “I wasn't specifically thinking just a red cloak.   But a colorful cloak  what do gold highlights do?” So the cloak being considered is colourful, hero by hero, not one red for all; the red scarf for everybody is not what he is asking for. The page took two more controls for it (each hero a different cloak colour; a trim on the cloak, gold by default, with its width). Seen there on the Cathedral, six heroes, the replay page's own overhead view: the trim round the collar and over the shoulders shows on every hero whichever way he faces, the hem's hardly at all; blue, teal and black cloaks read best on that floor, red less (the floor has orange and red-brown tiles) and bone least (cream tiles). The gold `#e0b95e` is lighter than every ground measured but the Cathedral's and is the ground's own hue, so it works against the cloak and the hair it sits on, not against the ground. Not ruled: whether gold on every hero's cloak is the mark the heroes share.
