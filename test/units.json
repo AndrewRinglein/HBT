@@ -860,5 +860,15 @@
     "name": "Dresser (TEST)",
     "abilities": ["power.test-osric.field-dressing"],
     "note": "engine capability.stabilise-downed-ally (2026-10-05): Osric's body (the test paladin) with one power, Field Dressing (stop the bleed-out count of a downed ally within 2 hexes), so the second instance of stabilising a downed ally is live in a battle (test.field-dressing). No battle of the cohort fields it."
+  },
+  {
+    "id": "test-snarer",
+    "from": "test-zombie",
+    "name": "Snarer (TEST)",
+    "ai": "melee-aggressive",
+    "maxStamina": 2,
+    "staminaRegen": 1,
+    "abilities": ["power.test-snare"],
+    "note": "engine rule.computer-avoids-own-traps (2026-10-06): the test zombie's body with Stamina and one power, Snare (place a trap), played by the melee rules so it places the trap toward the heroes when it cannot reach one. Its own side then has a trap on its way. Fielded only by test.snarer-traps."
   }
 ]

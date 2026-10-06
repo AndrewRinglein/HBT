@@ -138,5 +138,16 @@
     "cooldown": 2,
     "free": true,
     "note": "engine capability.stabilise-downed-ally (2026-10-05): a second power that stops a downed ally's bleed-out count, with other numbers than the Bandages' - within 2 hexes, 1 Stamina, a cooldown and no limit of uses - so the mechanism is held on a second row, pure data. Fielded only by test.field-dressing."
+  },
+  {
+    "id": "power.test-snare",
+    "name": "Snare (TEST)",
+    "range": 3,
+    "target": { "select": "hex", "side": "any" },
+    "effects": [{ "kind": "trap.place", "damage": { "amount": 2, "damageType": "physical" }, "statuses": [{ "statusId": "status.root", "value": 1 }] }],
+    "staminaCost": 1,
+    "cooldown": 0,
+    "uses": 1,
+    "note": "engine rule.computer-avoids-own-traps (2026-10-06): a trap an ENEMY places (no enemy row of the Codex places one) - one trap on an empty hex within 3, 2 physical damage and 1 Root - so the rule is held for the enemy's side as well as the heroes'. Fielded only by test.snarer-traps."
   }
 ]
