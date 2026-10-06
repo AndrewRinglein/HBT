@@ -1,5 +1,21 @@
 [
  {
+  "id": "tool.gate-flags-read-committed-edits",
+  "kind": "engine",
+  "shape": "plumbing",
+  "spec": "Found 2026-10-06 by the engine worker landing its first group under the group rule (engine/DECISIONS.md 2026-10-06 'engine items too are built in groups of up to four, with one set of heavy checks for the group'): the engine gate's flag 'existing tests untouched' reads only UNCOMMITTED edits, so an item built in a group - its sources and tests committed before its gate runs - is never flagged when it rewrote an existing test. content.resistance-to-weak-and-vigil-party-spirit restated assertions in engine/test/planted-banners.test.ts, engine/test/immune-one-is-resist.test.ts and two viewer tool tests, with dated notes, and landed as 'done' where before the group rule it would have landed 'done-needs-review'. The flag is how Andrew's review list is made (Law 10: an edited standing test is always shown to him); the group rule must not empty that list. The same worker already taught the gate to count an item's COMMITTED test files as its own (tools/gate-progress.mjs committedItemTests, GBH SWITCHES gate.committedItemTestsCount). Wanted: every flag and check of the engine gate that reads the working tree's uncommitted state to learn what an item touched - 'existing tests untouched' (deleted or changed lines in a test file that existed before the item), 'brought its own tests', and any other found by reading tools/gate.mjs and tools/gate-progress.mjs - also reads the commits that name the item (the same whole-id match), in the engine's home and in the viewer's, the kingdom's and content's, so a group-built item is flagged exactly as an item built alone would have been. No check is removed or loosened; a flag still never blocks. Prove it with tests on a scratch repository: an item whose commit deletes lines of an existing test is flagged; one that only adds a new test file is not; an item named rule.x is not charged with rule.x-more's commits. Then put right what slipped: set content.resistance-to-weak-and-vigil-party-spirit to the review state the gate would have given it, BY THE GATE'S OWN TOOL (find the command that re-reads a landed item's flags, or add one; never hand-edit status), and list every other item landed under the group rule since 2026-10-06 whose commits edited an existing test, so the home chat can tell Andrew. Record the change in GBH SWITCHES.md beside gate.committedItemTestsCount.",
+  "expect": "On a scratch repository the gate flags an item whose own commit changed an existing test and does not flag one whose commit only added a test; the whole-id match holds; content.resistance-to-weak-and-vigil-party-spirit reads done-needs-review, set by the gate's tool; the report lists every group-landed item that should have been flagged; no gate check was removed.",
+  "note": "Filed by the home chat 2026-10-06 from the engine worker's report. Tooling: it goes first in the engine worker's next group so the review list is right for everything landed after it."
+ },
+ {
+  "id": "rule.surge-is-at-least-level",
+  "kind": "engine",
+  "shape": "rule",
+  "spec": "Ruled 2026-10-06 (Andrew, engine/DECISIONS.md 'everyone gains Surge equal to its level at the least, and rolls the Surge check every Activation'): 'Everybody should be rolling a surge check after activation. Everyone gains surge equal to level, at the very least. Therefore, there is always at least a 1% chance of a surge.' This settles what 2026-09-27 left open ('how much Surge a hero gains each Turn - the Codex says it equals the level, the schedule says 0 + specialty'). Today a hero is fielded with the progression schedule's Surge (progression/PROGRESSION-SCHEDULE.json and its builder; content's level rows; kingdom/src/content/progress.ts) - 0 for most classes at level 1, plus a specialty's - and the Surge check (engine/src/core/battle.ts case 'surge-check') is skipped for a unit with Surge 0 and no Surge Chance, so most level-1 heroes never roll. Wanted: (1) a hero's Surge stat is its LEVEL at the least, at every level, with what a specialty, a badge (the Fey's +10), an item or a gift gives added on top - put where the stat is made (the schedule's builder and the content's level rows, so the Codex, the hero sheet, the level-up screen and the engine agree on one number; no second rule in the engine that silently adds the level); (2) so every hero rolls the check after each Activation - chance = Surge Chance + Surge, the pool gaining Surge each time and paying 100 for a Surge, exactly as 2026-09-27 ruled; nothing about the check's place above the ladder, the cost, or the relink changes; (3) the level-up screen shows the Surge gained with the level like any other stat. HEROES ONLY for now: the check is the hero side's today (rulesSideOf === 'hero'); whether 'everybody' reaches enemies and civilians is asked of Andrew - do not change that side; say in the report what an enemy's and a civilian's Surge and level are today so he can rule. This moves every battle a hero fights (a 1% chance that grows each Activation): declare changesBaseline, re-export the six opening recordings together on their seeds, and say per recording whether anyone surged and whether it ends differently; no seed is searched for a win. Tests that pinned 'a level-1 hero never rolls' are rewritten as the rule with dated notes (Law 10). COMBAT-DESIGN.md's curve (level 1 surges every ~12 Activations, guaranteed by 100) is the check on the numbers: a test over many seeded Activations finds a level-1 hero's first Surge near that.",
+  "expect": "Every base hero at level 1 is fielded with Surge of at least 1 and rolls a Surge check at the end of each Activation; at level 5 its Surge is at least 5; the Forest Fey at level 1 has 11; over many seeded Activations a level-1 hero with no other Surge first surges after about 12 to 14 Activations and never later than its 100th point; the hero sheet, the Codex and the level-up screen show the same Surge the engine fields; enemies and civilians are unchanged; the report says what moved in each opening recording.",
+  "note": "Filed by the home chat 2026-10-06."
+ },
+ {
   "id": "rule.one-move-action-one-primary-action",
   "kind": "engine",
   "shape": "rule",
@@ -47,7 +63,17 @@
   ],
   "spec": "Ruled 2026-10-05 (Andrew, engine/DECISIONS.md 2026-10-05 'the computer avoids its own traps; W moves the view up; the Wolf's numbers stand; the player moves the summoned Wolf; the foliage is tried the smallest way'): asked whether the computer should avoid traps - its own side's, the enemy's, or neither as built - 'Computers should avoid their own traps.' capability.placed-traps landed with the computer knowing of no trap at all, so a computer-run unit can walk onto a trap its own side placed (engine SWITCHES trapUnknownToTheComputer). Wanted in the computer's movement choice, with no content name in core: a unit played by the computer treats a hex holding a trap placed by its OWN side as a hex it will not end on or path through when any other way to do what it means to do exists (another path of no greater cost, another hex to attack from); if the only way to act at all runs over its own side's trap, say what it does in a switch - the default: it does not walk it, and takes its next best action. A trap placed by the other side stays unknown to it, exactly as built - he named only its own. A push, a pull or a placement onto a trap is not a choice and still springs it. This holds for a hero's side when the computer plays the heroes (the recordings, the control battles) and for the enemy's side. Mark trapUnknownToTheComputer overturned in part with his words. Declare changesBaseline if control battles move; the opening recordings place no trap and should not move - say so.",
   "expect": "In test.bear-traps and a second fielding where an enemy places a trap, over 100 replicates no unit played by the computer ever steps onto a trap its own side placed while another path or action exists, and units still spring the other side's traps as before; a unit pushed onto its own side's trap still springs it; the six opening recordings are event for event the same.",
-  "note": "Filed by the home chat 2026-10-05."
+  "note": "Filed by the home chat 2026-10-05.",
+  "probeIds": [
+   "power.bear-trap.use",
+   "power.test-snare"
+  ],
+  "variants": [
+   "power.bear-trap.use",
+   "power.test-snare"
+  ],
+  "status": "done",
+  "sha": "644d244"
  },
  {
   "id": "rule.prone-only-stand-up",
@@ -107,7 +133,13 @@
   ],
   "spec": "Ruled 2026-10-05 (Andrew, engine/DECISIONS.md 'a prone unit only stands; Stand Up is its one move; a set counts everything carried; Dwarf, Elf and Fey act; no gift doubles a hero's own badge; what cannot be paid is greyed; the player moves a summon; Resistance to Weak; the Vigil heals by the party's Spirit'): asked whether Holy Texts should count as a book and Heavy Chain as a chain for set bonuses - '8, yes.' - and what a set bonus counts - 'Everything you carry' (as built: engine SWITCHES setBonusCountsWhatIsCarried). capability.set-bonus left both untagged because the `book` and `chain` tags would also open them to Forge enchantments (engine SWITCHES setBonusTagsAdded). Wanted: Holy Texts is counted by 'for every BOOK you carry' and Heavy Chain by 'for every CHAIN item you carry', WITHOUT changing what the Forge may enchant - by a set-membership tag that the enchantment rule does not read, or by teaching the enchantment rule that set membership is not a weapon form; choose the smaller, record it as a switch with the other side, and prove with a test that the Forge's offers for both items are exactly what they were. Through the content pipeline; the Equip screen's count and the item card's set line follow by themselves. Look for any other item that plainly belongs to a set its row's words name and is not counted (a book, a chain, a ring, a destroyer item): list them in the report rather than tag them - only these two are ruled.",
   "expect": "A hero carrying the Book of Karma and Holy Texts has +2 Resist from the set; one carrying the Chains of the Wrathful and Heavy Chain has the chain bonus for two; the Forge offers for Holy Texts and Heavy Chain are unchanged (a test compares before and after); the report lists any other uncounted item found.",
-  "note": "Filed by the home chat 2026-10-05."
+  "note": "Filed by the home chat 2026-10-05.",
+  "probeIds": [
+   "item.book-of-karma",
+   "item.chains-of-the-wrathful"
+  ],
+  "status": "done",
+  "sha": "465a797"
  },
  {
   "id": "content.resistance-to-weak-and-vigil-party-spirit",
@@ -118,7 +150,13 @@
   ],
   "spec": "Ruled 2026-10-05 (Andrew, engine/DECISIONS.md 'a prone unit only stands; Stand Up is its one move; a set counts everything carried; Dwarf, Elf and Fey act; no gift doubles a hero's own badge; what cannot be paid is greyed; the player moves a summon; Resistance to Weak; the Vigil heals by the party's Spirit'): 'Immunity to week 2 should now be resistance to week 2. And yes, when we get to that part, it should remove two points of weak' and, asked whether the Banner of the Vigil heals each ally by that ally's own Spirit or the party's, '2 by the party spirit'. Two small content changes, one landing (GBH SWITCHES landing.groupOfSmallItems): (1) the word - everywhere a player or a document reads 'Immunity to Weak N' it reads 'Resistance to Weak N' (GLOSSARY.md 'Settled, 2026-10-05': Resistance to Weak; ids and field names are not renamed): the Banner of Courage's line, the floating words ('WEAK WARDED -2' becomes the GLOSSARY's word), the log line, the tooltip, the Codex, and any other row that carries the same clause (the review of 2026-10-04 counted four of his rows and names the Necklace) - and the mechanism is what capability.planted-banners built for the banner, N points off each Weak gained (engine SWITCHES immunityIsAWard): mark that switch ruled. Where another row carries the clause and is still a named gap, wire it to the same mechanism if it needs nothing new; otherwise leave it named and list it. 'Immune' stays the word for a unit that can gain none of a status. (2) the Banner of the Vigil heals an ally inside by the PARTY's Spirit at the end of its Activation (engine SWITCHES vigilHealsItsOwnSpirit overturned with his words) - the row's sentence says so too.",
   "expect": "No screen, log line, tooltip or Codex line reads 'Immunity to Weak'; the Banner of Courage reads 'Resistance to Weak 2' and Weak 5 gained inside it leaves 3; an ally with no Spirit of its own ending its Activation in the Vigil's aura heals by the party's Spirit; a test holds both; the report lists every row whose words changed and any left as a named gap.",
-  "note": "Filed by the home chat 2026-10-05."
+  "note": "Filed by the home chat 2026-10-05.",
+  "probeIds": [
+   "power.banner-courage.plant",
+   "power.banner-vigil.plant"
+  ],
+  "status": "done",
+  "sha": "da1d217"
  },
  {
   "id": "content.orphanage-body-and-graves-cursed",

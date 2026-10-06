@@ -18,7 +18,14 @@ import { executeCharge, planCharge, type ChargePlan } from './charge.js'
 export { activationChoices, controllerOf, heroesYetToAct, type ControlPolicy } from './control.js'
 
 /** Shared action input; session ownership is supplied separately from client data. */
-export type ActionRequest = { actor: number; actionId: string; slot?: import('./types.js').ActionSlot } & ({ target: number } | { destination: number } | { centre: number }
+export type ActionRequest = { actor: number; actionId: string; slot?: import('./types.js').ActionSlot
+  /**
+   * rule.computer-avoids-own-traps (2026-10-06; DECISIONS.md 2026-10-05 'the computer avoids its own traps; …'): hexes this
+   * MOVEMENT will not enter — a walk's or a charge's path goes round them, and a move that would end on one is refused. On a
+   * movement only; one or more hexes of the board, ascending, none twice (Law 6: one spelling of one request). The mover
+   * says which: the computer names the hexes holding its own side's traps (ai/modes.ts); a player's request names none.
+   */
+  avoid?: readonly number[] } & ({ target: number } | { destination: number } | { centre: number }
   /** v2.prop-attack (COMBAT-V2 §12.2): an attack with Destroy aimed at a hex holding a prop. */
   | { hex: number })
 export type BattleCommand = { kind: 'select-activation'; unitUid: number; expectedSeq: number } | (ActionRequest & { kind: 'action'; expectedSeq: number }) | { kind: 'end-cycle'; actor: number; expectedSeq: number }
@@ -57,10 +64,20 @@ function planAction(ctx: Ctx, request: unknown): Plan | Rejection {
   const aimed = Object.hasOwn(request, 'target')
   const centred = Object.hasOwn(request, 'centre')
   const hexed = Object.hasOwn(request, 'hex')
-  if (!keys(request, ['actor', 'actionId', centred ? 'centre' : aimed ? 'target' : hexed ? 'hex' : 'destination', ...(Object.hasOwn(request, 'slot') ? ['slot'] : [])])) return reject('malformed-action')
+  if (!keys(request, ['actor', 'actionId', centred ? 'centre' : aimed ? 'target' : hexed ? 'hex' : 'destination', ...(Object.hasOwn(request, 'slot') ? ['slot'] : []), ...(Object.hasOwn(request, 'avoid') ? ['avoid'] : [])])) return reject('malformed-action')
   if (request.slot !== undefined && request.slot !== 'movement' && request.slot !== 'primary') return reject('malformed-action')
   const { actor, actionId } = request
   if (!integer(actor) || !ctx.state.units[actor] || typeof actionId !== 'string') return reject('malformed-action')
+  // rule.computer-avoids-own-traps: the hexes a movement will not enter — a plain list of board hexes, ascending, none twice
+  let avoid: ReadonlySet<number> | undefined
+  if (request.avoid !== undefined) {
+    const list = request.avoid
+    if (!Array.isArray(list) || Object.getPrototypeOf(list) !== Array.prototype || !list.length) return reject('malformed-action')
+    if (list.some((h, i) => !integer(h) || h >= ctx.state.terrain.length || (i > 0 && h <= list[i - 1]))) return reject('malformed-action')
+    const named = Object.hasOwn(ctx.actions, actionId) ? ctx.actions[actionId] : undefined
+    if (!named || !isMove(named)) return reject('malformed-action')
+    avoid = new Set(list as number[])
+  }
   const u = ctx.state.units[actor]
   if (ctx.state.outcome) return reject('battle-complete')
   if (u.lifeState !== 'standing' || isBlocked(ctx, u)) return reject('actor-cannot-act')
@@ -89,13 +106,13 @@ function planAction(ctx: Ctx, request: unknown): Plan | Rejection {
   // capability.charge: a charge carries a move profile but is aimed at a unit, not a hex
   if (isMove(a) && !isCharge(a)) {
     if (aimed || !integer(request.destination) || request.destination >= ctx.state.terrain.length) return reject('malformed-destination')
-    return planMovement(ctx, actor, actionId, request.destination, slot)
+    return planMovement(ctx, actor, actionId, request.destination, slot, avoid)
   }
   if (!aimed || !integer(request.target) || !ctx.state.units[request.target]) return reject('malformed-target')
   const target = request.target
   const forced = forcedTargetOf(ctx, u)
   if (ctx.state.units[target]!.side !== u.side && forced !== null && target !== forced) return reject('forced-target')
-  if (isCharge(a)) return planCharge(ctx, actor, target, actionId, slot)
+  if (isCharge(a)) return planCharge(ctx, actor, target, actionId, slot, avoid)
   if (isAttack(a)) return canAttack(ctx, actor, target, actionId, slot) ? { kind: 'attack', actor, target, actionId, slot } : reject('illegal-target-or-action')
   return canUsePower(ctx, actor, target, actionId, slot) ? { kind: 'power', actor, target, actionId, slot } : reject('illegal-target-or-action')
 }
@@ -122,12 +139,19 @@ export function validateAction(ctx: Ctx, request: unknown): CommandResult {
  * unit id, then prop hex, centre hex. No entry carries `slot`: the engine's
  * own slot resolution applies, exactly as for the AI (SWITCHES.md
  * actionListSlot). Recomputed on every call (Law 8); pure — no state, no RNG.
+ *
+ * `avoid` (rule.computer-avoids-own-traps, 2026-10-06): read with hexes named, the list holds only the movements that enter
+ * none of them — a walk whose path goes round, a charge that reaches round, no move that ends on one — and each of those
+ * entries carries the same `avoid`, so that executing the entry takes the path it was listed for. Everything that is not a
+ * movement is the list it was. With none named (absent or empty) it is exactly the list it was.
  */
-export function legalActions(ctx: Ctx, actor: number): ActionRequest[] {
+export function legalActions(ctx: Ctx, actor: number, avoid?: readonly number[]): ActionRequest[] {
   const u = ctx.state.units[actor]
   if (!u || u.id !== actor) throw new Error(`legalActions: no unit ${actor}`)
   const out: ActionRequest[] = []
   const seen: string[] = []
+  const hexes = avoid?.length ? [...new Set(avoid)].sort((x, y) => x - y) : null
+  const not = hexes ? new Set(hexes) : undefined, named = hexes ? { avoid: hexes } : {}
   for (const actionId of grantedActionIds(ctx, u)) {
     if (seen.includes(actionId)) continue
     seen.push(actionId)
@@ -142,12 +166,12 @@ export function legalActions(ctx: Ctx, actor: number): ActionRequest[] {
     // hex and took the control battles from 32 s to 167 s, 86% of it in
     // planMovement. test/ai-action-list.test.ts holds every listed destination
     // to validateAction across the control battles.
-    if (isMove(a) && !isCharge(a)) { for (const plan of movementOptions(ctx, actor, actionId)) out.push({ actor, actionId, destination: plan.destination }); continue }
+    if (isMove(a) && !isCharge(a)) { for (const plan of movementOptions(ctx, actor, actionId, undefined, not)) out.push({ actor, actionId, destination: plan.destination, ...named }); continue }
     const candidates: ActionRequest[] = []
     if (isBurst(a)) for (const centre of burstCentres(ctx, actor, actionId)) candidates.push({ actor, actionId, centre })
     else if (a.target?.select === 'hex') for (const hex of powerHexesOf(ctx, actor, actionId)) candidates.push({ actor, actionId, hex })
     else {
-      for (let target = 0; target < ctx.state.units.length; target++) candidates.push({ actor, actionId, target })
+      for (let target = 0; target < ctx.state.units.length; target++) candidates.push({ actor, actionId, target, ...(isCharge(a) ? named : {}) })
       if (isAttack(a) && !isCharge(a)) for (const hex of propAttackHexes(ctx, actor, actionId)) candidates.push({ actor, actionId, hex })
     }
     for (const c of candidates) if (validateAction(ctx, c).ok) out.push(c)
@@ -202,6 +226,7 @@ function planCommand(ctx: Ctx, policy: ControlPolicy, command: unknown): Session
   if (kind !== 'action' && kind !== 'end-cycle' && kind !== 'swap') return reject('malformed-command')
   const fields = kind === 'end-cycle' ? ['kind', 'actor', 'expectedSeq'] : kind === 'swap' ? ['kind', 'actor', 'expectedSeq', 'hands'] : ['kind', 'actor', 'expectedSeq', 'actionId', Object.hasOwn(command, 'centre') ? 'centre' : Object.hasOwn(command, 'target') ? 'target' : Object.hasOwn(command, 'hex') ? 'hex' : 'destination']
   if (kind === 'action' && Object.hasOwn(command, 'slot')) fields.push('slot')
+  if (kind === 'action' && Object.hasOwn(command, 'avoid')) fields.push('avoid')   // rule.computer-avoids-own-traps: the same request, whoever sends it
   if (!keys(command, fields) || !integer(actor) || !ctx.state.units[actor] || !integer(expectedSeq)) return reject('malformed-command')
   if (ctx.state.outcome) return reject('battle-complete')
   if (ctx.battleCursor?.at !== 'acting') return reject('not-acting')
@@ -215,7 +240,7 @@ function planCommand(ctx: Ctx, policy: ControlPolicy, command: unknown): Session
     const why = canSwap(ctx, actor, hands)
     return why ? reject(`illegal-swap: ${why}`) : { kind, actor, hands: [...hands] }
   }
-  return planAction(ctx, { actor, actionId: command.actionId, ...(Object.hasOwn(command, 'centre') ? { centre: command.centre } : Object.hasOwn(command, 'target') ? { target: command.target } : Object.hasOwn(command, 'hex') ? { hex: command.hex } : { destination: command.destination }), ...(Object.hasOwn(command, 'slot') ? { slot: command.slot } : {}) })
+  return planAction(ctx, { actor, actionId: command.actionId, ...(Object.hasOwn(command, 'centre') ? { centre: command.centre } : Object.hasOwn(command, 'target') ? { target: command.target } : Object.hasOwn(command, 'hex') ? { hex: command.hex } : { destination: command.destination }), ...(Object.hasOwn(command, 'slot') ? { slot: command.slot } : {}), ...(Object.hasOwn(command, 'avoid') ? { avoid: command.avoid } : {}) })
 }
 
 /** A public UI may ask legality, then use pipeline previews for numbers; no future roll is exposed. */

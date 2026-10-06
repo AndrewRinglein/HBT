@@ -246,7 +246,8 @@ export function applyStatus(ctx: Ctx, unitId: number, id: string, value: number,
   const def = ctx.statuses[id]
   if (!def) throw new Error(`unknown status '${id}' — statuses are an explicit registry, check content/statuses.ts`)
   const u = unit(ctx, unitId)
-  // capability.planted-banners (2026-10-05): "Immunity to Weak 2 while inside it" — while the unit stands in the reach of a
+  // capability.planted-banners (2026-10-05): "Resistance to Weak 2 while inside it" (the row's word since 2026-10-06 — GLOSSARY
+  // 'Settled, 2026-10-05'; it read "Immunity to Weak 2". The line's id and the field keep theirs) — while the unit stands in the reach of a
   // planted object of its own side that wards this status, that many points of EACH application do not land (the largest ward
   // over it, never their sum; the lowest object id on a tie — Law 6). What is left lands as it always did.
   if (value > 0) {

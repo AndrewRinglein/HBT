@@ -44,6 +44,18 @@ function requestKey(r: ActionRequest): string {
   const aim = 'target' in r ? `t${r.target}` : 'destination' in r ? `d${r.destination}` : 'centre' in r ? `c${r.centre}` : `h${r.hex}`
   return `${r.actionId}|${aim}|${r.slot ?? ''}`
 }
+/**
+ * rule.computer-avoids-own-traps (2026-10-06; DECISIONS.md 2026-10-05 'the computer avoids its own traps; …': "Computers
+ * should avoid their own traps."): the hexes holding a trap this unit's OWN side placed, ascending. A unit the computer plays
+ * will not enter one — its action list is read with them named (commands.ts legalActions: no move that ends on one or
+ * paths through one; a walk or a charge goes round where it can) and whatever it does it does with them named, so the path
+ * taken is the path listed. Where the only way runs over one it has no such move, and the mode takes what else it has
+ * (SWITCHES.md computerOwnTrapOnlyWay). A trap the OTHER side placed is not on this list: it stays unknown to the computer,
+ * as capability.placed-traps built it. Read from the board each time (Law 8) — a trap placed or sprung this Activation counts.
+ */
+function ownTrapHexes(ctx: Ctx, u: Unit): number[] {
+  return (ctx.state.traps ?? []).filter((t) => t.side === u.side).map((t) => t.hex).sort((a, b) => a - b)
+}
 function options(decision: Decision, actor: number): ReadList {
   const ctx = decision.ctx
   const held = decision.list
@@ -53,7 +65,7 @@ function options(decision: Decision, actor: number): ReadList {
   // ai.sight (2026-09-27): nor any action aimed at a unit hidden from it — the
   // AI chooses from what it can see, so a hidden foe is never a plan
   const self = unit(ctx, actor)
-  const entries = legalActions(ctx, actor).filter((r) =>
+  const entries = legalActions(ctx, actor, ownTrapHexes(ctx, self)).filter((r) =>
     (!('target' in r) || !hiddenFrom(ctx, self, unit(ctx, r.target)))
     && (!decision.anchors.length || !('destination' in r) || anchorsAllow(decision, self, r.destination)))
   const list = { actor, seq: ctx.state.seq, entries, keys: new Set(entries.map(requestKey)) }
@@ -136,7 +148,9 @@ function act(decision: Decision, request: ActionRequest, why: Why): true {
   const free = ctx.actions[request.actionId]!.free
   if (!onList(decision, request)) throw new Error(`AI chose an action not on the action list: ${request.actionId}`)
   logDecision(decision, request, why)
-  const result = executeAction(ctx, request)
+  // rule.computer-avoids-own-traps: a movement is made with its own side's traps named, as its list entry was read
+  const not = ctx.actions[request.actionId]!.move ? ownTrapHexes(ctx, unit(ctx, request.actor)) : []
+  const result = executeAction(ctx, not.length ? { ...request, avoid: not } : request)
   if (!result.ok) throw new Error(`AI selected an illegal action: ${request.actionId}: ${result.reason}`)
   decision.actionsTaken++
   if (free) decision.freeUsed.add(request.actionId)
@@ -437,7 +451,8 @@ function dumbMelee(decision: Decision, u: Unit): void {
       // no opportunity-risk scoring is introduced here.
       // ai.scorer: the row's move tiers rank them (listed by hex, Law 6).
       const distance = ctx.geo.distance(u.hex, target.hex)
-      const plans = movementOptions(ctx, u.id, walk.id)
+      const own = ownTrapHexes(ctx, u)   // rule.computer-avoids-own-traps: the costs are those of the way round
+      const plans = movementOptions(ctx, u.id, walk.id, undefined, own.length ? new Set(own) : undefined)
         .filter(plan => onList(decision, { actor: u.id, destination: plan.destination, actionId: walk.id }))
         .filter(plan => ctx.geo.distance(plan.destination, target.hex) < distance)
         .sort((a, b) => a.destination - b.destination)

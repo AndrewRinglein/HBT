@@ -12005,8 +12005,7 @@ export const UNIT_PACK = {
               "effect": {
                 "kind": "heal",
                 "amount": {
-                  "scale": "stat",
-                  "stat": "spirit",
+                  "scale": "partySpirit",
                   "base": 0,
                   "mult": 1
                 }
@@ -15855,7 +15854,10 @@ export const UNIT_PACK = {
       "abilities": [
         "power.holy-texts.mercy"
       ],
-      "triggers": []
+      "triggers": [],
+      "setTags": [
+        "book"
+      ]
     },
     "item.bane-blade": {
       "id": "item.bane-blade",
@@ -18252,7 +18254,10 @@ export const UNIT_PACK = {
       },
       "grants": [],
       "abilities": [],
-      "triggers": []
+      "triggers": [],
+      "setTags": [
+        "chain"
+      ]
     },
     "item.mismatched-armor": {
       "id": "item.mismatched-armor",
@@ -20736,7 +20741,7 @@ export const UNIT_PACK = {
     },
     "item.necklace-of-weakness-immunity": {
       "id": "item.necklace-of-weakness-immunity",
-      "name": "Necklace of Weakness Immunity",
+      "name": "Necklace of Weakness Resistance",
       "itemClass": "trinket",
       "tier": 2,
       "hands": 0,
@@ -23643,6 +23648,77 @@ export const UNIT_PACK = {
           "power.sidestep"
         ],
         "triggers": []
+      },
+      {
+        "typeId": "test-snarer",
+        "name": "Snarer (TEST)",
+        "maxHp": 10,
+        "armor": 0,
+        "resist": 0,
+        "accuracy": 65,
+        "dodge": 0,
+        "strength": 4,
+        "precision": 0,
+        "magic": 0,
+        "spirit": 0,
+        "role": "melee",
+        "movement": 4,
+        "reach": 0,
+        "maxStamina": 2,
+        "staminaRegen": 1,
+        "ai": "melee-aggressive",
+        "attacks": [
+          "attack.test-zombie.bite"
+        ],
+        "abilities": [
+          "power.test-snare"
+        ],
+        "tags": [
+          "undead"
+        ],
+        "triggers": [
+          {
+            "id": "trigger.zombie.rot",
+            "hook": "onDamage",
+            "chance": 20,
+            "select": "target",
+            "effect": {
+              "kind": "status.apply",
+              "statusId": "status.poison",
+              "value": 1
+            },
+            "source": "unit.test-snarer",
+            "onlyWithAttack": "attack.test-zombie.bite"
+          },
+          {
+            "id": "test.zombie.sap",
+            "hook": "onDamage",
+            "chance": 20,
+            "select": "target",
+            "effect": {
+              "kind": "status.apply",
+              "statusId": "status.weak",
+              "value": 1
+            },
+            "source": "unit.test-snarer"
+          },
+          {
+            "id": "test.zombie.grasp",
+            "hook": "onHit",
+            "chance": 20,
+            "select": "target",
+            "effect": {
+              "kind": "status.apply",
+              "statusId": "status.slow",
+              "value": 1
+            },
+            "source": "unit.test-snarer"
+          }
+        ],
+        "moves": [
+          "power.move"
+        ],
+        "side": "enemy"
       }
     ],
     "attacks": {
@@ -24064,6 +24140,33 @@ export const UNIT_PACK = {
         "staminaCost": 1,
         "cooldown": 2,
         "free": true
+      },
+      "power.test-snare": {
+        "id": "power.test-snare",
+        "name": "Snare (TEST)",
+        "range": 3,
+        "target": {
+          "select": "hex",
+          "side": "any"
+        },
+        "effects": [
+          {
+            "kind": "trap.place",
+            "damage": {
+              "amount": 2,
+              "damageType": "physical"
+            },
+            "statuses": [
+              {
+                "statusId": "status.root",
+                "value": 1
+              }
+            ]
+          }
+        ],
+        "staminaCost": 1,
+        "cooldown": 0,
+        "uses": 1
       }
     },
     "statuses": {
@@ -37917,6 +38020,9 @@ export const UNIT_PACK = {
         "power.holy-texts.mercy"
       ],
       "triggers": [],
+      "setTags": [
+        "book"
+      ],
       "vsTarget": [
         {
           "tag": "undead",
@@ -37953,6 +38059,9 @@ export const UNIT_PACK = {
         "power.holy-texts.mercy"
       ],
       "triggers": [],
+      "setTags": [
+        "book"
+      ],
       "vsTarget": [
         {
           "tag": "undead",
@@ -37981,6 +38090,9 @@ export const UNIT_PACK = {
         "power.holy-texts.mercy"
       ],
       "triggers": [],
+      "setTags": [
+        "book"
+      ],
       "base": "item.holy-texts",
       "enchant": "enchant.heavens-edge",
       "gaps": [
@@ -38005,6 +38117,9 @@ export const UNIT_PACK = {
         "power.holy-texts.mercy"
       ],
       "triggers": [],
+      "setTags": [
+        "book"
+      ],
       "vsTarget": [
         {
           "tag": "demon",
@@ -41745,6 +41860,9 @@ export const UNIT_PACK = {
       "grants": [],
       "abilities": [],
       "triggers": [],
+      "setTags": [
+        "chain"
+      ],
       "base": "item.heavy-chain",
       "enchant": "enchant.warded"
     },
@@ -41763,6 +41881,9 @@ export const UNIT_PACK = {
       "grants": [],
       "abilities": [],
       "triggers": [],
+      "setTags": [
+        "chain"
+      ],
       "base": "item.heavy-chain",
       "enchant": "enchant.durable"
     },
@@ -41783,6 +41904,9 @@ export const UNIT_PACK = {
       "grants": [],
       "abilities": [],
       "triggers": [],
+      "setTags": [
+        "chain"
+      ],
       "base": "item.heavy-chain",
       "enchant": "enchant.enduring"
     },
@@ -41803,6 +41927,9 @@ export const UNIT_PACK = {
       "grants": [],
       "abilities": [],
       "triggers": [],
+      "setTags": [
+        "chain"
+      ],
       "base": "item.heavy-chain",
       "enchant": "enchant.might"
     },
@@ -41822,6 +41949,9 @@ export const UNIT_PACK = {
       "grants": [],
       "abilities": [],
       "triggers": [],
+      "setTags": [
+        "chain"
+      ],
       "base": "item.heavy-chain",
       "enchant": "enchant.runed"
     },
@@ -45147,6 +45277,9 @@ export const UNIT_PACK = {
         "power.holy-texts.mercy"
       ],
       "triggers": [],
+      "setTags": [
+        "book"
+      ],
       "base": "item.holy-texts"
     },
     "item.holy-texts.heavy": {
@@ -45165,6 +45298,9 @@ export const UNIT_PACK = {
         "power.holy-texts.mercy"
       ],
       "triggers": [],
+      "setTags": [
+        "book"
+      ],
       "base": "item.holy-texts",
       "enchant": "enchant.heavy"
     },
@@ -45184,6 +45320,9 @@ export const UNIT_PACK = {
         "power.holy-texts.mercy"
       ],
       "triggers": [],
+      "setTags": [
+        "book"
+      ],
       "base": "item.holy-texts",
       "enchant": "enchant.keen"
     },
@@ -45203,6 +45342,9 @@ export const UNIT_PACK = {
         "power.holy-texts.mercy"
       ],
       "triggers": [],
+      "setTags": [
+        "book"
+      ],
       "base": "item.holy-texts",
       "enchant": "enchant.cruel"
     },
@@ -47772,6 +47914,9 @@ export const UNIT_PACK = {
       "grants": [],
       "abilities": [],
       "triggers": [],
+      "setTags": [
+        "chain"
+      ],
       "base": "item.heavy-chain"
     },
     "item.heavy-chain.hale": {
@@ -47789,6 +47934,9 @@ export const UNIT_PACK = {
       "grants": [],
       "abilities": [],
       "triggers": [],
+      "setTags": [
+        "chain"
+      ],
       "base": "item.heavy-chain",
       "enchant": "enchant.hale"
     },
@@ -47807,6 +47955,9 @@ export const UNIT_PACK = {
       "grants": [],
       "abilities": [],
       "triggers": [],
+      "setTags": [
+        "chain"
+      ],
       "base": "item.heavy-chain",
       "enchant": "enchant.lucky"
     },
@@ -47825,6 +47976,9 @@ export const UNIT_PACK = {
       "grants": [],
       "abilities": [],
       "triggers": [],
+      "setTags": [
+        "chain"
+      ],
       "base": "item.heavy-chain",
       "enchant": "enchant.nimble"
     },
@@ -47842,6 +47996,9 @@ export const UNIT_PACK = {
       "grants": [],
       "abilities": [],
       "triggers": [],
+      "setTags": [
+        "chain"
+      ],
       "base": "item.heavy-chain",
       "enchant": "enchant.fleet"
     },
@@ -52017,7 +52174,7 @@ export const UNIT_PACK = {
       "grants": [],
       "flags": {},
       "gaps": [
-        "Immune weak 1"
+        "Resistance to Weak 1"
       ]
     },
     "badge.fire-resistant": {

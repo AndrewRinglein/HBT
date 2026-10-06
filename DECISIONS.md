@@ -5650,3 +5650,19 @@ Ruled:
 - **An engine item is built in a group of up to four, like the small viewer and kingdom items of 2026-10-04 (rule 16): one set of heavy checks for the group.** This changes GBH-PROTOCOL's "One item, one commit ... Never batch" for the checks only: each item is still its own commit, with its own test written first and seen red.
 - **The group's heavy checks run once, after its last item is built, and again nothing is merged into main without them having passed on the merged tree.**
 - The chat's working rules for it, each a line to change: within a group a worker runs only the item's own tests as it builds; an item that declares it changes the control battles has the control battles run at ITS commit, so what it moved is still known; a group that fails is searched commit by commit, the item that broke it is fixed or taken out of the group and the rest lands; a group is of items that belong together in one worker's list, never held open waiting for a fourth.
+
+## 2026-10-06 — everyone gains Surge equal to its level at the least, and rolls the Surge check every Activation
+
+Andrew, in the kingdom chat, reading that the Fey badge takes the Forest Fey's Surge from 0 to 10 "so it now rolls a Surge check each Activation":
+
+“You have a note after "forced fade rolls a surge check after activation." Everybody should be rolling a surge check after activation. Everyone gains surge equal to level, at the very least. Therefore, there is always at least a 1% chance of a surge. Is that not the way it works now?”
+
+It is not how it works now, and this is the answer to the question left open on 2026-09-27 ('Surge: a pool that pays 100 per Surge' - "Not ruled here: how much Surge a hero gains each Turn - the Codex says it equals the level, the schedule says 0 + specialty. Still open"). Today the engine fields a hero with the schedule's Surge (progression/PROGRESSION-SCHEDULE.json: 0 for most classes at level 1, plus what a specialty gives), and the Surge check is skipped for a unit with Surge 0 and no Surge Chance (src/core/battle.ts 'surge-check'), so most level-1 heroes never roll.
+
+Ruled:
+
+- **Every hero's Surge is at least its level** - what it gains each Activation toward its Surge Chance - with whatever a specialty, a badge or an item gives on top (the Fey's +10 makes 11 at level 1). The Codex's reading stands; the schedule's "0 + specialty" is wrong.
+- **Everybody rolls the Surge check after its Activation.** With Surge of at least 1 there is always at least a 1% chance; COMBAT-DESIGN's curve ("Level 1: surges every ~12 Activations, guaranteed by 100") is what this gives.
+- Asked the same day and not yet answered: whether "everybody" reaches the enemy side and civilians, who do not roll today (the check is the hero side's). Until he says, it is the heroes.
+
+Filed: `rule.surge-is-at-least-level`.

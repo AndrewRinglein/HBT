@@ -38466,6 +38466,15 @@ Andrew 2026-10-06: 'We don't need an attack with several chosen targets. This we
   PASS  the item's own tests — test/viewer.attack-row-shows-totals.test.ts
   PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
   PASS  brought its own tests — viewer/test/viewer.attack-row-shows-totals.test.ts
+## content.sets-count-holy-texts-and-heavy-chain — LANDED `465a797`
+2026-10-06 13:50
+
+  PASS  dependencies landed
+  WARN  not already decided — 2 candidate ruling(s) — READ BEFORE ASKING: SWITCHES.md:2526 · SWITCHES.md:2530
+  PASS  typecheck
+  PASS  the item's own tests — test/sets-count-holy-texts-and-heavy-chain.test.ts
+  PASS  gate 1 — the id appears in a real battle — item.book-of-karma: 2 log lines, 2 fired, 2 changed state · item.chains-of-the-wrathful: 2 log lines, 2 fired, 2 changed state
+  PASS  brought its own tests — test/sets-count-holy-texts-and-heavy-chain.test.ts
   PASS  existing tests untouched
   PASS  control battles unchanged
   PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
@@ -38488,6 +38497,22 @@ Andrew 2026-10-06: 'We don't need an attack with several chosen targets. This we
   PASS  brought its own tests — viewer/test/viewer.used-up-power-stays-greyed.test.ts
   PASS  existing tests untouched
   SKIPPED  control battles unchanged — engine code f60aaf9a04 and the content pack are the ones the control battles last passed on (2026-10-06 14:45, gate viewer.attack-row-shows-totals --land, in HBT-worker-content) — not run
+  PASS  generalizes — the second instance costs zero engine code — shape 'data' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without item.book-of-karma,item.chains-of-the-wrathful — they genuinely test it
+
+## content.resistance-to-weak-and-vigil-party-spirit — LANDED `da1d217`
+2026-10-06 14:20
+
+  PASS  dependencies landed
+  WARN  not already decided — 1 candidate ruling(s) — READ BEFORE ASKING: SWITCHES.md:2282
+  PASS  typecheck
+  PASS  the item's own tests — test/immune-one-is-resist.test.ts, test/planted-banners.test.ts, test/resistance-to-weak-and-vigil-party-spirit.test.ts
+  PASS  gate 1 — the id appears in a real battle — power.banner-courage.plant: 16 log lines, 16 fired, 5 changed state · power.banner-vigil.plant: 18 log lines, 18 fired, 5 changed state
+  PASS  brought its own tests — test/immune-one-is-resist.test.ts, test/planted-banners.test.ts, test/resistance-to-weak-and-vigil-party-spirit.test.ts
+  PASS  existing tests untouched
+  SKIPPED  control battles unchanged — engine code 852b05fc95 and the content pack are the ones the control battles last passed on (2026-10-06 13:50, gate content.sets-count-holy-texts-and-heavy-chain --land, in HBT-worker-engine) — not run
   PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
   PASS  hardcode scan — core knows mechanisms, never names
   PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
@@ -38508,6 +38533,22 @@ Andrew 2026-10-06: 'We don't need an attack with several chosen targets. This we
   PASS  brought its own tests — viewer/test/viewer.plates-and-banners-sit-low.test.ts
   PASS  existing tests untouched
   SKIPPED  control battles unchanged — engine code f60aaf9a04 and the content pack are the ones the control battles last passed on (2026-10-06 14:45, gate viewer.attack-row-shows-totals --land, in HBT-worker-content) — not run
+  PASS  generalizes — the second instance costs zero engine code — shape 'data' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without power.banner-courage.plant,power.banner-vigil.plant — they genuinely test it
+
+## rule.computer-avoids-own-traps — LANDED `644d244`
+2026-10-06 14:23
+
+  PASS  dependencies landed
+  WARN  not already decided — 1 candidate ruling(s) — READ BEFORE ASKING: DECISIONS.md:5295
+  PASS  typecheck
+  PASS  the item's own tests — test/battle-cursor.test.ts, test/computer-avoids-own-traps.test.ts
+  PASS  gate 1 — the id appears in a real battle — power.bear-trap.use: 14 log lines, 14 fired, 12 changed state · power.test-snare: 6 log lines, 6 fired, 4 changed state
+  PASS  brought its own tests — test/battle-cursor.test.ts, test/computer-avoids-own-traps.test.ts, test/fixtures/battle-cursor-computer-avoids-own-traps.json
+  PASS  existing tests untouched
+  SKIPPED  control battles unchanged — engine code 852b05fc95 and the content pack are the ones the control battles last passed on (2026-10-06 13:50, gate content.sets-count-holy-texts-and-heavy-chain --land, in HBT-worker-engine) — not run
   PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
   PASS  hardcode scan — core knows mechanisms, never names
   PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
@@ -38536,3 +38577,7 @@ Andrew 2026-10-06: 'We don't need an attack with several chosen targets. This we
   PASS  naming — new content ids use declared kinds
   PASS  naming — no banned words invented
   PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+  PASS  generalizes — the second instance costs zero engine code — power.bear-trap.use live · power.test-snare live
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without power.bear-trap.use,power.test-snare — they genuinely test it

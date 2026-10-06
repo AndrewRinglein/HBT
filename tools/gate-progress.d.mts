@@ -22,5 +22,7 @@ export function parseShard(arg: unknown): { k: number; n: number } | null
 export function normalizeShards(raw: unknown, tree: string): ShardRecord
 export function recordShard(raw: unknown, tree: string, k: number, n: number, ok: boolean): ShardRecord
 export function shardStatus(raw: unknown, tree: string, defaultN: number): ShardStatus
+/** The test/ files of the commits in cwd that name the item, in git-status-porcelain form (GBH SWITCHES gate.committedItemTestsCount). */
+export function committedItemTests(id: string, cwd?: string): string
 export function testFilesIn(porcelain: string): string[]
 export function killSwitchFiles(porcelain: string, full?: boolean): string[]
