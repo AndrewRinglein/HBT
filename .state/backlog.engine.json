@@ -24,7 +24,9 @@
   "variants": [
    "hero.base.warrior-iron",
    "hero.base.ranger-nature"
-  ]
+  ],
+  "status": "done-needs-review",
+  "sha": "43d9b80"
  },
  {
   "id": "rule.one-move-action-one-primary-action",
