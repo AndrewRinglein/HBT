@@ -38649,3 +38649,97 @@ index a5d9bce..a6547ed 100644
    assert.equal(STATIC.actions['power.banner-mystic-power.plant'], undefined, 'the Mystic Banner is not planted as an object that does nothing')
 ```
 </details>
+
+## rule.computer-avoids-own-traps — REFLAGGED, landed `644d244` **NEEDS REVIEW**
+2026-10-06 18:41
+
+Landed 'done' while the gate's flags read only uncommitted edits; read again from the item's commits (gate.mjs --reflag).
+
+  WARN  not already decided — 1 candidate ruling(s) — READ BEFORE ASKING: DECISIONS.md:5295
+  WARN  existing tests untouched — DELETED LINES in test/battle-cursor.test.ts (-6) — will land FLAGGED for review
+  PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  naming — no banned words invented
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+engine e54f5ac rule.computer-avoids-own-traps (and group A's two content items): the battle-cursor layer - 107 cases, none moved, test.snarer-traps added
+
+diff --git a/test/battle-cursor.test.ts b/test/battle-cursor.test.ts
+index 0935ba0..e97ee1c 100644
+--- a/test/battle-cursor.test.ts
++++ b/test/battle-cursor.test.ts
+@@ -549,4 +549,13 @@ const proneOnlyStandUpGolden = JSON.parse(readFileSync(new URL('./fixtures/battl
+ // Every case frozen here (tools/capture-dwarf-elf-fey-badges-act-cursor.mts). Moved: showcase.assembled-party, showcase.eve-24-a, showcase.horrors, showcase.kiln, showcase.prologue-party, showcase.rime, showcase.supper, showcase.surrounded, showcase.waystation, test.back-flip, test.bandages, test.banner-courage, test.bear-traps, test.caravan-aftermath, test.fend, test.field-dressing, test.item-uses, test.mending-light, test.opening-bridge, test.opening-cathedral, test.opening-cavern-trail, test.opening-gates, test.opening-lumberjack, test.opening-orphanage, test.swap, progression-surge-0, progression-surge-1, progression-surge-2. A `changed` case is checked here and skips the older layers.
+ const dwarfElfFeyBadgesActGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-dwarf-elf-fey-badges-act.json', import.meta.url), 'utf8'))
++// The group of 2026-10-06 (DECISIONS.md 'engine items too are built in groups of up to four …'): three items, one layer.
++// content.sets-count-holy-texts-and-heavy-chain (Holy Texts a book, Heavy Chain a chain item for sets - by a set membership the Forge
++// does not read), content.resistance-to-weak-and-vigil-party-spirit (the word; the Banner of the Vigil heals by the party's Spirit) and
++// rule.computer-avoids-own-traps (ruled 2026-10-05: "Computers should avoid their own traps." - a unit the computer plays will not
++// enter a hex holding its own side's trap). No battle fought before moves: no case fields the Book of Karma or the Chains of the
++// Wrathful with either row, none plants the Vigil's banner, and in the one case with traps (test.bear-traps) no hero walked onto a
++// hero's trap. test.snarer-traps is ADDED: a trap an enemy places, on its own side's way.
++// Every case frozen here (tools/capture-computer-avoids-own-traps-cursor.mts). Moved: none. A `changed` case is checked here and skips the older layers.
++const computerAvoidsOwnTrapsGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-computer-avoids-own-traps.json', import.meta.url), 'utf8'))
+ const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
+ // Explicit rule migration, not regenerated historical hashes. These nine old
+@@ -706,5 +715,8 @@ describe('resumable battle cursor', () => {
+       const proneOnlyStandUpExpected = proneOnlyStandUpGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+       const dwarfElfFeyBadgesActExpected = dwarfElfFeyBadgesActGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+-      const dwarfElfFeyBadgesActMoved = dwarfElfFeyBadgesActExpected?.changed === true
++      const computerAvoidsOwnTrapsExpected = computerAvoidsOwnTrapsGolden.cases.find((row:{id:string})=>row.id===fixture.id)
++      const computerAvoidsOwnTrapsMoved = computerAvoidsOwnTrapsExpected?.changed === true
++      // was: const dwarfElfFeyBadgesActMoved = dwarfElfFeyBadgesActExpected?.changed === true — a case group A: content.sets-count-holy-texts-and-heavy-chain, content.resistance-to-weak-and-vigil-party-spirit, rule.computer-avoids-own-traps moved skips this layer too (group A: content.sets-count-holy-texts-and-heavy-chain, content.resistance-to-weak-and-vigil-party-spirit, rule.computer-avoids-own-traps 2026-10-04)
++      const dwarfElfFeyBadgesActMoved = dwarfElfFeyBadgesActExpected?.changed === true || computerAvoidsOwnTrapsMoved
+       // was: const proneOnlyStandUpMoved = proneOnlyStandUpExpected?.changed === true — a case content.dwarf-elf-fey-badges-act moved skips this layer too (content.dwarf-elf-fey-badges-act 2026-10-04)
+       const proneOnlyStandUpMoved = proneOnlyStandUpExpected?.changed === true || dwarfElfFeyBadgesActMoved
+@@ -882,5 +894,12 @@ describe('resumable battle cursor', () => {
+           }
+         } else result = battle.runBattle(ctx)
+-        if (dwarfElfFeyBadgesActExpected) {
++        if (computerAvoidsOwnTrapsExpected) {
++        expect(hash(ctx.events), 'full computer-avoids-own-traps events').toBe(computerAvoidsOwnTrapsExpected.events)
++        expect(hash(ctx.state), 'full computer-avoids-own-traps state').toBe(computerAvoidsOwnTrapsExpected.state)
++        expect(hash(ctx.rng.log), 'full computer-avoids-own-traps RNG').toBe(computerAvoidsOwnTrapsExpected.rng)
++        expect(result).toEqual(computerAvoidsOwnTrapsExpected.result)
++        }
++        // was: if (dwarfElfFeyBadgesActExpected) { — group A: content.sets-count-holy-texts-and-heavy-chain, content.resistance-to-weak-and-vigil-party-spirit, rule.computer-avoids-own-traps (2026-10-04): a case it moved is checked above instead
++        if (dwarfElfFeyBadgesActExpected && !computerAvoidsOwnTrapsMoved) {
+         expect(hash(ctx.events), 'full dwarf-elf-fey-badges-act events').toBe(dwarfElfFeyBadgesActExpected.events)
+         expect(hash(ctx.state), 'full dwarf-elf-fey-badges-act state').toBe(dwarfElfFeyBadgesActExpected.state)
+engine e83f7ba rule.computer-avoids-own-traps (and group A's two content items): the battle-cursor layer captured again with the set rows' fielding in it - 108 cases, none moved, test.sets-counted and test.snarer-traps added
+
+diff --git a/test/battle-cursor.test.ts b/test/battle-cursor.test.ts
+index e97ee1c..b98f92a 100644
+--- a/test/battle-cursor.test.ts
++++ b/test/battle-cursor.test.ts
+@@ -553,7 +553,8 @@ const dwarfElfFeyBadgesActGolden = JSON.parse(readFileSync(new URL('./fixtures/b
+ // does not read), content.resistance-to-weak-and-vigil-party-spirit (the word; the Banner of the Vigil heals by the party's Spirit) and
+ // rule.computer-avoids-own-traps (ruled 2026-10-05: "Computers should avoid their own traps." - a unit the computer plays will not
+-// enter a hex holding its own side's trap). No battle fought before moves: no case fields the Book of Karma or the Chains of the
++// enter a hex holding its own side's trap). No battle fought before moves: no case fielded the Book of Karma or the Chains of the
+ // Wrathful with either row, none plants the Vigil's banner, and in the one case with traps (test.bear-traps) no hero walked onto a
+-// hero's trap. test.snarer-traps is ADDED: a trap an enemy places, on its own side's way.
++// hero's trap. Two cases are ADDED: test.sets-counted (the two set rows counted in a real battle) and test.snarer-traps (a trap an
++// enemy places, on its own side's way).
+ // Every case frozen here (tools/capture-computer-avoids-own-traps-cursor.mts). Moved: none. A `changed` case is checked here and skips the older layers.
+ const computerAvoidsOwnTrapsGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-computer-avoids-own-traps.json', import.meta.url), 'utf8'))
+engine 5f061d2 rule.computer-avoids-own-traps (and group A's two content items): the battle-cursor layer with the group's three fieldings - 109 cases, none moved, test.banner-vigil, test.sets-counted and test.snarer-traps added
+
+diff --git a/test/battle-cursor.test.ts b/test/battle-cursor.test.ts
+index b98f92a..41928c2 100644
+--- a/test/battle-cursor.test.ts
++++ b/test/battle-cursor.test.ts
+@@ -554,6 +554,7 @@ const dwarfElfFeyBadgesActGolden = JSON.parse(readFileSync(new URL('./fixtures/b
+ // rule.computer-avoids-own-traps (ruled 2026-10-05: "Computers should avoid their own traps." - a unit the computer plays will not
+ // enter a hex holding its own side's trap). No battle fought before moves: no case fielded the Book of Karma or the Chains of the
+-// Wrathful with either row, none plants the Vigil's banner, and in the one case with traps (test.bear-traps) no hero walked onto a
+-// hero's trap. Two cases are ADDED: test.sets-counted (the two set rows counted in a real battle) and test.snarer-traps (a trap an
++// Wrathful with either row, none planted the Vigil's banner, and in the one case with traps (test.bear-traps) no hero walked onto a
++// hero's trap. Three cases are ADDED, one fielding to an item: test.sets-counted (the two set rows counted in a real battle),
++// test.banner-vigil (the Vigil's banner planted, an ally with no Spirit healed by the party's) and test.snarer-traps (a trap an
+ // enemy places, on its own side's way).
+ // Every case frozen here (tools/capture-computer-avoids-own-traps-cursor.mts). Moved: none. A `changed` case is checked here and skips the older layers.
+```
+</details>
