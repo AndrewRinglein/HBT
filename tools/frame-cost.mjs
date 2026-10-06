@@ -380,6 +380,8 @@ async function liveRound(page){
 async function battle(browser,port,id){
  const page=await browser.newPage({viewport:{width:1920,height:1080}}),errors=[]
  page.on('pageerror',e=>errors.push(String(e)))
+ /* (kept for a battle that cannot be measured: what its page said) */
+ const said=[];page.on('console',m=>{if(m.type()==='error'&&said.length<6)said.push(m.text().slice(0,200))});page.on('crash',()=>said.push('THE PAGE CRASHED'))
  try{
   const t0=Date.now()
   await page.goto(`http://127.0.0.1:${port}/${relative(ROOT,PAGE).replace(/\\/g,'/')}?play=${id}`)
@@ -430,6 +432,10 @@ async function battle(browser,port,id){
   row.live=await liveRound(page)
   if(errors.length)row.pageErrors=errors
   return row
+ }catch(error){
+  /* a battle that could not be measured says where its page stood: the board's state, the scene's own status line, what the page complained of */
+  let where='';try{where=await Promise.race([page.evaluate(()=>{const sb=window.__sandbox,V=sb&&sb.viewer&&sb.viewer._V,wr=V&&V.dom.stage.parentNode;return ' [the board: '+(wr?wr.className||'no state':'none')+' · '+((document.querySelector('#terrainStatus')||{}).textContent||'')+' · '+((document.querySelector('#terrainLoading')||{}).textContent||'')+' · busy: '+(sb&&sb.busy)+']'}),new Promise(done=>setTimeout(()=>done(' [the page did not answer in 5 s]'),5000))])}catch(e){where=' [the page could not be asked: '+String(e&&e.message||e).split('\n')[0]+']'}
+  throw Error(String(error&&error.message||error).split('\n')[0]+where+(errors.length?' · page errors: '+errors.join(' | '):'')+(said.length?' · the page said: '+said.join(' | '):''))
  }finally{await page.close()}
 }
 
