@@ -5497,3 +5497,11 @@ Ruled:
 - **An attack or action always shows the numbers - the totals - never the numbers that make them up** ("contributing some numbers" is "contributing sum numbers" - dictation). Damage "already shows that way" and stays so.
 - **No list of what a total is made of**, on pointing or anywhere on the row: "there could be four things that are modifying your crit. We just need to see the total." The chat's default (4) in `viewer.attack-row-shows-totals` is struck.
 - The item's own card was not spoken to: it keeps saying what the weapon gives ("+5 Crit"), the chat's default, one line to change.
+
+## 2026-10-06 — the Deathbed notification and the others sit low, near the bottom of the screen
+
+Andrew, in the kingdom chat, playing:
+
+“The deathbed fighting notification and maybe other notifications are still happening too close to the center of the screen. Push it down closer to the bottom of the screen.”
+
+Ruled: **the Deathbed plate, and every other notification still shown near the middle of the screen, moves down close to the bottom** - where the notices already sit (2026-10-05, 'gold and bright text with no backdrop ... right above the bottom of the screen'). This overturns the chat's own default in `viewer.plates-banners-tooltip-gold-look` that the plates and banners "keep their own places" (viewer SWITCHES goldLookPlacesAndSizes); he had ruled their look, and the chat had left their place. Filed: `viewer.plates-and-banners-sit-low`.

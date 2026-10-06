@@ -1,5 +1,16 @@
 [
  {
+  "id": "viewer.plates-and-banners-sit-low",
+  "kind": "viewer",
+  "shape": "plumbing",
+  "needs": [
+   "viewer.plates-banners-tooltip-gold-look"
+  ],
+  "spec": "Ruled 2026-10-06 (Andrew, engine/DECISIONS.md 'the Deathbed notification and the others sit low, near the bottom of the screen'): 'The deathbed fighting notification and maybe other notifications are still happening too close to the center of the screen. Push it down closer to the bottom of the screen.' viewer.notices-gold-low-no-backdrop put the notices just above the action bar, and viewer.plates-banners-tooltip-gold-look gave the Deathbed plate, the injury plates, the phase and wave banners and the affliction pop-up the gold no-backdrop look but, by the chat's default, left them where they were (viewer SWITCHES goldLookPlacesAndSizes, noticePlace) - the Deathbed plate near the middle of the screen over the fight. Wanted: every notification the battle screen shows of its own accord - the Deathbed plate (Deathbed Fighting and its roll), the injury plates, the phase and wave banners, the affliction pop-up, 'New enemy', the lessons, 'No remaining actions possible', and any other found by walking the page's sources - sits low, in the same band just above the stamina strip and action bar where the notices stack, never over the middle of the board; when more than one shows at once they stack upward from that band in the order they came, none over another, and if the stack would climb past the lower third of the screen the oldest leaves first (record that as a switch with the other side). Their timing, their words and their look are unchanged. Not moved: what the player asked for with the pointer (the hex tooltip stays at the pointer; an item's card stays beside the panel), the questions with buttons (End Turn, switch hero, Skip tutorial - they keep their place and dimmed screen unless they too sit near the centre AND carry no button: say what you found), and the floating numbers and words over a unit ('STABILISED', damage, 'TRAP!') which belong to the unit. The kingdom's screens between battles already put their gold line at the bottom. Mark goldLookPlacesAndSizes overturned for place with his words. List in the report every notification kind found and where each now sits.",
+  "expect": "A Deathbed plate, an injury plate, a phase banner, a wave banner and the affliction pop-up each show in the band just above the action bar, none within the middle third of the screen's height (measured on the page, as the notices were); two at once stack without overlapping; the hex tooltip is still at the pointer and the floating words still over their unit; each notification's timing and words are what they were; the report lists every kind found and its place.",
+  "note": "Filed by the home chat 2026-10-06."
+ },
+ {
   "id": "viewer.attack-row-shows-totals",
   "kind": "viewer",
   "shape": "plumbing",
