@@ -2,7 +2,7 @@
 // why in one plain line in the battle screen — never silent, never a raw code like activation-not-selectable). The engine
 // refuses with a code (src/core/commands.ts, src/core/movement.ts); this table only words it. Who is named comes from the
 // caller (the engine's own unit names); nothing here decides whether an order is legal (kingdom SWITCHES turnRefusalWords).
-export type RefusalWho={actor?:string|null;target?:string|null;action?:string|null}
+export type RefusalWho={actor?:string|null;target?:string|null;action?:string|null;/** the name of the stand a knocked-down unit is granted (the engine's own action name) */stand?:string|null}
 
 /** One plain sentence for an engine refusal code. An unknown code still reads as a sentence, never as the code. */
 export function refusalLine(code:string,who:RefusalWho={}):string{
@@ -11,6 +11,9 @@ export function refusalLine(code:string,who:RefusalWho={}):string{
  switch(code){
   case 'unreachable-destination':return `${a} cannot reach that hex.`
   case 'actor-rooted':return `${a} is rooted and cannot move.`
+  // rule.prone-only-stand-up (engine DECISIONS.md 2026-10-05, Andrew: "yes, it cannot use attacks or powers until it stands."):
+  // the engine refuses a knocked-down unit everything but its stand, with this code - the words the bar's greyed rows carry
+  case 'actor-prone':return `Knocked down: ${who.stand??'stand up'} first.`
   case 'movement-slot-closed':return `${a} has already moved - attack, or End Activation.`
   case 'action-slot-closed':return `${a} has already used that part of its Activation.`
   case 'action-not-ready':return `${x} is not ready.`
@@ -28,6 +31,22 @@ export function refusalLine(code:string,who:RefusalWho={}):string{
   case 'not-human-controlled':return `${t} is not yours to command.`
   case 'activation-not-selectable':return `${t} cannot begin an Activation now.`
   default:return code.startsWith('malformed-')?'That order was not understood.':'That cannot be done now.'
+ }
+}
+
+/** viewer.unaffordable-actions-greyed (engine DECISIONS.md 2026-10-05 'a prone unit only stands; …; what cannot be paid is greyed; …', Andrew: "If a tax can't be paid for or a power can't be paid for, it should be grayed out." ('tax' is 'attack' - dictation)): why the engine's
+    limits check refuses an action its unit holds — one plain line from the engine's own numbers. The engine answers yes or
+    no (action.ts actionReady) and says no sentence; which of its questions failed is read by the caller in the order the
+    check asks them (Stamina, then the Turn it is ready on, then a use), and worded here (kingdom SWITCHES unpaidWords). */
+export type Unpaid={kind:'stamina';needs:number;has:number}|{kind:'cooldown';turns:number}|{kind:'warm-up';turns:number}|{kind:'uses'}|{kind:'other'}
+export function unpaidLine(u:Unpaid):string{
+ const turns=(n:number)=>`${n} ${n===1?'Turn':'Turns'}`
+ switch(u.kind){
+  case 'stamina':return `Not enough Stamina: needs ${u.needs}, has ${u.has}.`
+  case 'cooldown':return `On cooldown: ready in ${turns(u.turns)}.`
+  case 'warm-up':return `Warming up: ready in ${turns(u.turns)}.`
+  case 'uses':return 'No uses left this Battle.'
+  default:return 'Not ready.'
  }
 }
 
