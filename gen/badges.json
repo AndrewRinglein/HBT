@@ -1723,6 +1723,8 @@
    "id": "badge.dwarf",
    "name": "Dwarf",
    "rarity": "common",
+   "payload": "−1 Movement · +2 Max HP",
+   "payloadIsData": true,
    "statModifiers": [
     {
      "stat": "movement",
@@ -1736,12 +1738,15 @@
     }
    ],
    "intent": "Short, heavy and hard to move off a hex.",
-   "source": "Authored 2026-08-22 to separate the 24 Eve base heroes, which shared stat blocks."
+   "source": "Authored 2026-08-22 to separate the 24 Eve base heroes, which shared stat blocks.",
+   "note": "Acts since 2026-10-05 (engine content.dwarf-elf-fey-badges-act; engine/DECISIONS.md 2026-10-05 'a prone unit only stands; … Dwarf, Elf and Fey act; …': \"6. They should act.\"). The effect line is written from the numbers below, nothing added."
   },
   {
    "id": "badge.elf",
    "name": "Elf",
    "rarity": "common",
+   "payload": "+3 Vision · +2 Luck",
+   "payloadIsData": true,
    "statModifiers": [
     {
      "stat": "vision",
@@ -1755,12 +1760,15 @@
     }
    ],
    "intent": "Sees further and is harder to catch out.",
-   "source": "Authored 2026-08-22 to separate the 24 Eve base heroes, which shared stat blocks."
+   "source": "Authored 2026-08-22 to separate the 24 Eve base heroes, which shared stat blocks.",
+   "note": "Acts since 2026-10-05 (engine content.dwarf-elf-fey-badges-act; engine/DECISIONS.md 2026-10-05 'a prone unit only stands; … Dwarf, Elf and Fey act; …': \"6. They should act.\"). The effect line is written from the numbers below, nothing added."
   },
   {
    "id": "badge.fey",
    "name": "Fey",
    "rarity": "uncommon",
+   "payload": "+10 Surge",
+   "payloadIsData": true,
    "statModifiers": [
     {
      "stat": "surge",
@@ -1769,7 +1777,8 @@
     }
    ],
    "intent": "Acts out of turn more often than anything mortal should. SOFT: +10 Surge is large against a stat whose base IS the character's level, and a sweep should price it.",
-   "source": "Authored 2026-08-22 to separate the 24 Eve base heroes, which shared stat blocks."
+   "source": "Authored 2026-08-22 to separate the 24 Eve base heroes, which shared stat blocks.",
+   "note": "Acts since 2026-10-05 (engine content.dwarf-elf-fey-badges-act; engine/DECISIONS.md 2026-10-05 'a prone unit only stands; … Dwarf, Elf and Fey act; …': \"6. They should act.\"). The effect line is written from the numbers below, nothing added."
   },
   {
    "id": "badge.faithful",
