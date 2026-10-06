@@ -5815,3 +5815,37 @@ Ruled:
 
 - **Cut item 5 is the smaller version.** The table of which unit wears which model and motion lives under `art/tools/`; art work edits a file there, never a viewer file. The code stamp counts `art/tools/` as the viewer's code, so an edit there still runs the viewer's gate.
 - **Waiting, written down:** a separate list file the viewer reads, the check of every id against content, and moving the head-and-skin drawing code.
+
+## 2026-10-06 — building is split from testing: three builders and one lander; two tool items from the review of the testing
+
+Andrew, in the home chat, pasted this (from a review of the testing he had another chat do that day; the method is the memory note `timing-workers-from-transcripts`) and, asked whether it was his instruction to be recorded as his ruling, answered "1. Yes.":
+
+“After your full run and wrap are done, file the three things below. They come from a review of the testing I had another chat do on 2026-10-06 (the method is in the memory note timing-workers-from-transcripts).
+
+What it measured, 4 Oct 10:36Z to 6 Oct: workers spent about 69% of their active time on tests, 56% of it running or waiting on whole-suite runs and landing chains. The single-item gate failed 8 of 274 runs. The whole-suite runs in the four passes.jsonl files failed 119 of 417. Those 119 are 90 incidents: 42 were time-outs on a busy machine that passed on a re-run with nothing changed, 24 were older tests or recordings holding a value the item changed on purpose, 15 were real faults in the new work, 7 were the landing steps in the wrong order, 2 unknown.
+
+1. Tool item: give tests the 30-second limit on my PC that Cowork already has. engine/tools/gate-progress.mjs testTimeoutFor() returns 30 s only in Cowork (tool.cowork-test-timeout, 2026-09-26, "a timeout is not an assertion"); kingdom and viewer set no limit. Make all three packages use 30 s on the PC too. 19 of the 42 busy-machine incidents were a 5-second time-out.
+
+2. Tool item: the engine tests test/fix-shield-power-double-click.test.ts and test/movement-swap-and-shields.test.ts fail with "Shared viewer metadata is stale or dirty" whenever the engine suite runs before the viewer's dumps are regenerated after an engine change. Make the run order right, or make the two tests not depend on it. This was 7 incidents.
+
+3. Ruling, as a one-day trial: split building from testing. Three builders write items, each with its own test seen red then green and the single-item gate check, commit, and go straight to the next item; they never run the whole suites. One lander merges the builders' commits in groups of up to four, runs the heavy chain once on the merged tree, and lands each item at the engine gate. When the lander's run fails it re-runs once; it clears re-runs and stale recordings itself; a real fault goes back to the builder who wrote the item, who fixes it with a new commit; the rest of the group lands unless it depends on the bad item. Write this in DECISIONS.md as mine, re-brief the workers, and after one day measure the same way so I can see whether landings went from about 2 an hour toward 3 or 4.
+
+Not asked for now: changing how pinned values are handled, and an automatic re-run of failed tests in the gates.”
+
+Asked three things (1 is the pasted text his instruction; 2 since a wrap ends the chat, file and record after the full run is green and before any wrap; 3 should the seven-item cut's items go into the builders' queues), he answered:
+
+“1. Yes.
+2. Yes.
+3. Yes.
+
+ Let's ignore trial day.  There's no trial day, but we should put items into the very back of the builders queue.”
+
+Ruled:
+
+- **Building is split from testing.** Three builders write items - each with its own test seen red then green and the single-item gate check - commit, and go straight to the next item; they never run the whole suites. One lander merges the builders' commits in groups of up to four, runs the heavy chain once on the merged tree, and lands each item at the engine gate. A failed run is re-run once; the lander clears re-runs and stale recordings itself; a real fault goes back to the builder who wrote the item, who fixes it with a new commit; the rest of the group lands unless it depends on the bad item.
+- **It is not a one-day trial** ("There's no trial day"): it is how the work runs from the next round of workers on. Read, not certain: the measurement after a day that the pasted text asks for is still worth taking, the same way, and is taken unless he says not to.
+- **Two tool items are filed** after the full run is green in the main folder and before any wrap: tests get the 30-second limit on the PC that Cowork already has, in the engine, the kingdom and the viewer; and the two engine tests that fail with 'Shared viewer metadata is stale or dirty' stop depending on the order of the run.
+- **The seven-item cut's items go at the very back of the builders' queue**, behind the feature items.
+- Not asked for now, in his words: changing how pinned values are handled, and an automatic re-run of failed tests in the gates.
+
+This changes `DISPLAY-RULES.md` rules 16, 28 and 32 as they describe one worker building and landing its own items; that file is his list and is brought into line at the next wrap.
