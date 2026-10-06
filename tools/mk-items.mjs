@@ -51,10 +51,8 @@ const SET_TAGS = new Set(codex.items.map((i) => i.setBonus?.tag).filter(Boolean)
 // content.sets-count-holy-texts-and-heavy-chain (engine item, 2026-10-06; engine/DECISIONS.md 2026-10-05, Holy Texts a book and
 // Heavy Chain a chain for sets, "8, yes."): a row may also say `setMember` - a set it is counted in WITHOUT bearing the tag,
 // because the Forge reads a row's tags to say what it may be enchanted with. A row's `sets` are both; its `tags` are its tags.
-const setsOf = (i) => {
-  for (const t of i.setMember ?? []) if (!SET_TAGS.has(t)) fail(`${i.id}: setMember '${t}' is counted by no row's set line`)
-  return [...new Set([...(i.tags ?? []).filter((t) => SET_TAGS.has(t)), ...(i.setMember ?? [])])].sort()
-}
+// Like a tag, a membership no row's set line counts makes no set (the pack builder holds the field to the Codex's tags).
+const setsOf = (i) => [...new Set([...(i.tags ?? []), ...(i.setMember ?? [])].filter((t) => SET_TAGS.has(t)))].sort()
 /** A set payload in the engine's stat names (the battle receives it as heroMods); attackDamage is this weapon's own. */
 const payloadOf = (o, where) => sorted(Object.fromEntries(Object.entries(o).map(([k, v]) => {
   if (k === 'attackDamage') return [k, v]
