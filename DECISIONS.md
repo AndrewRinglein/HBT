@@ -5316,3 +5316,246 @@ With the answer just before it (the entry above: "I thought that a hit on a band
 
 - **Bandaging completely stops the bleed-out count** - it no longer runs down by itself; the hero is stable.
 - **A hit on a bandaged hero still takes one from the count, and at 0 the hero dies.** There is no floor at 1: the engine switch stabiliseHitsStillMoveTheCount's "never below 1" is overturned. Filed: `fix.bandaged-hero-dies-at-zero`.
+
+## 2026-10-06 — the characters stand out: the ground need not be yellow and green; a demo of the Orphanage with all of it but the cloaks
+
+Andrew, in the root chat (the XCOM 2 study), after the chat listed what the study asks for:
+
+“Well, if the ground is not going to be yellow and green, and if we change from yellow and green, I think we change all the yellow and green on the ground to something darker. There's no implicit reason why we need yellow and green on the ground.     We need to change hers. We change the sun with grass. We can change all grass to be that blue-violet color. That still looks good.  I'm building the cloaks in another chat. Sounds like we need to be mindful of the enemies as well. Have more fire and more highlights.   Can you alter a bunch of our terrain and all the things we knew we needed, so I can see this on the orphan map?   Everything except the cloaks. This is just a demo map.”
+
+Before it, the same morning: “One thing I've been exploring with another chat is putting a custom-fitted cloak that has a unique shape by class and a unique color by class, which are fairly bright on the backs of all the heroes.”
+
+Ruled:
+
+- **The ground need not be yellow and green.** For the demo all of it is changed to something darker, the grass to a blue-violet.
+- **The cloaks are built in another chat** - a fitted cloak, its shape and its bright colour by class, on every hero's back. This chat's demo leaves them out.
+- **It is a demo, on the Orphanage only.** No map, model or game code is changed by it.
+
+The demo is the page `.scratch-hero-colours/index.html` (what it opens on; `Two side by side` puts today's battle beside it). Four steps, each a switch:
+
+1. The ground and everything that grows on it is redrawn darker in one tint (blue-violet `#6a5fd0` at 45%), its own light and dark kept but evened; so is whatever else is painted yellow to green. It is taken on the painted colour before the light, so the sun, the shade and firelight lie on it.
+2. Nothing in the scenery is drawn brighter than a cap.
+3. Every body is drawn brighter (2.6 times) and its own colours stronger (1.3 times).
+4. Fire: four lanterns stood on the map, each a warm light; and the enemies edged in firelight, their ring and name in the fire's colour.
+
+Measured on it, the Orphanage's opening view, today against the demo: bodies 0.41 against 0.59 lightness; the ground beside them 0.58 against 0.43, and its dark-to-light swing 0.24-0.77 against 0.26-0.56; the bodies' colourfulness 0.03 against 0.07. The heroes go from 0.17 darker than their ground to 0.16 lighter. Strong colour in the scenery goes from 3% of it to 0.1%.
+
+The chat's own defaults, said to him and his to change in a line:
+
+- **“More fire and more highlights” is read as both** lanterns on the map and firelight on the enemies.
+- **The enemies' ring and name are drawn in the fire's colour in the demo**, not the side's violet `#a964d8`: on a blue-violet ground the violet sinks. The side colours themselves (gold, violet; `VFX/PLAYBACK-DESIGN.md`, 2026-08-20) are not changed by this.
+- “We need to change hers. We change the sun with grass.” is not understood (dictation); the chat took it as the sunlit grass, which step 1 and step 2 cover. The sun itself is as it was.
+
+Found on the way: since the viewer draws its solid pieces a material at a time (`viewer.solid-pieces-drawn-by-material`), a batch has a material of its own that shares only the piece's name - so the ground-tones page's `Open ground only` step, which finds the ground by its pieces' materials, no longer reaches the ground that is drawn. The demo finds it by the materials' names. For the cloak chat: on a blue-violet ground a blue cloak is the weak one and gold, red, orange and bone the strong ones - the reverse of the green ground.
+
+On seeing that demo: “Not what I meant. The tall grass has a purple version. You made all the ground purple, although it doesn't look bad. Let's try making the ground more gray and brown. It could maybe even be a little bit darker.   You have so many things as options here. It's hard for me to even parse, but this default purple color certainly makes the heroes and all the units stand out a lot more. I don't think it's a natural enough color.”
+
+So: **the ground is grey and brown, a little darker; the purple is the tall grass's, not the ground's; an all-purple ground is not natural enough** (though it made the units stand out a lot more). The page now opens on that look - the ground's own pieces redrawn in a grey-brown (`#6e6052`, darker than the first try), the tall grass (the scene's meadow tufts) in a purple, the river, the trees and the other growth as painted, the cap, the brighter bodies and the fire as before - and shows three buttons (as it is today; grey-brown ground with purple tall grass; all purple, the first try) and two sliders (how dark the ground is, how bright the bodies are), every other control folded away. Measured on it, today against this look: bodies 0.42 against 0.60 lightness; the ground beside them 0.58 against 0.40, its swing 0.23-0.76 against 0.27-0.55, its colourfulness 0.08 against 0.05. The heroes are 0.20 lighter than their ground. The chat did not find a purple version of the tall grass among the terrain's files and tinted the tall grass that is there; where his is, is asked of him.
+
+Of that look: “This looks pretty good. Do we need to make the white stone a different color?” The chat's answer was yes, and the look now does it: the boulders, the shore's rocks and its gravel (12% of the opening view) measured 0.61 lightness as painted, above the bodies' 0.59 - the brightest scenery on the board - and are redrawn a darker grey (`#807a73`), 0.50: under the bodies and over the ground's 0.40. Not ruled: he has not yet seen the grey stones.
+
+## 2026-10-06 — the characters stand out: “this color template is working”
+
+Andrew, in the root chat (the XCOM 2 study), of the Orphanage demo's grey-brown look with the stones made grey, and of the tall grass's purple version the chat had not found:
+
+“It's called something else, but it's the same general shape. There's something purple. I think the gray looks good for some. I think this color template is working.”
+
+Ruled:
+
+- **The colour template is working.** As the demo page shows it on the Orphanage (`.scratch-hero-colours/index.html`, the look it opens on), with what it measured there:
+
+  | what | how it is drawn | lightness |
+  |---|---|---|
+  | heroes and enemies | 2.6 times brighter, their own colours 1.3 times stronger | 0.59 |
+  | stone (boulders, shore rocks, gravel) | a darker grey, `#807a73` | 0.50 |
+  | the ground | grey-brown, `#6e6052`, darker and evened | 0.40 beside the units |
+  | the tall grass | the purple of the kit's own purple plant | - |
+  | water, trees, the other growth, wood, buildings | as painted | - |
+  | fire | lanterns on the map; the enemies edged in firelight, their ring and name in its colour | - |
+
+  The order is the point: units lightest, stone under them, ground under the stone. Today it is ground 0.58, stone 0.61, units 0.42.
+- **The grey is good for the stone** - the chat reads “for some” as “for stone” (dictation); his to correct.
+
+Found: the purple plant he meant is the **barberry bush** of the terrain kit (`assets/terrain-3d/ermakova-forest`: `ef-bush-barberry-01`, `-03`; texture `T_Bush_Barberry_BCO`, its leaves averaging `#5a5368`). The Orphanage's scene uses none. The demo tints its meadow-grass tufts to that purple; putting barberry where the tall grass stands is a change to the map itself.
+
+Not ruled, and the template's next step: how it reaches the game - as a look the battle screen applies to every painted map as it draws (what the demo does, material by material), or as the maps repainted - and whether the enemies' ring and name leave the side's violet on such a ground. It is a demo on one map; no map, model or game code is changed by any of this.
+
+## 2026-10-06 — a new enemy gets a close-up: the view turns to its front, zooms in, and goes back (asked for; questions put, not yet filed)
+
+Andrew, in the kingdom chat:
+
+“One of the things  I want to figure out how to do and then add to this queue for both replay and for actual battle.   The first time a new enemy is introduced onto a battlefield   we should change perspective and zoom in on the front of them. This is done in xcom2.   So it is a zoom-in, a change of perspective, a frontal view, and then you go back to your old view so that you get a sense of the enemy.   Ask me questions about this feature.”
+
+What he asked for: the first time a new enemy is introduced onto a battlefield, in a replay and in a played battle, the view changes perspective, zooms in on the enemy's front, and then returns to the view it left - "so that you get a sense of the enemy", as XCOM 2 does. It builds on two things ruled 2026-10-04 ('the opening's tutorial ...'): the camera shows what arrives, and "New enemy" with its name and "This enemy can ..." the first time a kind is met. The chat put its questions the same day; items are filed on his answers.
+
+## 2026-10-06 — the colour template goes to all six opening battles, the heroes and the enemies; the tall grass becomes barberry; the water and the trees move
+
+Andrew, in the root chat (the XCOM 2 study). He had been asked three things: whether the template reaches the game as a look the battle screen applies to every map as it draws or by repainting the maps; whether the enemies' ring and name stay violet on such a ground or take the fire colour; whether real barberry bushes go on the Orphanage in place of the tall grass.
+
+“Yes, yes, yes.   We need to look at all the coloration for all of the tiles and the first 6 tiles. I need to apply these changes to all of the six battles and the heroes and the enemies in the UI.   Yeah, the barberry is what I was talking about for the tall grass.   I also want the water and trees animated and barberry purple.”
+
+Ruled:
+
+- **The template is applied to all six opening battles, and to the heroes and the enemies** - in the game, not only on the demo page. This replaces 2026-10-03's “The ground tone … not accepted; they stay off”: that tone was the whole scene a little darker; this is the ground, the stone and the units each given its place.
+- **The tall grass's purple version is the barberry**, and real barberry goes where the tall grass stands.
+- **The water and the trees are animated.**
+
+The chat's readings, said to him and his to change in a line (the first two questions were either-or, and “yes” does not choose):
+
+- the template reaches the game **as a look the battle screen applies as it draws**, a map repainted only where a map needs it;
+- the enemies' ring and name **take the fire colour** on these maps (the side colours themselves, gold and violet, are `VFX/PLAYBACK-DESIGN.md`'s of 2026-08-20);
+- “in the UI” is the battle screen; “the first 6 tiles” is the first six battles.
+
+The template as it stands, tried on each battle on the demo page (units' lightness against the ground beside them, today and with the template; one paused moment each, so a rough reading):
+
+| battle | today | template | what the Orphanage's rules miss |
+|---|---|---|---|
+| Orphanage | 0.34 on 0.67 | 0.46 on 0.42 | - (an earlier moment read 0.59 on 0.40) |
+| Lumberjack House | 0.36 on 0.61 | 0.50 on 0.35 | grave earth, gravel, the forest's growth |
+| Bridge | 0.41 on 0.44 | 0.62 on 0.34 | the bridge's cobbles, its pale and dark stone: the ground there is stone |
+| Cavern Trail | 0.36 on 0.68 | 0.49 on 0.39 | the cliff's paint, the scree |
+| Gates | - | - | its 3D map did not load in the chat's pane on either day; not looked at |
+| Cathedral | 0.37 on 0.68 | 0.52 on 0.41 | the nave's painted floor and its stone are only held down by the cap |
+
+On all five the units go from darker than their ground to lighter. The Orphanage, the Lumberjack House and the Cavern Trail are built from the same kit and take the Orphanage's rules nearly whole; the Bridge and the Cathedral need their own.
+
+Against it, to be settled before the items are written: moving water and moving trees are scenery that changes every frame, and the battle screen was reworked on 2026-10-05 to draw nothing when nothing changed and to draw the scenery's shadows once (`viewer/SWITCHES.md` `stillFrameWhatChanges`) - what they cost has to be measured with the frame-cost tool; and eleven battle-screen items are already open in the queue.
+
+Nothing is filed yet: the pieces are put to him first (a tool that prints each battle's numbers; the look, map by map; the brighter bodies; the enemies' fire; barberry on the maps; lanterns on the maps; the water; the trees).
+
+## 2026-10-06 — the new-enemy close-up, ruled: once a battle for each kind, the group together, kinds one after the other, at the start of a battle too, everything else stops, a setting, a boss gets more
+
+Andrew, in the kingdom chat, answering twelve questions on the entry above (1 is 'the first time' once per run, like the 'New enemy' notice, or once in every battle a kind first appears; 2 when several of a new kind arrive together, one close-up on one of them or a sweep across the group; 3 when two new kinds arrive at once, does each get its own, one after the other; 4 does it also play for new kinds already standing on the board when a battle begins; 5 how long it holds - about two seconds; 6 should a click or a key skip it; 7 should the enemy do something during it, a roar or a flourish, or just stand; 8 do the name and 'This enemy can ...' show during the close-up, in place of the notice at the bottom; 9 for an enemy with no 3D body yet, its card art full-size instead, or no close-up until it has a body; 10 does everything else stop while it plays, in a live battle and in a replay; 11 a setting to turn close-ups off; 12 should a boss or a named enemy get a longer or different one):
+
+“Once every battle, when it appears on a list    one after the other.   I guess we should do it at the beginning of the battle, too. See what it looks like.  No, this is meant to be 3D, so it's going to have the environment around them. There are three zombies at the start of the battle. It's going to zoom in on the front of those zombies and show whatever terrain is around or behind. Zoom in so they're somewhat large, and then snap back to normal.  9. Just zoom in, it's fine if there's no 3D body.     10. Yeah, everything else stops.  11 and 12, yes.”
+
+Ruled:
+
+- **Once in every battle, for each kind of enemy, the first time that kind is on the battlefield** - not once a run.
+- **A group of one kind is shown together:** "It's going to zoom in on the front of those zombies and show whatever terrain is around or behind." One close-up for the group, not one each.
+- **Two new kinds at once: each its own close-up, one after the other.**
+- **At the beginning of a battle too**, for the kinds already standing there - "See what it looks like": it is a try, his to judge.
+- **It is the 3D scene itself** - the enemies where they stand with the ground and scenery around and behind them, "somewhat large" - and then the view "snap[s] back to normal": to the view it left.
+- **An enemy with no 3D body is zoomed in on all the same** ("Just zoom in, it's fine if there's no 3D body").
+- **Everything else stops while it plays**, in a played battle and in a replay.
+- **A setting turns close-ups off.**
+- **A boss or a named enemy gets a longer or different one** ("12, yes" - which of the two he did not say).
+- **Not answered, the chat's defaults (said to him the same day, each one line to change):** it holds about two seconds; a click or a key skips it; the enemies do what they are doing where they stand (no new motion is made for it); the 'New enemy' notice with its name and 'This enemy can ...' shows as it does today, at the bottom, while the close-up plays; a boss's is longer and nearer.
+
+Filed: `viewer.new-enemy-close-up`.
+
+Two corrections to the entry above, the same morning, after he asked “How much speed would we lose to add in that animation? It does look nice, but it's not that important.”:
+
+- **The Gates is a flat battle with no 3D scene** (`viewer/SWITCHES.md`, the table under `viewer.solid-pieces-drawn-by-material`: “The Gates is a flat battle: no 3D scene”) - that, and not the chat's pane, is why it showed nothing. The template is a way of drawing a 3D scene's materials and does not reach it; the Gates needs a 3D map, or its flat tiles their own colours.
+- **Moving water and trees do not work against the still-frame rule in a battle.** While bodies stand on the board the scene is already drawn every frame - the Orphanage 700 draw calls and 5.18 million triangles a frame, 13.2 ms of script, bodies idling (the same table) - because the bodies move where they stand; “a held frame draws nothing” is a board with nothing on it. Water moved and leaves bent in the way those pieces are drawn add no draw call and no triangle. What would cost is the trees' shadows moving with them: the scenery's shadow is drawn once and kept (`viewer.scenery-shadow-drawn-once`), and a swaying shadow brings that pass back every frame. So: the trees sway, their shadows stand still. Not measured - a gate was running on the machine when he asked, and the frame-cost tool measures it properly once the motion exists.
+
+**“It's not that important”**: the water and the trees go last of the eight pieces, the water first of the two, each landing with the frame-cost tool's before and after; the trees are dropped if the tool shows a cost.
+
+## 2026-10-06 — the colour template reaches the game by repainting the 3D tiles; the enemies' marks take the fire colour; the work goes after what is queued; planning first, then the queues
+
+Andrew, in the root chat (the XCOM 2 study), to four questions (1 a look the battle screen applies as it draws, or the maps repainted; 2 the enemies' ring and name from violet to the fire colour on these maps; 3 ahead of the queued battle-screen items or behind; 4 the Gates, a 3D map or its flat tiles recoloured):
+
+“1. I don't know the answer.
+2. Yes.
+3. After.
+4. I don't know what you mean.
+
+ I want to change the current 3D tiles by repainting them. We're going to want to insert all of this into the regular work queues, so we're just planning right now, and then we're going to insert items into our documentation.”
+
+Ruled:
+
+- **The current 3D tiles are changed by repainting them.** This answers the first question and replaces the chat's reading of the entry above (“a look the battle screen applies as it draws”): the template's colours go into the maps' own paint. The demo page stays what the repaint is judged against.
+- **The enemies' ring and name take the fire colour on these maps** (“Yes”), in place of the side's violet there.
+- **The work goes after what is already queued** (“After”).
+- **Planning now; the items are inserted into the regular queues afterwards.** Nothing is filed on this entry.
+
+Open: the fourth question was not understood and is put again in plainer words - five of the six opening battles are played on a 3D map; the Gates is still a flat board of hex pictures, so it has no 3D tiles to repaint.
+
+The chat's default, his to change in a line: the maps' repainting is filed in the art queue (`engine/.state/backlog.art.json`), a map an item; the units' brightness, the enemies' fire, the measuring tool, the water and the trees in the battle screen's (`backlog.viewer-kingdom.json`).
+
+## 2026-10-06 — an attack shows its total Accuracy and Crit, not the weapon's plus
+
+Andrew, in the kingdom chat, playing:
+
+“In the attacks and actions, when you have a dagger, it shows +5 critical.   It should not show the weapon modifier if the modifier is one of the stats that is regularly in use.  Instead, that stat should be displayed. Critical is an example, whereas critical just needs to be on the bottom part where it shows you have accuracy and then you have critical.  The dagger doesn't show +5 critical. What happens is the attack shows the total critical.   The same thing is true of accuracy.   There's no reason to show a plus accuracy. You just put it in the accuracy. Any questions about cueing the side amount?”
+
+Ruled:
+
+- **On an attack or action, a weapon's change to a stat the row already shows is not listed as a plus or a minus; the row shows that stat's total.** Crit and Accuracy are his two examples: a Dagger's Stab does not say "+5 Crit" - its Crit, in the part of the row that shows Accuracy and then Crit, is the total; "There's no reason to show a plus accuracy. You just put it in the accuracy."
+- The chat's defaults where he did not speak, said to him the same day and each one line to change: damage is left as the row shows it today (he named Crit and Accuracy); the item's own card, at Equip and in battle, still says what the weapon gives ("+5 Crit"), since that is the item described and not an attack; pointing at the total shows what it is made of.
+
+Filed: `viewer.attack-row-shows-totals`.
+
+## 2026-10-06 — an attack's numbers: the total alone, no list of what it is made of
+
+Andrew, in the kingdom chat, asked two things on the entry above (1 should damage follow the same rule - the row shows only the total damage number, with no "Strength −1"; 2 should the item's card keep saying "+5 Crit") and told the chat's default that pointing at a total lists its parts:
+
+“Damage already shows that way.   But yes, we should always be showing the numbers, not the contributing some numbers.     We don't need a total list because there could be four things that are modifying your crit. We just need to see the total.”
+
+Ruled:
+
+- **An attack or action always shows the numbers - the totals - never the numbers that make them up** ("contributing some numbers" is "contributing sum numbers" - dictation). Damage "already shows that way" and stays so.
+- **No list of what a total is made of**, on pointing or anywhere on the row: "there could be four things that are modifying your crit. We just need to see the total." The chat's default (4) in `viewer.attack-row-shows-totals` is struck.
+- The item's own card was not spoken to: it keeps saying what the weapon gives ("+5 Crit"), the chat's default, one line to change.
+
+## 2026-10-06 — the Deathbed notification and the others sit low, near the bottom of the screen
+
+Andrew, in the kingdom chat, playing:
+
+“The deathbed fighting notification and maybe other notifications are still happening too close to the center of the screen. Push it down closer to the bottom of the screen.”
+
+Ruled: **the Deathbed plate, and every other notification still shown near the middle of the screen, moves down close to the bottom** - where the notices already sit (2026-10-05, 'gold and bright text with no backdrop ... right above the bottom of the screen'). This overturns the chat's own default in `viewer.plates-banners-tooltip-gold-look` that the plates and banners "keep their own places" (viewer SWITCHES goldLookPlacesAndSizes); he had ruled their look, and the chat had left their place. Filed: `viewer.plates-and-banners-sit-low`.
+
+## 2026-10-06 — the colour template is filed: seven items in the art queue, five in the battle screen's; the Gates gets a 3D map
+
+Andrew, in the root chat (the XCOM 2 study), shown the plan as eleven items and asked whether the Gates gets a 3D map built like the other five or stays flat for now, and whether the list was right to file as it stood:
+
+“Yes, Gates gives a 3D map.  2, yes.”
+
+Ruled:
+
+- **The Gates gets a 3D map**, built like the other five and painted to the template from the start.
+- **The list is filed as it stood**, after what was already queued (his “After” of the entry above).
+
+Filed (`node tools/add-item.mjs`, at the end of each queue, in this order):
+
+| queue | item | what it is |
+|---|---|---|
+| art | `art.orphanage-repainted` | the ground grey-brown and darker, the stone a darker grey, barberry where the tall grass stands |
+| art | `art.lumberjack-house-repainted` | the same, with its grave earth and gravel |
+| art | `art.cavern-trail-repainted` | the same, with the cliff's paint, the scree and the straw field |
+| art | `art.bridge-repainted` | its cobbles and pale stone: the ground there is stone |
+| art | `art.cathedral-repainted` | the nave's painted floor and its stone, darker |
+| art | `art.map-lanterns` | lanterns and their warm light on the five maps |
+| art | `art.gates-3d-map` | a painted 3D scene for the Gates |
+| battle screen | `viewer.stand-out-measured` | one command printing each battle's numbers, taken over the battle |
+| battle screen | `viewer.units-brighter` | every body brighter, its own colours stronger |
+| battle screen | `viewer.enemies-in-firelight` | the enemies' ring and name in the fire colour; a firelight edge on their bodies |
+| battle screen | `viewer.water-moves` | the water moves, the cheap way, measured |
+| battle screen | `viewer.trees-sway` | the trees sway, their shadows still; abandoned if it costs speed |
+
+Each map is accepted against the demo page (`.scratch-hero-colours/index.html`, the look “The grey-brown template”) and by the numbers: the ground beside the units about 0.40 lightness, the stone about 0.50, the units over both. Every map item ends with pictures he says yes to before the scene is taken as the map. The cloaks are another chat's and are in none of these.
+
+The chat's defaults, his to change in a line: the maps' repainting is the art queue's, a map an item (that queue held only characters until now); the measuring tool stands eighth, behind twelve open battle-screen items, so a map repainted before it lands is measured by hand as this chat did; the Gates' scene is the art queue's and its binding to the map is filed in the battle screen's queue by that item when the scene exists.
+
+Found after the filing, for whoever takes those items (`assets/terrain-3d/orphanage-riverside/README.md`): the Orphanage's ground is a painting made with an image generator and its building a Tripo model; the trees, rocks and plants are the licensed Ermakova kit; Blender builds the rest, by `tools/battle-atlas/build-orphanage-riverside.py` (then its check, inspect and finalize scripts; `assets/battle-atlas/PAINTED_MAP_WORKFLOW.md` is the method). So a map's repainting is one of two things, and the item's taker says which it did: the painting and the kit's textures **recoloured by a script** (the demo's own step, baked into the pictures: the same painted detail in new colours), or the ground **painted anew** with an image generator. For `viewer.water-moves`: “The live viewer also animates the water; that shader effect is not baked into the GLB” - the Atlas preview page already moves this water. For `viewer.trees-sway`: “scene derivatives remove imported wind/AO vertex-color multiplication” - the kit came with wind data that the scenes' builds strip.
+
+Asked the same hour: “How does Claude do things like repainting? Should I take these tasks to Astra 6?” Not ruled; the chat does not know what Astra 6 is and said so.
+
+Asked whether recolouring the existing paint is enough for the five maps or the ground is painted fresh: “To repainting the existing is enough. We can keep our shapes and just repaint a bunch of things.” **Ruled: the maps keep their shapes and their own paint is recoloured**; no new ground painting is made for the five. (The Gates has no 3D map to recolour and is built; the barberry standing where the tall grass stood is the one change of shape, ruled earlier the same day.) What an art chat needs to do this - the template and its numbers, the steps of a repaint, each map's ground, stone and tall grass by piece name, the Gates' facts - is `assets/battle-atlas/COLOUR-TEMPLATE.md`, named in `DOCS.md`.
+
+## 2026-10-06 — the zoom pulls back no further than the whole map
+
+Andrew, in the kingdom chat, playing:
+
+“We should not be able to scroll out more than the map. There's a point where you can see the entire map. We don't need to scroll out more than that.”
+
+Ruled: **the wheel's furthest pull-back is the point where the entire map is seen, and no further** ("scroll out" is the wheel's zoom out). `viewer.zoom-stays` (landed 2026-10-05) set the far end at the whole board's fit "with the room the whole-map view always left" (viewer SWITCHES zoomRange) - room he does not want; what he saw go past the map is to be found and stopped. Filed: `viewer.zoom-out-stops-at-the-whole-map`.
+
+## 2026-10-06 — the starting heroes' special moves unlock at level 2 (asked for; questions put, not yet filed)
+
+Andrew, in the kingdom chat:
+
+“Real is another rule I want to add, which is that the special moves that the starting heroes get should be unlocked instead at level 2, so they don't clutter up level 1 tutorial. That way, you get something extra when you level up.”
+
+What he asked for: the special moves a starting hero has today at level 1 are instead unlocked at level 2 - so the level-1 tutorial is not cluttered with them, and a level-up gives something extra. Which actions count as "special moves", which heroes it covers, and how it shows at level 1 were asked the same day; the item is filed on his answers.
