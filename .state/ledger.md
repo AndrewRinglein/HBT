@@ -38170,3 +38170,186 @@ index 68a046c..1f59b85 100644
 ```
 </details>
   PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+## viewer.foliage-drawn-once — LANDED `2ace461` **NEEDS REVIEW**
+2026-10-06 09:58
+
+  PASS  dependencies landed
+  WARN  not already decided — 3 candidate ruling(s) — READ BEFORE ASKING: DECISIONS.md:5307 · SWITCHES.md:1944
+  PASS  typecheck
+  PASS  the item's own tests — test/viewer.foliage-drawn-once.test.ts, test/viewer.screenshot-time-out-under-load.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — viewer/test/frame-cost-page.ts, viewer/test/viewer.foliage-drawn-once.test.ts, viewer/test/viewer.screenshot-time-out-under-load.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/frame-cost-page.ts (-1), test/viewer.screenshot-time-out-under-load.test.ts (-1) — will land FLAGGED for review
+  PASS  control battles unchanged
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+1d2e27d
+
+diff --git a/test/frame-cost-page.ts b/test/frame-cost-page.ts
+index 4d1897e..21dff93 100644
+--- a/test/frame-cost-page.ts
++++ b/test/frame-cost-page.ts
+@@ -7,5 +7,6 @@
+ // asserts of its rows is unchanged.
+ // Not a test file. Used by test/viewer.frame-cost-measured.test.ts, test/viewer.see-through-only-when-moved.test.ts,
+-// test/viewer.scenery-shadow-drawn-once.test.ts and test/viewer.still-frame-draws-nothing.test.ts.
++// test/viewer.scenery-shadow-drawn-once.test.ts, test/viewer.still-frame-draws-nothing.test.ts,
++// test/viewer.solid-pieces-drawn-by-material.test.ts and test/viewer.foliage-drawn-once.test.ts.
+ import { execFileSync } from 'node:child_process'
+ import { mkdirSync, readFileSync, rmSync, statSync, writeFileSync } from 'node:fs'
+diff --git a/test/viewer.foliage-drawn-once.test.ts b/test/viewer.foliage-drawn-once.test.ts
+new file mode 100644
+index 0000000..b89ff79
+--- /dev/null
++++ b/test/viewer.foliage-drawn-once.test.ts
+@@ -0,0 +1,124 @@
++// viewer.foliage-drawn-once (engine backlog; the chat's call 2026-10-05, engine DECISIONS.md 2026-10-05 'the computer avoids its
++// own traps; W moves the view up; the Wolf's numbers stand; the player moves the summoned Wolf; the foliage is tried the smallest
++// way'). Expect: "With the switch on, each two-sided blended foliage piece issues one draw call where it issued two (the
++// Orphanage's foliage calls halve); with the switch off the page is pixel for pixel what it was (0 differing pixels on all six
++// battles); the report gives, per battle, draw calls and same-run frame-time ratio before and after and the count and size of
++// the pixel difference; the nine before-and-after pairs exist in both folders; a hidden character's foliage still fades
++// see-through at 32 of 32 views; a held frame still issues 0 draw calls."
++// The sources' half — which pieces are the foliage, that nothing else is touched, the one word of the switch, that switched
++// off no material differs from what three made, that a faded piece follows the switch — is
++// ../viewer/tools/foliage-drawn-once.test.mjs (run here). The page's half is the frame-cost tool in real Chrome on the sandbox
++// page built from these sources (one run for every frame test: test/frame-cost-page.ts): the same still view measured with the
++// foliage drawn once and drawn twice as before, frames of the two ways taken turn about, and at every view of a round both
++// ways drawn and every pixel compared. COUNTS AND SAME-RUN RATIOS ONLY are asserted here — draw calls, pieces, pixels, the
++// ratio of two medians taken turn about — never a time (viewer.frame-time-tests-hold-under-load). The six battles' own numbers
++// and the nine pairs of pictures are in the landing note (the tools run by hand); the run here is on the four battles the
++// frame tests share. Imports no page code.
++import { describe, it, expect } from 'vitest'
++import { execFileSync } from 'node:child_process'
++import { readFileSync } from 'node:fs'
++import { frameCostOnThePage, rowOf, FRAME_COST_BATTLES, FRAME_COST_WAIT_MS } from './frame-cost-page.js'
++
++type Pass = { all: number; shadow: number; scene: number; bodies: number; many?: number; inMany?: number }
++type Measure = { frames: number; draws: Pass; triangles: Pass }
++type Row = { battle: string; flat?: boolean; note?: string; still: { withCheck: Measure; withoutCheck: Measure }; held: Measure
++  foliage?: { pieces: number; materials: number; once: boolean; inSight: number }
++  foliageWays?: { once: Measure; twice: Measure; paired: { pairs: number; ratio: number } }
++  seeThrough?: { views: number; same: number; withSomethingHiding: number; fadedAlone?: number }
++  shadow?: { views: number; pixels: number; differing: number; worst: number; sameWay: number; blendedNoise: number
++    foliage?: { views: number; inSight: number; differing: number; least: number; worst: number; over16: number; onceAgain: number; onceAgainWorst: number; onceAgainOver16: number; twiceAgain: number; twiceAgainWorst: number; twiceAgainOver16: number } }; pageErrors?: string[] }
++/** the battles of the shared run whose scenes are mostly foliage */
++const LEAFY = ['encounter.opening.orphanage', 'encounter.opening.lumberjack', 'encounter.caravan-aftermath']
++
++describe('viewer.foliage-drawn-once', () => {
++  it('the sources: which pieces are the foliage and that nothing else is touched; the switch is one word, on for the try; switched off no material differs from what it was; a faded piece still fades alone and follows the switch', () => {
++    const out = execFileSync(process.execPath, ['--test', '--test-reporter=tap', 'tools/foliage-drawn-once.test.mjs'], { cwd: '../viewer', encoding: 'utf8', maxBuffer: 1 << 24, env: { ...process.env, VIEWER_PAGE: process.env.VIEWER_PAGE ?? '' } })
++    expect(out).toMatch(/# pass 4/); expect(out).toMatch(/# fail 0/)
++  }, 170000)
++
++  it('the built page: with the switch on each foliage piece in sight issues ONE draw call where it issued two — the scene\'s pass makes exactly that many fewer, the Orphanage\'s foliage calls halve', () => {
++    const got = frameCostOnThePage<Row>()
++    for (const battle of FRAME_COST_BATTLES) {
++      const r = rowOf(got, battle), at = battle.replace(/^encounter\.(opening\.)?/, '')
++      expect(r.flat, r.note).toBeFalsy(); expect(r.pageErrors ?? [], at).toEqual([])
++      expect(r.foliage, at + ': the page says how its foliage is drawn').toBeTruthy()
++      const f = r.foliage!, w = r.foliageWays!
++      expect(f.once, at + ': the switch is on for the try').toBe(true)
++      expect(f.inSight, at).toBeLessThanOrEqual(f.pieces)
++      expect(w, at + ': the tool measured the still view both ways').toBeTruthy()
++      /* the same still view, the same run: drawn twice, every foliage piece in sight is two calls of the scene's pass; drawn
++         once, one — so the pass makes exactly as many fewer calls as there are foliage pieces in sight (the page counts them
++         by three's own rule for what a pass draws). Nothing else in the frame changes: the shadow's pass is the same. */
++      expect(w.twice.draws.scene - w.once.draws.scene, at + ': draw calls saved in the scene\'s pass, against the foliage pieces in sight').toBe(f.inSight)
++      expect(w.once.draws.shadow, at + ': the shadow\'s pass is not touched').toBe(w.twice.draws.shadow)
++      /* and the frames the tool measures first — the page as it opens, the switch as built — are "once" frames, not "twice" ones */
++      if (f.inSight > 0) expect(r.still.withoutCheck.draws.scene, at + ': the page as built draws its foliage once').toBeLessThan(w.twice.draws.scene)
++      /* drawn twice the card was handed every foliage triangle twice (once to draw its back faces, once its front) */
++      if (f.inSight > 0) expect(w.twice.triangles.scene, at + ': triangles handed over').toBeGreaterThan(w.once.triangles.scene)
++      else expect(w.twice.triangles.scene, at).toBe(w.once.triangles.scene)
++    }
++    for (const battle of LEAFY) { const r = rowOf(got, battle), f = r.foliage!, w = r.foliageWays!
++      expect(f.pieces, battle + ': foliage pieces').toBeGreaterThan(500); expect(f.inSight, battle + ': in the opening view\'s sight').toBeGreaterThan(50)
++      /* the foliage's own calls halve: what the scene's pass draws besides is the same both ways, so twice the pieces in sight became once */
++      expect((w.twice.draws.scene - w.once.draws.scene) * 2, battle + ': the foliage\'s calls drawn twice').toBe(f.inSight * 2)
++      expect(w.once.draws.all, battle + ': a frame\'s draw calls, the bodies idling').toBeLessThan(w.twice.draws.all - f.inSight / 2) }
++    /* the Orphanage: 857 foliage pieces (viewer SWITCHES fewCallsFoliage); 700 draw calls a frame before this item */
++    const o = rowOf(got, 'encounter.opening.orphanage')
++    expect(o.foliage!.pieces, 'the Orphanage: two-sided blended pieces').toBeGreaterThanOrEqual(857)
++    expect(o.still.withoutCheck.draws.all, 'the Orphanage, bodies idling: draw calls a frame (700 before)').toBeLessThan(600)
++  }, FRAME_COST_WAIT_MS)
++
++  it('the built page: the two ways drawn at every view of a round and every pixel compared — the tool gives the count and the size of the difference, beside what two frames drawn the same way differ by', () => {
++    const got = frameCostOnThePage<Row>()
++    for (const battle of FRAME_COST_BATTLES) {
++      const r = rowOf(got, battle), at = battle.replace(/^encounter\.(opening\.)?/, '')
++      expect(r.shadow?.foliage, at + ': the tool drew the views both ways').toBeTruthy()
++      const p = r.shadow!.foliage!
++      expect(p.views, at).toBeGreaterThanOrEqual(8)
++      for (const k of ['differing', 'least', 'worst', 'over16', 'onceAgain', 'twiceAgain'] as const) { expect(Number.isInteger(p[k]), at + ': ' + k).toBe(true); expect(p[k], at + ': ' + k).toBeGreaterThanOrEqual(0) }
++      expect(p.differing, at).toBeLessThanOrEqual(r.shadow!.pixels); expect(p.least, at).toBeLessThanOrEqual(p.differing); expect(p.over16, at).toBeLessThanOrEqual(p.differing); expect(p.worst, at).toBeLessThanOrEqual(255)
++      /* a scene with no foliage: nothing is drawn another way, so nothing differs beyond what two frames of one way do (a frame's
++         own noise is by one shade, a blended piece's shimmer by two — viewer SWITCHES frameNoiseOneShade, blendedPiecesShimmer) */
++      if (r.foliage!.pieces === 0) { expect(p.inSight, at).toBe(0); expect(p.over16, at + ': no foliage, no difference the eye can find').toBe(0); expect(p.worst, at).toBeLessThanOrEqual(2) }
++    }
++    /* where there is foliage the switch does change pixels — only where a piece's own leaves overlap each other: a part of the picture, never most of it */
++    for (const battle of LEAFY) { const r = rowOf(got, battle), p = r.shadow!.foliage!
++      expect(p.differing, battle + ': pixels the two ways differ by').toBeGreaterThan(0)
++      expect(p.differing, battle + ': never most of the picture').toBeLessThan(r.shadow!.pixels / 2) }
++  }, FRAME_COST_WAIT_MS)
++
++  it('the built page: a piece hiding a character still fades see-through by itself at every view, and a held frame still issues no draw call', () => {
++    const got = frameCostOnThePage<Row>()
++    for (const battle of FRAME_COST_BATTLES) {
++      const r = rowOf(got, battle), at = battle.replace(/^encounter\.(opening\.)?/, '')
++      expect(r.seeThrough!.views, at).toBeGreaterThanOrEqual(32)
++      expect(r.seeThrough!.same, at + ': the see-through check\'s answer at every view').toBe(r.seeThrough!.views)
++      expect(r.seeThrough!.fadedAlone, at + ': views in which every faded piece is drawn by itself').toBe(r.seeThrough!.views)
++    }
++    expect(FRAME_COST_BATTLES.some((id) => rowOf(got, id).seeThrough!.withSomethingHiding > 0), 'a view with a piece in the way of a character').toBe(true)
++    for (const battle of ['encounter.opening.orphanage', 'encounter.opening.lumberjack', 'encounter.opening.bridge']) {
++      const r = rowOf(got, battle)
++      expect(r.held.frames).toBeGreaterThanOrEqual(30)
++      expect(r.held.draws.all, battle + ': draw calls with the clock held').toBe(0)
++    }
++  }, FRAME_COST_WAIT_MS)
++
++  it('the built page: frames of the two ways taken turn about in the same run — drawn once a frame\'s script costs less than drawn twice', () => {
++    const got = frameCostOnThePage<Row>()
++    for (const battle of LEAFY) { const p = rowOf(got, battle).foliageWays!.paired
++      expect(p.pairs, battle).toBeGreaterThanOrEqual(30)
++      /* a ratio of two medians of the same run, the frames turn about: load moves both alike (measured: .45 the Orphanage,
++         .33 the Lumberjack House, .62 the Caravan Aftermath) */
++      expect(p.ratio, battle + ': script time drawn once, as a part of drawn twice').toBeLessThan(.9) }
++  }, FRAME_COST_WAIT_MS)
++
++  it('no time is asserted here: the proof is counts, and one ratio of the same run', () => {
++    /* every assertion above this test: what it is made of (the first argument of each expect) reads no time the tool measured */
++    const all = readFileSync('test/viewer.foliage-drawn-once.test.ts', 'utf8'), above = all.slice(0, all.indexOf('it(\'no time is asserted here'))
++    const src = above.replace(/\/\*[\s\S]*?\*\//g, '').split('\n').filter((l) => !/^\s*\/\//.test(l)).join('\n')
++    const subjects = [...src.matchAll(/expect\(\s*([^,)]+)/g)].map((m) => m[1]!)
++    expect(subjects.length).toBeGreaterThan(20)
++    const aTime = new RegExp('\\bm' + 's\\b|M' + 's\\b|loadM')
++    for (const s of subjects) expect(aTime.test(s), 'a time in an assertion: ' + s).toBe(false)
++  })
++})
+diff --git a/test/viewer.screenshot-time-out-under-load.test.ts b/test/viewer.screenshot-time-out-under-load.test.ts
+index ccaea52..d6b5cf3 100644
+--- a/test/viewer.screenshot-time-out-under-load.test.ts
++++ b/test/viewer.screenshot-time-out-under-load.test.ts
+@@ -109,5 +109,7 @@ describe('a screenshot is taken of a still page: the frame loop is held, the pag
+     expect(direct, 'tools that take a screenshot directly').toEqual([])
+     expect(through.sort()).toEqual(['affliction-pop-up.verify.mjs', 'area-trigger-burst.shot.mjs', 'bar-card-and-log.verify.mjs', 'bar-moves-grey-when-done.shot.mjs', 'camera-shows-edge-units.shot.mjs',
+-      'characters-stand-out.verify.mjs', 'hit-slash.shot.mjs', 'no-target-ring.shot.mjs', 'notices-gold-low-no-backdrop.verify.mjs', 'plates-banners-tooltip-gold-look.verify.mjs', 'tutorial-overlays.shot.mjs'])
++      /* viewer.foliage-drawn-once (2026-10-05): one more tool takes its pictures through the helper — the foliage's before-and-after pairs; until then the list read
++         … 'characters-stand-out.verify.mjs', 'hit-slash.shot.mjs', … with no 'foliage-drawn-once.shot.mjs' between them */
++      'characters-stand-out.verify.mjs', 'foliage-drawn-once.shot.mjs', 'hit-slash.shot.mjs', 'no-target-ring.shot.mjs', 'notices-gold-low-no-backdrop.verify.mjs', 'plates-banners-tooltip-gold-look.verify.mjs', 'tutorial-overlays.shot.mjs'])
+   })
+   it('viewer.bar-card-and-log asserts everything it asserted before: each assertion of the tool as it stood (kingdom ccb2dc4) is still in it, and no time limit in it is longer', () => {
+```
+</details>
