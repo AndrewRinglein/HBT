@@ -5698,3 +5698,30 @@ Ruled:
 - **The shared map code gets a folder of its own** - not inside `viewer/`, and not left under `assets/` and `tools/`. The viewer and the kingdom import it from there.
 
 Not ruled by this entry: the folder's name (his to give); which gate and code stamp cover it (a tooling switch); and the character half - the model lists (`assets/characters/hero-transformations/activation-registry.json`, `assets/characters/equipment-v2/catalog.json`) and the head-and-skin drawing code (`afflictions.mjs`, `body-afflictions.mjs`). His words on that half are kept above as said; he had not yet been told what those files are, and "Shouldn't be in content" reads either way, so it was asked again the same hour. Nothing is filed from this entry.
+
+## 2026-10-06 — art and motion, and maps, are areas of their own that the viewer points at; each making area keeps a `workshop` shelf and an `accepted` shelf
+
+Andrew, in the codebase-review chat, on how the project divides so that areas can be worked in parallel:
+
+“I'm wondering about the division of things so that things can be worked on in parallel. I think that motion and art should not be part of the viewer.   I think it's actually even separate from the other content.   Shouldn't the viewer just point at the appropriate motions?   Maps also feel like they should just be pointed at by the viewer, and I can author and work on maps.   I'm also wondering about a dedicated testing folder so that when we're working on things, there's just a location for them before we decide if it's going to be part of the game or not.”
+
+Asked back (1 a trying shelf and an accepted shelf inside each making area, instead of one testing folder for everything; 2 what the two shelves are called - `workshop` and `accepted` proposed; 3 whether the line "this hero wears this look" stays on the art side with a check against content; 4 whether the battle you play - the sandbox and the opening's host - comes out of the kingdom into an area of its own later, or stays; 5 whether the GitHub repository is made private):
+
+“One, yes.   Okay, I like two workshops and accepted good.   3S   for it, we're just in a prototype phase.   5. Do I need it to be backed up? Private? I don't care if it's private.”
+
+Said (his first message, taken as the direction):
+
+- **Art and motion is an area of its own, apart from the viewer and apart from content, and the viewer points at it.** As put to him and not objected to: it hands over one catalogue naming each look with its files and its named motions; the viewer asks for a unit's motion by name and holds no art, no motion and no table of which file is which (today `viewer/tools/character-models.mjs` holds that table and reads the art folders by path).
+- **Maps are an area of their own that the viewer points at, and he authors them there.** The shared map code of the entry above lives in it. As put to him: the engine fights on a map too, so the area hands over the rule facts for the engine as well as the scene for the viewer.
+
+Ruled (answers 1 and 2):
+
+- **Each making area (art and motion, maps, sound) keeps two shelves, `workshop` and `accepted`, instead of one testing folder for everything.** As put to him: nothing in the engine, the viewer, the kingdom or content reads from a workshop shelf; accepting is moving a thing to `accepted` and adding its catalogue row, which is his approval.
+
+Read, not certain (dictated; his words are kept above as said, and both readings were put back to him the same hour):
+
+- "3S" is read as **3: yes** - "this hero wears this look" stays on the art side, with a check that fails when the hero id is not in content.
+- "for it, we're just in a prototype phase" is read as the answer to 4: **the battle you play stays in the kingdom for now.**
+- 5 is not a ruling: he asked whether a backup is needed and said he does not care whether the repository is private. Nothing has been pushed.
+
+Not ruled by this entry: the two areas' folder names and where they sit; what becomes of `assets/` and the root `tools/`; which gate checks the workshop rule (a tooling switch); the order of the moves. Nothing is filed from this entry.
