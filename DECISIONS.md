@@ -5686,3 +5686,15 @@ Andrew, in the kingdom chat, read the list of what waits on art:
 “The art for the held weapons should all be in.   I believe lanterns are done.”
 
 What the disk shows the same minute (read, not judged): `assets/characters/equipment-v2/` is there and the art chat's `viewer.equipment-v2` is landed in the viewer and the kingdom (2026-10-06); lantern PROPS are made - `assets/terrain-3d/map-lanterns/props/` holds `lantern-post.glb`, `lantern-sconce.glb` and three textures - but no lantern is placed in any of the six accepted scenes (`assets/terrain-3d/colour-template-review/run.json`: "lanterns remain separate queue work"; no lantern node in the six scene files when they were scoped that morning). So the seven viewer items filed as waiting on art (`viewer.enemy-held-weapons` above all) and `art.map-lanterns` are to be read again against what now exists before anyone calls them blocked: the next chat's first read. Nothing is filed from this entry.
+
+## 2026-10-06 — the map code the viewer and the kingdom share goes in a folder of its own
+
+Andrew, in the codebase-review chat, answering whether the map and character code that the viewer and the kingdom import from `assets/` and the root `tools/` should move inside `viewer/` or get a folder of its own (review item 11: `assets/battle-atlas/scene.mjs` and the modules it pulls, `terrain-fire.mjs`, `map-surroundings.mjs`, `cursed-ground.mjs`, `tools/battle-atlas/combat-compiler.mjs`, `tools/terrain-workshop/layout-adapter.mjs` - run by the game, covered by no package's gate):
+
+“I think the shared mapping should be in a folder of its own.   I don't know what you mean by character code. The character codes should definitely not be in the viewer. Shouldn't be in content”
+
+Ruled:
+
+- **The shared map code gets a folder of its own** - not inside `viewer/`, and not left under `assets/` and `tools/`. The viewer and the kingdom import it from there.
+
+Not ruled by this entry: the folder's name (his to give); which gate and code stamp cover it (a tooling switch); and the character half - the model lists (`assets/characters/hero-transformations/activation-registry.json`, `assets/characters/equipment-v2/catalog.json`) and the head-and-skin drawing code (`afflictions.mjs`, `body-afflictions.mjs`). His words on that half are kept above as said; he had not yet been told what those files are, and "Shouldn't be in content" reads either way, so it was asked again the same hour. Nothing is filed from this entry.
