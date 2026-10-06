@@ -5379,3 +5379,11 @@ Ruled:
 Found: the purple plant he meant is the **barberry bush** of the terrain kit (`assets/terrain-3d/ermakova-forest`: `ef-bush-barberry-01`, `-03`; texture `T_Bush_Barberry_BCO`, its leaves averaging `#5a5368`). The Orphanage's scene uses none. The demo tints its meadow-grass tufts to that purple; putting barberry where the tall grass stands is a change to the map itself.
 
 Not ruled, and the template's next step: how it reaches the game - as a look the battle screen applies to every painted map as it draws (what the demo does, material by material), or as the maps repainted - and whether the enemies' ring and name leave the side's violet on such a ground. It is a demo on one map; no map, model or game code is changed by any of this.
+
+## 2026-10-06 — a new enemy gets a close-up: the view turns to its front, zooms in, and goes back (asked for; questions put, not yet filed)
+
+Andrew, in the kingdom chat:
+
+“One of the things  I want to figure out how to do and then add to this queue for both replay and for actual battle.   The first time a new enemy is introduced onto a battlefield   we should change perspective and zoom in on the front of them. This is done in xcom2.   So it is a zoom-in, a change of perspective, a frontal view, and then you go back to your old view so that you get a sense of the enemy.   Ask me questions about this feature.”
+
+What he asked for: the first time a new enemy is introduced onto a battlefield, in a replay and in a played battle, the view changes perspective, zooms in on the enemy's front, and then returns to the view it left - "so that you get a sense of the enemy", as XCOM 2 does. It builds on two things ruled 2026-10-04 ('the opening's tutorial ...'): the camera shows what arrives, and "New enemy" with its name and "This enemy can ..." the first time a kind is met. The chat put its questions the same day; items are filed on his answers.
