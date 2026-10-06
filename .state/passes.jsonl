@@ -139,6 +139,7 @@
 {"suite":"kingdom","stamp":"6a710d1863","with":{"engine":"dc42f97df3","content":"c6cb89aebf","viewer":"42de2b68d5","kingdom":"6a710d1863"},"at":"2026-10-06T03:29:03.279Z","by":"gate --shard (4 of 4)","in":"HBT-worker-kingdom"}
 {"suite":"kingdom","stamp":"84ee17bd5b","with":{"engine":"0d95af9351","content":"c6cb89aebf","viewer":"b65800dac0","kingdom":"84ee17bd5b"},"at":"2026-10-06T04:23:01.268Z","by":"gate --shard (4 of 4)","in":"HBT-worker-kingdom"}
 {"suite":"kingdom","stamp":"20721f1c69","with":{"engine":"f6f6fb0bb1","content":"8f939e8202","viewer":"dbf2e382b6","kingdom":"20721f1c69"},"at":"2026-10-06T05:26:31.098Z","by":"suites --run","in":"HBT-worker-engine"}
+{"suite":"kingdom","stamp":"035e3262fb","with":{"engine":"f6f6fb0bb1","content":"8f939e8202","viewer":"5ce4c6ab12","kingdom":"035e3262fb"},"at":"2026-10-06T09:37:52.943Z","by":"gate --shard (4 of 4)","in":"HBT-worker-kingdom"}
 {"suite":"kingdom","stamp":"20721f1c69","with":{"engine":"1af59e0a85","content":"e4b5310a8b","viewer":"bead638a17","kingdom":"20721f1c69"},"at":"2026-10-06T08:09:37.049Z","by":"suites --run","in":"HBT-worker-engine"}
 {"suite":"kingdom","stamp":"20721f1c69","with":{"engine":"7bdc42952e","content":"e4b5310a8b","viewer":"953df212ef","kingdom":"20721f1c69"},"at":"2026-10-06T09:30:27.011Z","by":"suites --run","in":"HBT-worker-engine"}
 {"suite":"kingdom","stamp":"e85af16ba7","with":{"engine":"dce5b2973d","content":"8f939e8202","viewer":"53d63a3faa","kingdom":"e85af16ba7"},"at":"2026-10-06T08:52:36.970Z","by":"gate --shard (4 of 4)","in":"HBT-worker-content"}
@@ -149,3 +150,4 @@
 {"suite":"kingdom","stamp":"b4c76a9b46","with":{"engine":"852b05fc95","content":"3a7dd56661","viewer":"42ad19d70c","kingdom":"b4c76a9b46"},"at":"2026-10-06T13:44:22.829Z","by":"suites --run","in":"HBT-worker-engine"}
 {"suite":"kingdom","stamp":"b4c76a9b46","failed":true,"at":"2026-10-06T19:52:40.284Z","by":"suites --run --full","in":"Heroes of Blight and Tragic"}
 {"suite":"kingdom","stamp":"a284674119","with":{"engine":"1809956828","content":"3a7dd56661","viewer":"91edbdfe6e","kingdom":"a284674119"},"at":"2026-10-06T23:10:11.942Z","by":"gate --shard (4 of 4)","in":"HBT-worker-content"}
+{"suite":"kingdom","stamp":"446f4cd41b","with":{"engine":"852b05fc95","content":"3a7dd56661","viewer":"2a8cb4c722","kingdom":"446f4cd41b"},"at":"2026-10-06T22:42:33.953Z","by":"gate --shard (4 of 4)","in":"HBT-worker-kingdom"}
