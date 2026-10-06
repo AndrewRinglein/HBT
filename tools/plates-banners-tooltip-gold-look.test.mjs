@@ -61,8 +61,11 @@ test('a phase banner and a wave banner: the look, at the top of the board as bef
   let b = wrap.querySelector('.banner'); assert.ok(b, 'the Hero Phase banner'); assert.ok(classes(b).includes('phase') && classes(b).includes('hbtNotice'), 'wears the look: ' + b.className); assert.equal(b.querySelector('b').textContent, 'Hero Phase')
   at(P, e => e.type === 'encounter.wave')
   b = wrap.querySelector('.banner'); assert.ok(b && classes(b).includes('wave') && classes(b).includes('hbtNotice'), 'the wave banner wears it'); assert.equal(b.querySelector('b').textContent, 'A wave arrives')
-  assert.equal(wrap.querySelectorAll('.banner').length, 1, 'one at a time, as before'); assert.equal(b.parentNode, wrap)
-  const r = rulesOf('.banner'); assert.match(r, /position:\s*absolute/); assert.match(r, /left:\s*50%/); assert.match(r, /top:\s*18px/); assert.match(r, /transform:\s*translate\(-50%,0\)/); assert.match(r, /pointer-events:\s*none/)
+  /* Law 10, 2026-10-06 — viewer.plates-and-banners-sit-low (Andrew, engine DECISIONS.md 'the Deathbed notification and the others sit low, near the bottom of the screen': "… still happening too close to the center of the screen. Push it down closer to the bottom of the screen.") overturns the PLACE this test held; the look and the time are held as before. The lines were:
+       assert.equal(wrap.querySelectorAll('.banner').length, 1, 'one at a time, as before'); assert.equal(b.parentNode, wrap)
+       const r = rulesOf('.banner'); assert.match(r, /position:\s*absolute/); assert.match(r, /left:\s*50%/); assert.match(r, /top:\s*18px/); assert.match(r, /transform:\s*translate\(-50%,0\)/); assert.match(r, /pointer-events:\s*none/) */
+  assert.equal(wrap.querySelectorAll('.banner').length, 1, 'one at a time, as before'); assert.equal(b.parentNode, P.V.dom.root.querySelector('#noticeStack'), 'in the notices\' stack above the action bar')
+  const r = rulesOf('.banner'); assert.doesNotMatch(r, /top:\s*18px/); assert.match(r, /pointer-events:\s*none/)
   assert.match(rulesOf('.banner b'), /font-size:\s*22px/); assert.match(rulesOf('.banner span'), /font-size:\s*11\.5px/)
   /* its time: gone after 1650 ms of the page's clock, there before */
   P.w._flush(1500); assert.ok(wrap.querySelector('.banner'), 'still up at 1.5 s'); P.w._flush(300); assert.equal(wrap.querySelector('.banner'), null, 'gone by 1.8 s')
@@ -73,7 +76,10 @@ test('a Deathbed plate and an injury plate: the look, in their own places, the p
   const P = boot(), wrap = P.V.dom.stage.parentNode
   at(P, e => e.type === 'deathbed.stood' || e.type === 'deathbed.fell')
   const m = wrap.querySelector('.dbModal'); assert.ok(m, 'the Deathbed modal'); assert.ok(m.querySelector('.dbVeil'), 'over the dimmed screen that holds the game')
-  let plate = m.querySelector('.dbPlate'); assert.ok(plate && classes(plate).includes('hbtNotice'), 'the plate wears the look: ' + plate.className); assert.match(plate.textContent, /UNIT DOWNED/)
+  /* Law 10, 2026-10-06 — viewer.plates-and-banners-sit-low (Andrew, engine DECISIONS.md 'the Deathbed notification and the others sit low, near the bottom of the screen': "… still happening too close to the center of the screen. Push it down closer to the bottom of the screen.") overturns the PLACE this test held; the look and the time are held as before. The line was:
+       let plate = m.querySelector('.dbPlate'); … (the plate inside the modal, in the middle of the board) */
+  let plate = wrap.querySelector('.dbPlate'); assert.ok(plate && classes(plate).includes('hbtNotice'), 'the plate wears the look: ' + plate.className); assert.match(plate.textContent, /UNIT DOWNED/)
+  assert.equal(plate.parentNode, P.V.dom.root.querySelector('#noticeStack'), 'in the notices\' stack above the action bar')
   P.w._flush(1400); plate = wrap.querySelector('.dbPlate')
   assert.ok(plate && classes(plate).includes('hbtNotice'), 'and still at its second stage: ' + (plate && plate.className)); assert.match(plate.textContent, /DEATHBED FIGHTING/)
   assert.match(rulesOf('.dbModal'), /inset:\s*0/); assert.match(rulesOf('.dbModal'), /align-items:\s*center/); assert.match(rulesOf('.dbBold'), /font-size:\s*40px/)
@@ -81,7 +87,9 @@ test('a Deathbed plate and an injury plate: the look, in their own places, the p
   /* an injury: its plate over the unit */
   at(P, e => e.type === 'crit.effect')
   const inj = P.V.dom.root.querySelector('.injPlate'); assert.ok(inj, 'the injury plate'); assert.ok(classes(inj).includes('hbtNotice'), 'wears the look: ' + inj.className)
-  assert.match(rulesOf('.injPlate'), /position:\s*absolute/); assert.match(rulesOf('.injPlate'), /white-space:\s*nowrap/)
+  /* Law 10, 2026-10-06 — viewer.plates-and-banners-sit-low (Andrew, engine DECISIONS.md 'the Deathbed notification and the others sit low, near the bottom of the screen': "… still happening too close to the center of the screen. Push it down closer to the bottom of the screen.") overturns the PLACE this test held; the look and the time are held as before. The line was:
+       assert.match(rulesOf('.injPlate'), /position:\s*absolute/); assert.match(rulesOf('.injPlate'), /white-space:\s*nowrap/) */
+  assert.equal(inj.parentNode, P.V.dom.root.querySelector('#noticeStack'), 'in the notices\' stack above the action bar'); assert.match(rulesOf('.injPlate'), /white-space:\s*nowrap/)
   P.v.dispose()
 })
 

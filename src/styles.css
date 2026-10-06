@@ -83,8 +83,10 @@ html,body{margin:0;background:#08090b;color:var(--ink);
    the affliction pop-up should take the notices' look too, Andrew: "One, yes."): a banner is the notices' one
    lettering (.hbtNotice — gold, outlined, nothing behind it), in its own place and for its own time; every kind of banner the
    same gold (the words say which it is) */
-.banner{position:absolute;left:50%;top:18px;transform:translate(-50%,0);z-index:52;pointer-events:none;
-  padding:9px 22px;text-align:center}
+/* viewer.plates-and-banners-sit-low (engine DECISIONS.md 2026-10-06, Andrew: "… still happening too close to the center of the
+   screen. Push it down closer to the bottom of the screen."): a banner stands in the notices' stack above the action bar
+   (#noticeStack — board.js standLow); it stood 18 px under the top of the board. Its words, its time and its look are as they were */
+.banner{position:relative;pointer-events:none;padding:9px 22px;text-align:center}
 .banner b{display:block;font-family:Spectral,serif;font-size:22px;font-weight:700;letter-spacing:.3px}
 .banner span{display:block;font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;margin-top:2px}
 /* viewer.area-fall-warning: a hex marked to be struck — hatched in the hue of what will land, pulsing; an area's centre ringed */
@@ -95,14 +97,16 @@ html,body{margin:0;background:#08090b;color:var(--ink);
   repeating-linear-gradient(-45deg,color-mix(in srgb,var(--fall) 62%,transparent) 0 7px,color-mix(in srgb,var(--fall) 20%,transparent) 7px 16px)}
 @keyframes fallPulse{0%,100%{opacity:.5}50%{opacity:.95}}
 /* DEATHBED FIGHTING — the modal (Angela 2026-09-03 evening) */
-.dbModal{position:absolute;inset:0;z-index:60;pointer-events:none;display:flex;align-items:center;justify-content:center}
+/* viewer.plates-and-banners-sit-low: the dimmed screen is where it was; the plate's words stand in the notices' stack above
+   the action bar (board.js standLow), which is drawn over the veil so the words stay bright */
+.dbModal{position:absolute;inset:0;z-index:57;pointer-events:none;display:flex;align-items:center;justify-content:center}
 .dbVeil{position:absolute;inset:0;background:rgba(4,4,6,.62)}
 /* viewer.plates-banners-tooltip-gold-look (engine DECISIONS.md 2026-10-05 'gifts: the word; … the plates, banners, tooltip
    and pop-up take the gold look' — asked whether the Deathbed and injury plates, the phase and wave banners, the hex tooltip and
    the affliction pop-up should take the notices' look too, Andrew: "One, yes."): the plate's words are the notices'
    lettering with no box behind them, over the dimmed screen that holds the game (.dbVeil — behind the whole board, as the
    questions' is); "fights on" and "falls" are said by the words, not by a colour */
-.dbPlate{position:relative;min-width:420px;padding:26px 44px;text-align:center}
+.dbPlate{position:relative;min-width:420px;padding:4px 44px;text-align:center}
 .dbPlate span{display:block}
 .dbHead{font-size:13px;letter-spacing:.22em;text-transform:uppercase;font-weight:700}
 .dbSub{font-family:Spectral,serif;font-size:30px;font-weight:700;margin-top:6px}
@@ -585,7 +589,7 @@ html,body{margin:0;background:#08090b;color:var(--ink);
    and pop-up take the gold look' — asked whether the Deathbed and injury plates, the phase and wave banners, the hex tooltip and
    the affliction pop-up should take the notices' look too, Andrew: "One, yes."): the injury's name in the notices'
    lettering, no plate behind it, where it lands and flies as before */
-.injPlate{position:absolute;padding:6px 10px;text-align:center;
+.injPlate{position:relative;padding:6px 10px;text-align:center;
   font-family:'Barlow Semi Condensed',sans-serif;font-size:17px;line-height:1.2;letter-spacing:.03em;white-space:nowrap;pointer-events:none}
 .injPlate b{margin-right:4px}
 
