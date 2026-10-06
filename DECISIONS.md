@@ -5867,3 +5867,45 @@ Added the same minute, his next message, which settles the reading above:
 “We need to improve our methodology. We need to improve our file structure before we continue with development.”
 
 - **Methodology and file structure come before feature development continues.** Methodology: the two tool items from the review of the testing, and the builders-and-lander way of working. File structure: the seven-item cut. The three owed chains already running in the worker copies are finished and merged first, since the restructure edits the same files; no new feature item is started until the nine are landed.
+
+## 2026-10-06 — the one plan: land on the quick check, run the whole suites twice a day, four streams and one lander
+
+Andrew, in the home chat, after several versions of the plan and three questions put back to him:
+
+“I'm just going to say it again: the goal is to improve the architecture, improve the methodology of what we're doing, and make it so it's faster. Our process is really, really slow, and we have to make it faster.  I'm not even sure that this... I think we're just being saddled by a bunch of testing that isn't being very effective. How do we make everything faster? How do we make it organized the right way? How do we make it so I can work in parallel on multiple things? That is the goal.”
+
+“You're asking me questions that I'm asking you.   Decide what keeps the checks that matter and removes the things that don't. You know what the goal is. Don't ask me questions. I'm not you. I don't know the answer.   We want a game that doesn't have bugs, but if we catch very few bugs for twice as much time, that is not effective.   I want to be able to iterate on this game in at least four different ways simultaneously.  We are changing some architecture and some methodology, and doing some cleanup. What should we be doing? You tell me.  Not me telling you  consider very carefully, and then consider it again. Don't keep giving me different answers.  Give me one answer. That's the right answer you are telling me.”
+
+Decided by the home chat, on that word. It replaces the seven-item cut and its order (the entries above of this day); the builders-and-lander ruling stands and is widened to four builders.
+
+What it rests on (his review of the testing, 4-6 Oct, and the gate's own log read the same hour): workers spent 56% of their time on whole-suite runs and landing chains; those runs failed 119 times in 417 and 15 of the 90 incidents were real faults. The single-item gate takes seconds (five from check to landing, at the median) and failed for a real reason about ten times in 279 runs. So the quick check is cheap and honest, and the whole suites are dear and mostly noise at the moment they are run.
+
+**The checks**
+
+- **On every landing, kept as they are:** typecheck, the item's own test (seen red, then green) and the single-item gate. An item that changes engine code also keeps the control battles, which the gate already runs. A page item also needs the page to build and play its battles through (the viewer gate's verify part), once per group, by the lander.
+- **Twice a day, by the lander, alone on the machine:** all four whole suites. A real fault goes back to the builder who wrote the item, who fixes it with a new commit; a test or recording still holding a value an item changed on purpose is updated by the lander; a time-out is re-run once, and a test that times out a second time is put on a named list and fixed as an item, not re-run again.
+- **Dropped:** the whole suites at every merge-back (`tools/combine.mjs` runs them today); the viewer's whole gate at every page landing (its checks and tests parts); a new page test for every look-and-feel item - that kind of item is checked by a screenshot for Andrew's eye, and rules and numbers keep their tests.
+- **What that costs:** the main folder can be broken for up to half a day, and a fault found by a scheduled run has to be traced among the items landed since the last one.
+
+**Four streams, one lander**
+
+- (1) Engine and content. (2) The viewer's screen: the bars, panels, tokens and input. (3) The viewer's scene: the 3D scene, the camera and how maps are drawn. (4) Art and maps. Kingdom work, when there is any (its queue is empty today), goes with stream 2.
+- One builder per stream, each in its own copy, never running a whole suite and never building or committing a built page. A stream does not edit another stream's files; what it needs from another stream is filed as an item for that stream.
+- One lander merges the builders' commits in groups of up to four, builds the pages, runs the quick checks and lands each item at the engine gate; and runs the twice-daily suites.
+
+**The structure changes that the four streams need, and no others now**
+
+- Built pages are made by the lander only (no tool change; it is in every brief).
+- Logs stop being tracked.
+- The engine's per-landing golden chain becomes one capture tool and one current golden, so that the lander re-records a group's battles with one command.
+- The table of which unit wears which model and motion moves from `viewer/tools/` to `art/tools/`, so that stream 4 edits no viewer file.
+- The camera comes out of `viewer/src/board.js`, so that streams 2 and 3 do not both live in one 2,400-line file.
+
+**Not now, written down in `CODEBASE-REVIEW-2026-10-05.md`:** `maps/` holding the shared map code, the `workshop` and `accepted` folders, the tutorial-line fix (an ordinary bug), one repository in place of five, and everything else in that file's section 4.
+
+**The order**
+
+1. The three owed chains finish and are merged; the full run is green once in the main folder (the starting line).
+2. Tool items, by the home chat's first builder: the 30-second test limit on the PC; the two engine tests that depend on run order; the merge-back and the viewer's page landing no longer demand the whole suites, and the lander's twice-daily run records them; a look-and-feel item lands on a named screenshot in place of a page test.
+3. The four builders and the lander start. Each stream's first item is its structure change (stream 1 the golden chain, stream 2 or 3 the camera, stream 4 the table; logs go with the lander), and its feature queue follows at once.
+4. After one day, the same measurement as his review: landings an hour, and what the twice-daily runs caught.
