@@ -632,7 +632,8 @@ if (SINGLES) {
   const anyUnit = Object.values(v.state.U).find(u => u.life !== 'dead') || Object.values(v.state.U)[0]
   V.fx.injuryQ = []
   V.playCues([{ k: 'injury', id: anyUnit.id, name: 'Test Injury A' }, { k: 'injury', id: anyUnit.id, name: 'Test Injury B' }])
-  const plates = V.dom.stage.querySelectorAll('.injPlate').length
+  /* viewer.plates-and-banners-sit-low (2026-10-06): the plate stands in the notices' stack (the board's frame), not over its unit. Was: V.dom.stage.querySelectorAll('.injPlate').length */
+  const plates = V.dom.stage.parentNode.querySelectorAll('.injPlate').length
   check(V.fx.injuryQ.length === 2 && plates === 1, `ladder: two simultaneous injuries gave ${plates} plate(s) with ${V.fx.injuryQ.length} queued — they must queue, one at a time`)
 }
 
@@ -873,7 +874,8 @@ if (SINGLES) {
       v.seek(i); v.step()
       const wrap = V.dom.stage.parentNode, m = wrap.querySelector('.dbModal')
       /* the fake DOM's innerHTML is per element and not re-serialised from children: read the PLATE, which is what carries the words */
-      const plateHTML = () => m ? m.querySelector('.dbPlate').innerHTML : ''
+      /* viewer.plates-and-banners-sit-low (2026-10-06): the plate's words stand in the notices' stack above the action bar; the modal is the dimmed screen. Was: m ? m.querySelector('.dbPlate').innerHTML : '' */
+      const plateHTML = () => { const p = m && wrap.querySelector('.dbPlate'); return p ? p.innerHTML : '' }
       check(m && /UNIT DOWNED/.test(plateHTML()) && /Deathbed Fighting roll/.test(plateHTML()) && new RegExp('<b>' + e.roll + '</b> vs ' + e.chance).test(plateHTML()), `${label}: the Deathbed modal's first stage is wrong or missing at ${i}`)
       win._flush(1200); check(/DEATHBED FIGHTING/.test(plateHTML()) && /This hero fights on\./.test(plateHTML()), `${label}: the Deathbed modal's second stage does not say the hero fights on`)
       check(!/stands/i.test(plateHTML()), `${label}: the Deathbed modal says "stands"`)
@@ -898,7 +900,7 @@ if (SINGLES) {
     /* deathbed.none — a Wounded unit at 0: no roll, dead (engine b4cbd9b) */
     for (const [e, i] of byType(EV, 'deathbed.none').slice(0, 1)) { v.seek(i); v.step()
       const m = V.dom.stage.parentNode.querySelector('.dbModal')
-      check(m && /Already Wounded/.test(m.querySelector('.dbPlate').innerHTML), `${label}: the no-roll modal does not say the unit was already Wounded`); win._flush(3000) }
+      check(m && /Already Wounded/.test((V.dom.stage.parentNode.querySelector('.dbPlate') || {}).innerHTML || ''), `${label}: the no-roll modal does not say the unit was already Wounded`); win._flush(3000) }
     /* BADGES (engine 2e76ede): every badge the log grants is on the unit, and a mid-battle one beats */
     { const S = foldTo(EV, EV.length, CTX)
       for (const [e] of byType(EV, 'unit.badged').slice(0, 4)) check(S.U[e.actor] && S.U[e.actor].badges.includes(e.badgeId), `${label}: unit ${e.actor} lacks the fielded badge ${e.badgeId}`)
