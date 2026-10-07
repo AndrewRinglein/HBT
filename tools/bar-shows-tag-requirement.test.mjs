@@ -123,7 +123,15 @@ test('as before: the Bleeding Strike (no requirement) is on every attack; two re
       const was = a.attack ? u.triggers.filter(t => ATTACKER_HOOKS.includes(t.hook) && !(t.onlyWithAttack && t.onlyWithAttack !== id) && t.role !== 'defender') : []
       assert.deepEqual(ridersOf(unit, a, DD), was, `${b.label} ${u.name} ${id}`); asked++ }
   }
-  assert.ok(asked >= 330, 'every action of the opening roster')
+  /* Law 10, 2026-10-06 — engine item rule.special-moves-unlock-at-level-two (engine DECISIONS.md 2026-10-06 'a hero's special moves
+     unlock at level 2, ruled: all of them, every hero …'): this read
+       assert.ok(asked >= 330, 'every action of the opening roster')
+     — a floor under the roster of the day, 340 actions. The roster is the engine's (held to it, unit for unit and action for
+     action, by test/viewer.bar-shows-every-effect.test.ts), and a level-1 hero no longer holds its class's special move: 42
+     fieldings of the opening are of a level-1 hero, so it is 298 actions over the same 79 units. What the floor stood for is
+     held exactly beside it; the floor is said again under the roster as it is, so an emptied roster still cannot pass. */
+  assert.equal(asked, OPENING_ROSTER.battles.flatMap(b => b.units).reduce((n, u) => n + u.actions.length, 0), 'every action of the opening roster was asked')
+  assert.ok(asked >= 290, 'every action of the opening roster')
 })
 
 test('the rule is the engine\'s, read from the dump: for every attack, a tag-required trigger rides it exactly when the table lists it', () => {

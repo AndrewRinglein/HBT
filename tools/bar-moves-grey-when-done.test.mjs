@@ -11,7 +11,14 @@ import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import { makeWindow } from './fakedom.mjs'
-const battle1 = JSON.parse(readFileSync('battles/test.opening-orphanage.json', 'utf8'))
+/* Restated 2026-10-06 (engine item rule.special-moves-unlock-at-level-two; engine DECISIONS.md 2026-10-06 'a hero's special moves
+   unlock at level 2, ruled: all of them, every hero …'): a hero has a second movement power from level 2, and nobody in the
+   Orphanage's recording is level 2. The test needs a hero with two move rows, so it stands on the Lumberjack House's
+   recording (battle 2), where the first hero is level 2 and has her Side Roll, and on HER first Activation. What it holds -
+   which rows grey, on whose word - is unchanged. The lines were:
+     const battle1 = JSON.parse(readFileSync('battles/test.opening-orphanage.json', 'utf8'))
+     const begin = EV.findIndex(e => e.type === 'activation.begin' && e.phase === 'hero'), A = EV[begin].actor */
+const battle1 = JSON.parse(readFileSync('battles/test.opening-lumberjack.json', 'utf8'))
 const html = readFileSync(process.env.VIEWER_PAGE || 'BATTLE-VIEWER.html', 'utf8')
 const EV = battle1.events
 
@@ -31,8 +38,9 @@ function boot(opts = {}) {
   return { w, v, V: v._V, L }
 }
 const facts = (actor, more = {}) => ({ actor, slot: null, reach: [], zoc: [], path: [], provokes: [], ghost: null, threat: null, targets: [], aim: null, note: null, ...more })
-/* the first hero to act in the recording: a drafted hero with a basic move, a second movement power, attacks */
-const begin = EV.findIndex(e => e.type === 'activation.begin' && e.phase === 'hero'), A = EV[begin].actor
+/* the first Activation in the recording of a hero at level 2: a basic move, a second movement power, attacks */
+const LEVEL_TWO = new Set(EV.filter(e => e.type === 'unit.grown' && e.level >= 2).map(e => e.actor))
+const begin = EV.findIndex(e => e.type === 'activation.begin' && e.phase === 'hero' && LEVEL_TWO.has(e.actor)), A = EV[begin].actor
 const rows = V => V.dom.actionbar.querySelectorAll('.acRow').filter(r => r.dataset.act)
 const has = (r, cls) => r.className.split(/\s+/).includes(cls)
 const greyed = V => rows(V).filter(r => has(r, 'moveDone')).map(r => r.dataset.act)

@@ -2259,6 +2259,15 @@ host names as done, and the host reads the engine. The page check is the kingdom
 |---|---|---|---|---|
 | `restOfAWalkPinnedAsPrimary` | `test/viewer.bar-moves-grey-when-done.test.ts` held, of the engine, that the movement left over after a walk cut short "is still offered — as the primary action, which ends the Activation". Found by the viewer gate's checks part at the group's chain (the failed run stays in the record). | **Restated in place with a dated note (Law 10), the old three lines quoted: the rest of the walk is the same move action — refused as the primary action with `movement-slot-closed`, taken in the movement slot, and the hero's primary action and Activation are still its own.** The six opening recordings re-exported on the rule are event for event what they were. | The engine's rule moved; the test says the rule. | Default — 2026-10-06 |
 
+## rule.special-moves-unlock-at-level-two (engine item) — the bar lists a movement once the unit has reached its level, 2026-10-06
+
+Ruled 2026-10-06 (engine/DECISIONS.md 'a hero's special moves unlock at level 2, ruled: all of them, every hero, enemies and
+civilians unchanged, named on the level-up screen').
+
+| Switch | Question | Default | Reason | Status |
+|---|---|---|---|---|
+| `barListsMovesByLevel` | "A level-1 hero's bar shows the basic Move and no Leap, Side Roll, Sidestep, Back Flip, Focus or Devotion" | **The bar listed a unit's movements from its TYPE's row in the dump, whatever its level. The row carries the engine's `moveLevels` now (copied verbatim) and the bar lists a movement only when the unit has reached its level — the level is the engine's own line (`unit.grown`), 1 where the battle fielded the unit with none. A row that names no level (an enemy, a civilian, the test parties) lists everything, as before. Not shown locked: not there.** | The item's words; the page never guesses a level. | Default — 2026-10-06 |
+
 ## The six one-use content items (engine items) — the viewer's half, 2026-10-06
 
 Ruled 2026-10-06 (Andrew, engine DECISIONS.md 'the one-use rules: most are cut or reworded onto rules the engine already has; a

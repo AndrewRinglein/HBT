@@ -67,12 +67,17 @@ test('the fold plays both lines: they are folded types, and both battles hold th
      opening six, shields, custom weapons'): this read assert.equal(cavern.seed.replicate, 17). The shields are the Armory Ledger's now,
      the Cavern Trail is another fight, and by the same rule (the lowest seed whose battle turns a hero — viewer SWITCHES
      combineTurnedSeed, shieldsOpeningSeeds) the recording is on seed 11. */
-  /* Law 10, 2026-10-06 - content.used-twice-rules-removed (engine item; engine DECISIONS.md 2026-10-06 'the one-use rules: most are cut
-     or reworded onto rules the engine already has ...', of the Werewolf's Claw Frenzy: "the ordering, I don't really care about"): this
-     read assert.equal(cavern.seed.replicate, 11). The Claw Frenzy's Strength now counts - a Werewolf is a point stronger after every
-     swing - so the Cavern Trail is another fight from its first Werewolf's swing, and on seed 11 nobody is turned. By the same rule
-     (the lowest seed whose battle turns a hero, seeds 0 to 29 read for that kind of line - viewer SWITCHES combineTurnedSeed,
-     usedTwiceOpeningSeeds: 0, 4, 6 and 23 hold one) the recording is on seed 0. */
+  /* Law 10, 2026-10-06 — engine items rule.surge-is-at-least-level and rule.special-moves-unlock-at-level-two; engine DECISIONS.md 2026-10-06 'everyone gains Surge equal to its level at the least …', 'a hero's special moves unlock at level 2, ruled …':
+     this read assert.equal(cavern.seed.replicate, 11). Every hero rolls a Surge check and a level-1 hero has no special move, so
+     the Cavern Trail is another fight on every seed; read from 0 upward by the same rule, seeds 1, 5 and 22 turn a hero and the
+     recording is on seed 1 (the Battle Chaplain is bitten and turns). */
+  /* Law 10, 2026-10-06, combine - content.used-twice-rules-removed (engine item; engine DECISIONS.md 2026-10-06 'the one-use rules: most
+     are cut or reworded onto rules the engine already has ...', of the Werewolf's Claw Frenzy: "the ordering, I don't really care about"),
+     merged with the two rules above: this read assert.equal(cavern.seed.replicate, 1) on master and, in this copy before the merge,
+     assert.equal(cavern.seed.replicate, 0) where it had read 11. The Claw Frenzy's Strength now counts - a Werewolf is a point
+     stronger after every swing - so the Cavern Trail is another fight again. The rule read once more on the merged tree (the lowest
+     seed whose battle turns a hero, seeds 0 to 29 read for that kind of line - viewer SWITCHES combineTurnedSeed, usedTwiceOpeningSeeds):
+     0, 1, 5, 10 and 11 hold one, and the recording is on seed 0 (the Forest Elf is bitten and turns on the battle's last Turn). */
   assert.equal(cavern.seed.replicate, 0)
 })
 

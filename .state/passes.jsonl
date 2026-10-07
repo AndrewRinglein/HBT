@@ -171,6 +171,9 @@
 {"suite":"viewer","stamp":"42ad19d70c","with":{"engine":"852b05fc95","content":"3a7dd56661","viewer":"42ad19d70c","kingdom":"e9c8bd20ba"},"at":"2026-10-06T12:59:27.574Z","by":"gate (every part)","in":"HBT-worker-engine"}
 {"suite":"viewer","stamp":"f033ddc081","failed":true,"at":"2026-10-06T17:03:46.461Z","by":"gate --part checks","in":"HBT-worker-content"}
 {"suite":"viewer","stamp":"42ad19d70c","failed":true,"at":"2026-10-06T20:05:53.543Z","by":"gate --part checks","in":"Heroes of Blight and Tragic"}
+{"suite":"viewer","stamp":"793517f25c","failed":true,"at":"2026-10-06T17:13:46.381Z","by":"gate --part checks","in":"HBT-worker-engine"}
+{"suite":"viewer","stamp":"3136f53162","failed":true,"at":"2026-10-06T22:11:18.442Z","by":"gate --part checks","in":"HBT-worker-engine"}
+{"suite":"viewer","stamp":"3136f53162","with":{"engine":"86b00fef88","content":"08aab47578","viewer":"3136f53162","kingdom":"eba9aabb61"},"at":"2026-10-06T23:00:13.356Z","by":"gate (every part)","in":"HBT-worker-engine"}
 {"suite":"viewer","stamp":"959f71c9fa","failed":true,"at":"2026-10-06T22:25:52.240Z","by":"gate --part checks","in":"HBT-worker-content"}
 {"suite":"viewer","stamp":"91edbdfe6e","with":{"engine":"1809956828","content":"3a7dd56661","viewer":"91edbdfe6e","kingdom":"a284674119"},"at":"2026-10-06T22:51:15.917Z","by":"gate (every part)","in":"HBT-worker-content"}
 {"suite":"viewer","stamp":"2a8cb4c722","failed":true,"at":"2026-10-06T16:01:32.003Z","by":"gate --part checks","in":"HBT-worker-kingdom"}
@@ -178,3 +181,4 @@
 {"suite":"viewer","stamp":"2a8cb4c722","with":{"engine":"852b05fc95","content":"3a7dd56661","viewer":"2a8cb4c722","kingdom":"446f4cd41b"},"at":"2026-10-06T22:13:53.977Z","by":"gate (every part)","in":"HBT-worker-kingdom"}
 {"suite":"viewer","stamp":"93c09f8c0e","with":{"engine":"1809956828","content":"3a7dd56661","viewer":"93c09f8c0e","kingdom":"0034430bdc"},"at":"2026-10-06T23:44:50.538Z","by":"gate (every part)","in":"HBT-worker-content"}
 {"suite":"viewer","stamp":"33b8f35688","failed":true,"at":"2026-10-07T01:10:18.525Z","by":"gate --part checks","in":"HBT-worker-content"}
+{"suite":"viewer","stamp":"ca2390a185","with":{"engine":"a3db3d8073","content":"08aab47578","viewer":"ca2390a185","kingdom":"77fbd3f19c"},"at":"2026-10-07T00:43:27.287Z","by":"gate (every part)","in":"HBT-worker-engine"}

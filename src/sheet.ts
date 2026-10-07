@@ -53,6 +53,9 @@ export function sheetOf(typeId: string): UnitSheet | undefined {
     attacks: many(u.attacks, ACTIONS as Record<string, unknown>),
     abilities: many(u.abilities, ACTIONS as Record<string, unknown>),
     moves: many(u.moves, ACTIONS as Record<string, unknown>),
+    // rule.special-moves-unlock-at-level-two (engine item, 2026-10-06): the level each listed movement is granted at, the engine's
+    // field verbatim; absent on a row that grants none by level (every enemy, every civilian)
+    moveLevels: plain(u.moveLevels),
     badges: plain(u.badges) ?? [],
     triggers: plain(u.triggers) ?? [],
   }

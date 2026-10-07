@@ -29,7 +29,14 @@ describe('the action bar changes with the Activation', () => {
     advanceBattle(ctx, policy)
     expect(executeBattleCommand(ctx, policy, { kind: 'select-activation', unitUid: b!, expectedSeq: ctx.state.seq }).ok).toBe(true)
     advanceBattle(ctx, policy)
-    expect(ctx.events.slice(before).map((e) => [e.type, (e as { actor?: number }).actor])).toEqual([['activation.end', A.id], ['activation.selected', B.id], ['activation.begin', B.id]])
+    // Restated 2026-10-06 (engine item rule.surge-is-at-least-level; engine DECISIONS.md 2026-10-06 'everyone gains Surge equal to
+    // its level at the least, and rolls the Surge check every Activation'): the hero rolls its Surge check when its action cycle
+    // ends, so that line stands before End activation - here a check that does not surge (1 in 100). The three events the bar
+    // follows are as they were, in the same order, with the actors named. The line was:
+    //   expect(ctx.events.slice(before).map((e) => [e.type, (e as { actor?: number }).actor])).toEqual([['activation.end', A.id], ['activation.selected', B.id], ['activation.begin', B.id]])
+    const after = ctx.events.slice(before)
+    expect(after[0]).toMatchObject({ type: 'surge.checked', actor: A.id, hit: false, chance: 1 })
+    expect(after.slice(1).map((e) => [e.type, (e as { actor?: number }).actor])).toEqual([['activation.end', A.id], ['activation.selected', B.id], ['activation.begin', B.id]])
     expect(ctx.battleCursor).toMatchObject({ at: 'acting', actor: B.id })
     expect([...B.actions].sort()).not.toEqual([...A.actions].sort())
   })

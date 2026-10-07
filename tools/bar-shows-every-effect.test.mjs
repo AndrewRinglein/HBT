@@ -37,7 +37,14 @@ test('the audit, sheet actions vs bar buttons: every action the engine\'s unit h
      cannot pass. */
   const rostered = ROSTER.battles.flatMap(b => b.units), actionsOf = list => list.reduce((n, u) => n + u.actions.length, 0)
   assert.equal(units.length, rostered.length, 'the audit read every unit of the roster'); assert.ok(units.length >= 75, 'the roster\'s units')
-  assert.equal(actionsOf(units), actionsOf(rostered), 'and every action each holds'); assert.ok(actionsOf(units) >= 330, 'their actions')
+  /* Law 10, 2026-10-06 — engine item rule.special-moves-unlock-at-level-two (engine DECISIONS.md 2026-10-06 'a hero's special moves
+     unlock at level 2, ruled: all of them, every hero …'): this read
+       assert.equal(actionsOf(units), actionsOf(rostered), 'and every action each holds'); assert.ok(actionsOf(units) >= 330, 'their actions')
+     — a floor under the roster of the day, 340 actions. The roster is the engine's (held to it, unit for unit and action for
+     action, by test/viewer.bar-shows-every-effect.test.ts), and a level-1 hero no longer holds its class's special move: 42
+     fieldings of the opening are of a level-1 hero, so it is 298 actions over the same 79 units. What the floor stood for is
+     held exactly beside it; the floor is said again under the roster as it is, so an emptied roster still cannot pass. */
+  assert.equal(actionsOf(units), actionsOf(rostered), 'and every action each holds'); assert.ok(actionsOf(units) >= 290, 'their actions')
   const heroes = new Set(units.filter(u => u.typeId.startsWith('hero.base.')).map(u => u.typeId)); assert.equal(heroes.size, 24, 'the 24 base heroes')
   const missing = units.flatMap(u => u.missingActions.map(id => `${u.battle} · ${u.name}: ${id}`))
   assert.deepEqual(missing, [], 'no action on the engine\'s sheet is missing from the bar')

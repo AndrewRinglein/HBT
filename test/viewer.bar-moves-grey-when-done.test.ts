@@ -23,14 +23,20 @@ import { describe, it, expect } from 'vitest'
 import { execFileSync } from 'node:child_process'
 import { mkdirSync } from 'node:fs'
 import { advanceBattle } from '../../engine/src/core/battle.js'
-import { createCustomBattle } from '../../engine/src/core/setup.js'
+import { createBattle } from '../../engine/src/core/setup.js'
 import { executeBattleCommand, legalActions, validateBattleCommand, type ControlPolicy } from '../../engine/src/core/commands.js'
 import type { Ctx } from '../../engine/src/core/types.js'
 
 const HERO = 100, policy: ControlPolicy = { humanUnitUids: [HERO, 101] }
 /** the Iron Dwarf beside a durable zombie (or far from it), a second hero so the Hero Phase goes on after the first */
 function field(zombieHex: number): Ctx {
-  const ctx = createCustomBattle([{ type: 'hero.base.warrior-iron', hex: 85 }, { type: 'hero.base.warrior-iron', hex: 20 }], [{ type: 'unit.zombie', hex: zombieHex }], { strict: true, heroUids: [HERO, 101], enemyUids: [900] })
+  // Restated 2026-10-06 (engine item rule.special-moves-unlock-at-level-two; engine DECISIONS.md 2026-10-06 'a hero's special moves
+  // unlock at level 2, ruled: all of them, every hero …'): a hero has his special move from level 2, so the two Iron Dwarves are
+  // fielded at level 2 (with a warrior's specialty - the engine fields no level-2 hero without one). What this file holds - when
+  // a move is done, and that a walk closes Leap - is unchanged. The line was:
+  //   const ctx = createCustomBattle([{ type: 'hero.base.warrior-iron', hex: 85 }, { type: 'hero.base.warrior-iron', hex: 20 }], [{ type: 'unit.zombie', hex: zombieHex }], { strict: true, heroUids: [HERO, 101], enemyUids: [900] })
+  const LEVEL_TWO = { level: 2, specialtyId: 'specialty.berserker' }
+  const ctx = createBattle({ replicate: 0, mapId: 'map.open', heroes: ['hero.base.warrior-iron', 'hero.base.warrior-iron'], heroHexes: [85, 20], heroProgress: [LEVEL_TWO, LEVEL_TWO], enemies: ['unit.zombie'], enemyHexes: [zombieHex], enemyCount: 1, strict: true, heroUids: [HERO, 101], enemyUids: [900] })
   ctx.state.units[2]!.hp = ctx.state.units[2]!.maxHp = 1000
   for (const u of ctx.state.units) { u.surge = 0; u.surgeChance = 0 }
   expect(advanceBattle(ctx, policy)).toMatchObject({ kind: 'selecting' })
