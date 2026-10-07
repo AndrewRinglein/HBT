@@ -42777,3 +42777,144 @@ index 9c03d93..11fda8a 100644
         its attack one is chosen after this move too (kingdom SWITCHES attackOneAfterEachMove); if it does not, nothing of its is */
 ```
 </details>
+
+## content.used-twice-rules-removed — LANDED `c726f6a` **NEEDS REVIEW**
+2026-10-07 02:12
+
+  PASS  dependencies landed
+  WARN  not already decided — 2 candidate ruling(s) — READ BEFORE ASKING: SWITCHES.md:2282 · SWITCHES.md:2897
+  PASS  typecheck
+  PASS  the item's own tests — test/battle-cursor.test.ts, test/enemy-flip.test.ts, test/used-twice-rules-removed.test.ts
+  PASS  gate 1 — the id appears in a real battle — attack.eyeblight.gaze: 175 log lines, 175 fired, 77 changed state · trigger.werewolf.strength-strength.on-hit: 45 log lines, 45 fired, 15 changed state
+  PASS  brought its own tests — test/battle-cursor.test.ts, test/enemy-flip.test.ts, test/fixtures/battle-cursor-one-use-content-items.json, test/used-twice-rules-removed.test.ts
+  WARN  existing tests untouched — DELETED LINES in kingdom/test/turned-hero-lost.test.ts (-2), test/battle-cursor.test.ts (-2), test/enemy-flip.test.ts (-2), viewer/tools/plays-turned-units.test.mjs (-1) — will land FLAGGED for review
+  PASS  control battles unchanged
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — shape 'data' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without attack.eyeblight.gaze,trigger.werewolf.strength-strength.on-hit — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+engine 7f1f47c content.used-twice-rules-removed: its engine test - the Werewolf's Claw Frenzy leaves it a point of Strength stronger after every swing, hit or miss, each swing computed from the Strength it began with; the Eyeblight's Gaze deals its Precision as true damage; the four Tainted Blood items give 1 Bleed on taking damage; Grudge-Bearer is +1 Strength, Giant-Killer a fixed slayer that waits named; the standing gaze assertion restated with a dated note (test/enemy-flip.test.ts: the Gaze is no longer a named gap - Andrew 2026-10-06: 'It should be based on its stat.')
+
+diff --git a/test/enemy-flip.test.ts b/test/enemy-flip.test.ts
+index 0e77991..de9646b 100644
+--- a/test/enemy-flip.test.ts
++++ b/test/enemy-flip.test.ts
+@@ -49,6 +49,14 @@ describe('the horde is authored', () => {
+       if (u.attacks.length === 0) expect(g.some((x) => x.unit === r.id), `${r.id} fields weaponless and must carry a gap`).toBe(true)
+     }
+-    // the stat-less gaze is the shape the engine cannot say
+-    expect(g.some((x) => x.unit === 'unit.eyeblight' && /reads no stat/.test(x.what))).toBe(true)
++    // Restated 2026-10-06 (content.used-twice-rules-removed; ruled 2026-10-06, DECISIONS.md 'the one-use rules …', of the
++    // Eyeblight's Gaze: "I think an attack with flat damage is fine, although that's probably just a typo. It should not have
++    // flat damage. It should be based on its stat."). The Gaze reads Precision now, so it is an attack the engine fights and
++    // no longer a named gap. The two lines were:
++    //   // the stat-less gaze is the shape the engine cannot say
++    //   expect(g.some((x) => x.unit === 'unit.eyeblight' && /reads no stat/.test(x.what))).toBe(true)
++    expect(g.filter((x) => x.unit === 'unit.eyeblight' && /gaze/.test(x.what))).toEqual([])
++    expect(UNITS['unit.eyeblight']!.attacks).toContain('attack.eyeblight.gaze')
++    // a stat-less attack is still a shape the engine cannot say: any row that authors one must carry the gap
++    for (const x of g.filter((y) => /reads no stat/.test(y.what))) expect(x.needs).toBe('attack shape: stat-less (flat) damage')
+   })
+ })
+engine 5390bd1 content.used-twice-rules-removed, content.one-use-items-reworded, content.card-draw-badge-rules-cut (and the group's three other items' fieldings): the battle-cursor layer for the six one-use content items, captured on the tree merged with master 42d8dd8 - 113 cases; four fought differently, by content.used-twice-rules-removed (test.afflictions-at-zero-rule, test.opening-cavern-trail, showcase.prologue-enemies: the Werewolf's Claw Frenzy, 'the ordering, I don't really care about'; showcase.horrors: the Eyeblight's Gaze by its Precision, 'It should be based on its stat.'); nine in words only (progression-surge-0, -1, -2 and test.set-bonus: the Compass's and the Blink Ring's lines, content.one-use-items-reworded; showcase.eve-24-b, test.banner-courage, test.bear-traps, test.mending-light, test.snarer-traps: Wise's line, content.card-draw-badge-rules-cut); four added (test.take-root, test.divine-bulwark, test.banner-heroism, test.impersonation); the 23 control battles did not move
+
+diff --git a/test/battle-cursor.test.ts b/test/battle-cursor.test.ts
+index b9afb55..c7f2fb4 100644
+--- a/test/battle-cursor.test.ts
++++ b/test/battle-cursor.test.ts
+@@ -594,4 +594,18 @@ const specialMovesUnlockAtLevelTwoGolden = JSON.parse(readFileSync(new URL('./fi
+ // (state only). A `changed` case is checked here and skips the older layers.
+ const combineOneMoveGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-combine-one-move.json', import.meta.url), 'utf8'))
++// The six one-use content items (ruled 2026-10-06; DECISIONS.md 'the one-use rules: most are cut or reworded onto rules the engine
++// already has; a handful are built' and '… the card-draw badge rules are cut for now'): content.one-use-class-powers-reworded,
++// content.one-use-items-reworded, content.used-twice-rules-removed, content.banner-heroism-own-miss, content.impersonation-badge and
++// content.card-draw-badge-rules-cut - one content pack for the six, frozen on the tree merged with engine master 42d8dd8 (group B).
++// Four cases are FOUGHT DIFFERENTLY, all by content.used-twice-rules-removed: test.afflictions-at-zero-rule,
++// test.opening-cavern-trail and showcase.prologue-enemies (the Werewolf's Claw Frenzy leaves it a point of Strength stronger after
++// every swing - "the ordering, I don't really care about") and showcase.horrors (the Eyeblight's Gaze is an attack by its Precision -
++// "It should be based on its stat." - so the Eyeblights shoot from range). Nine move in WORDS ONLY, the same fight event for event
++// but for one row's written line: progression-surge-0, -1 and -2 (the Wayfinder's Compass) and test.set-bonus (the Blink Ring), by
++// content.one-use-items-reworded; showcase.eve-24-b, test.banner-courage, test.bear-traps, test.mending-light and test.snarer-traps
++// (Wise, an origin badge whose one rule was the card draw), by content.card-draw-badge-rules-cut. Four cases are ADDED, one fielding
++// to an item: test.take-root, test.divine-bulwark, test.banner-heroism, test.impersonation. The 23 control battles did not move.
++// Every case frozen here (tools/capture-one-use-content-items-cursor.mts). A `changed` case is checked here and skips the older layers.
++const oneUseContentItemsGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-one-use-content-items.json', import.meta.url), 'utf8'))
+ const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
+ // Explicit rule migration, not regenerated historical hashes. These nine old
+@@ -756,5 +770,8 @@ describe('resumable battle cursor', () => {
+       const specialMovesUnlockAtLevelTwoExpected = specialMovesUnlockAtLevelTwoGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+       const combineOneMoveExpected = combineOneMoveGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+-      const combineOneMoveMoved = combineOneMoveExpected?.changed === true
++      const oneUseContentItemsExpected = oneUseContentItemsGolden.cases.find((row:{id:string})=>row.id===fixture.id)
++      const oneUseContentItemsMoved = oneUseContentItemsExpected?.changed === true
++      // was: const combineOneMoveMoved = combineOneMoveExpected?.changed === true — a case the six one-use content items moved skips this layer too (content.used-twice-rules-removed and its group, 2026-10-06)
++      const combineOneMoveMoved = combineOneMoveExpected?.changed === true || oneUseContentItemsMoved
+       // was: const specialMovesUnlockAtLevelTwoMoved = specialMovesUnlockAtLevelTwoExpected?.changed === true — a case the combined tree moved skips this layer too (combine 2026-10-06)
+       const specialMovesUnlockAtLevelTwoMoved = specialMovesUnlockAtLevelTwoExpected?.changed === true || combineOneMoveMoved
+@@ -943,5 +960,12 @@ describe('resumable battle cursor', () => {
+           }
+         } else result = battle.runBattle(ctx)
+-        if (combineOneMoveExpected) {
++        if (oneUseContentItemsExpected) {
++        expect(hash(ctx.events), 'full one-use-content-items events').toBe(oneUseContentItemsExpected.events)
++        expect(hash(ctx.state), 'full one-use-content-items state').toBe(oneUseContentItemsExpected.state)
++        expect(hash(ctx.rng.log), 'full one-use-content-items RNG').toBe(oneUseContentItemsExpected.rng)
++        expect(result).toEqual(oneUseContentItemsExpected.result)
++        }
++        // was: if (combineOneMoveExpected) { — the six one-use content items (2026-10-06): a case they moved is checked above instead
++        if (combineOneMoveExpected && !oneUseContentItemsMoved) {
+         expect(hash(ctx.events), 'full combine-one-move events').toBe(combineOneMoveExpected.events)
+         expect(hash(ctx.state), 'full combine-one-move state').toBe(combineOneMoveExpected.state)
+viewer 7b23a41 content.used-twice-rules-removed (engine item): the Cavern Trail's recording moves from seed 11 to seed 0 by its own rule - the lowest seed of 0 to 29 whose battle turns a hero, read again now that a Werewolf is a point stronger after every swing (0, 4, 6 and 23 hold one; 11 holds none) - battles/library.json and the recording re-exported; the seed tools/plays-turned-units.test.mjs pins restated with a dated note (Law 10), found by the viewer gate's checks part (the failed run stays in the record); SWITCHES usedTwiceOpeningSeeds, usedTwicePinnedSeedRestated, oneUseEngineMadeFixtures
+
+diff --git a/tools/plays-turned-units.test.mjs b/tools/plays-turned-units.test.mjs
+index d53e5ac..17e0772 100644
+--- a/tools/plays-turned-units.test.mjs
++++ b/tools/plays-turned-units.test.mjs
+@@ -68,5 +68,11 @@ test('the fold plays both lines: they are folded types, and both battles hold th
+      the Cavern Trail is another fight, and by the same rule (the lowest seed whose battle turns a hero — viewer SWITCHES
+      combineTurnedSeed, shieldsOpeningSeeds) the recording is on seed 11. */
+-  assert.equal(cavern.seed.replicate, 11)
++  /* Law 10, 2026-10-06 - content.used-twice-rules-removed (engine item; engine DECISIONS.md 2026-10-06 'the one-use rules: most are cut
++     or reworded onto rules the engine already has ...', of the Werewolf's Claw Frenzy: "the ordering, I don't really care about"): this
++     read assert.equal(cavern.seed.replicate, 11). The Claw Frenzy's Strength now counts - a Werewolf is a point stronger after every
++     swing - so the Cavern Trail is another fight from its first Werewolf's swing, and on seed 11 nobody is turned. By the same rule
++     (the lowest seed whose battle turns a hero, seeds 0 to 29 read for that kind of line - viewer SWITCHES combineTurnedSeed,
++     usedTwiceOpeningSeeds: 0, 4, 6 and 23 hold one) the recording is on seed 0. */
++  assert.equal(cavern.seed.replicate, 0)
+ })
+ 
+kingdom 606aedd content.used-twice-rules-removed (engine item): the lost battle of test/turned-hero-lost.test.ts is fought on seed 11 where it was seed 4 - the Werewolf's Claw Frenzy now leaves it a point of Strength stronger after every swing ('the ordering, I don't really care about'), and by the file's own rule (the lowest of seeds 0 to 39 that fights the case out) the seed is read again; one line restated with a dated note (Law 10), every assertion unchanged, found by the group's kingdom suite; SWITCHES oneUseGeneratedRows, usedTwiceTurnedSeed, impersonationAtEquip
+
+diff --git a/test/turned-hero-lost.test.ts b/test/turned-hero-lost.test.ts
+index 11e84c7..9a72a06 100644
+--- a/test/turned-hero-lost.test.ts
++++ b/test/turned-hero-lost.test.ts
+@@ -27,6 +27,15 @@ describe('a hero still turned when a battle is lost is lost', () => {
+   //   // seed 1: a wipe — heroes 0, 2 and 3 end it turned to the enemy side, standing; hero 1 turned and was beaten down
+   //   const { result, events } = battle(1)
+-  // seed 4: a wipe — heroes 0, 2 and 3 end it turned to the enemy side, standing; hero 1 turned and was beaten down
+-  const { result, events } = battle(4)
++  // Law 10, 2026-10-06 — engine content.used-twice-rules-removed (Andrew, engine DECISIONS.md 2026-10-06 'the one-use rules: most
++  // are cut or reworded onto rules the engine already has; a handful are built', of the Werewolf's Claw Frenzy: "the ordering, I
++  // don't really care about"): the Claw Frenzy's Strength now counts - a Werewolf is a point stronger after every swing - so
++  // these six Werewolves fight another battle on every seed, and on seed 4 all four heroes end it turned and standing. The
++  // case is the same and every assertion below is unchanged; only the seed that fights it out is read again, the lowest of
++  // seeds 0 to 39 that does (11; also 19, 20, 26, 28, 38, 39). The won battle below is still seed 53. Found by the group's
++  // kingdom suite (the failed run stays in the record). The lines were:
++  //   // seed 4: a wipe — heroes 0, 2 and 3 end it turned to the enemy side, standing; hero 1 turned and was beaten down
++  //   const { result, events } = battle(4)
++  // seed 11: a wipe — heroes 0, 2 and 3 end it turned to the enemy side, standing; hero 1 turned and was beaten down
++  const { result, events } = battle(11)
+ 
+   it('the battle is the case: lost, some heroes turned at its end, one turned and beaten down', () => {
+```
+</details>

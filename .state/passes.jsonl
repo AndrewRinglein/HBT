@@ -123,3 +123,6 @@
 {"suite":"control","stamp":"7c1cded64d","pack":"4bc8583765","golden":"b4deeaba50","at":"2026-10-07T00:14:28.235Z","by":"gate tool.later-items --land","in":"HBT-worker-kingdom","moved":null}
 {"suite":"engine","stamp":"39734840b0","with":{"engine":"39734840b0","content":"d35d334539","viewer":"93c09f8c0e","kingdom":"0034430bdc"},"at":"2026-10-07T00:35:55.017Z","by":"gate --shard (1 of 1)","in":"HBT-worker-kingdom","tests":3163}
 {"suite":"engine","stamp":"b1f8527f22","with":{"engine":"b1f8527f22","content":"c05edbe9ce","viewer":"ca2390a185","kingdom":"77fbd3f19c"},"at":"2026-10-07T00:58:35.975Z","by":"gate --shard (1 of 1)","in":"HBT-worker-engine","tests":3194}
+{"suite":"engine","stamp":"31789b0d0d","with":{"engine":"31789b0d0d","content":"f4107c6ed0","viewer":"ea881d6a60","kingdom":"77fbd3f19c"},"at":"2026-10-07T01:32:19.808Z","by":"gate --shard (4 of 4)","in":"HBT-worker-content"}
+{"suite":"engine","stamp":"7966e51b08","with":{"engine":"7966e51b08","content":"f4107c6ed0","viewer":"ea881d6a60","kingdom":"0b33f894a8"},"at":"2026-10-07T02:11:06.772Z","by":"gate --shard (4 of 4)","in":"HBT-worker-content"}
+{"suite":"control","stamp":"7966e51b08","pack":"783c9d25a6","golden":"79665df944","at":"2026-10-07T02:12:36.025Z","by":"gate content.used-twice-rules-removed --land","in":"HBT-worker-content","moved":null}
