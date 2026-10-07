@@ -233,6 +233,16 @@ const RAW_SCENARIOS: Readonly<Record<string, ScenarioDef>> = {
     heroItems: [['item.longsword', 'item.kite-shield', 'item.divine-bulwark'], ['item.holy-texts', 'item.drakescale-coat']],
     enemies: ['unit.zombie', 'unit.fire-imp'], enemyHexes: [95, 94], replicate: 0,
   },
+  // content.banner-heroism-own-miss (2026-10-06; DECISIONS.md 2026-10-06 'the one-use rules …', of the Banner of Heroism:
+  // "Gains on miss. Gain surge, but not everyone gives everyone the modifier."): the banner live in a real battle - the Banner
+  // of Courage's fielding (the same map, hexes, Necromancer and zombie) with a paladin carrying the Banner of Heroism and a
+  // ranger. The paladin holds an Iron Mace, which grants no power: with her Longsword the computer raises its Counterattack
+  // first and the banner's 4 Stamina are never there (SWITCHES.md aiPowerLongestCooldownFirst). She plants it on Turn 1 and on
+  // Turn 2 misses inside it and gains 30 Surge Chance. A fielding, not a balance claim.
+  'test.banner-heroism': {
+    id: 'test.banner-heroism', note: 'TEST: a paladin carrying the Banner of Heroism (plant it: allies within 3 hexes of that hex have +2 Strength and +2 Precision, heal 5 at the end of each Activation, and one that misses gains 30 Surge Chance itself) and a ranger, against a Necromancer and a zombie. No campaign claim.',
+    mapId: 'map.open', heroes: ['hero.base.paladin-shiney', 'hero.base.ranger-aggressive'], heroHexes: [85, 101], heroItems: [['item.basic-armor', 'item.iron-mace', 'item.banner-heroism'], undefined], enemies: ['unit.necromancer', 'unit.zombie'], enemyHexes: [95, 94], replicate: 0,
+  },
   // capability.summons (2026-10-05; DECISIONS.md 2026-10-04 'his 28 reward weapons read back …': "We need: summons"): the Staff
   // of Summoning's Call the Wolf live in a real battle - a mage holding it, the zombies too far to reach on the first Turn, so
   // the computer calls the Wolf first and the Wolf then fights in the Hero Phase by its own AI. A fielding, not a balance claim.
