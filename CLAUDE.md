@@ -69,8 +69,17 @@ node tools/gate.mjs --shards-green     exit 0 only if the suite passed on the en
 node tools/gate.mjs --pack-golden      a new content pack shipped: re-record the control-battle golden and
                                        say whether the fights moved (content's ship.mjs runs it)
 node tools/suites.mjs --plan           which of the four suites the change runs, which it skips and why
-node tools/suites.mjs --run all        run those; --run all --full runs all four — the once-per-chat
-                                       full run wrap refuses without; --run <suite> runs one
+node tools/suites.mjs --run all        run those; --run all --full runs all four — THE SCHEDULED RUN, the
+                                       lander's, twice a day, alone on the machine (since 2026-10-06,
+                                       tool.landing-on-the-quick-check; until then the once-per-chat full
+                                       run wrap refused without); --run <suite> runs one
+node tools/suites.mjs --quick          the quick checks of a merge-back (combine runs them): the typecheck of
+                                       each package whose code changed, the control battles when the
+                                       engine's code or the pack changed; no whole suite
+node tools/suites.mjs --scheduled      when the last scheduled run was and what it found; exit 1 when none in
+                                       the last day — the one thing a landing and a wrap still refuse for
+node tools/suites.mjs --timeouts       the tests that timed out twice: each an item to fix, not a run to
+                                       repeat (--timeout-fixed <suite> "<test>" <item id> takes one off)
 node tools/suites.mjs --full-green     exit 0 only if all four passed together on the code as it stands
 node tools/code-stamp.mjs --packages   each package's code stamp
 node tools/gate.mjs <id>               run the gates, change nothing. Each check is recorded
@@ -280,7 +289,7 @@ archive/         old handoffs. Never read.
 
 **Generated here, never hand-edited:** anything under `generated/`, `GAME-BUILDER.html`,
 `.state/backlog.<area>.json`, `.state/ledger.md`, `.state/gauntlet-log.jsonl`,
-`.state/gauntlet.json`, `.state/baseline.hash`, `.state/passes.jsonl`, `.state/shards.json` (the gate's), `.state/inventory.json` (the prior-art audit's), `generated/wrong-home.{json,md}`, and `.state/now.json` (the wrap's),
+`.state/gauntlet.json`, `.state/baseline.hash`, `.state/passes.jsonl`, `.state/timed-out-twice.jsonl` (the suites tool's), `.state/shards.json` (the gate's), `.state/inventory.json` (the prior-art audit's), `generated/wrong-home.{json,md}`, and `.state/now.json` (the wrap's),
 `HANDOFF.md`, `STATE-ROW.md` (produced from it by `tools/handoff.mjs`). Regenerate; never edit.
 
 ## Adding anything touches four places
