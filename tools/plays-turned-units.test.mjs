@@ -67,7 +67,13 @@ test('the fold plays both lines: they are folded types, and both battles hold th
      opening six, shields, custom weapons'): this read assert.equal(cavern.seed.replicate, 17). The shields are the Armory Ledger's now,
      the Cavern Trail is another fight, and by the same rule (the lowest seed whose battle turns a hero — viewer SWITCHES
      combineTurnedSeed, shieldsOpeningSeeds) the recording is on seed 11. */
-  assert.equal(cavern.seed.replicate, 11)
+  /* Law 10, 2026-10-06 - content.used-twice-rules-removed (engine item; engine DECISIONS.md 2026-10-06 'the one-use rules: most are cut
+     or reworded onto rules the engine already has ...', of the Werewolf's Claw Frenzy: "the ordering, I don't really care about"): this
+     read assert.equal(cavern.seed.replicate, 11). The Claw Frenzy's Strength now counts - a Werewolf is a point stronger after every
+     swing - so the Cavern Trail is another fight from its first Werewolf's swing, and on seed 11 nobody is turned. By the same rule
+     (the lowest seed whose battle turns a hero, seeds 0 to 29 read for that kind of line - viewer SWITCHES combineTurnedSeed,
+     usedTwiceOpeningSeeds: 0, 4, 6 and 23 hold one) the recording is on seed 0. */
+  assert.equal(cavern.seed.replicate, 0)
 })
 
 test('before, during and after: at the turn the unit is its form — type, side, Health, the form\'s attacks, no hero gear — keeping its hex and its statuses; at the revert it is itself, whole', () => {
