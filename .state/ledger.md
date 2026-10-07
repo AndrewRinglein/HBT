@@ -39068,3 +39068,8 @@ index 0e02fbe..92f7e07 100644
        for (const m of [orphanage.still.withCheck, orphanage.still.withoutCheck, orphanage.scrolling.withoutCheck]) expect(m.draws.bodies, 'the Orphanage\'s bodies\' canvas: it was 498').toBeLessThan(250)
 ```
 </details>
+
+## capability.banner-heroism-on-miss — ABANDONED
+2026-10-07 00:13
+
+Andrew 2026-10-06 (DECISIONS.md 'the one-use rules: most are cut or reworded onto rules the engine already has; a handful are built'), of the Banner of Heroism: 'it could be done by everybody who's in range. Gains on miss. Gain surge, but not everyone gives everyone the modifier. That seems like a double stacked thing that we don't need.' The item asks for what he turned down - every ally in the banner's reach gaining Surge Chance when any one of them misses. Replaced by content.banner-heroism-own-miss: each ally in reach gains it on its own miss, which a planted object already lends. Nothing was built for this item.
