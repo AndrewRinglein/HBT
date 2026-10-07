@@ -762,7 +762,9 @@
    "badge.impersonation",
    "power.trickster.impersonation"
   ],
-  "note": "Probes declared 2026-10-06 by the content builder (engine SWITCHES.md oneUseProbes; GBH SWITCHES gate.dataItemProbeIsTheDictatedCase): the item's own id is not a content id, so the gate probes the rows of the ruling that a real battle fields."
+  "note": "Probes declared 2026-10-06 by the content builder (engine SWITCHES.md oneUseProbes; GBH SWITCHES gate.dataItemProbeIsTheDictatedCase): the item's own id is not a content id, so the gate probes the rows of the ruling that a real battle fields.",
+  "status": "done",
+  "sha": "dd7ef2f"
  },
  {
   "id": "content.card-draw-badge-rules-cut",
