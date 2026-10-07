@@ -1267,7 +1267,9 @@ function compiledPowerOf(p, unitId) {
   //       PARTY's Spirit, the ally's own or none (ruled 2026-10-05, "2 by the party spirit"; it read "its Spirit" and healed
   //       by the ally's own — engine SWITCHES.md vigilHealsItsOwnSpirit, overturned)
   //   "onCrit, for a unit in the aura: gain N Stamina"                                              a lent on-crit trigger
-  // A sentence that is none of these is a named gap on the power (the Heroic Banner's "onMiss … EVERY ally in the aura"); a
+  //   "onMiss, for a unit in the aura: gain N Surge Chance"                                         a lent on-miss trigger (2026-10-06)
+  // A sentence that is none of these is a named gap on the power (until 2026-10-06 the Heroic Banner's "onMiss … EVERY ally in
+  // the aura", which Andrew turned down that day; the line is now the one above); a
   // banner none of whose sentences compile is not planted at all — it stays an unparsed power (the Mystic Banner), never an
   // object that does nothing.
   if ((m = desc.match(/^One use per Battle\. Plant the banner on your hex\. For the rest of the Battle it projects an aura of radius (\d+) from that hex — you may walk away and it stays\. (.+)$/)) && tgt === 'the hex you occupy') {
@@ -1287,6 +1289,11 @@ function compiledPowerOf(p, unitId) {
       if ((c = s0.match(/^At the End of Activation of (?:an|any) ally inside(?: the aura)?, that ally heals (\d+)$/))) { lend('heal', 'onActivationEnd', { kind: 'heal', amount: +c[1] }); continue; }
       if (/^At the End of Activation of (?:an|any) ally inside(?: the aura)?, that ally heals an amount equal to the party's Spirit$/.test(s0)) { lend('heal', 'onActivationEnd', { kind: 'heal', amount: { scale: 'partySpirit', base: 0, mult: 1 } }); continue; }
       if ((c = s0.match(/^onCrit, for a unit in the aura: gain (\d+) Stamina$/))) { lend('stamina', 'onCrit', { kind: 'stamina.gain', value: +c[1] }); continue; }
+      // engine content.banner-heroism-own-miss (2026-10-06; engine DECISIONS.md 2026-10-06 'the one-use rules …', of the Banner of
+      // Heroism: "it could be done by everybody who's in range. Gains on miss. Gain surge, but not everyone gives everyone the
+      // modifier."): an ally standing in the banner's reach that misses gains the Surge Chance ITSELF - a lent on-miss trigger
+      // aimed at the unit it is lent to, the on-crit line's shape with the engine's surge.gain. Nothing new in the engine.
+      if ((c = s0.match(/^onMiss, for a unit in the aura: gain (\d+) Surge Chance$/))) { lend('surge-on-miss', 'onMiss', { kind: 'surge.gain', value: +c[1] }); continue; }
       found.push({ clause: s0, needs: 'planted object: clause unparsed' });
     }
     if (Object.keys(mods).length || Object.keys(wards).length || lends.length) {
