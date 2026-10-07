@@ -7880,7 +7880,7 @@
     "item.blink-ring"
    ],
    "action": null,
-   "name": "active: Free. This is not movement and cannot be interrupt",
+   "name": "active: Free. Move up to 4 hexes. It provokes nothing.",
    "kind": null,
    "engine": "no",
    "bar": null,
@@ -7965,7 +7965,7 @@
     "item.brass-spyglass-of-thessan"
    ],
    "action": null,
-   "name": "active: Free. Until the end of the Turn every attack you o",
+   "name": "active: Free. Every ally within 3 hexes gains +10 Accuracy",
    "kind": null,
    "engine": "no",
    "bar": null,
@@ -11681,7 +11681,7 @@
     "record": "assets/characters/oathblade-armor/rebuild/free-motion-study/selections.json"
    },
    "ruling": null,
-   "note": "on the bar, does nothing yet: unparsed: Heal 6, remove 5 Bleed and Poison from yourself, and gain +1 Item Slot for the r",
+   "note": "on the bar, does nothing yet: unparsed: Heal 6 and remove 5 Bleed and Poison from yourself",
    "variants": 0
   },
   {
@@ -12131,7 +12131,7 @@
     "record": "assets/characters/oathblade-armor/rebuild/free-motion-study/selections.json"
    },
    "ruling": null,
-   "note": "on the bar, does nothing yet: unparsed: Take 4 true damage to raise the ward properly: Protection equal to 3 + twice you",
+   "note": "on the bar, does nothing yet: unparsed: Take 4 true damage, gain Protection equal to 3 + twice your Resist, and remove 5",
    "variants": 0
   },
   {
@@ -12401,7 +12401,7 @@
     "record": "assets/characters/oathblade-armor/rebuild/free-motion-study/selections.json"
    },
    "ruling": null,
-   "note": "on the bar, does nothing yet: unparsed: Move up to your Movement",
+   "note": "on the bar, does nothing yet: unparsed: Move up to your Movement, then every enemy adjacent to you takes 3 + Strength ph",
    "variants": 0
   },
   {
@@ -13121,7 +13121,7 @@
     "record": "assets/characters/oathblade-armor/rebuild/free-motion-study/selections.json"
    },
    "ruling": null,
-   "note": "on the bar, does nothing yet: unparsed: For the rest of the Battle the target's magic damage is reduced by 3 and it cann",
+   "note": "on the bar, does nothing yet: unparsed: The target gains 4 Weak and takes -10 Accuracy for the rest of the Battle",
    "variants": 0
   },
   {
@@ -13481,7 +13481,7 @@
     "record": "assets/characters/oathblade-armor/rebuild/free-motion-study/selections.json"
    },
    "ruling": null,
-   "note": "on the bar, does nothing yet: unparsed: Aura: for the rest of the Battle, any ally within 2 hexes of you that is also ad",
+   "note": "on the bar, does nothing yet: unparsed: Aura: for the rest of the Battle, every ally within 2 hexes of you has +1 Armor ",
    "variants": 0
   },
   {
@@ -13931,7 +13931,7 @@
     "record": "assets/characters/oathblade-armor/rebuild/free-motion-study/selections.json"
    },
    "ruling": null,
-   "note": "on the bar, does nothing yet: unparsed: For the rest of the Battle, any enemy that begins its Turn adjacent to you takes",
+   "note": "on the bar, does nothing yet: unparsed: Every enemy adjacent to you takes -15 Accuracy for the rest of the Battle",
    "variants": 0
   },
   {
@@ -14336,7 +14336,7 @@
     "record": "assets/characters/oathblade-armor/rebuild/free-motion-study/selections.json"
    },
    "ruling": null,
-   "note": "on the bar, does nothing yet: unparsed: remove 5 Burn and 5 Poison from yourself and gain Protection equal to your Spiri",
+   "note": "on the bar, does nothing yet: unparsed: Take 2 true damage, remove 5 Burn and 5 Poison from yourself, and gain Protectio",
    "variants": 0
   },
   {
@@ -14876,7 +14876,7 @@
     "record": "assets/characters/oathblade-armor/rebuild/free-motion-study/selections.json"
    },
    "ruling": null,
-   "note": "on the bar, does nothing yet: unparsed: Until the start of your next Turn, your Vision is measured from your companion's",
+   "note": "on the bar, does nothing yet: unparsed: Until the end of your next Turn, you gain +2 Vision and your attacks gain +10 Ac",
    "variants": 0
   },
   {
@@ -15371,7 +15371,7 @@
     "record": "assets/characters/oathblade-armor/rebuild/free-motion-study/selections.json"
    },
    "ruling": null,
-   "note": "on the bar, does nothing yet: unparsed: For the rest of the Battle that ally's SWORD attacks add the party's Magic to th",
+   "note": "on the bar, does nothing yet: modifies only staff attacks — engine applies it to the unit",
    "variants": 0
   },
   {
@@ -15506,7 +15506,7 @@
     "record": "assets/characters/oathblade-armor/rebuild/free-motion-study/selections.json"
    },
    "ruling": null,
-   "note": "on the bar, does nothing yet: unparsed: All Bleed on that enemy ticks immediately and none of it is reduced by Resist",
+   "note": "on the bar, does nothing yet: unparsed: Dagger attack that adds every stack of Bleed on the target to its damage and CON",
    "variants": 0
   },
   {
@@ -15911,7 +15911,7 @@
     "record": "assets/characters/oathblade-armor/rebuild/free-motion-study/selections.json"
    },
    "ruling": null,
-   "note": "on the bar, does nothing yet: unparsed: For the rest of the Battle that enemy's Poison ticks twice each Turn, at the sta",
+   "note": "on the bar, does nothing yet: unparsed: The target gains 5 Poison and loses 1 Resist for the rest of the Battle",
    "variants": 0
   },
   {
@@ -16091,7 +16091,7 @@
     "record": "assets/characters/oathblade-armor/rebuild/free-motion-study/selections.json"
    },
    "ruling": null,
-   "note": "on the bar, does nothing yet: targets 'your own hex' unparsed — the power is inert",
+   "note": "on the bar, does nothing yet: targets 'you and allies within 1 hex' unparsed — the power is inert",
    "variants": 0
   },
   {
@@ -16316,7 +16316,7 @@
     "record": "assets/characters/oathblade-armor/rebuild/free-motion-study/selections.json"
    },
    "ruling": null,
-   "note": "on the bar, does nothing yet: unparsed: Until the start of your next Turn, all damage dealt to that ally is reduced by 2",
+   "note": "on the bar, does nothing yet: unparsed: That ally gains 4 Protection and you take 2 true damage",
    "variants": 0
   },
   {
@@ -16766,7 +16766,7 @@
     "record": "assets/characters/oathblade-armor/rebuild/free-motion-study/selections.json"
    },
    "ruling": null,
-   "note": "on the bar, does nothing yet: unparsed: Move every stack of Burn and Poison from one ally onto yourself",
+   "note": "on the bar, does nothing yet: unparsed: Remove 2 Burn and 2 Poison from that ally, and gain 2 Bleed yourself",
    "variants": 0
   },
   {
@@ -17396,7 +17396,7 @@
     "record": "assets/characters/oathblade-armor/rebuild/free-motion-study/selections.json"
    },
    "ruling": null,
-   "note": "on the bar, does nothing yet: unparsed: The target's next power this Battle costs 1 less Stamina, and it gains +5 Accura",
+   "note": "on the bar, does nothing yet: unparsed: The target gains 1 Stamina, and +5 Accuracy for the rest of the Battle",
    "variants": 0
   },
   {
@@ -17576,7 +17576,7 @@
     "record": "assets/characters/oathblade-armor/rebuild/free-motion-study/selections.json"
    },
    "ruling": null,
-   "note": "on the bar, does nothing yet: unparsed: The next attack made against the target this Turn takes -15 Accuracy",
+   "note": "on the bar, does nothing yet: unparsed: The target gains +15 Dodge until the end of its next Turn",
    "variants": 0
   },
   {
@@ -17767,7 +17767,7 @@
    "action": "power.sentinel.overwatch",
    "name": "Overwatch",
    "kind": "power",
-   "engine": "inert",
+   "engine": "yes",
    "bar": "power",
    "motion": null,
    "bodies": {
@@ -17801,7 +17801,7 @@
     "record": "assets/characters/oathblade-armor/rebuild/free-motion-study/selections.json"
    },
    "ruling": null,
-   "note": "on the bar, does nothing yet: unparsed: Until the start of your next Turn, an enemy that moves within both your Vision a",
+   "note": null,
    "variants": 0
   },
   {
@@ -17857,7 +17857,7 @@
    "action": "power.sentinel.take-root",
    "name": "Take Root",
    "kind": "power",
-   "engine": "inert",
+   "engine": "yes",
    "bar": "power",
    "motion": null,
    "bodies": {
@@ -17891,7 +17891,7 @@
     "record": "assets/characters/oathblade-armor/rebuild/free-motion-study/selections.json"
    },
    "ruling": null,
-   "note": "on the bar, does nothing yet: unparsed: Plant yourself",
+   "note": null,
    "variants": 0
   },
   {
@@ -18926,7 +18926,7 @@
     "record": "assets/characters/oathblade-armor/rebuild/free-motion-study/selections.json"
    },
    "ruling": null,
-   "note": "on the bar, does nothing yet: unparsed: Stance: for the rest of the Battle your staff attacks deal +2 damage and no ally",
+   "note": "on the bar, does nothing yet: unparsed: Stance: for the rest of the Battle your staff attacks deal +2 damage, and you lo",
    "variants": 0
   },
   {
@@ -19691,7 +19691,7 @@
     "record": "assets/characters/oathblade-armor/rebuild/free-motion-study/selections.json"
    },
    "ruling": null,
-   "note": "on the bar, does nothing yet: targets 'your own hex' unparsed — the power is inert",
+   "note": "on the bar, does nothing yet: targets 'the hex you occupy' unparsed — the power is inert",
    "variants": 0
   },
   {
@@ -20096,7 +20096,7 @@
     "record": "assets/characters/oathblade-armor/rebuild/free-motion-study/selections.json"
    },
    "ruling": null,
-   "note": "on the bar, does nothing yet: unparsed: Move up to twice your Movement toward the nearest map edge and leave the Battle",
+   "note": "on the bar, does nothing yet: unparsed: Move up to twice your Movement",
    "variants": 0
   },
   {
@@ -20107,7 +20107,7 @@
    "action": "power.trickster.impersonation",
    "name": "Impersonation",
    "kind": "power",
-   "engine": "inert",
+   "engine": "yes",
    "bar": "power",
    "motion": null,
    "bodies": {
@@ -20141,7 +20141,7 @@
     "record": "assets/characters/oathblade-armor/rebuild/free-motion-study/selections.json"
    },
    "ruling": null,
-   "note": "on the bar, does nothing yet: unparsed: Stance: for the rest of the Battle you satisfy EVERY class restriction on every ",
+   "note": null,
    "variants": 0
   },
   {
@@ -21716,7 +21716,7 @@
     "record": "assets/characters/oathblade-armor/rebuild/free-motion-study/selections.json"
    },
    "ruling": null,
-   "note": "on the bar, does nothing yet: unparsed: The target loses 2 Resist for the rest of the Battle and cannot gain Protection",
+   "note": "on the bar, does nothing yet: unparsed: The target loses 3 Resist for the rest of the Battle",
    "variants": 0
   },
   {
@@ -22745,7 +22745,7 @@
   "rows": 521,
   "missing": 352,
   "noEngine": 22,
-  "inert": 239,
+  "inert": 236,
   "noMotion": 352,
   "selectedUnbound": 323,
   "partial": 81
