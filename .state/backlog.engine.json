@@ -5,7 +5,9 @@
   "shape": "plumbing",
   "spec": "Andrew, 2026-10-06 (engine/DECISIONS.md 'the bug list is queued at low priority'; root BUG-REVIEW-2026-10-06.md section 8): \"I want to queue up all these bugs, but the bug list is low priority. ... I want them to be in our queue, but I want to make sure that, as I queue up other real things that we need, these don't get in the way.\" The queue is file order: tools/next.mjs and tools/start.mjs take the first ready item of an area's list, and tools/add-item.mjs appends (or --first), so 32 bug items filed at the end today would sit ahead of every real item filed after them. So: an item may carry `later: true`. tools/add-item.mjs accepts the field (a boolean, and nothing else); tools/next.mjs and tools/start.mjs offer a `later` item only when no other item of that area is ready, wherever it sits in the list; the Game Builder page lists the `later` items apart from the rest; the gate treats a `later` item like any other once it is named. One reading of 'ready' for both tools - the one next.mjs already has (its needs are landed) - held in one place, not copied.",
   "expect": "With a ready ordinary item filed AFTER a ready `later` item in the same area, next.mjs and start.mjs both name the ordinary one; with only `later` items ready they name the first of those; add-item.mjs refuses a `later` that is not a boolean; the Game Builder page shows the `later` items under their own heading; a `later` item named at the gate is checked and landed like any other. Each held by a test on a scratch state folder, seen red before the change.",
-  "note": "Filed by the home chat, 2026-10-06, first in the engine list, on Andrew's word (BUG-REVIEW-2026-10-06.md section 8, step 1). Small tooling; it is what keeps the 32 bug items out of the way."
+  "note": "Filed by the home chat, 2026-10-06, first in the engine list, on Andrew's word (BUG-REVIEW-2026-10-06.md section 8, step 1). Small tooling; it is what keeps the 32 bug items out of the way.",
+  "status": "done",
+  "sha": "a2b731f"
  },
  {
   "id": "tool.gate-flags-read-committed-edits",
