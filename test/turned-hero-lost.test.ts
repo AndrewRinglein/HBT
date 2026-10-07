@@ -26,8 +26,17 @@ describe('a hero still turned when a battle is lost is lost', () => {
   // (4; also 11, 20, 28, 34, 38). The lines were:
   //   // seed 1: a wipe — heroes 0, 2 and 3 end it turned to the enemy side, standing; hero 1 turned and was beaten down
   //   const { result, events } = battle(1)
-  // seed 4: a wipe — heroes 0, 2 and 3 end it turned to the enemy side, standing; hero 1 turned and was beaten down
-  const { result, events } = battle(4)
+  // Law 10, 2026-10-06 — engine content.used-twice-rules-removed (Andrew, engine DECISIONS.md 2026-10-06 'the one-use rules: most
+  // are cut or reworded onto rules the engine already has; a handful are built', of the Werewolf's Claw Frenzy: "the ordering, I
+  // don't really care about"): the Claw Frenzy's Strength now counts - a Werewolf is a point stronger after every swing - so
+  // these six Werewolves fight another battle on every seed, and on seed 4 all four heroes end it turned and standing. The
+  // case is the same and every assertion below is unchanged; only the seed that fights it out is read again, the lowest of
+  // seeds 0 to 39 that does (11; also 19, 20, 26, 28, 38, 39). The won battle below is still seed 53. Found by the group's
+  // kingdom suite (the failed run stays in the record). The lines were:
+  //   // seed 4: a wipe — heroes 0, 2 and 3 end it turned to the enemy side, standing; hero 1 turned and was beaten down
+  //   const { result, events } = battle(4)
+  // seed 11: a wipe — heroes 0, 2 and 3 end it turned to the enemy side, standing; hero 1 turned and was beaten down
+  const { result, events } = battle(11)
 
   it('the battle is the case: lost, some heroes turned at its end, one turned and beaten down', () => {
     expect(() => validateResult(result)).not.toThrow()
