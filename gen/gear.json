@@ -203,7 +203,7 @@
    "triggers": [
     {
      "hook": "startOfBattle",
-     "effect": "gain +2 Vision for the rest of the Battle, and you are never blinded below Vision 3 by darkness or fog"
+     "effect": "gain +2 Vision for the rest of the Battle"
     }
    ],
    "grants": [],
@@ -211,7 +211,7 @@
    "persists": true,
    "tags": [],
    "intent": "Vision only bites in darkness, fog and stealth — so this is either dead weight or the best trinket you own, and the map tells you which.",
-   "source": "Hell-TCG name reused (artifact, Wayfinder's Compass — trailblazing is a Kingdom stat; rebuilt onto Vision, which had no Hell-TCG equivalent at all)"
+   "source": "Hell-TCG name reused (artifact, Wayfinder's Compass — trailblazing is a Kingdom stat; rebuilt onto Vision, which had no Hell-TCG equivalent at all) | 2026-10-06 (engine/DECISIONS.md 'the one-use rules: most are cut or reworded onto rules the engine already has; a handful are built'): \"just give a bonus to vision\" - \"never blinded below Vision 3 by darkness or fog\" is cut; the +2 Vision stays on its start-of-Battle line (a trinket carries no flat stat: rule.item-limits)."
   },
   {
    "id": "item.lucky-charm",
@@ -298,10 +298,10 @@
    "cooldown": 3,
    "warmup": 0,
    "free": true,
-   "targets": "a hex within 8 hexes",
-   "description": "Free. Until the end of the Turn every attack you or any ally makes against enemies within 3 hexes of that hex gains +10 Accuracy.",
+   "targets": "allies within 3 hexes",
+   "description": "Free. Every ally within 3 hexes gains +10 Accuracy until the end of the Turn.",
    "intent": "One stamina turns the whole party's Turn into a focus-fire order, which is worth more than any number you could have put on yourself.",
-   "source": "Hell-TCG name reused (artifact, Brass Spyglass of Thessan — 'spot danger from leagues away' rebuilt as a party-wide Accuracy mark) | 2026-08-20: reworded the opening. \"Free\" here means it does not consume your primary action — it never meant costless, and on an item that also charges stamina the old wording read as though it did. | 2026-08-20: the mark is cut. \"mark that enemy, only one at a time\" was the mark system again. Rebuilt on a hex, which the game already targets. | 2026-08-20: standardised to \"Free.\" A trinket that does not use your action is a power and appears in the power list, so it uses the same word powers use. The stamina cost is a field, not prose."
+   "source": "Hell-TCG name reused (artifact, Brass Spyglass of Thessan — 'spot danger from leagues away' rebuilt as a party-wide Accuracy mark) | 2026-08-20: reworded the opening. \"Free\" here means it does not consume your primary action — it never meant costless, and on an item that also charges stamina the old wording read as though it did. | 2026-08-20: the mark is cut. \"mark that enemy, only one at a time\" was the mark system again. Rebuilt on a hex, which the game already targets. | 2026-08-20: standardised to \"Free.\" A trinket that does not use your action is a power and appears in the power list, so it uses the same word powers use. The stamina cost is a field, not prose. | 2026-10-06 (engine/DECISIONS.md 'the one-use rules: most are cut or reworded onto rules the engine already has; a handful are built'): \"Brass Spyglass, we don't need that\" - the bonus against enemies near a chosen hex is cut; it is a plain bonus to the allies around you."
   },
   {
    "id": "item.vial-of-abyssal-essence",
@@ -346,9 +346,9 @@
    "warmup": 0,
    "free": true,
    "targets": "self",
-   "description": "Free. This is not movement and cannot be interrupted.",
+   "description": "Free. Move up to 4 hexes. It provokes nothing.",
    "intent": "Four hexes of nothing at all, which is the only real answer to being surrounded.",
-   "source": "Hell-TCG name reused (item, Blink Ring — 'grants Blink class power' rebuilt as the trinket's own activated teleport now that there are hexes) | 2026-08-17: CUT. ally-reactive hooks, guarding, Consequence-Stack interference and non-knockback forced movement all removed by ruling. | 2026-08-20: reworded the opening. \"Free\" here means it does not consume your primary action — it never meant costless, and on an item that also charges stamina the old wording read as though it did. | 2026-08-20: standardised to \"Free.\" A trinket that does not use your action is a power and appears in the power list, so it uses the same word powers use. The stamina cost is a field, not prose. | 2026-10-05 engine capability.set-bonus: tagged 'ring' — a ring by its own name; the Staff of the Magi's set counts rings and no row bore the tag."
+   "source": "Hell-TCG name reused (item, Blink Ring — 'grants Blink class power' rebuilt as the trinket's own activated teleport now that there are hexes) | 2026-08-17: CUT. ally-reactive hooks, guarding, Consequence-Stack interference and non-knockback forced movement all removed by ruling. | 2026-08-20: reworded the opening. \"Free\" here means it does not consume your primary action — it never meant costless, and on an item that also charges stamina the old wording read as though it did. | 2026-08-20: standardised to \"Free.\" A trinket that does not use your action is a power and appears in the power list, so it uses the same word powers use. The stamina cost is a field, not prose. | 2026-10-05 engine capability.set-bonus: tagged 'ring' — a ring by its own name; the Staff of the Magi's set counts rings and no row bore the tag. | 2026-10-06 (engine/DECISIONS.md 'the one-use rules: most are cut or reworded onto rules the engine already has; a handful are built'): \"I don't think we need teleportation\" - it is a move that provokes nothing, as the Shadowdancer's Blink is."
   },
   {
    "id": "item.holy-chalice",
@@ -2440,35 +2440,6 @@
    "tags": [],
    "intent": "Become warfare itself: every kill makes the next Activation more likely to happen twice, and by the fourth kill you are simply taking extra turns.",
    "source": "Hell-TCG name reused (blood rune, Avatar of War — the class gate repealed as a bonus, the on-kill stack capped) | 2026-08-17 quality pass: the on-kill Armor stack was a flat number. Surge Chance added on top — the only bloodrune in the set that touches Surge, and the tier-3 kill-snowball is where it belongs. | 2026-08-20: there is no stacking-limit feature, so the cap is cut. Now unbounded: onKill, so the fight length caps it on its own."
-  },
-  {
-   "id": "item.rune-perfect-hunter",
-   "name": "Perfect Hunter",
-   "itemClass": "bloodrune",
-   "tier": 3,
-   "slots": 0,
-   "hands": 0,
-   "classRestriction": null,
-   "statModifiers": {
-    "precision": 1,
-    "reach": 1
-   },
-   "triggers": [
-    {
-     "hook": "startOfBattle",
-     "effect": "every slayer bonus you have from any source — weapon, enchant, specialty or this rune — increases by 2"
-    }
-   ],
-   "grants": [],
-   "equipCost": {
-    "manaCrystals": 3
-   },
-   "persists": true,
-   "tags": [
-    "ranged"
-   ],
-   "intent": "The ultimate predator: it is worthless on its own and it makes every other slayer source you own two points better.",
-   "source": "Hell-TCG name reused (blood rune, Perfect Hunter — 'slayerBonusAll: +2' ports exactly, and stacks with weapon and enchant slayer tables)"
   },
   {
    "id": "item.rune-hells-chosen",

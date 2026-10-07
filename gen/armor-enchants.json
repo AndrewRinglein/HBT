@@ -609,7 +609,7 @@
    ],
    "grants": [],
    "statModifiers": {
-    "armor": 1,
+    "armor": 2,
     "resist": 1,
     "health": 4,
     "movement": -1,
@@ -618,11 +618,11 @@
    "triggers": [
     {
      "hook": "startOfBattle",
-     "effect": "you may not act on Turn 1; from Turn 2 you have +1 Armor for the rest of the Battle"
+     "effect": "gain 1 Stun"
     }
    ],
    "intent": "It takes a full Turn to become the thing it is, and engagement lands on Turns 2 to 4, so it is nearly always ready in time.",
-   "source": "Hell-TCG name reused (Divine Bulwark — 'on equip: 2 Stun to self' rebuilt as a Turn-1 lockout)"
+   "source": "Hell-TCG name reused (Divine Bulwark — 'on equip: 2 Stun to self' rebuilt as a Turn-1 lockout) | 2026-10-06 (engine/DECISIONS.md 'the one-use rules: most are cut or reworded onto rules the engine already has; a handful are built'): \"Just add one stun. At combat start\" in place of \"you may not act on Turn 1\"; the +1 Armor it gave from Turn 2 is in its stats."
   },
   {
    "id": "item.stoneskin-hauberk",
@@ -815,20 +815,17 @@
     "armor": 1,
     "health": 4,
     "movement": -1,
-    "dodge": -5
+    "dodge": -5,
+    "fireResist": 2
    },
    "triggers": [
     {
      "hook": "startOfBattle",
      "effect": "gain +2 Resist against dragon for the rest of the Battle"
-    },
-    {
-     "hook": "onTakingDamage",
-     "effect": "Burn applied to you is halved, rounded down, before it is applied"
     }
    ],
    "intent": "Taken off the thing it was best at protecting, which tells you both how good it is and how little that helped.",
-   "source": "Hell-TCG name reused (Dragon's Blood / Dragon Slayer — name family only; the fire ward is new)"
+   "source": "Hell-TCG name reused (Dragon's Blood / Dragon Slayer — name family only; the fire ward is new) | 2026-10-06 (engine/DECISIONS.md 'the one-use rules: most are cut or reworded onto rules the engine already has; a handful are built'): \"Give it 2 fire resistance\" in place of \"Burn applied to you is halved\"."
   },
   {
    "id": "item.aegis-of-the-fleet",
@@ -969,14 +966,9 @@
     "accuracy": -10,
     "dodge": -5
    },
-   "triggers": [
-    {
-     "hook": "aura",
-     "effect": "AURA radius 1 — an enemy that ends its movement inside gains 1 Frost. The Frost cancels any Burn it carried."
-    }
-   ],
+   "triggers": [],
    "intent": "It exists to be the thing arrows hit, and it is extremely good at being the thing arrows hit.",
-   "source": "Hell-TCG name reused (Storm Bastion — rebuilt as the anti-ranged wall) | 2026-08-17: CUT. ally-reactive hooks, guarding, Consequence-Stack interference and non-knockback forced movement all removed by ruling. | 2026-08-17 quality pass: replaced a placeholder aura with a distinct effect. | 2026-08-20: \"and the first enemy to do so each Turn is knocked back\" counted occurrences. Cut; every enemy that stops inside takes the Frost, none are knocked back. | 2026-08-20 sweep: \"reduce all incoming ranged damage by 2\" filtered damage by how it was delivered — ranged is not a damage type, and nothing else in the game reduces damage by delivery. Flat reduction is Toughness, so it is +2 Toughness in the stat block. | 2026-08-20: the Toughness I put here does not reduce damage. The anti-ranged filter is gone (ranged is not a damage type), so the wall is Armor, which is what stops physical damage — 2 becomes 3."
+   "source": "Hell-TCG name reused (Storm Bastion — rebuilt as the anti-ranged wall) | 2026-08-17: CUT. ally-reactive hooks, guarding, Consequence-Stack interference and non-knockback forced movement all removed by ruling. | 2026-08-17 quality pass: replaced a placeholder aura with a distinct effect. | 2026-08-20: \"and the first enemy to do so each Turn is knocked back\" counted occurrences. Cut; every enemy that stops inside takes the Frost, none are knocked back. | 2026-08-20 sweep: \"reduce all incoming ranged damage by 2\" filtered damage by how it was delivered — ranged is not a damage type, and nothing else in the game reduces damage by delivery. Flat reduction is Toughness, so it is +2 Toughness in the stat block. | 2026-08-20: the Toughness I put here does not reduce damage. The anti-ranged filter is gone (ranged is not a damage type), so the wall is Armor, which is what stops physical damage — 2 becomes 3. | 2026-10-06 (engine/DECISIONS.md 'the one-use rules: most are cut or reworded onto rules the engine already has; a handful are built'): \"Storm Bastion, we don't need that\" - the aura (an enemy that ends its movement inside gains 1 Frost) is cut; the armor keeps its stats."
   }
  ],
  "enchants": [
@@ -1647,13 +1639,13 @@
    "triggers": [
     {
      "hook": "onTakingDamage",
-     "effect": "Bleed on you ticks twice"
+     "effect": "gain 1 Bleed"
     }
    ],
    "slayer": null,
    "grants": [],
    "intent": "Six Health and a body that will not close a wound; you are bigger and you are leaking.",
-   "source": "Hell-TCG name reused (Tainted Blood / Cursed Blood) | Ruled 2026-09-02 (GEAR-DESIGN.md §3a): the enchant pass — every surviving ingredient is tier 3 and is found on a reward weapon or armor, never sold; the Forge sells the nine tier-2 buyables instead. Renames drop \"arrows\" for the weapon itself; shields take no stat-modifying enchant (only the conditional Riposte)."
+   "source": "Hell-TCG name reused (Tainted Blood / Cursed Blood) | Ruled 2026-09-02 (GEAR-DESIGN.md §3a): the enchant pass — every surviving ingredient is tier 3 and is found on a reward weapon or armor, never sold; the Forge sells the nine tier-2 buyables instead. Renames drop \"arrows\" for the weapon itself; shields take no stat-modifying enchant (only the conditional Riposte). | 2026-10-06 (engine/DECISIONS.md 'the one-use rules: most are cut or reworded onto rules the engine already has; a handful are built'): \"We can remove the status that ticks twice.\" The downside is a point of Bleed when hurt."
   },
   {
    "id": "enchant.sacrifice",

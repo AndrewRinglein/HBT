@@ -145,7 +145,7 @@
    "id": "specialty.magical-friend",
    "name": "Magical Friend",
    "class": "class.ranger",
-   "intent": "Something small and bright walks the field on your behalf: it heals what you cannot reach and you see through its eyes.",
+   "intent": "Something small and bright walks the field beside you, and it heals what you cannot reach.",
    "needsCapability": "summoning",
    "statModifiers": {
     "magic": 2,
@@ -155,7 +155,7 @@
    "triggers": [
     {
      "hook": "startOfBattle",
-     "effect": "summon your companion on any hex within 2 hexes of you. It is a summoned ally with its own stat block and its own AI, it has your Vision, and it does not attack"
+     "effect": "summon your companion on any hex within 2 hexes of you. It is a summoned ally with its own stat block and its own AI"
     }
    ],
    "powers": [
@@ -164,7 +164,7 @@
     "power.magical-friend.mystic-wrath",
     "power.magical-friend.share-senses"
    ],
-   "source": "Hell-TCG Beast/Magical Friend (HoBaT has no pet system — gated on needsCapability rather than faked, and every power is written to measure from the companion's hex) | 2026-08-17 trim: three stats, no negatives, one ability. Dropped stats: strength -1; precision -1; health +2. | 2026-08-17 off-primary pass: two off-primaries at +1 was nothing; Magic doubled makes the branch real. | 2026-08-20: summoning is a feature we want — \"we can summon something, it has an AI assigned to it, whether it is an enemy or a hero, and it has a stat block.\" The companion is the first thing that needs it, so it is written in those words now instead of as a bespoke pet. See engine/COMBAT-SEQUENCE.md #Summoning and rule.summon-order."
+   "source": "Hell-TCG Beast/Magical Friend (HoBaT has no pet system — gated on needsCapability rather than faked, and every power is written to measure from the companion's hex) | 2026-08-17 trim: three stats, no negatives, one ability. Dropped stats: strength -1; precision -1; health +2. | 2026-08-17 off-primary pass: two off-primaries at +1 was nothing; Magic doubled makes the branch real. | 2026-08-20: summoning is a feature we want — \"we can summon something, it has an AI assigned to it, whether it is an enemy or a hero, and it has a stat block.\" The companion is the first thing that needs it, so it is written in those words now instead of as a bespoke pet. See engine/COMBAT-SEQUENCE.md #Summoning and rule.summon-order. | 2026-10-06 (engine/DECISIONS.md 'the one-use rules: most are cut or reworded onto rules the engine already has; a handful are built'): \"Magical friendly just summoned an ally.\" The companion is an ordinary summoned ally: \"it has your Vision\" and \"it does not attack\" are cut."
   },
   {
    "id": "specialty.feral",
@@ -481,9 +481,20 @@
     "ranged",
     "stance"
    ],
-   "description": "Until the start of your next Turn, an enemy that moves within both your Vision and your Reach takes one free ranged attack from you at -5 Accuracy. The watch is spent once it fires.",
-   "source": "new (built on Vision and Reach, the two stats with no Hell-TCG equivalent that the Ranger is supposed to care about) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-20: reworded off \"the first enemy that\". Overwatch is an object that gets spent, like a trap — not a tally of how many enemies have moved.",
-   "triggers": []
+   "description": "Until the end of your next Turn, your ranged attacks gain +10 Crit and +1 Reach.",
+   "source": "new (built on Vision and Reach, the two stats with no Hell-TCG equivalent that the Ranger is supposed to care about) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-20: reworded off \"the first enemy that\". Overwatch is an object that gets spent, like a trap — not a tally of how many enemies have moved. | 2026-10-06 (engine/DECISIONS.md 'the one-use rules: most are cut or reworded onto rules the engine already has; a handful are built'): the free shot at an enemy that moves in view is cut; the watch is a sharper, longer shot on your own Turn.",
+   "triggers": [],
+   "modifies": {
+    "tags": [
+     "bow",
+     "ranged"
+    ],
+    "scope": "until-end-of-your-next-turn",
+    "statModifiers": {
+     "crit": 10,
+     "reach": 1
+    }
+   }
   },
   {
    "id": "power.sentinel.sting-of-the-watch",
@@ -514,13 +525,13 @@
     "ranged",
     "stance"
    ],
-   "description": "Plant yourself. Your ranged attacks gain +20 Accuracy until you next move.",
-   "source": "New 2026-08-17 — replaces the \"if you did not move this Turn\" trigger, which is not a condition the engine has. The player chooses to stand still instead of the game checking whether they did. | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
+   "description": "Plant yourself: lose 5 Movement, and your ranged attacks gain +20 Accuracy, both until the end of your next Activation.",
+   "source": "New 2026-08-17 — replaces the \"if you did not move this Turn\" trigger, which is not a condition the engine has. The player chooses to stand still instead of the game checking whether they did. | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-10-06 (engine/DECISIONS.md 'the one-use rules: most are cut or reworded onto rules the engine already has; a handful are built'): \"the idea is that you don't move and you get a bonus. What we do instead is we give -5 move and a bonus until the end of your next activation.\" The duration \"until you next move\" is cut.",
    "modifies": {
     "tags": [
      "ranged"
     ],
-    "scope": "until-you-move",
+    "scope": "until-end-of-your-next-activation",
     "statModifiers": {
      "accuracy": 20
     }
@@ -653,8 +664,8 @@
    "free": false,
    "targets": "one ally within 3 hexes",
    "tags": [],
-   "description": "Until the start of your next Turn, all damage dealt to that ally is reduced by 2, and you take 2 true damage each time it is.",
-   "source": "Hell-TCG name reused (badge power, Take the Blow — max-Health swapping rebuilt as live damage redirection) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
+   "description": "That ally gains 4 Protection and you take 2 true damage.",
+   "source": "Hell-TCG name reused (badge power, Take the Blow — max-Health swapping rebuilt as live damage redirection) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-10-06 (engine/DECISIONS.md 'the one-use rules: most are cut or reworded onto rules the engine already has; a handful are built'): damage taken in an ally's place is cut; it is Protection for the ally at a price to you.",
    "triggers": []
   },
   {
@@ -686,8 +697,8 @@
    "tags": [
     "heal"
    ],
-   "description": "Heal that ally for 2 + Spirit; your companion may move up to 3 hexes first.",
-   "source": "Hell-TCG name reused (Beast/Magical Friend, Succor — range measured from the companion, not from you) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
+   "description": "Heal that ally for 2 + Spirit.",
+   "source": "Hell-TCG name reused (Beast/Magical Friend, Succor — range measured from the companion, not from you) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-10-06 (engine/DECISIONS.md 'the one-use rules: most are cut or reworded onto rules the engine already has; a handful are built'): the companion moving first is cut with the companion's special rules.",
    "triggers": []
   },
   {
@@ -732,8 +743,8 @@
    "free": true,
    "targets": "self",
    "tags": [],
-   "description": "Until the start of your next Turn, your Vision is measured from your companion's hex instead of your own, and darkness and fog do not hide anything inside it.",
-   "source": "new (the companion as a Vision relay — the Ranger's real stat, expressed through the thing that walks ahead of you) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
+   "description": "Free. Until the end of your next Turn, you gain +2 Vision and your attacks gain +10 Accuracy.",
+   "source": "new (the companion as a Vision relay — the Ranger's real stat, expressed through the thing that walks ahead of you) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-10-06 (engine/DECISIONS.md 'the one-use rules: most are cut or reworded onto rules the engine already has; a handful are built'): Vision measured from the companion is cut with the companion's special rules.",
    "triggers": []
   },
   {

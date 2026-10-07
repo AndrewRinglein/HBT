@@ -22,9 +22,10 @@
    "id": "badge.anguish",
    "name": "Anguish",
    "rarity": "rare",
-   "payload": "−1 card draw per Turn",
+   "payload": "",
    "category": "SIGNATURE",
-   "group": ""
+   "group": "",
+   "source": " | 2026-10-06 (engine/DECISIONS.md 'the one-use rules: most are cut or reworded onto rules the engine already has; a handful are built'): \"We may add a card system at some point, but you can cut all those for now\" (engine/DECISIONS.md '... the card-draw badge rules are cut for now'). Was \"−1 card draw per Turn\"; the row is empty until there is a card system."
   },
   {
    "id": "badge.attuned",
@@ -385,9 +386,13 @@
    "id": "badge.giant-killer",
    "name": "Giant-Killer",
    "rarity": "rare",
-   "payload": "slayer +2 vs the type that nearly killed her",
+   "payload": "Damage +2 vs Giants",
    "category": "AWARDED",
-   "group": ""
+   "group": "",
+   "slayer": {
+    "giant": 2
+   },
+   "source": " | 2026-10-06 (engine/DECISIONS.md 'the one-use rules: most are cut or reworded onto rules the engine already has; a handful are built'): \"We don't need to remember what killed someone, so we can get rid of that.\" A fixed slayer."
   },
   {
    "id": "badge.greedy",
@@ -427,9 +432,17 @@
    "id": "badge.grudge-bearer",
    "name": "Grudge-Bearer",
    "rarity": "rare",
-   "payload": "+2 Strength vs the type that last killed an ally",
+   "payload": "+1 Strength",
    "category": "SIGNATURE",
-   "group": ""
+   "group": "",
+   "statModifiers": [
+    {
+     "stat": "strength",
+     "op": "add",
+     "value": 1
+    }
+   ],
+   "source": " | 2026-10-06 (engine/DECISIONS.md 'the one-use rules: most are cut or reworded onto rules the engine already has; a handful are built'): \"We don't need to remember what killed someone, so we can get rid of that.\" A flat bonus."
   },
   {
    "id": "badge.hardy",
@@ -847,10 +860,10 @@
    "id": "badge.possession",
    "name": "Possession",
    "rarity": "affliction",
-   "payload": "+2 Magic, +1 Resist, +3 Vision, −10 Surge · `startOfBattle`: −2 card draw · −10 Deathbed Fighting · deploying the hero costs 3 Mana",
+   "payload": "+2 Magic, +1 Resist, +3 Vision, −10 Surge · −10 Deathbed Fighting · deploying the hero costs 3 Mana",
    "category": "SIGNATURE",
    "group": "",
-   "source": " | 2026-09-29: \"Possessed hero costs 3 magic crystals to deploy.\" (Mana) · \"Possession gives -10.\" (Deathbed Fighting) · \"Possession gives -10 to action surge per turn.\" Ruled 2026-09-29 (engine/DECISIONS.md 'the four afflictions: Vampirism rewritten, Cold Heart with it, deploy costs, Deathbed Fighting, Possession's Surge'). Filed as content.afflictions-revised. | 2026-10-01: at 0 Health, No Deathbed Fighting roll. The hero goes down and bleeds out, and a Ghost with the hero's image (Ghost stats) is summoned on the hero's hex as an enemy unit. Ruled 2026-10-01 (engine/DECISIONS.md 'the afflictions at 0 Health: Vampirism and Lycanthropy transform on a Luck roll, Possession raises a Ghost, Rotting Flesh gains Fragile; the first-affliction pop-up'). Every 2026-09-29 drawback and deploy cost stays (\"let's leave in\"). Filed as content.afflictions-at-zero. | 2026-10-04 (engine fix.affliction-pop-up-words; ruled 2026-10-03, engine DECISIONS.md 'the affliction pop-up's 0-Health words and its drawbacks come from the engine'): `drawbacks` marks which of this row's written terms are drawbacks - the stats it lowers and the terms that cost - so the first-affliction pop-up shows the row's own marks and its ruled 0-Health text (atZero.text) and writes none of its own.",
+   "source": " | 2026-09-29: \"Possessed hero costs 3 magic crystals to deploy.\" (Mana) · \"Possession gives -10.\" (Deathbed Fighting) · \"Possession gives -10 to action surge per turn.\" Ruled 2026-09-29 (engine/DECISIONS.md 'the four afflictions: Vampirism rewritten, Cold Heart with it, deploy costs, Deathbed Fighting, Possession's Surge'). Filed as content.afflictions-revised. | 2026-10-01: at 0 Health, No Deathbed Fighting roll. The hero goes down and bleeds out, and a Ghost with the hero's image (Ghost stats) is summoned on the hero's hex as an enemy unit. Ruled 2026-10-01 (engine/DECISIONS.md 'the afflictions at 0 Health: Vampirism and Lycanthropy transform on a Luck roll, Possession raises a Ghost, Rotting Flesh gains Fragile; the first-affliction pop-up'). Every 2026-09-29 drawback and deploy cost stays (\"let's leave in\"). Filed as content.afflictions-at-zero. | 2026-10-04 (engine fix.affliction-pop-up-words; ruled 2026-10-03, engine DECISIONS.md 'the affliction pop-up's 0-Health words and its drawbacks come from the engine'): `drawbacks` marks which of this row's written terms are drawbacks - the stats it lowers and the terms that cost - so the first-affliction pop-up shows the row's own marks and its ruled 0-Health text (atZero.text) and writes none of its own. | 2026-10-06 (engine/DECISIONS.md 'the one-use rules: most are cut or reworded onto rules the engine already has; a handful are built'): \"We may add a card system at some point, but you can cut all those for now\" (engine/DECISIONS.md '... the card-draw badge rules are cut for now'). The drawback \"`startOfBattle`: −2 card draw\" is cut from the payload and from its drawbacks; every other 2026-09-29 term stays.",
    "atZero": {
     "deathbedFighting": false,
     "raises": "unit.ghost",
@@ -862,7 +875,6 @@
      "surge"
     ],
     "terms": [
-     "`startOfBattle`: −2 card draw",
      "deploying the hero costs 3 Mana"
     ]
    },
@@ -874,7 +886,7 @@
    "name": "Quick Study",
    "playerLine": "Now and then, acts again",
    "rarity": "rare",
-   "payload": "+1 Surge · Draw turn 2 +1 (stub)",
+   "payload": "+1 Surge",
    "category": "GENERATIVE — FAVOURABLE",
    "group": "Flat stat",
    "statModifiers": [
@@ -888,7 +900,7 @@
     "surge"
    ],
    "rollable": true,
-   "source": "2026-08-21: machine-readable fields merged from the Crucible. The prose was already byte-identical; only statModifiers/hook/rollable/blockers/engineStatGap were added. | 2026-08-25 workbook review: mods; prose"
+   "source": "2026-08-21: machine-readable fields merged from the Crucible. The prose was already byte-identical; only statModifiers/hook/rollable/blockers/engineStatGap were added. | 2026-08-25 workbook review: mods; prose | 2026-10-06 (engine/DECISIONS.md 'the one-use rules: most are cut or reworded onto rules the engine already has; a handful are built'): \"We may add a card system at some point, but you can cut all those for now\" (engine/DECISIONS.md '... the card-draw badge rules are cut for now'). Was \"+1 Surge · Draw turn 2 +1 (stub)\"."
   },
   {
    "id": "badge.rage",
@@ -2300,9 +2312,8 @@
    "id": "badge.wise",
    "name": "Wise",
    "rarity": "uncommon",
-   "payload": "+1 draw on turn 1 and on turn 3",
-   "needsCapability": "turn-indexed draw — startOfBattleDraw covers turn 1 only; turn 3 needs a clock",
-   "source": "Defined in the 2026-08-25 undefined-names sheet (second half — resolves the sheet)."
+   "payload": "",
+   "source": "Defined in the 2026-08-25 undefined-names sheet (second half — resolves the sheet). | 2026-10-06 (engine/DECISIONS.md 'the one-use rules: most are cut or reworded onto rules the engine already has; a handful are built'): \"We may add a card system at some point, but you can cut all those for now\" (engine/DECISIONS.md '... the card-draw badge rules are cut for now'). Was \"+1 draw on turn 1 and on turn 3\"; the row is empty until there is a card system."
   },
   {
    "id": "badge.lithe",
@@ -2451,7 +2462,7 @@
    "id": "badge.old",
    "name": "Old",
    "rarity": "uncommon",
-   "payload": "−1 Health, −1 Movement; +2 draw on turn 1; +2 Item slots",
+   "payload": "−1 Health, −1 Movement; +2 Item slots",
    "statModifiers": [
     {
      "stat": "health",
@@ -2469,8 +2480,7 @@
      "value": 2
     }
    ],
-   "note": "The turn-1 draw maps to the existing startOfBattleDraw machinery (School Teacher precedent).",
-   "source": "Defined in the 2026-08-25 undefined-names sheet (second half — resolves the sheet)."
+   "source": "Defined in the 2026-08-25 undefined-names sheet (second half — resolves the sheet). | 2026-10-06 (engine/DECISIONS.md 'the one-use rules: most are cut or reworded onto rules the engine already has; a handful are built'): \"We may add a card system at some point, but you can cut all those for now\" (engine/DECISIONS.md '... the card-draw badge rules are cut for now'). Was \"...; +2 draw on turn 1; ...\"."
   },
   {
    "id": "badge.angry",
@@ -2969,6 +2979,15 @@
    "rollable": true,
    "note": "THE CANONICAL CARRIER of the Destroy Corpse mechanic. The mechanic was dictated 2026-08-30 (DESIGN-DUMP-CLEANED.md §9) as 'mostly a hero ability' with no carrier ever named, so the verb had no user — and the effect vocabulary is a CENSUS OF USE, which is why nothing could author it. This badge is the first user and fixes the phrasing every later author copies: 'destroy the corpse'. NAME IS MINE, free to change.",
    "source": "Authored 2026-09-02 to land the onKill destroy-corpse trigger asked for. Mechanic ruled 2026-08-30; see rule.corpses for all four denial routes."
+  },
+  {
+   "id": "badge.impersonation",
+   "name": "Impersonation",
+   "rarity": "power, play",
+   "payload": "satisfies every class restriction on the items carried · enemies choose targets as though this were a hero, not a civilian",
+   "category": "SPECIALTY GRANTS",
+   "group": "",
+   "source": "2026-10-06 (engine/DECISIONS.md 'the one-use rules: most are cut or reworded onto rules the engine already has; a handful are built'): \"Impersonation is something we want. However, this also needs the class power. I think it gives you a badge, so I think we turn this into a badge, and this class power gives that badge.\" Granted by power.trickster.impersonation. What it does is not built: the class restrictions are the kingdom's Equip, and how enemies choose targets waits on the design of the enemy's thinking."
   }
  ],
  "_machineReadable": "43 of the 128 badges carry statModifiers, hook, rollable, blockers and engineStatGap, merged from the Crucible 2026-08-21. The other 85 are prose only and still need the machine-readable half. content/ owns badges (COMBAT-DESIGN.md §8: HoBaT authored its own; the 238-row Hell-TCG library is a reference, not a port).",

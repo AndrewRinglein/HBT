@@ -438,8 +438,8 @@
    "tags": [
     "area"
    ],
-   "description": "Move up to your Movement; every enemy whose hex you passed beside takes 3 + Strength physical damage. It provokes nothing and it cannot crit.",
-   "source": "new 2026-08-20 —: \"we need to create a new class, Beast, and change the Spirit to just be a Civilian so there are no outliers on classes.\" Beast was four heroes with class:null; Spirit was one.",
+   "description": "Move up to your Movement, then every enemy adjacent to you takes 3 + Strength physical damage. It provokes nothing, and as an area effect it cannot crit.",
+   "source": "new 2026-08-20 —: \"we need to create a new class, Beast, and change the Spirit to just be a Civilian so there are no outliers on classes.\" Beast was four heroes with class:null; Spirit was one. | 2026-10-06 (engine/DECISIONS.md 'the one-use rules: most are cut or reworded onto rules the engine already has; a handful are built'): \"We can remove damage to enemies you run past.\" The damage lands where the charge ends.",
    "triggers": []
   },
   {

@@ -490,8 +490,8 @@
    "free": true,
    "targets": "one ally within 3 hexes",
    "tags": [],
-   "description": "Move every stack of Burn and Poison from one ally onto yourself. Free, and you will want it more often than the cooldown lets you have it.",
-   "source": "new | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
+   "description": "Free. Remove 2 Burn and 2 Poison from that ally, and gain 2 Bleed yourself.",
+   "source": "new | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-10-06 (engine/DECISIONS.md 'the one-use rules: most are cut or reworded onto rules the engine already has; a handful are built'): \"remove 2 burn and poison from an ally and gain 2 bleed.\" Moving a status from one unit to another is cut.",
    "triggers": []
   },
   {
@@ -688,8 +688,8 @@
    "free": true,
    "targets": "one ally within 3 hexes",
    "tags": [],
-   "description": "The next attack made against the target this Turn takes -15 Accuracy. It is free, so you can call it after you have seen who moved.",
-   "source": "new | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
+   "description": "Free. The target gains +15 Dodge until the end of its next Turn.",
+   "source": "new | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-10-06 (engine/DECISIONS.md 'the one-use rules: most are cut or reworded onto rules the engine already has; a handful are built'): a penalty on the next attack made against a target is cut; the same foresight as Dodge on the ally.",
    "triggers": []
   },
   {

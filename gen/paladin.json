@@ -206,7 +206,7 @@
    "triggers": [
     {
      "hook": "onKill",
-     "effect": "the nearest enemy within your Vision is Marked: you have +10 Accuracy and +2 damage against it for the rest of the Battle"
+     "effect": "gain +5 Accuracy for the rest of the Battle, stacking"
     }
    ],
    "powers": [
@@ -215,7 +215,7 @@
     "power.witch-hunter.iron-and-salt",
     "power.witch-hunter.burn-the-guilty"
    ],
-   "source": "Hell-TCG Inquisitor/Witch Hunter ('each kill reveals the next prey' rebuilt on Vision and Accuracy, neither of which existed in Hell-TCG) | 2026-08-17: reworded as a standing property; as a battle-start snapshot it saw nobody. | 2026-08-17 trim: three stats, no negatives, one ability. Dropped stats: health -2; vision +3. Parked abilities: passive: you see stealthed units within 4 hexes at all times, and you ignore Dodge that was granted by a magic effect. | 2026-08-17 off-primary pass: Precision doubled — a ranged Paladin has to pay for being ranged."
+   "source": "Hell-TCG Inquisitor/Witch Hunter ('each kill reveals the next prey' rebuilt on Vision and Accuracy, neither of which existed in Hell-TCG) | 2026-08-17: reworded as a standing property; as a battle-start snapshot it saw nobody. | 2026-08-17 trim: three stats, no negatives, one ability. Dropped stats: health -2; vision +3. Parked abilities: passive: you see stealthed units within 4 hexes at all times, and you ignore Dodge that was granted by a magic effect. | 2026-08-17 off-primary pass: Precision doubled — a ranged Paladin has to pay for being ranged. | 2026-10-06 (engine/DECISIONS.md 'the one-use rules: most are cut or reworded onto rules the engine already has; a handful are built'): the mark is cut from the on-kill line too."
   }
  ],
  "powers": [
@@ -393,8 +393,8 @@
    "free": true,
    "targets": "self",
    "tags": [],
-   "description": "Free. remove 5 Burn and 5 Poison from yourself and gain Protection equal to your Spirit — and take 1 true damage for every point you removed. Cleansing one tick is free insurance. Cleansing eight is a decision about which of the two things kills you.",
-   "source": "Hell-TCG name reused (Paladin/Holy Avenger, Succor of the Faithful — the +1 Spirit is cut, party sums are not handed out this cheaply) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-17 quality pass: 'remove 2 and 2, gain 2 Protection' had no decision. The cleanse now scales, and so does its price. | 2026-08-20: reworded the opening. \"Free\" here means it does not consume your primary action — it never meant costless, and on an item that also charges stamina the old wording read as though it did. | 2026-08-20: standardised to \"Free.\" A trinket that does not use your action is a power and appears in the power list, so it uses the same word powers use. The stamina cost is a field, not prose.",
+   "description": "Free. Take 2 true damage, remove 5 Burn and 5 Poison from yourself, and gain Protection equal to your Spirit.",
+   "source": "Hell-TCG name reused (Paladin/Holy Avenger, Succor of the Faithful — the +1 Spirit is cut, party sums are not handed out this cheaply) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-17 quality pass: 'remove 2 and 2, gain 2 Protection' had no decision. The cleanse now scales, and so does its price. | 2026-08-20: reworded the opening. \"Free\" here means it does not consume your primary action — it never meant costless, and on an item that also charges stamina the old wording read as though it did. | 2026-08-20: standardised to \"Free.\" A trinket that does not use your action is a power and appears in the power list, so it uses the same word powers use. The stamina cost is a field, not prose. | 2026-10-06 (engine/DECISIONS.md 'the one-use rules: most are cut or reworded onto rules the engine already has; a handful are built'): \"We can have things like take damage and cleanse. We don't have to have them be conditional on one another.\"",
    "triggers": []
   },
   {
@@ -556,8 +556,8 @@
    "tags": [
     "aura"
    ],
-   "description": "Aura: for the rest of the Battle, any ally within 2 hexes of you that is also adjacent to another ally has +1 Armor and +5 Dodge. It rewards a formation and it lapses the moment the line scatters.",
-   "source": "new | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
+   "description": "Aura: for the rest of the Battle, every ally within 2 hexes of you has +1 Armor and +5 Dodge.",
+   "source": "new | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-10-06 (engine/DECISIONS.md 'the one-use rules: most are cut or reworded onto rules the engine already has; a handful are built'): the condition \"that is also adjacent to another ally\" is cut.",
    "triggers": []
   },
   {
@@ -721,8 +721,8 @@
    "free": false,
    "targets": "one enemy within 4 hexes",
    "tags": [],
-   "description": "For the rest of the Battle the target's magic damage is reduced by 3 and it cannot apply Burn.",
-   "source": "new — the anti-caster half of the Inquisitor brief had no Hell-TCG equivalent, because Hell-TCG had no way to shut a caster down | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
+   "description": "The target gains 4 Weak and takes -10 Accuracy for the rest of the Battle.",
+   "source": "new — the anti-caster half of the Inquisitor brief had no Hell-TCG equivalent, because Hell-TCG had no way to shut a caster down | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-10-06 (engine/DECISIONS.md 'the one-use rules: most are cut or reworded onto rules the engine already has; a handful are built'): \"cannot apply Burn\" and a cut to its magic damage alone are cut; Weak is what lowers what a unit deals.",
    "triggers": []
   },
   {
@@ -735,8 +735,8 @@
    "free": false,
    "targets": "one enemy within your Vision",
    "tags": [],
-   "description": "Mark one enemy for the rest of the Battle: you have +10 Accuracy and +2 Precision against it, and you always know which hex it is in, whatever it does to hide.",
-   "source": "new | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
+   "description": "The target loses 10 Dodge and 1 Armor for the rest of the Battle. Both floor at zero.",
+   "source": "new | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-10-06 (engine/DECISIONS.md 'the one-use rules: most are cut or reworded onto rules the engine already has; a handful are built'): the mark is cut (a bonus held against one named enemy, and always knowing its hex); the quarry is simply easier to hit and to hurt.",
    "triggers": []
   },
   {
@@ -765,8 +765,8 @@
    "free": false,
    "targets": "one enemy within 3 hexes",
    "tags": [],
-   "description": "The target loses 2 Resist for the rest of the Battle and cannot gain Protection. Resist floors at zero.",
-   "source": "new | 2026-08-17: Protection has no duration — it decays 1 a Turn and by the damage it absorbs. Duration clause removed. | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
+   "description": "The target loses 3 Resist for the rest of the Battle. Resist floors at zero.",
+   "source": "new | 2026-08-17: Protection has no duration — it decays 1 a Turn and by the damage it absorbs. Duration clause removed. | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-10-06 (engine/DECISIONS.md 'the one-use rules: most are cut or reworded onto rules the engine already has; a handful are built'): \"cannot gain Protection\" is cut.",
    "triggers": []
   },
   {
