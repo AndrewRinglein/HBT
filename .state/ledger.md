@@ -42993,3 +42993,56 @@ index b9afb55..c7f2fb4 100644
          expect(hash(ctx.state), 'full combine-one-move state').toBe(combineOneMoveExpected.state)
 ```
 </details>
+
+## content.banner-heroism-own-miss — LANDED `c230dce` **NEEDS REVIEW**
+2026-10-07 02:13
+
+  PASS  dependencies landed
+  WARN  not already decided — 3 candidate ruling(s) — READ BEFORE ASKING: SWITCHES.md:2282 · SWITCHES.md:2897
+  PASS  typecheck
+  PASS  the item's own tests — test/banner-heroism-own-miss.test.ts, test/planted-banners.test.ts
+  PASS  gate 1 — the id appears in a real battle — power.banner-heroism.plant: 12 log lines, 12 fired, 5 changed state
+  PASS  brought its own tests — test/banner-heroism-own-miss.test.ts, test/planted-banners.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/planted-banners.test.ts (-3) — will land FLAGGED for review
+  SKIPPED  control battles unchanged — engine code 7966e51b08 and the content pack are the ones the control battles last passed on (2026-10-07 02:12, gate content.used-twice-rules-removed --land, in HBT-worker-content) — not run
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — shape 'data' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without power.banner-heroism.plant — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+engine 01fdd90 content.banner-heroism-own-miss: the standing banner test restated with a dated note - the Heroic Banner lends a second trigger (30 Surge Chance to the unit inside that misses) and names no gap, where it held the on-miss clause as a named gap (test/planted-banners.test.ts); Andrew 2026-10-06: 'Gains on miss. Gain surge, but not everyone gives everyone the modifier.'
+
+diff --git a/test/planted-banners.test.ts b/test/planted-banners.test.ts
+index 2f24e59..68080d1 100644
+--- a/test/planted-banners.test.ts
++++ b/test/planted-banners.test.ts
+@@ -67,10 +67,17 @@ describe('the rows', () => {
+       lends: [{ id: 'trigger.banner-vigil.plant.heal', hook: 'onActivationEnd', chance: 100, select: 'self', effect: { kind: 'heal', amount: { scale: 'partySpirit', base: 0, mult: 1 } }, source: vigil.id }] })
+     expect(vigil.gaps ?? []).toEqual([])
+-    // the Heroic: radius 3, +2 Strength and +2 Precision, heal 5 at the End of Activation; its on-miss clause is a named gap
++    // the Heroic: radius 3, +2 Strength and +2 Precision, heal 5 at the End of Activation, and 30 Surge Chance to a unit inside on its own miss
++    // Restated 2026-10-06 (content.banner-heroism-own-miss; ruled 2026-10-06, DECISIONS.md 'the one-use rules …': "it could be
++    // done by everybody who's in range. Gains on miss. Gain surge, but not everyone gives everyone the modifier."). The clause
++    // "onMiss by any ally in the aura: EVERY ally in the aura gains 30 Surge Chance" was a named gap; it is now the one that
++    // missed that gains, a second lent trigger, and the power names no gap. The two lines were:
++    //   lends: [{ id: 'trigger.banner-heroism.plant.heal', hook: 'onActivationEnd', chance: 100, select: 'self', effect: { kind: 'heal', amount: 5 }, source: heroic.id }] })
++    //   expect(heroic.gaps).toEqual(['onMiss by any ally in the aura: EVERY ally in the aura gains 30 Surge Chance — planted object: clause unparsed'])
+     const heroic = ABILITIES['power.banner-heroism.plant']!
+     expect([heroic.staminaCost, heroic.uses]).toEqual([4, 1])
+     expect(fx(heroic.id)).toEqual({ kind: 'plant', radius: 3, mods: { strength: 2, precision: 2 },
+-      lends: [{ id: 'trigger.banner-heroism.plant.heal', hook: 'onActivationEnd', chance: 100, select: 'self', effect: { kind: 'heal', amount: 5 }, source: heroic.id }] })
+-    expect(heroic.gaps).toEqual(['onMiss by any ally in the aura: EVERY ally in the aura gains 30 Surge Chance — planted object: clause unparsed'])
++      lends: [{ id: 'trigger.banner-heroism.plant.heal', hook: 'onActivationEnd', chance: 100, select: 'self', effect: { kind: 'heal', amount: 5 }, source: heroic.id },
++        { id: 'trigger.banner-heroism.plant.surge-on-miss', hook: 'onMiss', chance: 100, select: 'self', effect: { kind: 'surge.gain', value: 30 }, source: heroic.id }] })
++    expect(heroic.gaps ?? []).toEqual([])
+     // the Mystic: neither of its clauses is one the engine has - it is not planted as an object that does nothing
+     expect(ABILITIES['power.banner-mystic-power.plant']).toBeUndefined()
+```
+</details>
