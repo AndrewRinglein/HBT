@@ -89,6 +89,10 @@ export { actionReady } from '../../engine/src/core/action.js'
 // cannot pay for, from the engine's own numbers (staminaCostOf above, this, the unit's uses left); whether it is refused is
 // actionReady's answer alone.
 export { readyOn } from '../../engine/src/core/action.js'
+// Widened 2026-10-06 (viewer.attack-row-shows-totals): attackFigures — the attacker's side of an attack's Accuracy and Crit
+// before a target is chosen, the engine's own sum (its pipeline's rows that do not read the target). Read-only, pure. The
+// action bar's rows show these totals; nothing is added up in the host or the viewer.
+export { attackFigures } from '../../engine/src/core/pipeline.js'
 // Widened 2026-10-04 (viewer.move-cost-on-grid): stepCost — the engine's own charge for one step onto a hex, read-only, so
 // the battle screen's movement grid shows the engine's number on a tile and adds nothing up.
 export { movementOptions, stepCost } from '../../engine/src/core/movement.js'

@@ -37,7 +37,7 @@
 // screen. A unit that has not acted, or that can still do anything, is left alone (kingdom SWITCHES autoEnd*).
 import {sandboxChoices,sandboxActivationChoices,sandboxSwapChoices,sandboxSwapRefusals,type Sandbox,type SandboxChoice,type SandboxSwapOffer} from '../core/sandbox.js'
 import {controllerOf,validateBattleCommand,forecastFrom,previewFrom,preview,threatOf,zocHoldersAt,heroesYetToAct,isAttack,isMove,isBurst,actionReach,stepCost,passableFor,grantedActionIds,standsUp,actionReady,staminaCostOf,readyOn} from '../engine.js'
-import {refusalLine,switchLine,unpaidLine,type SwitchRefusal,type Unpaid} from './refusals.js'
+import {refusalLine,switchLine,unpaidLine,usedUpLine,type SwitchRefusal,type Unpaid} from './refusals.js'
 import {shownName} from '../../../viewer/src/names.js'
 import type {BattleCommand,Forecast} from '../engine.js'
 
@@ -387,8 +387,13 @@ export function createPlayInput(session:()=>Sandbox|null,run:(command:BattleComm
  }
  const cantPayOf=(s:Sandbox,actor:number):PlayCantPay[]=>{
   if(standOf(s,actor)!==null)return []
-  const u=s.ctx.state.units[actor]!
-  return grantedActionIds(s.ctx,u).flatMap(id=>{const a=s.ctx.actions[id];return !a||actionReady(s.ctx,u,a)?[]:[{id,why:unpaidLine(unpaidOf(s,actor,id))}]})
+  const u=s.ctx.state.units[actor]!,granted=grantedActionIds(s.ctx,u)
+  /* viewer.used-up-power-stays-greyed (engine DECISIONS.md 2026-10-06, Andrew: "One, yes."): an action whose last use is spent
+     is no longer on the engine's list for the unit (core/action.ts spendUse), so the limits check is never asked about it —
+     it is named here from the engine's own record of what the unit has used this Battle (usesSpentThisBattle), while the
+     engine does not grant it; a use the rules give back puts it on the list again and it is named no longer. */
+  const usedUp=Object.keys(u.usesSpentThisBattle??{}).filter(id=>!granted.includes(id)&&!!s.ctx.actions[id]).map(id=>({id,why:usedUpLine(s.ctx.actions[id]!.uses)}))
+  return [...granted.flatMap(id=>{const a=s.ctx.actions[id];return !a||actionReady(s.ctx,u,a)?[]:[{id,why:unpaidLine(unpaidOf(s,actor,id))}]}),...usedUp]
  }
  function facts():PlayFacts{
   const mc=moveClick()
@@ -554,7 +559,10 @@ export function createPlayInput(session:()=>Sandbox|null,run:(command:BattleComm
    /* fix.stand-up-does-nothing (2026-10-05, Andrew: "The stand-up button doesn't seem to work."): the action pressed is one the
       ENGINE grants the unit now (grantedActionIds: its own list, and Stand Up while it holds the prone status). This asked the
       unit's stored list, which never holds a status's action, so the press on Stand Up was dropped here without a word. */
-   if(!grantedActionIds(s.ctx,u).includes(e.actionId)||!s.ctx.actions[e.actionId])return false
+   if(!grantedActionIds(s.ctx,u).includes(e.actionId)||!s.ctx.actions[e.actionId]){
+    /* viewer.used-up-power-stays-greyed: a press on a used-up row is answered by its line and changes nothing */
+    const used=cantPayOf(s,actor).find(c=>c.id===e.actionId);if(used){note=used.why;return true}
+    return false}
    const a=s.ctx.actions[e.actionId]!
    /* viewer.prone-turn-only-stand-up: an action that waits on the unit's stand (standFirstOf — the engine's refusal) is not
       chosen; the press is answered in one line that says what to do, by the stand's own name, and the screen is left as the

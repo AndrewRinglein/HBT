@@ -133,7 +133,11 @@ describe('kingdom.attack-one-armed-after-move — after a unit moves, its attack
       if (r.length) { b.walk(r[0]!); if (b.acting() === dwarf.id) expect(P.facts().slot, 'a new Activation: chosen again after its move').toBe(chop) } }
   })
 
-  it('changing away from attack one to move again: Move chosen on the bar is armed in its place; that second move is the unit\'s primary action, and whatever the engine then leaves it, attack one is never left chosen for an Activation that is over', () => {
+  // 2026-10-06 — engine rule.one-move-action-one-primary-action (Andrew, engine/DECISIONS.md 'an Activation is one move action and one
+  // primary action, in that order; …'): the words of this test said the second move "is the unit's primary action" — what the engine did
+  // until that ruling. It is the rest of the SAME move action now, and does not cost the Dwarf its primary action: the title and one
+  // message say so, and one line is ADDED to hold it. No assertion was removed or loosened.
+  it('changing away from attack one to move again: Move chosen on the bar is armed in its place; that second move is the rest of the same move action, and whatever the engine then leaves it, attack one is never left chosen for an Activation that is over', () => {
     const b = battle1(DWARF), { s, P } = b, dwarf = b.me(), [chop] = b.attacksOf(dwarf)
     b.begin(dwarf)
     const move = P.facts().slot!, step = P.facts().reach.find((h) => s.ctx.geo.distance(dwarf.hex, h) === 1)!
@@ -142,8 +146,9 @@ describe('kingdom.attack-one-armed-after-move — after a unit moves, its attack
     expect(P.input({ kind: 'slot', actionId: move, unit: dwarf.id })).toBe(true)
     expect(P.facts().slot, 'Move is armed in its place').toBe(move)
     const more = P.facts().reach
-    expect(more.length, 'the engine offers the move again, as the unit\'s primary action').toBeGreaterThan(0)
+    expect(more.length, 'the engine offers the move again, the rest of the same move action').toBeGreaterThan(0)
     b.walk(more[0]!)
+    expect(dwarf.primaryUsed, 'walking on did not cost the Dwarf its primary action').toBe(false)
     /* the engine's own rule decides what follows (a primary action ends the Activation by itself): if the Dwarf still acts,
        its attack one is chosen after this move too (kingdom SWITCHES attackOneAfterEachMove); if it does not, nothing of its is */
     if (b.acting() === dwarf.id) expect(P.facts().slot, 'still acting: chosen after this move too').toBe(chop)

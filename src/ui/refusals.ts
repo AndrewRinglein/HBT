@@ -50,6 +50,11 @@ export function unpaidLine(u:Unpaid):string{
  }
 }
 
+/** viewer.used-up-power-stays-greyed (engine DECISIONS.md 2026-10-06 '… a used-up power stays on the bar, greyed', Andrew: "One,
+    yes."): the line a used-up action's greyed row says — the row's own count of uses, the engine's (a once-per-Battle power
+    says so). The bar words a replay's the same way (viewer src/actionbar.js). */
+export const usedUpLine=(uses:number|undefined):string=>uses===1?'Used: once per Battle.':'No uses left.'
+
 /** viewer.turn-taking point 4: the engine's `activation-not-selectable` for a switch to another hero, worded by why — the
     one asked for is not the player's, or has acted; or the hero acting has already moved or acted and must finish (no
     partial Activations). Every fact read here is the engine's (the unit's side, moveUsed, primaryUsed, the queue it gave). */

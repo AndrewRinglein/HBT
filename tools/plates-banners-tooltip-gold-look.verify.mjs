@@ -55,6 +55,8 @@ function bare(R,what,{keep=[],figures=[]}={}){
  assert.ok(words>0,what+' has words');return words}
 
 /* the markup the page writes for each (viewer src/board.js, src/affliction.js) */
+/* Law 10, 2026-10-06 — viewer.plates-and-banners-sit-low (Andrew, engine DECISIONS.md 'the Deathbed notification and the others sit low, near the bottom of the screen': "… still happening too close to the center of the screen. Push it down closer to the bottom of the screen.") overturns the PLACE this test held; the look and the time are held as before. The pieces are now stood by the page's own cues (the viewer's playCues), since their place is the
+   page's to give (board.js standLow); the markup below is what those cues write. */
 const BANNER=(kind,text,sub)=>`<div class="banner hbtNotice ${kind}"><b>${text}</b><span>${sub}</span></div>`
 const DEATHBED=`<div class="dbModal stood"><div class="dbVeil"></div><div class="dbPlate hbtNotice stood"><span class="dbHead gold">DEATHBED FIGHTING</span><span class="dbBold gold">This hero fights on.</span><span class="dbName">Iron Dwarf</span><span class="dbRoll">rolled <b>12</b> against <b>40</b></span></div></div>`
 const FELL=`<div class="dbModal fell"><div class="dbVeil"></div><div class="dbPlate hbtNotice fell"><span class="dbHead red">DEATHBED FIGHTING</span><span class="dbBold red">This hero falls.</span><span class="dbName">Iron Dwarf</span></div></div>`
@@ -80,6 +82,8 @@ try{
  const stand=(page,html,where)=>page.evaluate(([html,where])=>{document.querySelectorAll('[data-probe]').forEach(n=>n.remove());const V=window.__sandbox.viewer._V,host=where==='root'?V.dom.root:V.dom.stage.parentNode
   const t=document.createElement('template');t.innerHTML=html.trim();const n=t.content.firstElementChild;n.setAttribute('data-probe','1');host.appendChild(n)},[html,where])
  const away=page=>page.evaluate(()=>document.querySelectorAll('[data-probe]').forEach(n=>n.remove()))
+ /** play cues of the page's own (viewer.plates-and-banners-sit-low: a piece's place is the page's to give) and wait for it to stand */
+ const cue=(page,cues,ms=320,sels=[])=>page.evaluate(`(async()=>{const cues=${JSON.stringify(cues)},V=window.__sandbox.viewer._V,hero=Object.values(V.S.U).find(u=>u.side==='hero').id;V.playCues(cues.map(c=>c.id==='HERO'?{...c,id:hero}:c));await new Promise(r=>setTimeout(r,${ms}));const R=${READ};return [${sels.map(s=>'R('+JSON.stringify(s)+')').join(',')}]})()`)   // the cue, the wait and the reading in ONE call of the page: a reading that came late under load found the piece already gone
  const shot=async(page,name)=>{if(!SHOTS)return
   await page.waitForFunction(()=>!document.querySelector('#terrainLoading'),null,{timeout:150000}).catch(()=>say('the 3D map was still loading at the screenshot'))
   await page.waitForTimeout(1500)
@@ -93,18 +97,21 @@ try{
   const mid=x=>(x.l+x.r)/2
   // 1. a phase banner and a wave banner: at the top of the board, centred
   for(const [kind,text,sub] of [['phase','Hero Phase','your heroes act'],['wave','A wave arrives','Skeleton Archer · Skeleton Archer']]){
-   await stand(page,BANNER(kind,text,sub));const R=await read(page,'.banner[data-probe]');bare(R,'the '+kind+' banner')
-   assert.ok(Math.abs(mid(R.box)-mid(frame))<=2,`the ${kind} banner is centred across the board`);assert.ok(Math.abs(R.box.t-frame.t-18)<=1.5,`the ${kind} banner is 18 px under the top of the board, as before (${(R.box.t-frame.t).toFixed(1)})`)
-   if(board==='light')say(`the ${kind} banner: "${text}" in gold, outlined, nothing behind it, ${(R.box.t-frame.t).toFixed(0)} px under the top of the board`)
+   /* was: await stand(page,BANNER(kind,text,sub)) … assert.ok(Math.abs(R.box.t-frame.t-18)<=1.5,'the banner is 18 px under the top of the board, as before') */
+   const [R]=await cue(page,[{k:'banner',kind,text,sub}],320,['.banner']);bare(R,'the '+kind+' banner')
+   assert.ok(Math.abs(mid(R.box)-mid(frame))<=2,`the ${kind} banner is centred across the board`);assert.ok(R.box.b<=frame.b&&frame.b-R.box.b<=140,`the ${kind} banner is in the band just above the action bar (${(frame.b-R.box.b).toFixed(0)} px over the frame's foot)`)
+   if(board==='light')say(`the ${kind} banner: "${text}" in gold, outlined, nothing behind it, in the band above the action bar`)
    await shot(page,`${kind}-banner-${board}-board`)}
   // 2. the Deathbed plate, standing and falling: in the middle of the board, over the dimmed screen
   for(const [name,html] of [['stood',DEATHBED],['fell',FELL]]){
-   await stand(page,html);const R=await read(page,'.dbModal[data-probe] .dbPlate'),veil=(await read(page,'.dbModal[data-probe] .dbVeil')).box;bare(R,'the Deathbed plate ('+name+')')
-   assert.ok(Math.abs(mid(R.box)-mid(frame))<=2&&Math.abs((R.box.t+R.box.b)/2-(frame.t+frame.b)/2)<=2,'the Deathbed plate is in the middle of the board, as before');assert.ok(!/^rgba\(0, 0, 0, 0\)$/.test(veil.bg),'over the dimmed screen that holds the game')
-   if(board==='light'&&name==='stood')say(`the Deathbed plate: ${R.parts.filter(p=>p.own).length} lines in gold, outlined, no plate behind them, in the middle of the board over the dimmed screen`)
+   /* was: await stand(page,html) … assert.ok(…'the Deathbed plate is in the middle of the board, as before') */
+   void html;const [R,VE]=await cue(page,[{k:'deathbed',id:'HERO',result:name,n:12,chance:40}],1300,['.dbPlate','.dbModal .dbVeil']),veil=VE.box;bare(R,'the Deathbed plate ('+name+')')
+   assert.ok(Math.abs(mid(R.box)-mid(frame))<=2&&R.box.b<=frame.b&&frame.b-R.box.b<=140,'the Deathbed plate is in the band just above the action bar');assert.ok(!/^rgba\(0, 0, 0, 0\)$/.test(veil.bg),'over the dimmed screen that holds the game')
+   if(board==='light'&&name==='stood')say(`the Deathbed plate: ${R.parts.filter(p=>p.own).length} lines in gold, outlined, no plate behind them, in the band above the action bar over the dimmed screen`)
    await shot(page,`deathbed-${name}-${board}-board`)}
   // 3. an injury plate
-  await stand(page,INJURY);{const R=await read(page,'.injPlate[data-probe]');bare(R,'the injury plate');assert.ok(Math.abs(R.box.l-frame.l-640)<=1.5&&Math.abs(R.box.t-frame.t-300)<=1.5,'the injury plate stands where it is put')
+  /* was: await stand(page,INJURY) … assert.ok(…'the injury plate stands where it is put') */
+  await page.waitForTimeout(1500);void INJURY;{const [R]=await cue(page,[{k:'injury',id:'HERO',name:'Broken Arm'}],250,['.injPlate']);bare(R,'the injury plate');assert.ok(Math.abs(mid(R.box)-mid(frame))<=2&&R.box.b<=frame.b&&frame.b-R.box.b<=140,'the injury plate is in the band just above the action bar')
    if(board==='light')say('the injury plate: "'+R.box.text+'" in gold, outlined, nothing behind it');await shot(page,`injury-plate-${board}-board`)}
   // 4. the affliction pop-up: over the whole screen, its cards' frames and its Continue kept
   await stand(page,AFFLICTION,'root');{const R=await read(page,'#afflPop[data-probe] #afflBox'),pop=(await read(page,'#afflPop[data-probe]')).box
