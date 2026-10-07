@@ -66,12 +66,19 @@ describe('the rows', () => {
     expect(fx(vigil.id)).toEqual({ kind: 'plant', radius: 1,
       lends: [{ id: 'trigger.banner-vigil.plant.heal', hook: 'onActivationEnd', chance: 100, select: 'self', effect: { kind: 'heal', amount: { scale: 'partySpirit', base: 0, mult: 1 } }, source: vigil.id }] })
     expect(vigil.gaps ?? []).toEqual([])
-    // the Heroic: radius 3, +2 Strength and +2 Precision, heal 5 at the End of Activation; its on-miss clause is a named gap
+    // the Heroic: radius 3, +2 Strength and +2 Precision, heal 5 at the End of Activation, and 30 Surge Chance to a unit inside on its own miss
+    // Restated 2026-10-06 (content.banner-heroism-own-miss; ruled 2026-10-06, DECISIONS.md 'the one-use rules …': "it could be
+    // done by everybody who's in range. Gains on miss. Gain surge, but not everyone gives everyone the modifier."). The clause
+    // "onMiss by any ally in the aura: EVERY ally in the aura gains 30 Surge Chance" was a named gap; it is now the one that
+    // missed that gains, a second lent trigger, and the power names no gap. The two lines were:
+    //   lends: [{ id: 'trigger.banner-heroism.plant.heal', hook: 'onActivationEnd', chance: 100, select: 'self', effect: { kind: 'heal', amount: 5 }, source: heroic.id }] })
+    //   expect(heroic.gaps).toEqual(['onMiss by any ally in the aura: EVERY ally in the aura gains 30 Surge Chance — planted object: clause unparsed'])
     const heroic = ABILITIES['power.banner-heroism.plant']!
     expect([heroic.staminaCost, heroic.uses]).toEqual([4, 1])
     expect(fx(heroic.id)).toEqual({ kind: 'plant', radius: 3, mods: { strength: 2, precision: 2 },
-      lends: [{ id: 'trigger.banner-heroism.plant.heal', hook: 'onActivationEnd', chance: 100, select: 'self', effect: { kind: 'heal', amount: 5 }, source: heroic.id }] })
-    expect(heroic.gaps).toEqual(['onMiss by any ally in the aura: EVERY ally in the aura gains 30 Surge Chance — planted object: clause unparsed'])
+      lends: [{ id: 'trigger.banner-heroism.plant.heal', hook: 'onActivationEnd', chance: 100, select: 'self', effect: { kind: 'heal', amount: 5 }, source: heroic.id },
+        { id: 'trigger.banner-heroism.plant.surge-on-miss', hook: 'onMiss', chance: 100, select: 'self', effect: { kind: 'surge.gain', value: 30 }, source: heroic.id }] })
+    expect(heroic.gaps ?? []).toEqual([])
     // the Mystic: neither of its clauses is one the engine has - it is not planted as an object that does nothing
     expect(ABILITIES['power.banner-mystic-power.plant']).toBeUndefined()
     expect((ITEMS['item.banner-mystic-power']!.gaps ?? []).some((g) => g.includes('power.banner-mystic-power.plant'))).toBe(true)
