@@ -15,7 +15,9 @@
   "shape": "plumbing",
   "spec": "Andrew, 2026-10-06 (engine/DECISIONS.md 'building is split from testing ...', his item 2): \"the engine tests test/fix-shield-power-double-click.test.ts and test/movement-swap-and-shields.test.ts fail with 'Shared viewer metadata is stale or dirty' whenever the engine suite runs before the viewer's dumps are regenerated after an engine change. Make the run order right, or make the two tests not depend on it. This was 7 incidents.\" It happened again the same evening in the engine worker's merge (GBH SWITCHES combine.dumpsBeforeTheEngineSuite records the order it then took by hand). Both tests build the kingdom's sandbox page, whose builder refuses while viewer/generated/static.json carries an older engine stamp. Take the way that leaves no order to remember: the two tests make the dumps they need for themselves in a scratch folder (or are moved to the package whose page they build, if that is what they test - read them and say which they are), so the engine suite passes on a tree whose viewer dumps are stale. If neither is possible without weakening what they hold, make tools/suites.mjs and tools/combine.mjs redo the dumps before the engine suite whenever the engine's code stamp moved, and say why the first way failed. No assertion changes.",
   "expect": "On a scratch copy where engine source changed and the viewer's dumps were NOT regenerated, the engine suite passes (seen failing on those two tests before the change); the two tests still fail when the thing they guard is broken (seen); GBH SWITCHES combine.dumpsBeforeTheEngineSuite is closed or kept, with the reason.",
-  "note": "Filed by the home chat, 2026-10-06 - the method, 2 of 4. Small."
+  "note": "Filed by the home chat, 2026-10-06 - the method, 2 of 4. Small.",
+  "status": "done-needs-review",
+  "sha": "1d0c216"
  },
  {
   "id": "tool.landing-on-the-quick-check",

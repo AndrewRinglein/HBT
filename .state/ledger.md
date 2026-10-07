@@ -43319,3 +43319,238 @@ index 302fe74..2299825 100644
  
 ```
 </details>
+
+## tool.engine-suite-needs-no-run-order — LANDED `1d0c216` **NEEDS REVIEW**
+2026-10-07 03:20
+
+  PASS  dependencies landed
+  WARN  not already decided — 2 candidate ruling(s) — READ BEFORE ASKING: DECISIONS.md:5644 · DECISIONS.md:5831
+  PASS  typecheck
+  PASS  the item's own tests — test/engine-suite-needs-no-run-order.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — test/engine-suite-needs-no-run-order.test.ts
+  WARN  existing tests untouched — DELETED LINES in kingdom/test/swap-shields-play.test.ts (-2), kingdom/tools/shield-dblclick.verify.mjs (-1), kingdom/tools/swap-shields.verify.mjs (-1), test/fix-shield-power-double-click.test.ts (-47), test/movement-swap-and-shields.test.ts (-82), viewer/tools/bar-dblclick.test.mjs (-1), viewer/tools/swap-bar.test.mjs (-1) — will land FLAGGED for review
+  SKIPPED  control battles unchanged — engine code 2071f82193 and the content pack are the ones the control battles last passed on (2026-10-07 03:20, gate tool.thirty-second-test-limit-on-the-pc --land, in HBT-worker-engine) — not run
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+engine c019d79 tool.engine-suite-needs-no-run-order: the engine's suite builds no page - the two page tests of the kingdom's sandbox (test/fix-shield-power-double-click.test.ts, test/movement-swap-and-shields.test.ts) are the kingdom's now, word for word in what they assert; test/engine-suite-needs-no-run-order.test.ts holds that no engine test builds another package's page or runs a tool in another package's folder, and that the builder's refusal on stale dumps is not weakened (Andrew 2026-10-06, DECISIONS.md 'building is split from testing ...', his item 2; GBH SWITCHES combine.dumpsBeforeTheEngineSuite closed for the engine's suite). Seen: both failed here on a stale dump stamp before; the whole suite passed on that stale tree after (3242); in the kingdom both pass, and fail with the double-click handler and the swap cost broken
+
+diff --git a/test/fix-shield-power-double-click.test.ts b/test/fix-shield-power-double-click.test.ts
+deleted file mode 100644
+index 8b1a523..0000000
+--- a/test/fix-shield-power-double-click.test.ts
++++ /dev/null
+@@ -1,47 +0,0 @@
+-// fix.shield-power-double-click (engine DECISIONS.md 2026-10-01 'a self power fires on a double-click on its bar button').
+-// Andrew, playing the Orphanage on the built sandbox: "The two shield powers do not work. I click on them. … If I
+-// double-click on them or click on them and click on the hero, neither one of those does anything. I should be able to
+-// double-click on it in the bar and have it activate." movement.swap-and-shields' page test passed while this was so: it
+-// called the page's handlers by hand, skipped every animation between its two clicks, and always made the shield hero the
+-// one acting before touching its bar. This one builds BATTLE-SANDBOX.html into the kingdom's scratch folder and
+-// ../kingdom/tools/shield-dblclick.verify.mjs plays it in a real browser with real mouse events: a double-click on the bar
+-// of the hero proposed to act and of a hero only looked at, and a click on the bar then on the hero, for both. The engine's
+-// own numbers are asked here: each power's name and staminaCost. Imports no kingdom code.
+-import { describe, it, expect } from 'vitest'
+-import { execFileSync } from 'node:child_process'
+-import { mkdirSync } from 'node:fs'
+-import { ACTIONS, ITEMS } from '../src/content/index.js'
+-
+-type Use = { how: string, hero: string, power: string, used: boolean, cost: number, staminaBefore: number, staminaAfter: number, logNamed: boolean,
+-  modsShown: number, badgesBefore: number, badgesAfter: number, note: string | null }
+-const record = (): { errors: string[], uses: Use[] } => {
+-  mkdirSync('../kingdom/scratch', { recursive: true })
+-  execFileSync(process.execPath, ['tools/build-sandbox.mjs', 'scratch/shield-dblclick.html'], { cwd: '../kingdom', stdio: 'pipe' })
+-  return JSON.parse(execFileSync(process.execPath, ['tools/shield-dblclick.verify.mjs', 'scratch/shield-dblclick.html'], { cwd: '../kingdom', encoding: 'utf8', maxBuffer: 1 << 26 }))
+-}
+-
+-describe('a shield power fires from the bar of the built sandbox, driven by a real mouse', () => {
+-  const r = record()
+-  it('the page runs without an error', () => { expect(r.errors).toEqual([]) })
+-  it('every way Andrew tried: a double-click on the bar (the hero proposed, the hero looked at), the bar then the hero', () => {
+-    // Law 10, 2026-10-04 — content.shields-reauthored (engine item; engine DECISIONS.md 2026-09-28 'counterattack, special free attacks, the opening six, shields, custom weapons' and the Armory Ledger approved that day): the four powers were typed by id
+-    // ('power.tower-shield.cover', 'power.round-shield.turn-aside', 'power.tower-shield.stand-tall', 'power.round-shield.brace') and the Ledger
+-    // replaced them. The four ways are unchanged; the powers are the Tower's and the Round's own, in their rows' order.
+-    const [towerFirst, towerSecond] = ITEMS['item.tower-shield']!.abilities, [roundFirst, roundSecond] = ITEMS['item.round-shield']!.abilities
+-    expect(r.uses.map((u) => [u.how, u.power])).toEqual([
+-      ['double-click on the bar, the hero proposed', towerFirst],
+-      ['double-click on the bar of the hero looked at', roundFirst],
+-      ['click on the bar, then the hero', towerSecond],
+-      ['click on the bar of the hero looked at, then the hero', roundSecond],
+-    ])
+-  })
+-  for (const i of [0, 1, 2, 3]) it(`fires: stamina paid, the log names it, the board shows it — use ${i + 1}`, () => {
+-    const u = r.uses[i]!, def = ACTIONS[u.power]!
+-    expect(u.used, u.how).toBe(true)
+-    expect(u.cost, u.how).toBe(def.staminaCost)
+-    expect(u.staminaBefore - u.staminaAfter, u.how).toBe(def.staminaCost)
+-    expect(u.logNamed, u.how).toBe(true)
+-    expect(u.modsShown, u.how).toBeGreaterThan(0)
+-    expect(u.badgesAfter, u.how).toBeGreaterThan(u.badgesBefore)
+-  })
+-}, 400000)
+diff --git a/test/movement-swap-and-shields.test.ts b/test/movement-swap-and-shields.test.ts
+deleted file mode 100644
+index d2e8dcc..0000000
+--- a/test/movement-swap-and-shields.test.ts
++++ /dev/null
+@@ -1,82 +0,0 @@
+-// movement.swap-and-shields (engine DECISIONS.md 2026-10-01 'the movements': "weapon swap and shield actions are part of
+-// what's needed now"). The engine has both — the swap (v2.loadout-swap) and the shield powers (v2.shields); this asks that
+-// they are PLAYED in a sandbox battle on the board: the swap from the action bar before the primary (its cost paid, the
+-// hands to hold chosen, a second one refused on the bar), and each of the three shields' two powers clicked on the bar,
+-// each named in the battle log on the screen. The kingdom builds BATTLE-SANDBOX.html into its scratch folder and
+-// ../kingdom/tools/swap-shields.verify.mjs plays it through the built page's own DOM (the viewer's bar, figures and
+-// buttons); this reads its record. The engine's own numbers are asked here: swapCostOf and each power's staminaCost.
+-// Imports no kingdom code.
+-import { describe, it, expect } from 'vitest'
+-import { execFileSync } from 'node:child_process'
+-import { mkdirSync } from 'node:fs'
+-import { createCustomBattle } from '../src/core/setup.js'
+-import { swapCostOf } from '../src/core/swap.js'
+-import { ACTIONS, ITEMS } from '../src/content/index.js'
+-
+-type Power = { hero: string, id: string, turn: number, onBar: boolean, used: boolean, name: string | null, stamina: number | null, logNamed: boolean, note: string | null }
+-type Record = {
+-  swap: { hero: string, noSwapWhileChoosing: boolean, handsBefore: string[], offered: string[], costText: string, staminaBefore: number, staminaAfter: number,
+-    event: { stamina: number, handsAfter: string[] } | null, handsAfter: string[], stowed: string[], shieldPowersOnBarAfter: boolean,
+-    refused: { why: string | null, offered: string[], took: boolean, swapped: boolean }, logNamed: boolean },
+-  back: { offered: boolean, stowedBefore: string[], handsAfter: string[], staminaBefore: number, staminaAfter: number, event: { stamina: number } | null },
+-  powers: Power[],
+-}
+-const record = (): Record => {
+-  mkdirSync('../kingdom/scratch', { recursive: true })
+-  execFileSync(process.execPath, ['tools/build-sandbox.mjs', 'scratch/swap-shields.html'], { cwd: '../kingdom', stdio: 'pipe' })
+-  return JSON.parse(execFileSync(process.execPath, ['tools/swap-shields.verify.mjs', 'scratch/swap-shields.html'], { cwd: '../kingdom', encoding: 'utf8', maxBuffer: 1 << 26 }))
+-}
+-// Law 10, 2026-10-04 — content.shields-reauthored (engine item; engine DECISIONS.md 2026-09-28 'counterattack, special free attacks, the opening six, shields, custom weapons' and the Armory Ledger approved that day): the six powers were typed here by id
+-//   ['hero.base.paladin-hunk', 'power.kite-shield.shield-wall'], […, 'power.kite-shield.raise-guard'], ['hero.base.priest-armored',
+-//   'power.round-shield.turn-aside'], […, 'power.round-shield.brace'], ['hero.base.warrior-iron', 'power.tower-shield.cover'], […, 'power.tower-shield.stand-tall']
+-// and the Ledger replaced them. Each hero's are the two powers its shield's row grants, in the row's order.
+-const SHIELD_POWERS: [string, string][] = ([['hero.base.paladin-hunk', 'item.kite-shield'], ['hero.base.priest-armored', 'item.round-shield'], ['hero.base.warrior-iron', 'item.tower-shield']] as const)
+-  .flatMap(([hero, shield]) => ITEMS[shield]!.abilities.map((p): [string, string] => [hero, p]))
+-
+-describe('the swap and the shield powers, played on the board of a sandbox battle', () => {
+-  const r = record()
+-  // the engine's own swap cost for a hero that carries no swapCost modifier (COMBAT-V2 §11.2: "swapCost is a stat, default 1")
+-  const ctx = createCustomBattle([{ type: 'hero.base.paladin-hunk', hex: 85 }], [{ type: 'unit.zombie', hex: 200 }])
+-  const cost = swapCostOf(ctx, ctx.state.units[0]!)
+-
+-  it('the swap is on the action bar once the hero acts, offering the hands to hold and the engine\'s cost', () => {
+-    expect(r.swap.noSwapWhileChoosing).toBe(true)
+-    expect(r.swap.handsBefore).toEqual(['item.longsword', 'item.kite-shield'])
+-    expect(r.swap.offered).toEqual(['Nothing in hand', 'Longsword', 'Kite Shield'])
+-    expect(r.swap.costText).toBe(`${cost} stamina`)
+-  })
+-  it('swapping from the bar before the primary: stamina drops by swapCost, loadout.swapped, the shield stowed and its powers gone', () => {
+-    expect(r.swap.event).toEqual({ stamina: cost, handsAfter: ['item.longsword'] })
+-    expect(r.swap.staminaBefore - r.swap.staminaAfter).toBe(cost)
+-    expect(r.swap.handsAfter).toEqual(['item.longsword'])
+-    expect(r.swap.stowed).toEqual(['item.kite-shield'])
+-    expect(r.swap.shieldPowersOnBarAfter).toBe(false)
+-    expect(r.swap.logNamed).toBe(true)
+-  })
+-  it('a second swap in the activation is refused on the bar, with the engine\'s reason', () => {
+-    expect(r.swap.refused.offered).toEqual([])
+-    expect(r.swap.refused.why).toMatch(/swap of this activation is spent/)
+-    expect(r.swap.refused.took).toBe(false)
+-    expect(r.swap.refused.swapped).toBe(false)
+-  })
+-  it('the next activation, the shield stowed, the swap takes both back into hand', () => {
+-    expect(r.back.offered).toBe(true)
+-    expect(r.back.handsAfter).toEqual(['item.longsword', 'item.kite-shield'])
+-    expect(r.back.event).toEqual({ stamina: cost })
+-    expect(r.back.staminaBefore - r.back.staminaAfter).toBe(cost)
+-  })
+-  it('every shield power of the three shields is on the bar, used from it, paid for, and named in the battle log', () => {
+-    expect(r.powers.map((p) => [p.hero, p.id])).toEqual(SHIELD_POWERS)
+-    for (const p of r.powers) {
+-      const def = ACTIONS[p.id]!
+-      expect(p.onBar, p.id).toBe(true)
+-      expect(p.used, p.id).toBe(true)
+-      expect(p.name, p.id).toBe(def.name)
+-      expect(p.stamina, p.id).toBe(def.staminaCost)
+-      expect(p.logNamed, p.id).toBe(true)
+-    }
+-    // Law 10, 2026-10-04 (the note above): the six names are the rows' own (was: new Set(['Lock Shields', 'Raise Guard', 'Turn Aside', 'Bear Down', 'Cover', 'Stand Tall']))
+-    expect(SHIELD_POWERS).toHaveLength(6)
+-    expect(new Set(r.powers.map((p) => p.name))).toEqual(new Set(SHIELD_POWERS.map(([, p]) => ACTIONS[p]!.name)))
+-  })
+-}, 170000)
+viewer f7a774c tool.engine-suite-needs-no-run-order: two comments name the kingdom's page tests where they are now (kingdom/test; the engine's until 2026-10-06) - no code
+
+diff --git a/tools/bar-dblclick.test.mjs b/tools/bar-dblclick.test.mjs
+index ba31f66..8629844 100644
+--- a/tools/bar-dblclick.test.mjs
++++ b/tools/bar-dblclick.test.mjs
+@@ -5,5 +5,5 @@
+ // (no plan facts, the bar still), the double-click is held and offered once, when the host hands its facts back (viewer
+ // SWITCHES barDoubleClick). The host's half and the real mouse on the built sandbox are kingdom test/swap-shields-play.test.ts
+-// and engine test/fix-shield-power-double-click.test.ts. Runs against the page (VIEWER_PAGE, else BATTLE-VIEWER.html).
++// and kingdom test/fix-shield-power-double-click.test.ts (the engine's until 2026-10-06). Runs against the page (VIEWER_PAGE, else BATTLE-VIEWER.html).
+ import { test } from 'node:test'
+ import assert from 'node:assert/strict'
+diff --git a/tools/swap-bar.test.mjs b/tools/swap-bar.test.mjs
+index 8f60236..97c0b1e 100644
+--- a/tools/swap-bar.test.mjs
++++ b/tools/swap-bar.test.mjs
+@@ -4,5 +4,5 @@
+ // engine's cost — and a click is offered to the host as {kind:'swap', index, unit}; with none to make, the engine's
+ // reason stands in place of the buttons; no swap fact, no swap. The host's facts are validated whole (src/play.js). The
+-// played battle — the engine's swap, its cost, the refusal, the shield powers from the bar — is engine
++// played battle — the engine's swap, its cost, the refusal, the shield powers from the bar — is kingdom
+ // test/movement-swap-and-shields.test.ts. Runs against the page (VIEWER_PAGE, else BATTLE-VIEWER.html).
+ // 2026-10-04, viewer.swap-button-rearranges (engine DECISIONS.md 2026-10-03 'the swap button says "Swap" and opens a rearranging
+kingdom 46ad9ac tool.engine-suite-needs-no-run-order: the two page tests of the kingdom's sandbox that sat in engine/test are here now - test/fix-shield-power-double-click.test.ts and test/movement-swap-and-shields.test.ts, no assertion changed (paths and import paths only), so the engine's suite builds no page and cannot fail on stale viewer dumps (Andrew 2026-10-06, engine/DECISIONS.md 'building is split from testing ...', his item 2); four comments point at their new home
+
+diff --git a/test/swap-shields-play.test.ts b/test/swap-shields-play.test.ts
+index 9a2562f..ecb2d9b 100644
+--- a/test/swap-shields-play.test.ts
++++ b/test/swap-shields-play.test.ts
+@@ -4,5 +4,5 @@
+ // click on one runs the engine's swap command; a power aimed at the hero alone is used from the bar, chosen then chosen
+ // again (kingdom SWITCHES playInputSwap, playInputSwapActing, playInputSelfPower). The built page, played through its
+-// DOM, is engine test/movement-swap-and-shields.test.ts over tools/swap-shields.verify.mjs.
++// DOM, is test/movement-swap-and-shields.test.ts (here since 2026-10-06, the engine's before) over tools/swap-shields.verify.mjs.
+ import { describe, expect, it } from 'vitest'
+ import { createSandbox, advanceSandbox, commandSandbox, sandboxSwapChoices, sandboxSwapRefusals } from '../src/core/sandbox.js'
+@@ -87,5 +87,5 @@ describe('a shield power from the bar: chosen, then chosen again', () => {
+    Andrew looked at the Battle Chaplain while the Iron Dwarf was proposed, and nothing on its bar did anything. A shield power
+    on the bar of a hero only looked at begins it and is aimed at it; chosen again (the double-click's second offer), it is
+-   used (kingdom SWITCHES playQueueBarOrder). The real mouse on the built page is engine test/fix-shield-power-double-click.test.ts. */
++   used (kingdom SWITCHES playQueueBarOrder). The real mouse on the built page is test/fix-shield-power-double-click.test.ts (here since 2026-10-06). */
+ describe('a shield power on the bar of a hero only looked at', () => {
+   it('begins that hero, is aimed at it, and the second offer uses it', () => {
+diff --git a/tools/shield-dblclick.verify.mjs b/tools/shield-dblclick.verify.mjs
+index 73861e2..565391f 100644
+--- a/tools/shield-dblclick.verify.mjs
++++ b/tools/shield-dblclick.verify.mjs
+@@ -16,5 +16,5 @@
+ // screen name it, and does the board show it (the hero's folded stat mods from the power, its figure's badge).
+ //
+-//   node tools/shield-dblclick.verify.mjs <page.html>   prints the record as JSON (engine test/fix-shield-power-double-click.test.ts)
++//   node tools/shield-dblclick.verify.mjs <page.html>   prints the record as JSON (kingdom test/fix-shield-power-double-click.test.ts; the engine's until 2026-10-06)
+ import {readFileSync} from 'node:fs'
+ import {createRequire} from 'node:module'
+diff --git a/tools/swap-shields.verify.mjs b/tools/swap-shields.verify.mjs
+index 6e269a2..a6a95a9 100644
+--- a/tools/swap-shields.verify.mjs
++++ b/tools/swap-shields.verify.mjs
+@@ -10,5 +10,5 @@
+ // The battle log on the screen (the play chrome's #playLog) must name every power used and the swap.
+ //
+-//   node tools/swap-shields.verify.mjs <page.html>    prints the record as JSON (engine test/movement-swap-and-shields.test.ts)
++//   node tools/swap-shields.verify.mjs <page.html>    prints the record as JSON (kingdom test/movement-swap-and-shields.test.ts; the engine's until 2026-10-06)
+ import assert from 'node:assert/strict'
+ import {bootSlice} from './atlas-dom.mjs'
+```
+</details>
