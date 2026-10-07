@@ -2,11 +2,10 @@
  "hooks": [
   {
    "name": "onHit",
-   "uses": 80,
+   "uses": 79,
    "ids": [
     "item.hammer-of-justice",
     "item.runed-crossbow",
-    "item.death-bow",
     "item.pharaohs-gauntlets",
     "item.scepter-of-salvation",
     "item.siege-crossbow",
@@ -43,7 +42,8 @@
     "attack.horns.ram",
     "attack.breath.gout",
     "attack.breath.hiss",
-    "attack.pickaxe.pick"
+    "attack.pickaxe.pick",
+    "attack.burning-torch.swing"
    ]
   },
   {
@@ -91,7 +91,7 @@
   },
   {
    "name": "startOfBattle",
-   "uses": 37,
+   "uses": 36,
    "ids": [
     "item.cursed-sand-blade",
     "item.skyforged-halberd",
@@ -104,7 +104,6 @@
     "item.wayfinders-compass",
     "item.wreath-of-natures-protection",
     "item.velans-ferryman-coin",
-    "item.rune-perfect-hunter",
     "item.pilgrims-warding-stone",
     "item.vigils-shield",
     "item.ring-of-divine-protection",
@@ -182,7 +181,7 @@
   },
   {
    "name": "onTakingDamage",
-   "uses": 16,
+   "uses": 15,
    "ids": [
     "item.tomb-sentinels-blade",
     "item.wraithform-cloak",
@@ -190,7 +189,6 @@
     "item.stormweave-armor",
     "item.troll-gut-vest",
     "item.armor-of-thorns",
-    "item.drakescale-coat",
     "item.mark-of-suffering",
     "item.wreath-of-natures-protection",
     "item.scorpion-shield",
@@ -204,7 +202,7 @@
   },
   {
    "name": "passive",
-   "uses": 16,
+   "uses": 15,
    "ids": [
     "item.cloudsteel-plate",
     "item.skypriests-vestments",
@@ -217,7 +215,6 @@
     "specialty.totem-master",
     "specialty.shepherd",
     "specialty.apothecary",
-    "specialty.porter",
     "specialty.archivist",
     "specialty.sage",
     "specialty.drake",
@@ -226,11 +223,10 @@
   },
   {
    "name": "aura",
-   "uses": 14,
+   "uses": 13,
    "ids": [
     "item.holy-shield",
     "item.chains-of-the-faithful",
-    "item.storm-bastion",
     "item.tongue-of-xarveth",
     "item.starweaver-loom-fragment",
     "item.rune-aura-of-dread",
@@ -318,7 +314,7 @@
  "shapes": [
   {
    "name": "self",
-   "uses": 161,
+   "uses": 162,
    "ids": [
     "item.loaded-dice-of-mirran",
     "item.mug-of-endless-dregs",
@@ -456,7 +452,7 @@
   },
   {
    "name": "one ally within N hexes",
-   "uses": 54,
+   "uses": 53,
    "ids": [
     "item.saints-fingerbone",
     "item.medicine-belt",
@@ -470,7 +466,6 @@
     "power.beastward.usher-away",
     "power.demonic-ward.consume-magic",
     "power.fire-master.fire-shield",
-    "power.mystic.guidance",
     "power.spirit-walker.mend-the-thread",
     "power.blightcaller.regrowth",
     "power.grove-keeper.life-bloom",
@@ -497,13 +492,15 @@
     "power.apothecary.healing-potion",
     "power.porter.shoulder-the-load",
     "power.archer.small-bandage",
-    "power.sage.enlighten"
+    "power.sage.enlighten",
+    "power.broodmother.feed-the-brood"
    ]
   },
   {
    "name": "allies within N hexes",
-   "uses": 32,
+   "uses": 33,
    "ids": [
+    "item.brass-spyglass-of-thessan",
     "item.holy-chalice",
     "item.banner-of-resolve",
     "power.wayfinder.guide-the-party",
@@ -562,6 +559,29 @@
    ]
   },
   {
+   "name": "you and allies within N hexes",
+   "uses": 17,
+   "ids": [
+    "power.warchief.blood-oath",
+    "power.sentinel.far-watch",
+    "power.protector.sanctuary",
+    "power.demonic-ward.warded-ground",
+    "power.war-priest.shield-of-faith",
+    "power.martyred-saint.inner-light",
+    "power.sacred-shield.fortify",
+    "power.grand-master.unyielding",
+    "power.sacred-shield.crown-of-thorns",
+    "power.torchbearer.raise-the-torch",
+    "power.porter.drop-the-pack",
+    "power.militia.take-the-wall",
+    "power.porter.brace-the-line",
+    "power.broodmother.screen",
+    "power.warbeast.harness",
+    "power.round-shield.lock-shields",
+    "power.iron-round-shield.lock-shields"
+   ]
+  },
+  {
    "name": "enemies within N hexes",
    "uses": 16,
    "ids": [
@@ -584,28 +604,6 @@
    ]
   },
   {
-   "name": "you and allies within N hexes",
-   "uses": 16,
-   "ids": [
-    "power.warchief.blood-oath",
-    "power.sentinel.far-watch",
-    "power.protector.sanctuary",
-    "power.demonic-ward.warded-ground",
-    "power.war-priest.shield-of-faith",
-    "power.martyred-saint.inner-light",
-    "power.sacred-shield.fortify",
-    "power.grand-master.unyielding",
-    "power.sacred-shield.crown-of-thorns",
-    "power.torchbearer.raise-the-torch",
-    "power.militia.take-the-wall",
-    "power.porter.brace-the-line",
-    "power.broodmother.screen",
-    "power.warbeast.harness",
-    "power.round-shield.lock-shields",
-    "power.iron-round-shield.lock-shields"
-   ]
-  },
-  {
    "name": "up to N enemies within N hexes",
    "uses": 11,
    "ids": [
@@ -624,10 +622,9 @@
   },
   {
    "name": "a hex within N hexes",
-   "uses": 8,
+   "uses": 7,
    "ids": [
     "item.crows-eye-pendant",
-    "item.brass-spyglass-of-thessan",
     "power.trapper.poison-trap",
     "power.trapper.bear-trap",
     "power.trapper.spring-the-trap",
@@ -661,6 +658,18 @@
    ]
   },
   {
+   "name": "the hex you occupy",
+   "uses": 6,
+   "ids": [
+    "power.totem-master.ancestral-anchor",
+    "power.banner-assassin.plant",
+    "power.banner-mystic-power.plant",
+    "power.banner-vigil.plant",
+    "power.banner-courage.plant",
+    "power.banner-heroism.plant"
+   ]
+  },
+  {
    "name": "yourself or one ally within N hexes",
    "uses": 5,
    "ids": [
@@ -680,17 +689,6 @@
     "power.holy-champion.holy-radiance",
     "power.warbeast.warcry",
     "power.leader.battle-cry"
-   ]
-  },
-  {
-   "name": "the hex you occupy",
-   "uses": 5,
-   "ids": [
-    "power.banner-assassin.plant",
-    "power.banner-mystic-power.plant",
-    "power.banner-vigil.plant",
-    "power.banner-courage.plant",
-    "power.banner-heroism.plant"
    ]
   },
   {
@@ -751,14 +749,6 @@
    "ids": [
     "power.mystic.divination",
     "power.spirit-walker.spirit-link"
-   ]
-  },
-  {
-   "name": "your own hex",
-   "uses": 2,
-   "ids": [
-    "power.totem-master.ancestral-anchor",
-    "power.porter.drop-the-pack"
    ]
   },
   {
@@ -870,7 +860,7 @@
   },
   {
    "name": "the target carries a status",
-   "uses": 9,
+   "uses": 10,
    "ids": [
     "attack.iron-claws.eviscerate",
     "attack.apprentice-wand.surge",
@@ -879,6 +869,7 @@
     "attack.shadow-dagger.from-behind",
     "attack.demon-whip.hellcoil",
     "attack.pharaohs-gauntlets.the-kings-hands",
+    "power.nightblade.exsanguinate",
     "power.fire-master.fireball",
     "rule.corpses"
    ]
@@ -895,7 +886,7 @@
  "effects": [
   {
    "name": "grant a stat for the Battle",
-   "uses": 173,
+   "uses": 171,
    "ids": [
     "item.war-axe",
     "item.bloody-axe",
@@ -907,7 +898,6 @@
     "item.holy-avenger",
     "item.tomb-sentinels-blade",
     "item.gale-shroud",
-    "item.divine-bulwark",
     "item.drakescale-coat",
     "item.patrocoleas-armor",
     "item.wayfinders-compass",
@@ -934,6 +924,7 @@
     "item.lumberjack-axe",
     "attack.iron-mace.crush",
     "attack.death-blade.death-stroke",
+    "attack.death-bow.the-last-arrow",
     "attack.pickaxe.pick",
     "power.berserker.fast-fury",
     "power.shieldbearer.unbreakable"
@@ -941,7 +932,7 @@
   },
   {
    "name": "apply a status",
-   "uses": 139,
+   "uses": 143,
    "ids": [
     "item.bloody-axe",
     "item.runed-crossbow",
@@ -956,7 +947,7 @@
     "item.stormforged-halberd",
     "item.scorpion-carapace",
     "item.troll-gut-vest",
-    "item.storm-bastion",
+    "item.divine-bulwark",
     "item.poison-caltrops",
     "item.vial-of-abyssal-essence",
     "item.wreath-of-natures-protection",
@@ -987,11 +978,10 @@
   },
   {
    "name": "heal",
-   "uses": 84,
+   "uses": 83,
    "ids": [
     "item.death-blade",
     "item.seraph-bow",
-    "item.death-bow",
     "item.holy-avenger",
     "item.wind-blessed-leather",
     "item.wraithform-cloak",
@@ -1020,15 +1010,16 @@
     "power.vengeance.every-wound-remembered",
     "power.soul-stealer.dark-bolt",
     "power.soul-stealer.life-drain",
-    "power.soul-stealer.soul-thief",
     "power.totem-master.totem-of-healing",
+    "power.totem-master.ancestral-anchor",
     "power.spirit-walker.ancestors-call",
     "power.spirit-walker.mend-the-thread",
     "power.blightcaller.regrowth",
     "power.wild-shaper.wild-growth",
     "power.grove-keeper.life-bloom",
     "power.grove-keeper.rejuvenation",
-    "power.war-priest.restoration"
+    "power.war-priest.restoration",
+    "power.shepherd.circle-of-healing"
    ]
   },
   {
@@ -1099,7 +1090,6 @@
     "power.bowmaster.careful-aim",
     "power.bowmaster.sniper",
     "power.sentinel.overwatch",
-    "power.protector.take-the-blow",
     "power.magical-friend.share-senses",
     "power.assassin.knife-in-the-back",
     "power.assassin.deep-cut",
@@ -1110,6 +1100,7 @@
     "power.havoc.momentum",
     "power.vengeance.crossbow-shot",
     "power.vengeance.repay-in-kind",
+    "power.mystic.guidance",
     "power.spirit-walker.ghost-walk",
     "power.wild-shaper.claw",
     "power.war-priest.holy-flames",
@@ -1125,7 +1116,7 @@
   },
   {
    "name": "remove N of a status",
-   "uses": 40,
+   "uses": 42,
    "ids": [
     "item.mug-of-endless-dregs",
     "item.saints-fingerbone",
@@ -1150,6 +1141,7 @@
     "power.shepherd.close-wounds",
     "power.divine-light.total-healing",
     "power.redeemer.uncorrupted",
+    "power.redeemer.bear-the-flame",
     "power.blessed-sufferer.unbent",
     "power.vigil.protect-and-shield",
     "power.holy-avenger.succor-of-the-faithful",
@@ -1159,24 +1151,22 @@
     "power.purifier.cleanse",
     "power.exorcist.holy-shield",
     "power.apothecary.healing-potion",
+    "power.porter.drop-the-pack",
     "power.archer.small-bandage",
     "power.serpent.shed",
     "power.drake.roost",
     "power.warbeast.warcry",
     "power.leader.battle-cry",
-    "enchant.damned",
-    "specialty.champion",
-    "specialty.exorcist"
+    "enchant.damned"
    ]
   },
   {
    "name": "grant an aura",
-   "uses": 38,
+   "uses": 37,
    "ids": [
     "item.holy-shield",
     "item.chains-of-the-faithful",
     "item.phantoms-mantle",
-    "item.storm-bastion",
     "item.tongue-of-xarveth",
     "item.starweaver-loom-fragment",
     "item.banner-assassin",
@@ -1217,11 +1207,11 @@
    "name": "move yourself",
    "uses": 31,
    "ids": [
+    "item.blink-ring",
     "power.warchief.lead-from-front",
     "power.champion.heroic-charge",
     "power.crusader.holy-charge",
     "power.wayfinder.quick-evasion",
-    "power.magical-friend.succor",
     "power.feral.pounce",
     "power.feral.run-down",
     "power.beastward.usher-away",
@@ -1286,7 +1276,7 @@
   },
   {
    "name": "deal MAGIC damage",
-   "uses": 22,
+   "uses": 21,
    "ids": [
     "item.stormforged-blade",
     "item.magic-trap",
@@ -1303,7 +1293,6 @@
     "power.storm-caller.chain-lightning",
     "power.storm-caller.storm-surge",
     "power.deathknight.unholy-wrath",
-    "power.exorcist.sever-the-channel",
     "power.wyrmling.scorch",
     "power.fire-staff.fireball",
     "power.frost-staff.frost-nova",
@@ -1363,13 +1352,15 @@
   },
   {
    "name": "move WITHOUT provoking",
-   "uses": 16,
+   "uses": 18,
    "ids": [
+    "item.blink-ring",
     "power.crusader.holy-charge",
     "power.assassin.dodge-behind",
     "power.shadowdancer.blink",
     "power.shadowbound.shadow-step",
     "power.grand-master.grand-charge",
+    "power.trickster.escape",
     "power.hound.run-them-down",
     "power.drake.stoop",
     "power.direbeast.trample",
@@ -1529,12 +1520,13 @@
   },
   {
    "name": "consume the target’s status",
-   "uses": 7,
+   "uses": 8,
    "ids": [
     "attack.bloody-axe.butcher",
     "attack.poison-throwing-knives.venom-fan",
     "attack.demon-whip.hellcoil",
     "attack.pharaohs-gauntlets.the-kings-hands",
+    "power.nightblade.exsanguinate",
     "power.fire-master.fireball",
     "power.wild-shaper.claw",
     "rule.corpses"
@@ -1542,8 +1534,9 @@
   },
   {
    "name": "lose a stat (a cost)",
-   "uses": 6,
+   "uses": 7,
    "ids": [
+    "power.soul-stealer.soul-thief",
     "power.wild-shaper.wild-growth",
     "power.war-priest.shield-of-faith",
     "power.oracle.the-hour-of-your-death",
@@ -1608,19 +1601,12 @@
     "power.assassin.dodge-behind",
     "power.wyrmling.take-wing"
    ]
-  },
-  {
-   "name": "slayer bonus",
-   "uses": 1,
-   "ids": [
-    "item.rune-perfect-hunter"
-   ]
   }
  ],
  "statuses": [
   {
    "name": "burn",
-   "uses": 79,
+   "uses": 76,
    "ids": [
     "item.runed-crossbow",
     "item.book-of-exorcisms",
@@ -1628,8 +1614,6 @@
     "item.blade-of-demon-slaying",
     "item.stormforged-halberd",
     "item.chains-of-the-faithful",
-    "item.drakescale-coat",
-    "item.storm-bastion",
     "item.saints-fingerbone",
     "item.burning-oil",
     "item.fire-trap",
@@ -1661,12 +1645,14 @@
     "power.shepherd.close-wounds",
     "power.divine-light.total-healing",
     "power.divine-light.hallowed-ground",
-    "power.redeemer.true-sacrifice"
+    "power.redeemer.true-sacrifice",
+    "power.redeemer.holy-retribution",
+    "power.redeemer.uncorrupted"
    ]
   },
   {
    "name": "bleed",
-   "uses": 63,
+   "uses": 64,
    "ids": [
     "item.bloody-axe",
     "item.twin-talon-bow",
@@ -1772,6 +1758,7 @@
     "item.ring-of-divine-protection",
     "attack.dagger.stab",
     "power.shieldbearer.unbreakable",
+    "power.protector.take-the-blow",
     "power.demonic-ward.soul-barrier",
     "power.spirit-walker.spirit-link",
     "power.blessed-sufferer.shield-of-flesh",
@@ -1783,7 +1770,6 @@
     "power.grand-master.muster",
     "power.purifier.sanctified-ward",
     "power.exorcist.holy-shield",
-    "power.witch-hunter.iron-and-salt",
     "power.porter.brace-the-line",
     "power.direbeast.thick-pelt",
     "power.broodmother.screen",
@@ -1804,7 +1790,7 @@
   },
   {
    "name": "weak",
-   "uses": 39,
+   "uses": 40,
    "ids": [
     "item.pharaohs-gauntlets",
     "item.mug-of-endless-dregs",
@@ -1827,6 +1813,7 @@
     "power.wild-shaper.claw",
     "power.vigil.bravery",
     "power.grand-master.unyielding",
+    "power.exorcist.sever-the-channel",
     "power.apothecary.smoke-bomb",
     "power.porter.drop-the-pack",
     "power.hound.bay",
@@ -1849,8 +1836,9 @@
   },
   {
    "name": "stun",
-   "uses": 23,
+   "uses": 24,
    "ids": [
+    "item.divine-bulwark",
     "item.rune-bashing",
     "item.bracer-of-courage",
     "item.banner-of-resolve",
@@ -1905,9 +1893,8 @@
   },
   {
    "name": "frost",
-   "uses": 14,
+   "uses": 13,
    "ids": [
-    "item.storm-bastion",
     "item.winter-cloak",
     "item.stormcallers-orb",
     "item.necklace-of-frost-immunity",
@@ -2268,7 +2255,7 @@
   },
   {
    "name": "precision",
-   "uses": 30,
+   "uses": 29,
    "ids": [
     "item.seraph-bow",
     "item.death-bow",
@@ -2279,7 +2266,6 @@
     "item.rune-cat-eyes",
     "item.rune-executioner",
     "item.rune-avatar-of-war",
-    "item.rune-perfect-hunter",
     "power.wayfinder.switch-to-melee",
     "enchant.magic",
     "enchant.hunting",
@@ -2400,7 +2386,7 @@
   },
   {
    "name": "reach",
-   "uses": 20,
+   "uses": 19,
    "ids": [
     "item.sniper-bow",
     "item.seraph-bow",
@@ -2410,7 +2396,6 @@
     "item.stormfeather-quiver",
     "item.admirals-compass",
     "item.rune-sharp-eyes",
-    "item.rune-perfect-hunter",
     "power.wayfinder.switch-to-melee",
     "enchant.gale",
     "enchant.far",
@@ -2556,8 +2541,9 @@
   },
   {
    "name": "fireResist",
-   "uses": 3,
+   "uses": 4,
    "ids": [
+    "item.drakescale-coat",
     "item.idol-of-the-hearthmother",
     "item.necklace-of-fire-immunity",
     "enchant.fire-ward"
@@ -2614,7 +2600,7 @@
  "durations": [
   {
    "name": "rest of the Battle",
-   "uses": 174,
+   "uses": 172,
    "ids": [
     "item.war-axe",
     "item.bloody-axe",
@@ -2626,7 +2612,6 @@
     "item.holy-avenger",
     "item.tomb-sentinels-blade",
     "item.gale-shroud",
-    "item.divine-bulwark",
     "item.drakescale-coat",
     "item.patrocoleas-armor",
     "item.wayfinders-compass",
@@ -2653,6 +2638,7 @@
     "item.lumberjack-axe",
     "attack.iron-mace.crush",
     "attack.death-blade.death-stroke",
+    "attack.death-bow.the-last-arrow",
     "attack.pickaxe.pick",
     "power.berserker.fast-fury",
     "power.shieldbearer.unbreakable"
@@ -2660,7 +2646,7 @@
   },
   {
    "name": "until the end of your next Turn",
-   "uses": 42,
+   "uses": 45,
    "ids": [
     "item.rapier",
     "item.ghost-thread-cloak",
@@ -2678,6 +2664,8 @@
     "power.crusader.flaming-smite",
     "power.bowmaster.careful-aim",
     "power.bowmaster.sniper",
+    "power.sentinel.overwatch",
+    "power.magical-friend.share-senses",
     "power.assassin.knife-in-the-back",
     "power.assassin.deep-cut",
     "power.shadowbound.void-strike",
@@ -2686,6 +2674,7 @@
     "power.havoc.momentum",
     "power.vengeance.crossbow-shot",
     "power.vengeance.repay-in-kind",
+    "power.mystic.guidance",
     "power.wild-shaper.claw",
     "power.war-priest.holy-flames",
     "power.war-priest.smite-evil",
@@ -2698,20 +2687,14 @@
     "power.hound.worry-the-wound",
     "power.hound.loose-rein",
     "power.serpent.coil",
-    "power.serpent.shed",
-    "power.stalker.patience",
-    "power.wyrmling.kindle",
-    "power.longsword.counterattack"
+    "power.serpent.shed"
    ]
   },
   {
    "name": "until the start of your next Turn",
-   "uses": 7,
+   "uses": 4,
    "ids": [
     "item.mirage-dagger",
-    "power.sentinel.overwatch",
-    "power.protector.take-the-blow",
-    "power.magical-friend.share-senses",
     "power.shadowbound.shadow-step",
     "power.spirit-walker.ghost-walk",
     "power.torchbearer.hold-the-light"

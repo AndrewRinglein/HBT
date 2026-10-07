@@ -17,11 +17,6 @@
    "needs": "Knockback N"
   },
   {
-   "unit": "unit.eyeblight",
-   "what": "attack.eyeblight.gaze damage reads no stat (flat 1)",
-   "needs": "attack shape: stat-less (flat) damage"
-  },
-  {
    "unit": "unit.imp-master",
    "what": "aura 'allies within N hexes' — range null, N never stated",
    "needs": "content: range unstated"
@@ -85,11 +80,6 @@
    "unit": "unit.skeletal-archer",
    "what": "attack.skeletal-archer.shoot onHit: grant a stat until end of next Turn (movement)",
    "needs": "trigger-effect: statMod"
-  },
-  {
-   "unit": "unit.werewolf",
-   "what": "attack.werewolf.claw-frenzy onAttack: grant a stat for the Battle (strength) — a pre-damage stat grant is a STATION question (Law 1)",
-   "needs": "trigger-effect: statMod before damage"
   },
   {
    "unit": "hero.base.priest-robes",
@@ -313,13 +303,8 @@
   },
   {
    "unit": "item.death-bow",
-   "what": "attack.death-bow.the-last-arrow onKill: \"make one free Death Shot against a different enemy\"",
-   "needs": "trigger shape unparsed"
-  },
-  {
-   "unit": "item.death-bow",
-   "what": "onHit: the target cannot be healed until the end of its n",
-   "needs": "trigger shape unparsed"
+   "what": "attack.death-bow.the-last-arrow onKill: \"gain 70 Surge, and take -3 Precision for the rest of the Ba",
+   "needs": "no effect moves a unit's Surge amount — engine capability.trigger-moves-surge"
   },
   {
    "unit": "item.death-bow",
@@ -502,11 +487,6 @@
    "needs": "item field: airwalk"
   },
   {
-   "unit": "item.divine-bulwark",
-   "what": "startOfBattle: you may not act on Turn 1; from Turn 2 you have +1",
-   "needs": "trigger shape unparsed"
-  },
-  {
    "unit": "item.stoneskin-hauberk",
    "what": "onActivationEnd: gain +1 Armor until the end of your next Turn",
    "needs": "trigger shape unparsed"
@@ -547,11 +527,6 @@
    "needs": "trigger shape unparsed"
   },
   {
-   "unit": "item.drakescale-coat",
-   "what": "onTakingDamage: Burn applied to you is halved, rounded down, befor",
-   "needs": "trigger shape unparsed"
-  },
-  {
    "unit": "item.aegis-of-the-fleet",
    "what": "grants power.flight-swift",
    "needs": "item power — shape unparsed"
@@ -565,11 +540,6 @@
    "unit": "item.patrocoleas-armor",
    "what": "startOfBattle: heal 1 at the end of each of your Turns for the re",
    "needs": "trigger shape unparsed"
-  },
-  {
-   "unit": "item.storm-bastion",
-   "what": "aura: AURA radius 1 — an enemy that ends its movement in",
-   "needs": "hook: aura (declared, engine never fires it)"
   },
   {
    "unit": "item.earth-staff",
@@ -638,7 +608,7 @@
   },
   {
    "unit": "item.wayfinders-compass",
-   "what": "startOfBattle: gain +2 Vision for the rest of the Battle, and you",
+   "what": "startOfBattle: gain +2 Vision for the rest of the Battle",
    "needs": "trigger shape unparsed"
   },
   {
@@ -658,7 +628,7 @@
   },
   {
    "unit": "item.brass-spyglass-of-thessan",
-   "what": "active: Free. Until the end of the Turn every attack you o",
+   "what": "active: Free. Every ally within 3 hexes gains +10 Accuracy",
    "needs": "an ability with charges/targets — capability.consumables"
   },
   {
@@ -668,7 +638,7 @@
   },
   {
    "unit": "item.blink-ring",
-   "what": "active: Free. This is not movement and cannot be interrupt",
+   "what": "active: Free. Move up to 4 hexes. It provokes nothing.",
    "needs": "an ability with charges/targets — capability.consumables"
   },
   {
@@ -725,11 +695,6 @@
    "unit": "item.banner-mystic-power",
    "what": "grants power.banner-mystic-power.plant",
    "needs": "item power — shape unparsed"
-  },
-  {
-   "unit": "item.banner-heroism",
-   "what": "power.banner-heroism.plant: onMiss by any ally in the aura: EVERY ally in the aura gains 30 Surge Chance",
-   "needs": "planted object: clause unparsed"
   },
   {
    "unit": "item.backpack",
@@ -844,11 +809,6 @@
   {
    "unit": "item.rune-avatar-of-war",
    "what": "onKill: Surge Chance +20 for the rest of the Battle, stack",
-   "needs": "trigger shape unparsed"
-  },
-  {
-   "unit": "item.rune-perfect-hunter",
-   "what": "startOfBattle: every slayer bonus you have from any source — weap",
    "needs": "trigger shape unparsed"
   },
   {
