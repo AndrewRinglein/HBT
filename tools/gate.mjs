@@ -21,12 +21,19 @@
 //   --part tests        3b. the node --test lists that run against the page
 //   --status            which parts passed on this tree, and verify's library-wide
 //                       checks over the facts of all four slices
-//   --land              refuses unless every part passed on THIS tree against the
-//                       one candidate, unchanged, built from the same engine code
-//                       and viewer commit; then writes that candidate as
-//                       BATTLE-VIEWER.html — no rebuild
+//   --land              A PAGE LANDING. Since 2026-10-06 (tool.landing-on-the-quick-check; engine/DECISIONS.md
+//                       'the one plan: land on the quick check, run the whole suites twice a day, four streams
+//                       and one lander'): refuses unless the page is built and every VERIFY part passed on THIS
+//                       tree against the one candidate, unchanged, built from the same engine code and viewer
+//                       commit — the page plays its battles through: cursor equals events, the outcome matches;
+//                       then writes that candidate as BATTLE-VIEWER.html — no rebuild. The checks and tests
+//                       parts are not asked for: one that was not run is printed SKIPPED with the last
+//                       scheduled run, never PASS; one that was run on this tree and FAILED still refuses.
+//                       (Until that day: refused unless EVERY part passed on this tree.)
 //   (no flag)           every part in sequence, in one command, recorded — for a
-//                       shell with no time limit; says whether --land may run
+//                       shell with no time limit; says whether --land may run. This is
+//                       the viewer's suite of the scheduled run (engine/tools/suites.mjs
+//                       --run all --full, twice a day): where the checks and tests parts run
 //   --fresh             re-export every library battle from the engine at ../engine
 //                       and diff it byte-for-byte against battles/ — the engine's
 //                       own regression test for the library (plan §8.4). A
@@ -58,7 +65,7 @@ import { createHash } from 'node:crypto'
 import { mergedFails } from './verify-slices.mjs'
 import { PAGE_TESTS } from './page-tests.mjs'
 import { codeStamp, stampOf, allStamps, PACKAGES } from '../../engine/tools/code-stamp.mjs'
-import { readPasses, hasPass, appendPass, appendFail, copyName } from '../../engine/tools/suites.mjs'
+import { readPasses, hasPass, appendPass, appendFail, copyName, suiteLastScheduledNow, SCHEDULED_COMMAND } from '../../engine/tools/suites.mjs'
 
 const PKG = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 process.chdir(PKG)
@@ -268,13 +275,26 @@ function status(tree = treeHash()) {
     lines.push(`  library-wide ${merged.length ? 'FAIL\n    ' + merged.join('\n    ') : 'PASS (every battle driven once; icons, row kinds, status frames over all slices)'}`)
   }
   const green = !todo.length && pages.size === 1 && merged && !merged.length
+  /* A PAGE LANDING (tool.landing-on-the-quick-check, 2026-10-06; engine/DECISIONS.md 'the one plan: land on the quick check,
+     run the whole suites twice a day, four streams and one lander': "A page item also needs the page to build and play its
+     battles through (the viewer gate's verify part), once per group, by the lander" · "Dropped: … the viewer's whole gate at
+     every page landing (its checks and tests parts)"). `verified`: the page is built and every verify part passed on this
+     tree against that one page — cursor equals events, the outcome matches, the library-wide checks over all four slices.
+     The checks and tests parts are not asked for: `unrun` are the ones not run on this tree, said SKIPPED at the landing and
+     run by the scheduled run. `failed`: a part that WAS run on this tree and failed — that is a failure in hand, not a
+     check that was not run, and it still refuses the landing (GBH SWITCHES landing.viewerPartFailedStillRefuses). */
+  const verifyParts = PARTS.filter(p => p.startsWith('verify'))
+  const failed = PARTS.filter(p => cur[p] && !cur[p].ok)
+  const unrun = PARTS.filter(p => !cur[p])
+  const verified = verifyParts.every(p => cur[p] && cur[p].ok) && pages.size === 1 && !!merged && !merged.length && !failed.length
   const code = codeNow()
   if (green) recordGreen(cur)
   const pass = green ? null : hasPass(readPasses(PKG), 'viewer', code)
   console.log(`gate parts on tree ${tree.slice(0, 10)} (viewer code ${code}):\n${lines.join('\n')}\n` + (green ? 'ALL PARTS PASS — node tools/gate.mjs --land may write BATTLE-VIEWER.html'
-    : todo.length ? `still to run: ${todo.map(p => `node tools/gate.mjs --part ${p}`).join(' · ')}` : 'not landable')
+    : verified ? `THE PAGE IS BUILT AND EVERY VERIFY PART PASSES — node tools/gate.mjs --land may write BATTLE-VIEWER.html. Not run on this tree, and not needed for a page landing (the scheduled run runs them): ${unrun.join(', ')}`
+    : todo.length ? `still to run for a page landing: ${todo.filter(p => p.startsWith('verify') || failed.includes(p)).map(p => `node tools/gate.mjs --part ${p}`).join(' · ') || 'the verify parts again, against one page'}${unrun.some(p => !p.startsWith('verify')) ? ` — and, for the whole gate (the scheduled run): ${unrun.filter(p => !p.startsWith('verify')).map(p => `--part ${p}`).join(' · ')}` : ''}` : 'not landable')
     + (pass ? `\nviewer code ${code} has a recorded pass (${when(pass)}): the parts above are not needed for a tree that differs only in regenerated files or documents — node tools/gate.mjs --land rebuilds the page and says the parts were SKIPPED` : ''))
-  return { green, page: green ? [...pages][0] : null }
+  return { green, verified, unrun, failed, page: green || verified ? [...pages][0] : null }
 }
 
 const partArg = argv.indexOf('--part')
@@ -287,13 +307,15 @@ if (partArg >= 0) {
 if (argv.includes('--status')) process.exit(status().green ? 0 : 1)
 if (argv.includes('--land')) {
   const tree = treeHash(), st = status(tree)
-  if (!st.green) {
-    // The parts have not all passed on this tree. If the viewer's CODE is the code its gate last passed on, only a
+  if (!st.green && !st.verified) {
+    // The page has not been played through on this tree. If the viewer's CODE is the code its gate last passed on, only a
     // regenerated file, a document or the stamped commit moved (2026-10-04: none of them starts the gate): rebuild
-    // the page and land it, every part said to be SKIPPED. Otherwise refuse, as always.
+    // the page and land it, every part said to be SKIPPED. Otherwise refuse.
+    // (Until 2026-10-06 the refusal read 'every part must pass on this exact tree first': a page landing asked for the
+    // checks and tests parts too. tool.landing-on-the-quick-check: it asks for the page built and the verify parts.)
     const code = codeNow()
     const pass = hasPass(readPasses(PKG), 'viewer', code)
-    if (!pass) { console.error('GATE REFUSES --land — every part must pass on this exact tree first'); process.exit(1) }
+    if (!pass || st.failed.length) { console.error(`GATE REFUSES --land — ${st.failed.length ? `a part that was run on this tree FAILED (${st.failed.join(', ')}): fix it, or the tree, first` : `the page must be built and every verify part must pass on this exact tree first (node tools/gate.mjs --part verify k/${SLICES}, k = 1..${SLICES})`}`); process.exit(1) }
     let rec = readRecord()
     if (!rec || rec.tree !== tree || rec.slices !== SLICES) rec = { tree, slices: SLICES, parts: {} }
     let page
@@ -302,7 +324,7 @@ if (argv.includes('--land')) {
     for (const p of PARTS) console.log(`  SKIPPED  part ${p} — viewer code ${code} unchanged since its gate passed (${when(pass)})`)
     copyFileSync(CANDIDATE, 'BATTLE-VIEWER.html')
     if (treeHash() !== tree) { console.error('GATE REFUSES --land — the tree changed while the page was written'); process.exit(1) }
-    console.log(`landed BATTLE-VIEWER.html · sha256 ${page.slice(0, 12)} · REBUILT, NOT RE-VERIFIED: no part was run on tree ${tree.slice(0, 10)} — the viewer's code is the code its gate passed on, and only regenerated files or documents differ. Its playback is next checked by the full run (combine --full), once per chat before the wrap.`)
+    console.log(`landed BATTLE-VIEWER.html · sha256 ${page.slice(0, 12)} · REBUILT, NOT RE-VERIFIED: no part was run on tree ${tree.slice(0, 10)} — the viewer's code is the code its gate passed on, and only regenerated files or documents differ. Its playback is next checked by the scheduled run of the whole suites (from engine/: ${SCHEDULED_COMMAND}), twice a day.`)
     process.exit(0)
   }
   // no rebuild: the candidate every part checked is the page that lands, if it is still that page
@@ -310,9 +332,12 @@ if (argv.includes('--land')) {
   if (stale) { console.error(`GATE REFUSES --land — ${stale}. Run the verify and tests parts again`); process.exit(1) }
   const page = rec.candidate.page
   if (page !== st.page) { console.error(`GATE REFUSES --land — the candidate is ${page.slice(0, 12)}, the parts verified ${st.page.slice(0, 12)}. Run the verify and tests parts again`); process.exit(1) }
+  // the parts a page landing does not ask for and that were not run on this tree: said SKIPPED, with the last scheduled run — never PASS (Law 9)
+  if (!st.green) { console.log(''); for (const p of st.unrun) console.log(`  SKIPPED  part ${p} — not run at a page landing: the viewer's whole gate is run by the scheduled run (from engine/: ${SCHEDULED_COMMAND}); ${suiteLastScheduledNow(ROOT, 'viewer')}`) }
   copyFileSync(CANDIDATE, 'BATTLE-VIEWER.html')
   if (treeHash() !== tree) { console.error('GATE REFUSES --land — the tree changed while the page was written'); process.exit(1) }
-  console.log(`landed BATTLE-VIEWER.html · sha256 ${page.slice(0, 12)} · the page every part verified on tree ${tree.slice(0, 10)}`)
+  console.log(st.green ? `landed BATTLE-VIEWER.html · sha256 ${page.slice(0, 12)} · the page every part verified on tree ${tree.slice(0, 10)}`
+    : `landed BATTLE-VIEWER.html · sha256 ${page.slice(0, 12)} · BUILT AND PLAYED THROUGH: the ${SLICES} verify parts passed against this page on tree ${tree.slice(0, 10)}; NOT RUN: ${st.unrun.join(', ')}`)
   process.exit(0)
 }
 if (argv.includes('--fresh')) {
