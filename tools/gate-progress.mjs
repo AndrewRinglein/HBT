@@ -110,14 +110,26 @@ export function isCowork(env = process.env, cwd = process.cwd()) {
 export const COWORK_BUDGET_S = 150
 
 /**
- * tool.cowork-test-timeout (Andrew 2026-09-26): vitest's default per-test timeout.
- * In Cowork, load from outside the chat pushes 1-4 s tests past vitest's 5 s default,
- * so it is 30 s there; a terminal returns undefined and keeps vitest's own default.
- * A timeout is not an assertion; explicit per-test timeouts still win.
+ * vitest's default per-test time limit: 30 s, on every machine — the one number the engine's, kingdom's and the viewer's
+ * vitest configs all read (each `testTimeout: testTimeoutFor()`); none holds a number of its own.
+ *
+ * tool.cowork-test-timeout (Andrew 2026-09-26): in Cowork, load from outside the chat pushed 1-4 s tests past vitest's
+ * 5 s default, so it was 30 s there and a terminal kept vitest's own 5 s. A timeout is not an assertion.
+ * tool.thirty-second-test-limit-on-the-pc (Andrew 2026-10-06, DECISIONS.md 'building is split from testing: three
+ * builders and one lander; two tool items from the review of the testing', his item 1): "give tests the 30-second limit on
+ * my PC that Cowork already has ... Make all three packages use 30 s on the PC too. 19 of the 42 busy-machine incidents
+ * were a 5-second time-out." So it is 30 s everywhere, and the constant keeps the name it was given in Cowork.
+ *
+ * The environment may still override it: HOBAT_TEST_TIMEOUT, a whole number of milliseconds above zero (the name GBH
+ * SWITCHES vitest.budgetEnv gave the override on 2026-09-19; vitest reads no environment variable for this itself). A
+ * value that is not one is refused loudly, never read as the default (Law 9). An explicit per-test limit still wins.
  */
 export const COWORK_TEST_TIMEOUT_MS = 30_000
-export function testTimeoutFor(env = process.env, cwd = process.cwd()) {
-  return isCowork(env, cwd) ? COWORK_TEST_TIMEOUT_MS : undefined
+export function testTimeoutFor(env = process.env, cwd = process.cwd()) {   // cwd: kept for the callers that pass it; the machine no longer decides
+  const asked = String(env.HOBAT_TEST_TIMEOUT ?? '').trim()
+  if (!asked) return COWORK_TEST_TIMEOUT_MS
+  if (!/^[1-9]\d*$/.test(asked)) throw new Error(`HOBAT_TEST_TIMEOUT is a whole number of milliseconds above zero, not '${asked}' — unset it for the default ${COWORK_TEST_TIMEOUT_MS} ms`)
+  return Number(asked)
 }
 
 /**

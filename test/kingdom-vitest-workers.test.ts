@@ -14,7 +14,7 @@ import { spawnSync } from 'node:child_process'
 import { existsSync, readFileSync } from 'node:fs'
 import { availableParallelism } from 'node:os'
 import { fileURLToPath } from 'node:url'
-import { vitestWorkersFor } from '../tools/gate-progress.mjs'
+import { testTimeoutFor, vitestWorkersFor } from '../tools/gate-progress.mjs'
 import { PACKAGE_CODE } from '../tools/code-stamp.mjs'
 import { SUITES } from '../tools/suites.mjs'
 
@@ -70,10 +70,21 @@ describe('tool.kingdom-vitest-workers — kingdom caps its vitest workers as the
     expect(resolved(KINGDOM, '7').maxWorkers).toBe(7)
   }, LONG)
 
-  it("no test's time limit is changed: kingdom's config names none, and vitest keeps its own 5 s there", () => {
+  // Law 10, 2026-10-06 — tool.thirty-second-test-limit-on-the-pc (Andrew, DECISIONS.md 'building is split from testing: three
+  // builders and one lander; two tool items from the review of the testing', his item 1: "kingdom and viewer set no limit.
+  // Make all three packages use 30 s on the PC too. 19 of the 42 busy-machine incidents were a 5-second time-out."). This
+  // test held the rule that item changed on purpose: it was named
+  //   "no test's time limit is changed: kingdom's config names none, and vitest keeps its own 5 s there"
+  // and asserted the config text `.not.toMatch(/testTimeout|hookTimeout/)` and `resolved(KINGDOM).testTimeout` `.toBe(5000)`.
+  // What it holds now: the config names no number of its own (the limit is the one function's), no hook limit, and vitest
+  // resolves the function's limit there (30 seconds; test/thirty-second-test-limit-on-the-pc.test.ts holds the number). No
+  // test's own explicit limit and no assertion of any other test moved.
+  it("the default time limit is the one function's: kingdom's config holds no number of its own, and vitest resolves the function's limit there", () => {
     expect(existsSync(KINGDOM_CONFIG), 'kingdom/vitest.config.ts').toBe(true)
-    expect(readFileSync(KINGDOM_CONFIG, 'utf8')).not.toMatch(/testTimeout|hookTimeout/)
-    expect(resolved(KINGDOM).testTimeout).toBe(5000)
+    const text = readFileSync(KINGDOM_CONFIG, 'utf8')
+    expect(text).toMatch(/testTimeout:\s*testTimeoutFor\(\)/)
+    expect(text).not.toMatch(/testTimeout:\s*\d|hookTimeout/)
+    expect(resolved(KINGDOM).testTimeout).toBe(testTimeoutFor())   // 30 s, unless this run's own environment overrides it (HOBAT_TEST_TIMEOUT)
   }, LONG)
 
   it("tools/suites.mjs sets no worker cap of its own for kingdom's quarters — the config is the one place", () => {

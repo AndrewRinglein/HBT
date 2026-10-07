@@ -14,7 +14,7 @@ export function stopBefore(a: { elapsedMs: number; budgetMs: number; estimateMs:
 export function isCowork(env?: Record<string, string | undefined>, cwd?: string): boolean
 export const COWORK_BUDGET_S: number
 export const COWORK_TEST_TIMEOUT_MS: number
-export function testTimeoutFor(env?: Record<string, string | undefined>, cwd?: string): number | undefined
+export function testTimeoutFor(env?: Record<string, string | undefined>, cwd?: string): number
 export const VITEST_WORKERS: number
 export function vitestWorkersFor(cpus?: number): number
 export function budgetFrom(argv: string[], env?: Record<string, string | undefined>, cwd?: string): number
