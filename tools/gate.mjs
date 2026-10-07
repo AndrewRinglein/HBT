@@ -62,7 +62,7 @@ import { shardsFor, readPasses, hasPass, appendPass, appendFail, logCheck, contr
 import {
   treeHash, contextHash, openProgress, recall, record, clearResults, serialize,
   stopBefore, budgetFrom, parseShard, recordShard, shardStatus, testFilesIn, killSwitchFiles, committedItemTests,
-  committedAddedLines, committedNewFiles, editedTests, mintedKinds, reviewOf,
+  committedAddedLines, committedNewFiles, editedTests, mintedKinds, reviewOf, LOOK_KINDS, notOnlyALook, lookPicture,
 } from './gate-progress.mjs'
 
 const T0 = Date.now()
@@ -299,9 +299,18 @@ check('typecheck', () => {
 // The item's own tests, not the full suite (Andrew, 2026-09-23, DECISIONS.md "less
 // process per feature"). The full suite runs once per chat as the four shards, and
 // `wrap` refuses until all four passed on the final tree.
+//
+// A LOOK ITEM brings a picture in place of a test (tool.look-items-land-on-a-picture; DECISIONS.md 2026-10-06 'the one
+// plan: land on the quick check, run the whole suites twice a day, four streams and one lander': "Dropped: … a new page
+// test for every look-and-feel item - that kind of item is checked by a screenshot for Andrew's eye, and rules and
+// numbers keep their tests."). An item whose row says `"look": true` (tools/add-item.mjs: a viewer or kingdom item only)
+// is not asked for a test: the two checks that ask every other item for one say SKIPPED for it — never PASS — and two
+// checks of its own stand in their place, below 'brought its own tests'. A test it did bring still runs.
+const LOOK = item.look === true
 const touchedTests = () => [...new Set(testFilesIn(homePorcelain()))]
 check("the item's own tests", () => {
   const files = touchedTests()
+  if (!files.length && LOOK) return { skipped: true, note: "a look item: it brought no test — it is checked by a picture for Andrew's eye (the look checks below)" }
   if (!files.length) return { ok: false, note: 'no test file touched' }
   const r = vitestFiles("the item's own tests", files, (cmd) => runDiagnosticCommand(cmd, `gate-item-tests-${id}`, { ...IN_HOME, diagnostics: '.' }))
   if (!r) return { deferred: true }
@@ -332,8 +341,33 @@ check('gate 1 — the id appears in a real battle', () => {
 check('brought its own tests', () => {
   const files = homePorcelain().split('\n').filter(Boolean).map((l) => l.slice(3))
   const touched = [...new Set(files.filter((f) => f.startsWith('test/')))]
+  if (!touched.length && LOOK) return { skipped: true, note: 'a look item brings a picture in place of a test (the look checks below)' }
   return { ok: touched.length > 0, note: touched.length ? touched.map((f) => HOME_DIR + f).join(', ') : `no test file touched in ${HOME_DIR}test/` }
 })
+
+// The look item's own two checks (the note above 'the item's own tests'; tools/gate-progress.mjs holds what each reads).
+//   · NOTHING BUT HOW IT LOOKS. "An item that changes a rule, a number or what a control does is NOT a look item whatever
+//     its row says": refused when its commits touch engine/src, kingdom/src/core or content's rows — each file named —
+//     and when its kind is not viewer or kingdom.
+//   · A PICTURE OF THE REAL PAGE, NEWER THAN ITS SOURCE: under CONTENT-DRAFTS/<date>-<item id>/ at the root, added by a
+//     commit of the root repository that names the item, a real picture, committed after the item's last commit in the
+//     package it changed. It lands the item done-needs-review, so it reaches Andrew's list, with the picture's path in
+//     the ledger line.
+let lookPath = null
+if (LOOK) {
+  const ROOT = resolve(process.cwd(), '..')
+  check('look — nothing but how it looks', () => {
+    if (!LOOK_KINDS.includes(item.kind)) return { ok: false, note: `"look" is for a ${LOOK_KINDS.join(' or ')} item, and this one is kind '${item.kind}' — it lands on its own test` }
+    const rules = notOnlyALook(id, ROOT)
+    return { ok: rules.length === 0, note: rules.length
+      ? `it changes ${rules.slice(0, 4).join(', ')}${rules.length > 4 ? ` and ${rules.length - 4} more` : ''} — a rule, a number or what a control does. It is not a look item, whatever its row says: it lands on its own test (file it without "look")`
+      : 'its commits touch no engine source, no kingdom rule and no content row' }
+  }, { everyCall: true })
+  check('look — a picture of the real page, newer than its source', () => {
+    const r = lookPicture(id, ROOT)
+    return r.ok ? { ok: true, review: true, look: r.picture, note: `${r.picture}${r.pictures.length > 1 ? ` (and ${r.pictures.length - 1} more beside it)` : ''} — for Andrew's eye: lands for review` } : { ok: false, note: r.why }
+  }, { everyCall: true })   // both read the repositories' COMMITS, which are in no tree the gate's record is keyed on: read on every call
+}
 
 // A new mechanic may ADD tests. Editing tests that already passed is the classic
 // way an autonomous loop launders a failure into a success.
@@ -612,7 +646,8 @@ let controlResult = null   // the control battles' result this run, fresh or rec
 {
   for (let i = 0; i < CHECKS.length; i++) {
     const c = CHECKS[i]
-    const had = recall(progress, c.name)
+    // a check marked `everyCall` is never replayed and never recorded: what it reads is not in the tree this record is keyed on
+    const had = c.everyCall ? null : recall(progress, c.name)
     if (!had && stopBefore({ elapsedMs: Date.now() - T0, budgetMs: BUDGET, estimateMs: c.split ? undefined : progress.durations[c.name], ranFresh })) { stoppedAt = i; break }
     const t = Date.now()
     const r = had ?? c.fn()
@@ -626,11 +661,12 @@ let controlResult = null   // the control battles' result this run, fresh or rec
     // effects — applied the same whether the result is fresh or recorded
     if (r.golden) pendingGolden = r.golden
     if (r.review) needsReview = true
+    if (r.look) lookPath = r.look   // a look item's picture: its path goes in the ledger line of the landing
     if (MODE === 'land' && r.invented !== undefined) {
       const n = r.invented
       try { const g = JSON.parse(readFileSync('.state/gauntlet.json', 'utf8')); g.inventedCount = n; writeFileSync('.state/gauntlet.json', JSON.stringify(g)) } catch { writeFileSync('.state/gauntlet.json', JSON.stringify({ landings: 0, inventedCount: n })) }
     }
-    if (!had) { ranFresh++; progress = record(progress, c.name, res, Date.now() - t); saveProgress() }
+    if (!had) { ranFresh++; if (!c.everyCall) { progress = record(progress, c.name, res, Date.now() - t); saveProgress() } }
   }
 }
 if (stoppedAt !== -1) {
@@ -718,9 +754,12 @@ commitOnly([...itemFiles, PROGRESS, GOLDEN, '.state/gauntlet.json', PASSES_FILE]
 const sha = sh('git rev-parse --short HEAD').trim()
 item.status = needsReview ? 'done-needs-review' : 'done'
 item.sha = sha
+if (lookPath) item.picture = lookPath   // a look item's picture, on its row: report.mjs prints it beside the item
 const listFile = saveItem(backlog, item)
-appendFileSync(LEDGER, `\n## ${id} — LANDED \`${sha}\`${needsReview ? ' **NEEDS REVIEW**' : ''}\n${stamp}\n\n${body}\n` +
-  (needsReview ? `\n<details><summary>Existing tests were edited — review this diff</summary>\n\n\`\`\`diff\n${testDiff}\`\`\`\n</details>\n` : ''))
+// a look item's ledger line names its picture: that is what Andrew opens (tool.look-items-land-on-a-picture, 2026-10-06).
+// The diff block is written when there IS a diff of edited tests: a look item, flagged for its picture alone, has none.
+appendFileSync(LEDGER, `\n## ${id} — LANDED \`${sha}\`${needsReview ? ' **NEEDS REVIEW**' : ''}${lookPath ? ` — look: ${lookPath}` : ''}\n${stamp}\n\n${body}\n` +
+  (needsReview && (testDiff || !lookPath) ? `\n<details><summary>Existing tests were edited — review this diff</summary>\n\n\`\`\`diff\n${testDiff}\`\`\`\n</details>\n` : ''))
 // The seal is gone (Andrew, 2026-09-23, DECISIONS.md "less process per feature"):
 // every check is pass or fail, and a landing is a landing. Flags still print and
 // still go in the ledger; edited tests still land for review (Law 10).
@@ -729,4 +768,4 @@ appendFileSync(LEDGER, `\n## ${id} — LANDED \`${sha}\`${needsReview ? ' **NEED
 logRun('landed', { sha })
 commitOnly([listFile, LEDGER, RUNLOG], { amend: true, author: GATE })
 console.log(`committed ${itemFiles.length} file(s) the item touched, and the gate's records`)
-console.log(`\nLANDED as ${sha}${needsReview ? '  (flagged for review — existing tests edited, a banned word, prior art not named, or a wrong home)' : ''}\n`)
+console.log(`\nLANDED as ${sha}${needsReview ? `  (flagged for review — ${lookPath ? `a look item: its picture is ${lookPath}` : 'existing tests edited, a banned word, prior art not named, or a wrong home'})` : ''}\n`)

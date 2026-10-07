@@ -217,6 +217,17 @@ Engine work goes fastest in Claude Code on Andrew's PC, where no command limit a
   list of what to move out is `generated/wrong-home.md` (`node tools/wrong-home.mjs --write`).
 - **Nothing left out of the commit** — `--land` refuses if an ignored file under `src/`,
   `test/` or `tools/` could have fed a pass the commit would not carry.
+- **Look items** (tool.look-items-land-on-a-picture, 2026-10-06; `DECISIONS.md` "the one plan …": a
+  look-and-feel item "is checked by a screenshot for Andrew's eye, and rules and numbers keep their
+  tests") — a viewer or kingdom item whose row says `"look": true` (`add-item.mjs` takes it; any other
+  kind is refused) brings a PICTURE in place of a test: `CONTENT-DRAFTS/<yyyy-mm-dd>-<item id>/<name>.png`
+  at the root, of the real built page, committed in the ROOT repository (`git add -f` — the root ignores
+  pictures) by a commit that names the item, after its change is committed in its package. The gate
+  checks it is there, is a picture and is not older than the item's last commit; refuses `look` when the
+  item's commits touch `engine/src`, `kingdom/src/core` or content's rows, naming the file; and lands it
+  `done-needs-review` with the picture's path in the ledger line (`report.mjs` prints it). The two
+  checks that ask for a test print SKIPPED for it; a test it did bring still runs. Every other item is
+  still asked for its test.
 
 **One backlog item per feature, not one per layer** — sized to fit one chat, carried
 across engine, content and kingdom (each package commits in its own repository).

@@ -1,5 +1,5 @@
 // Types for tools/gate-progress.mjs, so a .test.ts can import it under strict tsc.
-export interface CheckResult { ok?: boolean; warn?: boolean; note?: string; skipPrint?: boolean; golden?: string; review?: boolean; invented?: number; skipped?: boolean; moved?: string }
+export interface CheckResult { ok?: boolean; warn?: boolean; note?: string; skipPrint?: boolean; golden?: string; review?: boolean; invented?: number; skipped?: boolean; moved?: string; look?: string }
 export interface Progress { id: string; tree: string; ctx: string; results: Record<string, CheckResult>; durations: Record<string, number>; discarded: boolean }
 export interface ShardRecord { tree: string; sets: Record<string, number[]> }
 export interface ShardStatus { green: boolean; n: number; passed: number[]; todo: number[] }
@@ -31,6 +31,14 @@ export function namesItem(text: string, id: string): boolean
 /** The commits in cwd's repository whose message names the item, oldest first (tool.gate-flags-read-committed-edits). */
 export function itemCommits(id: string, cwd?: string): string[]
 export function committedNewFiles(id: string, cwd?: string): string[]
+// look items (tool.look-items-land-on-a-picture, 2026-10-06)
+export const LOOK_KINDS: string[]
+export const LOOK_FOLDER: string
+export function lookFolderOf(id: string, date: string): string
+export function isPicture(file: string): boolean
+export function committedFiles(id: string, cwd?: string, paths?: string[]): string[]
+export function notOnlyALook(id: string, root: string): string[]
+export function lookPicture(id: string, root: string): { ok: true; picture: string; pictures: string[] } | { ok: false; why: string }
 export function committedAddedLines(id: string, cwd?: string, path?: string): string[]
 /** The id kinds the added lines mint; a quoted word that is one of `engineWords` (the engine's exported effect kinds) is not an id. */
 export function mintedKinds(lines: readonly string[], engineWords?: ReadonlySet<string>): string[]

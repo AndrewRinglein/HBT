@@ -4,6 +4,9 @@
 // --first puts the new items at the top of the queue (next.mjs takes backlog order).
 // An item may carry `"later": true` (tool.later-items, Andrew 2026-10-06): next.mjs and start.mjs
 // offer it only when nothing else in its area is ready, wherever it sits in the list.
+// A viewer or kingdom item may carry `"look": true` (tool.look-items-land-on-a-picture, 2026-10-06; DECISIONS.md 'the one
+// plan ...': a look-and-feel item "is checked by a screenshot for Andrew's eye, and rules and numbers keep their tests"):
+// the gate takes a picture of the real built page in place of a test and lands it for review. Any other kind is refused.
 // node tools/add-item.mjs --repoint <abandoned> <refiled> [--backlog <file>]
 //   every pending item whose `needs` names the abandoned id (status failed) names the
 //   re-filed one instead (Andrew, 2026-10-01, DECISIONS 'the abandoned ids' dependants
@@ -12,8 +15,9 @@
 // --backlog <file> writes every item into that one file instead.
 import { readFileSync, writeFileSync, renameSync, existsSync } from 'node:fs'
 import { readBacklog, areaOf, backlogFiles, backlogFile } from './backlog.mjs'
+import { LOOK_KINDS } from './gate-progress.mjs'
 
-const allowed = new Set(['id', 'kind', 'shape', 'spec', 'expect', 'needs', 'probeIds', 'variants', 'changesBaseline', 'neutral', 'note', 'effectSwitch', 'later'])
+const allowed = new Set(['id', 'kind', 'shape', 'spec', 'expect', 'needs', 'probeIds', 'variants', 'changesBaseline', 'neutral', 'note', 'effectSwitch', 'later', 'look'])
 const required = ['id', 'kind', 'shape', 'spec', 'expect']
 const shapes = new Set(['counter', 'plumbing', 'numbers', 'rule', 'pool', 'data', 'modifier', 'decision', 'trigger', 'station', 'naming', 'flag'])
 
@@ -32,7 +36,9 @@ function validate(items, existing) {
     for (const key of ['needs', 'probeIds', 'variants']) {
       if (key in item && (!Array.isArray(item[key]) || item[key].some(id => typeof id !== 'string' || !id.trim()) || new Set(item[key]).size !== item[key].length)) throw new Error(`${key} must be an array of distinct nonempty ids`)
     }
-    for (const key of ['changesBaseline', 'neutral', 'later']) if (key in item && typeof item[key] !== 'boolean') throw new Error(`${key} must be boolean`)
+    for (const key of ['changesBaseline', 'neutral', 'later', 'look']) if (key in item && typeof item[key] !== 'boolean') throw new Error(`${key} must be boolean`)
+    // tool.look-items-land-on-a-picture: only how a viewer or kingdom screen LOOKS may land on a picture; a rule, a number or what a control does keeps its test
+    if (item.look === true && !LOOK_KINDS.includes(item.kind)) throw new Error(`look is for a ${LOOK_KINDS.join(' or ')} item: ${item.id} is kind '${item.kind}', and lands on its own test`)
     // tool.effect-size-rules: the switch values a RULE item's WITHOUT arm runs with (tools/effect-arm.ts checks them against the engine's switches when measured)
     if ('effectSwitch' in item && (!item.effectSwitch || typeof item.effectSwitch !== 'object' || Array.isArray(item.effectSwitch) || !Object.keys(item.effectSwitch).length)) throw new Error('effectSwitch must be a non-empty object of switch values')
     for (const key of ['note']) {

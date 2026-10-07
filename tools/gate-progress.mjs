@@ -14,7 +14,7 @@
 //
 // Everything here is pure except treeHash, which asks git. gate.mjs owns the I/O.
 import { execFileSync, execSync } from 'node:child_process'
-import { copyFileSync, rmSync } from 'node:fs'
+import { copyFileSync, existsSync, readFileSync, readdirSync, rmSync } from 'node:fs'
 import { createHash } from 'node:crypto'
 import { availableParallelism, tmpdir } from 'node:os'
 import { join, resolve } from 'node:path'
@@ -282,8 +282,94 @@ export function committedAddedLines(id, cwd = process.cwd(), path = '.') {
   }
   return out
 }
+
+// ── LOOK ITEMS (tool.look-items-land-on-a-picture, 2026-10-06) ──────────────────────────────────────────────────────────
+// DECISIONS.md 2026-10-06 'the one plan: land on the quick check, run the whole suites twice a day, four streams and one
+// lander': "Dropped: … a new page test for every look-and-feel item - that kind of item is checked by a screenshot for
+// Andrew's eye, and rules and numbers keep their tests." A viewer or kingdom item whose row says `"look": true` brings, in
+// place of a test, a PICTURE of the real built page showing the change:
+//   <root>/CONTENT-DRAFTS/<yyyy-mm-dd>-<item id>/<any name>.png|jpg|jpeg|webp|gif
+// — the folder Andrew's pictures already go in, one folder an item — added by a commit of the ROOT repository that names
+// the item (the root ignores pictures, so `git add -f`; committed, it travels with the merge to the folder he looks in).
+// The gate reads three things of it here: it is there, it IS a picture, and it was committed after the item's last
+// commit in the package it changed. And one thing of the item: its commits touch no engine source, no kingdom rule and no
+// content row — an item that does is not a look item, whatever its row says.
+/** The kinds an item may be a look item of. */
+export const LOOK_KINDS = ['viewer', 'kingdom']
+/** The folder at the root, beside the packages, that holds one folder of pictures an item (GBH SWITCHES look.pictureFolder). */
+export const LOOK_FOLDER = 'CONTENT-DRAFTS'
+/** The folder a look item's pictures go in, on the day `date` (yyyy-mm-dd). */
+export const lookFolderOf = (id, date) => `${LOOK_FOLDER}/${date}-${id}`
+const LOOK_PICTURE = /\.(png|jpe?g|webp|gif)$/i
+/** Is the file a picture — by what it holds, not by what it is called: the first bytes of a PNG, a JPEG, a GIF or a WebP. */
+export function isPicture(file) {
+  let head
+  try { head = readFileSync(file).subarray(0, 12) } catch { return false }
+  const starts = (...bytes) => bytes.every((b, i) => head[i] === b)
+  return starts(0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a) || starts(0xff, 0xd8, 0xff) || head.subarray(0, 4).toString('latin1') === 'GIF8'
+    || (head.subarray(0, 4).toString('latin1') === 'RIFF' && head.subarray(8, 12).toString('latin1') === 'WEBP')
+}
+/** When a commit was made (its committer time, seconds), or 0. */
+const commitTime = (cwd, sha) => { try { return Number(gitIn(cwd, ['show', '-s', '--format=%ct', sha]).trim()) || 0 } catch { return 0 } }
+/** The files an item's commits touched — added, changed or deleted — under `paths` of `cwd`'s repository, sorted. */
+export function committedFiles(id, cwd = process.cwd(), paths = ['.']) {
+  const files = new Set()
+  for (const sha of itemCommits(id, cwd)) for (const { file } of statusRows(cwd, sha, paths)) files.add(file)
+  return [...files].sort()
+}
+/**
+ * What makes an item NOT a look item, as the files it changed: engine source (its commits in the engine, and what is
+ * uncommitted there — a landing commits it), kingdom's rules (src/core) and content's authored rows (gen/, settled.json).
+ * Each is named from the root: 'engine/src/core/battle.ts'. [] for an item that changes only how something looks.
+ */
+export function notOnlyALook(id, root) {
+  const out = []
+  const engine = join(root, 'engine')
+  let uncommitted = []
+  try { uncommitted = linesOf(gitIn(engine, ['status', '--porcelain', '--untracked-files=all', '--', 'src'])).map((l) => l.slice(3).replace(/^.* -> /, '')) } catch { /* no engine repository here */ }
+  for (const f of new Set([...committedFiles(id, engine, ['src']), ...uncommitted])) out.push(`engine/${f}`)
+  for (const f of committedFiles(id, join(root, 'kingdom'), ['src/core'])) out.push(`kingdom/${f}`)
+  for (const f of committedFiles(id, join(root, 'content'), ['gen', 'settled.json'])) out.push(`content/${f}`)
+  return out.sort()
+}
+/**
+ * A look item's picture. `{ ok: true, picture, pictures }` — `picture` the newest, by its path from the root — when a commit
+ * of the root repository that names the item added a picture under LOOK_FOLDER/<yyyy-mm-dd>-<id>/, the file is there and
+ * is a picture, and that commit is not older than the item's last commit in viewer/ or kingdom/. Otherwise `{ ok: false,
+ * why }`, saying which of those failed and what to do.
+ */
+export function lookPicture(id, root) {
+  const literally = String(id).replace(/[^A-Za-z0-9-]/g, (c) => `\\${c}`)   // an id's dots, read as dots
+  const folder = new RegExp('^' + LOOK_FOLDER + '/\\d{4}-\\d\\d-\\d\\d-' + literally + '/[^/]+$')
+  const how = `make one of the real built page (the kingdom's tools/*.shot.mjs take a page and a folder), put it in ${lookFolderOf(id, '<yyyy-mm-dd>')}/ at the root, and commit it there naming the item: git add -f <the picture>; git commit -m "${id}: its picture"`
+  // the pictures the item's root commits added or changed, each with the time of the last commit that did
+  const at = new Map()
+  for (const sha of itemCommits(id, root)) for (const { st, file } of statusRows(root, sha, [LOOK_FOLDER])) {
+    if (!folder.test(file)) continue
+    if (st.startsWith('D')) at.delete(file); else at.set(file, commitTime(root, sha))
+  }
+  const committed = [...at].filter(([file]) => existsSync(join(root, file)))
+  if (!committed.length) {
+    let onDisk = []
+    try { onDisk = readdirSync(join(root, LOOK_FOLDER), { withFileTypes: true }).filter((d) => d.isDirectory() && folder.test(`${LOOK_FOLDER}/${d.name}/x`)).flatMap((d) => readdirSync(join(root, LOOK_FOLDER, d.name)).map((f) => `${LOOK_FOLDER}/${d.name}/${f}`)) } catch { /* no folder of pictures here */ }
+    return { ok: false, why: onDisk.length
+      ? `${onDisk[0]} is on disk, but no commit of the root repository that names the item adds it — commit it there: git add -f ${onDisk[0]}; git commit -m "${id}: its picture"`
+      : `a look item lands on a picture, and this one has none — ${how}` }
+  }
+  const named = committed.filter(([file]) => LOOK_PICTURE.test(file))
+  const pictures = named.filter(([file]) => isPicture(join(root, file)))
+  if (!pictures.length) return { ok: false, why: `${committed[0][0]} is not a picture (a .png, .jpg, .jpeg, .webp or .gif file that holds one) — ${how}` }
+  // newer than its source: the item's last commit in the package it changed
+  const sources = ['viewer', 'kingdom'].flatMap((p) => itemCommits(id, join(root, p)).map((sha) => ({ p, sha, at: commitTime(join(root, p), sha) })))
+  if (!sources.length) return { ok: false, why: `no commit in viewer/ or kingdom/ names the item, so its picture shows no change of it — commit the change there naming the item, then make the picture` }
+  const last = sources.reduce((a, b) => (b.at > a.at ? b : a))
+  const fresh = pictures.filter(([, t]) => t >= last.at).sort((a, b) => b[1] - a[1] || (a[0] < b[0] ? -1 : 1))
+  if (!fresh.length) return { ok: false, why: `${pictures[0][0]} was committed before the item's last change (${last.p} ${last.sha.slice(0, 7)}): it does not show that change — make it again from the page as it is now, and commit it` }
+  return { ok: true, picture: fresh[0][0], pictures: fresh.map(([file]) => file) }
+}
+
 /** A test FILE of a package the item's home is not: its test/ and tools/ tests and verifiers — never regenerated data (dumps, fixtures, recordings). */
-const OTHER_PACKAGE_TEST = /^(test|tools)\/.*\.(test|verify)\.(ts|mts|mjs)$/
+const OTHER_PACKAGE_TEST =/^(test|tools)\/.*\.(test|verify)\.(ts|mts|mjs)$/
 /** The folder's own name: 'viewer' of '…/HBT/viewer'. */
 const packageName = (dir) => resolve(String(dir)).split(/[\\/]/).filter(Boolean).pop()
 const numstatRows = (text) => linesOf(text).map((l) => { const [add, del, ...rest] = l.split(/\t/); return { file: rest[rest.length - 1], add: Number(add) || 0, del: Number(del) || 0 } }).filter((r) => r.file)
