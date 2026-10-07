@@ -2299,6 +2299,14 @@ function compileSentences(desc) {
     // who plants, for that lifetime; the Accuracy is the row's `modifies` field, which compileClassPower reads with the same
     // lifetime and holds to this sentence's number and scope (TAKE_ROOT, below) - the bonus never compiles without its price.
     if ((m = s0.match(TAKE_ROOT))) { effects.push({ kind: 'statMod', stat: 'movement', value: -m[1], until: 'endOfNextActivation', who: 'self' }); continue; }
+    // engine content.impersonation-badge (2026-10-06; engine DECISIONS.md 2026-10-06 'the one-use rules …': "I think it gives
+    // you a badge, so I think we turn this into a badge, and this class power gives that badge."): "Stance: gain badge.<id>
+    // for the rest of the Battle" is the engine's badge.grant on the one who uses the power - the effect a bite's affliction
+    // already is (compileTriggerRows). A badge the Codex has no row for FAILS THE BUILD: a power may not grant a name.
+    if ((m = s0.match(/^Stance: gain (badge\.[a-z0-9][a-z0-9-]*) for the rest of the Battle$/))) {
+      if (!badges[m[1]]) throw new Error(`mkenginepack: a class power grants '${m[1]}', which is not a badge row of the Codex`);
+      effects.push({ kind: 'badge.grant', badgeId: m[1], who: 'self' }); continue;
+    }
     if (/^(Free|No roll, no crit)$/.test(s0)) continue;   // markers the row's fields already carry
     // flavour and explanation sentences — not rules
     if (/^(Read that|It makes no attack|It does not roll|It never rolls|It does not spend|It costs nothing|Cheap and|Put it on|Thrown into|Because Magic|Your cheap|Anyone carrying Burn|about \d|as an area effect)/.test(s0)) continue;
