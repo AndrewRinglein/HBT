@@ -36,18 +36,44 @@
 // so a change in one package that breaks another's test is found at the once-per-chat full run, not at
 // the change.
 //
+// LANDING ON THE QUICK CHECK (tool.landing-on-the-quick-check; DECISIONS.md 2026-10-06 'the one plan: land on the
+// quick check, run the whole suites twice a day, four streams and one lander', decided by the home chat on Andrew's
+// word: "Decide what keeps the checks that matter and removes the things that don't."). It REPLACES 'the full run,
+// once per chat' above for what a landing, a merge-back and a wrap demand; the plan, the record and `--full-green`
+// stand as they were, and are still what `--run all` and `combine --full` use.
+//   · THE QUICK CHECKS (`--quick`; the root's tools/combine.mjs runs them at every merge-back): the typecheck of
+//     each package whose code — or the engine's, which kingdom and the viewer import — has no typecheck recorded,
+//     and the control battles when the engine's code or the content pack changed. No whole suite is started: each of
+//     the four is printed SKIPPED with the date of the last scheduled run and what it found, never PASS (Law 9).
+//   · THE SCHEDULED RUN is `--run all --full`, by the lander, alone on the machine, twice a day. Every line it
+//     writes to a package's .state/passes.jsonl carries `"scheduled": "<when the run started>"`, and a failure
+//     carries `"failing": [{ "name", "timedOut" }]` — the tests the suite's own output names. Its FAIL line names the
+//     failing tests and the items landed (the engine's gate log) since that suite's last scheduled pass, so a fault
+//     can be traced among them.
+//   · NOTHING ELSE REFUSES FOR WANT OF A WHOLE-SUITE PASS: the engine's gate, kingdom's gate and `wrap` print when
+//     the last scheduled run was and what it found, and refuse only when no complete scheduled run is recorded in
+//     the last SCHEDULED_MAX_AGE_HOURS (a day).
+//   · A TEST THAT TIMES OUT TWICE in the runs this tool records goes on the named list, engine/TIMEOUTS_FILE: it is
+//     fixed as an item, not run a third time (`--timeouts` prints the list).
+// What it costs is in the DECISIONS entry: the main folder can be broken for up to half a day.
+//
 //   node tools/suites.mjs --plan [--full] [--json]   what would run, what is skipped and why; changes nothing
-//   node tools/suites.mjs --run all [--full]         run what the plan says (--full: all four), record each pass
+//   node tools/suites.mjs --quick                    the quick checks of a merge-back; the four suites printed SKIPPED
+//   node tools/suites.mjs --run all [--full]         run what the plan says (--full: all four — THE SCHEDULED RUN), record each
 //   node tools/suites.mjs --run <suite>              run that one suite whatever is recorded (content|kingdom|engine|viewer)
+//   node tools/suites.mjs --scheduled                when the last scheduled run was and what it found; exit 1 when none in the last day
+//   node tools/suites.mjs --timeouts                 the tests that timed out twice (fix each as an item)
+//   node tools/suites.mjs --timeout-fixed <suite> "<test>" <item id>   take a fixed test off that list
 //   node tools/suites.mjs --full-green               exit 0 only when all four passed together on the code as it stands
 //   node tools/suites.mjs --commit-records "<why>"   commit each package's changed pass records, and nothing else
-import { execFileSync, spawnSync } from 'node:child_process'
+import { execFileSync, spawn, spawnSync } from 'node:child_process'
 import { createHash } from 'node:crypto'
 import { appendFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { basename, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { PACKAGES, ROOT_DIR, allStamps, stampOf } from './code-stamp.mjs'
 import { commitOnly } from './commit-only.mjs'
+import { readBacklog } from './backlog.mjs'
 
 export const PASSES_FILE = '.state/passes.jsonl'
 const GOLDEN_FILE = '.state/baseline.hash'
@@ -168,6 +194,165 @@ export function logCheck(c) {
   return { name: c.name, ok: c.skipped ? false : !!c.ok, warn: !!c.warn, ...(c.skipped ? { skipped: true } : {}), note: c.note || undefined }
 }
 
+// ── the scheduled run, and what a failure names: pure (tool.landing-on-the-quick-check, 2026-10-06) ──
+/** A landing and a wrap refuse only when no complete scheduled run is this recent. */
+export const SCHEDULED_MAX_AGE_HOURS = 24
+/** The named list of the tests that timed out twice — one file, in engine/ (GBH SWITCHES landing.timedOutTwiceList). */
+export const TIMEOUTS_FILE = '.state/timed-out-twice.jsonl'
+export const SCHEDULED_COMMAND = 'node tools/suites.mjs --run all --full'
+const GATE_LOG = '.state/gauntlet-log.jsonl'
+const minute = (iso) => String(iso).slice(0, 16).replace('T', ' ')
+
+const TIMED_OUT = /timed out|Timeout (?:of )?\d+ ?ms|ETIMEDOUT/i
+/**
+ * The failing tests a suite's output names, in the order they are first named, each with whether the lines under its
+ * name (to the next name) say it ran out of time. Read from what the runners print themselves:
+ *   vitest          ` FAIL  test/a.test.ts > a group > a test`  (the engine's and kingdom's suites, the viewer's test/)
+ *   node --test     `✖ a test (12.3ms)`  or  `not ok 3 - a test`  (content's suite, the viewer's page tests)
+ *   the viewer gate `part verify 2/4: FAIL — verify failed`
+ * A time-out is not an assertion, so the two are kept apart: `timedOut` is what the time-out list counts.
+ */
+export function failingTests(output) {
+  const found = new Map()
+  let open = null
+  for (const raw of String(output ?? '').replace(/\x1b\[[0-9;]*m/g, '').split(/\r?\n/)) {
+    const l = raw.trim()
+    const part = l.match(/^part (.+?): FAIL(?: — (.*))?$/)
+    const m = part ? [l, `part ${part[1]}`]
+      : l.match(/^FAIL\s+(\S.*)$/) ?? l.match(/^not ok \d+ - (.+?)(?:\s+#.*)?$/) ?? (l === '✖ failing tests:' ? null : l.match(/^✖\s+(.+?)(?:\s+\([\d.]+\s*m?s\))?$/))
+    if (m) {
+      open = m[1].trim()
+      if (!found.has(open)) found.set(open, false)
+      if (part && TIMED_OUT.test(part[2] ?? '')) found.set(open, true)
+      continue
+    }
+    if (open && TIMED_OUT.test(l)) found.set(open, true)
+  }
+  return [...found].map(([name, timedOut]) => ({ name, timedOut }))
+}
+/** A failure's tests, said in one piece: `a > b [timed out]; c > d` (the first `most`, then how many more). */
+export function failingSaid(failing, most = 8) {
+  const list = failing ?? []
+  if (!list.length) return 'its output names no failing test — read the run above'
+  return list.slice(0, most).map((f) => `${f.name}${f.timedOut ? ' [timed out]' : ''}`).join('; ') + (list.length > most ? `; and ${list.length - most} more` : '')
+}
+
+/**
+ * Every scheduled run the four packages' records hold, oldest first: `{ id, at, in, rows, complete, ok }`. `id` is when
+ * the run started (the `scheduled` field of each line it wrote); `rows[suite]` is that suite's line in it, or absent
+ * when the run never recorded that suite (it was stopped, or the suite's code moved under it). `complete`: all four
+ * suites are in it. `ok`: complete, and none failed.
+ */
+export function scheduledRuns(passes) {
+  const byId = new Map()
+  for (const { suite } of SUITES) for (const p of passes?.[suite] ?? []) {
+    if (p.suite !== suite || typeof p.scheduled !== 'string' || Number.isNaN(Date.parse(p.scheduled))) continue
+    const run = byId.get(p.scheduled) ?? { id: p.scheduled, at: p.scheduled, in: p.in ?? null, rows: {} }
+    if (!run.rows[suite] || run.rows[suite].at <= p.at) run.rows[suite] = p
+    byId.set(p.scheduled, run)
+  }
+  return [...byId.values()].sort((a, b) => Date.parse(a.id) - Date.parse(b.id)).map((run) => {
+    const complete = SUITES.every((s) => run.rows[s.suite])
+    return { ...run, complete, ok: complete && SUITES.every((s) => !run.rows[s.suite].failed) }
+  })
+}
+/** One suite of a scheduled run, said: `PASS`, `FAIL (a > b; …)`, or `not run`. */
+const suiteFound = (row) => (!row ? 'not run' : row.failed ? `FAIL (${failingSaid(row.failing, 3)})` : 'PASS')
+/** A scheduled run in one line: when, in which copy, and what it found in each of the four. */
+export function scheduledRunSaid(run) {
+  return `${minute(run.at)}${run.in ? `, in ${run.in}` : ''} — ${SUITES.map((s) => `${s.suite} ${suiteFound(run.rows[s.suite])}`).join(' · ')}${run.complete ? '' : ' (NOT COMPLETE: not all four were run)'}`
+}
+/**
+ * What a landing, a merge-back and a wrap say about the whole suites, and whether a landing or a wrap must refuse.
+ * `run`: the latest COMPLETE scheduled run (all four suites run, passed or failed), or null. `due`: there is none in
+ * the last SCHEDULED_MAX_AGE_HOURS before `now` — the one case that refuses. A failed scheduled run does not refuse:
+ * what it found is said, and the fault goes back to the builder (the DECISIONS entry: the main folder can be broken for
+ * up to half a day). A run that is not complete is no run; it is named, so nobody takes it for one.
+ */
+export function scheduledStatus(passes, now = Date.now()) {
+  const runs = scheduledRuns(passes)
+  const run = runs.findLast((r) => r.complete) ?? null
+  const newer = runs.at(-1) && runs.at(-1) !== run ? runs.at(-1) : null
+  const ageHours = run ? (now - Date.parse(run.at)) / 3_600_000 : Infinity
+  const due = !(ageHours <= SCHEDULED_MAX_AGE_HOURS)
+  const said = (run
+    ? `the last scheduled run of the whole suites: ${scheduledRunSaid(run)}${due ? ` — ${Math.floor(ageHours)} hours ago, over ${SCHEDULED_MAX_AGE_HOURS}` : ''}`
+    : 'no scheduled run of the whole suites is recorded')
+    + (newer ? `; a later one is not complete (${scheduledRunSaid(newer)})` : '')
+  return { run, newer, due, ageHours, said }
+}
+/** One suite's part of that, for the line that says it was not run now (suiteLastScheduledNow reads the folder's records for it). */
+export function suiteLastScheduled(passes, suite, now = Date.now()) {
+  const { run } = scheduledStatus(passes, now)
+  return run ? `the last scheduled run (${minute(run.at)}${run.in ? `, in ${run.in}` : ''}) found it ${suiteFound(run.rows[suite])}` : 'no scheduled run is recorded'
+}
+
+/** The items the engine's gate log says landed after `since` (an ISO time; null: every landing in the log), oldest first, one row an item. */
+export function landedSince(logText, since = null) {
+  const rows = new Map()
+  for (const l of String(logText ?? '').split('\n')) {
+    if (!l.trim()) continue
+    let e = null
+    try { e = JSON.parse(l) } catch { continue }
+    if (!e || e.disposition !== 'landed' || typeof e.id !== 'string' || typeof e.at !== 'string') continue
+    if (since && !(e.at > since)) continue
+    rows.set(e.id, { id: e.id, sha: e.sha ?? null, at: e.at })
+  }
+  return [...rows.values()].sort((a, b) => (a.at < b.at ? -1 : a.at > b.at ? 1 : 0))
+}
+/**
+ * For a suite that failed: the pass to trace from — its last scheduled pass before `before`, else (no scheduled pass is
+ * recorded yet) its last recorded pass of any kind — and what the answer is called.
+ */
+export function lastPassBefore(passes, suite, before) {
+  const mine = (passes ?? []).filter((p) => p.suite === suite && !p.failed && typeof p.at === 'string' && (!before || p.at < before))
+  const latest = (list) => list.reduce((best, p) => (!best || p.at > best.at ? p : best), null)
+  const scheduled = latest(mine.filter((p) => typeof p.scheduled === 'string'))
+  if (scheduled) return { pass: scheduled, called: `its last scheduled pass (${minute(scheduled.at)})` }
+  const any = latest(mine)
+  return any ? { pass: any, called: `its last recorded pass (${minute(any.at)}${any.by ? `, ${any.by}` : ''}; no scheduled pass is recorded yet)` } : { pass: null, called: 'the start of the gate log (no pass of this suite is recorded)' }
+}
+/** The landed items, said: `rule.x (abc1234), viewer.y (def5678)` — the last `most` when there are more. */
+export function landedSaid(items, most = 12) {
+  if (!items.length) return 'none'
+  const said = (i) => `${i.id}${i.sha ? ` (${i.sha})` : ''}`
+  return items.length > most ? `${items.length} items, the latest ${most}: ${items.slice(-most).map(said).join(', ')}` : items.map(said).join(', ')
+}
+
+/**
+ * The time-out list's lines → the tests on it now: `{ suite, test, times, at }` for each test whose latest line is a
+ * listing and not a `fixed` one.
+ */
+export function timeoutsListed(text) {
+  const last = new Map()
+  for (const l of String(text ?? '').split('\n')) {
+    if (!l.trim()) continue
+    let row = null
+    try { row = JSON.parse(l) } catch { continue }
+    if (row && typeof row.suite === 'string' && typeof row.test === 'string') last.set(`${row.suite}\n${row.test}`, row)
+  }
+  return [...last.values()].filter((r) => !r.fixed)
+}
+/**
+ * Which of a failed run's time-outs are a SECOND time. `failing`: this run's failing tests. `passes`: the suite's
+ * recorded runs BEFORE this one. `listText`: the list as it stands. A test counts once per earlier recorded failure in
+ * which it timed out, since the list last said it was fixed. Returns `{ first, twice, listed }`: the tests that timed
+ * out for the first time (re-run once), those that have now done so twice (to be written to the list — each with the
+ * times), and those already on it (not to be run again).
+ */
+export function timeoutsOf({ suite, failing, passes, listText, at }) {
+  const rows = String(listText ?? '').split('\n').filter((l) => l.trim()).map((l) => { try { return JSON.parse(l) } catch { return null } }).filter(Boolean)
+  const on = new Set(timeoutsListed(listText).filter((r) => r.suite === suite).map((r) => r.test))
+  const first = [], twice = [], listed = []
+  for (const f of (failing ?? []).filter((x) => x.timedOut)) {
+    if (on.has(f.name)) { listed.push(f.name); continue }
+    const fixedAt = rows.filter((r) => r.suite === suite && r.test === f.name && r.fixed).map((r) => r.at).sort().at(-1) ?? ''
+    const before = (passes ?? []).filter((p) => p.suite === suite && p.failed && p.at > fixedAt && (p.failing ?? []).some((x) => x.name === f.name && x.timedOut)).map((p) => p.at)
+    if (before.length) twice.push({ suite, test: f.name, times: [...before, at] }); else first.push(f.name)
+  }
+  return { first, twice, listed }
+}
+
 // ── the record: on disk ─────────────────────────────────────────────────────
 export function readPasses(dir) {
   try { return parsePasses(readFileSync(join(dir, PASSES_FILE), 'utf8')) } catch { return [] }
@@ -179,16 +364,22 @@ export function appendPass(dir, pass) {
   const same = (p) => p.suite === pass.suite && p.stamp === pass.stamp && JSON.stringify(p.with ?? null) === JSON.stringify(pass.with ?? null)
     && (p.pack ?? null) === (pass.pack ?? null) && (p.golden ?? null) === (pass.golden ?? null)
   // the control battles: any line that says the same. A suite: only a pass that still stands (none since the last failure).
+  // …and a SCHEDULED run's line is always written: the run is dated by it (2026-10-06).
   const had = readPasses(dir)
-  if ((pass.suite === 'control' ? had : standing(runsOn(had, pass.suite, pass.stamp))).some(same)) return false
+  if (!pass.scheduled && (pass.suite === 'control' ? had : standing(runsOn(had, pass.suite, pass.stamp))).some(same)) return false
   return writeLine(dir, pass)
 }
 
-/** Record that a run of `suite` on the code `stamp` FAILED, so no older pass on that code is relied on. One line per run of failures. */
-export function appendFail(dir, { suite, stamp, by, in: where }) {
+/**
+ * Record that a run of `suite` on the code `stamp` FAILED, so no older pass on that code is relied on. One line per run of
+ * failures — except a run by this tool, which names what failed (`failing`) and, when it is the scheduled run, its date
+ * (`scheduled`): every one of those is written, because the scheduled run is read back by its date and the time-out list
+ * counts a test's time-outs run by run (2026-10-06).
+ */
+export function appendFail(dir, { suite, stamp, by, in: where, scheduled, failing, with: beside, at }) {
   if (!isStamp(stamp)) return false
-  if (runsOn(readPasses(dir), suite, stamp).at(-1)?.failed) return false
-  return writeLine(dir, { suite, stamp, failed: true, at: new Date().toISOString(), by, in: where })
+  if (!scheduled && !failing && runsOn(readPasses(dir), suite, stamp).at(-1)?.failed) return false
+  return writeLine(dir, { suite, stamp, failed: true, at: at ?? new Date().toISOString(), by, in: where, ...(beside ? { with: beside } : {}), ...(scheduled ? { scheduled } : {}), ...(failing ? { failing } : {}) })
 }
 
 function writeLine(dir, pass) {
@@ -209,9 +400,36 @@ export function recordSuitePass(root, suite, before, by, extra = {}) {
   appendPass(join(root, suite), { suite, stamp: before[suite], with: together ? before : null, at: new Date().toISOString(), by, in: copyName(root), ...extra })
   return { recorded: true }
 }
-/** Record that `suite` FAILED on the code it started on (when that is still its code). */
-export function recordSuiteFail(root, suite, before, by) {
-  if (isStamp(before[suite]) && stampOf(suite, join(root, suite)) === before[suite]) appendFail(join(root, suite), { suite, stamp: before[suite], by, in: copyName(root) })
+/** Record that `suite` FAILED on the code it started on (when that is still its code). `extra`: `scheduled`, `failing`, `at`. Returns whether it wrote. */
+export function recordSuiteFail(root, suite, before, by, extra = {}) {
+  if (!(isStamp(before[suite]) && stampOf(suite, join(root, suite)) === before[suite])) return false
+  return appendFail(join(root, suite), { suite, stamp: before[suite], by, in: copyName(root), ...extra })
+}
+
+// ── the scheduled run and the time-out list: on disk ────────────────────────
+/** What a landing, a merge-back and a wrap say about the whole suites in the folder `root`, and whether a landing or a wrap must refuse (scheduledStatus). */
+export function scheduledNow(root = ROOT_DIR, now = Date.now()) {
+  return scheduledStatus(everyPasses(root), now)
+}
+/** What the last scheduled run found in `suite`, said for a line that reports the suite as not run — in the folder `root`. */
+export function suiteLastScheduledNow(root, suite, now = Date.now()) {
+  return suiteLastScheduled(everyPasses(root), suite, now)
+}
+const readText = (file) => { try { return readFileSync(file, 'utf8') } catch { return '' } }
+/** The tests on the time-out list of the folder `root` (its engine/TIMEOUTS_FILE). */
+export function timeoutsNow(root = ROOT_DIR) {
+  return timeoutsListed(readText(join(root, 'engine', TIMEOUTS_FILE)))
+}
+function writeTimeoutLine(root, row) {
+  const file = join(root, 'engine', TIMEOUTS_FILE)
+  mkdirSync(join(root, 'engine', '.state'), { recursive: true })
+  const had = readText(file)
+  appendFileSync(file, (had && !had.endsWith('\n') ? '\n' : '') + JSON.stringify(row) + '\n')
+}
+/** Take a fixed test off the time-out list: one `fixed` line naming the item that fixed it. Throws when it is not on the list. */
+export function timeoutFixed(root, suite, test, item) {
+  if (!timeoutsNow(root).some((r) => r.suite === suite && r.test === test)) throw new Error(`'${test}' of the ${suite} suite is not on the time-out list (engine/${TIMEOUTS_FILE})`)
+  writeTimeoutLine(root, { suite, test, fixed: item, at: new Date().toISOString() })
 }
 
 // ── the control battles ─────────────────────────────────────────────────────
@@ -219,7 +437,11 @@ const sha10 = (text) => createHash('sha1').update(text).digest('hex').slice(0, 1
 export function packSha(engineDir) {
   try { return execFileSync('git', ['-C', engineDir, 'hash-object', '--', PACK_FILE], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] }).trim().slice(0, 10) || 'none' } catch { return 'none' }
 }
-const goldenText = (engineDir) => { try { return readFileSync(join(engineDir, GOLDEN_FILE), 'utf8').trim() || null } catch { return null } }
+// The golden's lines, whatever line endings this copy was checked out with (2026-10-06, found by the fixture of
+// test/landing-on-the-quick-check.test.ts, whose worker copy is a clone with git's own autocrlf): read with CRLF, a golden
+// that was the battles' own line for line compared unequal — 'CHANGED: bridge aaaaaaaa->aaaaaaaa' — and its sha was another
+// copy's. The same golden is now the same text, and the same sha, in any copy.
+const goldenText = (engineDir) => { try { return readFileSync(join(engineDir, GOLDEN_FILE), 'utf8').replace(/\r\n/g, '\n').trim() || null } catch { return null } }
 export const goldenSha = (engineDir) => { const g = goldenText(engineDir); return g ? sha10(g) : 'none' }
 const controlNow = (engineDir) => {
   const stamp = stampOf('engine', engineDir), pack = packSha(engineDir), golden = goldenText(engineDir)
@@ -308,35 +530,77 @@ export function fullGreenNow(root = ROOT_DIR) {
   return { ...r, stamps, said: r.green ? `all four suites passed together on ${stampsLine(stamps)}` : r.missing.map((m) => m.why).join('\n') }
 }
 
-/** Run one suite's commands in its package, in order, stopping at the first that fails. */
-function runCommands(root, s) {
+/** Run one command, its output shown as it comes AND kept, so that a failure's tests can be named from it. */
+function runKept(cmd, args, options) {
+  return new Promise((done) => {
+    const kept = []
+    const child = spawn(cmd, args, { ...options, stdio: ['inherit', 'pipe', 'pipe'] })
+    child.stdout.on('data', (d) => { process.stdout.write(d); kept.push(d) })
+    child.stderr.on('data', (d) => { process.stderr.write(d); kept.push(d) })
+    child.on('error', (e) => done({ status: 1, out: Buffer.concat(kept).toString('utf8') + `\n${e.message}` }))
+    child.on('close', (status) => done({ status, out: Buffer.concat(kept).toString('utf8') }))
+  })
+}
+
+/** Run one suite's commands in its package, in order, stopping at the first that fails. `{ ok, out }`: `out` is everything they printed. */
+async function runCommands(root, s) {
+  let out = ''
   for (const cmd of s.cmds) {
     console.log(`\n── ${s.why}: ${cmd.join(' ')}  (in ${s.suite}/)`)
-    const run = spawnSync(cmd[0] === 'node' ? process.execPath : cmd[0], cmd.slice(1), { cwd: join(root, s.suite), stdio: 'inherit', env: { ...(s.env ?? {}), ...process.env, VIEWER_PAGE: '' } })   // a suite's own defaults; what the caller's environment sets wins
-    if (run.status !== 0) return false
+    const run = await runKept(cmd[0] === 'node' ? process.execPath : cmd[0], cmd.slice(1), { cwd: join(root, s.suite), env: { ...(s.env ?? {}), ...process.env, VIEWER_PAGE: '' } })   // a suite's own defaults; what the caller's environment sets wins
+    out += run.out
+    if (run.status !== 0) return { ok: false, out }
   }
-  return true
+  return { ok: true, out }
 }
 
 /**
- * Run what the plan says (`only`: that one suite, whatever is recorded), record each pass, print one
- * line per suite — PASS, FAIL or SKIPPED with its reason — and return whether nothing failed.
+ * A suite failed: what its FAIL line says after the time — the failing tests its output names, and the items the
+ * engine's gate log says landed since that suite's last scheduled pass (a fault is traced among them) — and what its
+ * time-outs come to (timeoutsOf): a second time-out is written to the named list here. `had`: the suite's recorded runs
+ * before this one.
  */
-export function runSuites(root = ROOT_DIR, { full = false, only = null } = {}) {
+function failureOf(root, suite, { failing, had, at }) {
+  const from = lastPassBefore(had, suite, at)
+  const landed = landedSince(readText(join(root, 'engine', GATE_LOG)), from.pass ? from.pass.at : null)
+  const t = timeoutsOf({ suite, failing, passes: had, listText: readText(join(root, 'engine', TIMEOUTS_FILE)), at })
+  for (const row of t.twice) writeTimeoutLine(root, { ...row, at, in: copyName(root) })
+  const lines = [
+    ...t.first.map((name) => `  TIMED OUT, A FIRST TIME  ${suite}: ${name} — a time-out is re-run once: node tools/suites.mjs --run ${suite}`),
+    ...t.twice.map((row) => `  TIMED OUT TWICE  ${suite}: ${row.test} (${row.times.map(minute).join(', ')}) — written to engine/${TIMEOUTS_FILE}: fix it as an item; it is not run a third time`),
+    ...t.listed.map((name) => `  ON THE TIME-OUT LIST  ${suite}: ${name} — it timed out again; it is an item to fix, not a run to repeat (node tools/suites.mjs --timeouts)`),
+  ]
+  return { note: ` — failing: ${failingSaid(failing)}; landed since ${from.called}: ${landedSaid(landed)}`, lines }
+}
+
+/**
+ * Run what the plan says (`only`: that one suite, whatever is recorded), record each pass and each failure, print one
+ * line per suite — PASS, FAIL or SKIPPED with its reason — and return whether nothing failed. `full` with no `only` is
+ * THE SCHEDULED RUN: every line it records carries the time the run started, and it ends by saying what it found.
+ */
+export async function runSuites(root = ROOT_DIR, { full = false, only = null } = {}) {
   const plan = planNow(root, { full })
+  const scheduled = full && !only ? new Date().toISOString() : null
+  const by = `suites --run${full ? ' --full' : ''}`
   const rows = []
   for (const row of plan.suites) {
     if (only && row.suite !== only) continue
     if (!only && !row.run) { rows.push({ ...row, state: 'SKIPPED' }); continue }
     const s = SUITES.find((x) => x.suite === row.suite)
     const t0 = Date.now(), before = allStamps(root)
-    const ok = runCommands(root, s)
+    const { ok, out } = await runCommands(root, s)
     const secs = Math.round((Date.now() - t0) / 1000)
     console.log(`── ${s.why}: ${ok ? 'passed' : 'FAILED'} (${secs} s)`)
-    let note = ''
-    if (ok) { const rec = recordSuitePass(root, row.suite, before, `suites --run${full ? ' --full' : ''}`); if (!rec.recorded) note = ` — ${rec.why}` }
-    else recordSuiteFail(root, row.suite, before, `suites --run${full ? ' --full' : ''}`)
-    rows.push({ ...row, state: ok ? 'PASS' : 'FAIL', secs, note })
+    let note = '', lines = []
+    if (ok) { const rec = recordSuitePass(root, row.suite, before, by, scheduled ? { scheduled } : {}); if (!rec.recorded) note = ` — ${rec.why}` }
+    else {
+      const at = new Date().toISOString(), failing = failingTests(out), had = readPasses(join(root, row.suite))
+      const together = PACKAGES.every((p) => isStamp(before[p]))
+      const wrote = recordSuiteFail(root, row.suite, before, by, { at, failing, ...(together ? { with: before } : {}), ...(scheduled ? { scheduled } : {}) })
+      ;({ note, lines } = failureOf(root, row.suite, { failing, had, at }))
+      if (!wrote) note += ` — NOT RECORDED: ${row.suite}'s code changed while its suite ran`
+    }
+    rows.push({ ...row, state: ok ? 'PASS' : 'FAIL', secs, note, lines })
   }
   // a new content pack on unchanged engine code: the golden follows it, and says whether the fights moved
   let golden = null
@@ -346,17 +610,111 @@ export function runSuites(root = ROOT_DIR, { full = false, only = null } = {}) {
     golden = run.status === 0 ? 'the control-battle golden — re-recorded for the new content pack (see above for whether the fights moved)' : 'the control-battle golden — NOT re-recorded: gate.mjs --pack-golden failed'
   }
   console.log('')
-  for (const r of rows) console.log(r.state === 'SKIPPED' ? `  SKIPPED  ${r.why} — ${r.reason}` : `  ${r.state}  ${r.why} (${r.secs} s)${r.note}`)
+  for (const r of rows) {
+    console.log(r.state === 'SKIPPED' ? `  SKIPPED  ${r.why} — ${r.reason}` : `  ${r.state}  ${r.why} (${r.secs} s)${r.note}`)
+    for (const l of r.lines ?? []) console.log(l)
+  }
   if (golden) console.log(`  GOLDEN  ${golden}`)
+  if (scheduled) {
+    const run = scheduledRuns(everyPasses(root)).find((r) => r.id === scheduled)
+    console.log(`\nTHE SCHEDULED RUN — ${run ? scheduledRunSaid(run) : `${minute(scheduled)}: nothing was recorded (every package's code changed while it ran)`}`)
+    console.log(`  its records are in each package's ${PASSES_FILE}; commit them and nothing else:  node tools/suites.mjs --commit-records "passes: the scheduled run of ${minute(scheduled)}"`)
+  }
+  return { ok: !rows.some((r) => r.state === 'FAIL'), rows, scheduled }
+}
+
+// ── the quick checks of a merge-back (tool.landing-on-the-quick-check, 2026-10-06) ──
+/**
+ * The packages that have a compiler config, how each is typechecked (its own `npm run typecheck`, without the link step),
+ * and whose code its typecheck reads besides its own: kingdom and the viewer import the engine through their one door,
+ * so an engine change types them again (GBH SWITCHES landing.typecheckReadsTheEngine). content has no compiler config.
+ */
+export const TYPECHECKS = [
+  { pkg: 'engine', cmd: ['node', 'node_modules/typescript/bin/tsc', '--noEmit'], reads: [] },
+  { pkg: 'kingdom', cmd: ['node', '../engine/node_modules/typescript/bin/tsc', '--noEmit'], reads: ['engine'] },
+  { pkg: 'viewer', cmd: ['node', '../engine/node_modules/typescript/bin/tsc', '--noEmit'], reads: ['engine'] },
+]
+/** The control battles as the engine's gate runs them (`npx tsx tools/baseline.mts`), without npx. */
+const QUICK_BASELINE = ['node', 'node_modules/tsx/dist/cli.mjs', 'tools/baseline.mts']
+const typecheckKey = (check, stamps) => (check.reads.length ? Object.fromEntries(check.reads.map((p) => [p, stamps[p]])) : null)
+/** The recorded typecheck of `check.pkg` on its code and the code it reads as `stamps` has them — the latest such run, and only if it passed. */
+export function typecheckPass(passes, check, stamps) {
+  const key = JSON.stringify(typecheckKey(check, stamps))
+  const last = runsOn(passes, 'typecheck', stamps[check.pkg]).filter((p) => JSON.stringify(p.with ?? null) === key).at(-1)
+  return last && !last.failed ? last : null
+}
+/**
+ * The control battles at a merge-back, when the engine's code changed: run, and compared with the golden. The same →
+ * PASS. Moved, and a pending item DECLARES it changes them → MOVED, said and not judged: that item's landing at the
+ * engine's gate judges the fights and re-blesses the golden (a builder commits and does not land; the lander lands
+ * after the merge). Moved, and nothing pending declares it → FAIL: something leaked.
+ */
+export function quickControl({ golden, baseline, declared = [] }) {
+  let now
+  try { now = hashLines(baseline()) } catch (e) { return { state: 'FAIL', said: `the baseline probe errored (${String(e.message ?? e).split('\n')[0]})` } }
+  if (!now) return { state: 'FAIL', said: 'the baseline probe produced no hashes' }
+  if (!golden) return { state: 'SKIPPED', said: 'no golden is recorded here: the first engine landing blesses one — not judged at a merge-back' }
+  if (golden === now) return { state: 'PASS', said: '' }
+  const detail = movedBetween(golden, now)
+  if (declared.length) return { state: 'MOVED', said: `${detail} — NOT JUDGED HERE: ${declared.join(', ')} declare${declared.length === 1 ? 's' : ''} changesBaseline, and that landing at the engine's gate judges the fights and re-blesses the golden` }
+  return { state: 'FAIL', said: `CHANGED: ${detail}. Something leaked — no pending item declares changesBaseline. If the fights are meant to move, the item that moves them says so ("changesBaseline": true)` }
+}
+
+/**
+ * The quick checks, on the folder `root` as it stands: the typecheck of each package whose code (or the engine's, for
+ * the two that import it) has none recorded, and the control battles when the engine's code or the content pack
+ * changed. Each passes, fails, or is SKIPPED with the record it relied on. NO WHOLE SUITE IS STARTED: the four are
+ * printed SKIPPED with the last scheduled run and what it found in each — never PASS (Law 9). Returns whether nothing
+ * failed.
+ */
+export function runQuick(root = ROOT_DIR) {
+  const stamps = allStamps(root), rows = [], by = 'suites --quick'
+  for (const check of TYPECHECKS) {
+    const dir = join(root, check.pkg), stamp = stamps[check.pkg], key = typecheckKey(check, stamps)
+    const beside = check.reads.map((p) => ` and ${p} code ${stamps[p]}`).join('')
+    const had = typecheckPass(readPasses(dir), check, stamps)
+    if (had) { rows.push({ state: 'SKIPPED', what: `typecheck — ${check.pkg}`, why: `${check.pkg} code ${stamp}${beside} unchanged since it passed (${when(had)}; ${check.pkg}/${PASSES_FILE})` }); continue }
+    console.log(`\n── typecheck — ${check.pkg}: ${check.cmd.join(' ')}  (in ${check.pkg}/)`)
+    const t0 = Date.now()
+    const ok = spawnSync(process.execPath, check.cmd.slice(1), { cwd: dir, stdio: 'inherit' }).status === 0
+    const after = allStamps(root)
+    const still = isStamp(stamp) && after[check.pkg] === stamp && check.reads.every((p) => isStamp(stamps[p]) && after[p] === stamps[p])
+    if (still && ok) appendPass(dir, { suite: 'typecheck', stamp, with: key, at: new Date().toISOString(), by, in: copyName(root) })
+    if (still && !ok) appendFail(dir, { suite: 'typecheck', stamp, by, in: copyName(root), ...(key ? { with: key } : {}) })
+    rows.push({ state: ok ? 'PASS' : 'FAIL', what: `typecheck — ${check.pkg}`, secs: Math.round((Date.now() - t0) / 1000), why: ok && !still ? 'NOT RECORDED: the code changed while it ran' : '' })
+  }
+  rows.push({ state: 'SKIPPED', what: 'typecheck — content', why: 'content has no compiler config: nothing to typecheck' })
+  // the control battles: nothing a battle is made of changed → SKIPPED; only the pack → the golden follows it; the engine's code → they run
+  const engineDir = join(root, 'engine'), c = controlNow(engineDir)
+  if (c.action === 'skip') rows.push({ state: 'SKIPPED', what: 'the control battles', why: c.reason })
+  else if (c.action === 're-record') {
+    console.log(`\n── the control-battle golden: node tools/gate.mjs --pack-golden  (in engine/) — ${c.reason}`)
+    const ok = spawnSync(process.execPath, ['tools/gate.mjs', '--pack-golden'], { cwd: engineDir, stdio: 'inherit' }).status === 0
+    rows.push(ok ? { state: 'GOLDEN', what: 'the control battles', why: 're-recorded for the new content pack (see above for whether the fights moved)' } : { state: 'FAIL', what: 'the control battles', why: 'the golden was NOT re-recorded: gate.mjs --pack-golden failed' })
+  } else {
+    console.log(`\n── the control battles: ${QUICK_BASELINE.join(' ')}  (in engine/) — ${c.reason}`)
+    const t0 = Date.now()
+    let declared = []
+    try { declared = readBacklog(join(engineDir, '.state')).filter((x) => !x.status && x.changesBaseline).map((x) => x.id) } catch { /* no backlog here: nothing declares anything */ }
+    const r = quickControl({ golden: c.golden, declared, baseline: () => execFileSync(process.execPath, QUICK_BASELINE.slice(1), { cwd: engineDir, encoding: 'utf8', stdio: ['ignore', 'pipe', 'inherit'], maxBuffer: 1 << 26 }) })
+    if (r.state === 'PASS' && stampOf('engine', engineDir) === c.stamp) recordControl(engineDir, { by, moved: null })
+    rows.push({ state: r.state, what: 'the control battles', secs: Math.round((Date.now() - t0) / 1000), why: r.said })
+  }
+  const passes = everyPasses(root)
+  for (const s of SUITES) rows.push({ state: 'SKIPPED', what: s.why, why: `not run at a merge-back: the whole suites run twice a day (${SCHEDULED_COMMAND}); ${suiteLastScheduled(passes, s.suite)}` })
+  console.log('')
+  for (const r of rows) console.log(`  ${r.state}  ${r.what}${r.secs !== undefined ? ` (${r.secs} s)` : ''}${r.why ? ` — ${r.why}` : ''}`)
+  const status = scheduledStatus(passes)
+  console.log(`\n${status.said}${status.due ? ` — NONE IN THE LAST ${SCHEDULED_MAX_AGE_HOURS} HOURS: a landing and a wrap refuse until the lander has run it (${SCHEDULED_COMMAND}, from engine/, alone on the machine)` : ''}`)
   return { ok: !rows.some((r) => r.state === 'FAIL'), rows }
 }
 
-/** Commit each package's changed pass records — passes.jsonl, and the engine's golden — and nothing else. Returns the packages committed. */
+/** Commit each package's changed pass records — passes.jsonl, and the engine's golden and time-out list — and nothing else. Returns the packages committed. */
 export function commitRecords(root = ROOT_DIR, message = 'passes: recorded in this copy') {
   const done = []
   for (const p of PACKAGES) {
     const dir = join(root, p)
-    const files = [PASSES_FILE, ...(p === 'engine' ? [GOLDEN_FILE] : [])]
+    const files = [PASSES_FILE, ...(p === 'engine' ? [GOLDEN_FILE, TIMEOUTS_FILE] : [])]
     let changed = ''
     try { changed = execFileSync('git', ['-C', dir, 'status', '--porcelain', '--untracked-files=all', '--', ...files], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] }).trim() } catch { continue }
     if (!changed) continue
@@ -392,11 +750,31 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
     console.log(done.length ? `pass records committed in ${done.join(', ')}` : 'no pass record to commit')
     process.exit(0)
   }
+  if (argv.includes('--quick')) process.exit(runQuick(ROOT_DIR).ok ? 0 : 1)
+  if (argv.includes('--scheduled')) {
+    const st = scheduledNow()
+    console.log(st.said)
+    if (st.due) console.log(`none in the last ${SCHEDULED_MAX_AGE_HOURS} hours — the lander runs it, alone on the machine, from engine/: ${SCHEDULED_COMMAND}`)
+    process.exit(st.due ? 1 : 0)
+  }
+  if (argv.includes('--timeouts')) {
+    const list = timeoutsNow()
+    console.log(list.length ? `${list.length} test(s) timed out twice (engine/${TIMEOUTS_FILE}) — each is an item to fix, not a run to repeat:` : `no test is on the time-out list (engine/${TIMEOUTS_FILE})`)
+    for (const r of list) console.log(`  ${r.suite}: ${r.test} — ${(r.times ?? []).map(minute).join(', ')}`)
+    process.exit(0)
+  }
+  if (argv.includes('--timeout-fixed')) {
+    const i = argv.indexOf('--timeout-fixed'), [suite, test, item] = argv.slice(i + 1, i + 4)
+    if (!suite || !test || !item || [suite, test, item].some((a) => a.startsWith('--'))) { console.error('usage: node tools/suites.mjs --timeout-fixed <suite> "<test>" <item id>'); process.exit(2) }
+    try { timeoutFixed(ROOT_DIR, suite, test, item) } catch (e) { console.error(`suites: ${e.message}`); process.exit(1) }
+    console.log(`off the time-out list: ${suite}: ${test} — fixed by ${item}`)
+    process.exit(0)
+  }
   const which = at('--run')
   if (which === 'all' || SUITES.some((s) => s.suite === which)) {
-    const r = runSuites(ROOT_DIR, { full, only: which === 'all' ? null : which })
+    const r = await runSuites(ROOT_DIR, { full, only: which === 'all' ? null : which })
     process.exit(r.ok ? 0 : 1)
   }
-  console.error('usage: node tools/suites.mjs --plan [--full] [--json] | --run all [--full] | --run content|kingdom|engine|viewer | --full-green | --commit-records "<why>"')
+  console.error('usage: node tools/suites.mjs --plan [--full] [--json] | --quick | --run all [--full] | --run content|kingdom|engine|viewer | --scheduled | --timeouts | --timeout-fixed <suite> "<test>" <item id> | --full-green | --commit-records "<why>"')
   process.exit(2)
 }

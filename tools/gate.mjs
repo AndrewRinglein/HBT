@@ -38,6 +38,14 @@
 // pass stale. A landing whose item changed nothing a battle is made of prints
 // 'SKIPPED  control battles unchanged' with the reason — never PASS (Law 9). `--pack-golden`
 // re-records the golden when only the content pack moved, and says whether the fights moved.
+//
+// LANDING ON THE QUICK CHECK (tool.landing-on-the-quick-check; DECISIONS.md 2026-10-06 'the one plan: land on the quick
+// check, run the whole suites twice a day, four streams and one lander'). A landing is the quick check — typecheck, the
+// item's own tests, the control battles when the engine's code changed, the checks below — and asks for no whole-suite
+// pass on its tree. The lander runs all four whole suites twice a day (tools/suites.mjs --run all --full). Every run of
+// this gate prints one line saying when the last scheduled run was and what it found — SKIPPED, never PASS — and a
+// landing (--land) refuses only when no complete scheduled run is recorded in the last day. `--shard k/N` still runs the
+// engine's suite, and now names the tests that failed.
 
 import { execSync } from 'node:child_process'
 import { readFileSync, writeFileSync, appendFileSync } from 'node:fs'
@@ -50,7 +58,7 @@ import { changedPaths, commitOnly } from './commit-only.mjs'
 import { checkItem } from './prior-art.mjs'
 import { checkWrongHome } from './wrong-home.mjs'
 import { stampOf, allStamps, PACKAGES } from './code-stamp.mjs'
-import { shardsFor, readPasses, hasPass, appendPass, appendFail, logCheck, controlCheck, recordControl, packGolden, copyName, PASSES_FILE } from './suites.mjs'
+import { shardsFor, readPasses, hasPass, appendPass, appendFail, logCheck, controlCheck, recordControl, packGolden, copyName, PASSES_FILE, failingTests, scheduledNow, SCHEDULED_COMMAND, SCHEDULED_MAX_AGE_HOURS } from './suites.mjs'
 import {
   treeHash, contextHash, openProgress, recall, record, clearResults, serialize,
   stopBefore, budgetFrom, parseShard, recordShard, shardStatus, testFilesIn, killSwitchFiles, committedItemTests,
@@ -150,6 +158,9 @@ if (shardArg !== -1) {
   const todo = Array.from({ length: n }, (_, i) => i + 1).filter((x) => !passed.includes(x))
   console.log(`shard ${k}/${n}: ${r.ok ? 'PASS' : 'FAIL'}${count ? ` — ${count[1] ? count[1] + ' failed, ' : ''}${count[2]} passed` : ''}` +
     (r.ok ? '' : ` — ${r.note}`) + (r.ok && moved ? ' — NOT RECORDED: the engine\'s code changed while it ran' : ''))
+  // the failing tests, named as vitest names them (tool.landing-on-the-quick-check, 2026-10-06): the shard's output is kept
+  // in the diagnostic file, not printed, so the scheduled run (tools/suites.mjs) could not say WHICH tests failed
+  if (!r.ok) for (const f of failingTests(r.out)) console.log(` FAIL  ${f.name}${f.timedOut ? '\n   Error: Test timed out' : ''}`)
   console.log(`engine code ${code}: ${passed.length} of ${n} shards passed` +
     (todo.length ? ` — still to run: ${todo.map((x) => `--shard ${x}/${n}`).join(', ')}` : ' — the suite is green on this code'))
   // a failed shard is recorded too: an older pass on this code is not relied on after it
@@ -637,6 +648,22 @@ if (stoppedAt !== -1) {
   console.log(`  (not run — out of budget after a failure: ${left.join(', ')})`)
 }
 
+// THE WHOLE SUITES ARE NOT RUN AT A LANDING (tool.landing-on-the-quick-check; DECISIONS.md 2026-10-06 'the one plan: land on
+// the quick check, run the whole suites twice a day, four streams and one lander'). The lander runs all four twice a day
+// (tools/suites.mjs --run all --full). This line says when the last scheduled run was and what it found — SKIPPED, never
+// PASS (Law 9) — and a landing refuses only when no complete scheduled run is recorded in the last day. A scheduled run
+// that FAILED does not refuse: the fault goes back to the builder who wrote the item. It is read on every call and never
+// replayed from the progress record: it is about the clock, not about the tree.
+const SUITES_LINE = 'the whole suites — a scheduled run in the last day'
+const scheduledRun = scheduledNow(resolve(process.cwd(), '..'))
+{
+  const note = scheduledRun.due
+    ? `NOT RUN HERE, and ${scheduledRun.said} — none in the last ${SCHEDULED_MAX_AGE_HOURS} hours: a landing (--land) refuses until the lander has run it`
+    : `not run at a landing — ${scheduledRun.said}`
+  checks.push({ name: SUITES_LINE, skipped: true, note })
+  console.log(`  SKIPPED  ${SUITES_LINE}  — ${note}`)
+}
+
 const body = checks.map((c) => `  ${c.skipped ? 'SKIPPED' : c.ok ? 'PASS' : c.warn ? 'WARN' : 'FAIL'}  ${c.name}${c.note ? ' — ' + c.note : ''}`).join('\n')
 
 if (!ok) {
@@ -652,6 +679,13 @@ if (MODE !== 'land') {
   console.log('\nAll gates pass. Run with --land to commit.\n')
   logRun('check-passed')
   process.exit(0)
+}
+
+// the one thing about the whole suites that still stops a landing: nobody has run them in the last day
+if (scheduledRun.due) {
+  console.log(`\nNOT LANDED: ${scheduledRun.said} — none in the last ${SCHEDULED_MAX_AGE_HOURS} hours. The lander runs the whole suites, alone on the machine, from engine/:  ${SCHEDULED_COMMAND}  — then land again. Nothing was committed and no attempt is counted.\n`)
+  logRun('refused-no-scheduled-run', { reason: scheduledRun.said })
+  process.exit(1)
 }
 
 // Nothing the checks read is left out of the commit. The commit takes every changed

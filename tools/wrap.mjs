@@ -56,7 +56,7 @@ import { fileURLToPath } from 'node:url'
 import { render } from './start.mjs'
 import { produce, NOW_FILE } from './handoff.mjs'
 import { commitOnly } from './commit-only.mjs'
-import { fullGreenNow, PASSES_FILE } from './suites.mjs'
+import { scheduledNow, PASSES_FILE, SCHEDULED_COMMAND, SCHEDULED_MAX_AGE_HOURS } from './suites.mjs'
 
 const HERE = dirname(fileURLToPath(import.meta.url))
 const PACKAGE = 'engine'
@@ -107,9 +107,20 @@ if (!/^New chat with /.test(next.label)) fail(`the next chat's label starts "New
 // where a change in one package that breaks another's test is found. A ruling, a document, .state/
 // and a regenerated file change no package's code, so they do not make a full run stale. Checked
 // before a byte is written.
+//
+// 2026-10-06 — tool.landing-on-the-quick-check (DECISIONS.md 'the one plan: land on the quick check, run the whole
+// suites twice a day, four streams and one lander', decided by the home chat on Andrew's word: "Decide what keeps the
+// checks that matter and removes the things that don't."). The paragraph above is how it was until that day: wrap asked
+// tools/suites.mjs whether all four had passed together on the exact code being wrapped (its full-green check, which
+// `--full-green` still answers) and refused without it. The whole suites
+// are now the lander's, twice a day (tools/suites.mjs --run all --full), so wrap SAYS when the last scheduled run was and
+// what it found, and refuses only when no complete scheduled run is recorded in the last day. A scheduled run that failed
+// does not refuse a wrap: what it found is printed, and the fault goes back to the builder who wrote the item. What it
+// costs is in that entry: the main folder can be broken for up to half a day. Still checked before a byte is written.
 {
-  const full = fullGreenNow()
-  if (!full.green) fail(`no full run has passed on the code being wrapped —\n  ${full.said.split('\n').join('\n  ')}\nRun all four together, then wrap: from the shared folder, node tools/combine.mjs <worker folder> --full; or in this copy, from engine/, node tools/suites.mjs --run all --full (Cowork: each package's own commands — the engine's --shard k/8, kingdom's --shard k/4, the viewer's --part …, then node tools/suites.mjs --run content — with no code changed between them).`)
+  const whole = scheduledNow()
+  console.log(`suites  ${whole.said} — not run at a wrap`)
+  if (whole.due) fail(`${whole.said} — none in the last ${SCHEDULED_MAX_AGE_HOURS} hours.\nThe lander runs the whole suites, alone on the machine, then this wrap goes through: from engine/, ${SCHEDULED_COMMAND} (or, from the shared folder, node tools/combine.mjs <worker folder> --full). A copy that only lacks the record gets it by merging the shared folder's commits.`)
 }
 
 // The fast process (Andrew, 2026-09-30, DECISIONS.md "the fast process; the full process

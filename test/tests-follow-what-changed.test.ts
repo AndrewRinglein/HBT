@@ -396,86 +396,45 @@ describe('the control battles at a landing', () => {
   }, LONG)
 })
 
-describe('combine runs what the worker changed, and says what it skipped', () => {
-  let f: Fixture, worker: string
-  const combine = (...args: string[]) => node(f.main, f.env, 'tools/combine.mjs', worker, ...args)
-  beforeAll(async () => {
-    f = await testedFolder()
-    worker = join(dirname(f.main), 'worker')
-    mkdirSync(worker)
-    for (const r of ['.', 'engine', 'content', 'viewer', 'kingdom']) {
-      git(dirname(f.main), 'clone', '-q', join(f.main, r), join(worker, r))
-      git(join(worker, r), 'config', 'user.email', 'worker@example.invalid'); git(join(worker, r), 'config', 'user.name', 'worker')
-      // the clone keeps git's own line-ending setting (on this PC the two real folders differ too: one checks
-      // out CRLF, one LF). A stamp is over git's blobs, so the same code is the same stamp in both.
-    }
-    put(join(worker, 'engine', 'node_modules', 'vitest', 'vitest.mjs'), stub('kingdom'))
-  }, LONG)
-
-  it("a worker that brought only kingdom code: kingdom's suite alone, and the three it skipped and why", () => {
-    appendFileSync(join(worker, 'kingdom', 'src', 'core', 'week.ts'), 'export const more = 2\n')
-    commitAll(join(worker, 'kingdom'), 'kingdom.an-item: a kingdom change')
-    const r = combine()
-    expect(r.status, r.stdout + r.stderr).toBe(0)
-    expect(ranSuites(f)).toEqual(['kingdom'])
-    expect(ranLines(f)).toHaveLength(4)
-    for (const s of ["content's suite", "the engine's whole suite", "the viewer's whole gate"]) {
-      expect(r.stdout).toMatch(new RegExp(`SKIPPED\\s+${s} — .* code [0-9a-f]{10} unchanged since .* passed`))
-    }
-    // each skip names the recorded pass it relied on: the stamp, when, by what command, in which copy, and the file that holds it
-    expect(r.stdout).toMatch(/SKIPPED\s+content's suite — content code [0-9a-f]{10} unchanged since its suite passed \(\d{4}-\d\d-\d\d \d\d:\d\d, suites --run --full, in main; content\/\.state\/passes\.jsonl\)/)
-    expect(r.stdout).toMatch(/PASS\s+kingdom's suite/)
-    expect(r.stdout).not.toMatch(/PASS\s+(content's suite|the engine's whole suite|the viewer's whole gate)/)
-    expect(r.stdout).toMatch(/COMBINED/)
-    // this folder now holds the worker's commit, and the record of the pass it was tested by
-    expect(git(join(f.main, 'kingdom'), 'rev-parse', 'HEAD')).toBe(git(join(worker, 'kingdom'), 'rev-parse', 'HEAD'))
-    expect(git(join(f.main, 'kingdom'), 'status', '--porcelain')).toBe('')
-    const kingdomPasses = readFileSync(join(f.main, 'kingdom', '.state', 'passes.jsonl'), 'utf8').trim().split('\n')
-    expect(kingdomPasses).toHaveLength(2)
-    // the pass combine recorded ran in the WORKER's copy, and says so; it reached this folder only through the merge
-    expect(JSON.parse(kingdomPasses[1]!)).toMatchObject({ suite: 'kingdom', in: 'worker', by: 'suites --run' })
-    // …but the four have not passed together on this code: wrap's check is not satisfied
-    expect(suites(f, '--full-green').status).toBe(1)
-    clearRan(f)
-  }, LONG)
-
-  it('a failing suite stops the merge-back and this folder is not changed', () => {
-    appendFileSync(join(worker, 'viewer', 'src', 'fold.js'), 'export const more = 2\n')
-    commitAll(join(worker, 'viewer'), 'viewer.an-item: a viewer change')
-    const before = git(join(f.main, 'viewer'), 'rev-parse', 'HEAD')
-    const r = node(f.main, { ...f.env, FIXTURE_FAIL: 'viewer' }, 'tools/combine.mjs', worker)
-    expect(r.status).toBe(1)
-    expect(r.stdout).toMatch(/FAIL\s+the viewer's whole gate/)
-    expect(r.stderr).toMatch(/This folder was not changed/)
-    expect(git(join(f.main, 'viewer'), 'rev-parse', 'HEAD')).toBe(before)
-    expect(ranSuites(f)).toEqual(['viewer'])
-    clearRan(f)
-  }, LONG)
-
-  it('combine --full runs all four, and then wrap\'s check is satisfied', () => {
-    const r = combine('--full')
-    expect(r.status, r.stdout + r.stderr).toBe(0)
-    expect(ranSuites(f)).toEqual(['content', 'engine', 'kingdom', 'viewer'])
-    expect(r.stdout).not.toMatch(/SKIPPED/)
-    expect(r.stdout.match(/^\s*PASS /gm)?.length).toBeGreaterThanOrEqual(4)
-    expect(git(join(f.main, 'viewer'), 'rev-parse', 'HEAD')).toBe(git(join(worker, 'viewer'), 'rev-parse', 'HEAD'))
-    expect(suites(f, '--full-green').status).toBe(0)
-    clearRan(f)
-    // nothing new to bring and nothing changed: --full still runs all four (the once-per-chat run), plain combine runs none
-    const again = combine('--full')
-    expect(again.status, again.stdout + again.stderr).toBe(0)
-    expect(ranSuites(f)).toEqual(['content', 'engine', 'kingdom', 'viewer'])
-    clearRan(f)
-    const plain = combine()
-    expect(plain.status).toBe(0)
-    expect(plain.stdout).toMatch(/Nothing to combine/)
-    expect(ranLines(f)).toEqual([])
-  }, LONG)
+// Law 10, 2026-10-06 — tool.landing-on-the-quick-check (DECISIONS.md 'the one plan: land on the quick check, run the whole
+// suites twice a day, four streams and one lander', decided by the home chat on Andrew's word: "Decide what keeps the checks
+// that matter and removes the things that don't." — "Dropped: the whole suites at every merge-back (`tools/combine.mjs` runs
+// them today)"). This describe was 'combine runs what the worker changed, and says what it skipped', and held the rule that
+// entry changed on purpose, in three tests on a worker's copy of the tested folder:
+//   · "a worker that brought only kingdom code: kingdom's suite alone, and the three it skipped and why" — after
+//     `combine`, ranSuites was ['kingdom'] (its four quarters), the other three were printed `SKIPPED … code <stamp>
+//     unchanged since its suite passed (<when>, suites --run --full, in main; content/.state/passes.jsonl)`, kingdom's
+//     `PASS`, the pass recorded `{ suite: 'kingdom', in: 'worker', by: 'suites --run' }`, and `--full-green` still exit 1;
+//   · "a failing suite stops the merge-back and this folder is not changed" — FIXTURE_FAIL=viewer: exit 1, `FAIL  the
+//     viewer's whole gate`, 'This folder was not changed', the viewer's HEAD here unmoved;
+//   · "combine --full runs all four, and then wrap's check is satisfied" — all four ran, no SKIPPED, `--full-green` exit
+//     0; with nothing new to bring `--full` ran all four again and a plain combine said 'Nothing to combine'.
+// A merge-back now runs the quick checks and no whole suite. What it runs, that each suite is printed SKIPPED with the
+// last scheduled run, that a failing quick check stops it with this folder unchanged, and that `--full` still runs all
+// four are held in test/landing-on-the-quick-check.test.ts ('combine merges a copy without running a whole suite'), on a
+// fixture that has what the quick checks run. What did not change stays in this file: `--plan` and `--run all` still
+// choose a suite by its package's code ('what a change runs', above), and `--full-green` still means all four passed
+// together ('after a full run …', below).
+describe('combine no longer runs the suites the worker changed', () => {
+  it("the root's combine asks the suites tool for the quick checks, and for a run of the suites only with --full", () => {
+    const combine = readFileSync(join(ROOT_TOOLS, 'combine.mjs'), 'utf8')
+    expect(combine).toMatch(/suites\('--quick'\)/)
+    expect(combine).not.toMatch(/suites\('--run', 'all', \.\.\.\(FULL/)   // as it called the suites until 2026-10-06
+    expect(combine).toMatch(/if \(FULL\) \{[^}]*suites\('--run', 'all', '--full'\)/)
+  })
 })
 
-describe('wrap refuses without a full run', () => {
+// Law 10, 2026-10-06 — tool.landing-on-the-quick-check (the note above; the same entry: "Nothing else refuses for want of a
+// whole-suite pass on the exact tree" is the item's fourth part). This describe was 'wrap refuses without a full run'. Its
+// first test was "four suites that never passed together: refused, naming the run that satisfies it; nothing is written"
+// and asserted of the wrap `r.stderr` `.toMatch(/no full run has passed on the code being wrapped/)` and
+// `.toMatch(/combine\.mjs <worker folder> --full/)`; its third was "wrap asks that check and no narrower one" and asserted
+// wrap's source `.toMatch(/fullGreenNow\(/)`. `--full-green` is unchanged and its half of the first test stands; wrap no
+// longer asks it. What wrap asks now — a scheduled run in the last day — is held in
+// test/landing-on-the-quick-check.test.ts ('wrap says what the last scheduled run found …').
+describe('all four together: --full-green still says it; wrap no longer asks it', () => {
   const WRAP = ['tools/wrap.mjs', 'an item — an epic. Tried: it. Next: the next.', '--next', 'New chat with Heroes of Blight and Tragic — engine: the next item', 'start engine']
-  it('four suites that never passed together: refused, naming the run that satisfies it; nothing is written', () => {
+  it('four suites that never passed together: --full-green says so; a wrap is refused for want of a scheduled run, not of that', () => {
     const f = makeFolder()
     const engine = join(f.main, 'engine')
     for (const s of ['content', 'kingdom', 'engine', 'viewer']) expect(suites(f, '--run', s).status).toBe(0)   // each passed, with the others as they are…
@@ -486,8 +445,8 @@ describe('wrap refuses without a full run', () => {
     expect(green.stdout).toMatch(/content: passed on its own code [0-9a-f]{10}, but not together with the other three as they are now/)
     const r = node(engine, f.env, ...WRAP)
     expect(r.status).toBe(1)
-    expect(r.stderr).toMatch(/no full run has passed on the code being wrapped/)
-    expect(r.stderr).toMatch(/combine\.mjs <worker folder> --full/)
+    expect(r.stderr).not.toMatch(/no full run has passed on the code being wrapped/)
+    expect(r.stderr).toMatch(/no scheduled run of the whole suites is recorded/)
     expect(existsSync(join(engine, '.state', 'now.json'))).toBe(false)
   }, LONG)
 
@@ -502,9 +461,10 @@ describe('wrap refuses without a full run', () => {
     expect(green.stdout).toMatch(/all four suites passed together on engine [0-9a-f]{10}/)
   }, LONG)
 
-  it('wrap asks that check and no narrower one', () => {
+  it('wrap asks for a scheduled run in the last day, and neither narrower check', () => {
     const wrap = readFileSync(join(TOOLS, 'wrap.mjs'), 'utf8')
-    expect(wrap).toMatch(/fullGreenNow\(/)
+    expect(wrap).toMatch(/scheduledNow\(\)/)
+    expect(wrap).not.toMatch(/fullGreenNow\(/)
     expect(wrap).not.toMatch(/--shards-green/)
   })
 })
