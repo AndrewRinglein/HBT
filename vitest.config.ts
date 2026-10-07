@@ -11,12 +11,18 @@
 // `node tools/gate.mjs --shard k/4`, a landing's checks (the engine gate runs vitest here) and
 // engine/tools/suites.mjs all run vitest from this folder, so all three get the cap from here.
 //
-// No test's time limit is set or changed here (Law 10): vitest's own 5 s stands, and a test's
-// own explicit limit still wins. A plain object, not defineConfig: this package installs
-// nothing, and 'vitest/config' does not resolve from here.
+// The default test time limit is the engine's too — ../engine/tools/gate-progress.mjs testTimeoutFor,
+// the function engine/vitest.config.ts reads: 30 s on every machine, and no number here
+// (tool.thirty-second-test-limit-on-the-pc, 2026-10-06; Andrew, engine/DECISIONS.md 'building is
+// split from testing ...': "kingdom and viewer set no limit. Make all three packages use 30 s on the
+// PC too. 19 of the 42 busy-machine incidents were a 5-second time-out."). Until that day this file
+// named no limit and vitest's own 5 s stood. HOBAT_TEST_TIMEOUT (milliseconds) overrides it; a
+// test's own explicit limit still wins; no assertion is changed (a timeout is not an assertion).
+// A plain object, not defineConfig: this package installs nothing, and 'vitest/config' does not
+// resolve from here.
 //
 // This file is kingdom's code (engine/tools/code-stamp.mjs PACKAGE_CODE): changing it makes
 // the suite run again.
-import { vitestWorkersFor } from '../engine/tools/gate-progress.mjs'
+import { testTimeoutFor, vitestWorkersFor } from '../engine/tools/gate-progress.mjs'
 
-export default { test: { maxWorkers: vitestWorkersFor() } }
+export default { test: { maxWorkers: vitestWorkersFor(), testTimeout: testTimeoutFor() } }
