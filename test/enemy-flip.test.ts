@@ -48,8 +48,16 @@ describe('the horde is authored', () => {
       const u = UNITS[r.id]!
       if (u.attacks.length === 0) expect(g.some((x) => x.unit === r.id), `${r.id} fields weaponless and must carry a gap`).toBe(true)
     }
-    // the stat-less gaze is the shape the engine cannot say
-    expect(g.some((x) => x.unit === 'unit.eyeblight' && /reads no stat/.test(x.what))).toBe(true)
+    // Restated 2026-10-06 (content.used-twice-rules-removed; ruled 2026-10-06, DECISIONS.md 'the one-use rules …', of the
+    // Eyeblight's Gaze: "I think an attack with flat damage is fine, although that's probably just a typo. It should not have
+    // flat damage. It should be based on its stat."). The Gaze reads Precision now, so it is an attack the engine fights and
+    // no longer a named gap. The two lines were:
+    //   // the stat-less gaze is the shape the engine cannot say
+    //   expect(g.some((x) => x.unit === 'unit.eyeblight' && /reads no stat/.test(x.what))).toBe(true)
+    expect(g.filter((x) => x.unit === 'unit.eyeblight' && /gaze/.test(x.what))).toEqual([])
+    expect(UNITS['unit.eyeblight']!.attacks).toContain('attack.eyeblight.gaze')
+    // a stat-less attack is still a shape the engine cannot say: any row that authors one must carry the gap
+    for (const x of g.filter((y) => /reads no stat/.test(y.what))) expect(x.needs).toBe('attack shape: stat-less (flat) damage')
   })
 })
 
