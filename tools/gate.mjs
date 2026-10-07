@@ -32,7 +32,7 @@ import { readFileSync, writeFileSync, appendFileSync, existsSync, readdirSync, s
 import { join, resolve } from 'node:path'
 import { tmpdir } from 'node:os'
 import { stampOf, allStamps, PACKAGES } from '../../engine/tools/code-stamp.mjs'
-import { readPasses, hasPass, appendPass, appendFail, logCheck, copyName, PASSES_FILE } from '../../engine/tools/suites.mjs'
+import { readPasses, hasPass, appendPass, appendFail, logCheck, copyName, PASSES_FILE, scheduledNow, SCHEDULED_COMMAND, SCHEDULED_MAX_AGE_HOURS } from '../../engine/tools/suites.mjs'
 import { filesMentioningId } from './source-mentions.mjs'
 
 // ── the suite in four parts (Andrew, 2026-09-23, engine/DECISIONS.md "less
@@ -250,16 +250,22 @@ check('typecheck', () => {
 // they ran on this exact tree; when they ran on the same code but the tree has since changed in
 // a regenerated file, a built page or a document — or the pass is another copy's — the suite is
 // not run again and the check says SKIPPED, with why.
-check('full test suite — four shards green on this code', () => {
-  const code = codeNow(), todo = shardsTodo(code)
-  if (!todo.length) {
-    const s = shardsOn(code), tree = treeHash()
-    if (s.tree === tree) return { ok: true, note: `${SHARDS} of ${SHARDS} on tree ${tree.slice(0, 10)} (kingdom code ${code})` }
-    return { skipped: true, note: `kingdom code ${code} is unchanged since the four shards passed (${String(s.at).slice(0, 16).replace('T', ' ')}); only generated files, built pages, documents or .state/ differ on this tree — not run again` }
-  }
-  const pass = hasPass(readPasses('.'), 'kingdom', code)
-  if (pass) return { skipped: true, note: `kingdom's suite passed on kingdom code ${code} (${when(pass)}) — not run again` }
-  return { ok: false, note: `kingdom code ${code}: run ${todo.map((x) => `node tools/gate.mjs --shard ${x}/${SHARDS}`).join(' · ')}` }
+//
+// 2026-10-06 — tool.landing-on-the-quick-check (engine/DECISIONS.md 'the one plan: land on the quick check, run the whole
+// suites twice a day, four streams and one lander', decided by the home chat on Andrew's word: "Decide what keeps the
+// checks that matter and removes the things that don't."). Until that day this check was named 'full test suite — four
+// shards green on this code' and FAILED a landing whose kingdom code had no pass: `{ ok: false, note: 'kingdom code …:
+// run node tools/gate.mjs --shard 1/4 · …' }`. A landing no longer asks for a whole-suite pass on its code. The lander
+// runs all four suites twice a day (engine/tools/suites.mjs --run all --full); this check says when the last scheduled
+// run was and what it found — SKIPPED, never PASS (Law 9) — and fails a landing (--land) only when no complete scheduled
+// run is recorded in the last day. Four shards that did pass on this exact tree are still said — they ran — beside it;
+// they are kingdom's alone, and are not the scheduled run.
+check('the whole suites — a scheduled run in the last day', () => {
+  const code = codeNow(), shards = shardsTodo(code).length ? null : shardsOn(code)
+  const own = shards && shards.tree === treeHash() ? ` (kingdom's own ${SHARDS} shards did pass on this exact tree, kingdom code ${code})` : ''
+  const whole = scheduledNow(resolve(process.cwd(), '..'))
+  if (whole.due && MODE === 'land') return { ok: false, note: `${whole.said} — none in the last ${SCHEDULED_MAX_AGE_HOURS} hours. The lander runs the whole suites, alone on the machine, from engine/: ${SCHEDULED_COMMAND} — then land again${own}` }
+  return { skipped: true, note: `kingdom's suite is not run at a landing — ${whole.said}${whole.due ? ` — none in the last ${SCHEDULED_MAX_AGE_HOURS} hours: a landing (--land) refuses until the lander has run it` : ''}${own}` }
 })
 
 // ── gate 1: every criterion this item claims holds ──────────────────────────

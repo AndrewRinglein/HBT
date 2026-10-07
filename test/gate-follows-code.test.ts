@@ -87,12 +87,79 @@ describe("kingdom's shards are recorded against kingdom's code", () => {
 
 describe('a landing never reports PASS for a suite it did not run', () => {
   const src = readFileSync(GATE, 'utf8')
-  it('the full-suite check says SKIPPED when the shards ran on the same code but another tree', () => {
-    expect(src).toMatch(/skipped: true, note: `kingdom code \$\{code\} is unchanged since the four shards passed/)
+  // Law 10, 2026-10-06 — tool.landing-on-the-quick-check (engine queue; engine/DECISIONS.md 'the one plan: land on the quick
+  // check, run the whole suites twice a day, four streams and one lander', decided by the home chat on Andrew's word: "Decide
+  // what keeps the checks that matter and removes the things that don't."; the item: "the engine gate's and the kingdom
+  // gate's suite line … say when the last scheduled run was and what it found, and refuse only when no scheduled run is
+  // recorded in the last day"). This test was named 'the full-suite check says SKIPPED when the shards ran on the same code
+  // but another tree' and its first line asserted
+  //   expect(src).toMatch(/skipped: true, note: `kingdom code \$\{code\} is unchanged since the four shards passed/)
+  // — the check then FAILED a landing whose code had no pass at all. It no longer asks for a pass on the code: unless the
+  // four shards passed on this exact tree it says SKIPPED with the last scheduled run, whatever the code (the describe below).
+  it('the suite check says SKIPPED, with the last scheduled run, whenever the shards did not pass on this exact tree', () => {
+    expect(src).toMatch(/return \{ skipped: true, note: `kingdom's suite is not run at a landing — \$\{whole\.said\}/)
+    expect(src).not.toMatch(/is unchanged since the four shards passed/)
     expect(src).toMatch(/r\.skipped \? 'SKIPPED'/)
   })
   it('a skipped check is logged skipped, with ok false (the engine\'s logCheck, not a copy)', () => {
     expect(src).toMatch(/checks: checks\.map\(logCheck\)/)
     expect(src).toMatch(/from '\.\.\/\.\.\/engine\/tools\/suites\.mjs'/)
   })
+})
+
+// tool.landing-on-the-quick-check (2026-10-06, the note above). The real gate, on a scratch package whose item passes
+// nothing else here (there is no compiler in a scratch folder): only the suite line is read.
+describe("a landing says what the last scheduled run found, and fails for the suites only when none is recorded in the last day", () => {
+  const SUITES = "the whole suites — a scheduled run in the last day"
+  const item = (dir: string) => writeFileSync(join(dir, '.state', 'backlog.json'), JSON.stringify([{ id: 'tool.a-thing', kind: 'kingdom', shape: 'plumbing', spec: 'A thing.', expect: 'It does it.', unreachable: 'a tooling item: it closes no criterion of the slice' }]))
+  /** A scheduled run, as engine/tools/suites.mjs records one: a line in each of the four packages' passes.jsonl, all dated by when it started. */
+  const scheduled = (dir: string, hoursAgo: number, failed: string[] = []) => {
+    const at = new Date(Date.now() - hoursAgo * 3_600_000).toISOString()
+    for (const suite of ['engine', 'content', 'viewer', 'kingdom']) {
+      const state = join(dirname(dir), suite, '.state')
+      mkdirSync(state, { recursive: true })
+      appendFileSync(join(state, 'passes.jsonl'), JSON.stringify({ suite, stamp: '0123456789', at, by: 'suites --run --full', in: 'main', scheduled: at, ...(failed.includes(suite) ? { failed: true, failing: [{ name: 'test/a.test.ts > x', timedOut: false }] } : {}) }) + '\n')
+    }
+  }
+  const line = (out: string) => out.split('\n').find((l) => l.includes(SUITES)) ?? ''
+
+  it('none recorded: a check says so and that a landing will refuse; a landing FAILS on it, naming the run to make', () => {
+    const dir = scratch()
+    item(dir)
+    expect(line(gate(dir, 'tool.a-thing').stdout)).toMatch(/^  SKIPPED  the whole suites — a scheduled run in the last day  — kingdom's suite is not run at a landing — no scheduled run of the whole suites is recorded — none in the last 24 hours: a landing \(--land\) refuses until the lander has run it$/)
+    expect(line(gate(dir, 'tool.a-thing', '--land').stdout)).toMatch(/^  FAIL  the whole suites — a scheduled run in the last day  — no scheduled run of the whole suites is recorded — none in the last 24 hours\. The lander runs the whole suites, alone on the machine, from engine\/: node tools\/suites\.mjs --run all --full — then land again$/)
+  }, LONG)
+
+  it('one under a day old — though kingdom code has no pass of its own, and the run found a failure: SKIPPED with what it found, at a check and at a landing', () => {
+    const dir = scratch()
+    item(dir)
+    scheduled(dir, 4, ['engine'])
+    expect(gate(dir, '--shards-green').status).toBe(1)   // what a landing asked for until 2026-10-06
+    for (const args of [['tool.a-thing'], ['tool.a-thing', '--land']]) {
+      expect(line(gate(dir, ...args).stdout)).toMatch(/^  SKIPPED  the whole suites — a scheduled run in the last day  — kingdom's suite is not run at a landing — the last scheduled run of the whole suites: \d{4}-\d\d-\d\d \d\d:\d\d, in main — content PASS · kingdom PASS · engine FAIL \(test\/a\.test\.ts > x\) · viewer PASS$/)
+    }
+  }, LONG)
+
+  it('one over a day old: a landing fails on it, and the old run is named', () => {
+    const dir = scratch()
+    item(dir)
+    scheduled(dir, 30)
+    expect(line(gate(dir, 'tool.a-thing', '--land').stdout)).toMatch(/^  FAIL  the whole suites — a scheduled run in the last day  — the last scheduled run of the whole suites: .* — 30 hours ago, over 24 — none in the last 24 hours\./)
+  }, LONG)
+
+  it("four shards that passed on this exact tree are still said, beside the scheduled run: they ran, and they are kingdom's alone", () => {
+    const dir = scratch()
+    item(dir)
+    // the tree the gate judges: everything `git add -A` would commit, less .state/ (tools/gate.mjs treeHash)
+    const env = { ...process.env, GIT_INDEX_FILE: join(mkdtempSync(join(tmpdir(), 'kidx-')), 'index') }
+    const g = (...a: string[]) => execFileSync('git', a, { cwd: dir, env, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] })
+    g('add', '-A', '--', '.', ':!.state'); g('rm', '-r', '-q', '--cached', '--ignore-unmatch', '--', '.state')
+    const tree = g('write-tree').trim()
+    record(dir, { stamp: stampOf('kingdom', dir), tree, total: 4, passed: [1, 2, 3, 4], at: new Date().toISOString() })
+    scheduled(dir, 4)
+    expect(line(gate(dir, 'tool.a-thing', '--land').stdout)).toMatch(/^  SKIPPED  the whole suites — a scheduled run in the last day  — kingdom's suite is not run at a landing — the last scheduled run of the whole suites: .* · viewer PASS \(kingdom's own 4 shards did pass on this exact tree, kingdom code [0-9a-f]{10}\)$/)
+    // the same shards, another tree (a document moved): they are not said of this tree
+    appendFileSync(join(dir, 'CLAUDE.md'), 'a line\n')
+    expect(line(gate(dir, 'tool.a-thing', '--land').stdout)).toMatch(/ · viewer PASS$/)
+  }, LONG)
 })
