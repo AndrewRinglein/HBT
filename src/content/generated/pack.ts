@@ -26255,7 +26255,6 @@ export const UNIT_PACK = {
         }
       ],
       "gaps": [
-        "unparsed: Until the end of your next Turn, your ranged attacks gain +10 Crit and +1 Reach",
         "modifies only bow/ranged attacks — engine applies it to the unit"
       ]
     },
