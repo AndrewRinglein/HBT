@@ -15,6 +15,7 @@
 //   4. a Surge reopens the cycle as before.
 // It subsumes rule.walked-unit-has-moved's closing and rule.prone-only-stand-up's (test/walked-unit-has-moved.test.ts and
 // test/prone-only-stand-up.test.ts still hold, unchanged in what they ask).
+import { levelTwo } from './level-two.js'
 import { describe, expect, it } from 'vitest'
 import { runBattle } from '../src/core/battle.js'
 import { createBattle } from '../src/core/setup.js'
@@ -32,8 +33,13 @@ const HOME = hexId(5, 5), FAR = hexId(14, 13)
 
 /** One hero in the open, its Activation begun, Stamina for anything; a zombie beside it (`near`) or far away. Unit 0 the hero. */
 function rig(hero: string, near = false): { ctx: Ctx; u: Unit } {
-  const probe = createBattle({ replicate: 0, mapId: 'map.open', heroes: [hero], heroHexes: [HOME], enemies: ['test-zombie'], enemyHexes: [FAR], enemyCount: 1, strict: true })
-  const ctx = near ? createBattle({ replicate: 0, mapId: 'map.open', heroes: [hero], heroHexes: [HOME], enemies: ['test-zombie'], enemyHexes: [probe.geo.neighboursOf(HOME)[0]!], enemyCount: 1, strict: true }) : probe
+  // Restated 2026-10-06 at the merge of this rule with rule.special-moves-unlock-at-level-two (ruled the same day, DECISIONS.md
+  // 'a hero's special moves unlock at level 2, ruled: all of them, every hero …'): a hero has its Leap, Side Roll or Sidestep
+  // from level 2, and this file is about what a second movement may and may not do - so its hero is fielded at level 2
+  // (test/level-two.ts), where it has one. Both rulings stand; what is held of the one move action is unchanged. The two
+  // lines were the same without `heroProgress: [levelTwo(hero)]`.
+  const probe = createBattle({ replicate: 0, mapId: 'map.open', heroes: [hero], heroHexes: [HOME], enemies: ['test-zombie'], enemyHexes: [FAR], enemyCount: 1, strict: true, heroProgress: [levelTwo(hero)] })
+  const ctx = near ? createBattle({ replicate: 0, mapId: 'map.open', heroes: [hero], heroHexes: [HOME], enemies: ['test-zombie'], enemyHexes: [probe.geo.neighboursOf(HOME)[0]!], enemyCount: 1, strict: true, heroProgress: [levelTwo(hero)] }) : probe
   const u = ctx.state.units[0]!
   ctx.state.units[1]!.hp = ctx.state.units[1]!.maxHp = 500
   beginActivation(ctx, 0, 'test')
