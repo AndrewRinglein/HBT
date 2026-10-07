@@ -1003,6 +1003,25 @@ const movesForClass = (cls) => {
   walkP(SETTLED.powers);
   return [...new Set(out)];
 };
+// engine rule.special-moves-unlock-at-level-two (2026-10-06; engine DECISIONS.md 'a hero's special moves unlock at level 2,
+// ruled: all of them, every hero, enemies and civilians unchanged, named on the level-up screen'): "the special moves that
+// the starting heroes get should be unlocked instead at level 2". The level is on the GRANT, in the Codex: a movement power
+// a class grants says `grantedAtLevel` beside `grantedToClasses` (2 on each of the five today — Leap, Side Roll, Sidestep,
+// Focus, Devotion), and a row that gets its movements by its class carries the level of each as `moveLevels`; the engine
+// fields a hero below that level without the movement. A later special move names its own level here, with no code change.
+// Only a class's grant carries a level: an enemy's and a civilian's rows list their movements themselves and name none, and
+// so does the engine's own test party (the cohort's rows are copies that say their own moves). A level that is not a whole
+// number of 2 or more, or sits on a power no class grants, FAILS THE BUILD.
+for (const p of (Array.isArray(SETTLED.powers) ? SETTLED.powers : [])) {
+  if (p.grantedAtLevel === undefined) continue;
+  if (!p.movementAction || !(p.grantedToClasses || []).length) throw new Error(`mkenginepack: ${p.id} says grantedAtLevel and is not a movement power a class grants`);
+  if (!Number.isSafeInteger(p.grantedAtLevel) || p.grantedAtLevel < 2) throw new Error(`mkenginepack: ${p.id} grantedAtLevel is '${p.grantedAtLevel}' — a whole number, 2 or more`);
+}
+const moveLevelsForClass = (cls) => {
+  const levels = {};
+  for (const id of movesForClass(cls)) { const at = SPOWER_BY_ID.get(id)?.grantedAtLevel; if (at !== undefined) levels[id] = at; }
+  return Object.keys(levels).length ? { moveLevels: levels } : {};
+};
 
 const allHeroes = [];
 (function wh(o) { if (Array.isArray(o)) o.forEach(wh); else if (o && typeof o === 'object') { if (o.id && String(o.id).startsWith('hero.') && o.ported) allHeroes.push(o); else Object.values(o).forEach(wh); } })(D.heroes);
@@ -1518,7 +1537,7 @@ for (const id of PARTY) {
     maxStamina: d.staminaMax, staminaRegen: d.staminaRegen ?? 1,
     // no ai: the engine derives a hero's default from its kit (core/items.ts defaultAiOf; C16)
     attacks: ownAttackIds, abilities: [],
-    moves: movesForClass(h.class),
+    moves: movesForClass(h.class), ...moveLevelsForClass(h.class),   // rule.special-moves-unlock-at-level-two: the level each is granted at
     // hero assembly (2026-09-03): the class rides on tags so fieldedDef can find the level table
     tags: ['hero', ...(h.class ? [h.class] : [])],
     triggers: distinctTriggerIds(id, ownTriggers),
@@ -1617,7 +1636,7 @@ const alphaTeam = [];
       // a derived one is derived again (seam.items-per-unit)
       ...(h.ai ? { aiAuthored: true } : {}),
       attacks: ownAttackIds, abilities: [],
-      moves: movesForClass(h.class),
+      moves: movesForClass(h.class),   // no level (rule.special-moves-unlock-at-level-two): the Alpha Team is the engine's test party rebuilt as heroes, and a test party keeps its movements at level 1
       tags: ['hero', ...(h.class ? [h.class] : [])],
       triggers: distinctTriggerIds(id, ownTriggers),
       defaultItems: (h.kit || []).filter((i) => ITEM_BY_ID.has(i)),
@@ -2895,6 +2914,27 @@ checkBurstGround(authoredBursts); checkBurstGround(testBursts);
 const xpByTier = AUTH.xpByTier;
 if (!xpByTier || Object.keys(xpByTier).some((k) => !/^[1-9]$/.test(k)) || Object.values(xpByTier).some((v) => !Number.isSafeInteger(v) || v < 0)) throw new Error('gen/enemies-authored.json: xpByTier must map tiers to whole XP');
 for (const u of authoredEnemies) if (u.tier !== undefined && xpByTier[u.tier] === undefined) throw new Error(`${u.typeId}: tier ${u.tier} has no price in xpByTier`);
+// ── A HERO'S SURGE AT LEVEL 1 (engine rule.surge-is-at-least-level, 2026-10-06) ──────────────────────────────────────────
+// Ruled 2026-10-06 (engine DECISIONS.md 'everyone gains Surge equal to its level at the least, and rolls the Surge check
+// every Activation'): "Everyone gains surge equal to level, at the very least. Therefore, there is always at least a 1%
+// chance of a surge." The number is made HERE and in the level tables, nowhere else: a class table's every-level grant
+// (gen/levels.json `freebie`) is granted at every level, and level 1 is a level — the engine applies a table's rows from
+// level 2 up, so the level-1 share of an every-level grant of Surge is written on the unit's own row. One pass over every
+// row a hero is fielded from (the test cohort, the party, the alpha team, the test bodies), by the table the engine levels
+// it on (its `levelTable`, else its class tag — engine core/setup.ts levelTableOf), so no row is missed and none is typed
+// by hand. Hero-side rows only: an enemy rolls no Surge check. What a row already says (a test body's own Surge) is kept
+// and the level-1 point added to it. Until this ruling the engine added the level itself, and only to a hero fielded with
+// a progress record — which a level-1 hero is not, so every level-1 hero had Surge 0.
+{
+  const everyLevelSurge = (table) => { const st = Object.entries(table?.freebie || {}).filter(([k]) => statOf(k) === 'surge'); return st.reduce((n, [, v]) => n + v, 0); };
+  const tableOf = (row) => { const id = row.levelTable ?? (row.tags || []).find((t) => t.startsWith('class.')); return [...(LEVELS.classes || []), ...(LEVELS.civilianTypes || [])].find((c) => c.id === id); };
+  for (const row of [...heroes, ...prologueParty, ...alphaTeam, ...(Array.isArray(test.units) ? test.units : Object.values(test.units))]) {
+    if (row.side !== 'hero') continue;
+    const n = everyLevelSurge(tableOf(row));
+    if (!Number.isSafeInteger(n) || n < 0) throw new Error(`mkenginepack: ${row.typeId}'s level table grants '${n}' Surge at every level — a whole number, 0 or more`);
+    if (n > 0) row.surge = (row.surge ?? 0) + n;
+  }
+}
 const pack = { note: D.testCohort.note, xpByTier, heroes, enemies, authoredEnemies, authoredAttacks, authoredAbilities, authoredBursts, prologueParty, alphaTeam, critChart: compileCritChart(SETTLED.critChart), statuses, moves, items, test,
   classPowers, specialties, levels, generalPool, enchanted, derivedItems, encounters, badges, maps };
 
