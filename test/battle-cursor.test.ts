@@ -593,6 +593,20 @@ const specialMovesUnlockAtLevelTwoGolden = JSON.parse(readFileSync(new URL('./fi
 // move action is spent, where the walk was still asked for as the primary action and found nowhere to go), test.prone-b
 // (state only). A `changed` case is checked here and skips the older layers.
 const combineOneMoveGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-combine-one-move.json', import.meta.url), 'utf8'))
+// The six one-use content items (ruled 2026-10-06; DECISIONS.md 'the one-use rules: most are cut or reworded onto rules the engine
+// already has; a handful are built' and '… the card-draw badge rules are cut for now'): content.one-use-class-powers-reworded,
+// content.one-use-items-reworded, content.used-twice-rules-removed, content.banner-heroism-own-miss, content.impersonation-badge and
+// content.card-draw-badge-rules-cut - one content pack for the six, frozen on the tree merged with engine master 42d8dd8 (group B).
+// Four cases are FOUGHT DIFFERENTLY, all by content.used-twice-rules-removed: test.afflictions-at-zero-rule,
+// test.opening-cavern-trail and showcase.prologue-enemies (the Werewolf's Claw Frenzy leaves it a point of Strength stronger after
+// every swing - "the ordering, I don't really care about") and showcase.horrors (the Eyeblight's Gaze is an attack by its Precision -
+// "It should be based on its stat." - so the Eyeblights shoot from range). Nine move in WORDS ONLY, the same fight event for event
+// but for one row's written line: progression-surge-0, -1 and -2 (the Wayfinder's Compass) and test.set-bonus (the Blink Ring), by
+// content.one-use-items-reworded; showcase.eve-24-b, test.banner-courage, test.bear-traps, test.mending-light and test.snarer-traps
+// (Wise, an origin badge whose one rule was the card draw), by content.card-draw-badge-rules-cut. Four cases are ADDED, one fielding
+// to an item: test.take-root, test.divine-bulwark, test.banner-heroism, test.impersonation. The 23 control battles did not move.
+// Every case frozen here (tools/capture-one-use-content-items-cursor.mts). A `changed` case is checked here and skips the older layers.
+const oneUseContentItemsGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-one-use-content-items.json', import.meta.url), 'utf8'))
 const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
 // Explicit rule migration, not regenerated historical hashes. These nine old
 // cases contain Surge ledger/refresh changes or terminal markers corrected
@@ -755,7 +769,10 @@ describe('resumable battle cursor', () => {
       const surgeIsAtLeastLevelExpected = surgeIsAtLeastLevelGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const specialMovesUnlockAtLevelTwoExpected = specialMovesUnlockAtLevelTwoGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const combineOneMoveExpected = combineOneMoveGolden.cases.find((row:{id:string})=>row.id===fixture.id)
-      const combineOneMoveMoved = combineOneMoveExpected?.changed === true
+      const oneUseContentItemsExpected = oneUseContentItemsGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+      const oneUseContentItemsMoved = oneUseContentItemsExpected?.changed === true
+      // was: const combineOneMoveMoved = combineOneMoveExpected?.changed === true — a case the six one-use content items moved skips this layer too (content.used-twice-rules-removed and its group, 2026-10-06)
+      const combineOneMoveMoved = combineOneMoveExpected?.changed === true || oneUseContentItemsMoved
       // was: const specialMovesUnlockAtLevelTwoMoved = specialMovesUnlockAtLevelTwoExpected?.changed === true — a case the combined tree moved skips this layer too (combine 2026-10-06)
       const specialMovesUnlockAtLevelTwoMoved = specialMovesUnlockAtLevelTwoExpected?.changed === true || combineOneMoveMoved
       // was: const surgeIsAtLeastLevelMoved = surgeIsAtLeastLevelExpected?.changed === true — a case rule.special-moves-unlock-at-level-two moved skips this layer too (rule.special-moves-unlock-at-level-two 2026-10-04)
@@ -942,7 +959,14 @@ describe('resumable battle cursor', () => {
             battle.completeActionCycle(ctx)
           }
         } else result = battle.runBattle(ctx)
-        if (combineOneMoveExpected) {
+        if (oneUseContentItemsExpected) {
+        expect(hash(ctx.events), 'full one-use-content-items events').toBe(oneUseContentItemsExpected.events)
+        expect(hash(ctx.state), 'full one-use-content-items state').toBe(oneUseContentItemsExpected.state)
+        expect(hash(ctx.rng.log), 'full one-use-content-items RNG').toBe(oneUseContentItemsExpected.rng)
+        expect(result).toEqual(oneUseContentItemsExpected.result)
+        }
+        // was: if (combineOneMoveExpected) { — the six one-use content items (2026-10-06): a case they moved is checked above instead
+        if (combineOneMoveExpected && !oneUseContentItemsMoved) {
         expect(hash(ctx.events), 'full combine-one-move events').toBe(combineOneMoveExpected.events)
         expect(hash(ctx.state), 'full combine-one-move state').toBe(combineOneMoveExpected.state)
         expect(hash(ctx.rng.log), 'full combine-one-move RNG').toBe(combineOneMoveExpected.rng)
