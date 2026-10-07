@@ -1118,6 +1118,13 @@ function settledAttackExtras(a, unitId) {
       // to it and spends it), not a stat a modifier reaches. Named for what is missing, never guessed (the crit chart's
       // Knocked Sprawling, −50 Surge, waits on the same; filed as engine capability.trigger-moves-surge).
       gap(unitId, `${a.id} ${t.hook}: ${JSON.stringify(t.effect).slice(0, 60)}`, "no effect moves a unit's Surge amount — engine capability.trigger-moves-surge");
+    } else if (typeof t.effect === 'string' && /^gain \d+ Surge, and take -\d+ [A-Z][a-z]+ for the rest of the Battle$/.test(t.effect)) {
+      // engine content.one-use-items-reworded (2026-10-06; engine DECISIONS.md 2026-10-06 'the one-use rules …', of the Death
+      // Bow's Last Arrow: "on kill gain 70 surge and take -3 precision. Means you need to change out to melee after you kill
+      // with this."): two things on the one kill, and the first is the one-time Surge gain no effect can make yet. Neither is
+      // compiled until both can be - the loss without its gain would be another weapon - and the gap is named for the
+      // capability that builds it, as the Thrown Dagger's is, so that item finds this row.
+      gap(unitId, `${a.id} ${t.hook}: ${JSON.stringify(t.effect).slice(0, 60)}`, "no effect moves a unit's Surge amount — engine capability.trigger-moves-surge");
     } else {
       gap(unitId, `${a.id} ${t.hook}: ${JSON.stringify(t.effect).slice(0, 60)}`, 'trigger shape unparsed');
     }
