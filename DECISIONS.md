@@ -5993,3 +5993,17 @@ Andrew, in a root chat, answering four questions from a review of the four packa
 - **Reach weapons are melee; free attacks and Thorns go by adjacency.** Asked whether reach-2 and reach-3 melee weapons (whips, halberds, boarding hooks) count as melee for free attacks and Thorns: “They do not. I don't know how we do both their melee, but they don't trigger free attacks, and they don't trigger thorns. Both those things should also be based on adjacency. It's the triggering of the special attack that should only work on someone who is adjacent to you.” The chat's reading, not his words: the weapon is a melee weapon with reach; an attack of opportunity, a counterattack, a fend and Thorns are each set off only by, and made only against, a unit in the next hex — never because the attack's kind is melee alone. Thorns already tests both (`src/core/thorns.ts` `thornsOnHit`). The compiler today calls any attack with range over 1 ranged (`content/mkenginepack.mjs`, six melee-tagged attacks); how the row says “melee, reach 3” is the item's to settle, recorded as a switch.
 
 Nothing is built by this entry. He then asked for the list: “Okay, let's make a list of all of these bugs and fixes.”
+
+## 2026-10-06 — Knocked Sprawling knocks Prone and takes no Surge; the Bleeding crit is 4 Bleed; the card-draw badge rules are cut for now
+
+Andrew, in the same root chat, answering four questions left by the entry above (1 should Knocked Sprawling become "pushed 1 hex and knocked down (Prone)", with the Slow and the Surge loss removed; 2 do crit rows 8-10 - Winded, Guard Broken, Nerve Struck - stay as written; 3 the Bleeding crit row is 5 Bleed in `COMBAT-DESIGN.md` and 4 in `content/settled.json` - which; 4 the card-draw badges - Anguish, Wise, Old, Possession, Quick Study - is there a card system they belong to, or are they leftovers to cut):
+
+“One push, one hex, knock prone, keep the slow, get rid of the surge loss.   The rest can stay as written.   Crit row, make it 4 bleed.   We may add a card system at some point, but you can cut all those for now.”
+
+Ruled:
+
+- **Knocked Sprawling is: pushed 1 hex, knocked Prone, gain 2 Slow.** The -50 Surge goes. Filed: `rule.knocked-sprawling-knocks-prone`.
+- **Winded, Guard Broken and Nerve Struck stay as written.**
+- **The Bleeding crit is 4 Bleed** - what the content file and the engine already hold; `COMBAT-DESIGN.md`'s 5 is corrected by the same item.
+- **The card-draw rules on badges are cut for now** - “We may add a card system at some point”. Filed: `content.card-draw-badge-rules-cut`. The chat's reading: the card clause goes from each of the five; a badge with nothing else left is removed, and Possession and Old keep their other rules.
+- **What this changes in the queue (for the lander chat):** `capability.trigger-moves-surge` (pending) still names Knocked Sprawling's -50 Surge in its words and in what it expects; that half is gone - the item is the one-time gain or loss on a trigger or a power (the Daggers' +50), and no crit row. Its words are the lander chat's to correct.
