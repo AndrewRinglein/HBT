@@ -43554,3 +43554,399 @@ index 6e269a2..a6a95a9 100644
  import {bootSlice} from './atlas-dom.mjs'
 ```
 </details>
+
+## tool.landing-on-the-quick-check — LANDED `05f188a` **NEEDS REVIEW**
+2026-10-07 03:53
+
+  PASS  dependencies landed
+  WARN  not already decided — 1 candidate ruling(s) — READ BEFORE ASKING: DECISIONS.md:5644
+  PASS  typecheck
+  PASS  the item's own tests — test/landing-on-the-quick-check.test.ts, test/tests-follow-what-changed.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — test/landing-on-the-quick-check.test.ts, test/scratch-folder.ts, test/tests-follow-what-changed.test.ts
+  WARN  existing tests untouched — DELETED LINES in kingdom/test/gate-follows-code.test.ts (-2), test/tests-follow-what-changed.test.ts (-81), viewer/test/gate-follows-code.test.ts (-4) — will land FLAGGED for review
+  PASS  control battles unchanged
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+  SKIPPED  the whole suites — a scheduled run in the last day — not run at a landing — the last scheduled run of the whole suites: 2026-10-07 03:31, in HBT-worker-engine — content PASS · kingdom PASS · engine PASS · viewer PASS
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+engine 7f747f9 tool.landing-on-the-quick-check: a landing, a merge-back and a wrap no longer ask for a whole-suite pass on the exact tree (DECISIONS.md 2026-10-06 'the one plan: land on the quick check, run the whole suites twice a day, four streams and one lander') - tools/suites.mjs: --quick (the typecheck of each package whose code or the engine's changed, the control battles when the engine's code or the pack changed; the four suites printed SKIPPED with the last scheduled run, never PASS); --run all --full is the scheduled run (dated lines, a failure's tests named, its FAIL line names the items landed since that suite's last scheduled pass); --scheduled; the time-out list .state/timed-out-twice.jsonl (--timeouts, --timeout-fixed). tools/gate.mjs: one line saying when the last scheduled run was and what it found, a landing refuses only when none is recorded in the last day; --shard names its failing tests. tools/wrap.mjs: the same line and the same one refusal. The golden is read with CRLF folded to LF (found by the fixture). test/landing-on-the-quick-check.test.ts on scratch folders (test/scratch-folder.ts); test/tests-follow-what-changed.test.ts restated with dated notes (three combine tests, two wrap tests). GBH SWITCHES landing.onTheQuickCheck
+
+diff --git a/test/tests-follow-what-changed.test.ts b/test/tests-follow-what-changed.test.ts
+index cc728ff..f3423e9 100644
+--- a/test/tests-follow-what-changed.test.ts
++++ b/test/tests-follow-what-changed.test.ts
+@@ -397,84 +397,43 @@ describe('the control battles at a landing', () => {
+ })
+ 
+-describe('combine runs what the worker changed, and says what it skipped', () => {
+-  let f: Fixture, worker: string
+-  const combine = (...args: string[]) => node(f.main, f.env, 'tools/combine.mjs', worker, ...args)
+-  beforeAll(async () => {
+-    f = await testedFolder()
+-    worker = join(dirname(f.main), 'worker')
+-    mkdirSync(worker)
+-    for (const r of ['.', 'engine', 'content', 'viewer', 'kingdom']) {
+-      git(dirname(f.main), 'clone', '-q', join(f.main, r), join(worker, r))
+-      git(join(worker, r), 'config', 'user.email', 'worker@example.invalid'); git(join(worker, r), 'config', 'user.name', 'worker')
+-      // the clone keeps git's own line-ending setting (on this PC the two real folders differ too: one checks
+-      // out CRLF, one LF). A stamp is over git's blobs, so the same code is the same stamp in both.
+-    }
+-    put(join(worker, 'engine', 'node_modules', 'vitest', 'vitest.mjs'), stub('kingdom'))
+-  }, LONG)
+-
+-  it("a worker that brought only kingdom code: kingdom's suite alone, and the three it skipped and why", () => {
+-    appendFileSync(join(worker, 'kingdom', 'src', 'core', 'week.ts'), 'export const more = 2\n')
+-    commitAll(join(worker, 'kingdom'), 'kingdom.an-item: a kingdom change')
+-    const r = combine()
+-    expect(r.status, r.stdout + r.stderr).toBe(0)
+-    expect(ranSuites(f)).toEqual(['kingdom'])
+-    expect(ranLines(f)).toHaveLength(4)
+-    for (const s of ["content's suite", "the engine's whole suite", "the viewer's whole gate"]) {
+-      expect(r.stdout).toMatch(new RegExp(`SKIPPED\\s+${s} — .* code [0-9a-f]{10} unchanged since .* passed`))
+-    }
+-    // each skip names the recorded pass it relied on: the stamp, when, by what command, in which copy, and the file that holds it
+-    expect(r.stdout).toMatch(/SKIPPED\s+content's suite — content code [0-9a-f]{10} unchanged since its suite passed \(\d{4}-\d\d-\d\d \d\d:\d\d, suites --run --full, in main; content\/\.state\/passes\.jsonl\)/)
+-    expect(r.stdout).toMatch(/PASS\s+kingdom's suite/)
+-    expect(r.stdout).not.toMatch(/PASS\s+(content's suite|the engine's whole suite|the viewer's whole gate)/)
+-    expect(r.stdout).toMatch(/COMBINED/)
+-    // this folder now holds the worker's commit, and the record of the pass it was tested by
+-    expect(git(join(f.main, 'kingdom'), 'rev-parse', 'HEAD')).toBe(git(join(worker, 'kingdom'), 'rev-parse', 'HEAD'))
+-    expect(git(join(f.main, 'kingdom'), 'status', '--porcelain')).toBe('')
+-    const kingdomPasses = readFileSync(join(f.main, 'kingdom', '.state', 'passes.jsonl'), 'utf8').trim().split('\n')
+-    expect(kingdomPasses).toHaveLength(2)
+-    // the pass combine recorded ran in the WORKER's copy, and says so; it reached this folder only through the merge
+-    expect(JSON.parse(kingdomPasses[1]!)).toMatchObject({ suite: 'kingdom', in: 'worker', by: 'suites --run' })
+-    // …but the four have not passed together on this code: wrap's check is not satisfied
+-    expect(suites(f, '--full-green').status).toBe(1)
+-    clearRan(f)
+-  }, LONG)
+-
+-  it('a failing suite stops the merge-back and this folder is not changed', () => {
+-    appendFileSync(join(worker, 'viewer', 'src', 'fold.js'), 'export const more = 2\n')
+-    commitAll(join(worker, 'viewer'), 'viewer.an-item: a viewer change')
+-    const before = git(join(f.main, 'viewer'), 'rev-parse', 'HEAD')
+-    const r = node(f.main, { ...f.env, FIXTURE_FAIL: 'viewer' }, 'tools/combine.mjs', worker)
+-    expect(r.status).toBe(1)
+-    expect(r.stdout).toMatch(/FAIL\s+the viewer's whole gate/)
+-    expect(r.stderr).toMatch(/This folder was not changed/)
+-    expect(git(join(f.main, 'viewer'), 'rev-parse', 'HEAD')).toBe(before)
+-    expect(ranSuites(f)).toEqual(['viewer'])
+-    clearRan(f)
+-  }, LONG)
+-
+-  it('combine --full runs all four, and then wrap\'s check is satisfied', () => {
+-    const r = combine('--full')
+-    expect(r.status, r.stdout + r.stderr).toBe(0)
+-    expect(ranSuites(f)).toEqual(['content', 'engine', 'kingdom', 'viewer'])
+-    expect(r.stdout).not.toMatch(/SKIPPED/)
+-    expect(r.stdout.match(/^\s*PASS /gm)?.length).toBeGreaterThanOrEqual(4)
+-    expect(git(join(f.main, 'viewer'), 'rev-parse', 'HEAD')).toBe(git(join(worker, 'viewer'), 'rev-parse', 'HEAD'))
+-    expect(suites(f, '--full-green').status).toBe(0)
+-    clearRan(f)
+-    // nothing new to bring and nothing changed: --full still runs all four (the once-per-chat run), plain combine runs none
+-    const again = combine('--full')
+-    expect(again.status, again.stdout + again.stderr).toBe(0)
+-    expect(ranSuites(f)).toEqual(['content', 'engine', 'kingdom', 'viewer'])
+-    clearRan(f)
+-    const plain = combine()
+-    expect(plain.status).toBe(0)
+-    expect(plain.stdout).toMatch(/Nothing to combine/)
+-    expect(ranLines(f)).toEqual([])
+-  }, LONG)
++// Law 10, 2026-10-06 — tool.landing-on-the-quick-check (DECISIONS.md 'the one plan: land on the quick check, run the whole
++// suites twice a day, four streams and one lander', decided by the home chat on Andrew's word: "Decide what keeps the checks
++// that matter and removes the things that don't." — "Dropped: the whole suites at every merge-back (`tools/combine.mjs` runs
++// them today)"). This describe was 'combine runs what the worker changed, and says what it skipped', and held the rule that
++// entry changed on purpose, in three tests on a worker's copy of the tested folder:
++//   · "a worker that brought only kingdom code: kingdom's suite alone, and the three it skipped and why" — after
++//     `combine`, ranSuites was ['kingdom'] (its four quarters), the other three were printed `SKIPPED … code <stamp>
++//     unchanged since its suite passed (<when>, suites --run --full, in main; content/.state/passes.jsonl)`, kingdom's
++//     `PASS`, the pass recorded `{ suite: 'kingdom', in: 'worker', by: 'suites --run' }`, and `--full-green` still exit 1;
++//   · "a failing suite stops the merge-back and this folder is not changed" — FIXTURE_FAIL=viewer: exit 1, `FAIL  the
++//     viewer's whole gate`, 'This folder was not changed', the viewer's HEAD here unmoved;
++//   · "combine --full runs all four, and then wrap's check is satisfied" — all four ran, no SKIPPED, `--full-green` exit
++//     0; with nothing new to bring `--full` ran all four again and a plain combine said 'Nothing to combine'.
++// A merge-back now runs the quick checks and no whole suite. What it runs, that each suite is printed SKIPPED with the
++// last scheduled run, that a failing quick check stops it with this folder unchanged, and that `--full` still runs all
++// four are held in test/landing-on-the-quick-check.test.ts ('combine merges a copy without running a whole suite'), on a
++// fixture that has what the quick checks run. What did not change stays in this file: `--plan` and `--run all` still
++// choose a suite by its package's code ('what a change runs', above), and `--full-green` still means all four passed
++// together ('after a full run …', below).
++describe('combine no longer runs the suites the worker changed', () => {
++  it("the root's combine asks the suites tool for the quick checks, and for a run of the suites only with --full", () => {
++    const combine = readFileSync(join(ROOT_TOOLS, 'combine.mjs'), 'utf8')
++    expect(combine).toMatch(/suites\('--quick'\)/)
++    expect(combine).not.toMatch(/suites\('--run', 'all', \.\.\.\(FULL/)   // as it called the suites until 2026-10-06
++    expect(combine).toMatch(/if \(FULL\) \{[^}]*suites\('--run', 'all', '--full'\)/)
++  })
+ })
+ 
+-describe('wrap refuses without a full run', () => {
++// Law 10, 2026-10-06 — tool.landing-on-the-quick-check (the note above; the same entry: "Nothing else refuses for want of a
++// whole-suite pass on the exact tree" is the item's fourth part). This describe was 'wrap refuses without a full run'. Its
++// first test was "four suites that never passed together: refused, naming the run that satisfies it; nothing is written"
++// and asserted of the wrap `r.stderr` `.toMatch(/no full run has passed on the code being wrapped/)` and
++// `.toMatch(/combine\.mjs <worker folder> --full/)`; its third was "wrap asks that check and no narrower one" and asserted
++// wrap's source `.toMatch(/fullGreenNow\(/)`. `--full-green` is unchanged and its half of the first test stands; wrap no
++// longer asks it. What wrap asks now — a scheduled run in the last day — is held in
++// test/landing-on-the-quick-check.test.ts ('wrap says what the last scheduled run found …').
++describe('all four together: --full-green still says it; wrap no longer asks it', () => {
+   const WRAP = ['tools/wrap.mjs', 'an item — an epic. Tried: it. Next: the next.', '--next', 'New chat with Heroes of Blight and Tragic — engine: the next item', 'start engine']
+-  it('four suites that never passed together: refused, naming the run that satisfies it; nothing is written', () => {
++  it('four suites that never passed together: --full-green says so; a wrap is refused for want of a scheduled run, not of that', () => {
+     const f = makeFolder()
+     const engine = join(f.main, 'engine')
+@@ -487,6 +446,6 @@ describe('wrap refuses without a full run', () => {
+     const r = node(engine, f.env, ...WRAP)
+     expect(r.status).toBe(1)
+-    expect(r.stderr).toMatch(/no full run has passed on the code being wrapped/)
+-    expect(r.stderr).toMatch(/combine\.mjs <worker folder> --full/)
++    expect(r.stderr).not.toMatch(/no full run has passed on the code being wrapped/)
++    expect(r.stderr).toMatch(/no scheduled run of the whole suites is recorded/)
+     expect(existsSync(join(engine, '.state', 'now.json'))).toBe(false)
+   }, LONG)
+@@ -503,7 +462,8 @@ describe('wrap refuses without a full run', () => {
+   }, LONG)
+ 
+-  it('wrap asks that check and no narrower one', () => {
++  it('wrap asks for a scheduled run in the last day, and neither narrower check', () => {
+     const wrap = readFileSync(join(TOOLS, 'wrap.mjs'), 'utf8')
+-    expect(wrap).toMatch(/fullGreenNow\(/)
++    expect(wrap).toMatch(/scheduledNow\(\)/)
++    expect(wrap).not.toMatch(/fullGreenNow\(/)
+     expect(wrap).not.toMatch(/--shards-green/)
+   })
+viewer 4ac7515 tool.landing-on-the-quick-check: a page landing asks for the page built and the four verify parts on this tree - not the checks and tests parts, which are printed SKIPPED with the last scheduled run when they were not run and still refuse when one was run here and failed (engine/DECISIONS.md 2026-10-06 'the one plan ...': "A page item also needs the page to build and play its battles through (the viewer gate's verify part)"); test/gate-follows-code.test.ts runs the real gate on a scratch package, one older test restated with a dated note
+
+diff --git a/test/gate-follows-code.test.ts b/test/gate-follows-code.test.ts
+index 92f27aa..347de86 100644
+--- a/test/gate-follows-code.test.ts
++++ b/test/gate-follows-code.test.ts
+@@ -10,7 +10,17 @@
+ // The gate works on this package in place (it changes directory to it), so these tests read its
+ // source and ask it only for --status, which writes nothing.
++//
++// tool.landing-on-the-quick-check (engine queue, 2026-10-06; engine/DECISIONS.md 'the one plan: land on the quick
++// check, run the whole suites twice a day, four streams and one lander': "A page item also needs the page to build and
++// play its battles through (the viewer gate's verify part), once per group, by the lander" · "Dropped: … the viewer's
++// whole gate at every page landing (its checks and tests parts)"). A page landing asks for the page built and the
++// verify parts passed on this tree; the checks and tests parts stay runnable, are run by the scheduled run, and at a
++// landing are printed SKIPPED when they were not run — never PASS. The last describe runs the REAL gate, copied into a
++// scratch package beside a scratch engine/tools, with stand-ins for the page builder and the verifier.
+ import { describe, expect, it } from 'vitest'
+-import { spawnSync } from 'node:child_process'
+-import { readFileSync } from 'node:fs'
++import { execFileSync, spawnSync } from 'node:child_process'
++import { appendFileSync, cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync } from 'node:fs'
++import { tmpdir } from 'node:os'
++import { dirname, join } from 'node:path'
+ import { fileURLToPath } from 'node:url'
+ import { PACKAGE_CODE, stampOf } from '../../engine/tools/code-stamp.mjs'
+@@ -46,7 +56,14 @@ describe("the viewer's gate is recorded against the viewer's code", () => {
+ 
+ describe('--land never reports a part as passed that it did not run', () => {
+-  it('without a pass on this tree it refuses, unless the code has a recorded pass', () => {
++  // Law 10, 2026-10-06 — tool.landing-on-the-quick-check (the note at the top of this file; the same DECISIONS entry). This
++  // test was named 'without a pass on this tree it refuses, unless the code has a recorded pass' and its second line asserted
++  //   expect(src).toMatch(/if \(!pass\) \{ console\.error\('GATE REFUSES --land — every part must pass on this exact tree first'\)/)
++  // — every part: that is the rule the entry changed on purpose. It still refuses without a recorded pass; what it asks for
++  // in the refusal is the page built and the verify parts, and a part that was run on this tree and FAILED refuses too.
++  it('without the verify parts on this tree it refuses, unless the code has a recorded pass', () => {
+     expect(src).toMatch(/const pass = hasPass\(readPasses\(PKG\), 'viewer', code\)/)
+-    expect(src).toMatch(/if \(!pass\) \{ console\.error\('GATE REFUSES --land — every part must pass on this exact tree first'\)/)
++    expect(src).toMatch(/if \(!pass \|\| st\.failed\.length\) \{ console\.error\(`GATE REFUSES --land — /)
++    expect(src).toMatch(/the page must be built and every verify part must pass on this exact tree first/)
++    expect(src).not.toMatch(/'GATE REFUSES --land — every part must pass on this exact tree first'/)
+   })
+   it('with one, it rebuilds the page and prints every part SKIPPED with the reason', () => {
+@@ -56,2 +73,93 @@ describe('--land never reports a part as passed that it did not run', () => {
+   })
+ })
++
++// ── a page landing, on a scratch package (tool.landing-on-the-quick-check, 2026-10-06) ──
++const LONG = 240_000   // child processes beside other workers' runs: the time limit is not the assertion
++const put = (file: string, text: string) => { mkdirSync(dirname(file), { recursive: true }); writeFileSync(file, text) }
++const ENGINE_TOOLS = fileURLToPath(new URL('../../engine/tools/', import.meta.url))
++
++/**
++ * A scratch viewer beside a scratch engine/tools: the REAL gate and its slice arithmetic, the engine's real code-stamp
++ * and suites tools, and stand-ins for what would build or drive a page — the builder writes a page from the tree's
++ * source, the verifier writes the facts a slice records (and fails when FIXTURE_FAIL names `verify-<k>`), the compiler
++ * the checks part runs fails when FIXTURE_FAIL names `typecheck`. No page test (tests parts: nothing to run).
++ */
++function scratchViewer(): { viewer: string; gate: (env: Record<string, string>, ...args: string[]) => { status: number | null; stdout: string; stderr: string } } {
++  const base = mkdtempSync(join(tmpdir(), 'vgate-')), viewer = join(base, 'viewer'), engine = join(base, 'engine')
++  for (const f of ['code-stamp.mjs', 'suites.mjs', 'commit-only.mjs', 'backlog.mjs']) cpSync(join(ENGINE_TOOLS, f), join(engine, 'tools', f), { recursive: true })
++  put(join(engine, 'tools', 'engine-modules.mjs'), 'export {}\n')
++  put(join(engine, 'node_modules', 'typescript', 'bin', 'tsc'), "process.exit((process.env.FIXTURE_FAIL ?? '').split(',').includes('typecheck') ? 1 : 0)\n")
++  cpSync(GATE, join(viewer, 'tools', 'gate.mjs'))
++  cpSync(join(dirname(GATE), 'verify-slices.mjs'), join(viewer, 'tools', 'verify-slices.mjs'))
++  put(join(viewer, 'tools', 'page-tests.mjs'), 'export const PAGE_TESTS = []\n')
++  put(join(viewer, 'tools', 'build-viewer.mjs'), `import { readFileSync, writeFileSync } from 'node:fs'
++writeFileSync(process.argv[process.argv.indexOf('--candidate') + 1], '<html>' + readFileSync('src/fold.js', 'utf8') + '</html>')
++`)
++  put(join(viewer, 'tools', 'verify.mjs'), `import { writeFileSync } from 'node:fs'
++const a = process.argv.slice(2), k = Number(a[a.indexOf('--slice') + 1].split('/')[0])
++if ((process.env.FIXTURE_FAIL ?? '').split(',').includes('verify-' + k)) process.exit(1)
++writeFileSync(a[a.indexOf('--facts') + 1], JSON.stringify({ k, n: 4, libraryCount: 4, battles: [k - 1], singles: k === 1, uses: ['ra-crossed-swords', 'ra-shoe-prints', 'ra-bow'], damaging: 1, plain: 1, statusFrames: 1 }))
++`)
++  put(join(viewer, 'src', 'fold.js'), 'export const fold = 1\n')
++  put(join(viewer, 'src', 'theme.js'), "export const theme = { poison: { hue: '#11aa22' } }\n")
++  put(join(viewer, 'BATTLE-VIEWER.html'), '<html>the page as it was</html>\n')
++  put(join(viewer, '.gitignore'), '.build/\n')
++  const git = (...a: string[]) => execFileSync('git', a, { cwd: viewer, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] })
++  git('init', '-q'); git('config', 'user.email', 'fixture@example.invalid'); git('config', 'user.name', 'fixture'); git('config', 'core.autocrlf', 'false')
++  git('add', '-A'); git('commit', '-q', '-m', 'the package as it starts')
++  const gate = (env: Record<string, string>, ...args: string[]) => spawnSync(process.execPath, ['tools/gate.mjs', ...args], { cwd: viewer, encoding: 'utf8', env: { ...process.env, ...env } })
++  return { viewer, gate }
++}
++const VERIFY_PARTS = [1, 2, 3, 4].map((k) => ['--part', 'verify', `${k}/4`])
++
++describe('a page landing asks for the page built and the verify parts — not the checks and tests parts', () => {
++  it('nothing run on this tree: refused, and the refusal names the verify parts', () => {
++    const { viewer, gate } = scratchViewer()
++    const r = gate({}, '--land')
++    expect(r.status).toBe(1)
++    expect(r.stderr).toMatch(/GATE REFUSES --land — the page must be built and every verify part must pass on this exact tree first \(node tools\/gate\.mjs --part verify k\/4, k = 1\.\.4\)/)
++    expect(readFileSync(join(viewer, 'BATTLE-VIEWER.html'), 'utf8')).toBe('<html>the page as it was</html>\n')
++  }, LONG)
++
++  it('the page built and the four verify parts passed: it lands, and the parts it did not run are said SKIPPED, never PASS', () => {
++    const { viewer, gate } = scratchViewer()
++    for (const part of VERIFY_PARTS) { const p = gate({}, ...part); expect(p.status, p.stdout + p.stderr).toBe(0) }
++    const status = gate({}, '--status')
++    expect(status.status).toBe(1)   // the whole gate is not green: three parts were not run
++    expect(status.stdout).toMatch(/THE PAGE IS BUILT AND EVERY VERIFY PART PASSES — node tools\/gate\.mjs --land may write BATTLE-VIEWER\.html\. Not run on this tree, and not needed for a page landing \(the scheduled run runs them\): checks, tests 1\/2, tests 2\/2/)
++    const r = gate({}, '--land')
++    expect(r.status, r.stdout + r.stderr).toBe(0)
++    for (const p of ['checks', 'tests 1/2', 'tests 2/2']) {
++      expect(r.stdout, p).toContain(`  SKIPPED  part ${p} — not run at a page landing: the viewer's whole gate is run by the scheduled run (from engine/: node tools/suites.mjs --run all --full); no scheduled run is recorded`)
++      expect(r.stdout, p).not.toMatch(new RegExp(`${p}\\s+PASS`))
++    }
++    expect(r.stdout).toMatch(/landed BATTLE-VIEWER\.html · sha256 [0-9a-f]{12} · BUILT AND PLAYED THROUGH: the 4 verify parts passed against this page on tree [0-9a-f]{10}; NOT RUN: checks, tests 1\/2, tests 2\/2/)
++    expect(readFileSync(join(viewer, 'BATTLE-VIEWER.html'), 'utf8')).toBe('<html>export const fold = 1\n</html>')
++    // no pass of the whole gate is recorded: it did not run
++    expect(existsSync(join(viewer, '.state', 'passes.jsonl'))).toBe(false)
++  }, LONG)
++
++  it('a verify part that fails: refused', () => {
++    const { viewer, gate } = scratchViewer()
++    for (const part of VERIFY_PARTS) gate({ FIXTURE_FAIL: 'verify-3' }, ...part)
++    const r = gate({}, '--land')
++    expect(r.status).toBe(1)
++    expect(r.stderr).toMatch(/GATE REFUSES --land — a part that was run on this tree FAILED \(verify 3\/4\)/)
++    expect(readFileSync(join(viewer, 'BATTLE-VIEWER.html'), 'utf8')).toBe('<html>the page as it was</html>\n')
++  }, LONG)
++
++  it('a checks part that WAS run on this tree and failed still refuses: a failure in hand is not a check that was not run', () => {
++    const { viewer, gate } = scratchViewer()
++    for (const part of VERIFY_PARTS) expect(gate({}, ...part).status).toBe(0)
++    expect(gate({ FIXTURE_FAIL: 'typecheck' }, '--part', 'checks').status).toBe(1)
++    const r = gate({}, '--land')
++    expect(r.status).toBe(1)
++    expect(r.stderr).toMatch(/GATE REFUSES --land — a part that was run on this tree FAILED \(checks\)/)
++    // the tree changed (the fix): the record is another tree's, and the page must be played through again
++    appendFileSync(join(viewer, 'src', 'fold.js'), 'export const fixed = 2\n')
++    expect(gate({}, '--land').stderr).toMatch(/the page must be built and every verify part must pass on this exact tree first/)
++    for (const part of VERIFY_PARTS) expect(gate({}, ...part).status).toBe(0)
++    expect(gate({}, '--land').status).toBe(0)
++    expect(readFileSync(join(viewer, 'BATTLE-VIEWER.html'), 'utf8')).toContain('export const fixed = 2')
++  }, LONG)
++})
+kingdom cf88bfd tool.landing-on-the-quick-check: the gate's suite check says when the last scheduled run of the whole suites was and what it found, and fails a landing only when none is recorded in the last day - it no longer asks for a pass on kingdom's code (engine/DECISIONS.md 2026-10-06 'the one plan: land on the quick check, run the whole suites twice a day, four streams and one lander'); test/gate-follows-code.test.ts: four cases on a scratch package, one older test restated with a dated note
+
+diff --git a/test/gate-follows-code.test.ts b/test/gate-follows-code.test.ts
+index 3851c44..1759ce0 100644
+--- a/test/gate-follows-code.test.ts
++++ b/test/gate-follows-code.test.ts
+@@ -88,6 +88,16 @@ describe("kingdom's shards are recorded against kingdom's code", () => {
+ describe('a landing never reports PASS for a suite it did not run', () => {
+   const src = readFileSync(GATE, 'utf8')
+-  it('the full-suite check says SKIPPED when the shards ran on the same code but another tree', () => {
+-    expect(src).toMatch(/skipped: true, note: `kingdom code \$\{code\} is unchanged since the four shards passed/)
++  // Law 10, 2026-10-06 — tool.landing-on-the-quick-check (engine queue; engine/DECISIONS.md 'the one plan: land on the quick
++  // check, run the whole suites twice a day, four streams and one lander', decided by the home chat on Andrew's word: "Decide
++  // what keeps the checks that matter and removes the things that don't."; the item: "the engine gate's and the kingdom
++  // gate's suite line … say when the last scheduled run was and what it found, and refuse only when no scheduled run is
++  // recorded in the last day"). This test was named 'the full-suite check says SKIPPED when the shards ran on the same code
++  // but another tree' and its first line asserted
++  //   expect(src).toMatch(/skipped: true, note: `kingdom code \$\{code\} is unchanged since the four shards passed/)
++  // — the check then FAILED a landing whose code had no pass at all. It no longer asks for a pass on the code: unless the
++  // four shards passed on this exact tree it says SKIPPED with the last scheduled run, whatever the code (the describe below).
++  it('the suite check says SKIPPED, with the last scheduled run, whenever the shards did not pass on this exact tree', () => {
++    expect(src).toMatch(/return \{ skipped: true, note: `kingdom's suite is not run at a landing — \$\{whole\.said\}/)
++    expect(src).not.toMatch(/is unchanged since the four shards passed/)
+     expect(src).toMatch(/r\.skipped \? 'SKIPPED'/)
+   })
+@@ -97,2 +107,59 @@ describe('a landing never reports PASS for a suite it did not run', () => {
+   })
+ })
++
++// tool.landing-on-the-quick-check (2026-10-06, the note above). The real gate, on a scratch package whose item passes
++// nothing else here (there is no compiler in a scratch folder): only the suite line is read.
++describe("a landing says what the last scheduled run found, and fails for the suites only when none is recorded in the last day", () => {
++  const SUITES = "the whole suites — a scheduled run in the last day"
++  const item = (dir: string) => writeFileSync(join(dir, '.state', 'backlog.json'), JSON.stringify([{ id: 'tool.a-thing', kind: 'kingdom', shape: 'plumbing', spec: 'A thing.', expect: 'It does it.', unreachable: 'a tooling item: it closes no criterion of the slice' }]))
++  /** A scheduled run, as engine/tools/suites.mjs records one: a line in each of the four packages' passes.jsonl, all dated by when it started. */
++  const scheduled = (dir: string, hoursAgo: number, failed: string[] = []) => {
++    const at = new Date(Date.now() - hoursAgo * 3_600_000).toISOString()
++    for (const suite of ['engine', 'content', 'viewer', 'kingdom']) {
++      const state = join(dirname(dir), suite, '.state')
++      mkdirSync(state, { recursive: true })
++      appendFileSync(join(state, 'passes.jsonl'), JSON.stringify({ suite, stamp: '0123456789', at, by: 'suites --run --full', in: 'main', scheduled: at, ...(failed.includes(suite) ? { failed: true, failing: [{ name: 'test/a.test.ts > x', timedOut: false }] } : {}) }) + '\n')
++    }
++  }
++  const line = (out: string) => out.split('\n').find((l) => l.includes(SUITES)) ?? ''
++
++  it('none recorded: a check says so and that a landing will refuse; a landing FAILS on it, naming the run to make', () => {
++    const dir = scratch()
++    item(dir)
++    expect(line(gate(dir, 'tool.a-thing').stdout)).toMatch(/^  SKIPPED  the whole suites — a scheduled run in the last day  — kingdom's suite is not run at a landing — no scheduled run of the whole suites is recorded — none in the last 24 hours: a landing \(--land\) refuses until the lander has run it$/)
++    expect(line(gate(dir, 'tool.a-thing', '--land').stdout)).toMatch(/^  FAIL  the whole suites — a scheduled run in the last day  — no scheduled run of the whole suites is recorded — none in the last 24 hours\. The lander runs the whole suites, alone on the machine, from engine\/: node tools\/suites\.mjs --run all --full — then land again$/)
++  }, LONG)
++
++  it('one under a day old — though kingdom code has no pass of its own, and the run found a failure: SKIPPED with what it found, at a check and at a landing', () => {
++    const dir = scratch()
++    item(dir)
++    scheduled(dir, 4, ['engine'])
++    expect(gate(dir, '--shards-green').status).toBe(1)   // what a landing asked for until 2026-10-06
++    for (const args of [['tool.a-thing'], ['tool.a-thing', '--land']]) {
++      expect(line(gate(dir, ...args).stdout)).toMatch(/^  SKIPPED  the whole suites — a scheduled run in the last day  — kingdom's suite is not run at a landing — the last scheduled run of the whole suites: \d{4}-\d\d-\d\d \d\d:\d\d, in main — content PASS · kingdom PASS · engine FAIL \(test\/a\.test\.ts > x\) · viewer PASS$/)
++    }
++  }, LONG)
++
++  it('one over a day old: a landing fails on it, and the old run is named', () => {
++    const dir = scratch()
++    item(dir)
++    scheduled(dir, 30)
++    expect(line(gate(dir, 'tool.a-thing', '--land').stdout)).toMatch(/^  FAIL  the whole suites — a scheduled run in the last day  — the last scheduled run of the whole suites: .* — 30 hours ago, over 24 — none in the last 24 hours\./)
++  }, LONG)
++
++  it("four shards that passed on this exact tree are still said, beside the scheduled run: they ran, and they are kingdom's alone", () => {
++    const dir = scratch()
++    item(dir)
++    // the tree the gate judges: everything `git add -A` would commit, less .state/ (tools/gate.mjs treeHash)
++    const env = { ...process.env, GIT_INDEX_FILE: join(mkdtempSync(join(tmpdir(), 'kidx-')), 'index') }
++    const g = (...a: string[]) => execFileSync('git', a, { cwd: dir, env, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] })
++    g('add', '-A', '--', '.', ':!.state'); g('rm', '-r', '-q', '--cached', '--ignore-unmatch', '--', '.state')
++    const tree = g('write-tree').trim()
++    record(dir, { stamp: stampOf('kingdom', dir), tree, total: 4, passed: [1, 2, 3, 4], at: new Date().toISOString() })
++    scheduled(dir, 4)
++    expect(line(gate(dir, 'tool.a-thing', '--land').stdout)).toMatch(/^  SKIPPED  the whole suites — a scheduled run in the last day  — kingdom's suite is not run at a landing — the last scheduled run of the whole suites: .* · viewer PASS \(kingdom's own 4 shards did pass on this exact tree, kingdom code [0-9a-f]{10}\)$/)
++    // the same shards, another tree (a document moved): they are not said of this tree
++    appendFileSync(join(dir, 'CLAUDE.md'), 'a line\n')
++    expect(line(gate(dir, 'tool.a-thing', '--land').stdout)).toMatch(/ · viewer PASS$/)
++  }, LONG)
++})
+```
+</details>
