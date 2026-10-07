@@ -718,7 +718,9 @@
    "item.divine-bulwark"
   ],
   "note": "Probes declared 2026-10-06 by the content builder (engine SWITCHES.md oneUseProbes; GBH SWITCHES gate.dataItemProbeIsTheDictatedCase): the item's own id is not a content id, so the gate probes the rows of the ruling that a real battle fields.",
-  "attempts": 1
+  "attempts": 1,
+  "status": "done-needs-review",
+  "sha": "c6c004f"
  },
  {
   "id": "content.used-twice-rules-removed",
