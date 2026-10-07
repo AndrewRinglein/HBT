@@ -2310,7 +2310,9 @@ function compileSentences(desc) {
     if (/^(Free|No roll, no crit)$/.test(s0)) continue;   // markers the row's fields already carry
     // flavour and explanation sentences — not rules
     if (/^(Read that|It makes no attack|It does not roll|It never rolls|It does not spend|It costs nothing|Cheap and|Put it on|Thrown into|Because Magic|Your cheap|Anyone carrying Burn|about \d|as an area effect)/.test(s0)) continue;
-    if (/^Until the end of your next Turn, your attacks/.test(s0)) continue;   // the `modifies` field carries it
+    // the `modifies` field carries it - "your ranged attacks" too (engine content.one-use-class-powers-reworded, 2026-10-06:
+    // Overwatch's new sentence; its Crit and Reach compile from the field, so the sentence is not a second, unread, gap)
+    if (/^Until the end of your next Turn, your (?:ranged )?attacks/.test(s0)) continue;
     gaps.push(`unparsed: ${s0.slice(0, 80)}`);
   }
   return { effects, gaps, ground };
