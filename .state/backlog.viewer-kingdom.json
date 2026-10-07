@@ -1,5 +1,21 @@
 [
  {
+  "id": "viewer.camera-out-of-board",
+  "kind": "viewer",
+  "shape": "plumbing",
+  "spec": "The one plan, a structure change the streams need (Andrew 2026-10-06, engine/DECISIONS.md 'the one plan: land on the quick check, run the whole suites twice a day, four streams and one lander': the camera only; CODEBASE-REVIEW-2026-10-05.md section 4, item 8 and section 5.3): viewer/src/board.js is 2,386 lines (2026-10-06; it gained about 1,400 in two weeks) and is six components. About 800 of its lines are the camera, the edge bubbles, the reveal and the picking, though src/camera3d.js and src/camera-policy.js already exist. Move the camera out of board.js into its own module or modules beside those two, one job each (read all three first; say in the commit and at each file's head what each owns). board.js keeps what it draws and asks the camera for the view. This is a move, not a rewrite: no behaviour changes and no test's expectation changes (Law 10) - the page tests are the proof. Add no exemption to tools/exemptions.json for it. The unit tokens and the beats are NOT part of the cut: leave them in board.js.",
+  "expect": "board.js holds no camera, edge-bubble, reveal or picking code; every page test and the viewer gate pass with no expectation changed; the built page plays the same battles (the gate's verify part: cursor equals events, the outcome matches); the camera files' heads say what each owns.",
+  "note": "Filed by the home chat, 2026-10-06 - the one plan: a structure change the streams need, first in its stream. Big - it goes alone, not in a group."
+ },
+ {
+  "id": "viewer.model-table-lives-in-art",
+  "kind": "viewer",
+  "shape": "plumbing",
+  "spec": "The one plan, a structure change the streams need (Andrew 2026-10-06, engine/DECISIONS.md 'art and motion, and maps, are areas of their own that the viewer points at': \"I think that motion and art should not be part of the viewer ... Shouldn't the viewer just point at the appropriate motions?\"; 'the two new areas are art/ and maps/'; 'the art item is the smaller version': \"Okay, let's do a smaller version of the art item\"): the table of which look each unit type wears, which file and clip each motion is and what each body holds is viewer/tools/character-models.mjs (680 lines; BINDINGS, CLASS_LOOKS, CIVILIANS, HELD and the rest), with viewer/tools/equipment-models.mjs (24 lines) for held items - so every art change that adds or changes a model or a motion edits a viewer file. Move those two files, as they are, to art/tools/ at the project root, and leave at each old path a one-line re-export, so that none of the 31 files that import or run them (viewer tools, tests and src; kingdom tools and tests; one engine tool) is edited. Fix only what the move breaks inside the two files (how they find the project root and the viewer's generated/static.json). Count art/tools/ as the viewer's code in engine/tools/code-stamp.mjs PACKAGE_CODE, so that an edit to the table makes the viewer's recorded pass stale - without that an art-side edit would change the page with no gate run. Add art/README.md in a few plain lines: what the area is, that the table of who wears what is art/tools/character-models.mjs, that the model and motion files still live under assets/characters, and what the root's existing art/ files (GAPS.md, MANIFEST.json, heroes/) are. NOT in this item, and written as waiting in CODEBASE-REVIEW-2026-10-05.md: a separate list file the viewer reads, the check of every id against content, and moving the head-and-skin drawing code. No look changes: the pack the page receives is the same data.",
+  "expect": "viewer/tools/character-models.mjs and equipment-models.mjs are one-line re-exports and the table lives under art/tools/; no other file was edited to follow the move; node engine/tools/code-stamp.mjs --packages changes for the viewer when art/tools/character-models.mjs is edited (seen, then reverted); the built page's character pack is byte-identical to before; the viewer gate and the kingdom suite pass.",
+  "note": "Filed by the home chat, 2026-10-06 - the one plan: a structure change the streams need, first in its stream. Small to medium; after the maps item so the two do not edit the code stamp at once."
+ },
+ {
   "id": "viewer.repainted-scenes-in-the-game",
   "kind": "viewer",
   "shape": "plumbing",

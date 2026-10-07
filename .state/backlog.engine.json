@@ -1,5 +1,22 @@
 [
  {
+  "id": "tool.logs-not-tracked",
+  "kind": "engine",
+  "shape": "plumbing",
+  "spec": "The one plan, a structure change the streams need (Andrew 2026-10-06, engine/DECISIONS.md 'the one plan: land on the quick check, run the whole suites twice a day, four streams and one lander'; root CODEBASE-REVIEW-2026-10-05.md section 4, item 3): 581 `.log` files are tracked across the five repositories (2026-10-06: engine 276, most under scratch/; viewer 118, 95 of them at its root; kingdom 55; content 21; the root 111) and no `.gitignore` excludes them, so every gate run's output is committed with the next landing. In each of the five repositories add `*.log` to `.gitignore` and stop tracking the logs that are in (`git rm --cached`; the files stay on disk). Before removing, find the logs that a test, a tool or a document reads by name (a `*-red.log` beside a tool, a red log a criterion record cites): keep those tracked with a `!name` line each and say which reader needs each. Each repository commits its own change. A log is already not code (engine/tools/code-stamp.mjs LOGS), so no recorded pass goes stale.",
+  "expect": "`git ls-files '*.log'` in each of the five repositories lists only the logs named as kept, each with the reader that needs it; a log written by a gate run shows in no `git status`; `node tools/suites.mjs --plan` still reads every suite fresh.",
+  "note": "Filed by the home chat, 2026-10-06 - the one plan: a structure change the streams need, first in its stream. Small tooling; five repositories, one commit each."
+ },
+ {
+  "id": "tool.one-battle-cursor-golden",
+  "kind": "engine",
+  "shape": "plumbing",
+  "changesBaseline": false,
+  "spec": "The one plan, a structure change the streams need (Andrew 2026-10-06, engine/DECISIONS.md 'the one plan: land on the quick check, run the whole suites twice a day, four streams and one lander'; CODEBASE-REVIEW-2026-10-05.md section 4, item 7 and section 5.2): test/battle-cursor.test.ts (1,462 lines on 2026-10-06) holds one layer per landing that moved a battle. Each such landing adds a fixture test/fixtures/battle-cursor-<item>.json (87 of them), a single-use tools/capture-<item>-cursor.mts (78, each refusing to run twice) and a chained line `<x>Moved = ... || <previous>Moved`; the test and the tools folder grow with every battle-moving landing, and no one file shows what the battles are now. Replace the chain with ONE capture tool that takes the landing's name and ONE current golden. The tool re-records the golden from the engine as it stands and writes, beside it, which cases moved against the previous golden, the landing that moved them and the written reason Law 10 demands (a required argument). The test compares the engine against the one golden. The earlier layers' history stays in git: say at the test's head which commit removed them. No battle may move by this item - before removing a layer, show case by case that the new golden equals what the chain's last layer expects. Read engine/CLAUDE.md on how a battle-moving landing is recorded today, and change that text to the one command.",
+  "expect": "The suite passes with one golden fixture and one capture tool in place of the chain; run on the unchanged engine the tool reports no case moved; a scratch change that moves one battle makes the test fail naming the case, and the tool then records it with the landing's name and reason (seen, then reverted); the per-landing capture tools and cursor fixtures are gone except the one of each; engine/CLAUDE.md names the one command.",
+  "note": "Filed by the home chat, 2026-10-06 - the one plan: a structure change the streams need, first in its stream. Goes alone: it changes how every later battle-moving landing is recorded."
+ },
+ {
   "id": "tool.thirty-second-test-limit-on-the-pc",
   "kind": "engine",
   "shape": "plumbing",
