@@ -67,13 +67,27 @@ describe('authored action slots', () => {
     const ctx = fixture(), id = grant(ctx, { slot: 'movement' })
     rejectUnchanged(ctx, { actor: 0, actionId: id, target: 1, slot: 'primary' })
   })
-  it.each(['power.flight', 'power.sidestep', 'power.move'])('movement profile %s can spend primary', base => {
+  // Law 10, 2026-10-06 — OVERTURNED by a ruling, not loosened: rule.one-move-action-one-primary-action (Andrew, DECISIONS.md 'an
+  // Activation is one move action and one primary action, in that order; …': "All the player units get two actions: a move
+  // action and a primary action, in that order, every time they get activated. … That's fundamentally how this was built.")
+  // The primary action never takes a move-class action, so a movement row authored for the primary action alone has no
+  // slot it can be taken in. The 2026-08 law this file holds ("structurally, movement and primary are identical") stands for
+  // limits, costs, cooldowns and uses, and is narrowed in this one way. The test was:
+  //   it.each(['power.flight', 'power.sidestep', 'power.move'])('movement profile %s can spend primary', base => {
+  //     const ctx = fixture(), id = grant(ctx, { slot: 'primary' }, base) …
+  //     expect(executeAction(ctx, { actor: 0, actionId: id, destination: 84 }).ok).toBe(true)
+  //     expect([ctx.state.units[0]!.moveUsed, ctx.state.units[0]!.primaryUsed]).toEqual([false, true]) … })
+  it.each(['power.flight', 'power.sidestep', 'power.move'])('movement profile %s cannot spend primary: authored for the primary action it is refused with the movement-slot reason; authored either, it is the move action', base => {
     const ctx = fixture(), id = grant(ctx, { slot: 'primary' }, base)
     ctx.state.units[1]!.hex = 255
     const points = ctx.state.units[0]!.movePointsLeft
     expect(ctx.actions[id]!.move).toBeDefined()
-    expect(executeAction(ctx, { actor: 0, actionId: id, destination: 84 }).ok).toBe(true)
-    expect([ctx.state.units[0]!.moveUsed, ctx.state.units[0]!.primaryUsed]).toEqual([false, true])
+    expect(executeAction(ctx, { actor: 0, actionId: id, destination: 84 })).toEqual({ ok: false, reason: 'movement-slot-closed' })
+    expect([ctx.state.units[0]!.moveUsed, ctx.state.units[0]!.primaryUsed, ctx.state.units[0]!.hex === 84]).toEqual([false, false, false])
+    const either = grant(ctx, { slot: 'either' }, base)
+    expect(executeAction(ctx, { actor: 0, actionId: either, destination: 84, slot: 'primary' })).toEqual({ ok: false, reason: 'movement-slot-closed' })
+    expect(executeAction(ctx, { actor: 0, actionId: either, destination: 84 }).ok).toBe(true)
+    expect([ctx.state.units[0]!.moveUsed, ctx.state.units[0]!.primaryUsed]).toEqual([true, false])
     expect(ctx.state.units[0]!.hex).toBe(84)
     expect(ctx.state.units[0]!.movePointsLeft).toBe(points - (base === 'power.sidestep' ? 0 : 1))
     expect(ctx.state.units[0]!.stamina).toBe(base === 'power.sidestep' ? 100 : 99)

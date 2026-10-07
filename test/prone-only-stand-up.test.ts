@@ -204,13 +204,22 @@ describe('a prone unit makes no special free attack', () => {
 })
 
 describe('a unit that is standing is unchanged', () => {
-  it('a movement used before any walk still closes nothing: a Leap, then the walk in the primary slot', () => {
+  // Law 10, 2026-10-06 — OVERTURNED by a ruling, not loosened: rule.one-move-action-one-primary-action (Andrew, DECISIONS.md 'an
+  // Activation is one move action and one primary action, in that order; …': "All the player units get two actions: a move action
+  // and a primary action, in that order, every time they get activated. … That's fundamentally how this was built.") A walk
+  // after a Leap was the engine's fault, not a case to keep: the primary action never takes a move-class action. This case stood here as the control ("a unit that is standing is unchanged"), and that
+  // control is what the ruling found wrong. The test was:
+  //   it('a movement used before any walk still closes nothing: a Leap, then the walk in the primary slot', () => {
+  //     … const walkTo = movementOptions(ctx, 0, 'power.move')[0]?.destination
+  //     expect(walkTo, 'the walk is still offered').toBeDefined()
+  //     expect(validateAction(ctx, { actor: 0, actionId: 'power.move', destination: walkTo! })).toEqual({ ok: true })
+  //     expect(u.primaryUsed).toBe(false) })
+  it('a standing unit too has one move action: a Leap, and the walk is then closed with the reason a stood unit\'s is', () => {
     const { ctx, u } = rig(WARRIOR)
     const leapTo = movementOptions(ctx, 0, 'power.leap')[0]!.destination
     expect(executeAction(ctx, { actor: 0, actionId: 'power.leap', destination: leapTo })).toEqual({ ok: true })
-    const walkTo = movementOptions(ctx, 0, 'power.move')[0]?.destination
-    expect(walkTo, 'the walk is still offered').toBeDefined()
-    expect(validateAction(ctx, { actor: 0, actionId: 'power.move', destination: walkTo! })).toEqual({ ok: true })
+    expect(movementOptions(ctx, 0, 'power.move'), 'the walk is no longer offered').toEqual([])
+    expect(validateAction(ctx, order(ctx, u, ctx.actions['power.move']!))).toEqual(CLOSED)
     expect(u.primaryUsed).toBe(false)
   })
   it('the stand is refused to a unit that is not down, as before', () => {

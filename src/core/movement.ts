@@ -9,7 +9,7 @@ import { moveCostOf, terrainIdOf } from '../content/maps.js'
 import { blockingPropAt, passableHexes, type Passable } from './props.js'
 import { flatDamage } from './mitigation.js'
 import { addStatMod, applyCollisionDamage, emit, gainStamina, knockUnit, layerAt, loseMaxStamina, markWalked, moveUnit, standUp, unit } from './mutate.js'
-import { actionReady, closedByWalk, refusedProne, resolveActionSlot, isMove, movesOf, spendAction, staminaCostOf, walkOf } from './action.js'
+import { actionReady, refusedProne, resolveActionSlot, resumesWalk, isMove, movesOf, spendAction, staminaCostOf, walkOf } from './action.js'
 import { forcedTargetOf, hiddenFrom, incomingAbsorb, isBlocked, isProne, isRooted, spendAbsorb } from './status.js'
 import { FREE_ATTACK_STATS, performAttack, preview, type FreeAttackKind } from './pipeline.js'
 import { effective } from './stats.js'
@@ -130,6 +130,13 @@ export function pathTo(reach: Reach, from: HexId, dest: HexId): HexId[] {
   return path.reverse()
 }
 
+/**
+ * rule.one-move-action-one-primary-action (2026-10-06): the bonus movement a move's row gives THIS use of it. The rest of a
+ * walk cut short is the same move action, not a second use — it walks on what is left of the Activation's movement and is
+ * given no bonus again (SWITCHES.md resumedWalkNoSecondBonus; the bonus is paid first, so what of it was not walked is gone).
+ */
+const bonusOf = (ctx: Ctx, u: Unit, power: MoveDef): number => (resumesWalk(ctx, u, power) ? 0 : power.move.budgetMod)
+
 export type StepHook = (ctx: Ctx, unitId: number, entered: HexId) => boolean
 
 export type MovementPlan = { kind: 'move'; actor: number; power: MoveDef; destination: number; path: number[]; /** Movement points for this path; zero for non-path shapes. */ pathCost: number; slot: import('./types.js').ActionSlot }
@@ -141,11 +148,11 @@ function movementReason(ctx: Ctx, u: Unit, power: MoveDef, slot?: import('./type
   if (u.lifeState !== 'standing' || isBlocked(ctx, u)) return 'actor-cannot-act'
   if (refusedProne(ctx, u, power)) return 'actor-prone'   // rule.prone-only-stand-up: knocked down — only its stand
   if (!actionReady(ctx, u, power)) return 'action-not-ready'
+  // rule.one-move-action-one-primary-action (2026-10-06): a move-class action is only ever the move action, and there is one —
+  // the slot's own answer. It subsumes what rule.walked-unit-has-moved (2026-10-04) and rule.prone-only-stand-up (2026-10-05)
+  // each asked here in a line of their own (closedByWalk): a unit that has walked takes no OTHER movement, a unit that has
+  // stood takes none; the rest of a walk cut short is the same move action and is not closed (action.ts resumesWalk).
   if (resolveActionSlot(ctx, u, power, slot) === null) return 'movement-slot-closed'
-  // rule.walked-unit-has-moved (2026-10-04): a unit that has walked takes no OTHER movement this action cycle — the same
-  // refusal a spent movement slot gives, because that is what it is: its move is done (the rest of the walk is not closed).
-  // rule.prone-only-stand-up (2026-10-05): and a unit that has stood up takes no movement at all — standing was its move
-  if (closedByWalk(ctx, u, power)) return 'movement-slot-closed'
   return null
 }
 
@@ -170,7 +177,7 @@ function planMovementWithView(ctx: Ctx, actor: number, actionId: string, destina
   if (!passable(destination) || occupancy(ctx).has(destination) || avoid?.has(destination)) return refused('unreachable-destination')
   if (power.move.shape === 'sidestep') return ctx.geo.distance(u.hex, destination) === stepRangeOf(power) && passable(destination,u.hex) ? plan : refused('unreachable-destination')
   if (power.move.shape === 'flight') return flightLandings(ctx, u, power).includes(destination) ? plan : refused('unreachable-destination')
-  const reach = reachable(ctx, u, power.move.budgetMod, avoid)
+  const reach = reachable(ctx, u, bonusOf(ctx, u, power), avoid)
   if (!reach.has(destination)) return refused('unreachable-destination')
   plan.path = pathTo(reach, u.hex, destination)
   plan.pathCost = reach.get(destination)!.cost
@@ -184,7 +191,7 @@ export function movementOptions(ctx: Ctx, actor: number, actionId: string, slot?
   if (power.move.shape === 'sidestep' && stepRangeOf(power) === 0) return [{ kind: 'move', actor, power, destination: u.hex, path: [], pathCost: 0, slot: resolveActionSlot(ctx, u, power, slot)! }]
   if (isRooted(ctx, u)) return []
   if (power.move.shape === 'path') {
-    const reach = reachable(ctx, u, power.move.budgetMod, avoid)
+    const reach = reachable(ctx, u, bonusOf(ctx, u, power), avoid)
     return [...reach.keys()].sort((a, b) => a - b).map(destination => ({ kind: 'move', actor, power, destination, path: pathTo(reach, u.hex, destination), pathCost: reach.get(destination)!.cost, slot: resolveActionSlot(ctx, u, power, slot)! }))
   }
   if (power.move.shape === 'flight') return flightLandings(ctx, u, power).filter(h => !avoid?.has(h)).map(destination => ({ kind: 'move', actor, power, destination, path: [], pathCost: 0, slot: resolveActionSlot(ctx, u, power, slot)! }))
@@ -209,7 +216,8 @@ export function executeMove(ctx: Ctx, unitId: number, path: HexId[], power: Move
   const u = unit(ctx, unitId)
   const props=ctx.state.props,passable=passableFor(ctx,u,props),edgeCost=preparedLowEdgeCost(ctx,props)
   if (power.move.shape !== 'path' || movementReason(ctx, u, power, slot) || isRooted(ctx, u)) return 0
-  const allowance = Math.max(0, u.movePointsLeft + power.move.budgetMod)
+  const bonus = bonusOf(ctx, u, power)   // read before the spend below
+  const allowance = Math.max(0, u.movePointsLeft + bonus)
   const occupied = occupancy(ctx)
   let from = u.hex, asked = 0
   for (const hex of path) {
@@ -221,7 +229,7 @@ export function executeMove(ctx: Ctx, unitId: number, path: HexId[], power: Move
 
   spendAction(ctx, unitId, power, resolveActionSlot(ctx, u, power, slot)!)   // THE ONE SPEND (refactor.one-action-type)
   emit(ctx, 'move.begin', power.id, { actor: unitId, from: u.hex, to: path[path.length - 1], hexes: path.length })
-  return walkSteps(ctx, unitId, path, power.id, allowance, Math.max(0, power.move.budgetMod), onStep)
+  return walkSteps(ctx, unitId, path, power.id, allowance, Math.max(0, bonus), onStep)
 }
 
 /**

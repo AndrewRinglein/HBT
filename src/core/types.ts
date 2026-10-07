@@ -1191,11 +1191,6 @@ export type Unit = {
    * activation start, at activation end and by a Surge.
    */
   walked?: boolean
-  /**
-   * rule.prone-only-stand-up (2026-10-05): the unit has stood up from prone in this action cycle — that was its one move
-   * action, so no movement is accepted from it until the cycle is over. Absent = it has not; cleared where `walked` is.
-   */
-  stood?: boolean
   /** capability.auras: this unit's auras, own frozen copies (plain data). */
   auras: AuraDef[]
   /** capability.corpses: a raised or summoned unit leaves no corpse. capability.summons: on the heroes' side it is not a hero for victory or defeat. */

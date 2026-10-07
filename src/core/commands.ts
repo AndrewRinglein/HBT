@@ -1,7 +1,7 @@
 // The session boundary owns whose input is accepted. Resolution stays in the
 // same attack, power and movement functions used by automatic battles.
 import type { Ctx } from './types.js'
-import { actionReady, grantedActionIds, isAttack, isBurst, isCharge, isMove, refusedProne, resolveActionSlot } from './action.js'
+import { actionReady, grantedActionIds, isAttack, isBurst, isCharge, isMove, refusedProne, resolveActionSlot, isMoveClass } from './action.js'
 import { canAttack, performAttack } from './pipeline.js'
 import { burstCentres, canUseBurst, useBurst } from './burst.js'
 import { canUsePower, canUsePowerAt, powerHexesOf, usePower, usePowerAt } from './ability.js'
@@ -88,7 +88,10 @@ function planAction(ctx: Ctx, request: unknown): Plan | Rejection {
   const more = !!a && a.target?.select === 'hex' && u.aiming?.actionId === actionId && u.aiming.left > 0
   if (!a || (!more && !actionReady(ctx, u, a))) return reject('action-not-ready')
   const slot = more ? (request.slot === undefined || request.slot === 'primary' ? 'primary' : null) : resolveActionSlot(ctx, u, a, request.slot)
-  if (slot === null) return reject('action-slot-closed')
+  // rule.one-move-action-one-primary-action (2026-10-06): a movement refused its slot while the cycle is still open says so in
+  // the movement's own word (its move action is spent, or it was asked for as the primary action) — the reason the walked
+  // rule gave; once the primary action is spent the cycle is over for every action alike
+  if (slot === null) return reject(isMoveClass(a) && !u.primaryUsed ? 'movement-slot-closed' : 'action-slot-closed')
   if (isBurst(a)) {
     if (!centred || !integer(request.centre)) return reject('malformed-centre')
     return canUseBurst(ctx, actor, request.centre, actionId, slot) ? { kind: 'burst', actor, centre: request.centre, actionId, slot } : reject('illegal-centre-or-action')

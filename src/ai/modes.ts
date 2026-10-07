@@ -83,7 +83,10 @@ function anchorsAllow(decision: Decision, u: Unit, hex: HexId): boolean {
 }
 const onList = (decision: Decision, request: ActionRequest): boolean => options(decision, request.actor).keys.has(requestKey(request))
 function usableMoves(decision: Decision, u: Unit): MoveDef[] {
-  return readyMoves(decision.ctx, u).filter(a => !decision.freeUsed.has(a.id) && resolveActionSlot(decision.ctx, u, a) !== null)
+  // rule.one-move-action-one-primary-action (2026-10-06): the rest of a walk cut short is still the move action, and the
+  // legality offers it; the computer does not take it — it makes its one movement and then its primary action, as it always
+  // has (SWITCHES.md computerDoesNotResumeAWalk)
+  return readyMoves(decision.ctx, u).filter(a => !decision.freeUsed.has(a.id) && resolveActionSlot(decision.ctx, u, a) !== null && (a.free || !u.moveUsed))
 }
 function movePowerOf(decision: Decision, u: Unit, shape: MoveDef['move']['shape']): MoveDef | null {
   return usableMoves(decision, u).find(a => a.move.shape === shape) ?? null

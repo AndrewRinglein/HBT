@@ -42,11 +42,27 @@ describe('shared movement budgets', () => {
   it('does not let a repeated movement call regain the action bonus', () => {
     const { ctx, u, power } = fixture(3)
     expect(executeMove(ctx, 0, [86], power)).toBe(1)
+    // Law 10, 2026-10-06 — rule.one-move-action-one-primary-action (Andrew, DECISIONS.md 'an Activation is one move action and one
+    // primary action, in that order; …'; the item: "a walk begun and cut short may still be finished … since that is the same
+    // move action"): the repeated request is no longer refused outright — it is the REST of
+    // the same walk, in the same move action. What this test guards is kept as the rule it always was: the bonus is not
+    // regained. The first step was paid from the bonus (3) and the unit's own movement (1) is left; the rest of the walk
+    // may go that 1 and not a hex more, and spends no primary action. The lines were:
+    //   const before = saveBattle(ctx)
+    //   // V2: the repeated request is for the same spent slot, not a new primary move.
+    //   expect(executeMove(ctx, 0, [87], power, undefined, 'movement')).toBe(0)
+    //   expect(saveBattle(ctx)).toBe(before)
+    //   expect(u.hex).toBe(86)
+    expect(u.movePointsLeft, 'its own movement is left; the bonus paid the first step').toBe(1)
     const before = saveBattle(ctx)
-    // V2: the repeated request is for the same spent slot, not a new primary move.
-    expect(executeMove(ctx, 0, [87], power, undefined, 'movement')).toBe(0)
+    expect(executeMove(ctx, 0, [87, 88], power, undefined, 'movement'), 'two more hexes would need the bonus again').toBe(0)
+    expect(executeMove(ctx, 0, [87], power, undefined, 'primary'), 'never as the primary action').toBe(0)
     expect(saveBattle(ctx)).toBe(before)
-    expect(u.hex).toBe(86)
+    expect(executeMove(ctx, 0, [87], power, undefined, 'movement'), 'the rest of the walk, on its own movement').toBe(1)
+    expect([u.hex, u.movePointsLeft, u.moveUsed, u.primaryUsed]).toEqual([87, 0, true, false])
+    const after = saveBattle(ctx)
+    expect(executeMove(ctx, 0, [88], power, undefined, 'movement'), 'and no bonus a third time').toBe(0)
+    expect(saveBattle(ctx)).toBe(after)
   })
 
   it.each([[[86, 88]], [[9999]], [[86, 150]]])('rejects the entire malformed path %j before spending', path => {

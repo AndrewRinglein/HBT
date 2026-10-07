@@ -187,9 +187,20 @@ describe('capability.charge — noPrimaryAction', () => {
     const step = legalActions(ctx, e).find((r) => r.actionId === 'power.move' && 'destination' in r)!
     expect(executeAction(ctx, step)).toEqual({ ok: true })
     expect(legalActions(ctx, e)).toEqual([])
-    // the same body without the flag walks twice (movement, then primary) — the flag is the difference
-    const plain = duel('unit.fast-zombie', 6)
-    expect(resolveActionSlot(plain.ctx, plain.ctx.state.units[plain.e]!, walk, 'primary')).toBe('primary')
+    // Law 10, 2026-10-06 — rule.one-move-action-one-primary-action (Andrew, DECISIONS.md 'an Activation is one move action and one
+    // primary action, in that order; …': "All the player units get two actions: a move action and a primary action, in that
+    // order, every time they get activated."; SWITCHES.md oneMoveEveryUnit: applied to every unit). These lines held "the same
+    // body without the flag walks twice (movement, then primary) — the flag is the difference":
+    //   const plain = duel('unit.fast-zombie', 6)
+    //   expect(resolveActionSlot(plain.ctx, plain.ctx.state.units[plain.e]!, walk, 'primary')).toBe('primary')
+    // No unit takes a walk as its primary action now, so the walk no longer tells the two bodies apart. What the flag is has not
+    // changed — no primary action at all — and it is held on an attack: the plain body's own attack is its primary action, the
+    // Colossus is refused the primary action for the same row.
+    const plain = duel('unit.fast-zombie', 6), body = plain.ctx.state.units[plain.e]!
+    const strike = ACTIONS[UNITS['unit.fast-zombie']!.attacks.find((id) => ACTIONS[id] && !isCharge(ACTIONS[id]!))!]!
+    expect(resolveActionSlot(plain.ctx, body, walk, 'primary'), 'no unit walks as its primary action').toBeNull()
+    expect(resolveActionSlot(plain.ctx, body, strike, 'primary'), 'the plain body has a primary action').toBe('primary')
+    expect(resolveActionSlot(ctx, c, strike, 'primary'), 'the Colossus has none — the flag is the difference').toBeNull()
     void h
   })
 })

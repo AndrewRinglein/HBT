@@ -203,6 +203,22 @@ when the claim that they already did turned out to be true of this ladder only.
 
 Repeat per hex. Vision and stealth recalculate after **every** step, after everything else in that step. Reveal auras (e.g. *reveal all stealth within 4*) are evaluated here too.
 
+**An Activation is one move action and one primary action, in that order** (rule.one-move-action-one-primary-action, 2026-10-06;
+DECISIONS.md 2026-10-06 "an Activation is one move action and one primary action, in that order; …": "All the player units get two actions: a move action and a primary action, in that order, every time they get activated. You shouldn't need to additionally author something of 'Oh, there's only one move action.' … That's fundamentally how this was built: there's a move action and a primary action."). **Built: yes.**
+One rule, in the one slot resolution (`action.ts resolveActionSlot`), for every unit: a **move-class action** — a unit's
+Move, every special move, the stand: a movement that is not a charge — is only ever taken as the **move action**. The
+primary action never takes one: not asked for, and not as a fallback once the move action is spent (until this date a
+walk, or a second movement power, could be taken "as its primary"). Once the move action is spent no move-class action is
+legal in that action cycle, refused with `movement-slot-closed` — **except the rest of the walk that is that move action**:
+a walk begun (a hex entered) and stopped short may be walked on with the movement left, in the same move action, spending
+no primary action and with no bonus movement a second time. The primary action ends the action cycle, as it did
+(rule.primary-ends-activation), so the order is the structure's own: after it nothing is legal; a unit may skip either
+action. A Surge reopens the cycle whole. This **subsumes** the two paragraphs below — the walked unit's other movements
+and the stood unit's every movement are closed by the slot itself (`closedByWalk` and `Unit.stood` are gone) — and
+corrects one clause of the first: the rest of a walk cut short is the move action still, **not** the primary action. The
+2026-08 law "there are two actions in every activation: movement and primary … structurally identical" stands for limits,
+costs, cooldowns and uses (an action is one type), and is narrowed in this one way: a move goes in the move action.
+
 **A prone unit only stands, and standing is its one move** (rule.prone-only-stand-up, 2026-10-05; DECISIONS.md 2026-10-05 "a
 prone unit only stands; Stand Up is its one move; …": asked whether a knocked-down unit should be refused its attacks and
 powers too until it stands — "yes, it cannot use attacks or powers until it stands."; asked whether it may walk after Stand
