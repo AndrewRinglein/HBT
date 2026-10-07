@@ -668,6 +668,21 @@ function compileTriggerRows(t, unitId, attackId) {
       // C20 (engine fix.one-effect-vocabulary, 2026-10-01): "until end of your Activation" is end of Activation, never the Turn
       const until = /Battle/.test(ef.effect) ? 'battle' : 'endOfActivation';
       const select = ef.target === 'self' ? 'self' : areaSelect ?? 'target';
+      // engine content.used-twice-rules-removed (2026-10-06; engine DECISIONS.md 2026-10-06 'the one-use rules: most are cut or
+      // reworded onto rules the engine already has …', of the Werewolf's Claw Frenzy: "the ordering, I don't really care about"):
+      // an onAttack grant of a stat to the attacker ITSELF for the Battle counts from the attack AFTER the one that granted it.
+      // It lands when the swing is over, on the two hooks one of which every swing fires - onHit when it connects (fired after
+      // that hit's damage is computed, engine pipeline.ts resolveHitOn) and onMiss when it misses or is blocked - so the number
+      // the forecast gave still holds (Law 1) and nothing new is built. distinctTriggerIds names the two apart by their hook.
+      // A grant to the target on onAttack, a shorter lifetime, and any grant on onCrit stay the station question they were.
+      if (t.hook === 'onAttack' && select === 'self' && until === 'battle') {
+        for (const hook of ['onHit', 'onMiss']) {
+          out.push({ id: `${unitId.replace(/^unit\./, 'trigger.')}.${(t.name || ef.stat).toLowerCase().replace(/[^a-z0-9]+/g, '-')}-${ef.stat}`,
+            hook, chance: t.chance ?? ef.chance ?? 100, select,
+            effect: { kind: 'statMod', stat: modStatOf(ef.stat), value: ef.value, until }, source: unitId, ...(attackId ? { onlyWithAttack: attackId } : {}) });
+        }
+        continue;
+      }
       // a stat grant BEFORE the damage is computed (onAttack, onCrit) would change the number the preview promised — Law 1: damage-changing effects are stations, not triggers
       if (t.hook === 'onAttack' || t.hook === 'onCrit') { gap(unitId, `${where} ${t.hook}: ${ef.effect} (${ef.stat}) — a pre-damage stat grant is a STATION question (Law 1)`, 'trigger-effect: statMod before damage'); continue; }
       if (t.hook === 'onActivationEnd' && select === 'target') { gap(unitId, `${where} ${t.hook}: ${ef.effect} (${ef.stat}) — no target on this hook`, 'trigger-effect: statMod'); continue; }
