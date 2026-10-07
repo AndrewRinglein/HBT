@@ -738,5 +738,95 @@
   "shape": "data",
   "spec": "Ruled 2026-10-06 (Andrew, engine/DECISIONS.md 'Knocked Sprawling knocks Prone and takes no Surge; the Bleeding crit is 4 Bleed; the card-draw badge rules are cut for now'): asked whether the badges that speak of drawing cards belong to a card system or are leftovers, he said 'We may add a card system at some point, but you can cut all those for now.' There is no card system in the game. Five badge rows carry such a clause (content/gen/badges.json; the pack names each as an unread rule): badge.anguish ('-1 card draw per Turn'), badge.possession ('startOfBattle: -2 card draw'), badge.quick-study ('Draw turn 2 +1 (stub)'), badge.wise ('+1 draw on turn 1 and on turn 3'), badge.old ('+2 draw on turn 1'). Remove the card clause from each. A badge with nothing else left is removed, and whatever names it (a hero row, an origin, a gift or reward roll, an affliction list, a test) loses it or takes a neighbouring badge - list each. Possession (an affliction: its deploy cost and the rest) and Old (its Item Slots) keep their other rules. Not touched: 'grants a tactic slot' (badge.name-in-the-hall) - not asked. Re-read every content/ file immediately before editing it; commit content after every write. Rebuild the Codex's outputs and the pack with their gap lists.",
   "expect": "No badge row speaks of drawing a card; Possession and Old still hold their other rules; every badge removed is named in the commit with what named it; the content suite passes and expect.mjs stays where it was."
+ },
+ {
+  "id": "fix.same-as-self-reference",
+  "kind": "content",
+  "shape": "data",
+  "later": true,
+  "probeIds": [
+   "attack.zombie.claw"
+  ],
+  "note": "Filed 2026-10-06 by the bug-review builder from root BUG-REVIEW-2026-10-06.md section 8, marked later (Andrew, engine/DECISIONS.md 2026-10-06 'the castle attacked with every hero away is an automatic loss; the bug list is queued at low priority, behind anything real'). Shape data: the fix changes what a fielded attack row compiles to; attack.zombie.claw is the id the three rows point at and is live in a probe battle (seen 2026-10-06).",
+  "spec": "BUG-REVIEW-2026-10-06.md C1: THE BUG (reached today, and the one with the widest reach: three zombies): the Strong, Fast and Burning Zombies' Claw has lost its Poison 2 and Rotting Flesh, and the attack ships named 'claw'. The Burning Zombie's reference row carries the id it points at, and the id table keeps the last writer. WHERE: content/mkenginepack.mjs:156 (resolved at :157-175, :823). THE FIX: the table holds source rows only; a row that points at itself is refused. THE SWITCH TO TAKE: the review does not say what the Burning Zombie's own reference row becomes once a row that points at itself is refused - that is the item's to settle and record in engine/SWITCHES.md, never by letting the build pass on a row it should refuse. Like every bug in this file's list, it drops or changes something without naming a gap, which the compiler's own rule forbids. Shown in the review by: pack (the authored row compared with the generated pack). Line numbers are 2026-10-06's (content fd31946) and move with every landing: read the code first.",
+  "expect": "In the engine pack the Claw the Strong, Fast and Burning Zombies use carries Poison 2 and Rotting Flesh and the name its source row gives, each read from the authored row in the test and compared with the pack (the three have lost both today and the attack is named 'claw'); a hand-made row whose reference names its own id is refused by the compiler with the row named; any other referenced attack whose compiled row changes with the fix is listed in the landing note."
+ },
+ {
+  "id": "fix.attack-slayer-compiled",
+  "kind": "content",
+  "shape": "data",
+  "later": true,
+  "probeIds": [
+   "attack.holy-symbol.wrath"
+  ],
+  "note": "Filed 2026-10-06 by the bug-review builder from root BUG-REVIEW-2026-10-06.md section 8, marked later (Andrew, engine/DECISIONS.md 2026-10-06 'the castle attacked with every hero away is an automatic loss; the bug list is queued at low priority, behind anything real'). Shape data: attack.holy-symbol.wrath is one of the 11 and is live in a probe battle (seen 2026-10-06).",
+  "spec": "BUG-REVIEW-2026-10-06.md C2: THE BUG (reached today): an attack row's bonus against a creature type ('slayer') is never read - 11 attacks, among them the Holy Symbol's Wrath (+2 against undead) and the Blade of Demon Slaying's Demonbane. WHERE: content/mkenginepack.mjs:1423-1435, :1525-1537, :1776-1788. THE FIX: the attack's 'slayer' compiles to a vs-target rule for that attack; where the engine cannot scope one to an attack, a named gap. Like every bug in this file's list, it drops something without naming a gap, which the compiler's own rule forbids. Shown in the review by: pack (the authored row compared with the generated pack). Line numbers are 2026-10-06's (content fd31946) and move with every landing: read the code first.",
+  "expect": "Every attack row that carries a 'slayer' (11 on 2026-10-06, counted from the source in the test, never typed) has in the engine pack either a vs-target rule scoped to that attack or a named gap; none is dropped silently, as all are today. The Holy Symbol's Wrath deals 2 more to an undead target than to a living one in a scripted battle and nothing more on the wielder's other attacks - or, if the engine cannot scope the rule to one attack, its gap is named and the test says so."
+ },
+ {
+  "id": "fix.trigger-chance-scope-and-same-as",
+  "kind": "content",
+  "shape": "plumbing",
+  "later": true,
+  "note": "Filed 2026-10-06 by the bug-review builder from root BUG-REVIEW-2026-10-06.md section 8, marked later (Andrew, engine/DECISIONS.md 2026-10-06 'the castle attacked with every hero away is an automatic loss; the bug list is queued at low priority, behind anything real'). Shape plumbing: a compiler fix; none of the rows it names was seen in a probe battle on 2026-10-06, so no probeIds are filed.",
+  "spec": "BUG-REVIEW-2026-10-06.md C3, C5: TWO BUGS of how a trigger row compiles, both reached today. C3: a status applied by a trigger ignores the effect's own chance - the Shadow Sorcerer's Root lands every time instead of half. A stat grant ignores the effect's 'scope' - Eyeblight's 'ranged attacks only' -10 Accuracy applies to everything. WHERE: content/mkenginepack.mjs:617, :666-676. THE FIX: 't.chance ?? ef.chance ?? 100', as the other branches read it; a scope the compiler cannot express is a named gap. C5: a trigger row with no 'effects' list compiles to nothing with no gap - the Vampire Lord's Soul Rend ('same as Feed') has no trigger. WHERE: :575-598. THE FIX: a trigger's 'sameAs' resolves to the named trigger's effects; a row with no effects is a named gap. Like every bug in this file's list, each drops or changes something without naming a gap, which the compiler's own rule forbids. Both shown in the review by: pack (the authored row compared with the generated pack). Line numbers are 2026-10-06's (content fd31946) and move with every landing: read the code first.",
+  "expect": "In the engine pack the Shadow Sorcerer's Root carries the chance its row states, read from the row in the test, and over many seeded applications lands about half the time and not every time; Eyeblight's -10 Accuracy is scoped to ranged attacks or is a named gap, and is not applied to everything; the Vampire Lord's Soul Rend has the trigger Feed has; a hand-made trigger row with no effects and no sameAs is a named gap. Each is the pack against the authored row and fails on the compiler as it stood."
+ },
+ {
+  "id": "fix.enemy-attack-crit-and-shape",
+  "kind": "content",
+  "shape": "data",
+  "later": true,
+  "probeIds": [
+   "attack.bruiser-demon.bash"
+  ],
+  "note": "Filed 2026-10-06 by the bug-review builder from root BUG-REVIEW-2026-10-06.md section 8, marked later (Andrew, engine/DECISIONS.md 2026-10-06 'the castle attacked with every hero away is an automatic loss; the bug list is queued at low priority, behind anything real'). Shape data: attack.bruiser-demon.bash is the row C4 names and is live in a probe battle (seen 2026-10-06); the Bone Dragon was not seen in one.",
+  "spec": "BUG-REVIEW-2026-10-06.md C4, C6: TWO BUGS of the enemy attack lane, both reached today. C4: the lane never reads an attack's 'crit' - the Bruiser Demon's Bash loses its Crit 10. WHERE: content/mkenginepack.mjs:860-873. THE FIX: the lane reads it, as the special-move lane does (:774). C6: ordinary enemy attack rows are not checked for a shape the compiler cannot make - the Bone Dragon's line breath and wing sweep ship as single-target attacks. WHERE: :822-876. THE FIX: the same 'needs' and target-shape check that triggers, moves and self rows get; what is not built is a named gap. Like every bug in this file's list, each drops or changes something without naming a gap, which the compiler's own rule forbids. Both shown in the review by: pack (the authored row compared with the generated pack). Line numbers are 2026-10-06's (content fd31946) and move with every landing: read the code first.",
+  "expect": "Every ordinary enemy attack row that carries a 'crit' has it in the engine pack, read from the row in the test and carried the way the special-move lane carries it (the Bruiser Demon's Bash and its Crit 10, absent today); every ordinary enemy attack row whose shape the compiler cannot make is a named gap and not a single-target attack - the Bone Dragon's line breath and wing sweep are named, or compile to the shape their rows state where the engine has it. No enemy attack row's crit or shape is dropped without a named gap."
+ },
+ {
+  "id": "fix.enchant-grants-and-override-named",
+  "kind": "content",
+  "shape": "plumbing",
+  "later": true,
+  "note": "Filed 2026-10-06 by the bug-review builder from root BUG-REVIEW-2026-10-06.md section 8, marked later (Andrew, engine/DECISIONS.md 2026-10-06 'the castle attacked with every hero away is an automatic loss; the bug list is queued at low priority, behind anything real'). Shape plumbing: a compiler fix; none of the rows it names was seen in a probe battle on 2026-10-06, so no probeIds are filed.",
+  "spec": "BUG-REVIEW-2026-10-06.md C7: THE BUG (not reached with what ships now): an enchantment's granted power and its 'damage becomes magic' vanish on tier-3 items - 21 rows and 5 rows. WHERE: content/mkenginepack.mjs:2367-2437. THE FIX: the tier-3 loop names them, as the Forge loop does for grants (:2530). Like every bug in this file's list, it drops something without naming a gap, which the compiler's own rule forbids. Shown in the review by: pack (the authored row compared with the generated pack). Line numbers are 2026-10-06's (content fd31946) and move with every landing: read the code first.",
+  "expect": "Every tier-3 item row whose enchantment grants a power (21 on 2026-10-06) and every one whose enchantment makes its damage magic (5) carries a named gap for it in the build, the rows found by the test in the source and never typed; none vanishes silently, as all do on the compiler as it stood. The Forge loop names its grants as before."
+ },
+ {
+  "id": "fix.badge-condition-read-first",
+  "kind": "content",
+  "shape": "plumbing",
+  "later": true,
+  "note": "Filed 2026-10-06 by the bug-review builder from root BUG-REVIEW-2026-10-06.md section 8, marked later (Andrew, engine/DECISIONS.md 2026-10-06 'the castle attacked with every hero away is an automatic loss; the bug list is queued at low priority, behind anything real'). Shape plumbing: a compiler fix; none of the rows it names was seen in a probe battle on 2026-10-06, so no probeIds are filed.",
+  "spec": "BUG-REVIEW-2026-10-06.md C8: THE BUG (none is on a hero yet): a badge's text is split on commas before any condition is read, so the tail of a conditional clause becomes always-on - Tower Defender's +20 Dodge, Backstabber's +20 Crit, five more. WHERE: content/mkenginepack.mjs:479. THE FIX: the condition is read first; a conditional line is one gap, whole. Like every bug in this file's list, it changes something without naming a gap, which the compiler's own rule forbids. Shown in the review by: pack (the authored row compared with the generated pack). Line numbers are 2026-10-06's (content fd31946) and move with every landing: read the code first.",
+  "expect": "Tower Defender's +20 Dodge and Backstabber's +20 Crit are not always-on in the engine pack: each conditional badge line is one named gap, whole, and no part of it compiles to an unconditional modifier. The test finds every badge line with a condition in the source (seven on 2026-10-06, never typed) and asserts the same of each; it fails on the compiler as it stood. A badge line with commas and no condition compiles as it does today."
+ },
+ {
+  "id": "fix.power-riders-named",
+  "kind": "content",
+  "shape": "plumbing",
+  "later": true,
+  "note": "Filed 2026-10-06 by the bug-review builder from root BUG-REVIEW-2026-10-06.md section 8, marked later (Andrew, engine/DECISIONS.md 2026-10-06 'the castle attacked with every hero away is an automatic loss; the bug list is queued at low priority, behind anything real'). Shape plumbing: a compiler fix; none of the rows it names was seen in a probe battle on 2026-10-06, so no probeIds are filed.",
+  "spec": "BUG-REVIEW-2026-10-06.md C9: THE BUG (not reached with what ships now): 'Until the end of your next Turn, your attacks ...' is skipped whole, and only the stat part of 'modifies' is read - 23 powers lose their riders, 9 carry unread fields. WHERE: content/mkenginepack.mjs:2267, :2283-2291. THE FIX: each dropped rider and unread field is a named gap on that power. Like every bug in this file's list, it drops something without naming a gap, which the compiler's own rule forbids. Shown in the review by: pack (the authored row compared with the generated pack). Line numbers are 2026-10-06's (content fd31946) and move with every landing: read the code first.",
+  "expect": "Every power whose text holds an 'Until the end of your next Turn, your attacks ...' rider (23 on 2026-10-06) and every power whose 'modifies' carries a field the compiler does not read (9) has a named gap on that power saying which rider or field it is, the powers found by the test in the source and never typed; none is skipped silently, as all are on the compiler as it stood. The stat part of 'modifies' compiles as before."
+ },
+ {
+  "id": "fix.item-row-carries-its-gaps",
+  "kind": "content",
+  "shape": "plumbing",
+  "later": true,
+  "note": "Filed 2026-10-06 by the bug-review builder from root BUG-REVIEW-2026-10-06.md section 8, marked later (Andrew, engine/DECISIONS.md 2026-10-06 'the castle attacked with every hero away is an automatic loss; the bug list is queued at low priority, behind anything real'). Shape plumbing: a compiler fix; none of the rows it names was seen in a probe battle on 2026-10-06, so no probeIds are filed.",
+  "spec": "BUG-REVIEW-2026-10-06.md C10: THE BUG (not reached with what ships now): clauses dropped from an item's attacks go to the global gaps file but not onto the item's own row (30 rows), so the build's count of whole items is too high. WHERE: content/mkenginepack.mjs:2001. THE FIX: they go onto the row as well, by the rule at :1765-1768. Shown in the review by: pack (the authored row compared with the generated pack). Line numbers are 2026-10-06's (content fd31946) and move with every landing: read the code first.",
+  "expect": "Every item one of whose attacks drops a clause carries that gap on its own row as well as in the global gaps file (30 rows on 2026-10-06, found by the test from the gaps file and never typed), and the build's count of whole items no longer counts them; the test fails on the compiler as it stood. An item with no dropped clause is counted as before."
+ },
+ {
+  "id": "fix.reach-melee-kind",
+  "kind": "content",
+  "shape": "plumbing",
+  "later": true,
+  "note": "Filed 2026-10-06 by the bug-review builder from root BUG-REVIEW-2026-10-06.md section 8, marked later (Andrew, engine/DECISIONS.md 2026-10-06 'the castle attacked with every hero away is an automatic loss; the bug list is queued at low priority, behind anything real'). Shape plumbing: a compiler fix; none of the rows it names was seen in a probe battle on 2026-10-06, so no probeIds are filed.",
+  "spec": "BUG-REVIEW-2026-10-06.md R4 (the content half): RULED 2026-10-06 (Andrew, engine/DECISIONS.md 2026-10-06 'from the bug review: a Stunned unit makes no free attack; an affliction given by the blow that drops a hero takes hold and its roll is made at once; on kill is for taking a unit to 0; reach weapons are melee, and free attacks and Thorns go by adjacency'). Asked whether reach-2 and reach-3 melee weapons (whips, halberds, boarding hooks) count as melee for free attacks and Thorns: \"They do not. I don't know how we do both their melee, but they don't trigger free attacks, and they don't trigger thorns. Both those things should also be based on adjacency. It's the triggering of the special attack that should only work on someone who is adjacent to you.\" The chat's reading, not his words: whips, halberds and boarding hooks are melee weapons with reach. THIS ITEM is part (a) of the review's three: the compiler stops calling a melee-tagged attack ranged because its range is over 1 - six attacks today - and the Crippling Whip's two attacks ship at reach 1 against 'within 2 hexes'. WHERE: content/mkenginepack.mjs:1421, 1631, 1774 ('ranged means a NUMBER above 1'). THE SWITCH TO TAKE, as the ruling's entry leaves it: how the row says 'melee, reach 3' is the item's to settle, recorded as a switch in engine/SWITCHES.md. Parts (b) and (c), the engine's reactions going by adjacency, are rule.free-attacks-by-adjacency, which needs this item. Line numbers are 2026-10-06's (content fd31946) and move with every landing: read the code first.",
+  "expect": "Every attack row tagged melee whose range is over 1 (six on 2026-10-06, found by the test in the source and never typed) is kind melee in the engine pack with the reach its row states, and none of them is kind ranged, as all six are today; the Crippling Whip's two attacks reach 2, as 'within 2 hexes' says, and not 1; an attack that is ranged by its own row is still ranged. How a row says 'melee, reach N' is a switch recorded in engine/SWITCHES.md."
  }
 ]
