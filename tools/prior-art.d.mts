@@ -30,6 +30,6 @@ export function heldVerdict(lines: string[], named: boolean, o: { clean: string;
 export function clonesOf(files: string[], root?: string): Clone[]
 export function describeClone(c: Clone): string
 export function clonesTouching(clones: Clone[], added: Record<string, [number, number][]>): Clone[]
-export function changedFiles(root?: string): { path: string; before: string | null; after: string | null; added: [number, number][] }[]
+export function changedFiles(root?: string, id?: string | null): { path: string; before: string | null; after: string | null; added: [number, number][] }[]
 export function checkItem(item: { spec?: string }, root?: string): Verdict & { flags?: Flag[]; clones?: Clone[] }
 export function audit(o?: { root?: string; fresh?: boolean; write?: boolean; inventoryPath?: string }): { flags: Flag[]; clones: Clone[]; newClones: Clone[]; baseline: string }

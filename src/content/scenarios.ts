@@ -167,12 +167,16 @@ const RAW_SCENARIOS: Readonly<Record<string, ScenarioDef>> = {
   },
   // content.resistance-to-weak-and-vigil-party-spirit (2026-10-06; DECISIONS.md 2026-10-05 '… the Vigil heals by the party's
   // Spirit': asked whether the Banner of the Vigil heals each ally by that ally's own Spirit or the party's, "2 by the party
-  // spirit"): the Vigil's banner live in a real battle - the Banner of Courage's fielding with a priest carrying the Vigil's
-  // banner and a ranger who has no Spirit of her own. The priest plants it when he has nothing to strike; the ranger, hurt,
-  // ends an Activation inside its aura and heals by the party's Spirit. A fielding, not a balance claim.
+  // spirit"): the Vigil's banner live in a real battle - a priest who carries the banner and nothing to strike with, so he
+  // plants it on Turn 1, and beside him a warrior with no Spirit of his own, who is hurt, ends an Activation inside its aura
+  // and heals by the party's Spirit; the Banner of Courage's Necromancer and zombie against them. A fielding, not a balance claim.
+  // Said again 2026-10-06 (rule.surge-is-at-least-level and rule.special-moves-unlock-at-level-two (DECISIONS.md 2026-10-06 'everyone gains Surge equal to its level at the least …', 'a hero's special moves unlock at level 2, ruled …')): the fielding was the priest with his Holy Texts
+  // and the Hunter at hexes 85 and 101; a level-1 priest with a weapon now strikes every Activation and never plants (0 of 30
+  // replicates). The priest carries the banner alone; the ally is the first base hero, in the pack's order, beside whom the
+  // scene happens on replicate 0 - the Dwarven Brawler, at hexes 85 and 86. Found, not tuned.
   'test.banner-vigil': {
-    id: 'test.banner-vigil', note: 'TEST: a priest carrying the Banner of the Vigil (plant it: an ally that ends its Activation within 1 hex of that hex heals by the Spirit of the party) and a ranger with no Spirit of her own, against a Necromancer and a zombie. No campaign claim.',
-    mapId: 'map.open', heroes: ['hero.base.priest-armored', 'hero.base.ranger-aggressive'], heroHexes: [85, 101], heroItems: [['item.holy-texts', 'item.banner-vigil'], undefined], enemies: ['unit.necromancer', 'unit.zombie'], enemyHexes: [95, 94], replicate: 0,
+    id: 'test.banner-vigil', note: 'TEST: a priest carrying the Banner of the Vigil and nothing else (plant it: an ally that ends its Activation within 1 hex of that hex heals by the Spirit of the party) and a warrior with no Spirit of his own, against a Necromancer and a zombie. No campaign claim.',
+    mapId: 'map.open', heroes: ['hero.base.priest-armored', 'hero.base.warrior-brawler'], heroHexes: [85, 86], heroItems: [['item.banner-vigil'], undefined], enemies: ['unit.necromancer', 'unit.zombie'], enemyHexes: [95, 94], replicate: 0,
   },
   // capability.his-weapons-small-clauses (2026-10-05; DECISIONS.md 2026-10-04 'his 28 reward weapons read back …': "Everything
   // else in here seems like something we need."): "On kill: the corpse is destroyed" live in a real battle, twice over - a mage

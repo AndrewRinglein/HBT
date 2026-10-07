@@ -23,6 +23,7 @@ import { fileURLToPath, pathToFileURL } from 'node:url'
 import { execFileSync } from 'node:child_process'
 import { createHash } from 'node:crypto'
 import { tmpdir } from 'node:os'
+import { itemCommits } from './gate-progress.mjs'
 
 export const HERE = dirname(fileURLToPath(import.meta.url))
 /** The HBT folder: engine/tools/.. /.. */
@@ -456,30 +457,46 @@ export function clonesTouching(clones, added) {
 
 // ── what an item changed, across the four packages ───────────────────────────────
 const git = (pkg, args, root) => execFileSync('git', args, { cwd: join(root, pkg), encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'], maxBuffer: 64 << 20 })
-/** Every in-scope file an item changed (uncommitted, per package), its text at HEAD and now, and its added line ranges. */
-export function changedFiles(root = ROOT) {
+/**
+ * Every in-scope file an item changed, per package: its text before and now, and its added line ranges.
+ * Without `id` (as before): what is uncommitted — the text at HEAD against the working tree.
+ * With `id` (tool.gate-flags-read-committed-edits, 2026-10-06; DECISIONS.md 2026-10-06 'engine items too are built in groups
+ * of up to four …' — an item is committed before its gate runs): also the files the item's own commits touched
+ * (tools/gate-progress.mjs itemCommits — the whole id), read from the tree BEFORE its first commit in that package to the
+ * working tree. Where another item's commit changed the same file in between, its lines are read as this item's too: the
+ * audit may then flag more, never less.
+ */
+export function changedFiles(root = ROOT, id = null) {
   const out = []
   for (const pkg of [...new Set(SCOPE.map((s) => s.pkg))]) {
     if (!existsSync(join(root, pkg, '.git'))) continue
+    const mine = id ? itemCommits(id, join(root, pkg)) : []
+    // the tree the item started from: the parent of its first commit, or HEAD when it has committed nothing here
+    let base = 'HEAD'
+    if (mine.length) { try { base = git(pkg, ['rev-parse', '--verify', '-q', `${mine[0]}^`], root).trim() } catch { base = null } }
+    const paths = new Map()   // path -> known to be new (untracked, or absent from the base)
     for (const l of git(pkg, ['status', '--porcelain', '--untracked-files=all'], root).split('\n').filter(Boolean)) {
       let p = l.slice(3)
       if (p.includes(' -> ')) p = p.split(' -> ')[1]
-      p = p.replace(/^"|"$/g, '')
+      paths.set(p.replace(/^"|"$/g, ''), l.startsWith('??') && !mine.length)
+    }
+    for (const sha of mine) for (const l of git(pkg, ['show', '--first-parent', '--format=', '--name-only', sha], root).split(/\r?\n/).filter(Boolean)) if (!paths.has(l)) paths.set(l, false)
+    for (const [p, untracked] of paths) {
       const rel = `${pkg}/${p}`
       if (!inScope(rel)) continue
-      const untracked = l.startsWith('??')
       let before = null
-      if (!untracked) { try { before = git(pkg, ['show', `HEAD:${p}`], root) } catch { before = null } }
+      if (!untracked && base) { try { before = git(pkg, ['show', `${base}:${p}`], root) } catch { before = null } }
       const abs = join(root, rel)
       const after = existsSync(abs) ? readFileSync(abs, 'utf8') : null
       let added = []
       if (after !== null) {
         if (before === null) added = [[1, after.split('\n').length]]
-        else for (const m of git(pkg, ['diff', '-U0', 'HEAD', '--', p], root).matchAll(/^@@ -\d+(?:,\d+)? \+(\d+)(?:,(\d+))? @@/gm)) {
+        else for (const m of git(pkg, ['diff', '-U0', base, '--', p], root).matchAll(/^@@ -\d+(?:,\d+)? \+(\d+)(?:,(\d+))? @@/gm)) {
           const from = Number(m[1]), n = m[2] === undefined ? 1 : Number(m[2])
           if (n > 0) added.push([from, from + n - 1])
         }
       }
+      if (before === after) continue   // committed and then put back: not a change
       out.push({ path: rel, before, after, added })
     }
   }
@@ -489,7 +506,7 @@ export function changedFiles(root = ROOT) {
 /** The gate's check for one item: flags and new clones on what it changed, against the tree as it stands. */
 export function checkItem(item, root = ROOT) {
   const rules = readFunnels()
-  const changed = changedFiles(root)
+  const changed = changedFiles(root, item?.id)
   if (!changed.length) return { ok: true, note: 'no source file changed' }
   const tree = readTree(root)
   const whole = inventoryOf(tree, rules)

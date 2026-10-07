@@ -7,9 +7,10 @@
 // no OTHER movement is accepted from it until that action cycle is over; the refusal is the engine's own
 // 'movement-slot-closed'. The rest of a walk cut short may still be walked. A movement used BEFORE any walk is unchanged.
 // It lives in the one movement legality (core/movement.ts), so the action list, the AI and the host's commands all follow.
+import { levelTwo } from './level-two.js'
 import { describe, expect, it } from 'vitest'
 import { advanceBattle, runBattle } from '../src/core/battle.js'
-import { createBattle, createCustomBattle } from '../src/core/setup.js'
+import { createBattle } from '../src/core/setup.js'
 import { executeAction, executeBattleCommand, legalActions, validateAction, validateBattleCommand, type ControlPolicy } from '../src/core/commands.js'
 import { isCharge, isMove, movesOf } from '../src/core/action.js'
 import { movementOptions } from '../src/core/movement.js'
@@ -26,7 +27,10 @@ const HOME = hexId(5, 5), FAR = hexId(14, 13)
 
 /** One hero alone in the open, its Activation begun, with Stamina for anything; one zombie far away. */
 function rig(hero: string, opts: Record<string, unknown> = {}): { ctx: Ctx; u: Unit } {
-  const ctx = createBattle({ replicate: 0, mapId: 'map.open', heroes: [hero], heroHexes: [HOME], enemies: ['test-zombie'], enemyHexes: [FAR], enemyCount: 1, strict: true, ...opts })
+  // Restated 2026-10-06 (rule.special-moves-unlock-at-level-two; ruled 2026-10-06, DECISIONS.md 'a hero's special moves unlock
+  // at level 2 …'): the hero is fielded at level 2, where it has the special move this file tries; the rule held here - a walk
+  // closes every other movement - is unchanged. The line was the same without `heroProgress: [levelTwo(hero)]`.
+  const ctx = createBattle({ replicate: 0, mapId: 'map.open', heroes: [hero], heroHexes: [HOME], enemies: ['test-zombie'], enemyHexes: [FAR], enemyCount: 1, strict: true, heroProgress: [levelTwo(hero)], ...opts })
   const u = ctx.state.units[0]!
   beginActivation(ctx, 0, 'test')
   u.stamina = u.maxStamina = 20
@@ -53,7 +57,8 @@ describe('once a unit has walked, no other movement is accepted from it', () => 
     ['Leap', WARRIOR, 'power.leap', {}],
     ['Side Roll', RANGER, 'power.side-roll', {}],
     ['Sidestep', PALADIN, 'power.sidestep', {}],
-    ['Back Flip', ROGUE, 'power.back-flip', { heroProgress: [{ level: 1, powers: ['power.back-flip'] }] }],
+    // (2026-10-06: was { heroProgress: [{ level: 1, powers: ['power.back-flip'] }] } - the same draft, on the level-2 hero)
+    ['Back Flip', ROGUE, 'power.back-flip', { heroProgress: [levelTwo(ROGUE, { powers: ['power.back-flip'] })] }],
     ['Charging Run', WARRIOR, 'power.charging-run', { overrides: { [WARRIOR]: { moves: ['power.move', 'power.leap', 'power.charging-run'] } } }],
   ])('%s: usable before the hero walks; refused with the engine\'s reason after it has walked one hex; off the action list', (_name, hero, power, opts) => {
     const fresh = rig(hero, opts)
@@ -157,7 +162,9 @@ describe('once a unit has walked, no other movement is accepted from it', () => 
 
   it('the host\'s command is refused with the same reason, and nothing is spent', () => {
     const policy: ControlPolicy = { humanUnitUids: [100] }
-    const ctx = createCustomBattle([{ type: WARRIOR, hex: HOME }], [{ type: 'test-zombie', hex: FAR }], { strict: true, heroUids: [100], enemyUids: [900] })
+    // Restated 2026-10-06 (rule.special-moves-unlock-at-level-two): the warrior at level 2, where he has his Leap. It was:
+    //   const ctx = createCustomBattle([{ type: WARRIOR, hex: HOME }], [{ type: 'test-zombie', hex: FAR }], { strict: true, heroUids: [100], enemyUids: [900] })
+    const ctx = createBattle({ replicate: 0, mapId: 'map.open', heroes: [WARRIOR], heroHexes: [HOME], enemies: ['test-zombie'], enemyHexes: [FAR], enemyCount: 1, strict: true, heroProgress: [levelTwo(WARRIOR)], heroUids: [100], enemyUids: [900] })
     expect(advanceBattle(ctx, policy)).toEqual({ kind: 'selecting', unitUids: [100] })
     expect(executeBattleCommand(ctx, policy, { kind: 'select-activation', unitUid: 100, expectedSeq: ctx.state.seq })).toEqual({ ok: true })
     expect(advanceBattle(ctx, policy)).toEqual({ kind: 'acting', actor: 0 })

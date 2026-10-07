@@ -8,13 +8,15 @@
 // every home: a commit whose message names the item counts, its test files in `git status --porcelain` form.
 //
 // A scratch repository; nothing here touches the real folder.
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { execFileSync } from 'node:child_process'
 import { mkdirSync, mkdtempSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
 import { committedItemTests, killSwitchFiles, testFilesIn } from '../tools/gate-progress.mjs'
 
+// every test here makes a scratch repository and runs git a dozen times: seconds alone, more beside other workers' runs - a time limit is not the assertion
+vi.setConfig({ testTimeout: 120_000 })
 const git = (cwd: string, ...args: string[]) => execFileSync('git', args, { cwd, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] }).trim()
 const put = (file: string, text: string) => { mkdirSync(dirname(file), { recursive: true }); writeFileSync(file, text) }
 function repo(): string {

@@ -567,6 +567,32 @@ const computerAvoidsOwnTrapsGolden = JSON.parse(readFileSync(new URL('./fixtures
 // Every case frozen here (tools/capture-one-move-action-one-primary-action-cursor.mts). Moved: test.prone-b (state only).
 // A `changed` case is checked here and skips the older layers.
 const oneMoveActionGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-one-move-action-one-primary-action.json', import.meta.url), 'utf8'))
+// rule.surge-is-at-least-level (2026-10-06). Ruled 2026-10-06 (DECISIONS.md 'everyone gains Surge equal to its level at the least, and
+// rolls the Surge check every Activation'): "Everyone gains surge equal to level, at the very least. Therefore, there is always at
+// least a 1% chance of a surge." Every hero is fielded with Surge of at least 1 - the level's Surge is data now, on the pack's level
+// rows and the hero's own row - so every hero rolls the Surge check after each Activation: one more roll an Activation, and now and
+// then a Surge. Every battle a hero fights moves; a battle that fields only enemies, civilians or bodies with no hero class does not.
+// Every case frozen here (tools/capture-surge-is-at-least-level-cursor.mts). Moved: showcase.alpha-team, showcase.arc-variant, showcase.assembled-party (text only), showcase.badged, showcase.civilians, showcase.eve-24-a, showcase.eve-24-b, showcase.flight-bonuses, showcase.gash-variant, showcase.horrors, showcase.item-powers, showcase.kiln, showcase.knockback-two, showcase.movement-bonuses, showcase.ordered-power-preview, showcase.prologue-enemies, showcase.prologue-party, showcase.rime, showcase.supper, showcase.surge-flight-ladder, showcase.surrounded, showcase.two-zombies-and-a-child, showcase.waystation, showcase.wounded-entry, test.afflictions-at-zero, test.afflictions-at-zero-rule, test.area-fall-curse, test.area-fall-meteor, test.authored-slots, test.back-flip (text only), test.bandages, test.banner-courage, test.banner-vigil, test.bear-traps, test.block-a, test.block-b, test.board-authored, test.board-journey, test.call-the-wolf, test.caravan-aftermath, test.charge-a, test.charge-b, test.corpse-destroyed, test.counterattack, test.cover-crates, test.cover-fence, test.damage-packets, test.direct-map-authored, test.direct-map-journey, test.encounter-rules-a, test.encounter-rules-b, test.fend, test.field-dressing, test.flaming-longsword, test.flaming-war-axe, test.force-blast, test.frost-resistant, test.geometry-corridor, test.geometry-diagonal, test.ghost, test.ground-table, test.item-uses, test.kdb, test.knockback-well, test.mage-kindle, test.mending-light, test.mode-change-a, test.mode-change-b, test.opening-bridge, test.opening-cathedral, test.opening-cavern-trail, test.opening-gates, test.opening-lumberjack, test.opening-orphanage, test.perfect-sight, test.placed-remains-a, test.placed-remains-b, test.prone-a, test.prone-b, test.prop-destroy, test.props-viewer-ranged-zoc, test.raise-one, test.set-bonus, test.sets-counted, test.sight-a, test.sight-b, test.snarer-traps, test.stealth-a, test.stealth-b, test.stoke, test.structures, test.swap, test.swell, test.thin-sign, test.thorns, test.trigger-with-tag, test.vampire-bite, test.vortex, test.vs-target-a, test.vs-target-b, test.vs-target-c, progression-surge-0 (text only), progression-surge-1 (text only), progression-surge-2 (text only). A `changed` case is checked here and skips the older layers.
+const surgeIsAtLeastLevelGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-surge-is-at-least-level.json', import.meta.url), 'utf8'))
+// rule.special-moves-unlock-at-level-two (2026-10-06). Ruled 2026-10-06 (DECISIONS.md 'a hero's special moves unlock at level 2,
+// ruled: all of them, every hero, enemies and civilians unchanged, named on the level-up screen'): "the special moves that the starting
+// heroes get should be unlocked instead at level 2". A row may say the level a movement it lists is granted at; a hero fielded below
+// it does not have the movement. The 24 base heroes have their class's special move from level 2; an enemy, a civilian and the engine's
+// test parties keep theirs. A battle that fields a base hero at level 1 moves where that hero would have used its special move.
+// Every case frozen here (tools/capture-special-moves-unlock-at-level-two-cursor.mts). Moved: showcase.civilians, showcase.eve-24-a, showcase.eve-24-b, showcase.horrors, showcase.item-powers, showcase.kiln, showcase.prologue-party, showcase.rime, showcase.supper, showcase.surrounded, showcase.two-zombies-and-a-child, showcase.waystation, test.back-flip, test.bandages, test.banner-courage, test.banner-vigil, test.bear-traps, test.call-the-wolf, test.caravan-aftermath, test.corpse-destroyed, test.counterattack, test.fend, test.field-dressing, test.force-blast, test.item-uses, test.mending-light, test.opening-bridge, test.opening-cathedral, test.opening-cavern-trail, test.opening-gates, test.opening-lumberjack, test.opening-orphanage, test.perfect-sight, test.set-bonus, test.sets-counted, test.snarer-traps, test.stoke, test.swap, test.vortex. A `changed` case is checked here and skips the older layers.
+const specialMovesUnlockAtLevelTwoGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-special-moves-unlock-at-level-two.json', import.meta.url), 'utf8'))
+// combine (2026-10-06; GBH SWITCHES combine.mergeMainFirst, combine.cursorLayersCombinedOnTop): engine master a359a77
+// (rule.one-move-action-one-primary-action) merged into the engine worker's copy, which holds rule.surge-is-at-least-level and
+// rule.special-moves-unlock-at-level-two. Each side froze its layer on its own tree from the same layer below
+// (computer-avoids-own-traps): master's sits under this copy's two, in the order they landed, and the chain runs through all
+// three. On the combined tree a case in which a unit stood up is this copy's battle (the Surge check's lines) with master's
+// state (no `stood`) - neither side's hash. Every case frozen here on the combined tree
+// (tools/capture-combine-one-move-cursor.mts): `changed` marks the cases that differ from this copy's top layer
+// (special-moves-unlock-at-level-two). Moved: showcase.supper and showcase.waystation (one log line more each, nothing fought
+// differently: a ranged unit the computer plays that has just stood up logs `ai.denied` for the reposition it wanted - its
+// move action is spent, where the walk was still asked for as the primary action and found nowhere to go), test.prone-b
+// (state only). A `changed` case is checked here and skips the older layers.
+const combineOneMoveGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-combine-one-move.json', import.meta.url), 'utf8'))
 const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
 // Explicit rule migration, not regenerated historical hashes. These nine old
 // cases contain Surge ledger/refresh changes or terminal markers corrected
@@ -726,8 +752,18 @@ describe('resumable battle cursor', () => {
       const dwarfElfFeyBadgesActExpected = dwarfElfFeyBadgesActGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const computerAvoidsOwnTrapsExpected = computerAvoidsOwnTrapsGolden.cases.find((row:{id:string})=>row.id===fixture.id)
       const oneMoveActionExpected = oneMoveActionGolden.cases.find((row:{id:string})=>row.id===fixture.id)
-      const oneMoveActionMoved = oneMoveActionExpected?.changed === true
+      const surgeIsAtLeastLevelExpected = surgeIsAtLeastLevelGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+      const specialMovesUnlockAtLevelTwoExpected = specialMovesUnlockAtLevelTwoGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+      const combineOneMoveExpected = combineOneMoveGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+      const combineOneMoveMoved = combineOneMoveExpected?.changed === true
+      // was: const specialMovesUnlockAtLevelTwoMoved = specialMovesUnlockAtLevelTwoExpected?.changed === true — a case the combined tree moved skips this layer too (combine 2026-10-06)
+      const specialMovesUnlockAtLevelTwoMoved = specialMovesUnlockAtLevelTwoExpected?.changed === true || combineOneMoveMoved
+      // was: const surgeIsAtLeastLevelMoved = surgeIsAtLeastLevelExpected?.changed === true — a case rule.special-moves-unlock-at-level-two moved skips this layer too (rule.special-moves-unlock-at-level-two 2026-10-04)
+      const surgeIsAtLeastLevelMoved = surgeIsAtLeastLevelExpected?.changed === true || specialMovesUnlockAtLevelTwoMoved
+      // was (master): const oneMoveActionMoved = oneMoveActionExpected?.changed === true — a case this copy's two layers or the combined tree moved skips master's layer too (combine 2026-10-06: master's layer sits under this copy's)
+      const oneMoveActionMoved = oneMoveActionExpected?.changed === true || surgeIsAtLeastLevelMoved
       // was: const computerAvoidsOwnTrapsMoved = computerAvoidsOwnTrapsExpected?.changed === true — a case rule.one-move-action-one-primary-action moved skips this layer too (rule.one-move-action-one-primary-action 2026-10-06)
+      // (combine 2026-10-06: this copy's line here read `const computerAvoidsOwnTrapsMoved = computerAvoidsOwnTrapsExpected?.changed === true || surgeIsAtLeastLevelMoved` — master's layer sits between; the line is master's, below)
       const computerAvoidsOwnTrapsMoved = computerAvoidsOwnTrapsExpected?.changed === true || oneMoveActionMoved
       // was: const dwarfElfFeyBadgesActMoved = dwarfElfFeyBadgesActExpected?.changed === true — a case group A: content.sets-count-holy-texts-and-heavy-chain, content.resistance-to-weak-and-vigil-party-spirit, rule.computer-avoids-own-traps moved skips this layer too (group A: content.sets-count-holy-texts-and-heavy-chain, content.resistance-to-weak-and-vigil-party-spirit, rule.computer-avoids-own-traps 2026-10-04)
       const dwarfElfFeyBadgesActMoved = dwarfElfFeyBadgesActExpected?.changed === true || computerAvoidsOwnTrapsMoved
@@ -906,13 +942,35 @@ describe('resumable battle cursor', () => {
             battle.completeActionCycle(ctx)
           }
         } else result = battle.runBattle(ctx)
-        if (oneMoveActionExpected) {
+        if (combineOneMoveExpected) {
+        expect(hash(ctx.events), 'full combine-one-move events').toBe(combineOneMoveExpected.events)
+        expect(hash(ctx.state), 'full combine-one-move state').toBe(combineOneMoveExpected.state)
+        expect(hash(ctx.rng.log), 'full combine-one-move RNG').toBe(combineOneMoveExpected.rng)
+        expect(result).toEqual(combineOneMoveExpected.result)
+        }
+        // was: if (specialMovesUnlockAtLevelTwoExpected) { — combine (2026-10-06): a case the combined tree moved is checked above instead
+        if (specialMovesUnlockAtLevelTwoExpected && !combineOneMoveMoved) {
+        expect(hash(ctx.events), 'full special-moves-unlock-at-level-two events').toBe(specialMovesUnlockAtLevelTwoExpected.events)
+        expect(hash(ctx.state), 'full special-moves-unlock-at-level-two state').toBe(specialMovesUnlockAtLevelTwoExpected.state)
+        expect(hash(ctx.rng.log), 'full special-moves-unlock-at-level-two RNG').toBe(specialMovesUnlockAtLevelTwoExpected.rng)
+        expect(result).toEqual(specialMovesUnlockAtLevelTwoExpected.result)
+        }
+        // was: if (surgeIsAtLeastLevelExpected) { — rule.special-moves-unlock-at-level-two (2026-10-04): a case it moved is checked above instead
+        if (surgeIsAtLeastLevelExpected && !specialMovesUnlockAtLevelTwoMoved) {
+        expect(hash(ctx.events), 'full surge-is-at-least-level events').toBe(surgeIsAtLeastLevelExpected.events)
+        expect(hash(ctx.state), 'full surge-is-at-least-level state').toBe(surgeIsAtLeastLevelExpected.state)
+        expect(hash(ctx.rng.log), 'full surge-is-at-least-level RNG').toBe(surgeIsAtLeastLevelExpected.rng)
+        expect(result).toEqual(surgeIsAtLeastLevelExpected.result)
+        }
+        // was (master): if (oneMoveActionExpected) { — combine (2026-10-06): a case this copy's layers or the combined tree moved is checked above instead
+        if (oneMoveActionExpected && !surgeIsAtLeastLevelMoved) {
         expect(hash(ctx.events), 'full one-move-action-one-primary-action events').toBe(oneMoveActionExpected.events)
         expect(hash(ctx.state), 'full one-move-action-one-primary-action state').toBe(oneMoveActionExpected.state)
         expect(hash(ctx.rng.log), 'full one-move-action-one-primary-action RNG').toBe(oneMoveActionExpected.rng)
         expect(result).toEqual(oneMoveActionExpected.result)
         }
         // was: if (computerAvoidsOwnTrapsExpected) { — rule.one-move-action-one-primary-action (2026-10-06): a case it moved is checked above instead
+        // (combine 2026-10-06: this copy's line here read `if (computerAvoidsOwnTrapsExpected && !surgeIsAtLeastLevelMoved) {` — master's layer sits between)
         if (computerAvoidsOwnTrapsExpected && !oneMoveActionMoved) {
         expect(hash(ctx.events), 'full computer-avoids-own-traps events').toBe(computerAvoidsOwnTrapsExpected.events)
         expect(hash(ctx.state), 'full computer-avoids-own-traps state').toBe(computerAvoidsOwnTrapsExpected.state)

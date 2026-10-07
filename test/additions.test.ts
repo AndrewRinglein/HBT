@@ -182,7 +182,10 @@ describe('pass 3 — the Mage', () => {
     expect(seen.moved).toBeGreaterThan(0)
     expect(seen.staff).toBeGreaterThan(0)
     expect(seen.hurt).toBeGreaterThan(0)
-  })
+    // 2026-10-06 (rule.special-moves-unlock-at-level-two, after its gate ran out of time on two many-battle tests of its files): this
+    // test runs 2.6 seconds alone against the default limit of 5 and stated none; the limit is said here. No assertion is
+    // changed. It ended `})`.
+  }, 30_000)
 })
 
 // ─── PASS 4: the class power ─────────────────────────────────────────────────
@@ -233,12 +236,21 @@ describe('pass 4 — Arcane Bolt', () => {
       let castBy: number | null = null
       for (const e of ctx.events) {
         if (e.type === 'activation.begin') castBy = null
+        // Restated 2026-10-06 (rule.surge-is-at-least-level; ruled 2026-10-06, DECISIONS.md 'everyone gains Surge equal to its
+        // level at the least, and rolls the Surge check every Activation'): every hero rolls the check now, and a Surge opens a
+        // NEW action cycle - a second move and primary (capability.surge). The rule held here is of one action cycle: the power
+        // spends that cycle's primary. Until today no hero of these battles had Surge, so "the same activation" and "the same
+        // action cycle" were one thing; the two lines around this note are as they were.
+        if (e.type === 'surge.hit') castBy = null
         if (e.type === 'power.used') castBy = e.actor!
         if (e.type === 'attack.declared' && e.actor === castBy)
           throw new Error('a unit attacked after casting in the same activation')
       }
     }
-  })
+    // 2026-10-06 (rule.special-moves-unlock-at-level-two, after its gate ran out of time on two many-battle tests of its files): this
+    // test runs 3.0 seconds alone against the default limit of 5 and stated none; the limit is said here. No assertion is
+    // changed. It ended `})`.
+  }, 30_000)
   it('gate 1 — casts appear in the log with a full damage ledger', () => {
     // Arcane Bolt again — test cohort, explicitly (2026-09-02, see above).
     const ctx = createBattle({ replicate: 1, enemyCount: 8, heroes: TEST_COHORT.heroes }); runBattle(ctx)
@@ -280,5 +292,8 @@ describe('everything together', () => {
       const b = createBattle({ replicate: 7, mapId, enemyCount: 8 }); runBattle(b)
       expect(JSON.stringify(a.events)).toBe(JSON.stringify(b.events))
     }
-  })
+    // 2026-10-06 (rule.special-moves-unlock-at-level-two, after its gate ran out of time on two many-battle tests of its files): this
+    // test runs 2.4 seconds alone against the default limit of 5 and stated none; the limit is said here. No assertion is
+    // changed. It ended `})`.
+  }, 30_000)
 })

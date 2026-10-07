@@ -26,3 +26,13 @@ export function shardStatus(raw: unknown, tree: string, defaultN: number): Shard
 export function committedItemTests(id: string, cwd?: string): string
 export function testFilesIn(porcelain: string): string[]
 export function killSwitchFiles(porcelain: string, full?: boolean): string[]
+/** Does the text name the item as a whole id (not a longer id that begins the same way)? */
+export function namesItem(text: string, id: string): boolean
+/** The commits in cwd's repository whose message names the item, oldest first (tool.gate-flags-read-committed-edits). */
+export function itemCommits(id: string, cwd?: string): string[]
+export function committedNewFiles(id: string, cwd?: string): string[]
+export function committedAddedLines(id: string, cwd?: string, path?: string): string[]
+export interface EditedTest { file: string; add: number; del: number }
+/** The standing test files the item changed with lines deleted: uncommitted in its home, and in its commits in every package named. */
+export function editedTests(id: string, where?: { home?: string; others?: readonly string[] }): EditedTest[]
+export function reviewOf(id: string, where?: { home?: string; others?: readonly string[] }): { needsReview: boolean; edited: EditedTest[]; diff: string }

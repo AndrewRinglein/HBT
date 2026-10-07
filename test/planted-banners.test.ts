@@ -280,9 +280,15 @@ describe('the engine holds the row to its shape', () => {
 
   it('a unit with no Surge of its own rolls its Surge check while it holds Surge Chance it was given', () => {
     // 100 given: the check is automatic (fix.surge-spend: 100 surges without a roll) - on a hero whose Surge is 0
+    // Restated 2026-10-06 (rule.surge-is-at-least-level; ruled 2026-10-06: "Everyone gains surge equal to level, at the very
+    // least"): no hero is fielded with Surge 0 any more, so the unit with none is made one here - the rule held is the same,
+    // a unit whose own Surge is 0 still rolls while it holds Surge Chance it was given. The lines were:
+    //   const hero = ctx.state.units.find((u) => u.side === 'hero' && u.surge === 0)!
+    //   expect(hero).toBeDefined()
     const ctx = createBattle(scenarioOptions(SCENARIOS['test.banner-courage']!))
-    const hero = ctx.state.units.find((u) => u.side === 'hero' && u.surge === 0)!
-    expect(hero).toBeDefined()
+    const hero = ctx.state.units.find((u) => u.side === 'hero')!
+    expect(hero.surge).toBe(1)
+    hero.surge = 0
     gainSurgeChance(ctx, hero.id, 100, 'test')
     runBattle(ctx)
     const checks = types(ctx, 'surge.checked').filter((e) => e.actor === hero.id)

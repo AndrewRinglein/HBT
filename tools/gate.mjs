@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 // node tools/gate.mjs <item-id> [--land|--abandon] [--budget <s>] [--fresh]
+// node tools/gate.mjs <item-id> --reflag     a LANDED item's flags read again from its commits; sets done-needs-review when one asks (never by hand)
 //
 // The blocking gate. Claude does not get to decide whether an item passed —
 // this does, and its exit code is not arguable.
@@ -53,13 +54,14 @@ import { shardsFor, readPasses, hasPass, appendPass, appendFail, logCheck, contr
 import {
   treeHash, contextHash, openProgress, recall, record, clearResults, serialize,
   stopBefore, budgetFrom, parseShard, recordShard, shardStatus, testFilesIn, killSwitchFiles, committedItemTests,
+  committedAddedLines, committedNewFiles, editedTests, reviewOf,
 } from './gate-progress.mjs'
 
 const T0 = Date.now()
 
 const id = process.argv[2]
 const MODE = process.argv.includes('--land') ? 'land'
-  : process.argv.includes('--abandon') ? 'abandon' : 'check'
+  : process.argv.includes('--abandon') ? 'abandon' : process.argv.includes('--reflag') ? 'reflag' : 'check'
 const FULL = process.argv.includes('--full')
 const PROCESS = FULL ? 'full' : 'fast'
 
@@ -324,11 +326,14 @@ check('brought its own tests', () => {
 
 // A new mechanic may ADD tests. Editing tests that already passed is the classic
 // way an autonomous loop launders a failure into a success.
-const weakened = [tryRun('git diff --numstat -- test/', IN_HOME).out.trim(),
-  TESTS_HOME === '.' ? '' : tryRun(`git log --format= --numstat -F --grep="${id}" -- test/`, IN_HOME).out.trim()].filter(Boolean).join('\n')
-  .split('\n').filter(Boolean)
-  .map((l) => { const [add, del, file] = l.split('\t'); return { file, add: +add, del: +del } })
-  .filter((f) => f.del > 0)
+// tool.gate-flags-read-committed-edits (2026-10-06): what the item COMMITTED is read too — an item built in a group is its
+// own commit before its gate runs (DECISIONS.md 2026-10-06 'engine items too are built in groups of up to four …'), and this
+// flag is how the review list is made. In the item's home: every file under test/ that is changed, uncommitted or in a
+// commit that names the item (the whole id), unless the item itself added the file. In the other three packages: the test
+// files its commits there changed (tools/gate-progress.mjs editedTests). It read `git diff --numstat -- test/` in the home
+// and, for a viewer or kingdom item only, that package's commits naming the id as a substring.
+const REVIEW_HOMES = { home: resolve(TESTS_HOME), others: ['.', '../viewer', '../kingdom', '../content'].map((d) => resolve(d)).filter((d) => d !== resolve(TESTS_HOME)) }
+const weakened = editedTests(id, REVIEW_HOMES)
 flag('existing tests untouched', () => ({
   ok: weakened.length === 0,
   note: weakened.length ? `DELETED LINES in ${weakened.map((w) => `${w.file} (-${w.del})`).join(', ')} — will land FLAGGED for review` : '',
@@ -336,8 +341,7 @@ flag('existing tests untouched', () => ({
 // Edited tests still land for Angela's review (Law 10); that is not a seal.
 let needsReview = weakened.length > 0
 let pendingGolden = null
-const testDiff = weakened.length > 0 ? tryRun('git diff -U2 -- test/', IN_HOME).out +
-  (TESTS_HOME === '.' ? '' : tryRun(`git log -p -U2 --format=%h -F --grep="${id}" -- test/`, IN_HOME).out) : ''
+const testDiff = weakened.length > 0 ? reviewOf(id, REVIEW_HOMES).diff : ''
 
 // The control battles — run when the engine's code changed since they last passed, SKIPPED (and said
 // so) when nothing a battle is made of changed, and re-recorded rather than failed when only the
@@ -384,7 +388,8 @@ const stamp = new Date().toISOString().slice(0, 16).replace('T', ' ')
 /** Added lines of the current working diff, restricted to a path. */
 function addedLines(path) {
   const out = tryRun(`git diff -U0 -- ${path}`).out
-  return out.split('\n').filter((l) => l.startsWith('+') && !l.startsWith('+++'))
+  // … and the lines the item's own commits added (tool.gate-flags-read-committed-edits, 2026-10-06: a group-built item is committed before its gate)
+  return [...out.split('\n').filter((l) => l.startsWith('+') && !l.startsWith('+++')), ...committedAddedLines(id, process.cwd(), path)]
 }
 
 // Content-instance ids are three segments (attack.zombie.basic). Two-segment
@@ -486,8 +491,9 @@ flag('naming — no banned words invented', () => {
     if (/\b(proc|procs)\b/i.test(l)) smells.push("'proc' — say trigger")
     if (/\b(buff|debuff)s?\b/i.test(l)) smells.push("'buff/debuff' — say status")
   }
-  const newFiles = sh('git status --porcelain').split('\n').filter((l) => l.startsWith('??') || l.startsWith('A '))
-    .map((l) => l.slice(3)).filter((f) => /(utils|helpers|misc|stuff)\.(ts|mjs)$/.test(f))
+  const newFiles = [...sh('git status --porcelain').split('\n').filter((l) => l.startsWith('??') || l.startsWith('A ')).map((l) => l.slice(3)),
+    ...committedNewFiles(id, process.cwd())]   // tool.gate-flags-read-committed-edits: the files its commits added, too
+    .filter((f) => /(utils|helpers|misc|stuff)\.(ts|mjs)$/.test(f))
   for (const f of newFiles) smells.push(`${f} — a file named utils is where names go to be invented`)
   return { ok: smells.length === 0, review: smells.length > 0, note: smells.length ? [...new Set(smells)].slice(0, 4).join(' | ') + ' — will land FLAGGED' : '' }
 })
@@ -517,6 +523,39 @@ check('kill switch — the tests fail without the content', () => {
   }
   return { ok: true, note: `tests fail without ${ids.join(',')} — they genuinely test it` }
 }, { split: true })
+
+// ── --reflag: a LANDED item's flags, read again from its commits (tool.gate-flags-read-committed-edits, 2026-10-06) ──
+// The flags are how the review list is made (Law 10), and an item landed while a flag could not see what it had committed
+// landed 'done' where it should have landed 'done-needs-review'. `node tools/gate.mjs <id> --reflag` runs the gate's flags —
+// only the flags, no check, nothing a landing needs — over what the item's commits and the working tree say it touched, and
+// if any asks for review it sets the item to done-needs-review, writes the reason and the diff into the ledger, logs the run
+// and commits those three records. It never lowers a status (a flagged item stays flagged) and never touches an item that
+// is not landed. The status is written here and nowhere by hand.
+if (MODE === 'reflag') {
+  if (!['done', 'done-needs-review'].includes(item.status) || !item.sha) {
+    console.error(`--reflag reads a LANDED item's flags again; '${id}' is '${item.status ?? 'pending'}'. Gate it:  node tools/gate.mjs ${id}`)
+    process.exit(2)
+  }
+  let review = weakened.length > 0
+  for (const c of CHECKS.filter((x) => x.kind === 'flag')) {
+    const r = c.fn()
+    checks.push({ name: c.name, ...r, warn: !r.ok && !r.skipped })
+    if (r.review) review = true
+    console.log(`  ${r.skipped ? 'SKIPPED' : r.ok ? 'PASS' : 'WARN'}  ${c.name}${r.note ? '  — ' + r.note : ''}`)
+  }
+  const flagged = checks.map((c) => `  ${c.skipped ? 'SKIPPED' : c.ok ? 'PASS' : 'WARN'}  ${c.name}${c.note ? ' — ' + c.note : ''}`).join('\n')
+  if (!review) { console.log(`\nNo flag asks for review: '${id}' stays '${item.status}' (landed ${item.sha}).\n`); logRun('reflag-clean', { sha: item.sha }); process.exit(0) }
+  if (item.status === 'done-needs-review') { console.log(`\n'${id}' is already done-needs-review (landed ${item.sha}); nothing changed.\n`); process.exit(0) }
+  item.status = 'done-needs-review'
+  const listFile = saveItem(backlog, item)
+  appendFileSync(LEDGER, `\n## ${id} — REFLAGGED, landed \`${item.sha}\` **NEEDS REVIEW**\n${new Date().toISOString().slice(0, 16).replace('T', ' ')}\n\n` +
+    `Landed 'done' while the gate's flags read only uncommitted edits; read again from the item's commits (gate.mjs --reflag).\n\n${flagged}\n` +
+    (testDiff ? `\n<details><summary>Existing tests were edited — review this diff</summary>\n\n\`\`\`diff\n${testDiff}\`\`\`\n</details>\n` : ''))
+  logRun('reflagged', { sha: item.sha })
+  commitOnly([listFile, LEDGER, RUNLOG], { message: `${id}: reflagged for review - the gate's flags read again from the item's commits (tool.gate-flags-read-committed-edits)`, author: { email: 'a@b', name: 'combat-framework' } })
+  console.log(`\nREFLAGGED: '${id}' is done-needs-review (landed ${item.sha}); the ledger holds the diff.\n`)
+  process.exit(0)
+}
 
 // ── run the checks: replay what passed on this tree, run the rest, honour the budget ──
 // a viewer or kingdom item's tests are judged on that package's tree too: an edit there discards the record
