@@ -2233,8 +2233,12 @@ function targetingOfRaw(tgt) {
   return null;
 }
 const SPIRIT = (base, mult = 1) => ({ scale: 'partySpirit', base, mult });
-const untilOf = (scope) => scope === 'until-end-of-your-next-turn' ? 'endOfNextTurn' : scope === 'until-end-of-turn' ? 'endOfTurn' : scope === 'battle' || scope === 'rest-of-battle' ? 'battle' : null;
+// engine content.one-use-class-powers-reworded (2026-10-06; engine DECISIONS.md 2026-10-06 'the one-use rules …', of Take Root:
+// "we give -5 move and a bonus until the end of your next activation"): the fourth scope a `modifies` field may name, the
+// engine's endOfNextActivation - the lifetime "until the end of your next Activation" already has on a move's rider (above).
+const untilOf = (scope) => scope === 'until-end-of-your-next-turn' ? 'endOfNextTurn' : scope === 'until-end-of-turn' ? 'endOfTurn' : scope === 'until-end-of-your-next-activation' ? 'endOfNextActivation' : scope === 'battle' || scope === 'rest-of-battle' ? 'battle' : null;
 
+const TAKE_ROOT = /^Plant yourself: lose (\d+) Movement, and your ranged attacks gain \+(\d+) Accuracy, both until the end of your next Activation$/;
 // One sentence, one shape. Returns { effects, gaps } or null when nothing matched.
 // engine fix.burst-ground-class-powers (2026-10-04; engine SWITCHES.md burstGroundClassPowers): a blast sentence may
 // end in the ground clause the item bursts' sentence has — "[, and | — and then] those seven hexes become
@@ -2290,6 +2294,11 @@ function compileSentences(desc) {
       continue;
     }
     if ((m = s0.match(/^[Tt]ake (\d+) true damage$/))) { effects.push({ kind: 'damage', amount: +m[1], damageType: 'true', who: 'self' }); continue; }
+    // engine content.one-use-class-powers-reworded (2026-10-06): Take Root - "Plant yourself: lose N Movement, and your ranged
+    // attacks gain +M Accuracy, both until the end of your next Activation." The Movement lost is a stat modifier on the one
+    // who plants, for that lifetime; the Accuracy is the row's `modifies` field, which compileClassPower reads with the same
+    // lifetime and holds to this sentence's number and scope (TAKE_ROOT, below) - the bonus never compiles without its price.
+    if ((m = s0.match(TAKE_ROOT))) { effects.push({ kind: 'statMod', stat: 'movement', value: -m[1], until: 'endOfNextActivation', who: 'self' }); continue; }
     if (/^(Free|No roll, no crit)$/.test(s0)) continue;   // markers the row's fields already carry
     // flavour and explanation sentences — not rules
     if (/^(Read that|It makes no attack|It does not roll|It never rolls|It does not spend|It costs nothing|Cheap and|Put it on|Thrown into|Because Magic|Your cheap|Anyone carrying Burn|about \d|as an area effect)/.test(s0)) continue;
@@ -2309,6 +2318,11 @@ function compileClassPower(p, cls) {
   if (tg.hexGap && !p.burst) gaps.push(`targets 'a hex within ${tg.hexGap}' — engine centres the blast on a UNIT`);
   const { effects, gaps: g2, ground } = compileSentences(desc);
   gaps.push(...g2);
+  // Take Root's sentence and its `modifies` field say the one thing twice: they must agree (the scope, and the Accuracy)
+  const root = desc.replace(/\.$/, '').match(TAKE_ROOT);
+  if (root && (p.modifies?.scope !== 'until-end-of-your-next-activation' || p.modifies?.statModifiers?.accuracy !== +root[2] || Object.keys(p.modifies.statModifiers).length !== 1)) {
+    throw new Error(`mkenginepack: ${p.id} says "+${root[2]} Accuracy until the end of your next Activation" and its modifies field says ${JSON.stringify(p.modifies ?? null)}`);
+  }
   if (p.modifies) {
     const until = untilOf(p.modifies.scope);
     if (!until) gaps.push(`modifies scope '${p.modifies.scope}' unparsed`);
