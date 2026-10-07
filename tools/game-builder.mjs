@@ -14,7 +14,7 @@ import { readFileSync, writeFileSync, existsSync } from 'node:fs'
 import { createHash } from 'node:crypto'
 import { join } from 'node:path'
 import { measurementLabel } from './measurement-label.mjs'
-import { readBacklog } from './backlog.mjs'
+import { readBacklog, areaOf } from './backlog.mjs'
 
 // Artifact links carry a content-hash cache-buster (?v=). Browsers cache
 // file:// pages hard — Angela rebuilt the replay overnight and her browser
@@ -38,7 +38,11 @@ const questionsMd = read('.state/questions.md')
 const landed = backlog.filter((b) => String(b.status ?? '').startsWith('done'))
 const flagged = backlog.filter((b) => b.status === 'done-needs-review')
 const sealed = backlog.filter((b) => b.gauntlet === 'passed')
-const open = backlog.filter((b) => !b.status)
+// tool.later-items (Andrew, 2026-10-06, DECISIONS.md 'the bug list is queued at low priority, behind
+// anything real'): an open item marked `later` is offered only when nothing else in its area is ready,
+// so it is not counted with the open backlog — it has its own tile and its own list.
+const open = backlog.filter((b) => !b.status && !b.later)
+const later = backlog.filter((b) => !b.status && b.later)
 const abandoned = backlog.filter((b) => b.status === 'failed' || b.status === 'reverted')
 
 // FAIL counts per check name — "where we are failing" is the improvement signal
@@ -247,6 +251,7 @@ const html = `<!doctype html>
   <div class="tile"><div class="n">${flagged.length}</div><div class="l">flagged, need review</div></div>
   <div class="tile"><div class="n">${abandoned.length}</div><div class="l">abandoned / reverted</div></div>
   <div class="tile"><div class="n">${open.length}</div><div class="l">backlog open</div></div>
+  ${later.length ? `<div class="tile"><div class="n">${later.length}</div><div class="l">later</div></div>` : ''}
   <div class="tile"><div class="n">${qOpen.length}</div><div class="l">open questions</div></div>
 </div>
 
@@ -259,6 +264,11 @@ ${qOpen.map((q) => `<div class="q">❓ ${esc(q)}</div>`).join('')}
 ${qDone.length ? `<details><summary>${qDone.length} answered</summary>${qDone.map((q) => `<div class="q done">✓ ${esc(q)}</div>`).join('')}</details>` : ''}
 <div class="sub" style="margin-top:8px">Add or answer questions in <code>.state/questions.md</code> — this page re-renders on the next gate run (or <code>node tools/game-builder.mjs</code>).</div>
 
+${later.length ? `<h2 id="later">Later — ${later.length} item${later.length === 1 ? '' : 's'} offered only when nothing else in the area is ready</h2>
+<details><summary>the list, in the order each area offers them</summary>
+${later.map((b) => `<div class="q done"><b>${esc(b.id)}</b> · ${esc(areaOf(b))} · ${esc(b.shape)}${b.needs?.length ? ` · needs ${esc(b.needs.join(', '))}` : ''}<br>${esc(String(b.spec ?? '').slice(0, 220))}${String(b.spec ?? '').length > 220 ? '…' : ''}</div>`).join('')}
+</details>
+` : ''}
 <h2>Run log — newest batch on top, older batches collapsed</h2>
 <div class="filters" role="group" aria-label="filter runs">
   <button aria-pressed="true" data-f="all">all</button>
