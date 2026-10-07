@@ -593,11 +593,9 @@
    "warmup": 2,
    "free": false,
    "targets": "every enemy adjacent to you",
-   "tags": [
-    "aura"
-   ],
-   "description": "For the rest of the Battle, any enemy that begins its Turn adjacent to you takes -15 Accuracy against every target except you.",
-   "source": "new | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
+   "tags": [],
+   "description": "Every enemy adjacent to you takes -15 Accuracy for the rest of the Battle.",
+   "source": "new | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-10-06 (engine/DECISIONS.md 'the one-use rules: most are cut or reworded onto rules the engine already has; a handful are built'): \"I know it's meant for tanking, but we can just turn it into a -accuracy.\" The \"against every target except you\" is cut.",
    "triggers": []
   },
   {

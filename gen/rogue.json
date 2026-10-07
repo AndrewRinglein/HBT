@@ -278,8 +278,8 @@
    "free": false,
    "targets": "one enemy within 4 hexes",
    "tags": [],
-   "description": "For the rest of the Battle that enemy's Poison ticks twice each Turn, at the start and again at the end; each tick is still reduced separately by its Resist, so this is worth nothing against something well warded.",
-   "source": "new (the payoff card for the one specialty that plays the long game — and honest about the fact that Resist eats it) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
+   "description": "The target gains 5 Poison and loses 1 Resist for the rest of the Battle. Resist floors at zero.",
+   "source": "new (the payoff card for the one specialty that plays the long game — and honest about the fact that Resist eats it) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-10-06 (engine/DECISIONS.md 'the one-use rules: most are cut or reworded onto rules the engine already has; a handful are built'): \"We can remove the status that ticks twice.\" A dose of Poison and a point off the Resist that eats it.",
    "triggers": []
   },
   {
@@ -578,8 +578,8 @@
    "free": true,
    "targets": "self",
    "tags": [],
-   "description": "Heal 6, remove 5 Bleed and Poison from yourself, and gain +1 Item Slot for the rest of the Battle.",
-   "source": "new (the settled half of Hell-TCG's 'kills earn faith' — Faith was CUT, so the reward is Health and carrying capacity) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-20: the mark is cut. \"on a Turn in which your mark died\" needed the mark and a per-Turn kill flag. Cut; the power is now simply available.",
+   "description": "Heal 6 and remove 5 Bleed and Poison from yourself.",
+   "source": "new (the settled half of Hell-TCG's 'kills earn faith' — Faith was CUT, so the reward is Health and carrying capacity) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-20: the mark is cut. \"on a Turn in which your mark died\" needed the mark and a per-Turn kill flag. Cut; the power is now simply available. | 2026-10-06 (engine/DECISIONS.md 'the one-use rules: most are cut or reworded onto rules the engine already has; a handful are built'): \"We can remove an item slot gained during battle.\"",
    "triggers": []
   },
   {
@@ -628,8 +628,8 @@
    "free": false,
    "targets": "one enemy in melee reach",
    "tags": [],
-   "description": "All Bleed on that enemy ticks immediately and none of it is reduced by Resist. The Bleed is spent afterwards.",
-   "source": "new (the Nightblade's finisher — the specialty piles Bleed on everything, and this is the button that cashes it) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-20: nothing counts occurrences — no \"first time\", no Nth hit, no per-Turn or per-Battle tally. \"and then ticks a second time\" counted occurrences. One immediate tick.",
+   "description": "Dagger attack that adds every stack of Bleed on the target to its damage and CONSUMES it.",
+   "source": "new (the Nightblade's finisher — the specialty piles Bleed on everything, and this is the button that cashes it) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-20: nothing counts occurrences — no \"first time\", no Nth hit, no per-Turn or per-Battle tally. \"and then ticks a second time\" counted occurrences. One immediate tick. | 2026-10-06 (engine/DECISIONS.md 'the one-use rules: most are cut or reworded onto rules the engine already has; a handful are built'): \"we don't need a mechanic specifically for this. We do have a mechanic that says, add to damage equal to bleed\" - the immediate tick is cut; it is damage that adds the target's Bleed, as the Bloody Axe's Butcher is.",
    "triggers": []
   },
   {
@@ -646,8 +646,8 @@
     "thrown",
     "ranged"
    ],
-   "description": "Thrown dagger at +1 Precision and +5 Crit; against a target more than 3 hexes away it gains a further +5 Crit, and on hit the target gains 2 Bleed.",
-   "source": "Hell-TCG mechanic reused (Ebony Mask/Nightblade, 'Reach lets them strike from safety' — written out as an actual distance band) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
+   "description": "Thrown dagger at +1 Precision and +5 Crit; on hit the target gains 2 Bleed.",
+   "source": "Hell-TCG mechanic reused (Ebony Mask/Nightblade, 'Reach lets them strike from safety' — written out as an actual distance band) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-10-06 (engine/DECISIONS.md 'the one-use rules: most are cut or reworded onto rules the engine already has; a handful are built'): the further +5 Crit against a target more than 3 hexes away is cut - nothing else reads distance to the target.",
    "triggers": []
   },
   {
@@ -680,8 +680,8 @@
     "melee",
     "area"
    ],
-   "description": "Move up to 5 hexes in a straight line, passing through occupied hexes; every enemy whose hex you passed through or beside takes 4 magic damage, or 6 if it is demon or undead. As an area effect it cannot crit.",
-   "source": "Hell-TCG name reused (Demon Hunter/Havoc, Fel Rush — row damage rebuilt as a line you physically travel, which is what a rush is) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-10-04 (engine fix.own-area-skips-owner; ruled 2026-10-04, engine DECISIONS.md 'the Poison Imp, the Balrog and the four caster-centred class powers skip their owner too': \"One and two, yes, skip the caster.\"): the power is aimed at every OTHER unit within 3 hexes - the caster is skipped. The description names enemies only and is unchanged.",
+   "description": "Move up to 5 hexes in a straight line, passing through occupied hexes; then every enemy within 3 hexes of where you stop takes 4 magic damage, or 6 if it is demon or undead. As an area effect it cannot crit.",
+   "source": "Hell-TCG name reused (Demon Hunter/Havoc, Fel Rush — row damage rebuilt as a line you physically travel, which is what a rush is) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-10-04 (engine fix.own-area-skips-owner; ruled 2026-10-04, engine DECISIONS.md 'the Poison Imp, the Balrog and the four caster-centred class powers skip their owner too': \"One and two, yes, skip the caster.\"): the power is aimed at every OTHER unit within 3 hexes - the caster is skipped. The description names enemies only and is unchanged. | 2026-10-06 (engine/DECISIONS.md 'the one-use rules: most are cut or reworded onto rules the engine already has; a handful are built'): \"We can remove damage to enemies you run past.\" The damage lands where the rush ends.",
    "triggers": []
   },
   {
@@ -743,8 +743,8 @@
    "free": false,
    "targets": "self",
    "tags": [],
-   "description": "Take 4 true damage to raise the ward properly: Protection equal to 3 + twice your Resist, and remove 5 Burn from yourself. Decline the damage and the ward is only Protection equal to your Resist. The barrier is paid for in the currency it protects.",
-   "source": "Hell-TCG name reused (Demon Hunter/Demonic Ward, Soul Barrier — scaled off Resist rather than Ranged, since Precision is damage-only now) | 2026-08-17: Protection has no duration — it decays 1 a Turn and by the damage it absorbs. Duration clause removed. | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-17 quality pass: a flat Protection grant with no decision. Now a cost/benefit — the full ward is bought with 4 true damage.",
+   "description": "Take 4 true damage, gain Protection equal to 3 + twice your Resist, and remove 5 Burn from yourself. The barrier is paid for in the currency it protects.",
+   "source": "Hell-TCG name reused (Demon Hunter/Demonic Ward, Soul Barrier — scaled off Resist rather than Ranged, since Precision is damage-only now) | 2026-08-17: Protection has no duration — it decays 1 a Turn and by the damage it absorbs. Duration clause removed. | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-17 quality pass: a flat Protection grant with no decision. Now a cost/benefit — the full ward is bought with 4 true damage. | 2026-10-06 (engine/DECISIONS.md 'the one-use rules: most are cut or reworded onto rules the engine already has; a handful are built'): the choice inside the power (decline the damage for a smaller ward) is cut; it is the full ward at its price.",
    "triggers": []
   },
   {

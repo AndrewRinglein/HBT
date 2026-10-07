@@ -330,8 +330,8 @@
     "staff",
     "heal"
    ],
-   "description": "Staff attack dealing Magic magic damage; heal yourself half of what it deals.",
-   "source": "Hell-TCG name reused (Mage/Soul Stealer, Life Drain) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-20: \"healing is halved on burning ground\" is cut. Standing in fire gives you Burn, and Burn already halves healing on its holder — the clause restated a rule that fires on its own. ",
+   "description": "Staff attack dealing Magic magic damage; on hit you heal 3.",
+   "source": "Hell-TCG name reused (Mage/Soul Stealer, Life Drain) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-20: \"healing is halved on burning ground\" is cut. Standing in fire gives you Burn, and Burn already halves healing on its holder — the clause restated a rule that fires on its own.  | 2026-10-06 (engine/DECISIONS.md 'the one-use rules: most are cut or reworded onto rules the engine already has; a handful are built'): healing by a share of the damage dealt is cut; a flat heal on hit, as Dark Bolt has.",
    "triggers": []
   },
   {
@@ -346,8 +346,8 @@
    "tags": [
     "stance"
    ],
-   "description": "Stance: for the rest of the Battle your staff attacks deal +2 damage and no ally may heal you — the only Health you get is what you take. Every kill still pays out through the specialty.",
-   "source": "Hell-TCG name reused (Mage/Soul Stealer, Soul Thief — the permanent Magic gain was campaign-tier and moved to the specialty's onKill) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
+   "description": "Stance: for the rest of the Battle your staff attacks deal +2 damage, and you lose 2 Health.",
+   "source": "Hell-TCG name reused (Mage/Soul Stealer, Soul Thief — the permanent Magic gain was campaign-tier and moved to the specialty's onKill) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-10-06 (engine/DECISIONS.md 'the one-use rules: most are cut or reworded onto rules the engine already has; a handful are built'): \"We can remove cannot be healed.\"",
    "triggers": []
   },
   {
@@ -389,18 +389,18 @@
    "cooldown": 4,
    "warmup": 0,
    "free": false,
-   "targets": "one ally within 4 hexes",
+   "targets": "self",
    "tags": [
-    "sword"
+    "staff"
    ],
-   "description": "For the rest of the Battle that ally's SWORD attacks add the party's Magic to their damage. You do not lend them strength, you lend them the spell: a Warrior with a longsword and a Mystic behind him is swinging for Strength plus Magic every Turn.",
-   "source": "Hell-TCG name reused (Mage/Mystic, Guidance — melee/ranged became Strength/Precision, which are damage-only now) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-17 design pass: rebuilt a flat +1/+1 ally buff into the spellblade modifier — the ally's sword attacks add the party Magic for the rest of the Battle.",
+   "description": "Until the end of your next Turn, your attacks add the party's Magic to their damage.",
+   "source": "Hell-TCG name reused (Mage/Mystic, Guidance — melee/ranged became Strength/Precision, which are damage-only now) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-17 design pass: rebuilt a flat +1/+1 ally buff into the spellblade modifier — the ally's sword attacks add the party Magic for the rest of the Battle. | 2026-10-06 (engine/DECISIONS.md 'the one-use rules: most are cut or reworded onto rules the engine already has; a handful are built'): \"a mechanic that adds to magic on attack, but not to allies, so let's cut that\" - it is the caster's own attacks now, as Void Strike is.",
    "triggers": [],
    "modifies": {
     "tags": [
-     "sword"
+     "staff"
     ],
-    "scope": "rest-of-battle",
+    "scope": "until-end-of-your-next-turn",
     "addsStat": "magic"
    }
   },
@@ -572,13 +572,12 @@
    "cooldown": 6,
    "warmup": 2,
    "free": false,
-   "targets": "your own hex",
+   "targets": "the hex you occupy",
    "tags": [
     "aura"
    ],
-   "description": "Fix one of your active auras to the hex you are standing on. For the next three Turns it stays there at radius 2, keeps paying out at the end of your Turn, and no longer cares whether you moved or how far away you are. This is the only way a Totem Master ever leaves their own aura.",
-   "needsCapability": "hex-anchored persistent aura — an aura object that exists on a hex independently of the unit that created it, ticking on the owner's turn order",
-   "source": "new (the honest form of a totem; flagged rather than faked, since every other totem here is caster-anchored) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
+   "description": "Plant a totem on your hex. For the rest of the Battle it projects an aura of radius 2 from that hex — you may walk away and it stays. At the End of Activation of any ally inside the aura, that ally heals 2.",
+   "source": "new (the honest form of a totem; flagged rather than faked, since every other totem here is caster-anchored) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-10-06 (engine/DECISIONS.md 'the one-use rules: most are cut or reworded onto rules the engine already has; a handful are built'): pinning one of your live auras to a hex is cut; the totem is a planted object with its own aura, which the Banners already are.",
    "triggers": []
   },
   {

@@ -1187,11 +1187,11 @@
    "tags": [
     "banner"
    ],
-   "description": "One use per Battle. Plant the banner on your hex. For the rest of the Battle it projects an aura of radius 3 from that hex — you may walk away and it stays. +2 Strength and +2 Precision to allies in the aura. At the End of Activation of an ally inside, that ally heals 5. onMiss by any ally in the aura: EVERY ally in the aura gains 30 Surge Chance.",
+   "description": "One use per Battle. Plant the banner on your hex. For the rest of the Battle it projects an aura of radius 3 from that hex — you may walk away and it stays. +2 Strength and +2 Precision to allies in the aura. At the End of Activation of an ally inside, that ally heals 5. onMiss, for a unit in the aura: gain 30 Surge Chance.",
    "intent": "Three hexes where the party is simply better than it is, and where missing is not wasted.",
    "triggers": [],
    "needsCapability": "capability.banner — a planted board object projecting an aura from its hex for the rest of the Battle. Nothing in the engine plants anything yet.",
-   "source": "Dictated 2026-09-02. Banners are planted on a hex, ruled at landing."
+   "source": "Dictated 2026-09-02. Banners are planted on a hex, ruled at landing. | 2026-10-06 (engine/DECISIONS.md 'the one-use rules: most are cut or reworded onto rules the engine already has; a handful are built'): \"it could be done by everybody who's in range. Gains on miss. Gain surge, but not everyone gives everyone the modifier. That seems like a double stacked thing that we don't need.\" Each ally in reach gains it on its own miss."
   },
   {
    "id": "rule.stealth-does-not-hold",

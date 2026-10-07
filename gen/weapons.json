@@ -587,11 +587,11 @@
    "triggers": [
     {
      "hook": "aura",
-     "effect": "AURA radius 1 — an enemy adjacent to you takes -10 Accuracy against anyone except you."
+     "effect": "AURA radius 1 — an enemy adjacent to you takes -10 Accuracy."
     }
    ],
    "intent": "You are not carrying it for yourself, and it knows the difference.",
-   "source": "Hell-TCG name reused (Paladin, Holy Shield — the Paladin Resist line kept as stats) | 2026-08-17: CUT. ally-reactive hooks, guarding, Consequence-Stack interference and non-knockback forced movement all removed by ruling. | 2026-08-17 quality pass: replaced a placeholder aura with a distinct effect. | 2026-08-17: THERE IS NO FLANKING. It appears in no current design document — I carried it forward from a stale snapshot. Rebuilt on plain adjacency, which is real and checkable."
+   "source": "Hell-TCG name reused (Paladin, Holy Shield — the Paladin Resist line kept as stats) | 2026-08-17: CUT. ally-reactive hooks, guarding, Consequence-Stack interference and non-knockback forced movement all removed by ruling. | 2026-08-17 quality pass: replaced a placeholder aura with a distinct effect. | 2026-08-17: THERE IS NO FLANKING. It appears in no current design document — I carried it forward from a stale snapshot. Rebuilt on plain adjacency, which is real and checkable. | 2026-10-06 (engine/DECISIONS.md 'the one-use rules: most are cut or reworded onto rules the engine already has; a handful are built'): \"we can just turn it into a -accuracy\" - the aura's \"against anyone except you\" is cut."
   },
   {
    "id": "item.death-blade",
@@ -964,16 +964,12 @@
    },
    "triggers": [
     {
-     "hook": "onHit",
-     "effect": "the target cannot be healed until the end of its next Turn"
-    },
-    {
      "hook": "onKill",
      "effect": "regain 1 Stamina"
     }
    ],
-   "intent": "Nothing it touches gets better, and if the big shot lands the way it wants to, it takes a second one with it.",
-   "source": "Hell-TCG name reused (Death Bow — Drained rebuilt as a heal lock, on-kill kept)"
+   "intent": "If the big shot kills, the archer is suddenly quick and the bow suddenly worse: time to draw a blade.",
+   "source": "Hell-TCG name reused (Death Bow — Drained rebuilt as a heal lock, on-kill kept) | 2026-10-06 (engine/DECISIONS.md 'the one-use rules: most are cut or reworded onto rules the engine already has; a handful are built'): \"We can remove cannot be healed\" - the on-hit heal lock is cut."
   },
   {
    "id": "item.holy-avenger",
@@ -3178,10 +3174,11 @@
    "triggers": [
     {
      "hook": "onKill",
-     "effect": "make one free Death Shot against a different enemy"
+     "effect": "gain 70 Surge, and take -3 Precision for the rest of the Battle"
     }
    ],
-   "slayer": null
+   "slayer": null,
+   "source": " | 2026-10-06 (engine/DECISIONS.md 'the one-use rules: most are cut or reworded onto rules the engine already has; a handful are built'): \"Free shot at a different enemy isn't a thing we have and has complexity to it, so I don't think we ever want that ... I would have on kill gain 70 surge and take -3 precision. Means you need to change out to melee after you kill with this.\""
   },
   {
    "id": "attack.holy-avenger.avenging-strike",

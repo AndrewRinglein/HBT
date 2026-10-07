@@ -53,25 +53,20 @@
    "id": "specialty.porter",
    "name": "Porter",
    "class": "class.civilian",
-   "intent": "You carry what the heroes cannot, and the party's real capacity is however much of it you are still standing next to.",
+   "intent": "You carry what the heroes cannot.",
    "statModifiers": {
     "itemSlots": 2,
     "movement": 1,
     "health": 1
    },
-   "triggers": [
-    {
-     "hook": "passive",
-     "effect": "every ally within 2 hexes has +1 Item Slot"
-    }
-   ],
+   "triggers": [],
    "powers": [
     "power.porter.drop-the-pack",
     "power.porter.shoulder-the-load",
     "power.porter.brace-the-line",
     "power.porter.set-it-down"
    ],
-   "source": "new — the porter named in the HoBaT deployment design; the Hell-TCG Civilian power Equip is folded in here | 2026-08-17 trim: three stats, no negatives, one ability. Dropped stats: precision -1; dodge -5. Parked abilities: onDeath: everything in your Item Slots falls on your hex and may be taken by any unit that ends its Turn there. | 2026-08-17: CUT. ally-reactive hooks, guarding, Consequence-Stack interference and non-knockback forced movement all removed by ruling. | 2026-08-20: \"the hero you follow\" was a follow/attachment relationship built for one specialty. An aura on a radius instead."
+   "source": "new — the porter named in the HoBaT deployment design; the Hell-TCG Civilian power Equip is folded in here | 2026-08-17 trim: three stats, no negatives, one ability. Dropped stats: precision -1; dodge -5. Parked abilities: onDeath: everything in your Item Slots falls on your hex and may be taken by any unit that ends its Turn there. | 2026-08-17: CUT. ally-reactive hooks, guarding, Consequence-Stack interference and non-knockback forced movement all removed by ruling. | 2026-08-20: \"the hero you follow\" was a follow/attachment relationship built for one specialty. An aura on a radius instead. | 2026-10-06 (engine/DECISIONS.md 'the one-use rules: most are cut or reworded onto rules the engine already has; a handful are built'): \"We can remove an item slot gained during battle\" - the passive \"every ally within 2 hexes has +1 Item Slot\" is cut; the Porter's own Item Slots stay."
   },
   {
    "id": "specialty.militia",
@@ -313,8 +308,8 @@
    "tags": [
     "thrown"
    ],
-   "description": "Light a hex within 6 and it becomes burning. It reveals stealthed units within 3 hexes of it — their stealth breaks — nothing within 3 hexes is hidden by darkness or fog, and every unit inside loses 5 Dodge.",
-   "source": "new | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-17 design pass: reveal rewritten in the settled wording — it strips stealth from units in a radius rather than granting some standing see-through-stealth sense. | 2026-08-20: ground layers are PERSISTENT and carry no number and no clock. A hex is burning or it is not. One layer per hex; applying a different one replaces it. See rule.ground-layers.",
+   "description": "Light a hex within 6 and it becomes burning. It reveals stealthed units within 3 hexes of it — their stealth breaks.",
+   "source": "new | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-17 design pass: reveal rewritten in the settled wording — it strips stealth from units in a radius rather than granting some standing see-through-stealth sense. | 2026-08-20: ground layers are PERSISTENT and carry no number and no clock. A hex is burning or it is not. One layer per hex; applying a different one replaces it. See rule.ground-layers. | 2026-10-06 (engine/DECISIONS.md 'the one-use rules: most are cut or reworded onto rules the engine already has; a handful are built'): the lit zone (nothing hidden by darkness or fog within 3 hexes, and -5 Dodge inside) is cut.",
    "triggers": []
   },
   {
@@ -367,10 +362,10 @@
    "cooldown": 5,
    "warmup": 1,
    "free": false,
-   "targets": "your own hex",
+   "targets": "you and allies within 1 hex",
    "tags": [],
-   "description": "Leave the pack where you stand: for the rest of the Battle, the first ally to end its Turn on that hex heals 3 and removes 1 Weak. The pack is spent when it does.",
-   "source": "new — replaces the cut Hell-TCG Supply economy with a hex the party has to walk to | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-20 sweep: \"up to three times in total\" was a tally. Nothing counts occurrences. The pack is now an object that is spent, which is exactly how traps already work.",
+   "description": "You and every ally within 1 hex heal 3 and remove 1 Weak.",
+   "source": "new — replaces the cut Hell-TCG Supply economy with a hex the party has to walk to | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-20 sweep: \"up to three times in total\" was a tally. Nothing counts occurrences. The pack is now an object that is spent, which is exactly how traps already work. | 2026-10-06 (engine/DECISIONS.md 'the one-use rules: most are cut or reworded onto rules the engine already has; a handful are built'): the pickup left on a hex is cut; the pack is opened where the Porter stands.",
    "triggers": []
   },
   {
@@ -432,8 +427,8 @@
     "ranged",
     "spear"
    ],
-   "description": "Until the end of your next Turn, your attacks ignore your Reach limit and have +30 Accuracy; you may not move on the Turn you use this.",
-   "source": "Hell-TCG name reused (Civilian/Soldier, Aim! — the ignores-Reach clause ports intact) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-17 quality pass: was a bare attack at +2 Precision, which loses to whatever weapon is already in your hands. Rebuilt as a shape-1 tag modifier built on the Accuracy-surplus rule, so it reads differently to a rookie and to a veteran. | 2026-08-20: \"your next <form> attack\" is gone. Nothing tracks which attack is next or what form it is. Rewritten as a duration: until the end of your next Turn, your attacks carry it. The form qualifier is dropped with it. ",
+   "description": "Until the end of your next Turn, your attacks have +30 Accuracy and +1 Reach; you may not move on the Turn you use this.",
+   "source": "Hell-TCG name reused (Civilian/Soldier, Aim! — the ignores-Reach clause ports intact) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-17 quality pass: was a bare attack at +2 Precision, which loses to whatever weapon is already in your hands. Rebuilt as a shape-1 tag modifier built on the Accuracy-surplus rule, so it reads differently to a rookie and to a veteran. | 2026-08-20: \"your next <form> attack\" is gone. Nothing tracks which attack is next or what form it is. Rewritten as a duration: until the end of your next Turn, your attacks carry it. The form qualifier is dropped with it.  | 2026-10-06 (engine/DECISIONS.md 'the one-use rules: most are cut or reworded onto rules the engine already has; a handful are built'): ignoring the Reach limit is cut; a point of Reach instead.",
    "triggers": [],
    "modifies": {
     "tags": [
@@ -442,7 +437,8 @@
     ],
     "scope": "until-end-of-your-next-turn",
     "statModifiers": {
-     "accuracy": 30
+     "accuracy": 30,
+     "reach": 1
     }
    }
   },
@@ -503,8 +499,8 @@
    "free": false,
    "targets": "self",
    "tags": [],
-   "description": "Move up to twice your Movement toward the nearest map edge and leave the Battle. You keep everything you are carrying and you are available for the next one — the cheapest death you never had.",
-   "source": "Hell-TCG name reused (Civilian/Trickster, Escape — deck return rebuilt as a map-edge withdrawal, items no longer discarded) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
+   "description": "Move up to twice your Movement. It provokes nothing.",
+   "source": "Hell-TCG name reused (Civilian/Trickster, Escape — deck return rebuilt as a map-edge withdrawal, items no longer discarded) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-10-06 (engine/DECISIONS.md 'the one-use rules: most are cut or reworded onto rules the engine already has; a handful are built'): leaving the Battle by the map edge is cut.",
    "triggers": []
   },
   {
@@ -519,8 +515,8 @@
    "tags": [
     "stance"
    ],
-   "description": "Stance: for the rest of the Battle you satisfy EVERY class restriction on every item you carry, and enemies choose targets as though you were a hero rather than a civilian.",
-   "source": "Hell-TCG name reused (Civilian/Trickster, Impersonation — 'gain ALL class bonuses' rebuilt against classRestriction, which is a gate in HoBaT rather than a bonus) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-20: no naming function anywhere — you do not use a power and then make a second choice inside it. The choice is the power, or the target. \"name one class\" is gone; it grants ALL classes, which is both stronger and simpler — and it is what the old game did.",
+   "description": "Stance: gain badge.impersonation for the rest of the Battle.",
+   "source": "Hell-TCG name reused (Civilian/Trickster, Impersonation — 'gain ALL class bonuses' rebuilt against classRestriction, which is a gate in HoBaT rather than a bonus) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-20: no naming function anywhere — you do not use a power and then make a second choice inside it. The choice is the power, or the target. \"name one class\" is gone; it grants ALL classes, which is both stronger and simpler — and it is what the old game did. | 2026-10-06 (engine/DECISIONS.md 'the one-use rules: most are cut or reworded onto rules the engine already has; a handful are built'): \"Impersonation is something we want ... I think we turn this into a badge, and this class power gives that badge.\" What it does is on the badge row.",
    "triggers": [],
    "intent": "Not one class. All of them. A civilian holding the Holy Avenger, the void staff and the paladin plate at the same time, and being shot at like someone who deserves it."
   },
@@ -600,8 +596,8 @@
    "free": false,
    "targets": "one enemy within your Vision",
    "tags": [],
-   "description": "For the rest of the Battle it takes +2 damage from every source.",
-   "source": "Hell-TCG name reused (Lorekeeper/Archivist, Identify — the reveal half is new, since Hell-TCG had no hidden information) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-20: creature tags are player-visible by design and Armor and Resist are on the sheet, so revealing them is not an effect. The +2 damage is the whole power.",
+   "description": "The target loses 1 Armor and 1 Resist for the rest of the Battle. Both floor at zero.",
+   "source": "Hell-TCG name reused (Lorekeeper/Archivist, Identify — the reveal half is new, since Hell-TCG had no hidden information) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-20: creature tags are player-visible by design and Armor and Resist are on the sheet, so revealing them is not an effect. The +2 damage is the whole power. | 2026-10-06 (engine/DECISIONS.md 'the one-use rules: most are cut or reworded onto rules the engine already has; a handful are built'): \"+2 damage from every source\" is cut.",
    "triggers": []
   },
   {
@@ -673,8 +669,8 @@
    "free": false,
    "targets": "one ally within 3 hexes",
    "tags": [],
-   "description": "The target's next power this Battle costs 1 less Stamina, and it gains +5 Accuracy for the rest of the Battle.",
-   "source": "Hell-TCG name reused (Lorekeeper/Sage, Enlighten — the double Magic/Spirit grant would multiply party-wide sums, so it is rebuilt as a one-off Stamina discount) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
+   "description": "The target gains 1 Stamina, and +5 Accuracy for the rest of the Battle.",
+   "source": "Hell-TCG name reused (Lorekeeper/Sage, Enlighten — the double Magic/Spirit grant would multiply party-wide sums, so it is rebuilt as a one-off Stamina discount) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-10-06 (engine/DECISIONS.md 'the one-use rules: most are cut or reworded onto rules the engine already has; a handful are built'): a cheaper next power is cut; the Stamina is handed over now.",
    "triggers": []
   },
   {
