@@ -983,13 +983,14 @@ export const UNIT_PACK = {
       "precision": 1,
       "magic": 0,
       "spirit": 0,
-      "role": "melee",
+      "role": "ranged",
       "movement": 5,
       "reach": 0,
       "maxStamina": 0,
       "staminaRegen": 0,
-      "ai": "dumb-melee",
+      "ai": "ranged-kite",
       "attacks": [
+        "attack.eyeblight.gaze",
         "attack.eyeblight.claw"
       ],
       "abilities": [],
@@ -1014,7 +1015,35 @@ export const UNIT_PACK = {
           "source": "unit.eyeblight"
         },
         {
-          "id": "trigger.eyeblight.blight-the-eye-vision",
+          "id": "trigger.eyeblight.blight-the-eye-vision.gaze",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "statMod",
+            "stat": "vision",
+            "value": -2,
+            "until": "battle"
+          },
+          "source": "unit.eyeblight",
+          "onlyWithAttack": "attack.eyeblight.gaze"
+        },
+        {
+          "id": "trigger.eyeblight.blight-the-eye-accuracy.gaze",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "statMod",
+            "stat": "accuracy",
+            "value": -10,
+            "until": "battle"
+          },
+          "source": "unit.eyeblight",
+          "onlyWithAttack": "attack.eyeblight.gaze"
+        },
+        {
+          "id": "trigger.eyeblight.blight-the-eye-vision.claw",
           "hook": "onHit",
           "chance": 100,
           "select": "target",
@@ -1028,7 +1057,7 @@ export const UNIT_PACK = {
           "onlyWithAttack": "attack.eyeblight.claw"
         },
         {
-          "id": "trigger.eyeblight.blight-the-eye-accuracy",
+          "id": "trigger.eyeblight.blight-the-eye-accuracy.claw",
           "hook": "onHit",
           "chance": 100,
           "select": "target",
@@ -2693,6 +2722,34 @@ export const UNIT_PACK = {
           "source": "unit.werewolf"
         },
         {
+          "id": "trigger.werewolf.strength-strength.on-hit",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "self",
+          "effect": {
+            "kind": "statMod",
+            "stat": "strength",
+            "value": 1,
+            "until": "battle"
+          },
+          "source": "unit.werewolf",
+          "onlyWithAttack": "attack.werewolf.claw-frenzy"
+        },
+        {
+          "id": "trigger.werewolf.strength-strength.on-miss",
+          "hook": "onMiss",
+          "chance": 100,
+          "select": "self",
+          "effect": {
+            "kind": "statMod",
+            "stat": "strength",
+            "value": 1,
+            "until": "battle"
+          },
+          "source": "unit.werewolf",
+          "onlyWithAttack": "attack.werewolf.claw-frenzy"
+        },
+        {
           "id": "trigger.werewolf.afflict-lycanthropy",
           "hook": "onDamage",
           "chance": 10,
@@ -3069,6 +3126,16 @@ export const UNIT_PACK = {
       "reach": 1,
       "staminaCost": 0,
       "accuracy": 30
+    },
+    "attack.eyeblight.gaze": {
+      "id": "attack.eyeblight.gaze",
+      "name": "Eyeblight",
+      "kind": "ranged",
+      "damageType": "true",
+      "bonus": 0,
+      "stat": "precision",
+      "reach": 9,
+      "staminaCost": 0
     },
     "attack.eyeblight.claw": {
       "id": "attack.eyeblight.claw",
@@ -12085,12 +12152,20 @@ export const UNIT_PACK = {
                 "amount": 5
               },
               "source": "power.banner-heroism.plant"
+            },
+            {
+              "id": "trigger.banner-heroism.plant.surge-on-miss",
+              "hook": "onMiss",
+              "chance": 100,
+              "select": "self",
+              "effect": {
+                "kind": "surge.gain",
+                "value": 30
+              },
+              "source": "power.banner-heroism.plant"
             }
           ]
         }
-      ],
-      "gaps": [
-        "onMiss by any ally in the aura: EVERY ally in the aura gains 30 Surge Chance — planted object: clause unparsed"
       ]
     },
     "power.cure-poison.use": {
@@ -16453,7 +16528,6 @@ export const UNIT_PACK = {
       "abilities": [],
       "triggers": [],
       "gaps": [
-        "onHit: the target cannot be healed until the end of its n — trigger shape unparsed",
         "onKill: regain 1 Stamina — trigger shape unparsed"
       ]
     },
@@ -17415,7 +17489,7 @@ export const UNIT_PACK = {
       "slots": 1,
       "classRestriction": "class.paladin",
       "statModifiers": {
-        "armor": 1,
+        "armor": 2,
         "resist": 1,
         "maxHp": 4,
         "movement": -1,
@@ -17423,9 +17497,19 @@ export const UNIT_PACK = {
       },
       "grants": [],
       "abilities": [],
-      "triggers": [],
-      "gaps": [
-        "startOfBattle: you may not act on Turn 1; from Turn 2 you have +1 — trigger shape unparsed"
+      "triggers": [
+        {
+          "id": "trigger.divine-bulwark.stun",
+          "hook": "startOfBattle",
+          "chance": 100,
+          "select": "self",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.stun",
+            "value": 1
+          },
+          "source": "item.divine-bulwark"
+        }
       ]
     },
     "item.stoneskin-hauberk": {
@@ -17560,14 +17644,14 @@ export const UNIT_PACK = {
         "armor": 1,
         "maxHp": 4,
         "movement": -1,
-        "dodge": -5
+        "dodge": -5,
+        "fireResist": 2
       },
       "grants": [],
       "abilities": [],
       "triggers": [],
       "gaps": [
-        "startOfBattle: gain +2 Resist against dragon for the rest of the  — trigger shape unparsed",
-        "onTakingDamage: Burn applied to you is halved, rounded down, befor — trigger shape unparsed"
+        "startOfBattle: gain +2 Resist against dragon for the rest of the  — trigger shape unparsed"
       ]
     },
     "item.aegis-of-the-fleet": {
@@ -17684,10 +17768,7 @@ export const UNIT_PACK = {
       },
       "grants": [],
       "abilities": [],
-      "triggers": [],
-      "gaps": [
-        "aura: AURA radius 1 — an enemy that ends its movement in — hook: aura (declared, engine never fires it)"
-      ]
+      "triggers": []
     },
     "item.longbow": {
       "id": "item.longbow",
@@ -18907,7 +18988,7 @@ export const UNIT_PACK = {
       "abilities": [],
       "triggers": [],
       "gaps": [
-        "startOfBattle: gain +2 Vision for the rest of the Battle, and you — trigger shape unparsed"
+        "startOfBattle: gain +2 Vision for the rest of the Battle — trigger shape unparsed"
       ]
     },
     "item.lucky-charm": {
@@ -18967,7 +19048,7 @@ export const UNIT_PACK = {
       "abilities": [],
       "triggers": [],
       "gaps": [
-        "active: Free. Until the end of the Turn every attack you o — an ability with charges/targets — capability.consumables"
+        "active: Free. Every ally within 3 hexes gains +10 Accuracy — an ability with charges/targets — capability.consumables"
       ]
     },
     "item.vial-of-abyssal-essence": {
@@ -19000,7 +19081,7 @@ export const UNIT_PACK = {
         "ring"
       ],
       "gaps": [
-        "active: Free. This is not movement and cannot be interrupt — an ability with charges/targets — capability.consumables"
+        "active: Free. Move up to 4 hexes. It provokes nothing. — an ability with charges/targets — capability.consumables"
       ]
     },
     "item.holy-chalice": {
@@ -19254,10 +19335,7 @@ export const UNIT_PACK = {
       "abilities": [
         "power.banner-heroism.plant"
       ],
-      "triggers": [],
-      "gaps": [
-        "power.banner-heroism.plant: onMiss by any ally in the aura: EVERY ally in the aura gains 30 Surge Chance — planted object: clause unparsed"
-      ]
+      "triggers": []
     },
     "item.torch": {
       "id": "item.torch",
@@ -20451,24 +20529,6 @@ export const UNIT_PACK = {
       "triggers": [],
       "gaps": [
         "onKill: Surge Chance +20 for the rest of the Battle, stack — trigger shape unparsed"
-      ]
-    },
-    "item.rune-perfect-hunter": {
-      "id": "item.rune-perfect-hunter",
-      "name": "Perfect Hunter",
-      "itemClass": "bloodrune",
-      "tier": 3,
-      "hands": 0,
-      "slots": 0,
-      "statModifiers": {
-        "precision": 1,
-        "reach": 1
-      },
-      "grants": [],
-      "abilities": [],
-      "triggers": [],
-      "gaps": [
-        "startOfBattle: every slayer bonus you have from any source — weap — trigger shape unparsed"
       ]
     },
     "item.rune-hells-chosen": {
@@ -25704,7 +25764,7 @@ export const UNIT_PACK = {
       },
       "effects": [],
       "gaps": [
-        "unparsed: For the rest of the Battle, any enemy that begins its Turn adjacent to you takes",
+        "unparsed: Every enemy adjacent to you takes -15 Accuracy for the rest of the Battle",
         "no effect compiled — the power is inert"
       ]
     },
@@ -26047,11 +26107,25 @@ export const UNIT_PACK = {
         "select": "self",
         "side": "any"
       },
-      "effects": [],
+      "effects": [
+        {
+          "kind": "statMod",
+          "stat": "crit",
+          "value": 10,
+          "until": "endOfNextTurn",
+          "who": "self"
+        },
+        {
+          "kind": "statMod",
+          "stat": "reach",
+          "value": 1,
+          "until": "endOfNextTurn",
+          "who": "self"
+        }
+      ],
       "gaps": [
-        "unparsed: Until the start of your next Turn, an enemy that moves within both your Vision a",
-        "unparsed: The watch is spent once it fires",
-        "no effect compiled — the power is inert"
+        "unparsed: Until the end of your next Turn, your ranged attacks gain +10 Crit and +1 Reach",
+        "modifies only bow/ranged attacks — engine applies it to the unit"
       ]
     },
     "power.sentinel.sting-of-the-watch": {
@@ -26082,13 +26156,24 @@ export const UNIT_PACK = {
         "select": "self",
         "side": "any"
       },
-      "effects": [],
+      "effects": [
+        {
+          "kind": "statMod",
+          "stat": "movement",
+          "value": -5,
+          "until": "endOfNextActivation",
+          "who": "self"
+        },
+        {
+          "kind": "statMod",
+          "stat": "accuracy",
+          "value": 20,
+          "until": "endOfNextActivation",
+          "who": "self"
+        }
+      ],
       "gaps": [
-        "unparsed: Plant yourself",
-        "unparsed: Your ranged attacks gain +20 Accuracy until you next move",
-        "modifies scope 'until-you-move' unparsed",
-        "modifies only ranged attacks — engine applies it to the unit",
-        "no effect compiled — the power is inert"
+        "modifies only ranged attacks — engine applies it to the unit"
       ]
     },
     "power.sentinel.far-watch": {
@@ -26239,7 +26324,7 @@ export const UNIT_PACK = {
       },
       "effects": [],
       "gaps": [
-        "unparsed: Until the start of your next Turn, all damage dealt to that ally is reduced by 2",
+        "unparsed: That ally gains 4 Protection and you take 2 true damage",
         "no effect compiled — the power is inert"
       ]
     },
@@ -26277,7 +26362,6 @@ export const UNIT_PACK = {
       "effects": [],
       "gaps": [
         "unparsed: Heal that ally for 2 + Spirit",
-        "unparsed: your companion may move up to 3 hexes first",
         "no effect compiled — the power is inert"
       ]
     },
@@ -26330,7 +26414,7 @@ export const UNIT_PACK = {
       },
       "effects": [],
       "gaps": [
-        "unparsed: Until the start of your next Turn, your Vision is measured from your companion's",
+        "unparsed: Until the end of your next Turn, you gain +2 Vision and your attacks gain +10 Ac",
         "no effect compiled — the power is inert"
       ]
     },
@@ -26619,8 +26703,8 @@ export const UNIT_PACK = {
       },
       "effects": [],
       "gaps": [
-        "unparsed: For the rest of the Battle that enemy's Poison ticks twice each Turn, at the sta",
-        "unparsed: each tick is still reduced separately by its Resist, so this is worth nothing ag",
+        "unparsed: The target gains 5 Poison and loses 1 Resist for the rest of the Battle",
+        "unparsed: Resist floors at zero",
         "no effect compiled — the power is inert"
       ]
     },
@@ -26948,7 +27032,7 @@ export const UNIT_PACK = {
       },
       "effects": [],
       "gaps": [
-        "unparsed: Heal 6, remove 5 Bleed and Poison from yourself, and gain +1 Item Slot for the r",
+        "unparsed: Heal 6 and remove 5 Bleed and Poison from yourself",
         "no effect compiled — the power is inert"
       ]
     },
@@ -27004,8 +27088,7 @@ export const UNIT_PACK = {
       },
       "effects": [],
       "gaps": [
-        "unparsed: All Bleed on that enemy ticks immediately and none of it is reduced by Resist",
-        "unparsed: The Bleed is spent afterwards",
+        "unparsed: Dagger attack that adds every stack of Bleed on the target to its damage and CON",
         "no effect compiled — the power is inert"
       ]
     },
@@ -27023,7 +27106,7 @@ export const UNIT_PACK = {
       "effects": [],
       "gaps": [
         "unparsed: Thrown dagger at +1 Precision and +5 Crit",
-        "unparsed: against a target more than 3 hexes away it gains a further +5 Crit, and on hit t",
+        "unparsed: on hit the target gains 2 Bleed",
         "no effect compiled — the power is inert"
       ]
     },
@@ -27062,7 +27145,7 @@ export const UNIT_PACK = {
       "effects": [],
       "gaps": [
         "unparsed: Move up to 5 hexes in a straight line, passing through occupied hexes",
-        "unparsed: every enemy whose hex you passed through or beside takes 4 magic damage, or 6 if",
+        "unparsed: then every enemy within 3 hexes of where you stop takes 4 magic damage, or 6 if ",
         "unparsed: As an area effect it cannot crit",
         "no effect compiled — the power is inert"
       ]
@@ -27130,8 +27213,7 @@ export const UNIT_PACK = {
       },
       "effects": [],
       "gaps": [
-        "unparsed: Take 4 true damage to raise the ward properly: Protection equal to 3 + twice you",
-        "unparsed: Decline the damage and the ward is only Protection equal to your Resist",
+        "unparsed: Take 4 true damage, gain Protection equal to 3 + twice your Resist, and remove 5",
         "unparsed: The barrier is paid for in the currency it protects",
         "no effect compiled — the power is inert"
       ]
@@ -27386,7 +27468,7 @@ export const UNIT_PACK = {
       "effects": [],
       "gaps": [
         "unparsed: Staff attack dealing Magic magic damage",
-        "unparsed: heal yourself half of what it deals",
+        "unparsed: on hit you heal 3",
         "no effect compiled — the power is inert"
       ]
     },
@@ -27404,8 +27486,7 @@ export const UNIT_PACK = {
       },
       "effects": [],
       "gaps": [
-        "unparsed: Stance: for the rest of the Battle your staff attacks deal +2 damage and no ally",
-        "unparsed: Every kill still pays out through the specialty",
+        "unparsed: Stance: for the rest of the Battle your staff attacks deal +2 damage, and you lo",
         "no effect compiled — the power is inert"
       ]
     },
@@ -27454,16 +27535,14 @@ export const UNIT_PACK = {
       "free": false,
       "staminaCost": 1,
       "cooldown": 4,
-      "range": 4,
+      "range": 0,
       "target": {
-        "select": "unit",
-        "side": "ally"
+        "select": "self",
+        "side": "any"
       },
       "effects": [],
       "gaps": [
-        "unparsed: For the rest of the Battle that ally's SWORD attacks add the party's Magic to th",
-        "unparsed: You do not lend them strength, you lend them the spell: a Warrior with a longswo",
-        "modifies only sword attacks — engine applies it to the unit",
+        "modifies only staff attacks — engine applies it to the unit",
         "no effect compiled — the power is inert"
       ]
     },
@@ -27669,7 +27748,7 @@ export const UNIT_PACK = {
         "side": "any"
       },
       "gaps": [
-        "targets 'your own hex' unparsed — the power is inert"
+        "targets 'the hex you occupy' unparsed — the power is inert"
       ]
     },
     "power.spirit-walker.spirit-link": {
@@ -28317,8 +28396,7 @@ export const UNIT_PACK = {
       },
       "effects": [],
       "gaps": [
-        "unparsed: Move every stack of Burn and Poison from one ally onto yourself",
-        "unparsed: Free, and you will want it more often than the cooldown lets you have it",
+        "unparsed: Remove 2 Burn and 2 Poison from that ally, and gain 2 Bleed yourself",
         "no effect compiled — the power is inert"
       ]
     },
@@ -28578,8 +28656,7 @@ export const UNIT_PACK = {
       },
       "effects": [],
       "gaps": [
-        "unparsed: The next attack made against the target this Turn takes -15 Accuracy",
-        "unparsed: It is free, so you can call it after you have seen who moved",
+        "unparsed: The target gains +15 Dodge until the end of its next Turn",
         "no effect compiled — the power is inert"
       ]
     },
@@ -28910,9 +28987,7 @@ export const UNIT_PACK = {
       },
       "effects": [],
       "gaps": [
-        "unparsed: remove 5 Burn and 5 Poison from yourself and gain Protection equal to your Spiri",
-        "unparsed: Cleansing one tick is free insurance",
-        "unparsed: Cleansing eight is a decision about which of the two things kills you",
+        "unparsed: Take 2 true damage, remove 5 Burn and 5 Poison from yourself, and gain Protectio",
         "no effect compiled — the power is inert"
       ]
     },
@@ -29139,8 +29214,7 @@ export const UNIT_PACK = {
       },
       "effects": [],
       "gaps": [
-        "unparsed: Aura: for the rest of the Battle, any ally within 2 hexes of you that is also ad",
-        "unparsed: It rewards a formation and it lapses the moment the line scatters",
+        "unparsed: Aura: for the rest of the Battle, every ally within 2 hexes of you has +1 Armor ",
         "no effect compiled — the power is inert"
       ]
     },
@@ -29364,7 +29438,7 @@ export const UNIT_PACK = {
       },
       "effects": [],
       "gaps": [
-        "unparsed: For the rest of the Battle the target's magic damage is reduced by 3 and it cann",
+        "unparsed: The target gains 4 Weak and takes -10 Accuracy for the rest of the Battle",
         "no effect compiled — the power is inert"
       ]
     },
@@ -29418,7 +29492,7 @@ export const UNIT_PACK = {
       },
       "effects": [],
       "gaps": [
-        "unparsed: The target loses 2 Resist for the rest of the Battle and cannot gain Protection",
+        "unparsed: The target loses 3 Resist for the rest of the Battle",
         "unparsed: Resist floors at zero",
         "no effect compiled — the power is inert"
       ]
@@ -29633,7 +29707,7 @@ export const UNIT_PACK = {
         "side": "any"
       },
       "gaps": [
-        "targets 'your own hex' unparsed — the power is inert"
+        "targets 'you and allies within 1 hex' unparsed — the power is inert"
       ]
     },
     "power.porter.shoulder-the-load": {
@@ -29780,8 +29854,8 @@ export const UNIT_PACK = {
       },
       "effects": [],
       "gaps": [
-        "unparsed: Move up to twice your Movement toward the nearest map edge and leave the Battle",
-        "unparsed: You keep everything you are carrying and you are available for the next one — th",
+        "unparsed: Move up to twice your Movement",
+        "unparsed: It provokes nothing",
         "no effect compiled — the power is inert"
       ]
     },
@@ -29797,10 +29871,12 @@ export const UNIT_PACK = {
         "select": "self",
         "side": "any"
       },
-      "effects": [],
-      "gaps": [
-        "unparsed: Stance: for the rest of the Battle you satisfy EVERY class restriction on every ",
-        "no effect compiled — the power is inert"
+      "effects": [
+        {
+          "kind": "badge.grant",
+          "badgeId": "badge.impersonation",
+          "who": "self"
+        }
       ]
     },
     "power.archer.dedication": {
@@ -29980,7 +30056,7 @@ export const UNIT_PACK = {
       },
       "effects": [],
       "gaps": [
-        "unparsed: The target's next power this Battle costs 1 less Stamina, and it gains +5 Accura",
+        "unparsed: The target gains 1 Stamina, and +5 Accuracy for the rest of the Battle",
         "no effect compiled — the power is inert"
       ]
     },
@@ -30373,9 +30449,8 @@ export const UNIT_PACK = {
       },
       "effects": [],
       "gaps": [
-        "unparsed: Move up to your Movement",
-        "unparsed: every enemy whose hex you passed beside takes 3 + Strength physical damage",
-        "unparsed: It provokes nothing and it cannot crit",
+        "unparsed: Move up to your Movement, then every enemy adjacent to you takes 3 + Strength ph",
+        "unparsed: It provokes nothing, and as an area effect it cannot crit",
         "no effect compiled — the power is inert"
       ]
     },
@@ -41504,12 +41579,22 @@ export const UNIT_PACK = {
       },
       "grants": [],
       "abilities": [],
-      "triggers": [],
+      "triggers": [
+        {
+          "id": "trigger.barbarian-hide.tainted-blood.bleed",
+          "hook": "onTakingDamage",
+          "chance": 100,
+          "select": "self",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.bleed",
+            "value": 1
+          },
+          "source": "item.barbarian-hide.tainted-blood"
+        }
+      ],
       "base": "item.barbarian-hide",
-      "enchant": "enchant.tainted-blood",
-      "gaps": [
-        "enchant onTakingDamage: Bleed on you ticks twice — trigger shape unparsed"
-      ]
+      "enchant": "enchant.tainted-blood"
     },
     "item.barbarian-hide.regeneration": {
       "id": "item.barbarian-hide.regeneration",
@@ -41764,12 +41849,22 @@ export const UNIT_PACK = {
       },
       "grants": [],
       "abilities": [],
-      "triggers": [],
+      "triggers": [
+        {
+          "id": "trigger.brutes-harness.tainted-blood.bleed",
+          "hook": "onTakingDamage",
+          "chance": 100,
+          "select": "self",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.bleed",
+            "value": 1
+          },
+          "source": "item.brutes-harness.tainted-blood"
+        }
+      ],
       "base": "item.brutes-harness",
-      "enchant": "enchant.tainted-blood",
-      "gaps": [
-        "enchant onTakingDamage: Bleed on you ticks twice — trigger shape unparsed"
-      ]
+      "enchant": "enchant.tainted-blood"
     },
     "item.brutes-harness.might": {
       "id": "item.brutes-harness.might",
@@ -41988,12 +42083,22 @@ export const UNIT_PACK = {
       },
       "grants": [],
       "abilities": [],
-      "triggers": [],
+      "triggers": [
+        {
+          "id": "trigger.mismatched-armor.tainted-blood.bleed",
+          "hook": "onTakingDamage",
+          "chance": 100,
+          "select": "self",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.bleed",
+            "value": 1
+          },
+          "source": "item.mismatched-armor.tainted-blood"
+        }
+      ],
       "base": "item.mismatched-armor",
-      "enchant": "enchant.tainted-blood",
-      "gaps": [
-        "enchant onTakingDamage: Bleed on you ticks twice — trigger shape unparsed"
-      ]
+      "enchant": "enchant.tainted-blood"
     },
     "item.mismatched-armor.damned": {
       "id": "item.mismatched-armor.damned",
@@ -42080,12 +42185,22 @@ export const UNIT_PACK = {
       },
       "grants": [],
       "abilities": [],
-      "triggers": [],
+      "triggers": [
+        {
+          "id": "trigger.creature-hide.tainted-blood.bleed",
+          "hook": "onTakingDamage",
+          "chance": 100,
+          "select": "self",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.bleed",
+            "value": 1
+          },
+          "source": "item.creature-hide.tainted-blood"
+        }
+      ],
       "base": "item.creature-hide",
-      "enchant": "enchant.tainted-blood",
-      "gaps": [
-        "enchant onTakingDamage: Bleed on you ticks twice — trigger shape unparsed"
-      ]
+      "enchant": "enchant.tainted-blood"
     },
     "item.creature-hide.regeneration": {
       "id": "item.creature-hide.regeneration",
@@ -50637,7 +50752,7 @@ export const UNIT_PACK = {
       "grants": [],
       "flags": {},
       "gaps": [
-        "−1 card draw per Turn"
+        "no payload"
       ]
     },
     "badge.attuned": {
@@ -50899,7 +51014,7 @@ export const UNIT_PACK = {
       "grants": [],
       "flags": {},
       "gaps": [
-        "slayer +2 vs the type that nearly killed her"
+        "Damage +2 vs Giants"
       ]
     },
     "badge.greedy": {
@@ -50926,12 +51041,11 @@ export const UNIT_PACK = {
     "badge.grudge-bearer": {
       "id": "badge.grudge-bearer",
       "name": "Grudge-Bearer",
-      "statModifiers": {},
+      "statModifiers": {
+        "strength": 1
+      },
       "grants": [],
-      "flags": {},
-      "gaps": [
-        "+2 Strength vs the type that last killed an ally"
-      ]
+      "flags": {}
     },
     "badge.hardy": {
       "id": "badge.hardy",
@@ -51270,7 +51384,6 @@ export const UNIT_PACK = {
         "text": "No Deathbed Fighting roll. The hero goes down and bleeds out, and a Ghost with the hero's image (Ghost stats) is summoned on the hero's hex as an enemy unit."
       },
       "gaps": [
-        "`startOfBattle`: −2 card draw",
         "deploying the hero costs 3 Mana"
       ],
       "drawbacks": {
@@ -51278,7 +51391,6 @@ export const UNIT_PACK = {
           "surge"
         ],
         "gaps": [
-          "`startOfBattle`: −2 card draw",
           "deploying the hero costs 3 Mana"
         ]
       }
@@ -51290,10 +51402,7 @@ export const UNIT_PACK = {
         "surge": 1
       },
       "grants": [],
-      "flags": {},
-      "gaps": [
-        "Draw turn 2 +1 (stub)"
-      ]
+      "flags": {}
     },
     "badge.rage": {
       "id": "badge.rage",
@@ -52343,7 +52452,7 @@ export const UNIT_PACK = {
       "grants": [],
       "flags": {},
       "gaps": [
-        "+1 draw on turn 1 and on turn 3"
+        "no payload"
       ]
     },
     "badge.lithe": {
@@ -52491,7 +52600,6 @@ export const UNIT_PACK = {
       "grants": [],
       "flags": {},
       "gaps": [
-        "+2 draw on turn 1",
         "+2 Item slots"
       ]
     },
@@ -52937,6 +53045,18 @@ export const UNIT_PACK = {
       "flags": {},
       "gaps": [
         "On kill: destroy the corpse — no corpse is made"
+      ]
+    },
+    "badge.impersonation": {
+      "id": "badge.impersonation",
+      "name": "Impersonation",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "satisfies every class restriction on the items carried",
+        "enemies choose targets as though this were a hero",
+        "not a civilian"
       ]
     }
   },
