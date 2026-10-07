@@ -28,7 +28,11 @@ const AFFLICTIONS = [
   { id: 'badge.rotting-flesh', mods: ['movement', 'accuracy'], gaps: ['start of battle take 5 true damage'] },
   { id: 'badge.vampirism', mods: ['spirit'], gaps: ['deploying the hero costs 3 Faith', 'the hero gains half experience'] },
   { id: 'badge.lycanthropy', mods: ['crit', 'spirit'], gaps: ['deploying the hero costs 2 Supplies'] },
-  { id: 'badge.possession', mods: ['surge'], gaps: ['`startOfBattle`: −2 card draw', 'deploying the hero costs 3 Mana'] },
+  // Restated 2026-10-06 (content.card-draw-badge-rules-cut; ruled 2026-10-06, DECISIONS.md '… the card-draw badge rules are cut
+  // for now': "We may add a card system at some point, but you can cut all those for now."). Possession's row no longer says
+  // "`startOfBattle`: −2 card draw", so it is not among its written drawbacks. The line was:
+  //   { id: 'badge.possession', mods: ['surge'], gaps: ['`startOfBattle`: −2 card draw', 'deploying the hero costs 3 Mana'] },
+  { id: 'badge.possession', mods: ['surge'], gaps: ['deploying the hero costs 3 Mana'] },
 ] as const
 
 describe('the pack: an affliction\'s row carries its ruled 0-Health text and marks its drawbacks', () => {

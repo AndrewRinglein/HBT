@@ -80,7 +80,11 @@ const CARRIES: Record<string, { mods?: Record<string, number>; flags?: string[];
   'Quick Learner': { waits: ['Gain 7 XP per combat'] },
   Frail: { mods: { maxHp: -2 } },
   Faithful: { waits: ['onsurvivecombat: gain 1 faith'] },
-  Wise: { waits: ['+1 draw on turn 1 and on turn 3'] },
+  // Restated 2026-10-06 (content.card-draw-badge-rules-cut; ruled 2026-10-06, DECISIONS.md '… the card-draw badge rules are cut
+  // for now': "We may add a card system at some point, but you can cut all those for now."). Wise had no rule but the card
+  // draw; its row stays, empty (SWITCHES.md cardBadgesEmptied), and the pack says so. The line was:
+  //   Wise: { waits: ['+1 draw on turn 1 and on turn 3'] },
+  Wise: { waits: ['no payload'] },
   Vengeful: { waits: ['`onTakingDamage`: +1 Stamina'] },
   UndeadSlayer: { waits: ['Damage +2 vs Undead'] },
   Quick: { mods: { movement: 1 }, waits: ['+10 Surge Chance', 'Deploy +2'] },
