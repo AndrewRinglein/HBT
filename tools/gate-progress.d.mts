@@ -32,6 +32,8 @@ export function namesItem(text: string, id: string): boolean
 export function itemCommits(id: string, cwd?: string): string[]
 export function committedNewFiles(id: string, cwd?: string): string[]
 export function committedAddedLines(id: string, cwd?: string, path?: string): string[]
+/** The id kinds the added lines mint; a quoted word that is one of `engineWords` (the engine's exported effect kinds) is not an id. */
+export function mintedKinds(lines: readonly string[], engineWords?: ReadonlySet<string>): string[]
 export interface EditedTest { file: string; add: number; del: number }
 /** The standing test files the item changed with lines deleted: uncommitted in its home, and in its commits in every package named. */
 export function editedTests(id: string, where?: { home?: string; others?: readonly string[] }): EditedTest[]

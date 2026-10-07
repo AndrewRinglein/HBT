@@ -54,7 +54,7 @@ import { shardsFor, readPasses, hasPass, appendPass, appendFail, logCheck, contr
 import {
   treeHash, contextHash, openProgress, recall, record, clearResults, serialize,
   stopBefore, budgetFrom, parseShard, recordShard, shardStatus, testFilesIn, killSwitchFiles, committedItemTests,
-  committedAddedLines, committedNewFiles, editedTests, reviewOf,
+  committedAddedLines, committedNewFiles, editedTests, mintedKinds, reviewOf,
 } from './gate-progress.mjs'
 
 const T0 = Date.now()
@@ -469,19 +469,18 @@ const KNOWN_KINDS = (() => {
     return [...new Set([...ENGINE_KINDS, ...Object.keys(approved)])]
   } catch { return ENGINE_KINDS } // engine checked out alone — its own kinds still hold
 })()
+// The engine's own effect kinds, from its vocabulary export (generated/vocabulary.json - read, never copied): a quoted
+// "surge.gain" or "status.apply" in a content line is the engine's word, not a minted id (tools/gate-progress.mjs mintedKinds;
+// GBH SWITCHES gate.namingSkipsEngineEffectKinds, 2026-10-06). No export here (a scratch folder): nothing is skipped.
+const ENGINE_EFFECT_KINDS = (() => { try { return new Set(JSON.parse(readFileSync('generated/vocabulary.json', 'utf8')).effectKinds ?? []) } catch { return new Set() } })()
 check('naming — new content ids use declared kinds', () => {
-  const ids = new Set()
-  for (const l of addedLines('src/content')) {
-    // Map ROW art is not an id: a quoted 12-glyph string with a '..' run is
-    // board ASCII ('ww..bbbb....'), and reading 'ww' as an id kind was a false
-    // positive found landing map.showcase (2026-08-20).
-    // map.opening-six (2026-09-28): boards are any authored width now (board.variable-size), so
-    // row art is recognised at any length of 12 or more — a 20- or 40-glyph row read 'xf' as a kind.
-    // An id never holds '..' (tools/add-item.mjs id pattern), so the guard is unchanged.
-    const stripped = l.replace(/['"][a-zA-Z.]{12,}['"]/g, (s) => (s.includes('..') ? "''" : s))
-    for (const m of stripped.matchAll(/['"`]([a-z]+)\.[a-z0-9][a-z0-9.-]*['"`]/g)) ids.add(m[1])
-  }
-  const unknown = [...ids].filter((k) => !KNOWN_KINDS.includes(k))
+  // Map ROW art is not an id: a quoted 12-glyph string with a '..' run is
+  // board ASCII ('ww..bbbb....'), and reading 'ww' as an id kind was a false
+  // positive found landing map.showcase (2026-08-20).
+  // map.opening-six (2026-09-28): boards are any authored width now (board.variable-size), so
+  // row art is recognised at any length of 12 or more — a 20- or 40-glyph row read 'xf' as a kind.
+  // An id never holds '..' (tools/add-item.mjs id pattern), so the guard is unchanged. (The reading is mintedKinds'.)
+  const unknown = mintedKinds(addedLines('src/content'), ENGINE_EFFECT_KINDS).filter((k) => !KNOWN_KINDS.includes(k))
   return { ok: unknown.length === 0, note: unknown.length ? `unknown id kind(s): ${unknown.join(', ')} — declare the kind in GLOSSARY.md before minting ids under it` : '' }
 })
 flag('naming — no banned words invented', () => {

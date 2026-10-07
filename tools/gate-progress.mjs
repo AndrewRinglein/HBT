@@ -344,3 +344,22 @@ export function killSwitchFiles(porcelain, full = false) {
   const added = testFilesIn(String(porcelain ?? '').split('\n').filter((l) => /^(\?\?|A.) /.test(l)).join('\n'))
   return added.length ? added : touched
 }
+
+/**
+ * The id kinds the added lines mint - the word before the first dot of every quoted dotted name - for the gate's check
+ * 'naming - new content ids use declared kinds'. Two things a line may quote are not ids and are not read:
+ *   - board row art: a quoted run of 12 or more letters and dots holding '..' (map.showcase 2026-08-20, map.opening-six 2026-09-28);
+ *   - the engine's own EFFECT KINDS, exactly as its vocabulary export lists them (`engineWords`: generated/vocabulary.json
+ *     effectKinds - read, never copied). 2026-10-06, GBH SWITCHES gate.namingSkipsEngineEffectKinds: since the gate's checks read
+ *     an item's committed lines too (gate.flagsReadCommittedEdits) the generated content pack's lines reach this check, and a
+ *     lent trigger's effect kind "surge.gain" was read as an id of the undeclared kind 'surge'. Only the exact word is skipped:
+ *     "surge.anything-else" is still an id of kind 'surge', and still blocks.
+ */
+export function mintedKinds(lines, engineWords = new Set()) {
+  const kinds = new Set()
+  for (const l of lines) {
+    const stripped = l.replace(/['"][a-zA-Z.]{12,}['"]/g, (s) => (s.includes('..') ? "''" : s))
+    for (const m of stripped.matchAll(/['"`](([a-z]+)\.[a-z0-9][a-z0-9.-]*)['"`]/g)) if (!engineWords.has(m[1])) kinds.add(m[2])
+  }
+  return [...kinds]
+}
