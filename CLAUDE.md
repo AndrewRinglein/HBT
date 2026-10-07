@@ -215,6 +215,13 @@ across engine, content and kingdom (each package commits in its own repository).
 State lives on disk (`.state/backlog.<area>.json` — one to-do list per area: engine, viewer-kingdom, content, art; `tools/backlog.mjs`, Andrew 2026-10-01 — `.state/ledger.md`, `.state/baseline.hash`), so
 a fresh session resumes exactly where the last one stopped.
 
+**The queue is list order, except an item marked `"later": true`** (`tool.later-items`; Andrew,
+2026-10-06, `DECISIONS.md` "the bug list is queued at low priority, behind anything real").
+`next.mjs` and `start.mjs` offer a `later` item only when nothing else in its area is ready,
+wherever it sits in the list — one reading, `tools/backlog.mjs` `readyQueue`. `add-item.mjs` takes
+the field (a boolean); the Game Builder lists them under their own heading; the gate treats one
+like any other item once it is named.
+
 ## Stack
 
 Which files to open for which kind of item — read by `tools/start.mjs`, printed as *Stack

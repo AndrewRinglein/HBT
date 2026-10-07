@@ -39073,3 +39073,22 @@ index 0e02fbe..92f7e07 100644
 2026-10-07 00:13
 
 Andrew 2026-10-06 (DECISIONS.md 'the one-use rules: most are cut or reworded onto rules the engine already has; a handful are built'), of the Banner of Heroism: 'it could be done by everybody who's in range. Gains on miss. Gain surge, but not everyone gives everyone the modifier. That seems like a double stacked thing that we don't need.' The item asks for what he turned down - every ally in the banner's reach gaining Surge Chance when any one of them misses. Replaced by content.banner-heroism-own-miss: each ally in reach gains it on its own miss, which a planted object already lends. Nothing was built for this item.
+## tool.later-items — LANDED `a2b731f`
+2026-10-07 00:14
+
+  PASS  dependencies landed
+  WARN  not already decided — 2 candidate ruling(s) — READ BEFORE ASKING: DECISIONS.md:6016 · SWITCHES.md:2188
+  PASS  typecheck
+  PASS  the item's own tests — test/later-items.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — test/later-items.test.ts
+  PASS  existing tests untouched
+  PASS  control battles unchanged
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable

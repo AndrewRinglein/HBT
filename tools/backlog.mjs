@@ -14,6 +14,11 @@
 //
 // A folder holding the old single .state/backlog.json (a test fixture, an old
 // copy) is read and written as that one file, exactly as before.
+//
+// The queue is list order, with one exception (tool.later-items; Andrew, 2026-10-06,
+// DECISIONS.md 'the bug list is queued at low priority, behind anything real'): an
+// item marked `later: true` is offered only when nothing else is ready — readyQueue,
+// below, the one reading of "ready" and of the order that next.mjs and start.mjs share.
 import { readFileSync, writeFileSync, existsSync } from 'node:fs'
 import { join } from 'node:path'
 
@@ -54,6 +59,21 @@ export function saveArea(all, area, state = '.state') {
   const file = backlogFile(area, state)
   writeFileSync(file, JSON.stringify(all.filter((x) => areaOf(x) === area), null, 1) + '\n')
   return file
+}
+
+/** The ids that have landed (status done, or done-needs-review). */
+export const landedIds = (all) => new Set(all.filter((x) => String(x.status ?? '').startsWith('done')).map((x) => x.id))
+
+/**
+ * The queue, in the order it is offered: every READY item of `area` (of every area when
+ * `area` is null) — no status, every `needs` landed, in whichever area that need lives —
+ * in list order, the items marked `later` after all the others. So a `later` item is
+ * first only when no other item asked about is ready, wherever it sits in its list.
+ */
+export function readyQueue(all, area = null) {
+  const done = landedIds(all)
+  const ready = all.filter((x) => !x.status && (!area || areaOf(x) === area) && (x.needs ?? []).every((n) => done.has(n)))
+  return [...ready.filter((x) => !x.later), ...ready.filter((x) => x.later)]
 }
 
 /** saveArea for the area `item` belongs to. Returns the file written. */

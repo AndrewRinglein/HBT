@@ -2,6 +2,8 @@
 // Add pending work only. Gate/review remain the only writers of verdict fields.
 // node tools/add-item.mjs spec.json [--backlog <file>] [--first]
 // --first puts the new items at the top of the queue (next.mjs takes backlog order).
+// An item may carry `"later": true` (tool.later-items, Andrew 2026-10-06): next.mjs and start.mjs
+// offer it only when nothing else in its area is ready, wherever it sits in the list.
 // node tools/add-item.mjs --repoint <abandoned> <refiled> [--backlog <file>]
 //   every pending item whose `needs` names the abandoned id (status failed) names the
 //   re-filed one instead (Andrew, 2026-10-01, DECISIONS 'the abandoned ids' dependants
@@ -11,7 +13,7 @@
 import { readFileSync, writeFileSync, renameSync, existsSync } from 'node:fs'
 import { readBacklog, areaOf, backlogFiles, backlogFile } from './backlog.mjs'
 
-const allowed = new Set(['id', 'kind', 'shape', 'spec', 'expect', 'needs', 'probeIds', 'variants', 'changesBaseline', 'neutral', 'note', 'effectSwitch'])
+const allowed = new Set(['id', 'kind', 'shape', 'spec', 'expect', 'needs', 'probeIds', 'variants', 'changesBaseline', 'neutral', 'note', 'effectSwitch', 'later'])
 const required = ['id', 'kind', 'shape', 'spec', 'expect']
 const shapes = new Set(['counter', 'plumbing', 'numbers', 'rule', 'pool', 'data', 'modifier', 'decision', 'trigger', 'station', 'naming', 'flag'])
 
@@ -30,7 +32,7 @@ function validate(items, existing) {
     for (const key of ['needs', 'probeIds', 'variants']) {
       if (key in item && (!Array.isArray(item[key]) || item[key].some(id => typeof id !== 'string' || !id.trim()) || new Set(item[key]).size !== item[key].length)) throw new Error(`${key} must be an array of distinct nonempty ids`)
     }
-    for (const key of ['changesBaseline', 'neutral']) if (key in item && typeof item[key] !== 'boolean') throw new Error(`${key} must be boolean`)
+    for (const key of ['changesBaseline', 'neutral', 'later']) if (key in item && typeof item[key] !== 'boolean') throw new Error(`${key} must be boolean`)
     // tool.effect-size-rules: the switch values a RULE item's WITHOUT arm runs with (tools/effect-arm.ts checks them against the engine's switches when measured)
     if ('effectSwitch' in item && (!item.effectSwitch || typeof item.effectSwitch !== 'object' || Array.isArray(item.effectSwitch) || !Object.keys(item.effectSwitch).length)) throw new Error('effectSwitch must be a non-empty object of switch values')
     for (const key of ['note']) {
