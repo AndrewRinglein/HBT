@@ -5,7 +5,9 @@
   "shape": "plumbing",
   "spec": "Andrew, 2026-10-06 (engine/DECISIONS.md 'building is split from testing: three builders and one lander; two tool items from the review of the testing', his item 1): \"give tests the 30-second limit on my PC that Cowork already has. engine/tools/gate-progress.mjs testTimeoutFor() returns 30 s only in Cowork (tool.cowork-test-timeout, 2026-09-26, 'a timeout is not an assertion'); kingdom and viewer set no limit. Make all three packages use 30 s on the PC too. 19 of the 42 busy-machine incidents were a 5-second time-out.\" Make testTimeoutFor() return the 30 seconds on the PC as well, and have the engine's, the kingdom's and the viewer's vitest configs all take their limit from that one function (read the three configs first - one shape; the kingdom's and the viewer's already take their worker cap from the same file). A test that states its own limit keeps it (the six the engine worker gave 30 seconds on 2026-10-06 may drop theirs if the default now covers them - say which). The environment may still override. No assertion changes. Record it in GBH SWITCHES.md.",
   "expect": "With no environment variable set, a test that sleeps 6 seconds passes and one that sleeps 31 fails, in each of the three packages (shown once each on a scratch test, then removed); the three configs read one function; no test's assertion changed; the engine suite passes.",
-  "note": "Filed by the home chat, 2026-10-06 - the method, 1 of 4 (the one plan, step 2). Small."
+  "note": "Filed by the home chat, 2026-10-06 - the method, 1 of 4 (the one plan, step 2). Small.",
+  "status": "done-needs-review",
+  "sha": "83216e3"
  },
  {
   "id": "tool.engine-suite-needs-no-run-order",

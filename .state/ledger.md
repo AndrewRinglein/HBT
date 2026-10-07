@@ -43193,3 +43193,129 @@ index b9afb55..c7f2fb4 100644
          expect(hash(ctx.state), 'full combine-one-move state').toBe(combineOneMoveExpected.state)
 ```
 </details>
+
+## tool.thirty-second-test-limit-on-the-pc — LANDED `83216e3` **NEEDS REVIEW**
+2026-10-07 03:19
+
+  PASS  dependencies landed
+  WARN  not already decided — 3 candidate ruling(s) — READ BEFORE ASKING: SWITCHES.md:2897 · SWITCHES.md:2899
+  PASS  typecheck
+  PASS  the item's own tests — test/cowork-test-timeout.test.ts, test/kingdom-vitest-workers.test.ts, test/thirty-second-test-limit-on-the-pc.test.ts, test/viewer-vitest-workers.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — test/cowork-test-timeout.test.ts, test/kingdom-vitest-workers.test.ts, test/thirty-second-test-limit-on-the-pc.test.ts, test/viewer-vitest-workers.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/cowork-test-timeout.test.ts (-2), test/kingdom-vitest-workers.test.ts (-4), test/viewer-vitest-workers.test.ts (-4) — will land FLAGGED for review
+  PASS  control battles unchanged
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+engine 44e0da0 tool.thirty-second-test-limit-on-the-pc: a test gets 30 seconds on the PC as in Cowork - testTimeoutFor() returns 30 s on every machine and the engine's config reads it plainly; HOBAT_TEST_TIMEOUT (ms) overrides, a malformed value is refused (GBH SWITCHES vitest.thirtySecondsEverywhere); three tests that held the old rule are restated with dated notes (a terminal returned undefined; kingdom's and the viewer's configs named no limit); the six stated 30 s limits of 7d97a77 are kept; no assertion of another test changed
+
+diff --git a/test/cowork-test-timeout.test.ts b/test/cowork-test-timeout.test.ts
+index 2317db1..5a16758 100644
+--- a/test/cowork-test-timeout.test.ts
++++ b/test/cowork-test-timeout.test.ts
+@@ -2,4 +2,13 @@
+ // timeout is 30 s, because load from outside the chat pushes 1-4 s tests past vitest's
+ // 5 s default; a terminal keeps vitest's default. A timeout is not an assertion.
++//
++// Law 10, 2026-10-06 — tool.thirty-second-test-limit-on-the-pc (Andrew, DECISIONS.md 'building is split from testing:
++// three builders and one lander; two tool items from the review of the testing', his item 1): "give tests the 30-second
++// limit on my PC that Cowork already has. engine/tools/gate-progress.mjs testTimeoutFor() returns 30 s only in Cowork
++// (tool.cowork-test-timeout, 2026-09-26, 'a timeout is not an assertion') ... Make all three packages use 30 s on the PC
++// too." The first test below was named 'Cowork gets 30 s; a terminal keeps the default' and its last line asserted
++//   expect(testTimeoutFor({ PATH: 'C:\\Windows;C:\\node' }, 'C:\\Users\\aring\\engine')).toBeUndefined()
++// - the terminal half is the rule that ruling changed on purpose. Cowork's half is unchanged; the terminal now gets the
++// same 30 s (test/thirty-second-test-limit-on-the-pc.test.ts holds the whole rule, the override and the three configs).
+ import { describe, expect, it } from 'vitest'
+ import { testTimeoutFor, COWORK_TEST_TIMEOUT_MS } from '../tools/gate-progress.mjs'
+@@ -7,9 +16,9 @@ import config from '../vitest.config.js'
+ 
+ describe('the default test timeout follows the machine', () => {
+-  it('Cowork gets 30 s; a terminal keeps the default', () => {
++  it('Cowork gets 30 s; since 2026-10-06 a terminal gets the same 30 s', () => {
+     expect(COWORK_TEST_TIMEOUT_MS).toBe(30_000)
+     expect(testTimeoutFor({ PATH: '/opt/cowork/bin:/usr/bin' }, '/home/x')).toBe(30_000)
+     expect(testTimeoutFor({ PATH: '/usr/bin' }, '/sessions/abc/mnt/x')).toBe(30_000)
+-    expect(testTimeoutFor({ PATH: 'C:\\Windows;C:\\node' }, 'C:\\Users\\aring\\engine')).toBeUndefined()
++    expect(testTimeoutFor({ PATH: 'C:\\Windows;C:\\node' }, 'C:\\Users\\aring\\engine')).toBe(30_000)
+   })
+   it('the loaded config uses it', () => {
+diff --git a/test/kingdom-vitest-workers.test.ts b/test/kingdom-vitest-workers.test.ts
+index 272fae6..bfa12b0 100644
+--- a/test/kingdom-vitest-workers.test.ts
++++ b/test/kingdom-vitest-workers.test.ts
+@@ -15,5 +15,5 @@ import { existsSync, readFileSync } from 'node:fs'
+ import { availableParallelism } from 'node:os'
+ import { fileURLToPath } from 'node:url'
+-import { vitestWorkersFor } from '../tools/gate-progress.mjs'
++import { testTimeoutFor, vitestWorkersFor } from '../tools/gate-progress.mjs'
+ import { PACKAGE_CODE } from '../tools/code-stamp.mjs'
+ import { SUITES } from '../tools/suites.mjs'
+@@ -71,8 +71,19 @@ describe('tool.kingdom-vitest-workers — kingdom caps its vitest workers as the
+   }, LONG)
+ 
+-  it("no test's time limit is changed: kingdom's config names none, and vitest keeps its own 5 s there", () => {
++  // Law 10, 2026-10-06 — tool.thirty-second-test-limit-on-the-pc (Andrew, DECISIONS.md 'building is split from testing: three
++  // builders and one lander; two tool items from the review of the testing', his item 1: "kingdom and viewer set no limit.
++  // Make all three packages use 30 s on the PC too. 19 of the 42 busy-machine incidents were a 5-second time-out."). This
++  // test held the rule that item changed on purpose: it was named
++  //   "no test's time limit is changed: kingdom's config names none, and vitest keeps its own 5 s there"
++  // and asserted the config text `.not.toMatch(/testTimeout|hookTimeout/)` and `resolved(KINGDOM).testTimeout` `.toBe(5000)`.
++  // What it holds now: the config names no number of its own (the limit is the one function's), no hook limit, and vitest
++  // resolves the function's limit there (30 seconds; test/thirty-second-test-limit-on-the-pc.test.ts holds the number). No
++  // test's own explicit limit and no assertion of any other test moved.
++  it("the default time limit is the one function's: kingdom's config holds no number of its own, and vitest resolves the function's limit there", () => {
+     expect(existsSync(KINGDOM_CONFIG), 'kingdom/vitest.config.ts').toBe(true)
+-    expect(readFileSync(KINGDOM_CONFIG, 'utf8')).not.toMatch(/testTimeout|hookTimeout/)
+-    expect(resolved(KINGDOM).testTimeout).toBe(5000)
++    const text = readFileSync(KINGDOM_CONFIG, 'utf8')
++    expect(text).toMatch(/testTimeout:\s*testTimeoutFor\(\)/)
++    expect(text).not.toMatch(/testTimeout:\s*\d|hookTimeout/)
++    expect(resolved(KINGDOM).testTimeout).toBe(testTimeoutFor())   // 30 s, unless this run's own environment overrides it (HOBAT_TEST_TIMEOUT)
+   }, LONG)
+ 
+diff --git a/test/viewer-vitest-workers.test.ts b/test/viewer-vitest-workers.test.ts
+index 302fe74..2299825 100644
+--- a/test/viewer-vitest-workers.test.ts
++++ b/test/viewer-vitest-workers.test.ts
+@@ -16,5 +16,5 @@ import { existsSync, readFileSync } from 'node:fs'
+ import { availableParallelism } from 'node:os'
+ import { fileURLToPath } from 'node:url'
+-import { vitestWorkersFor } from '../tools/gate-progress.mjs'
++import { testTimeoutFor, vitestWorkersFor } from '../tools/gate-progress.mjs'
+ import { PACKAGE_CODE } from '../tools/code-stamp.mjs'
+ import { SUITES } from '../tools/suites.mjs'
+@@ -69,8 +69,19 @@ describe('tool.viewer-vitest-workers — the viewer caps its vitest workers as t
+   }, LONG)
+ 
+-  it("no test's time limit is changed: the viewer's config names none, and vitest keeps its own 5 s there", () => {
++  // Law 10, 2026-10-06 — tool.thirty-second-test-limit-on-the-pc (Andrew, DECISIONS.md 'building is split from testing: three
++  // builders and one lander; two tool items from the review of the testing', his item 1: "kingdom and viewer set no limit.
++  // Make all three packages use 30 s on the PC too. 19 of the 42 busy-machine incidents were a 5-second time-out."). This
++  // test held the rule that item changed on purpose: it was named
++  //   "no test's time limit is changed: the viewer's config names none, and vitest keeps its own 5 s there"
++  // and asserted the config text `.not.toMatch(/testTimeout|hookTimeout/)` and `resolved(VIEWER).testTimeout` `.toBe(5000)`.
++  // What it holds now: the config names no number of its own (the limit is the one function's), no hook limit, and vitest
++  // resolves the function's limit there (30 seconds; test/thirty-second-test-limit-on-the-pc.test.ts holds the number). No
++  // test's own explicit limit and no assertion of any other test moved.
++  it("the default time limit is the one function's: the viewer's config holds no number of its own, and vitest resolves the function's limit there", () => {
+     expect(existsSync(VIEWER_CONFIG), 'viewer/vitest.config.ts').toBe(true)
+-    expect(readFileSync(VIEWER_CONFIG, 'utf8')).not.toMatch(/testTimeout|hookTimeout/)
+-    expect(resolved(VIEWER).testTimeout).toBe(5000)
++    const text = readFileSync(VIEWER_CONFIG, 'utf8')
++    expect(text).toMatch(/testTimeout:\s*testTimeoutFor\(\)/)
++    expect(text).not.toMatch(/testTimeout:\s*\d|hookTimeout/)
++    expect(resolved(VIEWER).testTimeout).toBe(testTimeoutFor())   // 30 s, unless this run's own environment overrides it (HOBAT_TEST_TIMEOUT)
+   }, LONG)
+ 
+```
+</details>
