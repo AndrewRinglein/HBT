@@ -243,6 +243,18 @@ const RAW_SCENARIOS: Readonly<Record<string, ScenarioDef>> = {
     id: 'test.banner-heroism', note: 'TEST: a paladin carrying the Banner of Heroism (plant it: allies within 3 hexes of that hex have +2 Strength and +2 Precision, heal 5 at the end of each Activation, and one that misses gains 30 Surge Chance itself) and a ranger, against a Necromancer and a zombie. No campaign claim.',
     mapId: 'map.open', heroes: ['hero.base.paladin-shiney', 'hero.base.ranger-aggressive'], heroHexes: [85, 101], heroItems: [['item.basic-armor', 'item.iron-mace', 'item.banner-heroism'], undefined], enemies: ['unit.necromancer', 'unit.zombie'], enemyHexes: [95, 94], replicate: 0,
   },
+  // content.one-use-class-powers-reworded (2026-10-06; DECISIONS.md 2026-10-06 'the one-use rules: most are cut or reworded onto
+  // rules the engine already has …', of Take Root: "we give -5 move and a bonus until the end of your next activation"): the
+  // power live in a real battle - a Sentinel who drafted it, with fast zombies on top of her and a warrior beside her. She
+  // steps back, plants herself (it is free) and shoots with the 20; her next Activation begins with the 5 Movement gone.
+  // Replicate 2 is the first, read from 0 upward, in which what she does after planting is shoot her bow (on 0 and 1 a zombie
+  // is beside her and she punches it): found, not tuned. A fielding, not a balance claim.
+  'test.take-root': {
+    id: 'test.take-root', note: 'TEST: a level-3 Sentinel who drafted Take Root (free: lose 5 Movement and gain +20 Accuracy, both until the end of her next Activation) and a warrior, against two fast zombies and a zombie. No campaign claim.',
+    mapId: 'map.open', heroes: ['hero.base.ranger-aggressive', 'hero.base.warrior-iron'], heroHexes: [85, 101],
+    heroProgress: [{ level: 3, specialtyId: 'specialty.sentinel', powers: ['power.sentinel.take-root'] }, undefined],
+    enemies: ['unit.fast-zombie', 'unit.fast-zombie', 'unit.zombie'], enemyHexes: [86, 87, 104], replicate: 2,
+  },
   // capability.summons (2026-10-05; DECISIONS.md 2026-10-04 'his 28 reward weapons read back …': "We need: summons"): the Staff
   // of Summoning's Call the Wolf live in a real battle - a mage holding it, the zombies too far to reach on the first Turn, so
   // the computer calls the Wolf first and the Wolf then fights in the Hero Phase by its own AI. A fielding, not a balance claim.
