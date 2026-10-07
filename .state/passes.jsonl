@@ -155,3 +155,4 @@
 {"suite":"kingdom","stamp":"446f4cd41b","with":{"engine":"852b05fc95","content":"3a7dd56661","viewer":"2a8cb4c722","kingdom":"446f4cd41b"},"at":"2026-10-06T22:42:33.953Z","by":"gate --shard (4 of 4)","in":"HBT-worker-kingdom"}
 {"suite":"kingdom","stamp":"0034430bdc","with":{"engine":"1809956828","content":"3a7dd56661","viewer":"93c09f8c0e","kingdom":"0034430bdc"},"at":"2026-10-06T23:53:04.399Z","by":"gate --shard (4 of 4)","in":"HBT-worker-content"}
 {"suite":"kingdom","stamp":"77fbd3f19c","with":{"engine":"a3db3d8073","content":"08aab47578","viewer":"ca2390a185","kingdom":"77fbd3f19c"},"at":"2026-10-07T00:47:47.558Z","by":"suites --run","in":"HBT-worker-engine"}
+{"suite":"kingdom","stamp":"77fbd3f19c","failed":true,"at":"2026-10-07T01:52:35.624Z","by":"gate --shard 4/4","in":"HBT-worker-content"}
