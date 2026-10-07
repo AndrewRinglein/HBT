@@ -9,7 +9,7 @@
 //      the Tower's first, then its second — each from the bar, one per Turn. (The powers are the engine's rows': the note below.)
 // The battle log on the screen (the play chrome's #playLog) must name every power used and the swap.
 //
-//   node tools/swap-shields.verify.mjs <page.html>    prints the record as JSON (engine test/movement-swap-and-shields.test.ts)
+//   node tools/swap-shields.verify.mjs <page.html>    prints the record as JSON (kingdom test/movement-swap-and-shields.test.ts; the engine's until 2026-10-06)
 import assert from 'node:assert/strict'
 import {bootSlice} from './atlas-dom.mjs'
 

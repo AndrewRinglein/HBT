@@ -15,7 +15,7 @@
 // For each: did the engine use the power, what stamina it cost against the row's staminaCost, does the battle log on the
 // screen name it, and does the board show it (the hero's folded stat mods from the power, its figure's badge).
 //
-//   node tools/shield-dblclick.verify.mjs <page.html>   prints the record as JSON (engine test/fix-shield-power-double-click.test.ts)
+//   node tools/shield-dblclick.verify.mjs <page.html>   prints the record as JSON (kingdom test/fix-shield-power-double-click.test.ts; the engine's until 2026-10-06)
 import {readFileSync} from 'node:fs'
 import {createRequire} from 'node:module'
 import {createServer} from 'node:net'

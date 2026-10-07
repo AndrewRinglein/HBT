@@ -3,7 +3,7 @@
 // the sandbox's own engine-valid hand lists, the engine's swapCostOf, the engine's reason when there is none — and a
 // click on one runs the engine's swap command; a power aimed at the hero alone is used from the bar, chosen then chosen
 // again (kingdom SWITCHES playInputSwap, playInputSwapActing, playInputSelfPower). The built page, played through its
-// DOM, is engine test/movement-swap-and-shields.test.ts over tools/swap-shields.verify.mjs.
+// DOM, is test/movement-swap-and-shields.test.ts (here since 2026-10-06, the engine's before) over tools/swap-shields.verify.mjs.
 import { describe, expect, it } from 'vitest'
 import { createSandbox, advanceSandbox, commandSandbox, sandboxSwapChoices, sandboxSwapRefusals } from '../src/core/sandbox.js'
 import { SANDBOX_DEFAULT } from '../src/content/sandbox.js'
@@ -86,7 +86,7 @@ describe('a shield power from the bar: chosen, then chosen again', () => {
 /* fix.shield-power-double-click (engine DECISIONS.md 2026-10-01 'a self power fires on a double-click on its bar button'):
    Andrew looked at the Battle Chaplain while the Iron Dwarf was proposed, and nothing on its bar did anything. A shield power
    on the bar of a hero only looked at begins it and is aimed at it; chosen again (the double-click's second offer), it is
-   used (kingdom SWITCHES playQueueBarOrder). The real mouse on the built page is engine test/fix-shield-power-double-click.test.ts. */
+   used (kingdom SWITCHES playQueueBarOrder). The real mouse on the built page is test/fix-shield-power-double-click.test.ts (here since 2026-10-06). */
 describe('a shield power on the bar of a hero only looked at', () => {
   it('begins that hero, is aimed at it, and the second offer uses it', () => {
     const s = createSandbox({ mapId: SANDBOX_DEFAULT.mapId, heroes: [...SANDBOX_DEFAULT.heroes], enemies: [], seed: 1, encounterId: 'encounter.opening.orphanage' })
