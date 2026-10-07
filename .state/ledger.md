@@ -43950,3 +43950,24 @@ index 3851c44..1759ce0 100644
 +})
 ```
 </details>
+
+## tool.look-items-land-on-a-picture — LANDED `b621875`
+2026-10-07 04:20
+
+  PASS  dependencies landed
+  WARN  not already decided — 3 candidate ruling(s) — READ BEFORE ASKING: SWITCHES.md:2188 · SWITCHES.md:1971
+  PASS  typecheck
+  PASS  the item's own tests — test/look-items-land-on-a-picture.test.ts
+  PASS  gate 1 — the id appears in a real battle — engine-only plumbing, no probeIds — not applicable
+  PASS  brought its own tests — test/look-items-land-on-a-picture.test.ts
+  PASS  existing tests untouched
+  PASS  control battles unchanged
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+  SKIPPED  the whole suites — a scheduled run in the last day — not run at a landing — the last scheduled run of the whole suites: 2026-10-07 03:59, in HBT-worker-engine — content PASS · kingdom PASS · engine PASS · viewer PASS

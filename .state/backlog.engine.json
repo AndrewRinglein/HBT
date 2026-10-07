@@ -38,7 +38,9 @@
   ],
   "spec": "The one plan (engine/DECISIONS.md 2026-10-06 'the one plan ...'): \"Dropped: ... a new page test for every look-and-feel item - that kind of item is checked by a screenshot for Andrew's eye, and rules and numbers keep their tests.\" Today the engine gate asks every viewer and kingdom item for a test of its own ('brought its own tests', 'the item's own tests'), so a change to how something looks gets a headless-browser page test - the slow, time-out-prone kind (100 under viewer/tools, 82 probes under kingdom/tools). Let an item say it is a look item: a boolean field on the backlog row (propose `look: true`; tools/add-item.mjs accepts it like `later`), allowed only for kind viewer or kingdom. For such an item the gate takes, in place of a test, a picture the builder made of the real built page showing the change - a named file under one folder the item's commit adds (propose CONTENT-DRAFTS/<date>-<item id>/, where Andrew's pictures already go; choose and record) - checks the file exists, is an image and is newer than the item's source commit, and lands the item `done-needs-review` so that it reaches his list with the picture's path in the ledger line. An item that changes a rule, a number or what a control does is NOT a look item whatever its row says: the gate refuses `look` when the item's commits touch engine/src, kingdom/src/core or content rows. Use the existing shot helpers (the kingdom's *.shot.mjs, DISPLAY-RULES.md rule 24: an eyeball check links to the thing itself).",
   "expect": "On a scratch repository: a `look` item with a picture and no test lands `done-needs-review` and its ledger line names the picture; the same item without the picture is refused; a `look` item whose commit touches engine/src is refused naming the file; an ordinary viewer item is still asked for its test. add-item.mjs refuses a `look` that is not a boolean or sits on an engine item.",
-  "note": "Filed by the home chat, 2026-10-06 - the method, 4 of 4. Small to medium."
+  "note": "Filed by the home chat, 2026-10-06 - the method, 4 of 4. Small to medium.",
+  "status": "done",
+  "sha": "b621875"
  },
  {
   "id": "tool.later-items",
