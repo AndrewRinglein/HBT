@@ -9,3 +9,5 @@ export function readBacklog(state?: string): Array<Record<string, unknown> & { i
 export function saveArea(all: Array<Record<string, unknown>>, area: Area, state?: string): string
 export function saveItem(all: Array<Record<string, unknown>>, item: Record<string, unknown>, state?: string): string
 export function progressFor(item: Record<string, unknown>, state?: string): string
+export function landedIds(all: Array<Record<string, unknown>>): Set<string>
+export function readyQueue<T extends Record<string, unknown>>(all: T[], area?: Area | null): T[]

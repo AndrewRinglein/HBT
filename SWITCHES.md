@@ -2785,6 +2785,51 @@ removed from `types.ts`, `mutate.ts`, `snapshot.ts`. Written into `COMBAT-SEQUEN
 | `oneMoveBaseline` | What moves? | **Nothing. Measured at the group's one chain, 2026-10-06, on the tree merged with master f4ff797: all 23 control battles are byte for byte what the golden holds (`npx tsx tools/baseline.mts` against `.state/baseline.hash`), and the six opening recordings re-exported together on their seeds are event for event what they were — only the stamp they carry moved (viewer a96fa19). So the item does NOT declare `changesBaseline`: the gate fails a declaration with no consequence, and the finding in `oneMoveEveryUnit` is why there is none — the computer never spent its primary action on a movement. What the rule changes is what a PLAYER is offered, held by the item's own test and, on the built battle screen, by the kingdom's page check (`kingdom/tools/one-move-action-one-primary-action.verify.mjs`).** Before the chain this row read: to be measured; the finding predicts little or nothing. | "Declare changesBaseline" — only if they move. | Measured — 2026-10-06 |
 | `oneMoveFoundAtTheChain` | What did the group's whole suite find that the item's single files had not? | **Two, both this rule's own, each a failure of the fourth quarter that stays in the record: (1) `test/charge.test.ts` held, as the contrast for the Iron Colossus's `noPrimaryAction`, that "the same body without the flag walks twice (movement, then primary)" — no unit walks twice now; rewritten in place with a dated note (Law 10): the flag's difference is what it was, no primary action at all, and is held on an attack. (2) The battle-cursor layer: `test.prone-b`'s STATE hash moved — a unit that stood up no longer carries `stood` — with its events, RNG and result unchanged; a new layer `test/fixtures/battle-cursor-one-move-action-one-primary-action.json` (`tools/capture-one-move-action-one-primary-action-cursor.mts`: 109 cases, one changed, state only, none added) is checked first and the case skips the older layers, as every layer before it.** So the rewritten older tests are six, not five. | A failing test is a finding; neither assertion was loosened. | Recorded — 2026-10-06 |
 
+## content.one-use-* — what each cut row became where Andrew gave no replacement, 2026-10-06
+
+Ruled 2026-10-06 (Andrew, DECISIONS.md 'the one-use rules: most are cut or reworded onto rules the engine already has; a
+handful are built' and '... the card-draw badge rules are cut for now'). The source rows were changed the same day by the
+chat he ruled in (content 7c6e522, source rows only; `node ship.mjs --dry` passed); the items
+`content.one-use-class-powers-reworded`, `content.one-use-items-reworded`, `content.used-twice-rules-removed`,
+`content.banner-heroism-own-miss`, `content.impersonation-badge` and `content.card-draw-badge-rules-cut` land them. Where he
+said what a row becomes, the row says it in his words and is not a switch. Where he said only "cut", the chat chose, under his
+standing word that content details are decided and not asked (2026-10-03). He is not balancing: every number below is a
+placeholder of the right size, not a tuned one.
+
+| Switch | Question | Default | Reason | Status |
+|---|---|---|---|---|
+| `oneUseKeepsThePower` | "Cut" - the power, or its one-use rule? | **The rule. Every power keeps its id, its name, its cost and its place; no specialty loses a power.** | "A ton of these things can be done in other ways that fit within our mechanics ... We can reuse the things we already have." A specialty with three powers also fails the audit. | Default — 2026-10-06 |
+| `oneUseSoulBarrier` | Soul Barrier without the choice to decline its cost | **The full ward at its price: take 4 true damage, Protection 3 + twice Resist, remove 5 Burn.** | The cheaper half was the one-use part. | Default — 2026-10-06 |
+| `oneUseOverwatch` | Overwatch without the free shot at a moving enemy | **Until the end of your next Turn, ranged attacks gain +10 Crit and +1 Reach.** | A bonus to the holder's own attacks for a window is the shape nineteen powers share. | Default — 2026-10-06 |
+| `oneUseTakeTheBlow` | Take the Blow without damage taken in an ally's place | **The ally gains 4 Protection and you take 2 true damage.** | Protection bought with the giver's Health is Spirit Link's and Shield of Flesh's shape. | Default — 2026-10-06 |
+| `oneUseLongKnife` | Long Knife without the bonus by distance | **The distance clause is dropped; the rest stands.** | — | Default — 2026-10-06 |
+| `oneUseLifeDrain` | Life Drain without healing by a share of the damage | **On hit you heal 3.** | Dark Bolt's flat heal on hit. | Default — 2026-10-06 |
+| `oneUseGuidance` | Guidance, since Magic added to an ally's attacks is cut | **The caster's own attacks add the party's Magic until the end of its next Turn.** | "a mechanic that adds to magic on attack, but not to allies" - Void Strike's shape. | Default — 2026-10-06 |
+| `oneUseAncestralAnchor` | Ancestral Anchor without pinning a live aura to a hex | **Plant a totem: a planted object, radius 2, an ally ending its Activation inside heals 2.** | The Banners are this; the planted object is built (capability.planted-banners). | Default — 2026-10-06 |
+| `oneUseForeseeTheBlow` | Foresee the Blow without a penalty on the next attack against a target | **The target gains +15 Dodge until the end of its next Turn.** | Predict's shape. | Default — 2026-10-06 |
+| `oneUseSeverTheChannel` | Sever the Channel without "cannot apply Burn" | **The target gains 4 Weak and takes -10 Accuracy for the rest of the Battle.** | Weak is the status that lowers what a unit deals. | Default — 2026-10-06 |
+| `oneUseIronAndSalt` | Iron and Salt without "cannot gain Protection" | **The target loses 3 Resist (was 2).** | — | Default — 2026-10-06 |
+| `oneUseHunt` | Hunt and the Witch Hunter's on-kill line without the mark | **Hunt: the target loses 10 Dodge and 1 Armor for the Battle. On kill: +5 Accuracy for the Battle, stacking.** | A bonus held against one named enemy needs the mark; a loss on the enemy does not. | Default — 2026-10-06 |
+| `oneUseCloseRanks` | Close Ranks without "also adjacent to another ally" | **Every ally within 2 hexes has +1 Armor and +5 Dodge.** | — | Default — 2026-10-06 |
+| `oneUseDropThePack` | Drop the Pack without a pickup left on a hex | **You and every ally within 1 hex heal 3 and remove 1 Weak.** | — | Default — 2026-10-06 |
+| `oneUseAim` | Aim! without ignoring the Reach limit | **+1 Reach beside its +30 Accuracy.** | — | Default — 2026-10-06 |
+| `oneUseEscape` | Escape without leaving the Battle | **Move up to twice your Movement; it provokes nothing.** | — | Default — 2026-10-06 |
+| `oneUseIdentify` | Identify without "+2 damage from every source" | **The target loses 1 Armor and 1 Resist for the Battle.** | — | Default — 2026-10-06 |
+| `oneUseEnlighten` | Enlighten without a cheaper next power | **The target gains 1 Stamina now (and its +5 Accuracy).** | — | Default — 2026-10-06 |
+| `oneUseFlare` | Flare without its lit zone | **The hex becomes burning and stealth within 3 hexes of it breaks.** | — | Default — 2026-10-06 |
+| `oneUseShareSenses` | Share Senses, the companion being an ordinary summoned ally | **Free: +2 Vision and +10 Accuracy on your attacks until the end of your next Turn.** | "Magical friendly just summoned an ally." | Default — 2026-10-06 |
+| `oneUseTakeRootScope` | Take Root's attack bonus is written `until-end-of-your-next-activation`; the compiler's `untilOf` reads three scopes and not that one | **The row says it in his words; teaching the compiler the fourth scope (the engine has `endOfNextActivation`) is the landing item's.** | "until the end of your next activation." | OPEN for the item — 2026-10-06 |
+| `usedTwiceCreepingDose` | Creeping Dose without the second tick | **The target gains 5 Poison and loses 1 Resist for the Battle.** | — | Default — 2026-10-06 |
+| `usedTwiceTaintedBlood` | Tainted Blood's downside without the second tick | **On taking damage: gain 1 Bleed.** | The Bleeder badge's line. | Default — 2026-10-06 |
+| `usedTwiceRunPast` | Fel Rush and Trample without damage along the way | **The same damage where the move ends: Fel Rush to every enemy within 3 hexes, Trample to every adjacent enemy.** | Fel Rush's row was already aimed at every other unit within 3 hexes. | Default — 2026-10-06 |
+| `usedTwiceSoulThief` | Soul Thief's price without "no ally may heal you" | **Lose 2 Health.** | — | Default — 2026-10-06 |
+| `usedTwiceWhatKilled` | Giant-Killer and Grudge-Bearer without remembering what killed | **Giant-Killer: Damage +2 vs Giants. Grudge-Bearer: +1 Strength.** | — | Default — 2026-10-06 |
+| `itemsEmptiedKeepARule` | The Blink Ring and the Brass Spyglass, their one-use rule cut | **Each keeps a plain active: the Ring moves 4 hexes and provokes nothing; the Spyglass gives allies within 3 hexes +10 Accuracy until the end of the Turn.** | A trinket is an option, not a stat; tests field the Blink Ring, so the row stays. | Default — 2026-10-06 |
+| `divineBulwarkArmor` | The Divine Bulwark gave +1 Armor "from Turn 2" | **The point is in its stats (Armor 2), and it gives 1 Stun at the start.** | "Just add one stun. At combat start". | Default — 2026-10-06 |
+| `cardBadgesEmptied` | Anguish and Wise have no rule but the card draw | **The rows stay, empty, until there is a card system.** | "We may add a card system at some point"; a viewer fixture names Wise. | Default — 2026-10-06 |
+| `eyeblightGazeStat` | Which stat the Gaze reads | **Precision (the Eyeblight has 1), so the damage is what it was.** | "It should be based on its stat." | Default — 2026-10-06 |
+| `impersonationBadgeUnbuilt` | What badge.impersonation does | **Named on the row, built by nobody yet: class restrictions are the kingdom's Equip; how enemies choose targets waits on the design of the enemy's thinking.** | "AI hasn't really been designed yet". | OPEN — 2026-10-06 |
+
 ## rule.surge-is-at-least-level — a hero's Surge is its level at the least, and every hero rolls the check, 2026-10-06
 
 Ruled 2026-10-06 (DECISIONS.md 'everyone gains Surge equal to its level at the least, and rolls the Surge check every

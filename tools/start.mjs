@@ -6,7 +6,8 @@
 // This is the tool. It composes nothing from memory and counts nothing itself:
 // the count is `gate.mjs --count`'s line verbatim, the Now line is the one the
 // last wrap wrote to .state/now.json, the last landing is the gauntlet log's
-// own record, the queue is next.mjs's readiness rule over .state/backlog.<area>.json,
+// own record, the queue is next.mjs's readiness rule over .state/backlog.<area>.json
+// (tools/backlog.mjs readyQueue — an item marked `later` only when nothing else is ready),
 // the Delegate line is that queue with where each item stands, the Calls lines
 // are the switches recorded since the last wrap, and the stack is CLAUDE.md's
 // Stack table for the top item.
@@ -24,7 +25,7 @@ import { execFileSync } from 'node:child_process'
 import { readFileSync, existsSync } from 'node:fs'
 import { join, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { readBacklog, areaOf, AREAS } from './backlog.mjs'
+import { readBacklog, areaOf, AREAS, landedIds as landedOf, readyQueue } from './backlog.mjs'
 
 const HERE = dirname(fileURLToPath(import.meta.url))
 const PACKAGE = 'engine'
@@ -39,11 +40,17 @@ const SWITCHES_FILE = 'SWITCHES.md'
  */
 export function render({ wrapping = false, area = null } = {}) {
   const backlog = readBacklog()
-  const landedIds = new Set(backlog.filter((x) => String(x.status ?? '').startsWith('done')).map((x) => x.id))
-  // the queue is next.mjs's rule, not a second one: no status, every `needs` landed
+  const landedIds = landedOf(backlog)
+  // the queue is next.mjs's rule, not a second one (tools/backlog.mjs readyQueue): no status, every
+  // `needs` landed, the items marked `later` behind all the others
   const pending = backlog.filter((x) => !x.status && (!area || areaOf(x) === area))
-  const queue = pending.filter((x) => (x.needs ?? []).every((n) => landedIds.has(n)))
-  const item = (x) => `${x.id} [${x.kind} · ${x.shape}]`
+  const ready = readyQueue(backlog, area)
+  // tool.later-items (Andrew, 2026-10-06, DECISIONS.md 'the bug list is queued at low priority, behind
+  // anything real'): a `later` item is offered — on the Queue line, the Delegate line, as the top
+  // item — only when nothing else here is ready. While something else is, they are a count.
+  const waiting = ready.some((x) => !x.later) ? ready.filter((x) => x.later) : []
+  const queue = ready.filter((x) => !waiting.includes(x))
+  const item = (x) => `${x.id} [${x.kind} · ${x.shape}${x.later ? ' · later' : ''}]`
 
   // 1. the package and where it is, with the gate's count line verbatim
   const countLine = execFileSync(process.execPath, [join(HERE, 'gate.mjs'), '--count'], { encoding: 'utf8' }).trim().split('\n').pop()
@@ -94,6 +101,7 @@ export function render({ wrapping = false, area = null } = {}) {
   // 5. the queue — the items a chat can land, in backlog order
   lines.push(queue.length
     ? `Queue: ${item(queue[0])}${queue.slice(1, 3).map((x) => `, then ${item(x)}`).join('')}${queue.length > 3 ? ` (+${queue.length - 3} more)` : ''}`
+      + (waiting.length ? ` · ${waiting.length} later, offered when nothing else here is ready` : '')
     : 'Queue: empty')
 
   // 5b. who owns what — Delegate: every ready item a subagent may take, i.e. the
@@ -105,7 +113,7 @@ export function render({ wrapping = false, area = null } = {}) {
   })
   lines.push(`Delegate: ${delegate.length ? delegate.join('; ') : 'none'}`)
   // 5c. and what is blocked, so a chat does not go looking for it
-  const blocked = pending.filter((x) => !queue.includes(x))
+  const blocked = pending.filter((x) => !ready.includes(x))
   if (blocked.length) lines.push(`Blocked: ${blocked.map((x) => `${x.id} needs ${(x.needs ?? []).filter((n) => !landedIds.has(n)).join(', ')}`).join('; ')}`)
 
   // 5d. the calls subagents made — every SWITCHES.md row carrying a date on or
