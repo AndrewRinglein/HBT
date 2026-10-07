@@ -3,7 +3,7 @@
 // for the hero it plans with, the action bar's stamina strip shows it — one button per hand list the host offers, the
 // engine's cost — and a click is offered to the host as {kind:'swap', index, unit}; with none to make, the engine's
 // reason stands in place of the buttons; no swap fact, no swap. The host's facts are validated whole (src/play.js). The
-// played battle — the engine's swap, its cost, the refusal, the shield powers from the bar — is engine
+// played battle — the engine's swap, its cost, the refusal, the shield powers from the bar — is kingdom
 // test/movement-swap-and-shields.test.ts. Runs against the page (VIEWER_PAGE, else BATTLE-VIEWER.html).
 // 2026-10-04, viewer.swap-button-rearranges (engine DECISIONS.md 2026-10-03 'the swap button says "Swap" and opens a rearranging
 // of the unit's gear'): the strip now carries ONE button that reads Swap; the hand lists are chosen in the gear panel it opens

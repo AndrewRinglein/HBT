@@ -4,7 +4,7 @@
 // is not offered on its own, so a row is never offered three times; when the pair's first click set the host resolving
 // (no plan facts, the bar still), the double-click is held and offered once, when the host hands its facts back (viewer
 // SWITCHES barDoubleClick). The host's half and the real mouse on the built sandbox are kingdom test/swap-shields-play.test.ts
-// and engine test/fix-shield-power-double-click.test.ts. Runs against the page (VIEWER_PAGE, else BATTLE-VIEWER.html).
+// and kingdom test/fix-shield-power-double-click.test.ts (the engine's until 2026-10-06). Runs against the page (VIEWER_PAGE, else BATTLE-VIEWER.html).
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
