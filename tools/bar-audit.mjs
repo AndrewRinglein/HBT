@@ -115,14 +115,19 @@ export function actionNeeds(a, triggers, S) {
   const p = a.attack
   if (p) {
     need('attack kind ' + p.kind, [word(p.kind)]); need('damage type ' + p.damageType, [word(p.damageType)])
-    need('damage ' + p.stat + ' ' + p.bonus, [word(statWord(p.stat)), ...(p.bonus ? [num(p.bonus)] : [])])
+    /* Law 10, 2026-10-06 — viewer.attack-row-shows-totals (Andrew, engine DECISIONS.md 'an attack shows its total Accuracy and Crit, not the weapon's plus' and 'an attack's numbers: the total alone, no list of what it is made of': "The dagger doesn't show +5 critical. What happens is the attack shows the total critical. The same thing is true of accuracy." / "we should always be showing the numbers, not the contributing [sum] numbers."): the damage's flat figure, the attack's own Crit and its own Accuracy are IN
+       the totals the row shows and are no longer said beside them; what the audit asks is that the row says the stat the
+       damage is made from, and shows a Crit and an Accuracy. The three lines were:
+         need('damage ' + p.stat + ' ' + p.bonus, [word(statWord(p.stat)), ...(p.bonus ? [num(p.bonus)] : [])])
+         if (p.crit) need('crit ' + p.crit, [word('crit'), num(p.crit)])
+         if (p.accuracy) need('accuracy modifier ' + p.accuracy, [word('acc'), num(p.accuracy)]) */
+    need('damage from ' + p.stat, [word(statWord(p.stat))])
+    need('its Accuracy and its Crit, as totals', [word('accuracy'), word('crit')])
     need('range ' + a.range, [num(a.range)])
     if (p.applies) need('applies ' + p.applies.statusId + ' ' + p.applies.value, [word(S.statuses[p.applies.statusId] ?? p.applies.statusId), num(p.applies.value)])
-    if (p.crit) need('crit ' + p.crit, [word('crit'), num(p.crit)])
     if (p.hits > 1) need(p.hits + ' hits', [num(p.hits), word('hits')])
     if (p.critCount > 1) need(p.critCount + ' criticals', [num(p.critCount), word('criticals')])
     if (p.powerScale != null) need('power scale ' + p.powerScale, [word('power'), num(p.powerScale)])
-    if (p.accuracy) need('accuracy modifier ' + p.accuracy, [word('acc'), num(p.accuracy)])
     if (p.impact) need('impact ' + p.impact, [word('impact'), num(p.impact)])
     if (p.destroy) need('destroy ' + p.destroy, [word('destroy'), num(p.destroy)])
     if (p.armorPenetration != null) need('armor penetration ' + p.armorPenetration, [word('armor penetration'), num(p.armorPenetration)])

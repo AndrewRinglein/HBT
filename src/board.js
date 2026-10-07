@@ -676,8 +676,12 @@ function playInjury(V) {
   const p = V.data.POS[u.hex]
   const bb = el('bb', `left:${p.px}px;top:${p.py}px`)
   bb.style.transform = 'scale3d(1, var(--aniso, 1), 1) rotateZ(var(--unspin, 0deg)) rotateX(var(--anti)) translateZ(160px)'
-  const plate = el('injPlate hbtNotice', 'left:-90px;top:-118px;width:180px', `<b>✶</b> ${job.name}`)
-  bb.appendChild(plate); V.dom.stage.appendChild(bb); V.fx.nodes.add(bb)
+  /* viewer.plates-and-banners-sit-low: the injury's name stands in the notices' band above the action bar (it stood over its
+     unit) and flies to the panel from there; with no stack (no page) it stands over its unit as before */
+  const plate = el('injPlate hbtNotice', '', `<b>✶</b> ${job.name}`)
+  if (standLow(V, plate)) V.fx.nodes.add(plate)
+  else { plate.style.cssText = 'position:absolute;left:-90px;top:-118px;width:180px'; bb.appendChild(plate); V.dom.stage.appendChild(bb) }
+  V.fx.nodes.add(bb)
   if (plate.animate) plate.animate([{ transform: 'scale(1.25)', opacity: 0 }, { transform: 'scale(1)', opacity: 1 }], { duration: 140, easing: 'cubic-bezier(.2,1.2,.4,1)' })
   const t = setTimeout(() => {
     V.fx.timers.delete(t)
@@ -690,7 +694,7 @@ function playInjury(V) {
       const tgt = subjectOf(V) === job.id && V.dom.panel ? V.dom.panel.querySelector('.pInjuries') : null
       to = tgt ? tgt.getBoundingClientRect() : null
     } catch (e) {}
-    bb.remove(); V.fx.nodes.delete(bb)
+    bb.remove(); V.fx.nodes.delete(bb); plate.remove(); V.fx.nodes.delete(plate)
     if (from && to && document.body.animate) {
       const fly = el('injPlate fly hbtNotice', `position:fixed;left:${from.left}px;top:${from.top}px;width:${from.width}px;z-index:1000;margin:0`, `<b>✶</b> ${job.name}`)
       document.body.appendChild(fly); V.fx.nodes.add(fly)
@@ -756,13 +760,40 @@ export function rise(V, id) {
 }
 /* a BANNER over the board (a wave, night, the band, the objective): screen
    space, top centre, 1.6s, one at a time — the newest replaces the last */
+/* viewer.plates-and-banners-sit-low (engine DECISIONS.md 2026-10-06 'the Deathbed notification and the others sit low, near the
+   bottom of the screen', Andrew: "The deathbed fighting notification and maybe other notifications are still happening too
+   close to the center of the screen. Push it down closer to the bottom of the screen."): every notification the battle screen
+   shows of its own accord stands in the notices' one place — #noticeStack, in the board's frame just above the stamina strip
+   and the action bar (styles.css). A newcomer goes in at the TOP of the stack, so the stack climbs in the order they came and
+   none lies over another; and if the stack would climb over the middle of the battle screen's height, the oldest of the ones
+   put here leaves first (the newest always stays; the play note, the host's notice and the lesson are not put here and are
+   never taken away by this — viewer SWITCHES lowStackOldestLeaves). Returns false where there is no stack (no page). */
+export function standLow(V, node) {
+  const stack = V.dom.root && V.dom.root.querySelector ? V.dom.root.querySelector('#noticeStack') : null
+  if (!stack) return false
+  node.setAttribute('data-low', '1')
+  stack.insertBefore(node, stack.firstChild || null)
+  try {
+    const screen = V.dom.root.getBoundingClientRect(), limit = screen.top + screen.height / 2
+    /* measured only where the page is laid out: a stack as tall as the whole screen is no measurement (a test DOM's one rectangle) */
+    const climbs = () => { const st = stack.getBoundingClientRect(); return screen.height > 0 && st.height < screen.height && st.top < limit }
+    for (let n = 0; n < 8 && climbs(); n++) {
+      const put = [...stack.children].filter(c => c !== node && c.getAttribute && c.getAttribute('data-low'))
+      const oldest = put[put.length - 1]; if (!oldest) break
+      oldest.remove(); V.fx.nodes.delete(oldest)
+    }
+  } catch (e) {}
+  return true
+}
 export function banner(V, kind, text, sub) {
   const wrap = V.dom.stage.parentNode; if (!wrap) return
   const old = wrap.querySelector('.banner'); if (old) { old.remove(); V.fx.nodes.delete(old) }
   /* viewer.plates-banners-tooltip-gold-look: the notices' one lettering (styles.css .hbtNotice) */
   const b = el('banner hbtNotice ' + kind, '', `<b>${text}</b>${sub ? `<span>${sub}</span>` : ''}`)
-  wrap.appendChild(b); V.fx.nodes.add(b)
-  if (b.animate) b.animate([{ opacity: 0, transform: 'translate(-50%,-8px)' }, { opacity: 1, transform: 'translate(-50%,0)', offset: .12 }, { opacity: 1, offset: .8 }, { opacity: 0 }], { duration: 1600, fill: 'forwards' })
+  /* viewer.plates-and-banners-sit-low: in the notices' band above the action bar (it stood 18 px under the top of the board) */
+  if (!standLow(V, b)) wrap.appendChild(b)
+  V.fx.nodes.add(b)
+  if (b.animate) b.animate([{ opacity: 0, transform: 'translate(0,-8px)' }, { opacity: 1, transform: 'translate(0,0)', offset: .12 }, { opacity: 1, offset: .8 }, { opacity: 0 }], { duration: 1600, fill: 'forwards' })
   const t = setTimeout(() => { b.remove(); V.fx.nodes.delete(b); V.fx.timers.delete(t) }, dilate(V, 1650))
   V.fx.timers.add(t)
 }
@@ -814,6 +845,7 @@ export const DB_STAGE = 1100, DB_TOTAL = 2600
 export function deathbedModal(V, c) {
   const wrap = V.dom.stage.parentNode, u = V.S.U[c.id]; if (!wrap || !u) return
   const old = wrap.querySelector('.dbModal'); if (old) { old.remove(); V.fx.nodes.delete(old) }
+  const oldPlate = wrap.querySelector('.dbPlate'); if (oldPlate) { oldPlate.remove(); V.fx.nodes.delete(oldPlate) }
   const roll = c.n != null ? `<span class="dbRoll">rolled <b>${c.n}</b> vs ${c.chance}</span>` : ''
   /* three results since the reversal (engine b4cbd9b): stood, fell, and none —
      a unit already Wounded gets no roll at all */
@@ -832,12 +864,15 @@ export function deathbedModal(V, c) {
   m.appendChild(el('dbVeil', ''))
   const plate = el('dbPlate hbtNotice', '')
   plate.innerHTML = stage1
-  m.appendChild(plate)
+  /* viewer.plates-and-banners-sit-low: the dimmed screen that holds the game is where it was, behind the whole board; the
+     plate's words stand in the notices' band above the action bar (they stood in the middle of the board) */
   wrap.appendChild(m); V.fx.nodes.add(m)
+  if (!standLow(V, plate)) m.appendChild(plate)
+  V.fx.nodes.add(plate)
   if (plate.animate) plate.animate([{ transform: 'scale(1.12)', opacity: 0 }, { transform: 'scale(1)', opacity: 1 }], { duration: 160, easing: 'cubic-bezier(.2,1.2,.4,1)' })
   const t1 = setTimeout(() => { V.fx.timers.delete(t1); plate.innerHTML = stage2; plate.className = 'dbPlate hbtNotice ' + c.result
     if (plate.animate) plate.animate([{ transform: 'scale(1.25)' }, { transform: 'scale(1)' }], { duration: 220, easing: 'cubic-bezier(.2,1.3,.4,1)' }) }, dilate(V, DB_STAGE))
-  const t2 = setTimeout(() => { V.fx.timers.delete(t2); m.remove(); V.fx.nodes.delete(m) }, dilate(V, DB_TOTAL))
+  const t2 = setTimeout(() => { V.fx.timers.delete(t2); m.remove(); V.fx.nodes.delete(m); plate.remove(); V.fx.nodes.delete(plate) }, dilate(V, DB_TOTAL))
   V.fx.timers.add(t1); V.fx.timers.add(t2)
 }
 

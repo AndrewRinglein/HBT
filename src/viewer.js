@@ -262,6 +262,9 @@ export function mountBattleViewer(root, data, opts = {}) {
   /* viewer.item-card-in-battle: for a host that has cards (opts.itemCard(itemId) -> the card's markup, or null), an item's
      name in the panel opens that card beside the panel; a host with none mounts nothing (itemcard.js) */
   V.itemCard = typeof opts.itemCard === 'function' ? mountItemCard(V, opts.itemCard, err => fault(err)) : null
+  /* viewer.attack-row-shows-totals: for a host that has an engine (opts.attackTotals(unitId) -> {actionId: {accuracy, crit}} —
+     the engine's own figures for that unit's attacks now, or null), the action bar shows those; nothing is added up here */
+  V.attackTotals = typeof opts.attackTotals === 'function' ? id => { try { return opts.attackTotals(id) || null } catch (err) { fault(err); return null } } : null
 
   function render() {
     if (!V.layers.ground) buildGround(V)

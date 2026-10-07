@@ -118,7 +118,11 @@ test('an attack whose damage is a sum of terms says each on its line: the Force 
   assert.match(said('attack.staff-of-the-ultimate-destroyer.annihilation'), /\(2 × PRE\w* \+ 2 × party MAG\w*\)/)
   assert.match(said('attack.war-hammer.skullsplitter'), /\(STR\w* \+ ARM\w*/)
   // an attack of one stat reads as it did
-  assert.match(said('attack.longsword.slash'), /\(STR\w* \+1\)/)
+  /* Law 10, 2026-10-06 — viewer.attack-row-shows-totals (Andrew, engine DECISIONS.md 'an attack's numbers: the total alone, no list
+     of what it is made of': "we should always be showing the numbers, not the contributing [sum] numbers."): the flat figure
+     beside the damage's stat is in the damage total and is no longer said; the stat the damage is made from is. The line was:
+       assert.match(said('attack.longsword.slash'), /\(STR\w* \+1\)/) */
+  assert.match(said('attack.longsword.slash'), /Damage [^(]*\(STR\w*\)/)
   // every attack row the engine gives a second term is said so: no attack with terms shows a bare one-stat sum
   let n = 0
   for (const [id, a] of Object.entries(STATIC.actions)) { const p = a.attack; if (!p || !(p.addsStats?.length || p.statMult > 1)) continue; n++; assert.ok(/ \+ |× /.test(said(id).split('(')[1]), id + ': ' + said(id)) }

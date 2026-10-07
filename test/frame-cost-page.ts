@@ -6,7 +6,8 @@
 // the battles any of them reads, 60 frames a number; the others wait for that run's result and read it. What each file
 // asserts of its rows is unchanged.
 // Not a test file. Used by test/viewer.frame-cost-measured.test.ts, test/viewer.see-through-only-when-moved.test.ts,
-// test/viewer.scenery-shadow-drawn-once.test.ts and test/viewer.still-frame-draws-nothing.test.ts.
+// test/viewer.scenery-shadow-drawn-once.test.ts, test/viewer.still-frame-draws-nothing.test.ts,
+// test/viewer.solid-pieces-drawn-by-material.test.ts and test/viewer.foliage-drawn-once.test.ts.
 import { execFileSync } from 'node:child_process'
 import { mkdirSync, readFileSync, rmSync, statSync, writeFileSync } from 'node:fs'
 
@@ -39,7 +40,13 @@ export function frameCostOnThePage<Row>(): FrameCost<Row> {
       const again = have(); if (again) return again
       mkdirSync('../kingdom/scratch', { recursive: true })
       execFileSync(process.execPath, ['tools/build-sandbox.mjs', FRAME_COST_PAGE.replace(/^kingdom\//, '')], { cwd: '../kingdom', stdio: 'pipe' })
-      const out = execFileSync(process.execPath, ['tools/frame-cost.mjs', ...FRAME_COST_BATTLES, '--frames', '60', '--json', '--page', '../' + FRAME_COST_PAGE], { cwd: '../viewer', encoding: 'utf8', maxBuffer: 1 << 26, timeout: 1_200_000 })
+      /* (viewer.pixel-compare-tests-hold-against-frame-noise, 2026-10-06: the tool leaves with a failure when a battle could not be
+         measured, and says which and why in what it printed — until now that was thrown away and a red read only "Command failed") */
+      let out: string
+      try { out = execFileSync(process.execPath, ['tools/frame-cost.mjs', ...FRAME_COST_BATTLES, '--frames', '60', '--json', '--page', '../' + FRAME_COST_PAGE], { cwd: '../viewer', encoding: 'utf8', maxBuffer: 1 << 26, timeout: 1_200_000 }) }
+      catch (e) { const said = String((e as { stdout?: unknown }).stdout ?? ''), err = String((e as { stderr?: unknown }).stderr ?? '').trim()
+        const notes = [...said.matchAll(/"battle": "([^"]+)",\s*"flat": true,\s*"note": "((?:[^"\\]|\\.)*)"/g)].map((m) => m[1] + ' — ' + m[2])
+        throw new Error('frame-cost on the page: the tool did not measure every battle: ' + (notes.join(' · ') || String((e as Error).message).split('\n')[0]) + (err ? ' [' + err.slice(-400) + ']' : '')) }
       const result = JSON.parse(out) as FrameCost<Row>
       writeFileSync(OUT, JSON.stringify({ run: RUN, at: Date.now(), result }))
       return result

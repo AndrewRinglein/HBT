@@ -12,9 +12,9 @@
       "becomes": "the sheet states the move's range; move.begin already carries the real budget"
     },
     "base-accuracy": {
-      "where": "src/actionbar.js drawBar",
-      "computes": "prints the sheet's BASE accuracy as the resting row's ACC",
-      "becomes": "the engine emits the live accuracy, or the row is labelled base"
+      "where": "src/actions.js totalsOf (was src/actionbar.js drawBar; moved 2026-10-06 — viewer.attack-row-shows-totals)",
+      "computes": "in a REPLAY (no host, so no engine on the page), a resting attack row's Accuracy and Crit totals: the sheet's Accuracy and Crit at rest, the log's own changes to those stats (modOf) and the attack's own modifier. A host that plays hands the engine's own figures and nothing is computed",
+      "becomes": "the engine emits the live figures for a unit's attacks, or a recording carries them"
     },
     "sheet": {
       "where": "src/sheet.ts sheetOf",

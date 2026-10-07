@@ -81,13 +81,17 @@ export const kindOf = (a, D) => { const k = classOf(a, D); return k === 'attack'
 export function actionsOf(u, D) {
   if (!u) return []
   const k = kitOf(u, D)
-  /* capability.charges: an action that spent its last use LEAVES the list
-     (power.exhausted) — Andrew 2026-09-02, "they should vanish" */
-  const spent = new Set(u.spent || [])
+  /* viewer.used-up-power-stays-greyed (engine DECISIONS.md 2026-10-06 'an Activation is one move action and one primary action,
+     in that order; a used-up power stays on the bar, greyed' — asked whether a used-up once-per-battle power should stay on
+     the bar greyed instead of disappearing, Andrew: "One, yes."): an action that spent its last use (the log's own
+     power.exhausted) KEEPS its place in the list, marked usedUp; the bar greys it. Overturns, for the bar, capability.charges'
+     "an action that spent its last use LEAVES the list — Andrew 2026-09-02, 'they should vanish'". The lines were:
+       for (const m of k.moves)     if (!spent.has(m.id)) rows.push({ ...m, kind: 'move' })      (and so for attacks and abilities) */
+  const spent = new Set(u.spent || []), used = id => (spent.has(id) ? { usedUp: true } : {})
   const rows = []
-  for (const m of k.moves)     if (!spent.has(m.id)) rows.push({ ...m, kind: 'move' })
-  for (const a of k.attacks)   if (!spent.has(a.id)) rows.push({ ...a, kind: kindOf(a, D), isAttack: true, ...(classOf(a, D) === 'charge' ? { charge: true } : {}) })
-  for (const p of k.abilities) if (!spent.has(p.id)) rows.push({ ...p, kind: classOf(p, D), isPower: true })
+  for (const m of k.moves)     rows.push({ ...m, kind: 'move', ...used(m.id) })
+  for (const a of k.attacks)   rows.push({ ...a, kind: kindOf(a, D), isAttack: true, ...(classOf(a, D) === 'charge' ? { charge: true } : {}), ...used(a.id) })
+  for (const p of k.abilities) rows.push({ ...p, kind: classOf(p, D), isPower: true, ...used(p.id) })
   return rows
 }
 
@@ -133,6 +137,23 @@ export function moveHexes(a, u, D) {
 /* EXEMPTION dmg-fallback: the engine's own damageOnHit once this attack has
    been declared — it carries every live modifier — else the declare-time
    stat + bonus the ledger showed. The fallback duplicates engine math. */
+/* viewer.attack-row-shows-totals (engine DECISIONS.md 2026-10-06 'an attack shows its total Accuracy and Crit, not the weapon's plus' and 'an attack's numbers: the total alone, no list of what it is made of', Andrew: "The dagger doesn't show +5 critical. What happens is the attack shows the total critical. The same thing is true of accuracy." / "We just need to see the total."): an attack's Accuracy and Crit as TOTALS for this
+   unit now — never the weapon's plus, never a list of parts.
+   · A host that plays hands the ENGINE'S OWN figures for the unit (the mount option attackTotals(unitId) ->
+     {actionId: {accuracy, crit}}, kingdom: the engine's attackFigures on its live battle): shown as given.
+   · With no host (a replay — there is no engine on the page) the figure is made here from what the log and the sheet say:
+     EXEMPTION base-accuracy — the sheet's Accuracy and its Crit at rest (the engine's rule base in it), the log's own changes
+     to those two stats (modOf, the stat-delta sum the panel's stat block prints) and the attack's own modifier. It misses what
+     the engine derives without a line (an aura, a status that lends a stat, the ground) — the host's figure does not. */
+export function totalsOf(a, u, D, given) {
+  const p = a.attack; if (!p || a.kind === 'burst') return null
+  const g = given && given[a.id]
+  if (g && Number.isFinite(g.accuracy) && Number.isFinite(g.crit)) return { accuracy: g.accuracy, crit: g.crit, engine: true }
+  const sheet = (D.UD || {})[u && u.typeId]
+  if (!sheet || sheet.accuracy == null) return null
+  return { accuracy: sheet.accuracy + modOf(u, 'accuracy') + (p.accuracy || 0),
+    crit: sheet.critAtRest == null ? null : Math.max(0, sheet.critAtRest + modOf(u, 'crit') + (p.crit || 0)), engine: false }
+}
 export function dmgOf(a, u, D) {
   if (a.kind === 'burst') return null          // an action-bar row's kind is the engine's class (actionsOf)
   /* an attack's stat and bonus live under `attack` since 26fa562; a legacy
@@ -296,7 +317,8 @@ export function effectTag(a, u, D, SN) {
   if (a.effect === 'heal') bits.push('heals')
   if (a.effect === 'selfGuard') bits.push('protection, permanent stat cost')
   if (p.applies) bits.push(shortStatus(p.applies.statusId, SN) + ' ' + sgn(p.applies.value))
-  if (p.crit) bits.push('crit ' + sgn(p.crit))
+  /* viewer.attack-row-shows-totals (2026-10-06, Andrew: "The dagger doesn't show +5 critical."): the attack's own Crit is in the
+     row's Crit total, and is not said again here. The line was: if (p.crit) bits.push('crit ' + sgn(p.crit)) */
   if (p.hits > 1) bits.push(p.hits + ' hits')
   if (p.critCount > 1) bits.push(p.critCount + ' criticals')
   if (p.armorPenetration != null) bits.push('Armor penetration ' + p.armorPenetration)
@@ -497,7 +519,7 @@ export function statusLines(id, value, D, SN) {
 }
 
 /** every fact of one action, a line each — the row's tooltip, whole (the button shows what fits) */
-export function actionLines(a, u, D, SN) {
+export function actionLines(a, u, D, SN, given) {
   const k = a.kind === 'move' ? 'move' : a.kind === 'burst' ? 'burst' : a.attack ? 'attack' : 'power'
   const p = a.attack, lines = []
   lines.push((a.name || a.id) + ' — ' + (k === 'attack' ? `${p.kind} attack${a.move ? ' (charge)' : ''} · ${p.damageType}` : k === 'move' ? 'movement' : k))
@@ -511,18 +533,22 @@ export function actionLines(a, u, D, SN) {
   if (a.slot) lim.push(a.slot === 'either' ? 'uses the move or the primary action' : a.slot === 'movement' ? 'uses the move' : 'uses the primary action')
   lines.push(lim.join(' · '))
   if (p) {
-    const base = ((D.UD || {})[u && u.typeId] || {}).accuracy, dm = dmgOf(a, u, D)
+    const T = totalsOf(a, u, D, given), dm = dmgOf(a, u, D)
     /* capability.damage-from-two-stats (engine item, 2026-10-05; engine DECISIONS.md 2026-10-04 'his 28 reward weapons read back …':
        "We do need that."): the sum as the row writes it — the attack's own stat (twice, when the row says so), then each added
        term in the engine's own fields: "+ ½ party MAGIC", "+ 2 × party MAGIC", "+ ARMOR". Magic and Spirit are the party's. */
     const termWord = t => ` + ${t.div === 2 ? '½ ' : t.mult > 1 ? t.mult + ' × ' : ''}${t.stat === 'magic' || t.stat === 'spirit' ? 'party ' : ''}${statWord(t.stat)}`
     const sum = `${p.statMult > 1 ? p.statMult + ' × ' : ''}${statWord(p.stat)}${(p.addsStats || []).map(termWord).join('')}`
-    lines.push(`Accuracy ${base == null ? '—' : base}${p.accuracy ? ' · ACC ' + sgn(p.accuracy) + ' with this attack' : ''} · Range ${a.range} · Damage ${dm ? dm.n : '—'} (${sum}${p.bonus ? ' ' + sgn(p.bonus) : ''}${p.powerScale != null ? ' + Power × ' + p.powerScale : ''})`)
+    /* viewer.attack-row-shows-totals (2026-10-06, Andrew: "we should always be showing the numbers, not the contributing [sum]
+       numbers … We just need to see the total."): Accuracy and Crit are the totals for this unit's attack (totalsOf); the
+       attack's own modifier and the flat figure beside the damage's stat are in those totals and are not said. The terms'
+       NAMES stay — what the damage is made from (viewer SWITCHES totalsDamageTermsKept). The line was:
+         Accuracy <sheet base> · ACC ±N with this attack · Range … · Damage N (STAT ±bonus + Power × n) */
+    lines.push(`Accuracy ${T ? T.accuracy : '—'} · Crit ${T && T.crit != null ? T.crit : '—'} · Range ${a.range} · Damage ${dm ? dm.n : '—'} (${sum}${p.powerScale != null ? ' + Power × ' + p.powerScale : ''})`)
     const more = []
     /* capability.summons (engine item, 2026-10-05): the attack's Accuracy against a kind of target - the engine's flag
        'summon' (anything summoned) or a unit tag */
     for (const [kind, n] of Object.entries(p.accuracyVs || {})) more.push(sgn(n) + ' Accuracy against ' + (kind === 'summon' ? 'anything summoned' : kind))
-    if (p.crit) more.push('crit ' + sgn(p.crit))
     if (p.hits > 1) more.push(p.hits + ' hits')
     if (p.critCount > 1) more.push(p.critCount + ' criticals on a crit')
     if (p.armorPenetration != null) more.push('Armor penetration ' + p.armorPenetration)

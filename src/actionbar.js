@@ -7,7 +7,7 @@
    (dmg-fallback, move-range) in actions.js. Split out 2026-09-02. */
 import { icoHTML, actHue, ACT_CLASS } from './icons.js'
 import { stStyle } from './theme.js'
-import { actionsOf, moveHexes, dmgOf, effectTag, triggersFor, actionLines } from './actions.js'
+import { actionsOf, moveHexes, dmgOf, effectTag, triggersFor, actionLines, totalsOf } from './actions.js'
 import { barUnitOf } from './subject.js'
 
 const escape = value => String(value).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))
@@ -70,7 +70,10 @@ export function drawBar(V) {
      host, each with the line that says why). Nothing about Stamina, a cooldown or a use is worked out here for it: with no
      word from the host a row is as it was (a replay still shows the fold's cooldown count, below). */
   const unpaid = new Map(!!V.play && !!u && V.play.actor === u.id ? V.play.cantPay.map(c => [c.id, c.why]) : [])
-  const base = (UD[u?.typeId] || {}).accuracy      // EXEMPTION base-accuracy: the sheet's base, not the live total
+  /* viewer.attack-row-shows-totals (engine DECISIONS.md 2026-10-06, Andrew: "the attack shows the total critical. The same thing
+     is true of accuracy."): the row's Accuracy and then its Crit are TOTALS for this unit's attack — the engine's own figures
+     where a host plays (V.attackTotals), else actions.js totalsOf. It printed the sheet's base Accuracy and no Crit. */
+  const given = typeof V.attackTotals === 'function' && u ? V.attackTotals(u.id) : null
   const now = V.clock()
   let html = ''
   for (let i = 0; i < 12; i++) {
@@ -95,7 +98,8 @@ export function drawBar(V) {
     const stam = a.staminaCost
     /* capability.charges: what the log says is left, else the row's own count */
     const usesLeft = u.charges && u.charges[a.id] != null ? u.charges[a.id] : a.uses
-    const acc = a.isAttack ? (base != null ? base : '—') : '—'
+    const T = a.isAttack ? totalsOf(a, u, D, given) : null
+    const acc = T ? T.accuracy : '—', crit = T && T.crit != null ? T.crit : '—'
     const tag = effectTag(a, u, D, SN)
     const trg = triggersFor(u, a, D, SN, id => stStyle(id, D))
     const tkey = u.id + '|' + a.id, topen = view.TRG_OPEN.has(tkey)
@@ -117,17 +121,24 @@ export function drawBar(V) {
        cooldown) keeps the disabled look instead: the two are told apart at a glance (styles.css .moveDone, .cool) */
     const standFirst = waiting.includes(a.id)
     /* one reason at a time: a row that waits on the stand says that; otherwise the host's line for what cannot be paid */
-    const cantPay = !standFirst && unpaid.has(a.id)
+    /* viewer.used-up-power-stays-greyed (engine DECISIONS.md 2026-10-06, Andrew: "One, yes."): a row whose uses are spent (the
+       log's power.exhausted — actions.js actionsOf) stays in its place, greyed and unpressable, and says why. Where a host
+       plays the unit acting, whether it is still used up is the HOST's word (it names the row in cantPay with its line; a
+       use the rules gave back is simply not named, and the row is lit at once); with no host the log's line stands. */
+    const hosted = !!V.play && V.play.actor === u.id
+    const usedUp = !standFirst && !!a.usedUp && (!hosted || unpaid.has(a.id))
+    const cantPay = !standFirst && (unpaid.has(a.id) || usedUp)
+    const whyNot = unpaid.get(a.id) || (usedUp ? (a.uses === 1 ? 'Used: once per Battle.' : 'No uses left.') : '')
     const moveDone = !cool && !standFirst && a.kind === 'move' && !!V.play && V.play.actor === u.id && V.play.moveDone.includes(a.id)
-    const whole = actionLines(a, u, D, SN).join('\n') + (moveDone ? '\nThis move is done for this Activation.' : '')
-      + (standFirst ? '\nKnocked down: ' + (standName || 'stand up') + ' first.' : '') + (cantPay ? '\n' + unpaid.get(a.id) : '')
-    html += `<div class="acRow${firing ? ' firing' : ''}${cool ? ' cool' : ''}${moveDone ? ' moveDone' : ''}${standFirst ? ' standFirst' : ''}${cantPay ? ' cantPay' : ''}${chosen && !standFirst && !cantPay ? ' playChosen' : ''}" data-act="${escape(a.id)}"${standFirst || cantPay ? ' aria-disabled="true"' : ''} title="${escape(whole)}" style="border-left-color:${accent}">
+    const whole = actionLines(a, u, D, SN, given).join('\n') + (moveDone ? '\nThis move is done for this Activation.' : '')
+      + (standFirst ? '\nKnocked down: ' + (standName || 'stand up') + ' first.' : '') + (cantPay ? '\n' + whyNot : '')
+    html += `<div class="acRow${firing ? ' firing' : ''}${cool ? ' cool' : ''}${moveDone ? ' moveDone' : ''}${standFirst ? ' standFirst' : ''}${cantPay ? ' cantPay' : ''}${usedUp ? ' usedUp' : ''}${chosen && !standFirst && !cantPay ? ' playChosen' : ''}" data-act="${escape(a.id)}"${standFirst || cantPay ? ' aria-disabled="true"' : ''} title="${escape(whole)}" style="border-left-color:${accent}">
       <div class="acMain">
         <div class="acL1">${icoHTML(a)}
           <span class="acName">${escape(a.name || a.id)}${dupe ? `<span class="acFrom">${dupe}</span>` : ''}</span>
           ${tag ? `<span class="acTag${a.kind === 'burst' ? ' burstTag' : ''}" title="${escape(tag)}">${escape(tag)}</span>` : ''}</div>
         <div class="acL2">
-          ${a.kind === 'burst' ? cell('TYPE', 'BURST') : cell('ACC', acc)}${cell('RNG', rng)}
+          ${a.kind === 'burst' ? cell('TYPE', 'BURST') : cell('ACC', acc) + (a.isAttack ? cell('CRIT', crit) : '')}${cell('RNG', rng)}
           ${cell('DMG', dmg, (a.attack || a).damageType && dmg !== '—' ? actHue(a).col : null)}${cell('STA', stam != null ? stam : '—')}
         </div>
       </div>

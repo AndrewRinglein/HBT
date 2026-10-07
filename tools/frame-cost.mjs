@@ -66,19 +66,49 @@
 // draw between them. A row says what the page says of its batches (src/terrain3d.js V.solidBatches: how many batches hold how
 // many of the scene's solid pieces, and how long they took to build while the scene loaded). In the round of views that the
 // shadow is compared over, every view is also drawn both ways — the pieces batched, then each piece by itself as first
-// written (V.solidBatches.whole = true) — and every pixel of both canvases compared: the batched column (a view whose two ways
-// differ is drawn again, three times at the most: a frame is now and then a few pixels of one shade off its own repeat, the
-// pieces batched or not, and that is not the batches' doing — the JSON carries the fewest and the most). And at every view
+// written (V.solidBatches.whole = true) — and every pixel of both canvases compared: the batched column. And at every view
 // of the see-through round the page is asked whether every piece faded see-through is out of its batch and drawn by itself.
 // The still frames are also measured once more with every piece drawn by itself (eachByItself): the draw calls the batches
 // save, counted in the same run on the same view — and the triangles, which must be the very same.
+//
+// viewer.pixel-compare-tests-hold-against-frame-noise (2026-10-06): HOW TWO WAYS OF DRAWING A VIEW ARE COMPARED. This machine's
+// graphics card, handed the very same calls with the very same numbers, gives a still frame one of a few pictures — a handful
+// of pixels, the same ones for a view, one shade of 255 apart — and which one changes from frame to frame (found by folding
+// every call of a frame into one number: forty frames, one number, more than one picture; the software renderer never does
+// it; viewer SWITCHES.md, the item's section). One drawing of each way compared with one drawing of the other therefore read
+// a few pixels now and then that were neither way's doing, and the page tests that asked for 0 went red one gate in three;
+// the batched compare drew a differing view again, up to three times, which only made that rarer. NO COMPARE DRAWS AGAIN
+// UNTIL IT MATCHES ANY MORE. Each of the three compares — the sun's shadow kept against whole, the bodies' depth from the
+// pieces that can hide a body against every solid piece, the solid pieces batched against each by itself — draws each way
+// COMPARE_DRAWS times, turn about (the way as first written is the reference), and counts a pixel as differing only if none
+// of the one way's drawings shows a colour that one of the reference's shows there (tools/pixel-agree.mjs: the rule, and
+// why it is this one). The JSON carries, for each compare, beside differing and worst: draws (how often each way was
+// drawn), firstPair (the pixels in which the first drawing of each differed — what the old compare read), and the card's own
+// noise in those very drawings — unsteady / unsteadyBy (pixels not the same in every drawing of the reference way, and by
+// how much), otherUnsteady / otherUnsteadyBy (of the other way).
+//
+// viewer.foliage-drawn-once (2026-10-05): the scene's two-sided blended pieces — its foliage — are each drawn once where three
+// drew each twice, behind a switch the page can be asked the other side of while it runs (src/terrain3d.js V.foliage.once; a
+// page built before that item has none and the column reads —). A row says what the page says of its foliage (how many pieces
+// in how many materials, how many are in the still view's sight, which way they are drawn), and carries (JSON: foliageWays)
+// the still frames measured on the same view BOTH ways — drawn once, then twice as before: the draw calls, counted — and
+// frames taken turn about, one drawn once and one drawn twice (once, twice, once, twice …), the median of each and their
+// ratio: the two kinds timed under the same load. In the round of views the shadow is compared over, every view is also
+// drawn both ways WITH its blended pieces in the picture, and every pixel of both canvases compared: how many differ, by how
+// much at the most, how many by more than 16 of 255 — beside what two frames drawn the SAME way differ by, each way (the
+// blended pieces' own frame-to-frame difference, viewer SWITCHES blendedPiecesShimmer: what is under it is not the switch's).
 import {createRequire} from 'node:module'
 import {createServer} from 'node:net'
 import {spawn} from 'node:child_process'
 import {existsSync} from 'node:fs'
 import {resolve,dirname,relative} from 'node:path'
 import {fileURLToPath} from 'node:url'
+import {comparer} from './pixel-agree.mjs'
 const here=dirname(fileURLToPath(import.meta.url)),ROOT=resolve(here,'../..')
+/** how often each way of a compare is drawn at a view, turn about with the other (viewer.pixel-compare-tests-hold-against-frame-noise):
+    fixed — never raised for a view that differs. Ten: a pixel the card colours two ways with even chances is coloured apart by
+    all ten drawings of the two ways twice in a million views (2 x (1/4)^10) */
+const COMPARE_DRAWS=10
 export const BATTLES=['encounter.opening.orphanage','encounter.opening.lumberjack','encounter.opening.bridge','encounter.opening.cavern-trail','encounter.opening.gates','encounter.opening.cathedral','encounter.caravan-aftermath']
 /** the see-through check's own spacing (src/terrain3d.js SEE_EVERY) is 120 ms: a frame this long after the last may run it */
 const WITH_CHECK_MS=130,WITHOUT_CHECK_MS=1,WARM_UP=6,SCROLL_PX=14
@@ -144,8 +174,12 @@ function fadedNow(){
  return {faded:V.seeThrough.faded.size,...(b?{out:b.out,inStep:b.inStep}:{})}
 }
 function quarterTurn(){window.__sandbox.viewer.turn(90);return true}
+/** what the page says of its foliage — the two-sided blended pieces — and how many of them this view's pass draws */
+function foliageNow(){const f=window.__sandbox.viewer._V.foliage;return f?{pieces:f.pieces,materials:f.materials,once:f.once,inSight:f.inSight()}:null}
+/** ask for the foliage drawn once (true) or twice, as before (false) */
+function foliageWay(once){window.__sandbox.viewer._V.foliage.once=once;return true}
 /** the same frame drawn with the scenery's shadow kept, then with the shadow whole: are the two pictures the same, pixel for pixel? */
-function shadowBothWays(){
+function shadowBothWays(DRAWS){
  const V=window.__sandbox.viewer._V,k=V.sceneryShadow,S=window.__frameCost;if(!k||!V.seeThrough)return null
  const read=()=>[...document.querySelectorAll('canvas.terrain3d-canvas,canvas.terrain3d-bodies')].map(c=>{const gl=c.getContext('webgl2'),w=gl.drawingBufferWidth,h=gl.drawingBufferHeight,px=new Uint8Array(w*h*4)
   gl.readPixels(0,0,w,h,gl.RGBA,gl.UNSIGNED_BYTE,px);return px})
@@ -165,36 +199,47 @@ function shadowBothWays(){
  let scene=V.seeThrough.pieces()[0]?.o;while(scene?.parent)scene=scene.parent
  const blended=new Set();scene?.traverse(o=>{if(o.isMesh)for(const m of [].concat(o.material))if(m&&m.transparent&&m.colorWrite)blended.add(m)})
  for(const m of blended)m.colorWrite=false
- let first,kept,full,depth=null,batched=null
+ /* viewer.pixel-compare-tests-hold-against-frame-noise: THE CARD DOES NOT GIVE A STILL FRAME THE SAME PICTURE EVERY TIME — a
+    handful of pixels, the same ones for a view, are one shade off now and then, however the frame is drawn (the header; viewer
+    SWITCHES frameNoiseOneShade). So each compare draws each way DRAWS times, turn about — the way as first written (the
+    reference), then the other — and a pixel counts as differing only if no drawing of the other way shows a colour that a
+    drawing of the reference shows there (S.comparer: tools/pixel-agree.mjs). Asking for the other way takes the scenery's
+    shadow again on the next frame (the kept shadow and the batches both do), so the picture read is the frame AFTER it.
+    No drawing is repeated for a view that differs. */
+ /* (the drawings are not kept: each is read into the same pair of buffers and handed to the compare, which keeps what the
+    rule needs of it — twenty whole pictures a compare held at once stalled the page now and then on a busy machine) */
+ const scratch=[],readOver=()=>[...document.querySelectorAll('canvas.terrain3d-canvas,canvas.terrain3d-bodies')].map((c,i)=>{const gl=c.getContext('webgl2'),w=gl.drawingBufferWidth,h=gl.drawingBufferHeight
+  const px=scratch[i]&&scratch[i].length===w*h*4?scratch[i]:(scratch[i]=new Uint8Array(w*h*4));gl.readPixels(0,0,w,h,gl.RGBA,gl.UNSIGNED_BYTE,px);return px})
+ const turnAbout=(reference,other)=>{const c=S.comparer();for(let i=0;i<DRAWS;i++){reference();draw();draw();c.a(readOver());other();draw();draw();c.b(readOver())}return c.done()}
+ let first,kept,shadow,depth=null,batched=null
  try{
   draw();first=read()
   draw();kept=read()
-  k.whole=true;draw();full=read()
-  k.whole=false;draw()
-  /* the bodies' depth: from the pieces that can hide a body, then from every solid piece */
-  if(V.bodiesDepth){draw();const few=read(),pieces=V.bodiesDepth.pieces;V.bodiesDepth.whole=true;draw();const all=read();V.bodiesDepth.whole=false;draw()
-   const d=differ(few,all);depth={pieces,differing:d.n,worst:d.worst}}
-  /* the solid pieces: drawn from their batches, then each by itself as first written, then from their batches again.
-     A FRAME IS NOW AND THEN A FEW PIXELS OF ONE SHADE OFF THE VERY SAME FRAME DRAWN AGAIN, however its pieces are drawn (found
-     2026-10-05 on the Cathedral and the Cavern Trail: 6 to 12 pixels by 1 of 255 — most often the frame that takes the
-     scenery's shadow again, which asking for the other way does; between two frames with every piece by itself just as
-     well, and in the frame after the shadow's own switch above; the page before the batches has it too — sameWay. Viewer
-     SWITCHES frameNoiseOneShade). So the picture compared is the frame AFTER the one that takes the shadow again, and where
-     the two ways still differ they are drawn again, three times at the most: what is the batches' doing differs every
-     time; a frame's own noise does not come twice. Carried: the fewest pixels that differed over the drawings (differing),
-     the most (most), how often it was drawn (drawn), what the shadow-taking frame differed by (retake), and the batched
-     picture against itself drawn afterwards (back). */
-  if(V.solidBatches){for(let go=1;go<=3;go++){
-    draw();const by=read(),out=V.solidBatches.out;V.solidBatches.whole=true;draw();const taken=read();draw();const each=read();V.solidBatches.whole=false;draw();draw()
-    const again=read(),d=differ(by,each),got={differing:d.n,worst:d.worst,out,back:differ(by,again).n,retake:differ(taken,each).n}
-    batched=batched&&batched.differing<=got.differing?{...batched,most:Math.max(batched.most,d.n),drawn:go}:{...got,most:Math.max(batched?batched.most:0,d.n),drawn:go}
-    if(!d.n)break}}
+  /* the sun's shadow: whole on every drawn frame, as first written (the reference) — kept, the bodies' drawn over it */
+  shadow=turnAbout(()=>{k.whole=true},()=>{k.whole=false})
+  /* the bodies' depth: from every solid piece, as first written (the reference) — from the pieces that can hide a body */
+  if(V.bodiesDepth){const got=turnAbout(()=>{V.bodiesDepth.whole=true},()=>{V.bodiesDepth.whole=false});depth={pieces:V.bodiesDepth.pieces,...got}}
+  /* the solid pieces: each by itself, as first written (the reference) — from their batches */
+  if(V.solidBatches){const out=V.solidBatches.out,got=turnAbout(()=>{V.solidBatches.whole=true},()=>{V.solidBatches.whole=false});batched={out,...got}}
  }finally{for(const m of blended)m.colorWrite=true}
  draw()
+ /* viewer.foliage-drawn-once: LAST, when every older compare of this view is done and read (they are made on the very frames
+    they were made on before this one existed: the switch is not thrown until here) — the same view with its foliage drawn once, then twice as before — the blended pieces IN the
+    picture (they are what changes) — and, each way, the frame drawn again the same way: what two frames of one way differ by
+    is the blended pieces' own (blendedPiecesShimmer), not the switch's. Counted besides: the pixels that differ by more than
+    16 of 255 (a shade the eye can find). */
+ let foliage=null
+ if(V.foliage){const f=V.foliage,was=f.once
+  const far=(A,B)=>{let n=0,worst=0,over=0;for(let c=0;c<A.length;c++){const a=A[c],b=B[c]
+    for(let i=0;i<a.length;i+=4){const d=Math.max(Math.abs(a[i]-b[i]),Math.abs(a[i+1]-b[i+1]),Math.abs(a[i+2]-b[i+2]),Math.abs(a[i+3]-b[i+3]));if(d){n++;if(d>worst)worst=d;if(d>16)over++}}}return {n,worst,over}}
+  const take=way=>{f.once=way;draw();draw();const a=read();draw();return [a,read()]}
+  const [on,onAgain]=take(true),inSight=f.inSight(),[off,offAgain]=take(false);f.once=was;draw()
+  const d=far(on,off),a=far(on,onAgain),b=far(off,offAgain)
+  foliage={inSight,differing:d.n,worst:d.worst,over16:d.over,onceAgain:a.n,onceAgainWorst:a.worst,onceAgainOver16:a.over,twiceAgain:b.n,twiceAgainWorst:b.worst,twiceAgainOver16:b.over}}
  let pixels=0,drawn=0;for(const a of kept){pixels+=a.length/4;drawn+=drawnOf(a)}
- const both=differ(kept,full),same=differ(first,kept)
+ const same=differ(first,kept)
  /* (the bodies' own canvas is the second: what is drawn on it is the bodies in this view) */
- return {canvases:kept.length,pixels,drawn,bodies:kept[1]?drawnOf(kept[1]):0,differing:both.n,worst:both.worst,sameWay:same.n,blendedNoise,takes:k.takes,depth,batched}
+ return {canvases:kept.length,pixels,drawn,bodies:kept[1]?drawnOf(kept[1]):0,...shadow,sameWay:same.n,blendedNoise,takes:k.takes,depth,batched,foliage}
 }
 function scrollStep(px){
  const v=window.__sandbox.viewer,V=v._V,S=window.__frameCost
@@ -246,6 +291,20 @@ async function stillPaired(page){
  const ma=median(a),mb=median(b)
  return {pairs:a.length,withCheck:round(ma,2),withoutCheck:round(mb,2),ratio:round(ma/mb,3),...(runs0!=null?{checks:runs1-runs0}:{})}
 }
+/** viewer.foliage-drawn-once: still frames taken turn about, one with the foliage drawn once and one with it drawn twice as
+    before (once, twice, once, twice …) — the two kinds timed under the same load, frame for frame. A frame is drawn and let
+    go after each change of way (three finds each material's shader again on it), and the next one is the frame timed. */
+async function foliagePaired(page){
+ const a=[],b=[]
+ for(let i=0;i<WARM_UP/2+FRAMES;i++){
+  await page.evaluate(foliageWay,true);await page.evaluate(tick,WITHOUT_CHECK_MS);const A=await page.evaluate(tick,WITHOUT_CHECK_MS)
+  await page.evaluate(foliageWay,false);await page.evaluate(tick,WITHOUT_CHECK_MS);const B=await page.evaluate(tick,WITHOUT_CHECK_MS)
+  if(A.ms==null||B.ms==null)throw Error('the 3D scene\'s frame was not among the page\'s stored frames')
+  if(i<WARM_UP/2)continue
+  a.push(A.ms);b.push(B.ms)}
+ const ma=median(a),mb=median(b)
+ return {pairs:a.length,once:round(ma,2),twice:round(mb,2),ratio:round(ma/mb,3)}
+}
 /** a round of views: the four quarters, the view scrolled at each — which pieces hide a body, both ways, at every one */
 async function seeThroughRound(page){
  if(await page.evaluate(hidingNow)===null)return null
@@ -275,17 +334,26 @@ async function shadowRound(page){
  const views=[]
  for(let q=0;q<4;q++){
   await page.evaluate(()=>{const s=window.__sandbox;s.viewer.centre(s.session.ctx.battleCursor.actor);return true});await arrive()
-  views.push(await page.evaluate(shadowBothWays))
+  views.push(await page.evaluate(shadowBothWays,COMPARE_DRAWS))
   for(let k=0;k<3;k++){await page.evaluate(scrollStep,SCROLL_PX*4);await page.evaluate(tick,WITH_CHECK_MS)}
-  views.push(await page.evaluate(shadowBothWays))
+  views.push(await page.evaluate(shadowBothWays,COMPARE_DRAWS))
   await page.evaluate(quarterTurn);await arrive()}
- return {views:views.length,same:views.filter(v=>v.differing===0).length,pixels:views[0].pixels,drawn:Math.min(...views.map(v=>v.drawn)),bodies:Math.min(...views.map(v=>v.bodies)),
-  differing:Math.max(...views.map(v=>v.differing)),worst:Math.max(...views.map(v=>v.worst)),
+ /* a compare over the round's views: the most that differed at any view and by how much, the views with nothing differing,
+    how often each way was drawn at a view, and the card's own noise in those drawings at its most */
+ const most=(of,k)=>Math.max(...views.map(v=>of(v)[k]))
+ const over=of=>({same:views.filter(v=>of(v).differing===0).length,differing:most(of,'differing'),worst:most(of,'worst'),draws:Math.min(...views.map(v=>of(v).draws)),firstPair:most(of,'firstPair'),
+  unsteady:most(of,'unsteady'),unsteadyBy:most(of,'unsteadyBy'),otherUnsteady:most(of,'otherUnsteady'),otherUnsteadyBy:most(of,'otherUnsteadyBy')})
+ return {views:views.length,pixels:views[0].pixels,drawn:Math.min(...views.map(v=>v.drawn)),bodies:Math.min(...views.map(v=>v.bodies)),
+  ...over(v=>v),
   sameWay:Math.max(...views.map(v=>v.sameWay)),blendedNoise:Math.max(...views.map(v=>v.blendedNoise)),sceneryShadowDrawn:views[views.length-1].takes,
-  ...(views[0].depth?{depth:{pieces:Math.max(...views.map(v=>v.depth.pieces)),differing:Math.max(...views.map(v=>v.depth.differing)),worst:Math.max(...views.map(v=>v.depth.worst))}}:{}),
-  ...(views[0].batched?{batched:{views:views.length,same:views.filter(v=>v.batched.differing===0).length,differing:Math.max(...views.map(v=>v.batched.differing)),worst:Math.max(...views.map(v=>v.batched.worst)),
-   withAPieceOut:views.filter(v=>v.batched.out>0).length,back:Math.max(...views.map(v=>v.batched.back)),retake:Math.max(...views.map(v=>v.batched.retake)),
-   most:Math.max(...views.map(v=>v.batched.most)),drawnAgain:views.filter(v=>v.batched.drawn>1).length}}:{})}
+  ...(views[0].depth?{depth:{pieces:Math.max(...views.map(v=>v.depth.pieces)),...over(v=>v.depth)}}:{}),
+  ...(views[0].batched?{batched:{views:views.length,withAPieceOut:views.filter(v=>v.batched.out>0).length,...over(v=>v.batched)}}:{}),
+  /* viewer.foliage-drawn-once: over the views, the most and the fewest pixels the two ways differ by, the largest difference,
+     and beside them the most two frames drawn the same way differ by, each way */
+  ...(views[0].foliage?{foliage:{views:views.length,inSight:Math.max(...views.map(v=>v.foliage.inSight)),differing:Math.max(...views.map(v=>v.foliage.differing)),least:Math.min(...views.map(v=>v.foliage.differing)),
+   worst:Math.max(...views.map(v=>v.foliage.worst)),over16:Math.max(...views.map(v=>v.foliage.over16)),
+   onceAgain:Math.max(...views.map(v=>v.foliage.onceAgain)),onceAgainWorst:Math.max(...views.map(v=>v.foliage.onceAgainWorst)),onceAgainOver16:Math.max(...views.map(v=>v.foliage.onceAgainOver16)),
+   twiceAgain:Math.max(...views.map(v=>v.foliage.twiceAgain)),twiceAgainWorst:Math.max(...views.map(v=>v.foliage.twiceAgainWorst)),twiceAgainOver16:Math.max(...views.map(v=>v.foliage.twiceAgainOver16))}}:{})}
 }
 /** each thing that can move a pixel, started with the clock held, and what the very next frame did (viewer.still-frame-draws-nothing) */
 async function liveRound(page){
@@ -312,6 +380,8 @@ async function liveRound(page){
 async function battle(browser,port,id){
  const page=await browser.newPage({viewport:{width:1920,height:1080}}),errors=[]
  page.on('pageerror',e=>errors.push(String(e)))
+ /* (kept for a battle that cannot be measured: what its page said) */
+ const said=[];page.on('console',m=>{if(m.type()==='error'&&said.length<6)said.push(m.text().slice(0,200))});page.on('crash',()=>said.push('THE PAGE CRASHED'))
  try{
   const t0=Date.now()
   await page.goto(`http://127.0.0.1:${port}/${relative(ROOT,PAGE).replace(/\\/g,'/')}?play=${id}`)
@@ -328,6 +398,8 @@ async function battle(browser,port,id){
   await page.evaluate(install)
   /* (the frame by hand, for the page's own use: a picture is taken in the same task as the frame that drew it) */
   await page.evaluate(src=>{window.__frameCost.tick=(0,eval)('('+src+')')},tick.toString())
+  /* (and the rule two ways of drawing a view are compared by: tools/pixel-agree.mjs) */
+  await page.evaluate(src=>{window.__frameCost.comparer=(0,eval)('('+src+')')},comparer.toString())
   /* the frames the browser already held are its own to fire: let them, so each lands in the tool's hands */
   await page.waitForFunction(()=>[...window.__frameCost.queue.values()].some(cb=>/sawThrough/.test(String(cb))),null,{timeout:30000})
   /* "nothing moving": the battle opens with a glide to the unit that begins — let it arrive before a still frame is counted */
@@ -341,6 +413,16 @@ async function battle(browser,port,id){
   if(row.batches){await page.evaluate(()=>{window.__sandbox.viewer._V.solidBatches.whole=true;return true})
    row.eachByItself=await measure(page,WITHOUT_CHECK_MS,false)
    await page.evaluate(()=>{window.__sandbox.viewer._V.solidBatches.whole=false;return true});for(let i=0;i<3;i++)await page.evaluate(tick,WITH_CHECK_MS)}
+  /* viewer.foliage-drawn-once: the same still frames, on the same view, with the foliage drawn once and then twice as before —
+     the draw calls each way counted in the same run — and frames of the two ways taken turn about for their ratio */
+  const foliage=await page.evaluate(foliageNow)
+  if(foliage){row.foliage=foliage
+   await page.evaluate(foliageWay,true);for(let i=0;i<3;i++)await page.evaluate(tick,WITHOUT_CHECK_MS)
+   const once=await measure(page,WITHOUT_CHECK_MS,false)
+   await page.evaluate(foliageWay,false);for(let i=0;i<3;i++)await page.evaluate(tick,WITHOUT_CHECK_MS)
+   const twice=await measure(page,WITHOUT_CHECK_MS,false)
+   row.foliageWays={once,twice,paired:await foliagePaired(page)}
+   await page.evaluate(foliageWay,foliage.once);for(let i=0;i<3;i++)await page.evaluate(tick,WITH_CHECK_MS)}
   row.stillPaired=await stillPaired(page)
   row.scrolling={withCheck:await measure(page,WITH_CHECK_MS,true),withoutCheck:await measure(page,WITHOUT_CHECK_MS,true)}
   row.held=await measure(page,0,false)
@@ -350,14 +432,18 @@ async function battle(browser,port,id){
   row.live=await liveRound(page)
   if(errors.length)row.pageErrors=errors
   return row
+ }catch(error){
+  /* a battle that could not be measured says where its page stood: the board's state, the scene's own status line, what the page complained of */
+  let where='';try{where=await Promise.race([page.evaluate(()=>{const sb=window.__sandbox,V=sb&&sb.viewer&&sb.viewer._V,wr=V&&V.dom.stage.parentNode;return ' [the board: '+(wr?wr.className||'no state':'none')+' · '+((document.querySelector('#terrainStatus')||{}).textContent||'')+' · '+((document.querySelector('#terrainLoading')||{}).textContent||'')+' · busy: '+(sb&&sb.busy)+']'}),new Promise(done=>setTimeout(()=>done(' [the page did not answer in 5 s]'),5000))])}catch(e){where=' [the page could not be asked: '+String(e&&e.message||e).split('\n')[0]+']'}
+  throw Error(String(error&&error.message||error).split('\n')[0]+where+(errors.length?' · page errors: '+errors.join(' | '):'')+(said.length?' · the page said: '+said.join(' | '):''))
  }finally{await page.close()}
 }
 
 const n=x=>x==null?'—':x.toLocaleString('en-US')
 const short=id=>id.replace(/^encounter\.(opening\.)?/,'')
 function table(rows){
- const head=['battle','draw calls a frame (shadow · scene · bodies)','triangles a frame (shadow · scene · bodies)','script ms, still: with the check / without','script ms, scrolling: with / without','draw calls scrolling','see-through checks run: still / scrolling','one check, ms: now / every triangle','same pieces both ways','clock held: draw calls (shadow · scene · bodies)','shadow kept against shadow whole: the same picture?','bodies\' depth: pieces drawn; same picture as every piece?','solid pieces: in batches; batched against each by itself: the same picture?']
- const lines=rows.map(r=>r.flat?[short(r.battle),r.note,'','','','','','','','','','','']:[short(r.battle),
+ const head=['battle','draw calls a frame (shadow · scene · bodies)','triangles a frame (shadow · scene · bodies)','script ms, still: with the check / without','script ms, scrolling: with / without','draw calls scrolling','see-through checks run: still / scrolling','one check, ms: now / every triangle','same pieces both ways','clock held: draw calls (shadow · scene · bodies)','shadow kept against shadow whole: the same picture?','bodies\' depth: pieces drawn; same picture as every piece?','solid pieces: in batches; batched against each by itself: the same picture?','foliage: pieces, drawn once or twice; draw calls once / twice; once against twice: pixels that differ']
+ const lines=rows.map(r=>r.flat?[short(r.battle),r.note,'','','','','','','','','','','','']:[short(r.battle),
   `${n(r.still.withoutCheck.draws.all)} (${n(r.still.withoutCheck.draws.shadow)} · ${n(r.still.withoutCheck.draws.scene)} · ${n(r.still.withoutCheck.draws.bodies)})`,
   `${n(r.still.withoutCheck.triangles.all)} (${n(r.still.withoutCheck.triangles.shadow)} · ${n(r.still.withoutCheck.triangles.scene)} · ${n(r.still.withoutCheck.triangles.bodies)})`,
   `${r.still.withCheck.ms.median} (${r.still.withCheck.ms.min}–${r.still.withCheck.ms.max}) / ${r.still.withoutCheck.ms.median} (${r.still.withoutCheck.ms.min}–${r.still.withoutCheck.ms.max})`,
@@ -367,9 +453,10 @@ function table(rows){
   r.seeThrough?`${r.seeThrough.ms.median} (to ${r.seeThrough.ms.max}) / ${r.seeThrough.plainMs.median} (to ${r.seeThrough.plainMs.max})`:'—',
   r.seeThrough?`${r.seeThrough.same} of ${r.seeThrough.views} views (${r.seeThrough.withSomethingHiding} with a piece in the way)`:'—',
   `${n(r.held.draws.all)} (${n(r.held.draws.shadow)} · ${n(r.held.draws.scene)} · ${n(r.held.draws.bodies)})`,
-  r.shadow?`at most ${n(r.shadow.differing)} of ${n(r.shadow.pixels)} pixels differ, by ${r.shadow.worst} of 255, over ${r.shadow.views} views (two frames drawn the same way: ${n(r.shadow.sameWay)}); bodies in every view: ${r.shadow.bodies>0?'yes':'NO'}`:'—',
+  r.shadow?`at most ${n(r.shadow.differing)} of ${n(r.shadow.pixels)} pixels differ${r.shadow.differing?`, by ${r.shadow.worst} of 255`:''}, over ${r.shadow.views} views, each way drawn ${r.shadow.draws} times (the card's own: at most ${n(Math.max(r.shadow.unsteady,r.shadow.otherUnsteady))} pixels unsteady, by ${Math.max(r.shadow.unsteadyBy,r.shadow.otherUnsteadyBy)} of 255); bodies in every view: ${r.shadow.bodies>0?'yes':'NO'}`:'—',
   r.shadow?.depth?`at most ${n(r.shadow.depth.pieces)} pieces; ${n(r.shadow.depth.differing)} pixels differ${r.shadow.depth.differing?`, by ${r.shadow.depth.worst} of 255`:''}`:'—',
-  r.batches?`${n(r.batches.pieces)} of ${n(r.batches.solid)} in ${n(r.batches.batches)} batches${r.shadow?.batched?`; at most ${n(r.shadow.batched.differing)} pixels differ${r.shadow.batched.differing?`, by ${r.shadow.batched.worst} of 255`:''}, over ${r.shadow.batched.views} views (${r.shadow.batched.withAPieceOut} with a piece out of its batch${r.shadow.batched.drawnAgain?`; ${r.shadow.batched.drawnAgain} drawn again — a frame of them was ${n(r.shadow.batched.most)} pixels off its own repeat`:''})`:''}`:'—'])
+  r.batches?`${n(r.batches.pieces)} of ${n(r.batches.solid)} in ${n(r.batches.batches)} batches${r.shadow?.batched?`; at most ${n(r.shadow.batched.differing)} pixels differ${r.shadow.batched.differing?`, by ${r.shadow.batched.worst} of 255`:''}, over ${r.shadow.batched.views} views (${r.shadow.batched.withAPieceOut} with a piece out of its batch; the card's own: at most ${n(Math.max(r.shadow.batched.unsteady,r.shadow.batched.otherUnsteady))} pixels unsteady)`:''}`:'—',
+  r.foliage?`${n(r.foliage.pieces)} in ${n(r.foliage.materials)} materials, drawn ${r.foliage.once?'once':'twice'}; ${n(r.foliageWays.once.draws.all)} / ${n(r.foliageWays.twice.draws.all)}${r.shadow?.foliage?`; at most ${n(r.shadow.foliage.differing)} pixels differ, by ${r.shadow.foliage.worst} of 255, ${n(r.shadow.foliage.over16)} by more than 16, over ${r.shadow.foliage.views} views (two frames the same way: once ${n(r.shadow.foliage.onceAgain)}, twice ${n(r.shadow.foliage.twiceAgain)})`:''}`:'—'])
  const w=head.map((h,i)=>Math.max(h.length,...lines.map(l=>l[i].length)))
  const row=c=>'| '+c.map((x,i)=>x.padEnd(w[i])).join(' | ')+' |'
  return [row(head),'|'+w.map(x=>'-'.repeat(x+2)).join('|')+'|',...lines.map(row)].join('\n')
@@ -397,6 +484,7 @@ try{
   console.log(table(rows))
   for(const r of rows)if(r.seeThrough?.built)console.log(`  ${short(r.battle)}: the see-through structures — ${n(r.seeThrough.built.pieces)} pieces, ${n(r.seeThrough.built.triangles)} triangles — were built in ${r.seeThrough.built.ms} ms while the scene loaded (the page was ready ${n(r.loadMs)} ms after it was opened)`)
   for(const r of rows)if(r.batches)console.log(`  ${short(r.battle)}: the batches — ${n(r.batches.pieces)} solid pieces in ${n(r.batches.batches)}${r.eachByItself?`: ${n(r.still.withoutCheck.draws.all)} draw calls a frame where each piece by itself is ${n(r.eachByItself.draws.all)} (script ${r.still.withoutCheck.ms.median} ms where ${r.eachByItself.ms.median}), the same ${n(r.eachByItself.triangles.scene)} triangles in the scene's pass${r.eachByItself.triangles.scene===r.still.withoutCheck.triangles.scene?'':' — NOT the same: '+n(r.still.withoutCheck.triangles.scene)}`:''} — were built in ${r.batches.ms} ms while the scene loaded${r.seeThrough?.fadedAlone!=null?`; a piece faded see-through was out of its batch and drawn by itself in ${r.seeThrough.fadedAlone} of ${r.seeThrough.views} views (${r.seeThrough.withAPieceOut} with one out)`:''}`)
+  for(const r of rows)if(r.foliage)console.log(`  ${short(r.battle)}: the foliage — ${n(r.foliage.pieces)} two-sided blended pieces in ${n(r.foliage.materials)} materials, ${n(r.foliage.inSight)} in the still view's sight — drawn once: ${n(r.foliageWays.once.draws.all)} draw calls a frame (the scene's pass ${n(r.foliageWays.once.draws.scene)}); drawn twice, as before: ${n(r.foliageWays.twice.draws.all)} (${n(r.foliageWays.twice.draws.scene)}); triangles handed to the card in the scene's pass: ${n(r.foliageWays.once.triangles.scene)} where ${n(r.foliageWays.twice.triangles.scene)} (drawn twice, every foliage triangle is handed over twice); script, frames taken turn about: once ${r.foliageWays.paired.once} ms where twice ${r.foliageWays.paired.twice} (${r.foliageWays.paired.ratio} of it)`)
   for(const r of rows)if(r.pageErrors)console.log(`  ${short(r.battle)}: page errors — ${r.pageErrors.join(' · ')}`)}
 }finally{clearTimeout(deadline);await browser.close();child.kill()}
 process.exitCode=code

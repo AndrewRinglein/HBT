@@ -16,7 +16,7 @@ import { frameCostOnThePage, rowOf, FRAME_COST_WAIT_MS } from './frame-cost-page
 type Pass = { all: number; shadow: number; scene: number; bodies: number }
 type Measure = { frames: number; draws: Pass; triangles: Pass }
 type Row = { battle: string; flat?: boolean; note?: string; still: { withCheck: Measure; withoutCheck: Measure }; scrolling: { withCheck: Measure; withoutCheck: Measure }; held: Measure
-  shadow?: { views: number; same: number; pixels: number; drawn: number; bodies: number; differing: number; worst: number; sameWay: number; blendedNoise: number; sceneryShadowDrawn: number }; pageErrors?: string[] }
+  shadow?: { views: number; same: number; pixels: number; drawn: number; bodies: number; differing: number; worst: number; sameWay: number; blendedNoise: number; sceneryShadowDrawn: number; draws: number; unsteady: number; unsteadyBy: number; otherUnsteady: number; otherUnsteadyBy: number }; pageErrors?: string[] }
 
 describe('viewer.scenery-shadow-drawn-once', () => {
   it('the sources: the scenery\'s shadow is drawn once and kept, the bodies\' over it when a body moved, none when nothing moved', () => {
@@ -54,12 +54,22 @@ describe('viewer.scenery-shadow-drawn-once', () => {
     expect(r.shadow!.views).toBeGreaterThanOrEqual(8)
     expect(r.shadow!.drawn, 'the pictures compared are drawn ones').toBeGreaterThan(r.shadow!.pixels / 10)
     expect(r.shadow!.bodies, 'bodies, and so their shadows, are in every view compared').toBeGreaterThan(1000)
-    // "The same": of the two million pixels at most a handful differ, and by one shade of 255 — no more than differ between
-    // two frames drawn the SAME way (the tool draws those too: a dozen pixels by one shade, with the scene's blended pieces
-    // left out of the picture; with them in, thousands — viewer SWITCHES blendedPiecesShimmer). A shadow drawn wrong moves
-    // whole edges by tens of shades.
-    expect(r.shadow!.worst, 'the most any pixel differs, of 255').toBeLessThanOrEqual(2)
-    expect(r.shadow!.differing, `pixels that differ at the worst view, of ${r.shadow!.pixels} (two frames drawn the same way: ${r.shadow!.sameWay})`).toBeLessThanOrEqual(Math.max(40, 3 * r.shadow!.sameWay))
-    expect(r.shadow!.same, 'and some views are the same in every pixel').toBeGreaterThan(0)
+    // "The same" — viewer.pixel-compare-tests-hold-against-frame-noise (2026-10-06). This read: "of the two million pixels at
+    // most a handful differ, and by one shade of 255 — no more than differ between two frames drawn the SAME way (the tool
+    // draws those too: a dozen pixels by one shade, with the scene's blended pieces left out of the picture; with them in,
+    // thousands — viewer SWITCHES blendedPiecesShimmer). A shadow drawn wrong moves whole edges by tens of shades." and held
+    // `expect(r.shadow!.worst, 'the most any pixel differs, of 255').toBeLessThanOrEqual(2)`, `expect(r.shadow!.differing,
+    // …).toBeLessThanOrEqual(Math.max(40, 3 * r.shadow!.sameWay))` and `expect(r.shadow!.same, 'and some views are the same
+    // in every pixel').toBeGreaterThan(0)`. The handful was never the kept shadow's doing: this machine's graphics card,
+    // handed the very same calls, gives a still frame one of a few pictures. Each way is now drawn ten times at every view,
+    // turn about, and a pixel differs only if no drawing with the shadow kept shows a colour that a drawing with the shadow
+    // whole shows there (tools/pixel-agree.mjs). So it is held exactly — 0 pixels, at every view — where a handful was let
+    // through; the blended pieces are left out of the picture as before.
+    expect(r.shadow!.worst, 'the most any pixel differs, of 255').toBe(0)
+    expect(r.shadow!.differing, `pixels that differ at the worst view, of ${r.shadow!.pixels}`).toBe(0)
+    expect(r.shadow!.same, 'every view is the same in every pixel').toBe(r.shadow!.views)
+    expect(r.shadow!.draws, 'how often each way was drawn at a view').toBeGreaterThanOrEqual(10)
+    expect(r.shadow!.otherUnsteadyBy, 'the most two drawings with the shadow kept are apart in a pixel, of 255').toBeLessThanOrEqual(Math.max(2, r.shadow!.unsteadyBy))
+    expect((r.shadow!.unsteady + r.shadow!.otherUnsteady) * 1000, 'pixels the card does not colour the same every time, against the picture\'s').toBeLessThan(r.shadow!.pixels)
   }, FRAME_COST_WAIT_MS)
 })

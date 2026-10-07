@@ -23,7 +23,7 @@ type Pass = { all: number; shadow: number; scene: number; bodies: number }
 type Measure = { frames: number; draws: Pass; triangles: Pass }
 type Live = { held: number; camera: number; afterCamera: number; idle: number; afterIdle: number; effect: { first: number; next: number; ended: number; after: number } | null; notice: { atOnce: boolean; nextFrame: boolean }; hover: { tip: boolean; words: string } }
 type Row = { battle: string; flat?: boolean; note?: string; still: { withCheck: Measure; withoutCheck: Measure }; scrolling: { withCheck: Measure; withoutCheck: Measure }; held: Measure; live: Live
-  shadow?: { views: number; bodies: number; pixels: number; depth?: { pieces: number; differing: number; worst: number } }; pageErrors?: string[] }
+  shadow?: { views: number; bodies: number; pixels: number; depth?: { pieces: number; differing: number; worst: number; draws: number; unsteady: number; unsteadyBy: number; otherUnsteady: number; otherUnsteadyBy: number } }; pageErrors?: string[] }
 
 describe('viewer.still-frame-draws-nothing', () => {
   it('the sources: the scene listed once; the pieces that can hide a body never fewer than do; a frame in which nothing changed not drawn, and drawn for each thing that changes', () => {
@@ -98,6 +98,14 @@ describe('viewer.still-frame-draws-nothing', () => {
         expect(r.shadow?.depth, `${r.battle}: the page says how the bodies' depth is taken`).toBeTruthy()
         expect(r.shadow!.bodies, `${r.battle}: bodies are in every view compared`).toBeGreaterThan(1000)
         expect([r.shadow!.depth!.differing, r.shadow!.depth!.worst], `${r.battle}: pixels that differ; by how much`).toEqual([0, 0])
+        /* viewer.pixel-compare-tests-hold-against-frame-noise (2026-10-06; the line above went red in a gate that had not
+           touched it, by 1 pixel and by 8): the 0 is now of ten drawings of each way taken turn about — a pixel differs only
+           if no drawing from the few pieces shows a colour that a drawing from every solid piece shows there
+           (tools/pixel-agree.mjs; this machine's card gives a still frame one of a few pictures, a few pixels one shade apart).
+           Nothing is let through, and nothing is drawn again until it matches. */
+        expect(r.shadow!.depth!.draws, `${r.battle}: how often each way was drawn at a view`).toBeGreaterThanOrEqual(10)
+        expect(r.shadow!.depth!.otherUnsteadyBy, `${r.battle}: the most two drawings from the few pieces are apart in a pixel, of 255`).toBeLessThanOrEqual(Math.max(2, r.shadow!.depth!.unsteadyBy))
+        expect((r.shadow!.depth!.unsteady + r.shadow!.depth!.otherUnsteady) * 1000, `${r.battle}: pixels the card does not colour the same every time, against the picture's`).toBeLessThan(r.shadow!.pixels)
       }
       for (const m of [orphanage.still.withCheck, orphanage.still.withoutCheck, orphanage.scrolling.withoutCheck]) expect(m.draws.bodies, 'the Orphanage\'s bodies\' canvas: it was 498').toBeLessThan(250)
       expect(orphanage.shadow!.depth!.pieces, 'pieces in the depth pass, at the most over the round').toBeLessThan(250)
