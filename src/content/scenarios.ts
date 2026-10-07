@@ -223,6 +223,16 @@ const RAW_SCENARIOS: Readonly<Record<string, ScenarioDef>> = {
     heroItems: [['item.book-of-karma'], ['item.chains-of-the-wrathful', 'item.heavy-chain']],
     heroStowed: [['item.holy-texts'], []], enemies: ['unit.zombie', 'unit.zombie'], enemyHexes: [91, 107], replicate: 0,
   },
+  // content.one-use-items-reworded (2026-10-06; DECISIONS.md 2026-10-06 'the one-use rules …', of the Divine Bulwark: "Just add
+  // one stun. At combat start"; of the Drakescale Coat: "Give it 2 fire resistance."): the two armors worn in a real battle -
+  // a paladin in the Bulwark, who starts the Battle Stunned by 1 and loses her first Activation to it, and a priest in the
+  // Coat, against a zombie and a Fire Imp. A fielding, not a balance claim.
+  'test.divine-bulwark': {
+    id: 'test.divine-bulwark', note: 'TEST: a paladin wearing the Divine Bulwark (1 Stun at the start of the Battle) and a priest wearing the Drakescale Coat (2 Fire Resist), against a zombie and a Fire Imp. No campaign claim.',
+    mapId: 'map.open', heroes: ['hero.base.paladin-shiney', 'hero.base.priest-armored'], heroHexes: [85, 101],
+    heroItems: [['item.longsword', 'item.kite-shield', 'item.divine-bulwark'], ['item.holy-texts', 'item.drakescale-coat']],
+    enemies: ['unit.zombie', 'unit.fire-imp'], enemyHexes: [95, 94], replicate: 0,
+  },
   // capability.summons (2026-10-05; DECISIONS.md 2026-10-04 'his 28 reward weapons read back …': "We need: summons"): the Staff
   // of Summoning's Call the Wolf live in a real battle - a mage holding it, the zombies too far to reach on the first Turn, so
   // the computer calls the Wolf first and the Wolf then fights in the Hero Phase by its own AI. A fielding, not a balance claim.
