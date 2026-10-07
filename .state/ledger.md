@@ -43086,3 +43086,110 @@ index 2f24e59..68080d1 100644
   PASS  naming — new content ids use declared kinds
   PASS  naming — no banned words invented
   PASS  kill switch — the tests fail without the content — tests fail without badge.impersonation,power.trickster.impersonation — they genuinely test it
+
+## content.card-draw-badge-rules-cut — LANDED `6cc7c2b` **NEEDS REVIEW**
+2026-10-07 02:15
+
+  PASS  dependencies landed
+  WARN  not already decided — 3 candidate ruling(s) — READ BEFORE ASKING: SWITCHES.md:2899 · SWITCHES.md:2897
+  PASS  typecheck
+  PASS  the item's own tests — test/affliction-pop-up-words.test.ts, test/battle-cursor.test.ts, test/card-draw-badge-rules-cut.test.ts, test/hero-origin-badges.test.ts
+  PASS  gate 1 — the id appears in a real battle — badge.possession: 5 log lines, 5 fired, 5 changed state
+  PASS  brought its own tests — test/affliction-pop-up-words.test.ts, test/battle-cursor.test.ts, test/card-draw-badge-rules-cut.test.ts, test/fixtures/battle-cursor-one-use-content-items.json, test/hero-origin-badges.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/affliction-pop-up-words.test.ts (-1), test/battle-cursor.test.ts (-2), test/hero-origin-badges.test.ts (-1) — will land FLAGGED for review
+  SKIPPED  control battles unchanged — engine code 7966e51b08 and the content pack are the ones the control battles last passed on (2026-10-07 02:12, gate content.used-twice-rules-removed --land, in HBT-worker-content) — not run
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — shape 'data' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without badge.possession — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+engine 6788b4d content.card-draw-badge-rules-cut: two standing tests restated with dated notes - Possession's written drawbacks no longer hold its card-draw term (test/affliction-pop-up-words.test.ts), and Wise, an origin badge whose one line was the card draw, is an empty row the pack names 'no payload' (test/hero-origin-badges.test.ts); Andrew 2026-10-06: 'We may add a card system at some point, but you can cut all those for now.'
+
+diff --git a/test/affliction-pop-up-words.test.ts b/test/affliction-pop-up-words.test.ts
+index 79d4e00..059725e 100644
+--- a/test/affliction-pop-up-words.test.ts
++++ b/test/affliction-pop-up-words.test.ts
+@@ -29,5 +29,9 @@ const AFFLICTIONS = [
+   { id: 'badge.vampirism', mods: ['spirit'], gaps: ['deploying the hero costs 3 Faith', 'the hero gains half experience'] },
+   { id: 'badge.lycanthropy', mods: ['crit', 'spirit'], gaps: ['deploying the hero costs 2 Supplies'] },
+-  { id: 'badge.possession', mods: ['surge'], gaps: ['`startOfBattle`: −2 card draw', 'deploying the hero costs 3 Mana'] },
++  // Restated 2026-10-06 (content.card-draw-badge-rules-cut; ruled 2026-10-06, DECISIONS.md '… the card-draw badge rules are cut
++  // for now': "We may add a card system at some point, but you can cut all those for now."). Possession's row no longer says
++  // "`startOfBattle`: −2 card draw", so it is not among its written drawbacks. The line was:
++  //   { id: 'badge.possession', mods: ['surge'], gaps: ['`startOfBattle`: −2 card draw', 'deploying the hero costs 3 Mana'] },
++  { id: 'badge.possession', mods: ['surge'], gaps: ['deploying the hero costs 3 Mana'] },
+ ] as const
+ 
+diff --git a/test/hero-origin-badges.test.ts b/test/hero-origin-badges.test.ts
+index 8a8df7e..b5a683c 100644
+--- a/test/hero-origin-badges.test.ts
++++ b/test/hero-origin-badges.test.ts
+@@ -81,5 +81,9 @@ const CARRIES: Record<string, { mods?: Record<string, number>; flags?: string[];
+   Frail: { mods: { maxHp: -2 } },
+   Faithful: { waits: ['onsurvivecombat: gain 1 faith'] },
+-  Wise: { waits: ['+1 draw on turn 1 and on turn 3'] },
++  // Restated 2026-10-06 (content.card-draw-badge-rules-cut; ruled 2026-10-06, DECISIONS.md '… the card-draw badge rules are cut
++  // for now': "We may add a card system at some point, but you can cut all those for now."). Wise had no rule but the card
++  // draw; its row stays, empty (SWITCHES.md cardBadgesEmptied), and the pack says so. The line was:
++  //   Wise: { waits: ['+1 draw on turn 1 and on turn 3'] },
++  Wise: { waits: ['no payload'] },
+   Vengeful: { waits: ['`onTakingDamage`: +1 Stamina'] },
+   UndeadSlayer: { waits: ['Damage +2 vs Undead'] },
+engine 5390bd1 content.used-twice-rules-removed, content.one-use-items-reworded, content.card-draw-badge-rules-cut (and the group's three other items' fieldings): the battle-cursor layer for the six one-use content items, captured on the tree merged with master 42d8dd8 - 113 cases; four fought differently, by content.used-twice-rules-removed (test.afflictions-at-zero-rule, test.opening-cavern-trail, showcase.prologue-enemies: the Werewolf's Claw Frenzy, 'the ordering, I don't really care about'; showcase.horrors: the Eyeblight's Gaze by its Precision, 'It should be based on its stat.'); nine in words only (progression-surge-0, -1, -2 and test.set-bonus: the Compass's and the Blink Ring's lines, content.one-use-items-reworded; showcase.eve-24-b, test.banner-courage, test.bear-traps, test.mending-light, test.snarer-traps: Wise's line, content.card-draw-badge-rules-cut); four added (test.take-root, test.divine-bulwark, test.banner-heroism, test.impersonation); the 23 control battles did not move
+
+diff --git a/test/battle-cursor.test.ts b/test/battle-cursor.test.ts
+index b9afb55..c7f2fb4 100644
+--- a/test/battle-cursor.test.ts
++++ b/test/battle-cursor.test.ts
+@@ -594,4 +594,18 @@ const specialMovesUnlockAtLevelTwoGolden = JSON.parse(readFileSync(new URL('./fi
+ // (state only). A `changed` case is checked here and skips the older layers.
+ const combineOneMoveGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-combine-one-move.json', import.meta.url), 'utf8'))
++// The six one-use content items (ruled 2026-10-06; DECISIONS.md 'the one-use rules: most are cut or reworded onto rules the engine
++// already has; a handful are built' and '… the card-draw badge rules are cut for now'): content.one-use-class-powers-reworded,
++// content.one-use-items-reworded, content.used-twice-rules-removed, content.banner-heroism-own-miss, content.impersonation-badge and
++// content.card-draw-badge-rules-cut - one content pack for the six, frozen on the tree merged with engine master 42d8dd8 (group B).
++// Four cases are FOUGHT DIFFERENTLY, all by content.used-twice-rules-removed: test.afflictions-at-zero-rule,
++// test.opening-cavern-trail and showcase.prologue-enemies (the Werewolf's Claw Frenzy leaves it a point of Strength stronger after
++// every swing - "the ordering, I don't really care about") and showcase.horrors (the Eyeblight's Gaze is an attack by its Precision -
++// "It should be based on its stat." - so the Eyeblights shoot from range). Nine move in WORDS ONLY, the same fight event for event
++// but for one row's written line: progression-surge-0, -1 and -2 (the Wayfinder's Compass) and test.set-bonus (the Blink Ring), by
++// content.one-use-items-reworded; showcase.eve-24-b, test.banner-courage, test.bear-traps, test.mending-light and test.snarer-traps
++// (Wise, an origin badge whose one rule was the card draw), by content.card-draw-badge-rules-cut. Four cases are ADDED, one fielding
++// to an item: test.take-root, test.divine-bulwark, test.banner-heroism, test.impersonation. The 23 control battles did not move.
++// Every case frozen here (tools/capture-one-use-content-items-cursor.mts). A `changed` case is checked here and skips the older layers.
++const oneUseContentItemsGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-one-use-content-items.json', import.meta.url), 'utf8'))
+ const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
+ // Explicit rule migration, not regenerated historical hashes. These nine old
+@@ -756,5 +770,8 @@ describe('resumable battle cursor', () => {
+       const specialMovesUnlockAtLevelTwoExpected = specialMovesUnlockAtLevelTwoGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+       const combineOneMoveExpected = combineOneMoveGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+-      const combineOneMoveMoved = combineOneMoveExpected?.changed === true
++      const oneUseContentItemsExpected = oneUseContentItemsGolden.cases.find((row:{id:string})=>row.id===fixture.id)
++      const oneUseContentItemsMoved = oneUseContentItemsExpected?.changed === true
++      // was: const combineOneMoveMoved = combineOneMoveExpected?.changed === true — a case the six one-use content items moved skips this layer too (content.used-twice-rules-removed and its group, 2026-10-06)
++      const combineOneMoveMoved = combineOneMoveExpected?.changed === true || oneUseContentItemsMoved
+       // was: const specialMovesUnlockAtLevelTwoMoved = specialMovesUnlockAtLevelTwoExpected?.changed === true — a case the combined tree moved skips this layer too (combine 2026-10-06)
+       const specialMovesUnlockAtLevelTwoMoved = specialMovesUnlockAtLevelTwoExpected?.changed === true || combineOneMoveMoved
+@@ -943,5 +960,12 @@ describe('resumable battle cursor', () => {
+           }
+         } else result = battle.runBattle(ctx)
+-        if (combineOneMoveExpected) {
++        if (oneUseContentItemsExpected) {
++        expect(hash(ctx.events), 'full one-use-content-items events').toBe(oneUseContentItemsExpected.events)
++        expect(hash(ctx.state), 'full one-use-content-items state').toBe(oneUseContentItemsExpected.state)
++        expect(hash(ctx.rng.log), 'full one-use-content-items RNG').toBe(oneUseContentItemsExpected.rng)
++        expect(result).toEqual(oneUseContentItemsExpected.result)
++        }
++        // was: if (combineOneMoveExpected) { — the six one-use content items (2026-10-06): a case they moved is checked above instead
++        if (combineOneMoveExpected && !oneUseContentItemsMoved) {
+         expect(hash(ctx.events), 'full combine-one-move events').toBe(combineOneMoveExpected.events)
+         expect(hash(ctx.state), 'full combine-one-move state').toBe(combineOneMoveExpected.state)
+```
+</details>
