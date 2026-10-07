@@ -255,6 +255,18 @@ const RAW_SCENARIOS: Readonly<Record<string, ScenarioDef>> = {
     heroProgress: [{ level: 3, specialtyId: 'specialty.sentinel', powers: ['power.sentinel.take-root'] }, undefined],
     enemies: ['unit.fast-zombie', 'unit.fast-zombie', 'unit.zombie'], enemyHexes: [86, 87, 104], replicate: 2,
   },
+  // content.impersonation-badge (2026-10-06; DECISIONS.md 2026-10-06 'the one-use rules …': "I think we turn this into a badge,
+  // and this class power gives that badge."): the Trickster's Impersonation live in a real battle - the orphans at level 3,
+  // who drafted it, and a warrior, on the Banner of Courage's fielding (the same map, hexes, Necromancer and zombie). The power
+  // warms up for 3 Turns and takes the primary action, so the computer uses it on the first Activation after that in which
+  // the orphans have nothing to strike. Replicate 2 is the first, read from 0 upward, in which that comes (Turn 5): found,
+  // not tuned. A fielding, not a balance claim.
+  'test.impersonation': {
+    id: 'test.impersonation', note: 'TEST: the orphans at level 3 as Tricksters who drafted Impersonation (after 3 Turns: gain badge.impersonation for the rest of the Battle) and a warrior, against a Necromancer and a zombie. No campaign claim.',
+    mapId: 'map.open', heroes: ['hero.fixed.orphans', 'hero.base.warrior-iron'], heroHexes: [85, 101],
+    heroProgress: [{ level: 3, specialtyId: 'specialty.trickster', powers: ['power.trickster.impersonation'] }, undefined],
+    enemies: ['unit.necromancer', 'unit.zombie'], enemyHexes: [95, 94], replicate: 2,
+  },
   // capability.summons (2026-10-05; DECISIONS.md 2026-10-04 'his 28 reward weapons read back …': "We need: summons"): the Staff
   // of Summoning's Call the Wolf live in a real battle - a mage holding it, the zombies too far to reach on the first Turn, so
   // the computer calls the Wolf first and the Wolf then fights in the Hero Phase by its own AI. A fielding, not a balance claim.
