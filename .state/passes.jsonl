@@ -129,3 +129,7 @@
 {"suite":"engine","stamp":"2071f82193","with":{"engine":"2071f82193","content":"f4107c6ed0","viewer":"8ae7783cb8","kingdom":"4d80fa3fe0"},"at":"2026-10-07T02:53:57.456Z","by":"gate --shard (1 of 1)","in":"HBT-worker-engine","tests":3242}
 {"suite":"engine","stamp":"2071f82193","with":{"engine":"2071f82193","content":"f4107c6ed0","viewer":"db7a78031f","kingdom":"1a575eb830"},"at":"2026-10-07T03:07:39.199Z","by":"gate --shard (1 of 1)","in":"HBT-worker-engine","tests":3242}
 {"suite":"control","stamp":"2071f82193","pack":"783c9d25a6","golden":"79665df944","at":"2026-10-07T03:20:43.692Z","by":"gate tool.thirty-second-test-limit-on-the-pc --land","in":"HBT-worker-engine","moved":null}
+{"suite":"typecheck","stamp":"6f755ff0e4","with":null,"at":"2026-10-07T03:27:40.672Z","by":"suites --quick","in":"HBT-worker-engine"}
+{"suite":"control","stamp":"6f755ff0e4","pack":"783c9d25a6","golden":"79665df944","at":"2026-10-07T03:28:19.402Z","by":"suites --quick","in":"HBT-worker-engine","moved":null}
+{"suite":"engine","stamp":"5e7ba917be","with":{"engine":"5e7ba917be","content":"f4107c6ed0","viewer":"15d2a5c7d4","kingdom":"c5f356548a"},"at":"2026-10-07T03:41:36.571Z","by":"gate --shard (1 of 1)","in":"HBT-worker-engine","tests":3273}
+{"suite":"engine","stamp":"5e7ba917be","with":{"engine":"5e7ba917be","content":"f4107c6ed0","viewer":"15d2a5c7d4","kingdom":"c5f356548a"},"at":"2026-10-07T03:41:36.863Z","by":"suites --run --full","in":"HBT-worker-engine","scheduled":"2026-10-07T03:31:58.657Z"}
