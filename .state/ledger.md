@@ -42018,3 +42018,758 @@ index 0e02fbe..92f7e07 100644
   PASS  naming — new content ids use declared kinds
   PASS  naming — no banned words invented
   PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+## rule.one-move-action-one-primary-action — REFLAGGED, landed `ecf934e` **NEEDS REVIEW**
+2026-10-07 01:00
+
+Landed 'done' while the gate's flags read only uncommitted edits; read again from the item's commits (gate.mjs --reflag).
+
+  WARN  not already decided — 4 candidate ruling(s) — READ BEFORE ASKING: DECISIONS.md:5588 · SWITCHES.md:2690
+  WARN  existing tests untouched — DELETED LINES in kingdom/test/attack-one-armed-after-move.test.ts (-2), kingdom/test/play-input-choose.test.ts (-1), kingdom/tools/bar-moves-grey-when-done.verify.mjs (-2), test/authored-slots.test.ts (-207), test/battle-commands.test.ts (-3), test/battle-cursor.test.ts (-2), test/charge.test.ts (-3), test/movement-plans.test.ts (-3), test/prone-only-stand-up.test.ts (-4), test/walked-unit-has-moved.test.ts (-6), viewer/test/viewer.bar-moves-grey-when-done.test.ts (-4) — will land FLAGGED for review
+  PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  naming — no banned words invented
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+engine 74998af rule.one-move-action-one-primary-action (built, NOT landed - light work while the machine has no memory for a chain): a move-class action is only ever the move action and the primary action never takes one (core/action.ts resolveActionSlot, isMoveClass, resumesWalk; closedByWalk and Unit.stood removed as subsumed; movement.ts, commands.ts the reason; ai/modes.ts the computer does not resume a walk); the rest of a walk cut short is the same move action, with no bonus a second time; test/one-move-action-one-primary-action.test.ts red then green as a single file; five older tests rewritten in place with dated notes; COMBAT-SEQUENCE and SWITCHES (the finding on the enemy side: applied to every unit); the item's probe declarations
+
+diff --git a/test/authored-slots.test.ts b/test/authored-slots.test.ts
+index 03dc0d2..297caea 100644
+--- a/test/authored-slots.test.ts
++++ b/test/authored-slots.test.ts
+@@ -1,208 +1,222 @@
+-import { afterEach, describe, expect, it, vi } from 'vitest'
+-import { createCustomBattle } from '../src/core/setup.js'
+-import { advanceBattle, completeActionCycle } from '../src/core/battle.js'
+-import { executeAction, executeBattleCommand } from '../src/core/commands.js'
+-import * as commands from '../src/core/commands.js'
+-import { restoreBattle, saveBattle } from '../src/core/snapshot.js'
+-import { runActivation, AI_MODES } from '../src/ai/modes.js'
+-import { performAttack } from '../src/core/pipeline.js'
+-import { type ActionDef, type Ctx } from '../src/core/types.js'
+-afterEach(() => vi.restoreAllMocks())
+-
+-function fixture(mode: 'any' | 'byProfile' = 'any', extraEnemy = false) {
+-  const ctx = createCustomBattle([{ type: 'test-warrior', hex: 85 }], [{ type: 'test-zombie', hex: 86 }, ...(extraEnemy ? [{ type: 'test-zombie', hex: 102 }] : [])], { strict: true })
+-  ctx.cfg.switches.actionSlots = mode
+-  const u = ctx.state.units[0]!, enemy = ctx.state.units[1]!
+-  enemy.hp = enemy.maxHp = 1000
+-  u.maxStamina = u.stamina = 100
+-  u.surge = 0
+-  expect(advanceBattle(ctx)).toEqual({ kind: 'acting', actor: 0 })
+-  return ctx
+-}
+-function grant(ctx: Ctx, patch: Partial<ActionDef>, base = 'attack.test-warrior.axe') {
+-  // Existing published profiles isolate rule failures before new transport fixtures land.
+-  const source = ctx.actions[base]!
+-  expect(source).toBeDefined()
+-  const id = source.id
+-  ctx.actions = { ...ctx.actions, [id]: { ...source, ...patch } }
+-  const u = ctx.state.units[0]!
+-  if (!u.actions.includes(id)) u.actions.push(id)
+-  if (patch.uses) u.usesLeft[id] = patch.uses
+-  return id
+-}
+-function rejectUnchanged(ctx: Ctx, request: object) {
+-  const before = saveBattle(ctx)
+-  expect(executeAction(ctx, request).ok).toBe(false)
+-  expect(saveBattle(ctx)).toBe(before)
+-}
+-
+-describe('authored action slots', () => {
+-  it.each(['movement', 'primary', 'either', undefined] as const)('an attack honors slot %s', slot => {
+-    const ctx = fixture(), id = grant(ctx, slot === undefined ? {} : { slot })
+-    expect(executeAction(ctx, { actor: 0, actionId: id, target: 1 })).toEqual({ ok: true })
+-    expect([ctx.state.units[0]!.moveUsed, ctx.state.units[0]!.primaryUsed]).toEqual(slot === 'primary' ? [false, true] : [true, false])
+-  })
+-  it('either permits exactly two attacks and distinct strict RNG rolls', () => {
+-    const ctx = fixture(), id = grant(ctx, { slot: 'either', staminaCost: 2 })
+-    const req = { actor: 0, actionId: id, target: 1 }
+-    expect(executeAction(ctx, req).ok).toBe(true)
+-    expect(executeAction(ctx, req).ok).toBe(true)
+-    expect(ctx.state.units[0]!.stamina).toBe(96)
+-    expect(ctx.state.units[0]!.attackOrdinal).toBe(2)
+-    rejectUnchanged(ctx, req)
+-  })
+-  it('explicit primary spends primary first and closes movement', () => {
+-    const ctx = fixture(), id = grant(ctx, { slot: 'either' })
+-    const policy = { humanUnitUids: [ctx.state.units[0]!.uid] }
+-    expect(executeBattleCommand(ctx, policy, { kind: 'action', actor: 0, actionId: id, target: 1, slot: 'primary', expectedSeq: ctx.state.seq }).ok).toBe(true)
+-    expect(ctx.state.units[0]!.moveUsed).toBe(false)
+-    expect(ctx.battleCursor!.at).not.toBe('acting')
+-    rejectUnchanged(ctx, { actor: 0, actionId: id, target: 1, slot: 'movement' })
+-  })
+-  it.each(['either', 'reaction', 'bad', null])('rejects invalid requested slot %s atomically', slot => {
+-    const ctx = fixture(), id = grant(ctx, { slot: 'either' })
+-    rejectUnchanged(ctx, { actor: 0, actionId: id, target: 1, slot })
+-  })
+-  it('rejects a requested slot incompatible with its authored restriction', () => {
+-    const ctx = fixture(), id = grant(ctx, { slot: 'movement' })
+-    rejectUnchanged(ctx, { actor: 0, actionId: id, target: 1, slot: 'primary' })
+-  })
+-  it.each(['power.flight', 'power.sidestep', 'power.move'])('movement profile %s can spend primary', base => {
+-    const ctx = fixture(), id = grant(ctx, { slot: 'primary' }, base)
+-    ctx.state.units[1]!.hex = 255
+-    const points = ctx.state.units[0]!.movePointsLeft
+-    expect(ctx.actions[id]!.move).toBeDefined()
+-    expect(executeAction(ctx, { actor: 0, actionId: id, destination: 84 }).ok).toBe(true)
+-    expect([ctx.state.units[0]!.moveUsed, ctx.state.units[0]!.primaryUsed]).toEqual([false, true])
+-    expect(ctx.state.units[0]!.hex).toBe(84)
+-    expect(ctx.state.units[0]!.movePointsLeft).toBe(points - (base === 'power.sidestep' ? 0 : 1))
+-    expect(ctx.state.units[0]!.stamina).toBe(base === 'power.sidestep' ? 100 : 99)
+-  })
+-  it('effect powers use movement then leave primary available', () => {
+-    const ctx = fixture(), id = grant(ctx, { slot: 'movement', effects: [{ kind: 'stamina.gain', value: 1 }], range: 0, target: { select: 'self', side: 'any' } })
+-    const { attack: _attack, ...power } = ctx.actions[id]!
+-    ctx.actions = { ...ctx.actions, [id]: power }
+-    expect(executeAction(ctx, { actor: 0, actionId: id, target: 0 }).ok).toBe(true)
+-    expect([ctx.state.units[0]!.moveUsed, ctx.state.units[0]!.primaryUsed]).toEqual([true, false])
+-  })
+-  it('free attacks consume resources but no slot, and primary closes them', () => {
+-    const ctx = fixture(), id = grant(ctx, { slot: 'primary', free: true, staminaCost: 3 })
+-    expect(executeAction(ctx, { actor: 0, actionId: id, target: 1 }).ok).toBe(true)
+-    expect([ctx.state.units[0]!.moveUsed, ctx.state.units[0]!.primaryUsed, ctx.state.units[0]!.stamina]).toEqual([false, false, 97])
+-    ctx.state.units[0]!.primaryUsed = true
+-    rejectUnchanged(ctx, { actor: 0, actionId: id, target: 1 })
+-  })
+-  it('a free power is legal after movement, then rejected after primary', () => {
+-    const ctx = fixture(), id = grant(ctx, { slot: 'movement' })
+-    const free = 'power.test-slot-free'
+-    ctx.state.units[0]!.actions.push(free)
+-    expect(executeAction(ctx, { actor: 0, actionId: id, target: 1 }).ok).toBe(true)
+-    ctx.state.units[0]!.stamina = 90
+-    expect(executeAction(ctx, { actor: 0, actionId: free, target: 0 }).ok).toBe(true)
+-    expect(ctx.state.units[0]!.stamina).toBe(91)
+-    const primary = grant(ctx, { slot: 'primary' }, 'attack.punch')
+-    expect(executeAction(ctx, { actor: 0, actionId: primary, target: 1 }).ok).toBe(true)
+-    rejectUnchanged(ctx, { actor: 0, actionId: free, target: 0 })
+-  })
+-  // LAW 10 — rewritten 2026-10-04 by rule.free-attack-is-basic-attack (2026-10-04; DECISIONS.md 2026-09-28 'counterattack, special free attacks …': "the basic attack, no stamina, −20 Accuracy"; 2026-10-04 'the basic attack is a weapon's first attack …': "that stamina cost is not triggered by special free attacks").
+-  // This read '… but pay resources' and held the reaction's Stamina to 97. A reaction is a special free attack: no Stamina.
+-  // Its use and cooldown are still spent; the authored slot and the closed cycle are still ignored.
+-  it('reactions ignore authored slots and the closed cycle; they spend a use and the cooldown, and no Stamina', () => {
+-    const ctx = fixture(), id = grant(ctx, { slot: 'movement', staminaCost: 3, uses: 2, cooldown: 1 })
+-    ctx.state.units[0]!.moveUsed = ctx.state.units[0]!.primaryUsed = true
+-    performAttack(ctx, 0, 1, id, 'reaction')
+-    expect(ctx.state.units[0]!.stamina).toBe(100)   // was 97: a special free attack spends no Stamina
+-    expect(ctx.state.units[0]!.usesLeft[id]).toBe(1)
+-    expect(ctx.state.units[0]!.cooldowns[id]).toBe(ctx.state.turn + 2)
+-    const after = saveBattle(ctx)
+-    expect(() => performAttack(ctx, 0, 1, id, 'reaction')).toThrow(/illegal/)
+-    expect(saveBattle(ctx)).toBe(after)
+-  })
+-  it.each([{ cooldown: 1 }, { uses: 1 }, { staminaCost: 100 }])('resource limit %j prevents the second slot use', patch => {
+-    const ctx = fixture(), id = grant(ctx, { slot: 'either', ...patch })
+-    const req = { actor: 0, actionId: id, target: 1 }
+-    expect(executeAction(ctx, req).ok).toBe(true)
+-    rejectUnchanged(ctx, req)
+-  })
+-  it('multi-hit pays once and spends one authored slot', () => {
+-    const ctx = fixture(), id = grant(ctx, { slot: 'movement', staminaCost: 3, uses: 2 })
+-    ctx.actions = { ...ctx.actions, [id]: { ...ctx.actions[id]!, attack: { ...ctx.actions[id]!.attack!, hits: 3 } } }
+-    expect(executeAction(ctx, { actor: 0, actionId: id, target: 1 }).ok).toBe(true)
+-    expect([ctx.state.units[0]!.stamina, ctx.state.units[0]!.usesLeft[id], ctx.state.units[0]!.moveUsed, ctx.state.units[0]!.primaryUsed]).toEqual([97, 1, true, false])
+-  })
+-  it('a V2 burst spends one slot and one charge for all targets', () => {
+-    const ctx = fixture('any', true), id = grant(ctx, { slot: 'movement', staminaCost: 3, uses: 2 })
+-    ctx.actions = {...ctx.actions, [id]: {id, name: 'Burst', slot: 'movement', staminaCost: 3, cooldown: 0, uses: 2, range: 1, burst: {shape: {kind: 'radius', radius: 1}, side: 'enemy', packets: [{id: 'base', amount: 3, damageType: 'true'}]}}}
+-    expect(executeAction(ctx, { actor: 0, actionId: id, centre: ctx.state.units[1]!.hex }).ok).toBe(true)
+-    expect(ctx.events.filter(e => e.type === 'burst.struck' && e.causeId === id).map(e => e.target)).toContain(1)
+-    expect(ctx.events.filter(e => e.type === 'burst.struck' && e.causeId === id).map(e => e.target)).toContain(2)
+-    expect([ctx.state.units[0]!.stamina, ctx.state.units[0]!.usesLeft[id], ctx.state.units[0]!.moveUsed, ctx.state.units[0]!.primaryUsed]).toEqual([97, 1, true, false])
+-  })
+-  it('reload after movement preserves second action and Surge continuation exactly', () => {
+-    const ctx = fixture(), id = grant(ctx, { slot: 'either' })
+-    ctx.state.units[0]!.surge = 100
+-    expect(executeAction(ctx, { actor: 0, actionId: id, target: 1 }).ok).toBe(true)
+-    const restored = restoreBattle(saveBattle(ctx), ctx)
+-    for (const c of [ctx, restored]) {
+-      expect(executeAction(c, { actor: 0, actionId: id, target: 1 }).ok).toBe(true)
+-      completeActionCycle(c)
+-      expect(advanceBattle(c)).toEqual({ kind: 'acting', actor: 0 })
+-      expect([c.state.units[0]!.moveUsed, c.state.units[0]!.primaryUsed]).toEqual([false, false])
+-    }
+-    expect(saveBattle(restored)).toBe(saveBattle(ctx))
+-  })
+-  it('AI continues to the second compatible attack', () => {
+-    const ctx = fixture(), id = grant(ctx, { slot: 'either' })
+-    ctx.state.units[0]!.actions = [id]
+-    ctx.state.units[0]!.ai = 'dumb-melee'
+-    runActivation(ctx, 0)
+-    expect(ctx.state.units[0]!.attackOrdinal).toBe(2)
+-  })
+-  it('AI uses a free power once and still spends both paid opportunities', () => {
+-    const ctx = fixture(), id = grant(ctx, { slot: 'either', staminaCost: 0 })
+-    const u = ctx.state.units[0]!
+-    u.actions = [id, 'power.test-slot-free']; u.ai = 'melee-aggressive'; u.stamina = 0
+-    runActivation(ctx, 0)
+-    expect(u.attackOrdinal).toBe(2)
+-    expect(u.stamina).toBe(1)
+-    expect(ctx.events.filter(e => e.type === 'power.used' && e.causeId === 'power.test-slot-free')).toHaveLength(1)
+-  })
+-  it.each(AI_MODES)('any-mode %s actions match the human command resolver', ai => {
+-    const ctx = fixture(); ctx.state.units[0]!.ai = ai
+-    const execute = commands.executeAction
+-    const spy = vi.spyOn(commands, 'executeAction').mockImplementation((live, request) => {
+-      const human = restoreBattle(saveBattle(live), live)
+-      const actor = (request as commands.ActionRequest).actor
+-      expect(commands.executeBattleCommand(human, { humanUnitUids: [human.state.units[actor]!.uid] }, { ...(request as commands.ActionRequest), kind: 'action', expectedSeq: human.state.seq })).toEqual({ ok: true })
+-      const result = execute(live, request)
+-      expect(result).toEqual({ ok: true })
+-      expect(live.state).toEqual(human.state)
+-      expect(live.events).toEqual(human.events)
+-      expect(live.rng.log).toEqual(human.rng.log)
+-      return result
+-    })
+-    runActivation(ctx, 0)
+-    expect(spy).toHaveBeenCalled()
+-  })
+-  it.each(AI_MODES)('AI mode %s terminates with free choices and respects primary closure', ai => {
+-    const ctx = fixture(), id = grant(ctx, { slot: 'either', free: true })
+-    ctx.state.units[0]!.actions = [id]
+-    ctx.state.units[0]!.ai = ai
+-    runActivation(ctx, 0)
+-    expect(ctx.state.units[0]!.attackOrdinal).toBeLessThanOrEqual(1)
+-  })
+-  it('byProfile honors authored movement rather than overriding it', () => {
+-    const ctx = fixture('byProfile'), id = grant(ctx, { slot: 'movement' })
+-    expect(executeAction(ctx, { actor: 0, actionId: id, target: 1 }).ok).toBe(true)
+-    expect([ctx.state.units[0]!.moveUsed, ctx.state.units[0]!.primaryUsed]).toEqual([true, false])
+-  })
+-  it('byProfile AI continues after an authored movement attack', () => {
+-    const ctx = fixture('byProfile'), first = grant(ctx, { slot: 'movement' })
+-    const second = grant(ctx, { slot: 'primary' }, 'attack.punch')
+-    ctx.state.units[0]!.actions = [first, second]
+-    ctx.state.units[0]!.ai = 'dumb-melee'
+-    runActivation(ctx, 0)
+-    expect(ctx.state.units[0]!.attackOrdinal).toBe(2)
+-  })
+-})
++import { afterEach, describe, expect, it, vi } from 'vitest'
++import { createCustomBattle } from '../src/core/setup.js'
++import { advanceBattle, completeActionCycle } from '../src/core/battle.js'
++import { executeAction, executeBattleCommand } from '../src/core/commands.js'
++import * as commands from '../src/core/commands.js'
++import { restoreBattle, saveBattle } from '../src/core/snapshot.js'
++import { runActivation, AI_MODES } from '../src/ai/modes.js'
++import { performAttack } from '../src/core/pipeline.js'
++import { type ActionDef, type Ctx } from '../src/core/types.js'
++afterEach(() => vi.restoreAllMocks())
++
++function fixture(mode: 'any' | 'byProfile' = 'any', extraEnemy = false) {
++  const ctx = createCustomBattle([{ type: 'test-warrior', hex: 85 }], [{ type: 'test-zombie', hex: 86 }, ...(extraEnemy ? [{ type: 'test-zombie', hex: 102 }] : [])], { strict: true })
++  ctx.cfg.switches.actionSlots = mode
++  const u = ctx.state.units[0]!, enemy = ctx.state.units[1]!
++  enemy.hp = enemy.maxHp = 1000
++  u.maxStamina = u.stamina = 100
++  u.surge = 0
++  expect(advanceBattle(ctx)).toEqual({ kind: 'acting', actor: 0 })
++  return ctx
++}
++function grant(ctx: Ctx, patch: Partial<ActionDef>, base = 'attack.test-warrior.axe') {
++  // Existing published profiles isolate rule failures before new transport fixtures land.
++  const source = ctx.actions[base]!
++  expect(source).toBeDefined()
++  const id = source.id
++  ctx.actions = { ...ctx.actions, [id]: { ...source, ...patch } }
++  const u = ctx.state.units[0]!
++  if (!u.actions.includes(id)) u.actions.push(id)
++  if (patch.uses) u.usesLeft[id] = patch.uses
++  return id
++}
++function rejectUnchanged(ctx: Ctx, request: object) {
++  const before = saveBattle(ctx)
++  expect(executeAction(ctx, request).ok).toBe(false)
++  expect(saveBattle(ctx)).toBe(before)
++}
++
++describe('authored action slots', () => {
++  it.each(['movement', 'primary', 'either', undefined] as const)('an attack honors slot %s', slot => {
++    const ctx = fixture(), id = grant(ctx, slot === undefined ? {} : { slot })
++    expect(executeAction(ctx, { actor: 0, actionId: id, target: 1 })).toEqual({ ok: true })
++    expect([ctx.state.units[0]!.moveUsed, ctx.state.units[0]!.primaryUsed]).toEqual(slot === 'primary' ? [false, true] : [true, false])
++  })
++  it('either permits exactly two attacks and distinct strict RNG rolls', () => {
++    const ctx = fixture(), id = grant(ctx, { slot: 'either', staminaCost: 2 })
++    const req = { actor: 0, actionId: id, target: 1 }
++    expect(executeAction(ctx, req).ok).toBe(true)
++    expect(executeAction(ctx, req).ok).toBe(true)
++    expect(ctx.state.units[0]!.stamina).toBe(96)
++    expect(ctx.state.units[0]!.attackOrdinal).toBe(2)
++    rejectUnchanged(ctx, req)
++  })
++  it('explicit primary spends primary first and closes movement', () => {
++    const ctx = fixture(), id = grant(ctx, { slot: 'either' })
++    const policy = { humanUnitUids: [ctx.state.units[0]!.uid] }
++    expect(executeBattleCommand(ctx, policy, { kind: 'action', actor: 0, actionId: id, target: 1, slot: 'primary', expectedSeq: ctx.state.seq }).ok).toBe(true)
++    expect(ctx.state.units[0]!.moveUsed).toBe(false)
++    expect(ctx.battleCursor!.at).not.toBe('acting')
++    rejectUnchanged(ctx, { actor: 0, actionId: id, target: 1, slot: 'movement' })
++  })
++  it.each(['either', 'reaction', 'bad', null])('rejects invalid requested slot %s atomically', slot => {
++    const ctx = fixture(), id = grant(ctx, { slot: 'either' })
++    rejectUnchanged(ctx, { actor: 0, actionId: id, target: 1, slot })
++  })
++  it('rejects a requested slot incompatible with its authored restriction', () => {
++    const ctx = fixture(), id = grant(ctx, { slot: 'movement' })
++    rejectUnchanged(ctx, { actor: 0, actionId: id, target: 1, slot: 'primary' })
++  })
++  // Law 10, 2026-10-06 — OVERTURNED by a ruling, not loosened: rule.one-move-action-one-primary-action (Andrew, DECISIONS.md 'an
++  // Activation is one move action and one primary action, in that order; …': "All the player units get two actions: a move
++  // action and a primary action, in that order, every time they get activated. … That's fundamentally how this was built.")
++  // The primary action never takes a move-class action, so a movement row authored for the primary action alone has no
++  // slot it can be taken in. The 2026-08 law this file holds ("structurally, movement and primary are identical") stands for
++  // limits, costs, cooldowns and uses, and is narrowed in this one way. The test was:
++  //   it.each(['power.flight', 'power.sidestep', 'power.move'])('movement profile %s can spend primary', base => {
++  //     const ctx = fixture(), id = grant(ctx, { slot: 'primary' }, base) …
++  //     expect(executeAction(ctx, { actor: 0, actionId: id, destination: 84 }).ok).toBe(true)
++  //     expect([ctx.state.units[0]!.moveUsed, ctx.state.units[0]!.primaryUsed]).toEqual([false, true]) … })
++  it.each(['power.flight', 'power.sidestep', 'power.move'])('movement profile %s cannot spend primary: authored for the primary action it is refused with the movement-slot reason; authored either, it is the move action', base => {
++    const ctx = fixture(), id = grant(ctx, { slot: 'primary' }, base)
++    ctx.state.units[1]!.hex = 255
++    const points = ctx.state.units[0]!.movePointsLeft
++    expect(ctx.actions[id]!.move).toBeDefined()
++    expect(executeAction(ctx, { actor: 0, actionId: id, destination: 84 })).toEqual({ ok: false, reason: 'movement-slot-closed' })
++    expect([ctx.state.units[0]!.moveUsed, ctx.state.units[0]!.primaryUsed, ctx.state.units[0]!.hex === 84]).toEqual([false, false, false])
++    const either = grant(ctx, { slot: 'either' }, base)
++    expect(executeAction(ctx, { actor: 0, actionId: either, destination: 84, slot: 'primary' })).toEqual({ ok: false, reason: 'movement-slot-closed' })
++    expect(executeAction(ctx, { actor: 0, actionId: either, destination: 84 }).ok).toBe(true)
++    expect([ctx.state.units[0]!.moveUsed, ctx.state.units[0]!.primaryUsed]).toEqual([true, false])
++    expect(ctx.state.units[0]!.hex).toBe(84)
++    expect(ctx.state.units[0]!.movePointsLeft).toBe(points - (base === 'power.sidestep' ? 0 : 1))
++    expect(ctx.state.units[0]!.stamina).toBe(base === 'power.sidestep' ? 100 : 99)
++  })
++  it('effect powers use movement then leave primary available', () => {
++    const ctx = fixture(), id = grant(ctx, { slot: 'movement', effects: [{ kind: 'stamina.gain', value: 1 }], range: 0, target: { select: 'self', side: 'any' } })
++    const { attack: _attack, ...power } = ctx.actions[id]!
++    ctx.actions = { ...ctx.actions, [id]: power }
++    expect(executeAction(ctx, { actor: 0, actionId: id, target: 0 }).ok).toBe(true)
++    expect([ctx.state.units[0]!.moveUsed, ctx.state.units[0]!.primaryUsed]).toEqual([true, false])
++  })
++  it('free attacks consume resources but no slot, and primary closes them', () => {
++    const ctx = fixture(), id = grant(ctx, { slot: 'primary', free: true, staminaCost: 3 })
++    expect(executeAction(ctx, { actor: 0, actionId: id, target: 1 }).ok).toBe(true)
++    expect([ctx.state.units[0]!.moveUsed, ctx.state.units[0]!.primaryUsed, ctx.state.units[0]!.stamina]).toEqual([false, false, 97])
++    ctx.state.units[0]!.primaryUsed = true
++    rejectUnchanged(ctx, { actor: 0, actionId: id, target: 1 })
++  })
++  it('a free power is legal after movement, then rejected after primary', () => {
++    const ctx = fixture(), id = grant(ctx, { slot: 'movement' })
++    const free = 'power.test-slot-free'
++    ctx.state.units[0]!.actions.push(free)
++    expect(executeAction(ctx, { actor: 0, actionId: id, target: 1 }).ok).toBe(true)
++    ctx.state.units[0]!.stamina = 90
++    expect(executeAction(ctx, { actor: 0, actionId: free, target: 0 }).ok).toBe(true)
++    expect(ctx.state.units[0]!.stamina).toBe(91)
++    const primary = grant(ctx, { slot: 'primary' }, 'attack.punch')
++    expect(executeAction(ctx, { actor: 0, actionId: primary, target: 1 }).ok).toBe(true)
++    rejectUnchanged(ctx, { actor: 0, actionId: free, target: 0 })
++  })
++  // LAW 10 — rewritten 2026-10-04 by rule.free-attack-is-basic-attack (2026-10-04; DECISIONS.md 2026-09-28 'counterattack, special free attacks …': "the basic attack, no stamina, −20 Accuracy"; 2026-10-04 'the basic attack is a weapon's first attack …': "that stamina cost is not triggered by special free attacks").
++  // This read '… but pay resources' and held the reaction's Stamina to 97. A reaction is a special free attack: no Stamina.
++  // Its use and cooldown are still spent; the authored slot and the closed cycle are still ignored.
++  it('reactions ignore authored slots and the closed cycle; they spend a use and the cooldown, and no Stamina', () => {
++    const ctx = fixture(), id = grant(ctx, { slot: 'movement', staminaCost: 3, uses: 2, cooldown: 1 })
++    ctx.state.units[0]!.moveUsed = ctx.state.units[0]!.primaryUsed = true
++    performAttack(ctx, 0, 1, id, 'reaction')
++    expect(ctx.state.units[0]!.stamina).toBe(100)   // was 97: a special free attack spends no Stamina
++    expect(ctx.state.units[0]!.usesLeft[id]).toBe(1)
++    expect(ctx.state.units[0]!.cooldowns[id]).toBe(ctx.state.turn + 2)
++    const after = saveBattle(ctx)
++    expect(() => performAttack(ctx, 0, 1, id, 'reaction')).toThrow(/illegal/)
++    expect(saveBattle(ctx)).toBe(after)
++  })
++  it.each([{ cooldown: 1 }, { uses: 1 }, { staminaCost: 100 }])('resource limit %j prevents the second slot use', patch => {
++    const ctx = fixture(), id = grant(ctx, { slot: 'either', ...patch })
++    const req = { actor: 0, actionId: id, target: 1 }
++    expect(executeAction(ctx, req).ok).toBe(true)
++    rejectUnchanged(ctx, req)
++  })
++  it('multi-hit pays once and spends one authored slot', () => {
++    const ctx = fixture(), id = grant(ctx, { slot: 'movement', staminaCost: 3, uses: 2 })
++    ctx.actions = { ...ctx.actions, [id]: { ...ctx.actions[id]!, attack: { ...ctx.actions[id]!.attack!, hits: 3 } } }
++    expect(executeAction(ctx, { actor: 0, actionId: id, target: 1 }).ok).toBe(true)
++    expect([ctx.state.units[0]!.stamina, ctx.state.units[0]!.usesLeft[id], ctx.state.units[0]!.moveUsed, ctx.state.units[0]!.primaryUsed]).toEqual([97, 1, true, false])
++  })
++  it('a V2 burst spends one slot and one charge for all targets', () => {
++    const ctx = fixture('any', true), id = grant(ctx, { slot: 'movement', staminaCost: 3, uses: 2 })
++    ctx.actions = {...ctx.actions, [id]: {id, name: 'Burst', slot: 'movement', staminaCost: 3, cooldown: 0, uses: 2, range: 1, burst: {shape: {kind: 'radius', radius: 1}, side: 'enemy', packets: [{id: 'base', amount: 3, damageType: 'true'}]}}}
++    expect(executeAction(ctx, { actor: 0, actionId: id, centre: ctx.state.units[1]!.hex }).ok).toBe(true)
++    expect(ctx.events.filter(e => e.type === 'burst.struck' && e.causeId === id).map(e => e.target)).toContain(1)
++    expect(ctx.events.filter(e => e.type === 'burst.struck' && e.causeId === id).map(e => e.target)).toContain(2)
++    expect([ctx.state.units[0]!.stamina, ctx.state.units[0]!.usesLeft[id], ctx.state.units[0]!.moveUsed, ctx.state.units[0]!.primaryUsed]).toEqual([97, 1, true, false])
++  })
++  it('reload after movement preserves second action and Surge continuation exactly', () => {
++    const ctx = fixture(), id = grant(ctx, { slot: 'either' })
++    ctx.state.units[0]!.surge = 100
++    expect(executeAction(ctx, { actor: 0, actionId: id, target: 1 }).ok).toBe(true)
++    const restored = restoreBattle(saveBattle(ctx), ctx)
++    for (const c of [ctx, restored]) {
++      expect(executeAction(c, { actor: 0, actionId: id, target: 1 }).ok).toBe(true)
++      completeActionCycle(c)
++      expect(advanceBattle(c)).toEqual({ kind: 'acting', actor: 0 })
++      expect([c.state.units[0]!.moveUsed, c.state.units[0]!.primaryUsed]).toEqual([false, false])
++    }
++    expect(saveBattle(restored)).toBe(saveBattle(ctx))
++  })
++  it('AI continues to the second compatible attack', () => {
++    const ctx = fixture(), id = grant(ctx, { slot: 'either' })
++    ctx.state.units[0]!.actions = [id]
++    ctx.state.units[0]!.ai = 'dumb-melee'
++    runActivation(ctx, 0)
++    expect(ctx.state.units[0]!.attackOrdinal).toBe(2)
++  })
++  it('AI uses a free power once and still spends both paid opportunities', () => {
++    const ctx = fixture(), id = grant(ctx, { slot: 'either', staminaCost: 0 })
++    const u = ctx.state.units[0]!
++    u.actions = [id, 'power.test-slot-free']; u.ai = 'melee-aggressive'; u.stamina = 0
++    runActivation(ctx, 0)
++    expect(u.attackOrdinal).toBe(2)
++    expect(u.stamina).toBe(1)
++    expect(ctx.events.filter(e => e.type === 'power.used' && e.causeId === 'power.test-slot-free')).toHaveLength(1)
++  })
++  it.each(AI_MODES)('any-mode %s actions match the human command resolver', ai => {
++    const ctx = fixture(); ctx.state.units[0]!.ai = ai
++    const execute = commands.executeAction
++    const spy = vi.spyOn(commands, 'executeAction').mockImplementation((live, request) => {
++      const human = restoreBattle(saveBattle(live), live)
++      const actor = (request as commands.ActionRequest).actor
++      expect(commands.executeBattleCommand(human, { humanUnitUids: [human.state.units[actor]!.uid] }, { ...(request as commands.ActionRequest), kind: 'action', expectedSeq: human.state.seq })).toEqual({ ok: true })
++      const result = execute(live, request)
++      expect(result).toEqual({ ok: true })
++      expect(live.state).toEqual(human.state)
++      expect(live.events).toEqual(human.events)
++      expect(live.rng.log).toEqual(human.rng.log)
++      return result
++    })
++    runActivation(ctx, 0)
++    expect(spy).toHaveBeenCalled()
++  })
++  it.each(AI_MODES)('AI mode %s terminates with free choices and respects primary closure', ai => {
++    const ctx = fixture(), id = grant(ctx, { slot: 'either', free: true })
++    ctx.state.units[0]!.actions = [id]
++    ctx.state.units[0]!.ai = ai
++    runActivation(ctx, 0)
++    expect(ctx.state.units[0]!.attackOrdinal).toBeLessThanOrEqual(1)
++  })
++  it('byProfile honors authored movement rather than overriding it', () => {
++    const ctx = fixture('byProfile'), id = grant(ctx, { slot: 'movement' })
++    expect(executeAction(ctx, { actor: 0, actionId: id, target: 1 }).ok).toBe(true)
++    expect([ctx.state.units[0]!.moveUsed, ctx.state.units[0]!.primaryUsed]).toEqual([true, false])
++  })
++  it('byProfile AI continues after an authored movement attack', () => {
++    const ctx = fixture('byProfile'), first = grant(ctx, { slot: 'movement' })
++    const second = grant(ctx, { slot: 'primary' }, 'attack.punch')
++    ctx.state.units[0]!.actions = [first, second]
++    ctx.state.units[0]!.ai = 'dumb-melee'
++    runActivation(ctx, 0)
++    expect(ctx.state.units[0]!.attackOrdinal).toBe(2)
++  })
++})
+ 
+diff --git a/test/battle-commands.test.ts b/test/battle-commands.test.ts
+index 3afadc7..c97f5f0 100644
+--- a/test/battle-commands.test.ts
++++ b/test/battle-commands.test.ts
+@@ -9,5 +9,5 @@ import { attacksOf } from '../src/core/action.js'
+ import { performAttack } from '../src/core/pipeline.js'
+ import { usePower } from '../src/core/ability.js'
+-import { executeFlight, executeMove, executeSidestep, pathTo, reachable } from '../src/core/movement.js'
++import { executeFlight, executeMove, executeSidestep, movementOptions, pathTo, reachable } from '../src/core/movement.js'
+ import { applyStatus } from '../src/core/status.js'
+ import { settle } from '../src/core/settle.js'
+@@ -83,6 +83,18 @@ describe('plumbing.battle-commands', () => {
+     expect(ctx.state.units[0]!.hex).toBe(destination)
+     expect(saveBattle(ctx)).toBe(saveBattle(direct))
+-    // V2 profiles no longer imply restrictions: this reuses the SAME slot.
+-    rejected(ctx, action(ctx, { actionId: id, destination: 87, slot: 'movement' }))
++    // Law 10, 2026-10-06 — rule.one-move-action-one-primary-action (Andrew, DECISIONS.md 'an Activation is one move action and one
++    // primary action, in that order; …'; the item: "a walk begun and cut short may still be finished … since that is the same
++    // move action"): a second request in the movement slot is refused for a movement that is
++    // not the unit's walk, as before; for its walk it is the rest of that walk — taken when movement is left, in the same move
++    // action, and never the primary action. The lines were:
++    //   // V2 profiles no longer imply restrictions: this reuses the SAME slot.
++    //   rejected(ctx, action(ctx, { actionId: id, destination: 87, slot: 'movement' }))
++    const me = ctx.state.units[0]!, rest = power.move.shape === 'path' && me.walked === true && movementOptions(ctx, 0, id).some((p) => p.destination === 87)
++    if (!rest) rejected(ctx, action(ctx, { actionId: id, destination: 87, slot: 'movement' }))
++    else {
++      rejected(ctx, action(ctx, { actionId: id, destination: 87, slot: 'primary' }))
++      expect(executeBattleCommand(ctx, policy, action(ctx, { actionId: id, destination: 87, slot: 'movement' }))).toEqual({ ok: true })
++      expect([me.hex, me.moveUsed, me.primaryUsed]).toEqual([87, true, false])
++    }
+   })
+ 
+diff --git a/test/movement-plans.test.ts b/test/movement-plans.test.ts
+index b45fbe8..b26f9ea 100644
+--- a/test/movement-plans.test.ts
++++ b/test/movement-plans.test.ts
+@@ -43,9 +43,25 @@ describe('shared movement budgets', () => {
+     const { ctx, u, power } = fixture(3)
+     expect(executeMove(ctx, 0, [86], power)).toBe(1)
++    // Law 10, 2026-10-06 — rule.one-move-action-one-primary-action (Andrew, DECISIONS.md 'an Activation is one move action and one
++    // primary action, in that order; …'; the item: "a walk begun and cut short may still be finished … since that is the same
++    // move action"): the repeated request is no longer refused outright — it is the REST of
++    // the same walk, in the same move action. What this test guards is kept as the rule it always was: the bonus is not
++    // regained. The first step was paid from the bonus (3) and the unit's own movement (1) is left; the rest of the walk
++    // may go that 1 and not a hex more, and spends no primary action. The lines were:
++    //   const before = saveBattle(ctx)
++    //   // V2: the repeated request is for the same spent slot, not a new primary move.
++    //   expect(executeMove(ctx, 0, [87], power, undefined, 'movement')).toBe(0)
++    //   expect(saveBattle(ctx)).toBe(before)
++    //   expect(u.hex).toBe(86)
++    expect(u.movePointsLeft, 'its own movement is left; the bonus paid the first step').toBe(1)
+     const before = saveBattle(ctx)
+-    // V2: the repeated request is for the same spent slot, not a new primary move.
+-    expect(executeMove(ctx, 0, [87], power, undefined, 'movement')).toBe(0)
++    expect(executeMove(ctx, 0, [87, 88], power, undefined, 'movement'), 'two more hexes would need the bonus again').toBe(0)
++    expect(executeMove(ctx, 0, [87], power, undefined, 'primary'), 'never as the primary action').toBe(0)
+     expect(saveBattle(ctx)).toBe(before)
+-    expect(u.hex).toBe(86)
++    expect(executeMove(ctx, 0, [87], power, undefined, 'movement'), 'the rest of the walk, on its own movement').toBe(1)
++    expect([u.hex, u.movePointsLeft, u.moveUsed, u.primaryUsed]).toEqual([87, 0, true, false])
++    const after = saveBattle(ctx)
++    expect(executeMove(ctx, 0, [88], power, undefined, 'movement'), 'and no bonus a third time').toBe(0)
++    expect(saveBattle(ctx)).toBe(after)
+   })
+ 
+diff --git a/test/prone-only-stand-up.test.ts b/test/prone-only-stand-up.test.ts
+index 1b56444..83fb7b7 100644
+--- a/test/prone-only-stand-up.test.ts
++++ b/test/prone-only-stand-up.test.ts
+@@ -201,11 +201,20 @@ describe('a prone unit makes no special free attack', () => {
+ 
+ describe('a unit that is standing is unchanged', () => {
+-  it('a movement used before any walk still closes nothing: a Leap, then the walk in the primary slot', () => {
++  // Law 10, 2026-10-06 — OVERTURNED by a ruling, not loosened: rule.one-move-action-one-primary-action (Andrew, DECISIONS.md 'an
++  // Activation is one move action and one primary action, in that order; …': "All the player units get two actions: a move action
++  // and a primary action, in that order, every time they get activated. … That's fundamentally how this was built.") A walk
++  // after a Leap was the engine's fault, not a case to keep: the primary action never takes a move-class action. This case stood here as the control ("a unit that is standing is unchanged"), and that
++  // control is what the ruling found wrong. The test was:
++  //   it('a movement used before any walk still closes nothing: a Leap, then the walk in the primary slot', () => {
++  //     … const walkTo = movementOptions(ctx, 0, 'power.move')[0]?.destination
++  //     expect(walkTo, 'the walk is still offered').toBeDefined()
++  //     expect(validateAction(ctx, { actor: 0, actionId: 'power.move', destination: walkTo! })).toEqual({ ok: true })
++  //     expect(u.primaryUsed).toBe(false) })
++  it('a standing unit too has one move action: a Leap, and the walk is then closed with the reason a stood unit\'s is', () => {
+     const { ctx, u } = rig(WARRIOR)
+     const leapTo = movementOptions(ctx, 0, 'power.leap')[0]!.destination
+     expect(executeAction(ctx, { actor: 0, actionId: 'power.leap', destination: leapTo })).toEqual({ ok: true })
+-    const walkTo = movementOptions(ctx, 0, 'power.move')[0]?.destination
+-    expect(walkTo, 'the walk is still offered').toBeDefined()
+-    expect(validateAction(ctx, { actor: 0, actionId: 'power.move', destination: walkTo! })).toEqual({ ok: true })
++    expect(movementOptions(ctx, 0, 'power.move'), 'the walk is no longer offered').toEqual([])
++    expect(validateAction(ctx, order(ctx, u, ctx.actions['power.move']!))).toEqual(CLOSED)
+     expect(u.primaryUsed).toBe(false)
+   })
+diff --git a/test/walked-unit-has-moved.test.ts b/test/walked-unit-has-moved.test.ts
+index 0614845..7a49fcb 100644
+--- a/test/walked-unit-has-moved.test.ts
++++ b/test/walked-unit-has-moved.test.ts
+@@ -107,15 +107,29 @@ describe('once a unit has walked, no other movement is accepted from it', () =>
+   })
+ 
+-  it('a movement used BEFORE any walk is unchanged: after a Leap the walk is still taken, and the hero has not walked until it does', () => {
++  // Law 10, 2026-10-06 — OVERTURNED by a ruling, not loosened: rule.one-move-action-one-primary-action (Andrew, DECISIONS.md 'an
++  // Activation is one move action and one primary action, in that order; …': "All the player units get two actions: a move action
++  // and a primary action, in that order, every time they get activated. … That's fundamentally how this was built.") A walk
++  // after a Leap was the engine's fault, not a case to keep: the primary action never takes a move-class action. The test was:
++  //   it('a movement used BEFORE any walk is unchanged: after a Leap the walk is still taken, and the hero has not walked until it does', () => {
++  //     … expect(executeAction(ctx, { actor: 0, actionId: 'power.leap', destination: destinations(ctx, 'power.leap')[0]! })).toEqual({ ok: true })
++  //     expect(u.moveUsed).toBe(true); expect((u as { walked?: boolean }).walked).toBeUndefined()
++  //     const next = destinations(ctx, walk); expect(next.length).toBeGreaterThan(0)
++  //     expect(executeAction(ctx, { actor: 0, actionId: walk, destination: next[0]! })).toEqual({ ok: true })
++  //     // as before this rule: the walk after a Leap is the hero's primary action
++  //     expect(u.primaryUsed).toBe(true) })
++  it('a movement used BEFORE any walk is the unit\'s move action: after a Leap the walk is refused with the same reason, and the hero has not walked', () => {
+     const { ctx, u } = rig(WARRIOR)
+     const walk = walkOf(ctx, u).id
++    const before = destinations(ctx, walk)
++    expect(before.length, 'before the Leap the walk has somewhere to go').toBeGreaterThan(0)
+     expect(executeAction(ctx, { actor: 0, actionId: 'power.leap', destination: destinations(ctx, 'power.leap')[0]! })).toEqual({ ok: true })
+     expect(u.moveUsed).toBe(true)
+     expect((u as { walked?: boolean }).walked).toBeUndefined()
+-    const next = destinations(ctx, walk)
+-    expect(next.length).toBeGreaterThan(0)
+-    expect(executeAction(ctx, { actor: 0, actionId: walk, destination: next[0]! })).toEqual({ ok: true })
+-    // as before this rule: the walk after a Leap is the hero's primary action
+-    expect(u.primaryUsed).toBe(true)
++    expect(destinations(ctx, walk)).toEqual([])
++    expect(listed(ctx, walk)).toBe(0)
++    expect(validateAction(ctx, { actor: 0, actionId: walk, destination: aimAt(ctx, u, 1) })).toEqual(REFUSED)
++    expect(executeAction(ctx, { actor: 0, actionId: walk, destination: aimAt(ctx, u, 1), slot: 'primary' })).toEqual(REFUSED)
++    // its primary action is still its own
++    expect(u.primaryUsed).toBe(false)
+   })
+ 
+engine 7d9b712 rule.one-move-action-one-primary-action: what the group's whole suite found, both the rule's own - test/charge.test.ts's contrast for the Colossus restated with a dated note (no unit walks twice now; the flag's difference is held on an attack), and the battle-cursor layer for the item: 109 cases, test.prone-b moved in its state only (a unit that stood no longer carries stood; events, RNG and result unchanged), none added
+
+diff --git a/test/battle-cursor.test.ts b/test/battle-cursor.test.ts
+index 41928c2..8685db0 100644
+--- a/test/battle-cursor.test.ts
++++ b/test/battle-cursor.test.ts
+@@ -560,4 +560,12 @@ const dwarfElfFeyBadgesActGolden = JSON.parse(readFileSync(new URL('./fixtures/b
+ // Every case frozen here (tools/capture-computer-avoids-own-traps-cursor.mts). Moved: none. A `changed` case is checked here and skips the older layers.
+ const computerAvoidsOwnTrapsGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-computer-avoids-own-traps.json', import.meta.url), 'utf8'))
++// rule.one-move-action-one-primary-action (ruled 2026-10-06; DECISIONS.md 'an Activation is one move action and one primary action,
++// in that order; …': "All the player units get two actions: a move action and a primary action, in that order, every time they
++// get activated."), Law 10: a move-class action is only ever the move action, and `Unit.stood` is removed as subsumed. No case
++// is FOUGHT differently — the computer never spent its primary action on a movement (SWITCHES.md oneMoveEveryUnit) — but a case in
++// which a unit stood up no longer carries `stood` in its state: its state hash moves, its events, RNG and result do not.
++// Every case frozen here (tools/capture-one-move-action-one-primary-action-cursor.mts). Moved: test.prone-b (state only).
++// A `changed` case is checked here and skips the older layers.
++const oneMoveActionGolden = JSON.parse(readFileSync(new URL('./fixtures/battle-cursor-one-move-action-one-primary-action.json', import.meta.url), 'utf8'))
+ const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex')
+ // Explicit rule migration, not regenerated historical hashes. These nine old
+@@ -718,5 +726,8 @@ describe('resumable battle cursor', () => {
+       const dwarfElfFeyBadgesActExpected = dwarfElfFeyBadgesActGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+       const computerAvoidsOwnTrapsExpected = computerAvoidsOwnTrapsGolden.cases.find((row:{id:string})=>row.id===fixture.id)
+-      const computerAvoidsOwnTrapsMoved = computerAvoidsOwnTrapsExpected?.changed === true
++      const oneMoveActionExpected = oneMoveActionGolden.cases.find((row:{id:string})=>row.id===fixture.id)
++      const oneMoveActionMoved = oneMoveActionExpected?.changed === true
++      // was: const computerAvoidsOwnTrapsMoved = computerAvoidsOwnTrapsExpected?.changed === true — a case rule.one-move-action-one-primary-action moved skips this layer too (rule.one-move-action-one-primary-action 2026-10-06)
++      const computerAvoidsOwnTrapsMoved = computerAvoidsOwnTrapsExpected?.changed === true || oneMoveActionMoved
+       // was: const dwarfElfFeyBadgesActMoved = dwarfElfFeyBadgesActExpected?.changed === true — a case group A: content.sets-count-holy-texts-and-heavy-chain, content.resistance-to-weak-and-vigil-party-spirit, rule.computer-avoids-own-traps moved skips this layer too (group A: content.sets-count-holy-texts-and-heavy-chain, content.resistance-to-weak-and-vigil-party-spirit, rule.computer-avoids-own-traps 2026-10-04)
+       const dwarfElfFeyBadgesActMoved = dwarfElfFeyBadgesActExpected?.changed === true || computerAvoidsOwnTrapsMoved
+@@ -896,5 +907,12 @@ describe('resumable battle cursor', () => {
+           }
+         } else result = battle.runBattle(ctx)
+-        if (computerAvoidsOwnTrapsExpected) {
++        if (oneMoveActionExpected) {
++        expect(hash(ctx.events), 'full one-move-action-one-primary-action events').toBe(oneMoveActionExpected.events)
++        expect(hash(ctx.state), 'full one-move-action-one-primary-action state').toBe(oneMoveActionExpected.state)
++        expect(hash(ctx.rng.log), 'full one-move-action-one-primary-action RNG').toBe(oneMoveActionExpected.rng)
++        expect(result).toEqual(oneMoveActionExpected.result)
++        }
++        // was: if (computerAvoidsOwnTrapsExpected) { — rule.one-move-action-one-primary-action (2026-10-06): a case it moved is checked above instead
++        if (computerAvoidsOwnTrapsExpected && !oneMoveActionMoved) {
+         expect(hash(ctx.events), 'full computer-avoids-own-traps events').toBe(computerAvoidsOwnTrapsExpected.events)
+         expect(hash(ctx.state), 'full computer-avoids-own-traps state').toBe(computerAvoidsOwnTrapsExpected.state)
+diff --git a/test/charge.test.ts b/test/charge.test.ts
+index f25082f..849edaa 100644
+--- a/test/charge.test.ts
++++ b/test/charge.test.ts
+@@ -188,7 +188,18 @@ describe('capability.charge — noPrimaryAction', () => {
+     expect(executeAction(ctx, step)).toEqual({ ok: true })
+     expect(legalActions(ctx, e)).toEqual([])
+-    // the same body without the flag walks twice (movement, then primary) — the flag is the difference
+-    const plain = duel('unit.fast-zombie', 6)
+-    expect(resolveActionSlot(plain.ctx, plain.ctx.state.units[plain.e]!, walk, 'primary')).toBe('primary')
++    // Law 10, 2026-10-06 — rule.one-move-action-one-primary-action (Andrew, DECISIONS.md 'an Activation is one move action and one
++    // primary action, in that order; …': "All the player units get two actions: a move action and a primary action, in that
++    // order, every time they get activated."; SWITCHES.md oneMoveEveryUnit: applied to every unit). These lines held "the same
++    // body without the flag walks twice (movement, then primary) — the flag is the difference":
++    //   const plain = duel('unit.fast-zombie', 6)
++    //   expect(resolveActionSlot(plain.ctx, plain.ctx.state.units[plain.e]!, walk, 'primary')).toBe('primary')
++    // No unit takes a walk as its primary action now, so the walk no longer tells the two bodies apart. What the flag is has not
++    // changed — no primary action at all — and it is held on an attack: the plain body's own attack is its primary action, the
++    // Colossus is refused the primary action for the same row.
++    const plain = duel('unit.fast-zombie', 6), body = plain.ctx.state.units[plain.e]!
++    const strike = ACTIONS[UNITS['unit.fast-zombie']!.attacks.find((id) => ACTIONS[id] && !isCharge(ACTIONS[id]!))!]!
++    expect(resolveActionSlot(plain.ctx, body, walk, 'primary'), 'no unit walks as its primary action').toBeNull()
++    expect(resolveActionSlot(plain.ctx, body, strike, 'primary'), 'the plain body has a primary action').toBe('primary')
++    expect(resolveActionSlot(ctx, c, strike, 'primary'), 'the Colossus has none — the flag is the difference').toBeNull()
+     void h
+   })
+viewer 711d12b rule.one-move-action-one-primary-action (engine item): the viewer's test of what the engine does to a walk cut short restated with a dated note - the rest of the walk is the same move action, never the primary action (test/viewer.bar-moves-grey-when-done.test.ts; found by the gate's checks part, the failed run stays in the record); SWITCHES restOfAWalkPinnedAsPrimary
+
+diff --git a/test/viewer.bar-moves-grey-when-done.test.ts b/test/viewer.bar-moves-grey-when-done.test.ts
+index abb2d9c..7d98feb 100644
+--- a/test/viewer.bar-moves-grey-when-done.test.ts
++++ b/test/viewer.bar-moves-grey-when-done.test.ts
+@@ -53,5 +53,15 @@ describe('the moves grey once the move is done: what the engine does to a unit\'
+     expect(advanceBattle(ctx, policy)).toEqual({ kind: 'selecting', unitUids: [101] })
+   })
+-  it('a walk cut short: the movement action is spent, the movement left over is still offered — as the primary action, which ends the Activation', () => {
++  // Law 10, 2026-10-06 — engine rule.one-move-action-one-primary-action (Andrew, engine/DECISIONS.md 'an Activation is one move action and
++  // one primary action, in that order; …': "All the player units get two actions: a move action and a primary action, in that order, every
++  // time they get activated."; the item: "a walk begun and cut short may still be finished … since that is the same move action"). This test
++  // held what the engine did before the ruling — "the movement left over is still offered — as the primary action, which ends the
++  // Activation". Its last three lines were:
++  //   expect(validateBattleCommand(ctx, policy, { kind: 'action', actor: 0, actionId: 'power.move', slot: 'movement', destination: rest[0]!, expectedSeq: ctx.state.seq }).ok).toBe(false)   // not as a second movement action
++  //   expect(act(ctx, { actionId: 'power.move', slot: 'primary', destination: rest[0]! })).toEqual({ ok: true })
++  //   expect(me.primaryUsed).toBe(true); expect(ctx.battleCursor!.at).not.toBe('acting')
++  // The rule now: the rest of the walk is the SAME move action — the primary action never takes it (refused with the movement-slot reason),
++  // it is taken as the move action, and it costs the hero neither its primary action nor its Activation.
++  it('a walk cut short: the movement action is spent, the movement left over is still offered — as the same move action; the primary action never takes it', () => {
+     const ctx = field(15), me = ctx.state.units[0]!, budget = me.movePointsLeft
+     const near = destinations(ctx, 'power.move').find((d) => ctx.geo.distance(me.hex, d) === 1)!
+@@ -61,7 +71,7 @@ describe('the moves grey once the move is done: what the engine does to a unit\'
+     expect(ctx.battleCursor).toMatchObject({ at: 'acting', actor: 0 })
+     const rest = destinations(ctx, 'power.move'); expect(rest.length).toBeGreaterThan(0)   // the engine still takes the basic move
+-    expect(validateBattleCommand(ctx, policy, { kind: 'action', actor: 0, actionId: 'power.move', slot: 'movement', destination: rest[0]!, expectedSeq: ctx.state.seq }).ok).toBe(false)   // not as a second movement action
+-    expect(act(ctx, { actionId: 'power.move', slot: 'primary', destination: rest[0]! })).toEqual({ ok: true })
+-    expect(me.primaryUsed).toBe(true); expect(ctx.battleCursor!.at).not.toBe('acting')
++    expect(validateBattleCommand(ctx, policy, { kind: 'action', actor: 0, actionId: 'power.move', slot: 'primary', destination: rest[0]!, expectedSeq: ctx.state.seq })).toMatchObject({ ok: false, reason: 'movement-slot-closed' })   // never as the primary action
++    expect(act(ctx, { actionId: 'power.move', slot: 'movement', destination: rest[0]! })).toEqual({ ok: true })                                  // the rest of the walk: the same move action
++    expect(me).toMatchObject({ hex: rest[0]!, moveUsed: true, primaryUsed: false }); expect(ctx.battleCursor).toMatchObject({ at: 'acting', actor: 0 })   // its primary action and its Activation are still its own
+   })
+   // Law 10, 2026-10-04 — rule.walked-unit-has-moved (the note at the top): the test held "Leap is still taken, as the primary action" - what
+kingdom ef8b3e1 rule.one-move-action-one-primary-action (engine item, built, NOT landed): the host's half - no line of the play input changed; test/play-input-choose.test.ts holds its rule as the engine now answers (the rest of a walk is the move action, so the basic move stays armed where nothing was; no attack is chosen - Law 10 note at the edit); SWITCHES restOfAWalkStaysArmed
+
+diff --git a/test/play-input-choose.test.ts b/test/play-input-choose.test.ts
+index 4dc0f93..234f567 100644
+--- a/test/play-input-choose.test.ts
++++ b/test/play-input-choose.test.ts
+@@ -50,5 +50,13 @@ describe('choosing what the hero does', () => {
+     /* taken back (a right-click): no action chosen, no arrow */
+     expect(P.input({ kind: 'back' })).toBe(true); P.input({ kind: 'point', hex: far })
+-    expect(P.facts().slot).toBeNull(); expect(P.facts().aim).toBeNull()
++    /* Law 10, 2026-10-06 — engine rule.one-move-action-one-primary-action (Andrew, engine/DECISIONS.md 'an Activation is one move
++       action and one primary action, in that order; …'; the item: "a walk begun and cut short may still be finished … since
++       that is the same move action"): the hero walked one hex of its movement, so the rest of that walk is still its move
++       action and the engine lists it in the movement slot — where the input arms the basic move whenever the engine lists
++       one. Before, the rest of a walk was the PRIMARY action and nothing was armed. What this test holds is unchanged: with
++       the attack taken back NO ATTACK is chosen and no arrow is drawn. The line was:
++         expect(P.facts().slot).toBeNull(); expect(P.facts().aim).toBeNull() */
++    const now = P.facts().slot
++    expect(now === null || isMove(s.ctx.actions[now]!), 'no attack is chosen').toBe(true); expect(now).not.toBe(one); expect(P.facts().aim).toBeNull()
+   })
+   it('an attack chosen, the arrow reaches no further than its reach — the engine\'s — toward the pointer', () => {
+kingdom cb32d6d rule.one-move-action-one-primary-action (engine item): the page check the item asks for - tools/one-move-action-one-primary-action.verify.mjs, run on the built BATTLE-SANDBOX.html by test/one-move-action-one-primary-action.test.ts: after its Leap the Iron Dwarf's Move row is greyed and the engine refuses the walk (movement-slot-closed), the Ranger's after a Side Roll; after one hex of a walk every other movement is greyed, the rest of the walk is still offered and the engine's record holds no movement as the primary action
+
+diff --git a/tools/bar-moves-grey-when-done.verify.mjs b/tools/bar-moves-grey-when-done.verify.mjs
+index 15a4f76..0d0bf17 100644
+--- a/tools/bar-moves-grey-when-done.verify.mjs
++++ b/tools/bar-moves-grey-when-done.verify.mjs
+@@ -81,9 +81,9 @@ assert.deepEqual([...V().play.moveDone].sort(),[...othersB].sort(),'the host nam
+ for(const id of othersB)assert.equal(offered(id),0,`${ctx().actions[id].name} is greyed and the engine takes no use of it`)
+ for(const r of rows())if(!isMove(r.dataset.act))assert.ok(!has(r,'moveDone')&&!has(r,'cool'),`${r.dataset.act} is at full strength`)
+-say(`3 after ${B.name} walks one hex: the engine's unit has moveUsed=true and walked=true, ${B.movePointsLeft} of ${budget} movement left, and still takes ${ctx().actions[basicB].name} to ${restB} hexes (as its primary action) — not greyed; ${othersB.map(id=>ctx().actions[id].name).join(', ')} greyed: the engine takes no other movement after a walk`)
++say(`3 after ${B.name} walks one hex: the engine's unit has moveUsed=true and walked=true, ${B.movePointsLeft} of ${budget} movement left, and still takes ${ctx().actions[basicB].name} to ${restB} hexes (the same move action since engine rule.one-move-action-one-primary-action, 2026-10-06; until then as its primary action) — not greyed; ${othersB.map(id=>ctx().actions[id].name).join(', ')} greyed: the engine takes no other movement after a walk`)
+ // 4. the grey leaves with the Activation: the next unit's bar is at full strength
+ V().dom.root.querySelector('#playEndAct').handlers.click({});settle()
+ assert.notEqual(acting(),b);assert.deepEqual(greyed(),[]);assert.deepEqual(V().play.moveDone,[])
+ say(`4 ${unit(acting()).name} begins: nothing greyed`)
+-console.log('  FOUND for Andrew: (a) a paid attack or power made first ends the Activation at once (engine rule.primary-ends-activation), so the move is lost with it and there is no bar left to grey; (b) after a walk cut short the engine still offers the rest of the basic move — as the primary action — so it is not greyed; (c) [ruled 2026-10-04, engine rule.walked-unit-has-moved] once a hero has walked - one hex or its whole movement - Leap, Side Roll and its other movement powers are refused by the engine and greyed; a movement power used BEFORE any walk is unchanged.')
++console.log('  FOUND for Andrew: (a) a paid attack or power made first ends the Activation at once (engine rule.primary-ends-activation), so the move is lost with it and there is no bar left to grey; (b) after a walk cut short the engine still offers the rest of the basic move — the same move action since engine rule.one-move-action-one-primary-action (2026-10-06; until then it was the primary action) — so it is not greyed; (c) [ruled 2026-10-04, engine rule.walked-unit-has-moved] once a hero has walked - one hex or its whole movement - Leap, Side Roll and its other movement powers are refused by the engine and greyed; [ruled 2026-10-06, engine rule.one-move-action-one-primary-action] and after a movement power used BEFORE any walk the walk is refused and greyed the same way (tools/one-move-action-one-primary-action.verify.mjs).')
+ console.log('bar-moves-grey-when-done: the Orphanage on the built sandbox, the expect line passed')
+kingdom 95a9fc6 rule.one-move-action-one-primary-action (engine item): the walk-on test's words brought to the rule - the second move is the rest of the same move action, not the primary action - and one line added that holds it: walking on does not cost the Dwarf its primary action (test/attack-one-armed-after-move.test.ts; no assertion removed or loosened)
+
+diff --git a/test/attack-one-armed-after-move.test.ts b/test/attack-one-armed-after-move.test.ts
+index 9c03d93..11fda8a 100644
+--- a/test/attack-one-armed-after-move.test.ts
++++ b/test/attack-one-armed-after-move.test.ts
+@@ -134,5 +134,9 @@ describe('kingdom.attack-one-armed-after-move — after a unit moves, its attack
+   })
+ 
+-  it('changing away from attack one to move again: Move chosen on the bar is armed in its place; that second move is the unit\'s primary action, and whatever the engine then leaves it, attack one is never left chosen for an Activation that is over', () => {
++  // 2026-10-06 — engine rule.one-move-action-one-primary-action (Andrew, engine/DECISIONS.md 'an Activation is one move action and one
++  // primary action, in that order; …'): the words of this test said the second move "is the unit's primary action" — what the engine did
++  // until that ruling. It is the rest of the SAME move action now, and does not cost the Dwarf its primary action: the title and one
++  // message say so, and one line is ADDED to hold it. No assertion was removed or loosened.
++  it('changing away from attack one to move again: Move chosen on the bar is armed in its place; that second move is the rest of the same move action, and whatever the engine then leaves it, attack one is never left chosen for an Activation that is over', () => {
+     const b = battle1(DWARF), { s, P } = b, dwarf = b.me(), [chop] = b.attacksOf(dwarf)
+     b.begin(dwarf)
+@@ -143,6 +147,7 @@ describe('kingdom.attack-one-armed-after-move — after a unit moves, its attack
+     expect(P.facts().slot, 'Move is armed in its place').toBe(move)
+     const more = P.facts().reach
+-    expect(more.length, 'the engine offers the move again, as the unit\'s primary action').toBeGreaterThan(0)
++    expect(more.length, 'the engine offers the move again, the rest of the same move action').toBeGreaterThan(0)
+     b.walk(more[0]!)
++    expect(dwarf.primaryUsed, 'walking on did not cost the Dwarf its primary action').toBe(false)
+     /* the engine's own rule decides what follows (a primary action ends the Activation by itself): if the Dwarf still acts,
+        its attack one is chosen after this move too (kingdom SWITCHES attackOneAfterEachMove); if it does not, nothing of its is */
+```
+</details>
