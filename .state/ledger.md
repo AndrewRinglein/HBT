@@ -43046,3 +43046,23 @@ index 2f24e59..68080d1 100644
      expect(ABILITIES['power.banner-mystic-power.plant']).toBeUndefined()
 ```
 </details>
+
+## content.one-use-class-powers-reworded — LANDED `dd67aad`
+2026-10-07 02:14
+
+  PASS  dependencies landed
+  WARN  not already decided — 3 candidate ruling(s) — READ BEFORE ASKING: SWITCHES.md:2282 · SWITCHES.md:2188
+  PASS  typecheck
+  PASS  the item's own tests — test/one-use-class-powers-reworded.test.ts
+  PASS  gate 1 — the id appears in a real battle — power.sentinel.take-root: 8 log lines, 8 fired, 5 changed state
+  PASS  brought its own tests — test/one-use-class-powers-reworded.test.ts
+  PASS  existing tests untouched
+  SKIPPED  control battles unchanged — engine code 7966e51b08 and the content pack are the ones the control battles last passed on (2026-10-07 02:12, gate content.used-twice-rules-removed --land, in HBT-worker-content) — not run
+  PASS  content has a published source — 53 ids without a published source (43 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  prior art — nothing new copies what exists — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  wrong home — nothing another package owns — fast — wrap runs it over the whole tree; --full runs it here
+  PASS  generalizes — the second instance costs zero engine code — shape 'data' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without power.sentinel.take-root — they genuinely test it
