@@ -115,3 +115,4 @@
 {"suite":"engine","stamp":"38619508f5","failed":true,"at":"2026-10-06T22:12:52.598Z","by":"gate --shard 4/4","in":"HBT-worker-content"}
 {"suite":"engine","stamp":"1809956828","with":{"engine":"1809956828","content":"3a7dd56661","viewer":"91edbdfe6e","kingdom":"a284674119"},"at":"2026-10-06T23:01:50.979Z","by":"gate --shard (4 of 4)","in":"HBT-worker-content"}
 {"suite":"control","stamp":"1809956828","pack":"4bc8583765","golden":"b4deeaba50","at":"2026-10-06T23:17:31.669Z","by":"gate rule.one-move-action-one-primary-action --land","in":"HBT-worker-content","moved":null}
+{"suite":"engine","stamp":"a3db3d8073","failed":true,"at":"2026-10-07T00:06:26.408Z","by":"gate --shard 1/1","in":"HBT-worker-engine"}
