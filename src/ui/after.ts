@@ -449,7 +449,11 @@ export function levelUpScreen(c: CampaignState, heroId: string, from: 'rewards' 
   const v = viewLevelUp(c, heroId)
   const art = portraitOf(portraitIdOf(h))
   const grants = Object.entries(v.row.grants)
-  const bonuses = [...grants.map(([k, n]) => `<div class="bonus-item ${k === 'itemSlots' ? 'slot' : ''}"><span class="bonus-text">${esc(statWordsOf(k, n))}</span></div>`), ...(v.needsSpecialty ? ['<div class="bonus-item specialty"><span class="bonus-text">Choose a specialty</span></div>'] : []), ...(v.pickOptions ? ['<div class="bonus-item"><span class="bonus-text">Pick one of ' + v.pickOptions.length + '</span></div>'] : [])]
+  // rule.special-moves-unlock-at-level-two (engine item, 2026-10-06): "the level-up screen should name the moves unlocked, and it should
+  // go above their head as a thing they gained" — each move the level unlocks is a bonus of its own, with the Codex's line; `data-gain`
+  // is what rises above the hero with the other gains (mountLevelUp reads it).
+  const moves = v.movesUnlocked.map((m) => `<div class="bonus-item move" data-move="${esc(m.id)}" data-gain="${esc('New move: ' + m.name)}"><span class="bonus-text">${esc('New move: ' + m.name)}</span>${m.line ? `<span class="bonus-line">${esc(m.line)}</span>` : ''}</div>`)
+  const bonuses = [...grants.map(([k, n]) => `<div class="bonus-item ${k === 'itemSlots' ? 'slot' : ''}"><span class="bonus-text">${esc(statWordsOf(k, n))}</span></div>`), ...moves, ...(v.needsSpecialty ? ['<div class="bonus-item specialty"><span class="bonus-text">Choose a specialty</span></div>'] : []), ...(v.pickOptions ? ['<div class="bonus-item"><span class="bonus-text">Pick one of ' + v.pickOptions.length + '</span></div>'] : [])]
   const specialtyCards = v.specialtyOffers.map((s) => `<div class="choice-card" data-act="choose-specialty" data-id="${esc(s.id)}"><div class="choice-name">${esc(s.name)}</div><div class="choice-description">${esc(s.intent)}</div><div class="choice-stats">${Object.entries(s.statModifiers).map(([k, n]) => `<span class="stat-bonus ${statChangeIsGain(k, n) ? '' : 'neg'}">${esc(statWordsOf(k, n))}</span>`).join('')}</div></div>`).join('')
   const pickCards = (v.pickOptions ?? []).map((o, i) => `<div class="choice-card" data-act="choose-pick" data-id="${i}"><div class="choice-name">${esc(Object.entries(o).map(([k, n]) => statWordsOf(k, n)).join(', '))}</div></div>`).join('')
   return `<div class="hx levelup" data-hero="${esc(heroId)}" data-from="${from}" data-to="${v.to}" data-needs-specialty="${v.needsSpecialty ? 1 : 0}" data-needs-pick="${v.pickOptions ? 1 : 0}" data-can="${canLevelUp(c, heroId) ? 1 : 0}">${muteButton()}
@@ -517,7 +521,7 @@ export function mountLevelUp(root: HTMLElement, onLevel: (choice: { specialtyId?
   /** The gains float after the level is written — read back off the preview list so the words match. */
   const onLevelGains = (): { text: string; type: string }[] => {
     onLevel(choice)
-    const out = qa(root, '.bonus-item').filter((b) => !b.classList.contains('specialty') && !/Pick one/.test(b.textContent ?? '')).map((b) => ({ text: b.textContent ?? '', type: b.classList.contains('slot') ? 'slot' : 'stat' }))
+    const out = qa(root, '.bonus-item').filter((b) => !b.classList.contains('specialty') && !/Pick one/.test(b.textContent ?? '')).map((b) => ({ text: b.dataset['gain'] ?? b.textContent ?? '', type: b.classList.contains('move') ? 'move' : b.classList.contains('slot') ? 'slot' : 'stat' }))
     if (choice.specialtyId) out.push({ text: (q(root, `.choice-card[data-id="${choice.specialtyId}"] .choice-name`)?.textContent ?? choice.specialtyId), type: 'specialty-name' })
     if (choice.pick !== undefined) out.push({ text: q(root, `.choice-card[data-act="choose-pick"][data-id="${choice.pick}"] .choice-name`)?.textContent ?? 'pick', type: 'specialty' })
     return out

@@ -6,12 +6,17 @@
 // not work. I can't double-click on it or anything to make it trigger." The play input (src/ui/play-input.ts) asked about
 // each; every number is the engine's (its validated choices, reachOf, its own events).
 import { describe, it, expect } from 'vitest'
+import { levelTwoRows } from './level-two.js'
 import { createSandbox, advanceSandbox, commandSandbox, sandboxActivationChoices, sandboxChoices, type Sandbox } from '../src/core/sandbox.js'
 import { SANDBOX_DEFAULT } from '../src/content/sandbox.js'
 import { createPlayInput } from '../src/ui/play-input.js'
 import { actionReach, isAttack, isMove } from '../src/engine.js'
 
-const start = () => { const s = createSandbox({ mapId: SANDBOX_DEFAULT.mapId, heroes: [...SANDBOX_DEFAULT.heroes], enemies: [], seed: 1, encounterId: 'encounter.opening.orphanage' }); advanceSandbox(s); return s }
+// Law 10, 2026-10-06 — rule.special-moves-unlock-at-level-two (engine item; engine DECISIONS.md 2026-10-06 'a hero's special moves
+// unlock at level 2, ruled: all of them, every hero …'): the Priest has his Devotion from level 2, and two tests here choose it from
+// the bar. The sandbox's three heroes are fielded as campaign rows at level 2 (test/level-two.ts); what is held of choosing is
+// unchanged. The line was the same without `heroRows`.
+const start = () => { const s = createSandbox({ mapId: SANDBOX_DEFAULT.mapId, heroes: [...SANDBOX_DEFAULT.heroes], heroRows: levelTwoRows(SANDBOX_DEFAULT.heroes), enemies: [], seed: 1, encounterId: 'encounter.opening.orphanage' }); advanceSandbox(s); return s }
 /** a sandbox with the hero of this type acting, and a play input on it */
 function acting(type: RegExp) {
   const s = start(), P = createPlayInput(() => s, (c) => commandSandbox(s, c))

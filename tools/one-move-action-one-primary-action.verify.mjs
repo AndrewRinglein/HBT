@@ -7,7 +7,7 @@
 // Move row is greyed and after a Move the special moves are greyed (already so by the walked rule)."
 //
 // On the page PLAY.html opens for battle 1 (BATTLE-SANDBOX.html?play=encounter.opening.orphanage&heroes=<hero>), a hero with a
-// movement power of its own — the Iron Dwarf's Leap, then the Ranger's Side Roll (the item's two variants):
+// movement power of its own (at level 2 since engine rule.special-moves-unlock-at-level-two, 2026-10-06 - the note in open()) — the Iron Dwarf's Leap, then the Ranger's Side Roll (the item's two variants):
 //   1. its Activation begins with nothing greyed;
 //   2. the power is pressed on the bar and taken to a hex of its area: the Move row and every other movement are greyed, the
 //      host names each as done, arming one offers nowhere to go, the ENGINE refuses the walk with its movement-slot reason
@@ -25,7 +25,7 @@ import {createRequire} from 'node:module'
 import {bootSlice} from './atlas-dom.mjs'
 import {board} from './lesson-play.mjs'
 const esbuild=createRequire(import.meta.url)('../../engine/node_modules/esbuild')
-const built=esbuild.buildSync({stdin:{contents:`export {saveSandbox,restoreSandbox} from './src/core/sandbox.ts';export {validateAction,executeAction} from '../engine/src/core/commands.ts';export {movementOptions} from '../engine/src/core/movement.ts'`,resolveDir:process.cwd(),loader:'ts'},bundle:true,platform:'node',format:'esm',write:false,logLevel:'silent'})
+const built=esbuild.buildSync({stdin:{contents:`export {saveSandbox,restoreSandbox,createSandbox} from './src/core/sandbox.ts';export {SANDBOX_HEROES} from './src/content/sandbox.ts';export {specialtiesOf} from './src/content/progress.ts';export {validateAction,executeAction} from '../engine/src/core/commands.ts';export {movementOptions} from '../engine/src/core/movement.ts'`,resolveDir:process.cwd(),loader:'ts'},bundle:true,platform:'node',format:'esm',write:false,logLevel:'silent'})
 const E=await import('data:text/javascript;base64,'+Buffer.from(built.outputFiles[0].text).toString('base64'))
 const page=process.argv[2]??'BATTLE-SANDBOX.html',ORPHANAGE='encounter.opening.orphanage'
 const CLOSED={ok:false,reason:'movement-slot-closed'}
@@ -33,8 +33,22 @@ const say=(...a)=>console.log('  '+a.join(' '))
 const has=(n,cls)=>n.className.split(/\s+/).includes(cls)
 
 function open(hero){
- const {w}=bootSlice(page,{search:`?play=${ORPHANAGE}&heroes=${hero}`}),h=w.__sandbox,B=board({handle:h,w})
+ /* Law 10, 2026-10-06 — at the merge of this rule with rule.special-moves-unlock-at-level-two (engine item, ruled the same day; engine
+    DECISIONS.md 'a hero's special moves unlock at level 2, ruled: all of them, every hero …': "the special moves that the starting
+    heroes get should be unlocked instead at level 2"). The Orphanage's hero is level 1 and has the walk alone, and this page check is
+    about a hero with a movement power of its own. So the page is opened as before and the SAME battle - the page's own map,
+    encounter, enemies and seed - is put on it through the page's own import with the hero as a campaign row at level 2 (the first
+    specialty of its class: the engine fields no level-2 hero without one). Both rulings stand; everything read of the bar, the host
+    and the engine below is unchanged. The lines were:
+      const {w}=bootSlice(page,{search:`?play=${ORPHANAGE}&heroes=${hero}`}),h=w.__sandbox,B=board({handle:h,w})
+      const {V,ctx}=B */
+ const {w,root}=bootSlice(page,{search:`?play=${ORPHANAGE}&heroes=${hero}`}),h=w.__sandbox,B=board({handle:h,w})
  const {V,ctx}=B
+ {B.settle();const config=h.session.config;assert.deepEqual(config.heroes,[hero],'the page fields the one hero asked for')
+  const row=structuredClone(E.SANDBOX_HEROES.find(x=>x.id===hero)),levelTwo={...row,level:2,specialty:E.specialtiesOf(row.classes[0])[0].id}
+  w.document.getElementById('transferText').value=E.saveSandbox(E.createSandbox({...config,heroRows:[levelTwo]}))
+  const imp=root.els.find(e=>e.dataset.act==='import');assert.ok(imp,"the page has its import");imp.handlers.click();B.settle()
+  assert.deepEqual(h.session.config.heroRows?.map(r=>[r.id,r.level]),[[hero,2]],"the battle on the page fields the hero at level 2")}
  const me=()=>ctx().state.units.find(u=>u.typeId===hero)
  const chip=id=>V().dom.rail.querySelectorAll('.railchip').find(c=>+c.dataset.i===id)
  const mine=()=>{B.settle();if(B.actor()?.id!==me().id){chip(me().id).handlers.dblclick({stopPropagation(){}});B.settle()}assert.equal(B.actor()?.id,me().id,me().name+' is the one acting')}

@@ -141,3 +141,13 @@ export const STAT_LINES: Readonly<Record<string, string>> = {
   "toughness": "Harder to wound",
   "vision": "Sees farther",
 }
+
+/** Per class that has one: its bonus move and the Codex's one line of what the move does (the class row's bonusMoveNote). */
+export const MOVE_LINES: readonly { readonly classId: string; readonly moveId: string; readonly line: string }[] = [
+  {"classId":"class.warrior","moveId":"power.leap","line":"2 stamina, 2 hexes, +2 Strength until end of Turn."},
+  {"classId":"class.ranger","moveId":"power.side-roll","line":"1 stamina, 1 hex."},
+  {"classId":"class.rogue","moveId":"power.side-roll","line":"1 stamina, 1 hex."},
+  {"classId":"class.mage","moveId":"power.focus","line":"0 stamina, moves you ZERO hexes, gain 1 Stamina. A caught caster stays caught."},
+  {"classId":"class.priest","moveId":"power.devotion","line":"0 stamina, moves you ZERO hexes, -1 Stamina Max for the Battle, gain 2 Stamina."},
+  {"classId":"class.paladin","moveId":"power.sidestep","line":"0 stamina, cooldown 1, 1 hex."},
+]

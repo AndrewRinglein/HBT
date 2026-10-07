@@ -15,7 +15,7 @@
 
 import type { CampaignState, HeroId } from './campaign.js'
 import { type Ctx, setRewardOffer, applyTakeReward, applyEquip, applyLevel, applySpecialty, setCursor } from './mutate.js'
-import { levelRowOf, specialtiesOf, specialtyOf, SPECIALTY_OFFER, type SpecialtyRow, type LevelRow } from '../content/progress.js'
+import { levelRowOf, specialtiesOf, specialtyOf, SPECIALTY_OFFER, type SpecialtyRow, type LevelRow, movesUnlockedAt, type MoveUnlocked } from '../content/progress.js'
 import { SWITCHES } from '../content/switches.js'
 import { rollOf, drawOf } from './rng.js'
 import { REWARDS, REWARD_ODDS, slotOf, type RewardRow } from '../content/rewards.js'
@@ -236,6 +236,8 @@ export type LevelUpView = {
   /** The row carries a choice: one of these, by index. */
   pickOptions: readonly Readonly<Record<string, number>>[] | null
   specialty: SpecialtyRow | null
+  /** rule.special-moves-unlock-at-level-two (engine item, 2026-10-06): the movements this level unlocks — the engine's row; empty for most levels. */
+  movesUnlocked: readonly MoveUnlocked[]
 }
 export function viewLevelUp(campaign: CampaignState, heroId: HeroId): LevelUpView {
   const h = campaign.roster[heroId]
@@ -248,6 +250,7 @@ export function viewLevelUp(campaign: CampaignState, heroId: HeroId): LevelUpVie
     needsSpecialty, specialtyOffers: needsSpecialty ? specialtyOfferOf(campaign, heroId) : [],
     pickOptions: row.choice ?? null,
     specialty: h.specialty ? specialtyOf(h.specialty) : null,
+    movesUnlocked: movesUnlockedAt(h.unitType, h.level + 1),
   }
 }
 
